@@ -1,0 +1,8 @@
+{
+    "extends": "@sapphire/ts-config",
+    "compilerOptions": {
+        "outDir": "dist",
+        "target": "ES2020",
+        "declaration": false
+    }
+}

@@ -1,0 +1,13 @@
+{
+    "extends": "../../tsconfig.json",
+    "compilerOptions": {
+        "outDir": "./dist",
+        "baseUrl": "./src",
+        "paths": {
+			"#functions": ["functions/*"],
+		},
+        "sourceMap": true
+    },
+    "include": ["./lib/**/*.ts"],
+    "exclude": ["*.test.ts"]
+}
