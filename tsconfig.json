@@ -1,8 +1,24 @@
 {
-    "extends": "@sapphire/ts-config",
     "compilerOptions": {
-        "outDir": "dist",
-        "target": "ES2020",
-        "declaration": false
+        "allowSyntheticDefaultImports": true,
+		"alwaysStrict": true,
+		"esModuleInterop": true,
+		"experimentalDecorators": true,
+		"forceConsistentCasingInFileNames": true,
+		"importHelpers": true,
+		"incremental": true,
+		"lib": ["esnext"],
+		"module": "CommonJS",
+		"moduleResolution": "Node",
+		"newLine": "lf",
+		"noEmitHelpers": true,
+		"noFallthroughCasesInSwitch": true,
+		"noImplicitReturns": true,
+		"pretty": true,
+		"removeComments": false,
+		"resolveJsonModule": true,
+		"sourceMap": true,
+		"strict": true,
+		"target": "ES2020"
     }
 }

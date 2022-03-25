@@ -7,6 +7,14 @@ services:
             POSTGRES_DB: yoki
             POSTGRES_USER: yoki_user
             POSTGRES_PASSWORD: yoki_pass
+        networks:
+            - main-network
+    bot:
+        command: ["yarn", "run", "dev"]
+        depends_on:
+            - db
+        volumes:
+            - '../../services/bot/src:/usr/app/services/bot/src'
 
 volumes:
   yoki-postgres-data:

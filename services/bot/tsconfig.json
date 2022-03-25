@@ -6,8 +6,9 @@
         "paths": {
 			"#functions": ["functions/*"],
 		},
-        "sourceMap": true
+        "sourceMap": true,
+        "noImplicitAny": false
     },
-    "include": ["./lib/**/*.ts"],
+    "include": ["./src/**/*.ts"],
     "exclude": ["*.test.ts"]
 }

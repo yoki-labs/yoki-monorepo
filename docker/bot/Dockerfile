@@ -1,10 +1,17 @@
-FROM node:16-alpine
+FROM node:16-alpine as BUILD_IMAGE
 WORKDIR /usr/app
 
-COPY package*.json GUILDED_ICON.svg nodemon.json ./
-RUN npm i
-COPY tsconfig.json ./
-COPY src src/
-RUN npm run build
+RUN apk add --update \
+    && apk add --no-cache ca-certificates \
+    && apk add --no-cache --virtual .build-deps curl bash
 
-CMD [ "node", "dist/index.js" ]
+RUN curl -L https://yarnpkg.com/install.sh | bash
+COPY package.json tsconfig.json ./
+
+COPY ./services/bot/package.json ./services/bot/tsconfig.json ./services/bot/nodemon.json services/bot/
+RUN yarn install
+COPY ./services/bot/src/. services/bot/src/
+RUN yarn build
+
+WORKDIR /usr/app/services/bot
+CMD ["yarn", "run", "start"]

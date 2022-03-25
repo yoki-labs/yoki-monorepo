@@ -3,13 +3,13 @@ services:
     bot:
         build:
             context: ../../
-            dockerfile: ./bot/Dockerfile
+            dockerfile: ./docker/bot/Dockerfile
         container_name: YOKI_BOT
         restart: unless-stopped
-        depends_on:
-            - cache
         env_file:
-            - ../../
+            - ../../.env
+        networks:
+            - main-network
 
 networks:
     main-network:
