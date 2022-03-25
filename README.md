@@ -45,6 +45,11 @@ DATABASE_URL="PUT_IN_TEST_DB_URL" // if you are using the docker-compose setup, 
 DEFAULT_PREFIX="DEFAULT_PREFIX"
 ```
 
+## Standards
+
+**Never commit straight to main! Always use a feature branch and create PRs!**.
+Please make sure you run `yarn build` and `yarn lint:fix` before pushing commits to your branch. The husky git commit hook should do it for you, but if it doesn't, be sure to do it yourself.
+
 ## Terms
 
 By coming on as a developer, you are expected to keep this code closed source. You are not to fork it or republish it, as this code is unlicensed and any unauthorized distribution will be a violation of the licensing (or rather, the lack of). Of course, I'm probably not gonna litigate anything, but it's in your better favor not to be a jerk to the people who have put a lot of hard work into this bot.

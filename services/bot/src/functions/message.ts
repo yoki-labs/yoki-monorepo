@@ -1,3 +1,1 @@
-export const messageFunctionsBuilder = ({ db, client }) => {
-
-}
+export const messageFunctionsBuilder = ({ db, client }) => {};
