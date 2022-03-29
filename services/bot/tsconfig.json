@@ -2,9 +2,8 @@
     "extends": "../../tsconfig.json",
     "compilerOptions": {
         "outDir": "./dist",
-        "baseUrl": "./src",
         "paths": {
-			"#functions": ["functions/*"],
+			"#functions": ["./src/functions/*"],
 		},
         "sourceMap": true,
         "noImplicitAny": false

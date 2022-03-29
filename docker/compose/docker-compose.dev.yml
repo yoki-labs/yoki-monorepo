@@ -3,18 +3,24 @@ services:
     db:
         image: postgres
         restart: unless-stopped
+        container_name: YOKI_DB
         environment:
             POSTGRES_DB: yoki
             POSTGRES_USER: yoki_user
             POSTGRES_PASSWORD: yoki_pass
         networks:
             - main-network
+        ports:
+            - 5432:5432
     bot:
         command: ["yarn", "run", "dev"]
         depends_on:
             - db
         volumes:
             - '../../services/bot/src:/usr/app/services/bot/src'
+        environment:
+            DATABASE_URL: "postgresql://yoki_user:yoki_pass@db:5432/yoki?schema=public"
+
 
 volumes:
   yoki-postgres-data:
