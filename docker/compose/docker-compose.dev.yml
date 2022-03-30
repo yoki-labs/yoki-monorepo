@@ -17,10 +17,9 @@ services:
         depends_on:
             - db
         volumes:
-            - '../../services/bot/src:/usr/app/services/bot/src'
+            - "../../services/bot/src:/usr/app/services/bot/src"
         environment:
             DATABASE_URL: "postgresql://yoki_user:yoki_pass@db:5432/yoki?schema=public"
 
-
 volumes:
-  yoki-postgres-data:
+    yoki-postgres-data:
