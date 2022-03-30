@@ -1,20 +1,24 @@
-import { removeWordFromFilter } from "../../functions/content-filter";
-import type { Command } from "../Command.spec";
+import type { Command } from "../Command";
 
-export default {
-    name: "delete",
+const Delete: Command = {
+    name: "filter-delete",
+    subName: "delete",
     description: "Remove a word or phrase from the automod filter",
+    usage: "<word-to-delete>",
+    subCommand: true,
     args: [
         {
             name: "phrase",
             type: "string",
         },
     ],
-    execute: async (message, args, _commandCtx, ctx) => {
+    execute: async (message, args, _commandCtx, { prisma, messageUtil, contentFilterUtil }) => {
         const phrase = args.phrase as string;
-        const existingEntry = await ctx.prisma.contentFilter.findFirst({ where: { serverId: message.serverId!, content: phrase } });
-        if (!existingEntry) return ctx.rest.router.createChannelMessage(message.channelId, "This phrase is not in your server's filter!");
-        await removeWordFromFilter(ctx.prisma, message.serverId!, phrase);
-        return ctx.rest.router.createChannelMessage(message.channelId, `Successfully deleted \`${phrase}\` from the automod list!`);
+        const existingEntry = await prisma.contentFilter.findFirst({ where: { serverId: message.serverId!, content: phrase } });
+        if (!existingEntry) return messageUtil.send(message.channelId, "This phrase is not in your server's filter!");
+        await contentFilterUtil.removeWordFromFilter(message.serverId!, phrase);
+        return messageUtil.send(message.channelId, `Successfully deleted \`${phrase}\` from the automod list!`);
     },
-} as Command;
+};
+
+export default Delete;

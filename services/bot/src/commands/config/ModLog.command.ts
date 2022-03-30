@@ -1,0 +1,32 @@
+import { LogChannelType } from "@prisma/client";
+
+import type { Command } from "../Command";
+
+const Filter: Command = {
+    name: "modlog",
+    description: "Set or view the mod log channel for this server.",
+    usage: "[new-channel-id]",
+    aliases: ["mod-log", "modlogs", "mod-logs"],
+    args: [{ name: "newChannel", optional: true, type: "string" }],
+    execute: async (message, args, _commandCtx, ctx) => {
+        const newChannel = (args.newChannel as string) ?? null;
+        const modLogChannel = await ctx.serverUtil.getModLogChannel(message.serverId!);
+
+        if (!newChannel)
+            return ctx.messageUtil.send(
+                message.channelId,
+                modLogChannel ? `The modlogs channel is set to: \`${modLogChannel.channelId}\`` : `There is no modlogs channel set.`
+            );
+
+        const newModLogsChannel = await ctx.prisma.logChannel.create({
+            data: {
+                channelId: newChannel,
+                serverId: message.serverId!,
+                type: LogChannelType.MOD_ACTION_LOG,
+            },
+        });
+        return ctx.messageUtil.send(message.channelId, `Successfully set the modlogs channel to \`${newModLogsChannel.channelId}\``);
+    },
+};
+
+export default Filter;

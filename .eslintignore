@@ -3,3 +3,4 @@ dist/
 types/
 *.d.ts
 packages/**/*.js
+*.json

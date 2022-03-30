@@ -1,8 +1,12 @@
-import type { Command } from "./Command.spec";
+import type { Command } from "./Command";
 
-export default {
+const Ping: Command = {
     name: "ping",
-    execute: (message, args, commandCtx, ctx) => {
-        return ctx.rest.router.createChannelMessage(message.channelId, { content: "PONG!", replyMessageIds: [message.id] });
+    description: "Send a ping message",
+    usage: "",
+    execute: (message, _args, _commandCtx, ctx) => {
+        return ctx.messageUtil.send(message.channelId, { content: "PONG!", replyMessageIds: [message.id] });
     },
-} as Command;
+};
+
+export default Ping;
