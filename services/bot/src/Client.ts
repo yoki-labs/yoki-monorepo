@@ -2,6 +2,7 @@ import Collection from "@discordjs/collection";
 import REST from "@guildedjs/rest";
 import WebSocketManager from "@guildedjs/ws";
 import { PrismaClient } from "@prisma/client";
+import RedisClient from "ioredis";
 
 import type { Command } from "./commands/Command";
 import ChatMessageCreated from "./events/ChatMessageCreated";
@@ -11,14 +12,15 @@ import { ServerUtil } from "./functions/server";
 import type { Context } from "./typings";
 
 export default class Client {
-    ws = new WebSocketManager({ token: process.env.GUILDED_TOKEN });
-    rest = new REST({ token: process.env.GUILDED_TOKEN });
-    commands = new Collection<string, Command>();
-    prisma = new PrismaClient();
+    readonly ws = new WebSocketManager({ token: process.env.GUILDED_TOKEN });
+    readonly rest = new REST({ token: process.env.GUILDED_TOKEN });
+    readonly prisma = new PrismaClient();
+    readonly redis = new RedisClient(process.env.REDIS_URL ?? "cache:6379");
 
-    messageUtil = new MessageUtil(this);
-    serverUtil = new ServerUtil(this);
-    contentFilterUtil = new ContentFilterUtil(this);
+    readonly commands = new Collection<string, Command>();
+    readonly messageUtil = new MessageUtil(this);
+    readonly serverUtil = new ServerUtil(this);
+    readonly contentFilterUtil = new ContentFilterUtil(this);
 
     eventHandler: { [x: string]: (packet: any, ctx: Context) => void } = {
         ChatMessageCreated,

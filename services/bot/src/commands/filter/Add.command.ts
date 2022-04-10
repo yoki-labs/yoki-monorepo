@@ -8,6 +8,7 @@ const Add: Command = {
     usage: "<word-to-ban> [severity=warn]",
     examples: ["test_word warn", "test_word_2 kick"],
     subCommand: true,
+    modOnly: true,
     args: [
         {
             name: "phrase",

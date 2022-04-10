@@ -28,10 +28,13 @@
         "@discordjs/collection": "^0.5.0",
         "@guildedjs/rest": "^2.1.0",
         "@guildedjs/ws": "^1.1.0",
+        "@node-redis/json": "^1.0.2",
         "@prisma/client": "^3.11.0",
         "common-tags": "^1.8.2",
+        "ioredis": "^5.0.3",
         "node-fetch": "2.6.6",
         "recursive-readdir": "^2.2.2",
+        "redis-json": "^6.0.3",
         "tslib": "^2.0.3"
     },
     "imports": {

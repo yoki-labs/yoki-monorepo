@@ -5,6 +5,7 @@ const List: Command = {
     description: "Add a word or phrase to the automod filter",
     usage: "",
     subCommand: true,
+    modOnly: true,
     execute: async (message, _args, _commandCtx, ctx) => {
         const bannedWords = await ctx.contentFilterUtil.getBannedWords(message.serverId!);
         return ctx.messageUtil.send(

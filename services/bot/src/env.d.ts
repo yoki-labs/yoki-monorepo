@@ -3,5 +3,6 @@ declare namespace NodeJS {
         GUILDED_TOKEN: string;
         DEFAULT_PREFIX: string;
         BOT_ID: string;
+        BOT_OWNER: string;
     }
 }

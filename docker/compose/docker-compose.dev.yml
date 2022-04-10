@@ -12,10 +12,18 @@ services:
             - main-network
         ports:
             - 5432:5432
+    cache:
+      image: redislabs/redismod:latest
+      restart: unless-stopped
+      networks:
+          - main-network
+      ports:
+        - '6379:6379'
     bot:
         command: ["yarn", "run", "dev"]
         depends_on:
             - db
+            - cache
         volumes:
             - "../../services/bot/src:/usr/app/services/bot/src"
         environment:

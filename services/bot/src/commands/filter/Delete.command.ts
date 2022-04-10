@@ -6,6 +6,7 @@ const Delete: Command = {
     description: "Remove a word or phrase from the automod filter",
     usage: "<word-to-delete>",
     subCommand: true,
+    modOnly: true,
     args: [
         {
             name: "phrase",

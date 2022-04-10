@@ -1,8 +1,12 @@
-import { LogChannelType, Severity } from "@prisma/client";
+import type { TeamMemberPayload } from "@guildedjs/guilded-api-typings";
+import JSONCache from "redis-json";
 
-import UtilClass from "./UtilClass";
+import { LogChannelType, Severity } from "../typings";
+import Util from "./util";
 
-export class ServerUtil extends UtilClass {
+export class ServerUtil extends Util {
+    readonly cache = new JSONCache<TeamMemberPayload>(this.client.redis);
+
     getServerFromDatabase(serverId: string) {
         return this.prisma.server.findUnique({ where: { serverId } });
     }
@@ -57,4 +61,18 @@ export class ServerUtil extends UtilClass {
     populateActionMessage(id: number, channelId: string, messageId: string) {
         return this.prisma.action.update({ where: { id }, data: { logChannelId: channelId, logChannelMessage: messageId } });
     }
+
+    async getMember(serverId: string, userId: string, cache = true, force = false) {
+        if (!force) {
+            const isCached = await this.cache.get(buildMemberKey(serverId, userId));
+            if (isCached) return isCached;
+        }
+
+        return this.rest.router.getMember(serverId, userId).then((data) => {
+            if (cache) void this.cache.set(buildMemberKey(serverId, userId), data.member);
+            return data.member;
+        });
+    }
 }
+
+export const buildMemberKey = (serverId: string, memberId: string) => `member-${serverId}-${memberId}`;

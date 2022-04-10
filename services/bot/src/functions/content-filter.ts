@@ -2,7 +2,7 @@ import type { ChatMessagePayload } from "@guildedjs/guilded-api-typings";
 import { ContentFilter, Severity } from "@prisma/client";
 import { stripIndents } from "common-tags";
 
-import UtilClass from "./UtilClass";
+import Util from "./util";
 
 export const options = {
     kick: Severity.KICK,
@@ -14,7 +14,7 @@ export const options = {
 export const optionKeys = Object.keys(options);
 export const transformSeverityStringToEnum = (str: string) => options[str] as Severity;
 
-export class ContentFilterUtil extends UtilClass {
+export class ContentFilterUtil extends Util {
     addWordToFilter(data: Omit<ContentFilter, "id">) {
         return this.prisma.contentFilter.create({ data });
     }
@@ -25,6 +25,14 @@ export class ContentFilterUtil extends UtilClass {
 
     getBannedWords(serverId: string) {
         return this.prisma.contentFilter.findMany({ where: { serverId } });
+    }
+
+    enableFilter(serverId: string) {
+        return this.prisma.server.updateMany({ data: { filterEnabled: true }, where: { serverId } });
+    }
+
+    disableFilter(serverId: string) {
+        return this.prisma.server.updateMany({ data: { filterEnabled: false }, where: { serverId } });
     }
 
     async scanMessage(message: ChatMessagePayload) {

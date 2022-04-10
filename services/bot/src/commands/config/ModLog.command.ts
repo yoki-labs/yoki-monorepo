@@ -1,5 +1,4 @@
-import { LogChannelType } from "@prisma/client";
-
+import { LogChannelType } from "../../typings";
 import type { Command } from "../Command";
 
 const Filter: Command = {
@@ -8,15 +7,18 @@ const Filter: Command = {
     usage: "[new-channel-id]",
     aliases: ["mod-log", "modlogs", "mod-logs"],
     args: [{ name: "newChannel", optional: true, type: "string" }],
+    modOnly: true,
     execute: async (message, args, _commandCtx, ctx) => {
-        const newChannel = (args.newChannel as string) ?? null;
-        const modLogChannel = await ctx.serverUtil.getModLogChannel(message.serverId!);
+        const newChannel = args.newChannel as string;
+        // if (newChannel && !isUUID(newChannel)) return ctx.messageUtil.send(message.channelId, "Oh no! That is not a valid channel ID.");
 
-        if (!newChannel)
+        if (!newChannel) {
+            const modLogChannel = await ctx.serverUtil.getModLogChannel(message.serverId!);
             return ctx.messageUtil.send(
                 message.channelId,
                 modLogChannel ? `The modlogs channel is set to: \`${modLogChannel.channelId}\`` : `There is no modlogs channel set.`
             );
+        }
 
         const newModLogsChannel = await ctx.prisma.logChannel.create({
             data: {

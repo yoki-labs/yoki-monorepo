@@ -1,7 +1,7 @@
 import type { WSChatMessageCreatedPayload } from "@guildedjs/guilded-api-typings";
 import { stripIndents } from "common-tags";
 
-import type { Context } from "../typings";
+import { Context, RoleType } from "../typings";
 
 export default async (packet: WSChatMessageCreatedPayload, ctx: Context) => {
     const { message } = packet.d;
@@ -51,6 +51,15 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context) => {
             resolvedArgs[command.args[i].name] = args[i];
         }
     }
+
+    if (command.modOnly && message.createdBy !== process.env.BOT_OWNER) {
+        const member = await ctx.serverUtil.getMember(message.serverId, message.createdBy);
+        const modRoles = await ctx.prisma.role.findMany({ where: { serverId: message.serverId, type: RoleType.MOD } });
+        if (!modRoles.some((role) => member.roleIds.includes(role.roleId)))
+            return ctx.messageUtil.reply(message, "Oh no! Unfortunately, you are missing the mod role permission!");
+    }
+
+    if (command.ownerOnly && message.createdBy !== process.env.BOT_OWNER) return void 0;
 
     try {
         await command.execute(message, resolvedArgs, { packet }, ctx);
