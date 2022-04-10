@@ -5,7 +5,7 @@ const Add: Command = {
     name: "filter-add",
     subName: "add",
     description: "Add a word or phrase to the automod filter",
-    usage: "<word-to-ban> [severity=warn]",
+    usage: "<word-to-ban> [severity=warn] [infraction_points=5]",
     examples: ["test_word warn", "test_word_2 kick"],
     subCommand: true,
     modOnly: true,
@@ -19,11 +19,20 @@ const Add: Command = {
             type: "string",
             optional: true,
         },
+        {
+            name: "infraction_points",
+            type: "number",
+            optional: true,
+        },
     ],
-    execute: async (message, args, _commandCtx, { prisma, messageUtil, contentFilterUtil }) => {
+    execute: async (message, args, { prisma, messageUtil, contentFilterUtil }) => {
         const phrase = args.phrase as string;
         const severity = (args.severity as string) ?? "warn";
+        const infractionPoints = (args.infraction_points as number) ?? 5;
+
         if (!optionKeys.includes(severity)) return messageUtil.send(message.channelId, "Sorry, but that is not a valid severity level!");
+        if (infractionPoints < 0 || infractionPoints > 100)
+            return messageUtil.send(message.channelId, "Sorry, but the infraction points must be between 0 and 100.");
         const doesExistAlready = await prisma.contentFilter.findFirst({ where: { serverId: message.serverId!, content: phrase } });
         if (doesExistAlready) return messageUtil.send(message.channelId, "This word is already in your server's filter!");
         await contentFilterUtil.addWordToFilter({
@@ -31,6 +40,7 @@ const Add: Command = {
             creatorId: message.createdBy,
             serverId: message.serverId!,
             severity: transformSeverityStringToEnum(severity),
+            infractionPoints,
         });
         return messageUtil.send(message.channelId, `Successfully added \`${phrase}\` with the severity \`${severity}\` to the automod list!`);
     },

@@ -8,14 +8,20 @@ datasource db {
 }
 
 model Server {
-    id            Int       @id @default(autoincrement())
-    serverId      String    @unique @db.VarChar(255)
-    botJoinedAt   DateTime? @default(now())
-    premium       Boolean   @default(false)
-    locale        String    @default("en-US")
-    muteRoleId    String?
-    filterEnabled Boolean   @default(false)
-    disabled      Boolean   @default(false)
+    id                         Int       @id @default(autoincrement())
+    serverId                   String    @unique @db.VarChar(255)
+    botJoinedAt                DateTime? @default(now())
+    premium                    Boolean   @default(false)
+    locale                     String    @default("en-US")
+    muteRoleId                 Int?
+    filterEnabled              Boolean   @default(false)
+    disabled                   Boolean   @default(false)
+    muteInfractionThreshold    Int       @default(10)
+    kickInfractionThreshold    Int       @default(15)
+    banInfractionThreshold     Int       @default(30)
+    softbanInfractionThreshold Int       @default(25)
+    spamInfractionPoints       Int       @default(5)
+    prefix                     String?
 }
 
 model LogChannel {
@@ -33,11 +39,12 @@ model Role {
 }
 
 model ContentFilter {
-    id        Int      @id @default(autoincrement())
-    serverId  String   @db.VarChar(255)
-    content   String   @db.VarChar(255)
-    severity  Severity
-    creatorId String   @db.VarChar(255)
+    id               Int      @id @default(autoincrement())
+    serverId         String   @db.VarChar(255)
+    content          String   @db.VarChar(255)
+    severity         Severity
+    creatorId        String   @db.VarChar(255)
+    infractionPoints Int
 }
 
 model CustomTag {
@@ -55,6 +62,7 @@ model Action {
     logChannelMessage String?   @db.VarChar(255)
     executorId        String    @db.VarChar(255)
     reason            String?   @db.VarChar(255)
+    infractionPoints  Int
     targetId          String    @db.VarChar(255)
     createdAt         DateTime  @default(now())
     updatedAt         DateTime? @updatedAt

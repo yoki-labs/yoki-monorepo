@@ -13,7 +13,7 @@ const Delete: Command = {
             type: "string",
         },
     ],
-    execute: async (message, args, _commandCtx, { prisma, messageUtil, contentFilterUtil }) => {
+    execute: async (message, args, { prisma, messageUtil, contentFilterUtil }) => {
         const phrase = args.phrase as string;
         const existingEntry = await prisma.contentFilter.findFirst({ where: { serverId: message.serverId!, content: phrase } });
         if (!existingEntry) return messageUtil.send(message.channelId, "This phrase is not in your server's filter!");

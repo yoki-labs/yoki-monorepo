@@ -10,7 +10,7 @@ const Filter: Command = {
     args: [{ name: "newRole", type: "string" }],
     modOnly: true,
     ownerOnly: true,
-    execute: async (message, args, _commandCtx, ctx) => {
+    execute: async (message, args, ctx) => {
         const newRole = Number(args.newRole as string);
         if (!isNaN(newRole)) return ctx.messageUtil.send(message.channelId, "That is not a valid role ID.");
         const existing = await ctx.prisma.role.findMany({ where: { serverId: message.serverId, roleId: newRole, type: RoleType.MOD } });

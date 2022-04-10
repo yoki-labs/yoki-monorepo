@@ -7,7 +7,7 @@ const Disable: Command = {
     usage: "",
     subCommand: true,
     modOnly: true,
-    execute: async (message, _args, _commandCtx, ctx) => {
+    execute: async (message, _args, ctx) => {
         return ctx.contentFilterUtil
             .enableFilter(message.serverId!)
             .then(() => ctx.messageUtil.send(message.channelId, "Successfully disabled the automod filter for this server."))

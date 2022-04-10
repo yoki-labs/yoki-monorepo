@@ -1,7 +1,7 @@
 import type { TeamMemberPayload } from "@guildedjs/guilded-api-typings";
 import JSONCache from "redis-json";
 
-import { LogChannelType, Severity } from "../typings";
+import { Action, LogChannelType } from "../typings";
 import Util from "./util";
 
 export class ServerUtil extends Util {
@@ -25,6 +25,9 @@ export class ServerUtil extends Util {
                 muteRoleId: null,
                 botJoinedAt: null,
                 filterEnabled: false,
+                kickInfractionThreshold: 15,
+                muteInfractionThreshold: 10,
+                banInfractionThreshold: 30,
             },
         });
     }
@@ -36,14 +39,8 @@ export class ServerUtil extends Util {
         reason,
         targetId,
         expiresAt,
-    }: {
-        serverId: string;
-        type: Severity;
-        executorId: string;
-        reason: string | null;
-        targetId: string;
-        expiresAt: Date | null;
-    }) {
+        infractionPoints,
+    }: Pick<Action, "serverId" | "type" | "executorId" | "reason" | "targetId" | "expiresAt" | "infractionPoints">) {
         return this.prisma.action.create({
             data: {
                 serverId,
@@ -53,6 +50,7 @@ export class ServerUtil extends Util {
                 targetId,
                 createdAt: new Date(),
                 updatedAt: null,
+                infractionPoints,
                 expiresAt,
             },
         });

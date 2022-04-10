@@ -5,11 +5,15 @@ import { Context, RoleType } from "../typings";
 
 export default async (packet: WSChatMessageCreatedPayload, ctx: Context) => {
     const { message } = packet.d;
-
     if (message.createdByBotId || message.createdBy === process.env.BOT_ID || !message.serverId) return void 0;
-    if (!message.content.startsWith(process.env.DEFAULT_PREFIX)) {
+
+    let serverFromDb = await ctx.serverUtil.getServerFromDatabase(message.serverId);
+    if (serverFromDb?.disabled) return void 0;
+    if (!serverFromDb) serverFromDb = await ctx.serverUtil.createFreshServerInDatabase(message.serverId);
+
+    if (!message.content.startsWith(serverFromDb.prefix ?? process.env.DEFAULT_PREFIX)) {
         await ctx.messageUtil.logMessage(message);
-        return ctx.contentFilterUtil.scanMessage(message);
+        return ctx.contentFilterUtil.scanMessage(message, serverFromDb);
     }
 
     let [commandName, ...args] = message.content.slice(process.env.DEFAULT_PREFIX.length).trim().split(/ +/g);
@@ -17,9 +21,6 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context) => {
     commandName = commandName.toLowerCase();
 
     let command = ctx.commands.get(commandName) ?? ctx.commands.find((command) => command.aliases?.includes(commandName) ?? false);
-    const serverFromDb = await ctx.serverUtil.getServerFromDatabase(message.serverId);
-    if (serverFromDb?.disabled) return void 0;
-    if (!serverFromDb) await ctx.serverUtil.createFreshServerInDatabase(message.serverId);
     if (!command) return;
 
     const parentCommand = command;
@@ -38,17 +39,31 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context) => {
     const resolvedArgs: Record<string, string | number | boolean> = {};
     if (command.args && command.args.length) {
         for (let i = 0; i < command.args.length; i++) {
-            if (command.args[i].type === "string" && typeof args[i] !== "string") {
-                if (!command.args[i].optional)
+            const commandArg = command.args[i];
+            if (commandArg.type === "string" && typeof args[i] !== "string") {
+                if (!commandArg.optional)
                     return ctx.messageUtil.send(
                         message.channelId,
                         stripIndents`
-					Sorry, your ${command.args[i].name} was not valid! Was expecting a \`string\`, received \`${args[i]}\`
-					**Usage:** \`${parentCommand.name}${command.name === parentCommand.name ? "" : ` ${command.subName ?? command.name}`} ${command.usage}\`
-					`
+							Sorry, your ${commandArg.name} was not valid! Was expecting a \`string\`, received \`${args[i]}\`
+							**Usage:** \`${parentCommand.name}${command.name === parentCommand.name ? "" : ` ${command.subName ?? command.name}`} ${command.usage}\`
+						`
                     );
+                resolvedArgs[commandArg.name] = args[i];
+            } else if (commandArg.type === "number") {
+                if (args[i] !== undefined || !Number.isNaN(Number(args[i])))
+                    if (!commandArg.optional)
+                        return ctx.messageUtil.send(
+                            message.channelId,
+                            stripIndents`
+								Sorry, your ${commandArg.name} was not valid! Was expecting a \`string\`, received \`${args[i]}\`
+								**Usage:** \`${parentCommand.name}${command.name === parentCommand.name ? "" : ` ${command.subName ?? command.name}`} ${command.usage}\`
+							`
+                        );
+                resolvedArgs[commandArg.name] = Number(args[i]);
+            } else {
+                resolvedArgs[commandArg.name] = args[i];
             }
-            resolvedArgs[command.args[i].name] = args[i];
         }
     }
 
@@ -62,7 +77,7 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context) => {
     if (command.ownerOnly && message.createdBy !== process.env.BOT_OWNER) return void 0;
 
     try {
-        await command.execute(message, resolvedArgs, { packet }, ctx);
+        await command.execute(message, resolvedArgs, ctx, { packet });
     } catch (e) {
         console.error(e);
         return ctx.messageUtil.send(

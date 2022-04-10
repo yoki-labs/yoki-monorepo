@@ -21,4 +21,4 @@ export interface CommandContext {
     packet: WSChatMessageCreatedPayload;
 }
 
-export { LogChannelType, RoleType, Severity } from "@prisma/client";
+export { Action, ContentFilter, LogChannel, LogChannelType, RoleType, Server, Severity } from "@prisma/client";
