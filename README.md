@@ -40,6 +40,8 @@ yarn install
 ## Environment Variables
 
 ```
+BOT_ID="BOT_USER_ID"
+BOT_OWNER="BOT_OWNER"
 GUILDED_TOKEN="GET_GUILDED_TOKEN_FROM_SOMEWHERE"
 DATABASE_URL="PUT_IN_TEST_DB_URL" // if you are using the docker-compose setup, your url will look a little different.
 DEFAULT_PREFIX="DEFAULT_PREFIX"

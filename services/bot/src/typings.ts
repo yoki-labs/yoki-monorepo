@@ -1,6 +1,7 @@
 import type Collection from "@discordjs/collection";
 import type { WSChatMessageCreatedPayload } from "@guildedjs/guilded-api-typings";
 import type RestManager from "@guildedjs/rest";
+import type { WebhookClient } from "@guildedjs/webhook-client";
 import type { PrismaClient } from "@prisma/client";
 
 import type { Command } from "./commands/Command";
@@ -15,6 +16,7 @@ export interface Context {
     messageUtil: MessageUtil;
     serverUtil: ServerUtil;
     contentFilterUtil: ContentFilterUtil;
+    errorHandler: WebhookClient;
 }
 
 export interface CommandContext {

@@ -26,7 +26,9 @@
     },
     "dependencies": {
         "@discordjs/collection": "^0.5.0",
+        "@guildedjs/embeds": "^1.0.5-selfbot",
         "@guildedjs/rest": "^2.1.0",
+        "@guildedjs/webhook-client": "^1.0.6-selfbot",
         "@guildedjs/ws": "^1.1.0",
         "@node-redis/json": "^1.0.2",
         "@prisma/client": "^3.11.0",

@@ -1,3 +1,4 @@
+import Embed from "@guildedjs/embeds";
 import type { WSChatMessageCreatedPayload } from "@guildedjs/guilded-api-typings";
 import { stripIndents } from "common-tags";
 
@@ -79,13 +80,27 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context) => {
     try {
         await command.execute(message, resolvedArgs, ctx, { packet });
     } catch (e) {
-        console.error(e);
+        if (e instanceof Error) {
+            console.error(e);
+            Error.captureStackTrace(e);
+            void ctx.errorHandler.send("Error in command usage!", [
+                new Embed()
+                    .setDescription(
+                        stripIndents`
+						Server: **${message.serverId}**
+						Channel: **${message.channelId}**
+						User: **${message.createdBy}**
+						Content: \`${message.content}\`
+					`
+                    )
+                    .setColor("RED"),
+            ]);
+        }
         return ctx.messageUtil.send(
             message.channelId,
             stripIndents`
         **Oh no, something went wrong!**
-        This is potentially an issue on our end, please contact us and include the following:
-        \`${(e as Error).message}\`
+        This is potentially an issue on our end, please contact us and include the following: \`${(e as Error).message}\`
         `
         );
     }

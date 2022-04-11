@@ -16,7 +16,7 @@ const Filter: Command = {
             const modLogChannel = await ctx.serverUtil.getModLogChannel(message.serverId!);
             return ctx.messageUtil.send(
                 message.channelId,
-                modLogChannel ? `The modlogs channel is set to: \`${modLogChannel.channelId}\`` : `There is no modlogs channel set.`
+                modLogChannel ? `The modlogs channel is set to: \`${modLogChannel!.channelId}\`` : `There is no modlogs channel set.`
             );
         }
 

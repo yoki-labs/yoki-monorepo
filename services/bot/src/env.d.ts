@@ -4,5 +4,6 @@ declare namespace NodeJS {
         DEFAULT_PREFIX: string;
         BOT_ID: string;
         BOT_OWNER: string;
+        ERROR_WEBHOOK: string;
     }
 }

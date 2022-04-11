@@ -1,5 +1,6 @@
 import Collection from "@discordjs/collection";
 import REST from "@guildedjs/rest";
+import { WebhookClient } from "@guildedjs/webhook-client";
 import WebSocketManager from "@guildedjs/ws";
 import { PrismaClient } from "@prisma/client";
 import RedisClient from "ioredis";
@@ -16,6 +17,7 @@ export default class Client {
     readonly rest = new REST({ token: process.env.GUILDED_TOKEN });
     readonly prisma = new PrismaClient();
     readonly redis = new RedisClient(process.env.REDIS_URL ?? "cache:6379");
+    readonly errorHandler = new WebhookClient(process.env.ERROR_WEBHOOK);
 
     readonly commands = new Collection<string, Command>();
     readonly messageUtil = new MessageUtil(this);

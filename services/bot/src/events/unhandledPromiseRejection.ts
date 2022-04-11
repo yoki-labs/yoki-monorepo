@@ -1,0 +1,18 @@
+import Embed from "@guildedjs/embeds";
+import type { WebhookClient } from "@guildedjs/webhook-client";
+import { stripIndents } from "common-tags";
+
+export default (err: Error, errorHandler: WebhookClient) => {
+    console.error(err);
+    Error.captureStackTrace(err);
+    void errorHandler.send("Error in command usage!", [
+        new Embed()
+            .setDescription(
+                stripIndents`
+				${err.message}
+				${err.stack}
+			`
+            )
+            .setColor("RED"),
+    ]);
+};
