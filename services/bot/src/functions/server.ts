@@ -1,4 +1,5 @@
 import type { TeamMemberPayload } from "@guildedjs/guilded-api-typings";
+import { nanoid } from "nanoid";
 import JSONCache from "redis-json";
 
 import { Action, LogChannelType } from "../typings";
@@ -43,6 +44,7 @@ export class ServerUtil extends Util {
     }: Pick<Action, "serverId" | "type" | "executorId" | "reason" | "targetId" | "expiresAt" | "infractionPoints">) {
         return this.prisma.action.create({
             data: {
+                referenceId: nanoid(17),
                 serverId,
                 type,
                 executorId,

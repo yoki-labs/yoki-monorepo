@@ -19,5 +19,5 @@ export interface Command {
     preRunCheck?: (message: ChatMessagePayload, args: string[], ctx: Context) => unknown;
     modOnly?: boolean;
     ownerOnly?: boolean;
-    execute: (message: ChatMessagePayload, args: { [x: string]: string | number | boolean }, ctx: Context, raw: CommandContext) => unknown;
+    execute: (message: ChatMessagePayload, args: { [x: string]: string | number | boolean | null }, ctx: Context, raw: CommandContext) => unknown;
 }

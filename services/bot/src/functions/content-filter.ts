@@ -35,6 +35,7 @@ export class ContentFilterUtil extends Util {
                 content: stripIndents`**Alert:** ${message.createdBy}, you have used a filtered word. 
 				This is a warning for you to not use it again, otherwise moderation action will be taken against you.
 				`,
+                isPrivate: true,
                 replyMessageIds: [message.id],
             });
         },
@@ -107,7 +108,8 @@ export class ContentFilterUtil extends Util {
     async scanMessage(message: ChatMessagePayload, server: Server) {
         if (message.createdByBotId || message.createdByWebhookId) return void 0;
         const bannedWordsList = await this.getBannedWords(message.serverId!);
-        const ifTriggers = bannedWordsList.find((word) => message.content.includes(word.content));
+        const lowerCasedMessageContent = message.content.toLowerCase();
+        const ifTriggers = bannedWordsList.find((word) => lowerCasedMessageContent.includes(word.content));
         if (!ifTriggers) return;
 
         const pastActions = await this.getMemberHistory(message.serverId!, message.createdBy);
@@ -120,8 +122,8 @@ export class ContentFilterUtil extends Util {
             type: ifExceeds ?? ifTriggers.severity,
             executorId: process.env.BOT_ID,
             reason: ifExceeds
-                ? `[AUTOMOD] ${ifExceeds} threshold exceeded, used word ${ifTriggers.content}`
-                : `[AUTOMOD] content filter tripped, used word ${ifTriggers.content}`,
+                ? `[AUTOMOD] ${ifExceeds} threshold exceeded, used phrase ${ifTriggers.content}`
+                : `[AUTOMOD] content filter tripped, used phrase ${ifTriggers.content}`,
             targetId: message.createdBy,
             expiresAt: (ifExceeds ?? ifTriggers.severity) === Severity.MUTE ? new Date(Date.now() + 1000 * 60 * 60 * 12) : null,
             infractionPoints: ifTriggers.infractionPoints,

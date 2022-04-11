@@ -50,18 +50,19 @@ model ContentFilter {
 model CustomTag {
     id       Int    @id @default(autoincrement())
     serverId String @db.VarChar(255)
-    content  String @db.VarChar(255)
+    content  String @db.Text
     name     String @db.VarChar(255)
 }
 
 model Action {
     id                Int       @id @default(autoincrement())
+    referenceId       String    @db.VarChar(255)
     serverId          String    @db.VarChar(255)
     type              Severity
     logChannelId      String?   @db.VarChar(255)
     logChannelMessage String?   @db.VarChar(255)
     executorId        String    @db.VarChar(255)
-    reason            String?   @db.VarChar(255)
+    reason            String?   @db.Text
     infractionPoints  Int
     targetId          String    @db.VarChar(255)
     createdAt         DateTime  @default(now())
@@ -75,7 +76,7 @@ model Message {
     serverId  String    @db.VarChar(255)
     channelId String    @db.VarChar(255)
     authorId  String    @db.VarChar(255)
-    content   String    @db.VarChar(255)
+    content   String    @db.Text
     embeds    Json      @db.JsonB
     isBot     Boolean
     createdAt DateTime

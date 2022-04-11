@@ -5,7 +5,7 @@ const Add: Command = {
     name: "filter-add",
     subName: "add",
     description: "Add a word or phrase to the automod filter",
-    usage: "<word-to-ban> [severity=warn] [infraction_points=5]",
+    usage: "<phrase> [severity=warn] [infraction_points=5]",
     examples: ["test_word warn", "test_word_2 kick"],
     subCommand: true,
     modOnly: true,
@@ -27,8 +27,8 @@ const Add: Command = {
     ],
     execute: async (message, args, { prisma, messageUtil, contentFilterUtil }) => {
         const phrase = args.phrase as string;
-        const severity = (args.severity as string) ?? "warn";
-        const infractionPoints = (args.infraction_points as number) ?? 5;
+        const severity = (args.severity as string | null) ?? "warn";
+        const infractionPoints = (args.infraction_points as number | null) ?? 5;
 
         if (!optionKeys.includes(severity)) return messageUtil.send(message.channelId, "Sorry, but that is not a valid severity level!");
         if (infractionPoints < 0 || infractionPoints > 100)

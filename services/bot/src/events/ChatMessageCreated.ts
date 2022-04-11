@@ -1,6 +1,7 @@
 import Embed from "@guildedjs/embeds";
 import type { WSChatMessageCreatedPayload } from "@guildedjs/guilded-api-typings";
 import { stripIndents } from "common-tags";
+import { nanoid } from "nanoid";
 
 import { Context, RoleType } from "../typings";
 
@@ -37,7 +38,7 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context) => {
         args = args.slice(1);
     }
 
-    const resolvedArgs: Record<string, string | number | boolean> = {};
+    const resolvedArgs: Record<string, string | number | boolean | null> = {};
     if (command.args && command.args.length) {
         for (let i = 0; i < command.args.length; i++) {
             const commandArg = command.args[i];
@@ -50,18 +51,19 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context) => {
 							**Usage:** \`${parentCommand.name}${command.name === parentCommand.name ? "" : ` ${command.subName ?? command.name}`} ${command.usage}\`
 						`
                     );
-                resolvedArgs[commandArg.name] = args[i];
+                resolvedArgs[commandArg.name] = args[i] ?? null;
             } else if (commandArg.type === "number") {
-                if (args[i] !== undefined || !Number.isNaN(Number(args[i])))
+                if (typeof args[i] === "undefined" || Number.isNaN(Number(args[i]))) {
                     if (!commandArg.optional)
                         return ctx.messageUtil.send(
                             message.channelId,
                             stripIndents`
-								Sorry, your ${commandArg.name} was not valid! Was expecting a \`string\`, received \`${args[i]}\`
+								Incorrect usage! \`${commandArg.name}\` was not valid! Was expecting a \`string\`, received \`${args[i]}\`
 								**Usage:** \`${parentCommand.name}${command.name === parentCommand.name ? "" : ` ${command.subName ?? command.name}`} ${command.usage}\`
 							`
                         );
-                resolvedArgs[commandArg.name] = Number(args[i]);
+                }
+                resolvedArgs[commandArg.name] = args[i] ? Number(args[i]) : null;
             } else {
                 resolvedArgs[commandArg.name] = args[i];
             }
@@ -80,6 +82,7 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context) => {
     try {
         await command.execute(message, resolvedArgs, ctx, { packet });
     } catch (e) {
+        const referenceId = nanoid();
         if (e instanceof Error) {
             console.error(e);
             Error.captureStackTrace(e);
@@ -87,10 +90,15 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context) => {
                 new Embed()
                     .setDescription(
                         stripIndents`
+						Reference ID: **${referenceId}**
 						Server: **${message.serverId}**
 						Channel: **${message.channelId}**
 						User: **${message.createdBy}**
 						Content: \`${message.content}\`
+						Error: \`\`\`
+						${e.message}
+						${e.stack}
+						\`\`\`
 					`
                     )
                     .setColor("RED"),
@@ -100,7 +108,7 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context) => {
             message.channelId,
             stripIndents`
         **Oh no, something went wrong!**
-        This is potentially an issue on our end, please contact us and include the following: \`${(e as Error).message}\`
+        This is potentially an issue on our end, please contact us and forward the following ID: \`${referenceId}\`
         `
         );
     }
