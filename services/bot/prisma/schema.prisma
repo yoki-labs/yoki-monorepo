@@ -15,7 +15,8 @@ model Server {
     locale                     String    @default("en-US")
     muteRoleId                 Int?
     filterEnabled              Boolean   @default(false)
-    disabled                   Boolean   @default(false)
+    blacklisted                Boolean   @default(false)
+    flags                      String[]
     muteInfractionThreshold    Int       @default(10)
     kickInfractionThreshold    Int       @default(15)
     banInfractionThreshold     Int       @default(30)
@@ -45,6 +46,12 @@ model ContentFilter {
     severity         Severity
     creatorId        String   @db.VarChar(255)
     infractionPoints Int
+}
+
+model Preset {
+    id       Int    @id @default(autoincrement())
+    serverId String
+    preset   String @db.VarChar(255)
 }
 
 model CustomTag {

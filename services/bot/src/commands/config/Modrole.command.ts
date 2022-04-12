@@ -12,9 +12,9 @@ const Filter: Command = {
     ownerOnly: true,
     execute: async (message, args, ctx) => {
         const newRole = Number(args.newRole as string);
-        if (!isNaN(newRole)) return ctx.messageUtil.send(message.channelId, "That is not a valid role ID.");
+        if (isNaN(newRole)) return ctx.messageUtil.send(message.channelId, "That is not a valid role ID.");
         const existing = await ctx.prisma.role.findMany({ where: { serverId: message.serverId, roleId: newRole, type: RoleType.MOD } });
-        if (existing) return ctx.messageUtil.send(message.channelId, "That is already a mod role!");
+        if (existing.length) return ctx.messageUtil.send(message.channelId, "That is already a mod role!");
 
         // temp remove all other mod roles until multiple mod roles are support (premium feature??)
         await ctx.prisma.role.deleteMany({ where: { serverId: message.serverId!, type: RoleType.MOD } });

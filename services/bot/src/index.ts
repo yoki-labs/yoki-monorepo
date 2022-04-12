@@ -5,16 +5,17 @@ import recursive from "recursive-readdir";
 import Client from "./Client";
 import type { Command } from "./commands/Command";
 import unhandledPromiseRejection from "./events/unhandledPromiseRejection";
+import Welcome from "./events/Welcome";
 config({ path: join(__dirname, "..", "..", "..", ".env") });
 
-["BOT_ID", "DEFAULT_PREFIX", "GUILDED_TOKEN", "DATABASE_URL", "BOT_OWNER", "ERROR_WEBHOOK"].forEach((x) => {
+["DEFAULT_PREFIX", "GUILDED_TOKEN", "DATABASE_URL", "MAIN_SERVER", "ERROR_WEBHOOK"].forEach((x) => {
     if (!process.env[x]) throw new Error(`Missing env var ${x}`);
 });
 
 const client = new Client();
 
 client.ws.emitter.on("gatewayEvent", (event, data) => client.eventHandler[event]?.(data, client));
-client.ws.emitter.on("ready", () => console.log("WS is ready to receive events!"));
+client.ws.emitter.on("ready", (data) => Welcome(data, client));
 
 process.on("unhandledRejection", (err) => unhandledPromiseRejection(err as Error, client.errorHandler));
 
@@ -24,6 +25,14 @@ void (async (): Promise<void> => {
         const command = (await import(commandFile)).default as Command;
         console.log(`Loading command ${command.name}`);
         client.commands.set(command.name.toLowerCase(), command);
+    }
+
+    try {
+        const existingMainServer = await client.prisma.server.findMany({ where: { serverId: process.env.MAIN_SERVER } });
+        if (!existingMainServer) await client.serverUtil.createFreshServerInDatabase(process.env.MAIN_SERVER, { flags: ["EARLY_ACCESS"] });
+    } catch (e) {
+        console.log("ERROR!: You have not applied the migrations. You must run 'yarn migrate:dev' in the services/bot directory. Exiting...");
+        return process.exit(1);
     }
 
     try {

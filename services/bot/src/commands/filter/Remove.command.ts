@@ -1,10 +1,10 @@
 import type { Command } from "../Command";
 
 const Delete: Command = {
-    name: "filter-delete",
-    subName: "delete",
+    name: "filter-remove",
+    subName: "remove",
     description: "Remove a word or phrase from the automod filter",
-    usage: "<word-to-delete>",
+    usage: "<phrase>",
     subCommand: true,
     modOnly: true,
     args: [

@@ -25,7 +25,12 @@ const Add: Command = {
             optional: true,
         },
     ],
-    execute: async (message, args, { prisma, messageUtil, contentFilterUtil }) => {
+    execute: async (message, args, { prisma, messageUtil, contentFilterUtil }, { server }) => {
+        if (!server.filterEnabled)
+            return messageUtil.send(
+                message.channelId,
+                `Automod filter is disabled! Please enable using \`${server.prefix ?? process.env.DEFAULT_PREFIX}filter enable\``
+            );
         const phrase = args.phrase as string;
         const severity = (args.severity as string | null) ?? "warn";
         const infractionPoints = (args.infraction_points as number | null) ?? 5;

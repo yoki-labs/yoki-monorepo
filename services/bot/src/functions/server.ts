@@ -16,19 +16,20 @@ export class ServerUtil extends Util {
         return this.prisma.logChannel.findFirst({ where: { serverId, type: LogChannelType.MOD_ACTION_LOG } });
     }
 
-    createFreshServerInDatabase(serverId: string) {
+    createFreshServerInDatabase(serverId: string, data?: Record<string, any>) {
         return this.prisma.server.create({
             data: {
                 serverId,
                 locale: "en-US",
                 premium: false,
-                disabled: false,
+                blacklisted: false,
                 muteRoleId: null,
                 botJoinedAt: null,
                 filterEnabled: false,
-                kickInfractionThreshold: 15,
-                muteInfractionThreshold: 10,
+                kickInfractionThreshold: 20,
+                muteInfractionThreshold: 15,
                 banInfractionThreshold: 30,
+                ...data,
             },
         });
     }

@@ -27,6 +27,14 @@
     minimatch "^3.0.4"
     strip-json-comments "^3.1.1"
 
+"@guildedjs/common@2.1.0", "@guildedjs/common@^2.1.0":
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/@guildedjs/common/-/common-2.1.0.tgz#026f18be1402ad75120bb15801bc05263880df9a"
+  integrity sha512-V9LYV38u+k8Cj0+bThUrTqVFQ6IB9ADjGQlCavX3QTEutOLf6SkZG6p1bBlVHOMrVZqj1a5k4hOfw6R0Y1gJVA==
+  dependencies:
+    "@discordjs/collection" "^0.5.0"
+    uuid "^8.3.2"
+
 "@guildedjs/common@^1.0.5-selfbot":
   version "1.0.5-selfbot"
   resolved "https://registry.yarnpkg.com/@guildedjs/common/-/common-1.0.5-selfbot.tgz#9bbcf5f3d1444988b655fc42fba9851561061592"
@@ -36,23 +44,24 @@
     "@guildedjs/embeds" "^1.0.5-selfbot"
     uuid "^8.3.2"
 
-"@guildedjs/common@^2.0.1":
-  version "2.0.1"
-  resolved "https://registry.npmjs.org/@guildedjs/common/-/common-2.0.1.tgz"
-  integrity sha512-SxLlLd3yox0QDpkvw9LOM2cvaT6lWFfjLmBG5nXgSWyWg7Po0BFEd4Emng747pBRUTdGPRm7X+765vgwgWfAng==
-  dependencies:
-    "@discordjs/collection" "^0.5.0"
-    uuid "^8.3.2"
-
 "@guildedjs/embeds@^1.0.5-selfbot":
   version "1.0.5-selfbot"
   resolved "https://registry.yarnpkg.com/@guildedjs/embeds/-/embeds-1.0.5-selfbot.tgz#7aa46e273a0356f413bdca5a0e889721b1ceabd7"
   integrity sha512-sgySJaLm0r6ApGiumCfSqxF3UcRtUJf32pu9qHB1SuOJqgzNaIq3Xy4S48rMArSAEolm5nQxHMR/pY+OWMVHBw==
 
-"@guildedjs/guilded-api-typings@2.1.0", "@guildedjs/guilded-api-typings@^2.1.0":
-  version "2.1.0"
-  resolved "https://registry.npmjs.org/@guildedjs/guilded-api-typings/-/guilded-api-typings-2.1.0.tgz"
-  integrity sha512-GZZrgQSMwxf4RaXUSBSu99GGex5NaYyV+jldKHQah3b/BySwbZ/5FYDu5xi1BtmEwUTsMaYHFZm9aFwRARE7Jg==
+"@guildedjs/guilded-api-typings@2.2.0", "@guildedjs/guilded-api-typings@^2.2.0":
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/@guildedjs/guilded-api-typings/-/guilded-api-typings-2.2.0.tgz#17ad7add31c609d4780190ad23b0762ab609f3f5"
+  integrity sha512-yE86IiC4XFWmZA1vyF6v6NVAwOSSWK4vfVqRqDWPhlJzl8YMxWeBqU955Y1XmAICJA2OVAIz58X1VHA/pVNwlw==
+
+"@guildedjs/rest@2.2.1":
+  version "2.2.1"
+  resolved "https://registry.yarnpkg.com/@guildedjs/rest/-/rest-2.2.1.tgz#909277817576adcfee6875f0fcaa25863203f307"
+  integrity sha512-3OT5VBHIaHrsQUL3QD/Vvad7unoIBntnIXHMfnGOfJlrOqti3Ok9qBQf8e3AQRnWnUIYBzumHQy/A8QER8uN+w==
+  dependencies:
+    "@guildedjs/common" "2.1.0"
+    node-fetch "^2.6.7"
+    qs "^6.10.3"
 
 "@guildedjs/rest@^1.0.6-selfbot":
   version "1.0.6-selfbot"
@@ -60,15 +69,6 @@
   integrity sha512-H8tbAObOUHNFGbtvxZt0TlXa7/cFWG7meXNUzY2ZjLYn2ktfjSGoVhcRxmztZJXLoQa96TdY7bG6Pi5MhOlVrg==
   dependencies:
     node-fetch "^2.6.1"
-
-"@guildedjs/rest@^2.1.0":
-  version "2.1.0"
-  resolved "https://registry.npmjs.org/@guildedjs/rest/-/rest-2.1.0.tgz"
-  integrity sha512-yOEHHkHjNoOzARm76IiQ7DA0kxdp2xFKmX3rnkb/uKIzOHfETsEFPFSAVuStdFo3EHT0X9jsKpT9SuPREFAGoA==
-  dependencies:
-    "@guildedjs/common" "^2.0.1"
-    node-fetch "^2.6.7"
-    qs "^6.10.3"
 
 "@guildedjs/webhook-client@^1.0.6-selfbot":
   version "1.0.6-selfbot"
@@ -80,13 +80,13 @@
     "@guildedjs/rest" "^1.0.6-selfbot"
     node-fetch "^2.6.1"
 
-"@guildedjs/ws@^1.1.0":
-  version "1.1.0"
-  resolved "https://registry.npmjs.org/@guildedjs/ws/-/ws-1.1.0.tgz"
-  integrity sha512-xsr0SsaEYLOzQtmpBydmi/VTIlTo2SYMkkHIy4uskNt2mO4qSrUAVZKZyuQZP9XFt+8lO288tgGCNRgJ6z/yYg==
+"@guildedjs/ws@1.2.1":
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/@guildedjs/ws/-/ws-1.2.1.tgz#2209d0534ab743bdcdbd2907f81a4cb5ca859b1b"
+  integrity sha512-fPDhbwhk9oXCBbQJ11eouNv8mbmPYj2U9ai+JBEOoy7Dk1CjRL2UarhuvqAae2Jb18ntoFrdJ2hZwz7l1NBCww==
   dependencies:
-    "@guildedjs/common" "^2.0.1"
-    "@guildedjs/guilded-api-typings" "^2.1.0"
+    "@guildedjs/common" "^2.1.0"
+    "@guildedjs/guilded-api-typings" "^2.2.0"
     "@types/ws" "8.5.3"
     typed-emitter "2.1.0"
     ws "8.5.0"

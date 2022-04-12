@@ -1,26 +1,14 @@
-import type Collection from "@discordjs/collection";
 import type { WSChatMessageCreatedPayload } from "@guildedjs/guilded-api-typings";
-import type RestManager from "@guildedjs/rest";
-import type { WebhookClient } from "@guildedjs/webhook-client";
-import type { PrismaClient } from "@prisma/client";
+import type { ContentFilter, Server } from "@prisma/client";
 
-import type { Command } from "./commands/Command";
-import type { ContentFilterUtil } from "./functions/content-filter";
-import type { MessageUtil } from "./functions/message";
-import type { ServerUtil } from "./functions/server";
+import type Client from "./Client";
 
-export interface Context {
-    rest: RestManager;
-    commands: Collection<string, Command>;
-    prisma: PrismaClient;
-    messageUtil: MessageUtil;
-    serverUtil: ServerUtil;
-    contentFilterUtil: ContentFilterUtil;
-    errorHandler: WebhookClient;
-}
+export type Context = Client;
 
 export interface CommandContext {
     packet: WSChatMessageCreatedPayload;
+    server: Server;
 }
 
 export { Action, ContentFilter, LogChannel, LogChannelType, RoleType, Server, Severity } from "@prisma/client";
+export type ContentFilterScan = Pick<ContentFilter, "content" | "infractionPoints" | "severity">;

@@ -2,8 +2,10 @@ import Collection from "@discordjs/collection";
 
 import type { Command } from "../Command";
 import Add from "./Add.command";
-import Delete from "./Delete.command";
+import Disable from "./Disable.command";
+import Enable from "./Enable.command";
 import List from "./List.command";
+import Remove from "./Remove.command";
 
 const Filter: Command = {
     name: "filter",
@@ -12,7 +14,12 @@ const Filter: Command = {
     examples: ["add test-word warn", "add another-test-word ban"],
     aliases: ["words"],
     parentCommand: true,
-    subCommands: new Collection<string, Command>().set("add", Add).set("delete", Delete).set("list", List),
+    subCommands: new Collection<string, Command>()
+        .set("add", Add)
+        .set("remove", Remove)
+        .set("list", List)
+        .set("enable", Enable)
+        .set("disable", Disable),
     execute: () => void 0,
 };
 

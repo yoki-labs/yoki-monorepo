@@ -1,5 +1,6 @@
 import { stripIndents } from "common-tags";
 
+import { ContentFilterUtil } from "../../functions/content-filter";
 import type { Command } from "../Command";
 
 const History: Command = {
@@ -28,6 +29,8 @@ const History: Command = {
             message.channelId,
             stripIndents`
 				${actions.map((x) => `**ID:** \`${x.referenceId}\`, **TYPE:** \`${x.type}\`, **REASON:** \`${x.reason}\``).join("\n")}
+				
+				**Total Infraction Points:** ${ContentFilterUtil.totalAllInfractionPoints(actions)}
 			`
         );
     },

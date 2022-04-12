@@ -7,10 +7,10 @@ import { Context, RoleType } from "../typings";
 
 export default async (packet: WSChatMessageCreatedPayload, ctx: Context) => {
     const { message } = packet.d;
-    if (message.createdByBotId || message.createdBy === process.env.BOT_ID || !message.serverId) return void 0;
+    if (message.createdByBotId || message.createdBy === ctx.userId || !message.serverId || !ctx.userId) return void 0;
 
     let serverFromDb = await ctx.serverUtil.getServerFromDatabase(message.serverId);
-    if (serverFromDb?.disabled) return void 0;
+    if (serverFromDb?.blacklisted || !serverFromDb?.flags?.includes("EARLY_ACCESS")) return void 0;
     if (!serverFromDb) serverFromDb = await ctx.serverUtil.createFreshServerInDatabase(message.serverId);
 
     if (!message.content.startsWith(serverFromDb.prefix ?? process.env.DEFAULT_PREFIX)) {
@@ -30,10 +30,18 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context) => {
         if (!args[0])
             return ctx.messageUtil.send(
                 message.channelId,
-                `You must provide a sub command to run. Your options are: ${command.subCommands.map((x) => `\`${x.name}\``).join(", ")}`
+                `You must provide a sub command to run. Your options are: ${command.subCommands
+                    .map((x) => `\`${x.name.split("-")[1]}\``)
+                    .join(", ")}. Example: \`${command.name}\``
             );
         const subCommand = command.subCommands.get(args[0]);
-        if (!subCommand) return ctx.messageUtil.send(message.channelId, "Invalid sub-command");
+        if (!subCommand)
+            return ctx.messageUtil.send(
+                message.channelId,
+                `Invalid sub-command. Your options are ${command.subCommands.map((x) => `\`${x.name.split("-")[1]}\``).join(", ")}. Example: \`${
+                    command.name
+                }\``
+            );
         command = subCommand;
         args = args.slice(1);
     }
@@ -80,7 +88,7 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context) => {
     if (command.ownerOnly && message.createdBy !== process.env.BOT_OWNER) return void 0;
 
     try {
-        await command.execute(message, resolvedArgs, ctx, { packet });
+        await command.execute(message, resolvedArgs, ctx, { packet, server: serverFromDb });
     } catch (e) {
         const referenceId = nanoid();
         if (e instanceof Error) {

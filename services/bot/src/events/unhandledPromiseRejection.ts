@@ -5,7 +5,7 @@ import { stripIndents } from "common-tags";
 export default (err: Error, errorHandler: WebhookClient) => {
     console.error(err);
     Error.captureStackTrace(err);
-    void errorHandler.send("Error in command usage!", [
+    void errorHandler.send("Unhandled error!", [
         new Embed()
             .setDescription(
                 stripIndents`
