@@ -18,7 +18,12 @@ export default class Client {
     readonly ws = new WebSocketManager({ token: process.env.GUILDED_TOKEN });
     readonly rest = new REST({ token: process.env.GUILDED_TOKEN });
     readonly prisma = new PrismaClient();
-    readonly redis = new RedisClient(process.env.REDIS_URL ?? "cache:6379");
+    readonly redis = new RedisClient(
+        (process.env.REDIS_HOST && process.env.REDIS_PORT!,
+        process.env.REDIS_HOST!,
+        { username: process.env.REDIS_USERNAME, password: process.env.REDIS_PASSWORD }) ?? "cache:6379"
+    );
+
     readonly errorHandler = new WebhookClient(process.env.ERROR_WEBHOOK);
 
     readonly commands = new Collection<string, Command>();
