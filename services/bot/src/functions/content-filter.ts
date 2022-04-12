@@ -143,7 +143,9 @@ export class ContentFilterUtil extends Util {
         const enabledPresets = await this.getEnabledPresets(message.serverId!);
 
         const lowerCasedMessageContent = message.content.toLowerCase();
-        const ifTriggersCustom: ContentFilterScan | undefined = bannedWordsList.find((word) => lowerCasedMessageContent.includes(word.content));
+        const ifTriggersCustom: ContentFilterScan | undefined = bannedWordsList.find((word) =>
+            lowerCasedMessageContent.includes(word.content.toLowerCase())
+        );
         let ifTriggersPreset: ContentFilterScan | undefined;
         if (!ifTriggersCustom) {
             for (const enabledPreset of enabledPresets) {
