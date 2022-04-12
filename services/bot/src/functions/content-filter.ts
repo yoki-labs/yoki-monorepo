@@ -118,7 +118,7 @@ export class ContentFilterUtil extends Util {
         const msg = await this.client.messageUtil.send(
             modLogChannel.channelId,
             stripIndents`
-				**Target:** \`${member.user.name} ${createdCase.targetId}\`
+				**Target:** \`${member.user.name} (${createdCase.targetId})\`
 				**Type:** \`${createdCase.type}\`
 				**Reason:** \`${createdCase.reason}\`
 				${
