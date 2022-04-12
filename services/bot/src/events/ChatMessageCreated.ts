@@ -78,7 +78,7 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context) => {
         }
     }
 
-    if (command.modOnly && message.createdBy !== process.env.BOT_OWNER) {
+    if (command.modOnly && message.createdBy !== ctx.ownerId) {
         const member = await ctx.serverUtil.getMember(message.serverId, message.createdBy);
         const modRoles = await ctx.prisma.role.findMany({ where: { serverId: message.serverId, type: RoleType.MOD } });
         if (!modRoles.some((role) => member.roleIds.includes(role.roleId)))
