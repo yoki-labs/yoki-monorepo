@@ -10,6 +10,7 @@ elif [ $1 == "db" ]; then
 elif [ $1 == "prod" ]; then
     echo "Running prod up"
     docker-compose up -d --build
+	docker-compose logs --follow bot 
 elif [ $1 == "down" ]; then
     echo "Running local down"
     docker-compose -f docker-compose.yml -f docker-compose.dev.yml down ${@:2}
