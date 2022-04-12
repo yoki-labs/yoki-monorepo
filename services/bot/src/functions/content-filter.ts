@@ -2,7 +2,7 @@ import type { ChatMessagePayload, TeamMemberPayload } from "@guildedjs/guilded-a
 import { stripIndents } from "common-tags";
 
 import slursList from "../presets/slurs.json";
-import { Action, ContentFilter, ContentFilterScan, LogChannel, RoleType, Server, Severity } from "../typings";
+import { Action, ContentFilter, ContentFilterScan, LogChannel, Server, Severity } from "../typings";
 import Util from "./util";
 
 export const options = {
@@ -162,8 +162,8 @@ export class ContentFilterUtil extends Util {
         const triggeredWord = (ifTriggersCustom ?? ifTriggersPreset) as ContentFilterScan;
 
         const member = await this.client.serverUtil.getMember(message.serverId!, message.createdBy);
-        const modRoles = await this.prisma.role.findMany({ where: { serverId: message.serverId, type: RoleType.MOD } });
-        if (modRoles.some((modRole) => member.roleIds.includes(modRole.roleId))) return;
+        // const modRoles = await this.prisma.role.findMany({ where: { serverId: message.serverId, type: RoleType.MOD } });
+        // if (modRoles.some((modRole) => member.roleIds.includes(modRole.roleId))) return;
 
         const pastActions = await this.getMemberHistory(message.serverId!, message.createdBy);
         const totalInfractionPoints = ContentFilterUtil.totalAllInfractionPoints(pastActions) + triggeredWord.infractionPoints;
