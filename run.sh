@@ -14,6 +14,9 @@ elif [ $1 == "prod" ]; then
 elif [ $1 == "down" ]; then
     echo "Running local down"
     docker-compose -f docker-compose.yml -f docker-compose.dev.yml down ${@:2}
+elif [ $1 == "logs" ]; then
+	echo "Attaching to bot logs"
+    docker-compose -f docker-compose.yml -f docker-compose.dev.yml logs -f bot
 else
     echo "Invalid args."
 fi
