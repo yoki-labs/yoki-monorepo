@@ -85,7 +85,7 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context) => {
             return ctx.messageUtil.reply(message, "Oh no! Unfortunately, you are missing the mod role permission!");
     }
 
-    if (command.ownerOnly && message.createdBy !== process.env.BOT_OWNER) return void 0;
+    if (command.ownerOnly && message.createdBy !== ctx.ownerId) return void 0;
 
     try {
         await command.execute(message, resolvedArgs, ctx, { packet, server: serverFromDb });
