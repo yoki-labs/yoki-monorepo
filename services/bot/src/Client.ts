@@ -3,7 +3,7 @@ import REST from "@guildedjs/rest";
 import { WebhookClient } from "@guildedjs/webhook-client";
 import WebSocketManager from "@guildedjs/ws";
 import { PrismaClient } from "@prisma/client";
-import RedisClient from "ioredis";
+import RedisClient, { RedisOptions } from "ioredis";
 
 import type { Command } from "./commands/Command";
 import ChatMessageCreated from "./events/ChatMessageCreated";
@@ -18,11 +18,12 @@ export default class Client {
     readonly ws = new WebSocketManager({ token: process.env.GUILDED_TOKEN });
     readonly rest = new REST({ token: process.env.GUILDED_TOKEN });
     readonly prisma = new PrismaClient();
-    readonly redis = new RedisClient(
-        (process.env.REDIS_HOST && process.env.REDIS_PORT!,
-        process.env.REDIS_HOST!,
-        { username: process.env.REDIS_USERNAME, password: process.env.REDIS_PASSWORD }) ?? "cache:6379"
-    );
+    readonly redis = new RedisClient({
+        host: process.env.REDIS_HOST ?? "cache",
+        username: process.env.REDIS_USERNAME,
+        password: process.env.REDIS_PASSWORD,
+        port: process.env.REDIS_PORT ?? 6379,
+    } as RedisOptions);
 
     readonly errorHandler = new WebhookClient(process.env.ERROR_WEBHOOK);
 
