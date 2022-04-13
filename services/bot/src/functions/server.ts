@@ -74,7 +74,7 @@ export class ServerUtil extends Util {
         }
 
         return this.rest.router.getMember(serverId, userId).then((data) => {
-            if (cache) void this.cache.set(buildMemberKey(serverId, userId), data.member);
+            if (cache) void this.cache.set(buildMemberKey(serverId, userId), data.member, { expire: 900 });
             return data.member;
         });
     }

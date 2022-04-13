@@ -16,3 +16,4 @@ min/
 .idea/
 *.env
 docs/
+.env.prod
