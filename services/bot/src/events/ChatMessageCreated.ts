@@ -40,7 +40,7 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context) => {
                 message.channelId,
                 `Invalid sub-command. Your options are ${command.subCommands.map((x) => `\`${x.name.split("-")[1]}\``).join(", ")}. Example: \`${
                     command.name
-                }\``
+                } ${command.subCommands.first()!.subName}\``
             );
         command = subCommand;
         args = args.slice(1);
