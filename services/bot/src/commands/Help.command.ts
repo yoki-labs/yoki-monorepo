@@ -25,7 +25,7 @@ const Help: Command = {
 				**Name:** \`${command.name}\`
 				${command.aliases ? `**Aliases:** ${command.aliases.map((x) => `\`${x}\``).join(", ")}` : ""}
 				**Description:** \`${command.description}\`
-				**Usage:** \`${commandCtx.server.prefix}${command.name} ${command.usage}\`
+				**Usage:** \`${commandCtx.server.prefix ?? process.env.DEFAULT_PREFIX}${command.name} ${command.usage}\`
 				${command.examples ? `**Examples:** ${command.examples.map((x) => `\`${x}\``).join(", ")}` : ""}
 				${command.userPermissions ? `**User Required Permissions:** ${command.userPermissions.map((x) => `\`${x}\``).join(", ")}` : ""}
 				${command.clientPermissions ? `**Client Required Permissions:** ${command.clientPermissions.map((x) => `\`${x}\``).join(", ")}` : ""}
