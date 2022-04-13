@@ -25,12 +25,12 @@ const Help: Command = {
 				**Name:** \`${command.name}\`
 				${command.aliases ? `**Aliases:** ${command.aliases.map((x) => `\`${x}\``).join(", ")}` : ""}
 				**Description:** \`${command.description}\`
-				**Usage:** \`${command.usage}\`
+				**Usage:** \`${commandCtx.server.prefix}${command.name} ${command.usage}\`
 				${command.examples ? `**Examples:** ${command.examples.map((x) => `\`${x}\``).join(", ")}` : ""}
 				${command.userPermissions ? `**User Required Permissions:** ${command.userPermissions.map((x) => `\`${x}\``).join(", ")}` : ""}
 				${command.clientPermissions ? `**Client Required Permissions:** ${command.clientPermissions.map((x) => `\`${x}\``).join(", ")}` : ""}
 				**Mod Only:** \`${command.modOnly ?? false}\`
-				**Parent Command (contains sub-commands):** ${command.parentCommand ?? false}
+				**Parent Command (contains sub-commands):** \`${command.parentCommand ?? false}\`
 			`
             );
         }
@@ -41,7 +41,7 @@ const Help: Command = {
             message.channelId,
             stripIndents`
 				A list of available commands.
-				For additional info on a command, type \`${commandCtx.server.prefix}help [command]\`
+				For additional info on a command, type \`${commandCtx.server.prefix ?? process.env.DEFAULT_PREFIX}help [command]\`
 				
 				**Legend:**
 				\`<arg>\` - required.
