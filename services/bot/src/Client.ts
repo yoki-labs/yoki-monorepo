@@ -15,6 +15,7 @@ import type { Context } from "./typings";
 export default class Client {
     userId: string | null = null;
     ownerId: string | null = null;
+    operators: string[] = [];
     readonly ws = new WebSocketManager({ token: process.env.GUILDED_TOKEN });
     readonly rest = new REST({ token: process.env.GUILDED_TOKEN });
     readonly prisma = new PrismaClient();

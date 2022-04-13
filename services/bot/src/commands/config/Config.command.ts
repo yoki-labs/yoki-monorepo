@@ -1,6 +1,7 @@
 import Collection from "@discordjs/collection";
 
 import type { Command } from "../Command";
+import FilterOnMods from "./FilterOnMods.command";
 // import Infraction from "./Infraction.command";
 import Modlog from "./ModLog.command";
 import Modrole from "./Modrole.command";
@@ -10,7 +11,8 @@ const subCommands = new Collection<string, Command>()
     // .set("infraction", Infraction)
     .set("modlog", Modlog)
     .set("modrole", Modrole)
-    .set("muterole", Muterole);
+    .set("muterole", Muterole)
+    .set("filteronmods", FilterOnMods);
 
 const Config: Command = {
     name: "config",

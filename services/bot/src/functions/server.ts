@@ -1,4 +1,5 @@
 import type { TeamMemberPayload } from "@guildedjs/guilded-api-typings";
+import { stripIndents } from "common-tags";
 import { nanoid } from "nanoid";
 import JSONCache from "redis-json";
 
@@ -65,6 +66,29 @@ export class ServerUtil extends Util {
 
     populateActionMessage(id: number, channelId: string, messageId: string) {
         return this.prisma.action.update({ where: { id }, data: { logChannelId: channelId, logChannelMessage: messageId } });
+    }
+
+    async sendModLogMessage(modLogChannelId: string, createdCase: Action, member: TeamMemberPayload) {
+        const msg = await this.client.messageUtil.send(
+            modLogChannelId,
+            stripIndents`
+				**Target:** \`${member.user.name} (${createdCase.targetId})\`
+				**Type:** \`${createdCase.type}\`
+				**Reason:** \`${createdCase.reason ?? "NO REASON PROVIDED"}\`
+				${
+                    createdCase.expiresAt
+                        ? `**Expiration:** \`${createdCase.expiresAt.toLocaleDateString("en-US", {
+                              year: "numeric",
+                              month: "long",
+                              day: "numeric",
+                              hour: "2-digit",
+                              minute: "2-digit",
+                          })}\``
+                        : ""
+                }
+			`
+        );
+        await this.client.serverUtil.populateActionMessage(createdCase.id, msg.message.channelId, msg.message.id);
     }
 
     async getMember(serverId: string, userId: string, cache = true, force = false) {

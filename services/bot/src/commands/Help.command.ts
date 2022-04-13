@@ -26,11 +26,11 @@ const Help: Command = {
 				${command.aliases ? `**Aliases:** ${command.aliases.map((x) => `\`${x}\``).join(", ")}` : ""}
 				**Description:** \`${command.description}\`
 				**Usage:** \`${commandCtx.server.prefix ?? process.env.DEFAULT_PREFIX}${command.name} ${command.usage}\`
-				${command.examples ? `**Examples:** ${command.examples.map((x) => `\`${x}\``).join(", ")}` : ""}
+				${command.examples ? `**Examples:** ${command.examples.map((x) => `\`${command.parentCommand ? `${command.name} ` : ""}${x}\``).join(", ")}` : ""}
 				${command.userPermissions ? `**User Required Permissions:** ${command.userPermissions.map((x) => `\`${x}\``).join(", ")}` : ""}
 				${command.clientPermissions ? `**Client Required Permissions:** ${command.clientPermissions.map((x) => `\`${x}\``).join(", ")}` : ""}
 				**Mod Only:** \`${command.modOnly ?? false}\`
-				**Parent Command (contains sub-commands):** \`${command.parentCommand ?? false}\`
+				**Has sub-commands:** \`${command.parentCommand ?? false}\`
 			`
             );
         }

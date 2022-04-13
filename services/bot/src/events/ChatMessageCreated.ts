@@ -32,15 +32,15 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context) => {
                 message.channelId,
                 `You must provide a sub command to run. Your options are: ${command.subCommands
                     .map((x) => `\`${x.name.split("-")[1]}\``)
-                    .join(", ")}. Example: \`${command.name}\``
+                    .join(", ")}. Example: \`${serverFromDb.prefix ?? process.env.DEFAULT_PREFIX}${command.name}\``
             );
         const subCommand = command.subCommands.get(args[0]);
         if (!subCommand)
             return ctx.messageUtil.send(
                 message.channelId,
                 `Invalid sub-command. Your options are ${command.subCommands.map((x) => `\`${x.name.split("-")[1]}\``).join(", ")}. Example: \`${
-                    command.name
-                } ${command.subCommands.first()!.subName}\``
+                    serverFromDb.prefix ?? process.env.DEFAULT_PREFIX
+                }${command.name} ${command.subCommands.first()!.subName}\``
             );
         command = subCommand;
         args = args.slice(1);
@@ -79,12 +79,23 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context) => {
                         return ctx.messageUtil.send(
                             message.channelId,
                             stripIndents`
-								Incorrect usage! \`${commandArg.name}\` was not valid! Was expecting a \`string\`, received \`${args[i]}\`
+								Incorrect usage! \`${commandArg.name}\` was not valid! Was expecting a \`number\`, received \`${args[i]}\`
 								**Usage:** \`${parentCommand.name}${command.name === parentCommand.name ? "" : ` ${command.subName ?? command.name}`} ${command.usage}\`
 							`
                         );
                 }
                 resolvedArgs[commandArg.name] = args[i] ? Number(args[i]) : null;
+            } else if (commandArg.type === "boolean") {
+                if (typeof args[i] === "undefined" || !["true", "enable", "yes", "disable", "false", "no"].includes(args[i]?.toLowerCase()))
+                    if (!commandArg.optional)
+                        return ctx.messageUtil.send(
+                            message.channelId,
+                            stripIndents`
+						Incorrect usage! \`${commandArg.name}\` was not valid! Was expecting a \`true/false\`, received \`${args[i]}\`
+						**Usage:** \`${parentCommand.name}${command.name === parentCommand.name ? "" : ` ${command.subName ?? command.name}`} ${command.usage}\`
+					`
+                        );
+                resolvedArgs[commandArg.name] = ["true", "yes", "enable"].includes(args[i]?.toLowerCase()) ? true : false;
             } else {
                 resolvedArgs[commandArg.name] = args[i];
             }
@@ -92,12 +103,12 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context) => {
     }
 
     const member = await ctx.serverUtil.getMember(message.serverId, message.createdBy);
-    if (command.modOnly && message.createdBy !== ctx.ownerId) {
+    if (command.modOnly && !ctx.operators.includes(message.createdBy)) {
         const modRoles = await ctx.prisma.role.findMany({ where: { serverId: message.serverId, type: RoleType.MOD } });
         if (!modRoles.some((role) => member.roleIds.includes(role.roleId)))
             return ctx.messageUtil.reply(message, "Oh no! Unfortunately, you are missing the mod role permission!");
     }
-    if (command.ownerOnly && message.createdBy !== ctx.ownerId) return void 0;
+    if (command.ownerOnly && !ctx.operators.includes(message.createdBy)) return void 0;
 
     try {
         await command.execute(message, resolvedArgs, ctx, { packet, server: serverFromDb, member });
@@ -116,7 +127,6 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context) => {
 						User: **${message.createdBy}**
 						Content: \`${message.content}\`
 						Error: \`\`\`
-						${e.message}
 						${e.stack}
 						\`\`\`
 					`

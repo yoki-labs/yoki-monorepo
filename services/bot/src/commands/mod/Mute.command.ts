@@ -54,7 +54,7 @@ const Mute: Command = {
         });
 
         const modlog = await ctx.serverUtil.getModLogChannel(message.serverId!);
-        if (modlog) await ctx.contentFilterUtil.sendModLogMessage(modlog.channelId, newAction, commandCtx.member);
+        if (modlog) await ctx.serverUtil.sendModLogMessage(modlog.channelId, newAction, commandCtx.member);
 
         return ctx.messageUtil.send(
             message.channelId,

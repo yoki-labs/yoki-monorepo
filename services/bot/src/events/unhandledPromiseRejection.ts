@@ -9,7 +9,6 @@ export default (err: Error, errorHandler: WebhookClient) => {
         new Embed()
             .setDescription(
                 stripIndents`
-				${err.message}
 				${err.stack}
 			`
             )

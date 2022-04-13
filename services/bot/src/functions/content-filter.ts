@@ -21,7 +21,7 @@ export class ContentFilterUtil extends Util {
             ...slursList.ban.map(
                 (banSlur): ContentFilterScan => ({
                     content: banSlur,
-                    infractionPoints: 15,
+                    infractionPoints: 0,
                     severity: Severity.BAN,
                 })
             ),
@@ -114,29 +114,6 @@ export class ContentFilterUtil extends Util {
         return null;
     }
 
-    async sendModLogMessage(modLogChannelId: string, createdCase: Action, member: TeamMemberPayload) {
-        const msg = await this.client.messageUtil.send(
-            modLogChannelId,
-            stripIndents`
-				**Target:** \`${member.user.name} (${createdCase.targetId})\`
-				**Type:** \`${createdCase.type}\`
-				**Reason:** \`${createdCase.reason ?? "NO REASON PROVIDED"}\`
-				${
-                    createdCase.expiresAt
-                        ? `**Expiration:** \`${createdCase.expiresAt.toLocaleDateString("en-US", {
-                              year: "numeric",
-                              month: "long",
-                              day: "numeric",
-                              hour: "2-digit",
-                              minute: "2-digit",
-                          })}\``
-                        : ""
-                }
-			`
-        );
-        await this.client.serverUtil.populateActionMessage(createdCase.id, msg.message.channelId, msg.message.id);
-    }
-
     async scanMessage(message: ChatMessagePayload, server: Server) {
         if (message.createdByBotId || message.createdByWebhookId || message.createdBy === this.client.userId) return void 0;
         const bannedWordsList = await this.getBannedWords(message.serverId!);
@@ -149,21 +126,20 @@ export class ContentFilterUtil extends Util {
         let ifTriggersPreset: ContentFilterScan | undefined;
         if (!ifTriggersCustom) {
             for (const enabledPreset of enabledPresets) {
-                const temp = this.presets[enabledPreset.preset as keyof typeof this.presets].find((word) =>
-                    lowerCasedMessageContent.includes(word.content)
-                );
+                const presetFilterList = this.presets[enabledPreset.preset as keyof typeof this.presets];
+                const temp = presetFilterList.find((word) => lowerCasedMessageContent.includes(word.content.toLowerCase()));
                 if (temp) {
                     ifTriggersPreset = temp;
                     break;
                 }
             }
-            if (!ifTriggersPreset) return;
         }
-        const triggeredWord = (ifTriggersCustom ?? ifTriggersPreset) as ContentFilterScan;
+        const triggeredWord = (ifTriggersCustom ?? ifTriggersPreset) as ContentFilterScan | undefined;
+        if (!triggeredWord) return void 0;
 
         const member = await this.client.serverUtil.getMember(message.serverId!, message.createdBy);
         const modRoles = await this.prisma.role.findMany({ where: { serverId: message.serverId, type: RoleType.MOD } });
-        if (modRoles.some((modRole) => member.roleIds.includes(modRole.roleId))) return;
+        if (!server.filterOnMods && modRoles.some((modRole) => member.roleIds.includes(modRole.roleId))) return;
 
         const pastActions = await this.getMemberHistory(message.serverId!, message.createdBy);
         const totalInfractionPoints = ContentFilterUtil.totalAllInfractionPoints(pastActions) + triggeredWord.infractionPoints;
@@ -181,7 +157,7 @@ export class ContentFilterUtil extends Util {
             expiresAt: (ifExceeds ?? triggeredWord.severity) === Severity.MUTE ? new Date(Date.now() + 1000 * 60 * 60 * 12) : null,
             infractionPoints: triggeredWord.infractionPoints,
         });
-        if (modLogChannel) await this.sendModLogMessage(modLogChannel.channelId, createdCase, member);
+        if (modLogChannel) await this.client.serverUtil.sendModLogMessage(modLogChannel.channelId, createdCase, member);
         await this.rest.router.deleteChannelMessage(message.channelId!, message.id);
         return this.severityAction[triggeredWord.severity]?.(message, server, member);
     }

@@ -12,8 +12,8 @@ const List: Command = {
         return ctx.messageUtil.send(
             message.channelId,
             bannedWords.length
-                ? `These are the banned words for this server: ${bannedWords.map((word) => `\`${word.content}\``).join(", ")}`
-                : "There are no banned words for this server"
+                ? `These are the custom banned words for this server: ${bannedWords.map((word) => `\`${word.content}\``).join(", ")}`
+                : "There are no custom banned words for this server"
         );
     },
 };

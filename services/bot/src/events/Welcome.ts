@@ -5,4 +5,6 @@ import type Client from "../Client";
 export default (data: WSWelcomePayload["d"]["user"], client: Client) => {
     client.userId = data.id;
     client.ownerId = data.createdBy;
+    client.operators = process.env.OPERATOR_IDS?.split(",") ?? [];
+    client.operators.push(client.ownerId);
 };

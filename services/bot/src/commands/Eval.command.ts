@@ -1,6 +1,6 @@
 import { stripIndents } from "common-tags";
+import { inspect } from "node:util";
 import fetch from "node-fetch";
-import { inspect } from "util";
 
 import type { Command } from "./Command";
 
@@ -18,6 +18,19 @@ const _tooLong = (body: string): Promise<string> => {
     return fetch("https://paste.discord.land/documents", { method: "POST", body }).then((d) => d.json().then((v) => v.key));
 };
 
+const format = (first: string, second: string) => stripIndents`
+	📥 **Input**
+	${first
+        .split("\n")
+        .map((x) => `\`${x.trim()}\``)
+        .join("\n")}
+	📤 **Output**
+	${second
+        .split("\n")
+        .map((x) => `\`${x.trim()}\``)
+        .join("\n")}
+	`;
+
 const Eval: Command = {
     name: "eval",
     description: "[PRIVATE]",
@@ -25,48 +38,24 @@ const Eval: Command = {
     usage: "",
     ownerOnly: true,
     execute: async (message, _args, ctx, commandCtx) => {
-        const code = commandCtx.packet.d.message.content.slice(`${commandCtx.server.prefix}eval`.length);
+        const code = commandCtx.packet.d.message.content.slice(`${commandCtx.server.prefix ?? process.env.DEFAULT_PREFIX}eval`.length).trim();
+        console.log(code);
         if (!code) return ctx.messageUtil.send(message.channelId, "Gotta give me something to eval there chief.");
-        const codeblock = (content: string) => `\`\`\`js\n${content}\`\`\``;
+        let evaled;
         try {
-            const evaled = eval(`(async () => {${code}})()`); // eslint-disable-line no-eval
-            const clean = await _clean(evaled);
-            const final = stripIndents`
-                📥 **Input**
-                ${codeblock(code)}
-                📤 **Output**
-                ${codeblock(clean)}
-                `;
-
-            if (final.length > 2000) {
-                const key = await _tooLong(clean);
-                return ctx.messageUtil.send(
-                    message.channelId,
-                    `Output exceeded 2000 characters (${final.length}). https://paste.discord.land/${key}.js`
-                );
-            }
-
-            await ctx.messageUtil.send(message.channelId, final);
+            evaled = await eval(`(async () => {${code}})()`); // eslint-disable-line no-eval
         } catch (e) {
-            const clean = await _clean(e);
-            const final = stripIndents`
-                📥 **Input**
-                ${codeblock(code)}
-                📤 **Error**
-                ${codeblock(clean)}
-                `;
-
-            if (final.length > 2000) {
-                const key = await _tooLong(clean);
-                return ctx.messageUtil.send(
-                    message.channelId,
-                    `Error exceeded 2000 characters (${final.length}). https://paste.discord.land/${key}.js`
-                );
-            }
-
-            await ctx.messageUtil.send(message.channelId, final);
+            evaled = e;
         }
-        return void 0;
+        const clean = await _clean(evaled);
+        const final = format(code, clean);
+
+        if (final.length > 2000) {
+            const key = await _tooLong(clean);
+            return ctx.messageUtil.send(message.channelId, `Output exceeded 2000 characters (${final.length}). https://paste.discord.land/${key}.js`);
+        }
+
+        return ctx.messageUtil.send(message.channelId, final);
     },
 };
 

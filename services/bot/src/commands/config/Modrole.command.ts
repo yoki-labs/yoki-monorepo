@@ -16,10 +16,11 @@ const Modrole: Command = {
             const modRoles = await ctx.prisma.role.findMany({ where: { serverId: message.serverId, type: RoleType.MOD } });
             return ctx.messageUtil.send(
                 message.channelId,
-                stripIndents`
-				The mod roles for this server:
-				${modRoles.map((modRole) => `\t- \`${modRole.roleId}\``).join("\n")}
-			`
+                modRoles.length
+                    ? stripIndents`
+					The mod roles for this server:
+					${modRoles.map((modRole) => `\`${modRole.roleId}\``).join("\n")}`
+                    : "There are no modroles configured for this server"
             );
         }
         if (isNaN(newRole)) return ctx.messageUtil.send(message.channelId, "That is not a valid role ID.");
