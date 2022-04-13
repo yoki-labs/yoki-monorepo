@@ -18,6 +18,8 @@ That was a lot of jargon, I admit. To simplify it a lot: development in the dock
 
 ## Starting the bot
 
+**A video demonstration of the below steps is available [here](https://github.com/Yoki-Labs/yoki/issues/1)**
+
 -   Clone the repository `git clone https://github.com/Yoki-Labs/yoki.git`
 -   Cd in and install the packages `cd yoki && yarn install`
 -   Populate the [environment variables in a .env file in the root](#environment-variables)
