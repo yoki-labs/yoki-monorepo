@@ -6,6 +6,7 @@ const Help: Command = {
     name: "help",
     description: "Send a list of all commands",
     usage: "[commandName]",
+    hidden: true,
     args: [
         {
             name: "commandName",

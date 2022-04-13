@@ -21,6 +21,7 @@ const _tooLong = (body: string): Promise<string> => {
 const Eval: Command = {
     name: "eval",
     description: "[PRIVATE]",
+    hidden: true,
     usage: "",
     ownerOnly: true,
     execute: async (message, _args, ctx, commandCtx) => {
