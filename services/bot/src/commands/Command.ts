@@ -6,6 +6,7 @@ import type { CommandContext, Context } from "../typings";
 export interface Command {
     name: string;
     subName?: string;
+    hidden?: boolean;
     description: string;
     usage: string;
     examples?: string[];
@@ -15,7 +16,7 @@ export interface Command {
     subCommands?: Collection<string, Command>;
     clientPermissions?: string[];
     userPermissions?: string[];
-    args?: { name: string; type: "string" | "number" | "boolean"; optional?: boolean; resolver?: (...content: any[]) => any }[];
+    args?: { name: string; type: "string" | "number" | "boolean" | "rest"; optional?: boolean; resolver?: (...content: any[]) => any }[];
     preRunCheck?: (message: ChatMessagePayload, args: string[], ctx: Context) => unknown;
     modOnly?: boolean;
     ownerOnly?: boolean;

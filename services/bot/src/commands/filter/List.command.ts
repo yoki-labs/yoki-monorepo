@@ -4,6 +4,7 @@ const List: Command = {
     name: "filter-list",
     description: "Add a word or phrase to the automod filter",
     usage: "",
+    subName: "list",
     subCommand: true,
     modOnly: true,
     execute: async (message, _args, ctx) => {

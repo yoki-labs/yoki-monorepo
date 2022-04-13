@@ -24,6 +24,10 @@ void (async (): Promise<void> => {
     for (const commandFile of commandFiles.filter((x) => x.endsWith(".command.js"))) {
         const command = (await import(commandFile)).default as Command;
         console.log(`Loading command ${command.name}`);
+        if (!command.name) {
+            console.log(`ERROR loading ${commandFile}`);
+            continue;
+        }
         client.commands.set(command.name.toLowerCase(), command);
     }
 

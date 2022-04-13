@@ -2,7 +2,7 @@ import type { ChatMessagePayload, TeamMemberPayload } from "@guildedjs/guilded-a
 import { stripIndents } from "common-tags";
 
 import slursList from "../presets/slurs.json";
-import { Action, ContentFilter, ContentFilterScan, LogChannel, Server, Severity } from "../typings";
+import { Action, ContentFilter, ContentFilterScan, RoleType, Server, Severity } from "../typings";
 import Util from "./util";
 
 export const options = {
@@ -98,29 +98,29 @@ export class ContentFilterUtil extends Util {
     }
 
     async ifExceedsInfractionThreshold(total: number, server: Server, message: ChatMessagePayload, member: TeamMemberPayload) {
-        if (total >= server.banInfractionThreshold) {
+        if (server.banInfractionThreshold && total >= server.banInfractionThreshold) {
             await this.severityAction.BAN(message, server, member);
             return Severity.BAN;
-        } else if (total >= server.softbanInfractionThreshold) {
+        } else if (server.softbanInfractionThreshold && total >= server.softbanInfractionThreshold) {
             await this.severityAction.SOFTBAN(message, server, member);
             return Severity.SOFTBAN;
-        } else if (total >= server.kickInfractionThreshold) {
+        } else if (server.kickInfractionThreshold && total >= server.kickInfractionThreshold) {
             await this.severityAction.KICK(message, server, member);
             return Severity.KICK;
-        } else if (total >= server.muteInfractionThreshold) {
+        } else if (server.muteInfractionThreshold && total >= server.muteInfractionThreshold) {
             await this.severityAction.MUTE(message, server, member);
             return Severity.MUTE;
         }
         return null;
     }
 
-    async sendModLogMessage(modLogChannel: LogChannel, createdCase: Action, member: TeamMemberPayload) {
+    async sendModLogMessage(modLogChannelId: string, createdCase: Action, member: TeamMemberPayload) {
         const msg = await this.client.messageUtil.send(
-            modLogChannel.channelId,
+            modLogChannelId,
             stripIndents`
 				**Target:** \`${member.user.name} (${createdCase.targetId})\`
 				**Type:** \`${createdCase.type}\`
-				**Reason:** \`${createdCase.reason}\`
+				**Reason:** \`${createdCase.reason ?? "NO REASON PROVIDED"}\`
 				${
                     createdCase.expiresAt
                         ? `**Expiration:** \`${createdCase.expiresAt.toLocaleDateString("en-US", {
@@ -138,7 +138,7 @@ export class ContentFilterUtil extends Util {
     }
 
     async scanMessage(message: ChatMessagePayload, server: Server) {
-        if (message.createdByBotId || message.createdByWebhookId) return void 0;
+        if (message.createdByBotId || message.createdByWebhookId || message.createdBy === this.client.userId) return void 0;
         const bannedWordsList = await this.getBannedWords(message.serverId!);
         const enabledPresets = await this.getEnabledPresets(message.serverId!);
 
@@ -162,8 +162,8 @@ export class ContentFilterUtil extends Util {
         const triggeredWord = (ifTriggersCustom ?? ifTriggersPreset) as ContentFilterScan;
 
         const member = await this.client.serverUtil.getMember(message.serverId!, message.createdBy);
-        // const modRoles = await this.prisma.role.findMany({ where: { serverId: message.serverId, type: RoleType.MOD } });
-        // if (modRoles.some((modRole) => member.roleIds.includes(modRole.roleId))) return;
+        const modRoles = await this.prisma.role.findMany({ where: { serverId: message.serverId, type: RoleType.MOD } });
+        if (modRoles.some((modRole) => member.roleIds.includes(modRole.roleId))) return;
 
         const pastActions = await this.getMemberHistory(message.serverId!, message.createdBy);
         const totalInfractionPoints = ContentFilterUtil.totalAllInfractionPoints(pastActions) + triggeredWord.infractionPoints;
@@ -181,7 +181,7 @@ export class ContentFilterUtil extends Util {
             expiresAt: (ifExceeds ?? triggeredWord.severity) === Severity.MUTE ? new Date(Date.now() + 1000 * 60 * 60 * 12) : null,
             infractionPoints: triggeredWord.infractionPoints,
         });
-        if (modLogChannel) await this.sendModLogMessage(modLogChannel, createdCase, member);
+        if (modLogChannel) await this.sendModLogMessage(modLogChannel.channelId, createdCase, member);
         await this.rest.router.deleteChannelMessage(message.channelId!, message.id);
         return this.severityAction[triggeredWord.severity]?.(message, server, member);
     }

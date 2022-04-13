@@ -7,7 +7,7 @@ import { Context, RoleType } from "../typings";
 
 export default async (packet: WSChatMessageCreatedPayload, ctx: Context) => {
     const { message } = packet.d;
-    if (message.createdByBotId || message.createdBy === ctx.userId || !message.serverId || !ctx.userId) return void 0;
+    if (message.createdByBotId || message.createdBy === ctx.userId || !message.serverId) return void 0;
 
     let serverFromDb = await ctx.serverUtil.getServerFromDatabase(message.serverId);
     if (serverFromDb?.blacklisted || !serverFromDb?.flags?.includes("EARLY_ACCESS")) return void 0;
@@ -50,12 +50,25 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context) => {
     if (command.args && command.args.length) {
         for (let i = 0; i < command.args.length; i++) {
             const commandArg = command.args[i];
+            if (commandArg.type === "rest" && typeof args[i] !== "string") {
+                if (!commandArg.optional)
+                    return ctx.messageUtil.send(
+                        message.channelId,
+                        stripIndents`
+						Sorry, your ${commandArg.name} was not valid! Was expecting a \`string\`, received \`${typeof args[i] === "undefined" ? "nothing" : args[i]}\`
+						**Usage:** \`${parentCommand.name}${command.name === parentCommand.name ? "" : ` ${command.subName ?? command.name}`} ${command.usage}\`
+					`
+                    );
+                resolvedArgs[commandArg.name] = args.slice(i).join(" ") ?? null;
+                break;
+            }
+
             if (commandArg.type === "string" && typeof args[i] !== "string") {
                 if (!commandArg.optional)
                     return ctx.messageUtil.send(
                         message.channelId,
                         stripIndents`
-							Sorry, your ${commandArg.name} was not valid! Was expecting a \`string\`, received \`${args[i]}\`
+							Sorry, your ${commandArg.name} was not valid! Was expecting a \`string\`, received \`${typeof args[i] === "undefined" ? "nothing" : args[i]}\`
 							**Usage:** \`${parentCommand.name}${command.name === parentCommand.name ? "" : ` ${command.subName ?? command.name}`} ${command.usage}\`
 						`
                     );
@@ -78,17 +91,16 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context) => {
         }
     }
 
+    const member = await ctx.serverUtil.getMember(message.serverId, message.createdBy);
     if (command.modOnly && message.createdBy !== ctx.ownerId) {
-        const member = await ctx.serverUtil.getMember(message.serverId, message.createdBy);
         const modRoles = await ctx.prisma.role.findMany({ where: { serverId: message.serverId, type: RoleType.MOD } });
         if (!modRoles.some((role) => member.roleIds.includes(role.roleId)))
             return ctx.messageUtil.reply(message, "Oh no! Unfortunately, you are missing the mod role permission!");
     }
-
     if (command.ownerOnly && message.createdBy !== ctx.ownerId) return void 0;
 
     try {
-        await command.execute(message, resolvedArgs, ctx, { packet, server: serverFromDb });
+        await command.execute(message, resolvedArgs, ctx, { packet, server: serverFromDb, member });
     } catch (e) {
         const referenceId = nanoid();
         if (e instanceof Error) {

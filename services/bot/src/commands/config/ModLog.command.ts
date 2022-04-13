@@ -1,13 +1,14 @@
 import { LogChannelType } from "../../typings";
 import type { Command } from "../Command";
 
-const Filter: Command = {
-    name: "modlog",
+const Modlog: Command = {
+    name: "config-modlog",
     description: "Set or view the mod log channel for this server.",
-    usage: "[new-channel-id]",
+    usage: "modlog [newChannel]",
+    subCommand: true,
+    subName: "modlog",
     aliases: ["mod-log", "modlogs", "mod-logs"],
     args: [{ name: "newChannel", optional: true, type: "string" }],
-    modOnly: true,
     execute: async (message, args, ctx) => {
         const newChannel = args.newChannel as string;
         // if (newChannel && !isUUID(newChannel)) return ctx.messageUtil.send(message.channelId, "Oh no! That is not a valid channel ID.");
@@ -31,4 +32,4 @@ const Filter: Command = {
     },
 };
 
-export default Filter;
+export default Modlog;

@@ -16,6 +16,10 @@ export class ServerUtil extends Util {
         return this.prisma.logChannel.findFirst({ where: { serverId, type: LogChannelType.MOD_ACTION_LOG } });
     }
 
+    getMuteRole(serverId: string) {
+        return this.prisma.server.findFirst({ select: { muteRoleId: true }, where: { serverId } });
+    }
+
     createFreshServerInDatabase(serverId: string, data?: Record<string, any>) {
         return this.prisma.server.create({
             data: {

@@ -6,6 +6,7 @@ const List: Command = {
     name: "preset-list",
     description: "See all the preset options this bot has and also which ones are enabled for this server",
     usage: "",
+    subName: "list",
     subCommand: true,
     modOnly: true,
     execute: async (message, _args, ctx) => {
