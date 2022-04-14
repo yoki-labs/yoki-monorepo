@@ -14,10 +14,10 @@ jobs:
             - name: Build
               uses: jerray/publish-docker-action@v1.0.5
               with:
-                  username: ${{ github.REPO_OWNER }}
+                  username: ${{ github.repository_owner }}
                   password: ${{ secrets.GITHUB_TOKEN }}
                   registry: docker.pkg.github.com
-                  repository: ${{ github.REPO_NAME }}/${{ matrix.service-name }}
+                  repository: ${{ github.repository }}/${{ matrix.service-name }}
                   auto_tag: true
                   file: docker/${{ matrix.service-name }}/Dockerfile
     deploy:
