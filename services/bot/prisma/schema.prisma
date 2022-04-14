@@ -110,6 +110,7 @@ enum RoleType {
     MOD
     ADMIN
     REACT
+    TEST3
 }
 
 enum Severity {
