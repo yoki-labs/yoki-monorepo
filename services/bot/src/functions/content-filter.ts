@@ -1,8 +1,8 @@
-import type { ChatMessagePayload, TeamMemberPayload } from "@guildedjs/guilded-api-typings";
+import type { ChatMessagePayload } from "@guildedjs/guilded-api-typings";
 import { stripIndents } from "common-tags";
 
 import slursList from "../presets/slurs.json";
-import { Action, ContentFilter, ContentFilterScan, RoleType, Server, Severity } from "../typings";
+import { Action, CachedMember, ContentFilter, ContentFilterScan, RoleType, Server, Severity } from "../typings";
 import Util from "./util";
 
 export const options = {
@@ -35,7 +35,7 @@ export class ContentFilterUtil extends Util {
         ],
     };
 
-    readonly severityAction: Record<Severity, (message: ChatMessagePayload, server: Server, member: TeamMemberPayload) => unknown> = {
+    readonly severityAction: Record<Severity, (message: ChatMessagePayload, server: Server, member: CachedMember) => unknown> = {
         [Severity.BAN]: (message) => {
             return this.rest.router.banMember(message.serverId!, message.createdBy);
         },
@@ -97,7 +97,7 @@ export class ContentFilterUtil extends Util {
         return this.prisma.preset.deleteMany({ where: { serverId, preset } });
     }
 
-    async ifExceedsInfractionThreshold(total: number, server: Server, message: ChatMessagePayload, member: TeamMemberPayload) {
+    async ifExceedsInfractionThreshold(total: number, server: Server, message: ChatMessagePayload, member: CachedMember) {
         if (server.banInfractionThreshold && total >= server.banInfractionThreshold) {
             await this.severityAction.BAN(message, server, member);
             return Severity.BAN;

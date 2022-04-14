@@ -60,9 +60,9 @@ const Mute: Command = {
 
         return ctx.messageUtil.send(
             message.channelId,
-            `User ${commandCtx.member.nickname ?? commandCtx.member.user.name} (${commandCtx.member.user.id}) has been muted for **${
-                duration / 1000 / 60
-            } minutes** for the reason of \`${reason ?? "NO REASON PROVIDED"}\`.`
+            `User ${commandCtx.member.user.name} (${commandCtx.member.user.id}) has been muted for **${duration / 1000 / 60} minutes** for the reason of \`${
+                reason ?? "NO REASON PROVIDED"
+            }\`.`
         );
     },
 };

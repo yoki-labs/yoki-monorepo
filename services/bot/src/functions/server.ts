@@ -1,13 +1,12 @@
-import type { TeamMemberPayload } from "@guildedjs/guilded-api-typings";
 import { stripIndents } from "common-tags";
 import { nanoid } from "nanoid";
 import JSONCache from "redis-json";
 
-import { Action, LogChannelType } from "../typings";
+import { Action, CachedMember, LogChannelType } from "../typings";
 import Util from "./util";
 
 export class ServerUtil extends Util {
-    readonly cache = new JSONCache<TeamMemberPayload>(this.client.redis);
+    readonly cache = new JSONCache<CachedMember>(this.client.redis);
 
     getServerFromDatabase(serverId: string) {
         return this.prisma.server.findUnique({ where: { serverId } });
@@ -55,7 +54,7 @@ export class ServerUtil extends Util {
         return this.prisma.action.update({ where: { id }, data: { logChannelId: channelId, logChannelMessage: messageId } });
     }
 
-    async sendModLogMessage(modLogChannelId: string, createdCase: Action & { reasonMetaData?: string }, member: TeamMemberPayload) {
+    async sendModLogMessage(modLogChannelId: string, createdCase: Action & { reasonMetaData?: string }, member: CachedMember) {
         const msg = await this.client.messageUtil.send(
             modLogChannelId,
             stripIndents`
@@ -85,7 +84,12 @@ export class ServerUtil extends Util {
         }
 
         return this.rest.router.getMember(serverId, userId).then((data) => {
-            if (cache) void this.cache.set(buildMemberKey(serverId, userId), data.member, { expire: 900 });
+            if (cache)
+                void this.cache.set(
+                    buildMemberKey(serverId, userId),
+                    { roleIds: data.member.roleIds, user: { id: data.member.user.id, name: data.member.user.name } },
+                    { expire: 900 }
+                );
             return data.member;
         });
     }
