@@ -14,9 +14,9 @@ jobs:
             - name: Build
               uses: jerray/publish-docker-action@v1.0.5
               with:
-                  username: ${{ github.repository_owner }}
-                  password: ${{ secrets.GITHUB_TOKEN }}
-                  registry: docker.pkg.github.com
+                  username: ${{ secrets.DO_IMAGE_REGISTRY_KEY }}
+                  password: ${{ secrets.DO_IMAGE_REGISTRY_KEY }}
+                  registry: registry.digitalocean.com/yoki
                   repository: ${{ github.repository }}/${{ matrix.service-name }}
                   file: docker/${{ matrix.service-name }}/Dockerfile
     deploy:
