@@ -1,5 +1,6 @@
 import { optionKeys, transformSeverityStringToEnum } from "../../functions/content-filter";
 import type { Command } from "../Command";
+import { RoleType } from ".prisma/client";
 
 const Add: Command = {
     name: "filter-add",
@@ -8,7 +9,7 @@ const Add: Command = {
     usage: "<phrase> [severity=warn] [infraction_points=5]",
     examples: ["test_word warn", "test_word_2 kick"],
     subCommand: true,
-    modOnly: true,
+    requiredRole: RoleType.ADMIN,
     args: [
         {
             name: "phrase",

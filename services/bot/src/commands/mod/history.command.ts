@@ -2,12 +2,13 @@ import { stripIndents } from "common-tags";
 
 import { ContentFilterUtil } from "../../functions/content-filter";
 import type { Command } from "../Command";
+import { RoleType } from ".prisma/client";
 
 const History: Command = {
     name: "history",
     description: "Get the history for a user.",
     usage: "<targetId>",
-    modOnly: true,
+    requiredRole: RoleType.MOD,
     args: [
         {
             name: "targetId",
@@ -29,7 +30,7 @@ const History: Command = {
             message.channelId,
             stripIndents`
 				${actions.map((x) => `**ID:** \`${x.referenceId}\`, **TYPE:** \`${x.type}\`, **REASON:** \`${x.reason}\``).join("\n")}
-				
+
 				**Total Infraction Points:** ${ContentFilterUtil.totalAllInfractionPoints(actions)}
 			`
         );

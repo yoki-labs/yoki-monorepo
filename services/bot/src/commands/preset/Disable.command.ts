@@ -1,4 +1,5 @@
 import type { Command } from "../Command";
+import { RoleType } from ".prisma/client";
 
 const Enable: Command = {
     name: "preset-disable",
@@ -6,7 +7,7 @@ const Enable: Command = {
     description: "Disable a preset",
     usage: "",
     subCommand: true,
-    modOnly: true,
+    requiredRole: RoleType.MOD,
     args: [
         {
             name: "preset",

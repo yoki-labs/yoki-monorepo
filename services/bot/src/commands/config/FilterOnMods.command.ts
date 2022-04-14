@@ -1,4 +1,5 @@
 import type { Command } from "../Command";
+import { RoleType } from ".prisma/client";
 
 const FilterOnMods: Command = {
     name: "config-filteronmods",
@@ -6,6 +7,7 @@ const FilterOnMods: Command = {
     usage: "filterOnMods [newSetting]",
     subCommand: true,
     subName: "filteronmods",
+    requiredRole: RoleType.ADMIN,
     args: [{ name: "newSetting", optional: true, type: "boolean" }],
     execute: async (message, args, ctx, commandCtx) => {
         const newSetting = (args.newSetting as boolean) ?? null;

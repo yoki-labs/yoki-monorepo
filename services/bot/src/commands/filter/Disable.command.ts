@@ -1,4 +1,5 @@
 import type { Command } from "../Command";
+import { RoleType } from ".prisma/client";
 
 const Disable: Command = {
     name: "filter-disable",
@@ -6,7 +7,7 @@ const Disable: Command = {
     description: "Disable the automod filter",
     usage: "",
     subCommand: true,
-    modOnly: true,
+    requiredRole: RoleType.ADMIN,
     execute: async (message, _args, ctx) => {
         return ctx.contentFilterUtil
             .enableFilter(message.serverId!)

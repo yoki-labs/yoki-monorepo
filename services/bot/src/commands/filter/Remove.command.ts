@@ -1,4 +1,5 @@
 import type { Command } from "../Command";
+import { RoleType } from ".prisma/client";
 
 const Delete: Command = {
     name: "filter-remove",
@@ -6,7 +7,7 @@ const Delete: Command = {
     description: "Remove a word or phrase from the automod filter",
     usage: "<phrase>",
     subCommand: true,
-    modOnly: true,
+    requiredRole: RoleType.ADMIN,
     args: [
         {
             name: "phrase",

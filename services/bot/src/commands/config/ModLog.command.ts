@@ -1,5 +1,6 @@
 import { LogChannelType } from "../../typings";
 import type { Command } from "../Command";
+import { RoleType } from ".prisma/client";
 
 const Modlog: Command = {
     name: "config-modlog",
@@ -7,6 +8,7 @@ const Modlog: Command = {
     usage: "modlog [newChannel]",
     subCommand: true,
     subName: "modlog",
+    requiredRole: RoleType.ADMIN,
     aliases: ["mod-log", "modlogs", "mod-logs"],
     args: [{ name: "newChannel", optional: true, type: "string" }],
     execute: async (message, args, ctx) => {

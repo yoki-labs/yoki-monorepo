@@ -6,6 +6,7 @@ import FilterOnMods from "./FilterOnMods.command";
 import Modlog from "./ModLog.command";
 import Modrole from "./Modrole.command";
 import Muterole from "./Muterole.command";
+import { RoleType } from ".prisma/client";
 
 const subCommands = new Collection<string, Command>()
     // .set("infraction", Infraction)
@@ -20,7 +21,7 @@ const Config: Command = {
     usage: `<${subCommands.map((_v, k) => k).join(" | ")}> <..args>`,
     // examples: [...(Modlog.examples as string[]), ...(Modrole.examples as string[])],
     parentCommand: true,
-    modOnly: true,
+    requiredRole: RoleType.ADMIN,
     ownerOnly: true,
     subCommands,
     execute: () => void 0,

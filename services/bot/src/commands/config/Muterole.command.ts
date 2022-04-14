@@ -1,4 +1,5 @@
 import type { Command } from "../Command";
+import { RoleType } from ".prisma/client";
 
 const Muterole: Command = {
     name: "config-muterole",
@@ -6,6 +7,7 @@ const Muterole: Command = {
     usage: "muterole [newRole]",
     subCommand: true,
     subName: "muterole",
+    requiredRole: RoleType.ADMIN,
     args: [{ name: "newRole", optional: true, type: "string" }],
     execute: async (message, args, ctx) => {
         const newRole = args.newRole ? Number(args.newRole as string) : null;

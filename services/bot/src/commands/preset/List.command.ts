@@ -1,6 +1,7 @@
 import { stripIndents } from "common-tags";
 
 import type { Command } from "../Command";
+import { RoleType } from ".prisma/client";
 
 const List: Command = {
     name: "preset-list",
@@ -8,7 +9,7 @@ const List: Command = {
     usage: "",
     subName: "list",
     subCommand: true,
-    modOnly: true,
+    requiredRole: RoleType.MOD,
     execute: async (message, _args, ctx) => {
         const allPresets = ctx.contentFilterUtil.presets;
         const enabledPresets = await ctx.contentFilterUtil.getEnabledPresets(message.serverId!);
