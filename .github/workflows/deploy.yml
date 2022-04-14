@@ -18,4 +18,5 @@ jobs:
                   script: |
                       cd yoki/yoki
                       git pull
+                      chmod +x ./run.sh
                       ./run.sh prod
