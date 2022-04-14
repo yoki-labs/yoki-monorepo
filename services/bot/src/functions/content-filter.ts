@@ -136,7 +136,6 @@ export class ContentFilterUtil extends Util {
         }
         const triggeredWord = (ifTriggersCustom ?? ifTriggersPreset) as ContentFilterScan | undefined;
         if (!triggeredWord) return void 0;
-
         const member = await this.client.serverUtil.getMember(message.serverId!, message.createdBy);
         const modRoles = await this.prisma.role.findMany({ where: { serverId: message.serverId, type: RoleType.MOD } });
         if (!server.filterOnMods && modRoles.some((modRole) => member.roleIds.includes(modRole.roleId))) return;
@@ -150,13 +149,13 @@ export class ContentFilterUtil extends Util {
             serverId: message.serverId!,
             type: ifExceeds ?? triggeredWord.severity,
             executorId: this.client.userId!,
-            reason: ifExceeds
-                ? `[AUTOMOD] ${ifExceeds} threshold exceeded, used phrase ${triggeredWord.content}`
-                : `[AUTOMOD] content filter tripped, used phrase ${triggeredWord.content}`,
+            reason: ifExceeds ? `[AUTOMOD] ${ifExceeds} threshold exceeded, used phrase:` : `[AUTOMOD] content filter tripped, used phrase:`,
+            triggerWord: triggeredWord.content,
             targetId: message.createdBy,
             expiresAt: (ifExceeds ?? triggeredWord.severity) === Severity.MUTE ? new Date(Date.now() + 1000 * 60 * 60 * 12) : null,
             infractionPoints: triggeredWord.infractionPoints,
         });
+
         if (modLogChannel) await this.client.serverUtil.sendModLogMessage(modLogChannel.channelId, createdCase, member);
         await this.rest.router.deleteChannelMessage(message.channelId!, message.id);
         return this.severityAction[triggeredWord.severity]?.(message, server, member);

@@ -44,10 +44,11 @@ export class ServerUtil extends Util {
         type,
         executorId,
         reason,
+        triggerWord = null,
         targetId,
         expiresAt,
         infractionPoints,
-    }: Pick<Action, "serverId" | "type" | "executorId" | "reason" | "targetId" | "expiresAt" | "infractionPoints">) {
+    }: Pick<Action, "serverId" | "type" | "executorId" | "reason" | "triggerWord" | "targetId" | "expiresAt" | "infractionPoints">) {
         return this.prisma.action.create({
             data: {
                 referenceId: nanoid(17),
@@ -55,6 +56,7 @@ export class ServerUtil extends Util {
                 type,
                 executorId,
                 reason,
+                triggerWord,
                 targetId,
                 createdAt: new Date(),
                 updatedAt: null,
@@ -74,7 +76,7 @@ export class ServerUtil extends Util {
             stripIndents`
 				**Target:** \`${member.user.name} (${createdCase.targetId})\`
 				**Type:** \`${createdCase.type}\`
-				**Reason:** \`${createdCase.reason ?? "NO REASON PROVIDED"}\`
+				**Reason:** \`${createdCase.reason ?? "NO REASON PROVIDED"}\`${createdCase.triggerWord === null ? "" : ` ||${createdCase.triggerWord}||`}
 				${
                     createdCase.expiresAt
                         ? `**Expiration:** \`${createdCase.expiresAt.toLocaleDateString("en-US", {
