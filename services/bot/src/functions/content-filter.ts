@@ -120,9 +120,7 @@ export class ContentFilterUtil extends Util {
         const enabledPresets = await this.getEnabledPresets(message.serverId!);
 
         const lowerCasedMessageContent = message.content.toLowerCase();
-        const ifTriggersCustom: ContentFilterScan | undefined = bannedWordsList.find((word) =>
-            lowerCasedMessageContent.includes(word.content.toLowerCase())
-        );
+        const ifTriggersCustom: ContentFilterScan | undefined = bannedWordsList.find((word) => lowerCasedMessageContent.includes(word.content.toLowerCase()));
         let ifTriggersPreset: ContentFilterScan | undefined;
         if (!ifTriggersCustom) {
             for (const enabledPreset of enabledPresets) {
@@ -149,14 +147,14 @@ export class ContentFilterUtil extends Util {
             serverId: message.serverId!,
             type: ifExceeds ?? triggeredWord.severity,
             executorId: this.client.userId!,
-            reason: ifExceeds ? `[AUTOMOD] ${ifExceeds} threshold exceeded, used phrase:` : `[AUTOMOD] content filter tripped, used phrase:`,
+            reason: `${ifExceeds ? `[AUTOMOD] ${ifExceeds} threshold exceeded, used phrase:` : `[AUTOMOD] content filter tripped, used phrase:`}`,
             triggerWord: triggeredWord.content,
             targetId: message.createdBy,
             expiresAt: (ifExceeds ?? triggeredWord.severity) === Severity.MUTE ? new Date(Date.now() + 1000 * 60 * 60 * 12) : null,
             infractionPoints: triggeredWord.infractionPoints,
         });
 
-        if (modLogChannel) await this.client.serverUtil.sendModLogMessage(modLogChannel.channelId, createdCase, member);
+        if (modLogChannel) await this.client.serverUtil.sendModLogMessage(modLogChannel.channelId, { ...createdCase, reasonMetaData: `||${triggeredWord.content}||` }, member);
         await this.rest.router.deleteChannelMessage(message.channelId!, message.id);
         return this.severityAction[triggeredWord.severity]?.(message, server, member);
     }

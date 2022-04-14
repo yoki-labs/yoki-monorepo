@@ -38,7 +38,7 @@
     ],
     "prettier": {
         "endOfLine": "auto",
-        "printWidth": 150,
+        "printWidth": 180,
         "semi": true,
         "tabWidth": 4
     },

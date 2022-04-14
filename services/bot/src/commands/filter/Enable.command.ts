@@ -12,10 +12,7 @@ const Enable: Command = {
             .enableFilter(message.serverId!)
             .then(() => ctx.messageUtil.send(message.channelId, "Successfully enabled the automod filter for this server."))
             .catch((e: Error) =>
-                ctx.messageUtil.send(
-                    message.channelId,
-                    `There was an issue enabling automoderation for your server. Please forward this error to bot staff: \`${e.message}\``
-                )
+                ctx.messageUtil.send(message.channelId, `There was an issue enabling automoderation for your server. Please forward this error to bot staff: \`${e.message}\``)
             );
     },
 };

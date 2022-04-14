@@ -16,7 +16,6 @@ const History: Command = {
     ],
     execute: async (message, args, ctx) => {
         const targetId = args.targetId as string;
-
         const actions = await ctx.prisma.action.findMany({
             where: {
                 serverId: message.serverId!,
@@ -28,14 +27,7 @@ const History: Command = {
         return ctx.messageUtil.send(
             message.channelId,
             stripIndents`
-				${actions
-                    .map(
-                        (x) =>
-                            `**ID:** \`${x.referenceId}\`, **TYPE:** \`${x.type}\`, **REASON:** \`${x.reason}\`${
-                                x.triggerWord === null ? "" : ` ||${x.triggerWord}||`
-                            }`
-                    )
-                    .join("\n")}
+				${actions.map((x) => `**ID:** \`${x.referenceId}\`, **TYPE:** \`${x.type}\`, **REASON:** \`${x.reason}\`${(x.triggerWord && `||${x.triggerWord}||`) ?? ""}`).join("\n")}
 				
 				**Total Infraction Points:** ${ContentFilterUtil.totalAllInfractionPoints(actions)}
 			`

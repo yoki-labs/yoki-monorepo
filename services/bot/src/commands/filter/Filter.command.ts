@@ -14,12 +14,7 @@ const Filter: Command = {
     examples: ["add test-word warn", "add another-test-word ban"],
     aliases: ["words"],
     parentCommand: true,
-    subCommands: new Collection<string, Command>()
-        .set("add", Add)
-        .set("remove", Remove)
-        .set("list", List)
-        .set("enable", Enable)
-        .set("disable", Disable),
+    subCommands: new Collection<string, Command>().set("add", Add).set("remove", Remove).set("list", List).set("enable", Enable).set("disable", Disable),
     execute: () => void 0,
 };
 
