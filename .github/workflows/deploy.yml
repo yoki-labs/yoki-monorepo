@@ -33,4 +33,6 @@ jobs:
                   port: 22000
                   script: |
                       cd yoki
+                      cd docker/compose && docker-compose pull
+                      cd ../../
                       ./run-prod.sh
