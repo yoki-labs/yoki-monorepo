@@ -43,9 +43,6 @@ const Help: Command = {
 				A list of available commands.
 				For additional info on a command, type \`${commandCtx.server.prefix ?? process.env.DEFAULT_PREFIX}help [command]\`
 				
-				**Legend:**
-				\`<arg>\` - required.
-				\`[arg]\` - optional.
 				
 				Categories marked with * are commands that contain sub commands.
 
