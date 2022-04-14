@@ -18,7 +18,6 @@ jobs:
                   password: ${{ secrets.GITHUB_TOKEN }}
                   registry: docker.pkg.github.com
                   repository: ${{ github.repository }}/${{ matrix.service-name }}
-                  auto_tag: true
                   file: docker/${{ matrix.service-name }}/Dockerfile
     deploy:
         name: Deploy to Production
