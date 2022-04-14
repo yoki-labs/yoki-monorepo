@@ -30,7 +30,7 @@ jobs:
                   host: ${{ secrets.DO_HOST }}
                   username: nico
                   key: ${{ secrets.DO_KEY }}
-                  port: 22000
+                  port: 22005
                   script: |
                       cd yoki
                       cd docker/compose && docker-compose pull
