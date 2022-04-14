@@ -1,6 +1,6 @@
 import { optionKeys, transformSeverityStringToEnum } from "../../functions/content-filter";
+import { RoleType } from "../../typings";
 import type { Command } from "../Command";
-import { RoleType } from ".prisma/client";
 
 const Add: Command = {
     name: "filter-add",

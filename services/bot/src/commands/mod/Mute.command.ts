@@ -1,8 +1,8 @@
 import { stripIndents } from "common-tags";
 import ms from "ms";
 
+import { RoleType } from "../../typings";
 import type { Command } from "../Command";
-import { RoleType } from ".prisma/client";
 
 const Mute: Command = {
     name: "mute",

@@ -1,5 +1,5 @@
+import { RoleType } from "../../typings";
 import type { Command } from "../Command";
-import { RoleType } from ".prisma/client";
 
 const Enable: Command = {
     name: "filter-enable",

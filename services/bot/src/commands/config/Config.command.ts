@@ -1,12 +1,12 @@
 import Collection from "@discordjs/collection";
 
+import { RoleType } from "../../typings";
 import type { Command } from "../Command";
 import FilterOnMods from "./FilterOnMods.command";
 // import Infraction from "./Infraction.command";
 import Modlog from "./ModLog.command";
 import Modrole from "./Modrole.command";
 import Muterole from "./Muterole.command";
-import { RoleType } from ".prisma/client";
 
 const subCommands = new Collection<string, Command>()
     // .set("infraction", Infraction)

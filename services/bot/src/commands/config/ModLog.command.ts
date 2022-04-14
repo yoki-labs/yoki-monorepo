@@ -1,6 +1,5 @@
-import { LogChannelType } from "../../typings";
+import { LogChannelType, RoleType } from "../../typings";
 import type { Command } from "../Command";
-import { RoleType } from ".prisma/client";
 
 const Modlog: Command = {
     name: "config-modlog",

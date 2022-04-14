@@ -1,8 +1,8 @@
 import { stripIndents } from "common-tags";
 
 import { ContentFilterUtil } from "../../functions/content-filter";
+import { RoleType } from "../../typings";
 import type { Command } from "../Command";
-import { RoleType } from ".prisma/client";
 
 const History: Command = {
     name: "history",

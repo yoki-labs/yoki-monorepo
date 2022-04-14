@@ -1,7 +1,6 @@
 import { stripIndents } from "common-tags";
 
 import type { Command } from "./Command";
-import { RoleType } from ".prisma/client";
 
 const Help: Command = {
     name: "help",
@@ -30,8 +29,7 @@ const Help: Command = {
 				${command.examples ? `**Examples:** ${command.examples.map((x) => `\`${command.parentCommand ? `${command.name} ` : ""}${x}\``).join(", ")}` : ""}
 				${command.userPermissions ? `**User Required Permissions:** ${command.userPermissions.map((x) => `\`${x}\``).join(", ")}` : ""}
 				${command.clientPermissions ? `**Client Required Permissions:** ${command.clientPermissions.map((x) => `\`${x}\``).join(", ")}` : ""}
-				**Mod Only:** \`${command.requiredRole === RoleType.MOD}\`
-				**Admin Only:** \`${command.requiredRole === RoleType.ADMIN}\`
+				${command.requiredRole ? `**Required Role:** \`${command.requiredRole}\`` : ""}
 				**Has sub-commands:** \`${command.parentCommand ?? false}\`
 			`
             );

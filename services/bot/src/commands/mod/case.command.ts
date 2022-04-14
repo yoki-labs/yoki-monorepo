@@ -1,7 +1,7 @@
 import { stripIndents } from "common-tags";
 
+import { RoleType } from "../../typings";
 import type { Command } from "../Command";
-import { RoleType } from ".prisma/client";
 
 const History: Command = {
     name: "case",
