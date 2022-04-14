@@ -3,9 +3,6 @@ on:
     push:
         branches:
             - main
-        paths:
-            - "services/**"
-            - "docker/**"
 jobs:
     docker:
         runs-on: ubuntu-latest
@@ -17,8 +14,25 @@ jobs:
             - name: Build
               uses: jerray/publish-docker-action@v1.0.5
               with:
-                  username: ${{ secrets.DO_IMAGE_REGISTRY_KEY }}
-                  password: ${{ secrets.DO_IMAGE_REGISTRY_KEY }}
-                  registry: registry.digitalocean.com/yoki-labs
+                  username: ${{ github.repository_owner }}
+                  password: ${{ secrets.GITHUB_TOKEN }}
+                  registry: docker.pkg.github.com
                   repository: ${{ github.repository }}/${{ matrix.service-name }}
                   file: docker/${{ matrix.service-name }}/Dockerfile
+    deploy:
+        name: Deploy to Production
+        needs: [docker]
+        runs-on: ubuntu-latest
+        steps:
+            - name: executing remote ssh commands using ssh key
+              uses: appleboy/ssh-action@master
+              with:
+                  host: ${{ secrets.DO_HOST }}
+                  username: nico
+                  key: ${{ secrets.DO_KEY }}
+                  port: 22000
+                  script: |
+                      cd yoki
+                      cd docker/compose && docker-compose pull
+                      cd ../../
+                      ./run-prod.sh

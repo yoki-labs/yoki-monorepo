@@ -1,0 +1,44 @@
+version: "3.7"
+services:
+    db:
+        image: postgres
+        restart: unless-stopped
+        container_name: YOKI_DB
+        environment:
+            POSTGRES_DB: yoki
+            POSTGRES_USER: yoki_user
+            POSTGRES_PASSWORD: yoki_pass
+        networks:
+            - main-network
+        volumes:
+            - yoki-postgres-data:/var/lib/postgresql/data
+        ports:
+            - 5432:5432
+    cache:
+        image: redislabs/redismod:latest
+        restart: unless-stopped
+        networks:
+            - main-network
+        ports:
+            - "6379:6379"
+    bot:
+        build:
+            context: ../../
+            dockerfile: ./docker/bot/Dockerfile
+        command: ["yarn", "run", "dev"]
+        depends_on:
+            - db
+            - cache
+        volumes:
+            - "../../services/bot/src:/usr/app/services/bot/src"
+        restart: "no"
+        environment:
+            DATABASE_URL: "postgresql://yoki_user:yoki_pass@db:5432/yoki?schema=public"
+        networks:
+            - main-network
+
+networks:
+    main-network:
+        driver: bridge
+volumes:
+    yoki-postgres-data:
