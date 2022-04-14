@@ -49,7 +49,7 @@ jobs:
             - name: Run database migration if schema changed.
               if: steps.verify-changed-files.outputs.db == 'true'
               run: |
-                  yarn global add @prisma/client
+                  yarn global add prisma
                   cd services/bot
                   yarn migrate:prod:ci
               env:
