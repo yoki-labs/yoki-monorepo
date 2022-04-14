@@ -40,14 +40,14 @@ jobs:
                         - 'services/bot/prisma/schema.prisma'
 
             - name: Install Node v14
-              if: contains(steps.verify-changed-files.outputs.changed_files, 'services/bot/prisma/migrations') && contains(steps.verify-changed-files.outputs.changed_files, 'services/bot/prisma/schema.prisma')
+              if: steps.verify-changed-files.outputs.db == 'true'
               uses: actions/setup-node@9ced9a43a244f3ac94f13bfd896db8c8f30da67a # tag=v3
               with:
                   node-version: "16"
                   cache: "yarn"
 
             - name: Run database migration if schema changed.
-              if: contains(steps.verify-changed-files.outputs.changed_files, 'services/bot/prisma/migrations') && contains(steps.verify-changed-files.outputs.changed_files, 'services/bot/prisma/schema.prisma')
+              if: steps.verify-changed-files.outputs.db == 'true'
               run: |
                   yarn global add @prisma/client
                   cd services/bot

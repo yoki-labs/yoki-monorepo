@@ -111,6 +111,7 @@ enum RoleType {
     ADMIN
     REACT
     TEST3
+    TEST4
 }
 
 enum Severity {
