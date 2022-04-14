@@ -24,6 +24,7 @@ model Server {
     spamInfractionPoints       Int       @default(5)
     filterOnMods               Boolean   @default(false)
     prefix                     String?
+    test                       String    @default("TEST")
 }
 
 model LogChannel {
