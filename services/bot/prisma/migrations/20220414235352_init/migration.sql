@@ -2,7 +2,7 @@
 CREATE TYPE "LogChannelType" AS ENUM ('ALL', 'FALLBACK', 'MOD_ACTION_LOG', 'FILTER', 'MEMBER_ROLES_UPDATE', 'MEMBER_UPDATE', 'MEMBER_JOIN_LEAVE', 'CHAT_MESSAGE_UPDATE', 'CHAT_MESSAGE_DELETE', 'NOTIFICATION');
 
 -- CreateEnum
-CREATE TYPE "RoleType" AS ENUM ('MOD', 'REACT');
+CREATE TYPE "RoleType" AS ENUM ('MOD', 'ADMIN', 'REACT');
 
 -- CreateEnum
 CREATE TYPE "Severity" AS ENUM ('WARN', 'MUTE', 'KICK', 'SOFTBAN', 'BAN');
@@ -18,11 +18,12 @@ CREATE TABLE "Server" (
     "filterEnabled" BOOLEAN NOT NULL DEFAULT false,
     "blacklisted" BOOLEAN NOT NULL DEFAULT false,
     "flags" TEXT[],
-    "muteInfractionThreshold" INTEGER NOT NULL DEFAULT 10,
-    "kickInfractionThreshold" INTEGER NOT NULL DEFAULT 15,
-    "banInfractionThreshold" INTEGER NOT NULL DEFAULT 30,
-    "softbanInfractionThreshold" INTEGER NOT NULL DEFAULT 25,
+    "muteInfractionThreshold" INTEGER DEFAULT 10,
+    "kickInfractionThreshold" INTEGER DEFAULT 15,
+    "banInfractionThreshold" INTEGER DEFAULT 45,
+    "softbanInfractionThreshold" INTEGER DEFAULT 25,
     "spamInfractionPoints" INTEGER NOT NULL DEFAULT 5,
+    "filterOnMods" BOOLEAN NOT NULL DEFAULT false,
     "prefix" TEXT,
 
     CONSTRAINT "Server_pkey" PRIMARY KEY ("id")
@@ -89,11 +90,13 @@ CREATE TABLE "Action" (
     "logChannelMessage" VARCHAR(255),
     "executorId" VARCHAR(255) NOT NULL,
     "reason" TEXT,
+    "triggerWord" TEXT,
     "infractionPoints" INTEGER NOT NULL,
     "targetId" VARCHAR(255) NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3),
     "expiresAt" TIMESTAMP(3),
+    "expired" BOOLEAN NOT NULL DEFAULT false,
 
     CONSTRAINT "Action_pkey" PRIMARY KEY ("id")
 );
