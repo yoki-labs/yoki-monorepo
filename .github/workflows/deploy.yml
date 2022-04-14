@@ -15,4 +15,7 @@ jobs:
                   username: nico
                   key: ${{ secrets.DO_KEY }}
                   port: 22000
-                  script: whoami
+                  script: |
+                      cd yoki/yoki
+                      git pull
+                      ./run.sh prod
