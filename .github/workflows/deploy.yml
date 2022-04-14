@@ -34,4 +34,4 @@ jobs:
                   port: 22000
                   script: |
                       cd yoki
-                      ./run.sh prod
+                      ./run-prod.sh prod
