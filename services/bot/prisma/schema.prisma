@@ -112,6 +112,7 @@ enum RoleType {
     REACT
     TEST3
     TEST4
+    TEST5
 }
 
 enum Severity {
