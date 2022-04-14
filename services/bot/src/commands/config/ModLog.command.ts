@@ -15,10 +15,7 @@ const Modlog: Command = {
 
         if (!newChannel) {
             const modLogChannel = await ctx.serverUtil.getModLogChannel(message.serverId!);
-            return ctx.messageUtil.send(
-                message.channelId,
-                modLogChannel ? `The modlogs channel is set to: \`${modLogChannel!.channelId}\`` : `There is no modlogs channel set.`
-            );
+            return ctx.messageUtil.send(message.channelId, modLogChannel ? `The modlogs channel is set to: \`${modLogChannel!.channelId}\`` : `There is no modlogs channel set.`);
         }
 
         const newModLogsChannel = await ctx.prisma.logChannel.create({

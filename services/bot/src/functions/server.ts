@@ -39,27 +39,14 @@ export class ServerUtil extends Util {
         });
     }
 
-    addAction({
-        serverId,
-        type,
-        executorId,
-        reason,
-        targetId,
-        expiresAt,
-        infractionPoints,
-    }: Pick<Action, "serverId" | "type" | "executorId" | "reason" | "targetId" | "expiresAt" | "infractionPoints">) {
+    addAction(data: Omit<Action, "id" | "referenceId" | "createdAt" | "updatedAt" | "logChannelI" | "expired" | "logChannelId" | "logChannelMessage">) {
         return this.prisma.action.create({
             data: {
                 referenceId: nanoid(17),
-                serverId,
-                type,
-                executorId,
-                reason,
-                targetId,
                 createdAt: new Date(),
                 updatedAt: null,
-                infractionPoints,
-                expiresAt,
+                expired: false,
+                ...data,
             },
         });
     }
@@ -68,13 +55,13 @@ export class ServerUtil extends Util {
         return this.prisma.action.update({ where: { id }, data: { logChannelId: channelId, logChannelMessage: messageId } });
     }
 
-    async sendModLogMessage(modLogChannelId: string, createdCase: Action, member: TeamMemberPayload) {
+    async sendModLogMessage(modLogChannelId: string, createdCase: Action & { reasonMetaData?: string }, member: TeamMemberPayload) {
         const msg = await this.client.messageUtil.send(
             modLogChannelId,
             stripIndents`
 				**Target:** \`${member.user.name} (${createdCase.targetId})\`
 				**Type:** \`${createdCase.type}\`
-				**Reason:** \`${createdCase.reason ?? "NO REASON PROVIDED"}\`
+				**Reason:** \`${createdCase.reason ?? "NO REASON PROVIDED"}\` ${createdCase.reasonMetaData ?? ""}
 				${
                     createdCase.expiresAt
                         ? `**Expiration:** \`${createdCase.expiresAt.toLocaleDateString("en-US", {

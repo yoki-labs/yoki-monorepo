@@ -30,9 +30,9 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context) => {
         if (!args[0])
             return ctx.messageUtil.send(
                 message.channelId,
-                `You must provide a sub command to run. Your options are: ${command.subCommands
-                    .map((x) => `\`${x.name.split("-")[1]}\``)
-                    .join(", ")}. Example: \`${serverFromDb.prefix ?? process.env.DEFAULT_PREFIX}${command.name}\``
+                `You must provide a sub command to run. Your options are: ${command.subCommands.map((x) => `\`${x.name.split("-")[1]}\``).join(", ")}. Example: \`${
+                    serverFromDb.prefix ?? process.env.DEFAULT_PREFIX
+                }${command.name}\``
             );
         const subCommand = command.subCommands.get(args[0]);
         if (!subCommand)
@@ -105,8 +105,7 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context) => {
     const member = await ctx.serverUtil.getMember(message.serverId, message.createdBy);
     if (command.modOnly && !ctx.operators.includes(message.createdBy)) {
         const modRoles = await ctx.prisma.role.findMany({ where: { serverId: message.serverId, type: RoleType.MOD } });
-        if (!modRoles.some((role) => member.roleIds.includes(role.roleId)))
-            return ctx.messageUtil.reply(message, "Oh no! Unfortunately, you are missing the mod role permission!");
+        if (!modRoles.some((role) => member.roleIds.includes(role.roleId))) return ctx.messageUtil.reply(message, "Oh no! Unfortunately, you are missing the mod role permission!");
     }
     if (command.ownerOnly && !ctx.operators.includes(message.createdBy)) return void 0;
 
