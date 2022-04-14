@@ -4,8 +4,25 @@ on:
         branches:
             - main
 jobs:
-    docs:
+    docker:
+        runs-on: ubuntu-latest
+        strategy:
+            matrix:
+                service-name: [bot]
+        steps:
+            - uses: actions/checkout@v2
+            - name: Build
+              uses: jerray/publish-docker-action@v1.0.5
+              with:
+                  username: ${{ github.REPO_OWNER }}
+                  password: ${{ secrets.GITHUB_TOKEN }}
+                  registry: docker.pkg.github.com
+                  repository: ${{ github.REPO_NAME }}/${{ matrix.service-name }}
+                  auto_tag: true
+                  file: docker/${{ matrix.service-name }}/Dockerfile
+    deploy:
         name: Deploy to Production
+        needs: [docker]
         runs-on: ubuntu-latest
         steps:
             - name: executing remote ssh commands using ssh key
@@ -16,7 +33,5 @@ jobs:
                   key: ${{ secrets.DO_KEY }}
                   port: 22000
                   script: |
-                      cd yoki/yoki
-                      git pull
-                      chmod +x ./run.sh
+                      cd yoki
                       ./run.sh prod

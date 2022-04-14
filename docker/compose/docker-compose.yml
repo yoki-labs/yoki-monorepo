@@ -1,16 +1,9 @@
 version: "3.7"
 services:
     bot:
-        build:
-            context: ../../
-            dockerfile: ./docker/bot/Dockerfile
+        image: docker.pkg.github.com/Yoki-Labs/yoki/bot
         container_name: YOKI_BOT
         restart: unless-stopped
         env_file:
             - ../../.env
-        networks:
-            - main-network
-
-networks:
-    main-network:
-        driver: bridge
+            

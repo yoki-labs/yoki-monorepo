@@ -15,13 +15,16 @@ services:
         ports:
             - 5432:5432
     cache:
-      image: redislabs/redismod:latest
-      restart: unless-stopped
-      networks:
-          - main-network
-      ports:
-        - '6379:6379'
+        image: redislabs/redismod:latest
+        restart: unless-stopped
+        networks:
+            - main-network
+        ports:
+            - "6379:6379"
     bot:
+        build:
+            context: ../../
+            dockerfile: ./docker/bot/Dockerfile
         command: ["yarn", "run", "dev"]
         depends_on:
             - db
@@ -31,6 +34,11 @@ services:
         restart: "no"
         environment:
             DATABASE_URL: "postgresql://yoki_user:yoki_pass@db:5432/yoki?schema=public"
+        networks:
+            - main-network
 
+networks:
+    main-network:
+        driver: bridge
 volumes:
     yoki-postgres-data:
