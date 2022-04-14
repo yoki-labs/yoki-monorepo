@@ -18,10 +18,7 @@ const Enable: Command = {
         const preset = args.preset as string;
         const allPresets = Object.keys(ctx.contentFilterUtil.presets);
         if (!allPresets.includes(preset))
-            return ctx.messageUtil.send(
-                message.channelId,
-                `That is not a valid preset. Your options are: ${allPresets.map((x) => `\`${x}\``).join(", ")}`
-            );
+            return ctx.messageUtil.send(message.channelId, `That is not a valid preset. Your options are: ${allPresets.map((x) => `\`${x}\``).join(", ")}`);
 
         return ctx.contentFilterUtil
             .enablePreset(message.serverId!, preset)

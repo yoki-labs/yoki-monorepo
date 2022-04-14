@@ -71,6 +71,7 @@ model Action {
     logChannelMessage String?   @db.VarChar(255)
     executorId        String    @db.VarChar(255)
     reason            String?   @db.Text
+    triggerWord       String?   @db.Text
     infractionPoints  Int
     targetId          String    @db.VarChar(255)
     createdAt         DateTime  @default(now())

@@ -30,9 +30,9 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context) => {
         if (!args[0])
             return ctx.messageUtil.send(
                 message.channelId,
-                `You must provide a sub command to run. Your options are: ${command.subCommands
-                    .map((x) => `\`${x.name.split("-")[1]}\``)
-                    .join(", ")}. Example: \`${serverFromDb.prefix ?? process.env.DEFAULT_PREFIX}${command.name}\``
+                `You must provide a sub command to run. Your options are: ${command.subCommands.map((x) => `\`${x.name.split("-")[1]}\``).join(", ")}. Example: \`${
+                    serverFromDb.prefix ?? process.env.DEFAULT_PREFIX
+                }${command.name}\``
             );
         const subCommand = command.subCommands.get(args[0]);
         if (!subCommand)

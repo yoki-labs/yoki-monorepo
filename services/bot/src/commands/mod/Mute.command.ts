@@ -49,6 +49,7 @@ const Mute: Command = {
             executorId: message.createdBy,
             infractionPoints: 10,
             reason,
+            triggerWord: null,
             targetId,
             type: "MUTE",
             expiresAt,
