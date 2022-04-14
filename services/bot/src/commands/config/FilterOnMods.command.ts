@@ -1,3 +1,4 @@
+import { RoleType } from "../../typings";
 import type { Command } from "../Command";
 
 const FilterOnMods: Command = {
@@ -6,6 +7,7 @@ const FilterOnMods: Command = {
     usage: "filterOnMods [newSetting]",
     subCommand: true,
     subName: "filteronmods",
+    requiredRole: RoleType.ADMIN,
     args: [{ name: "newSetting", optional: true, type: "boolean" }],
     execute: async (message, args, ctx, commandCtx) => {
         const newSetting = (args.newSetting as boolean) ?? null;

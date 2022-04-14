@@ -10,6 +10,7 @@
         "lint:fix": "yarn lint --fix",
         "prepare": "npx husky install",
         "prettier": "npx prettier --write **/*.{ts,js,json,yml,yaml,md}",
+        "generate": "cd services/bot && yarn generate",
         "refresh": "npx ts-node scripts/refresh.ts"
     },
     "devDependencies": {

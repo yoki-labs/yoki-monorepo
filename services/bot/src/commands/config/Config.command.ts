@@ -1,5 +1,6 @@
 import Collection from "@discordjs/collection";
 
+import { RoleType } from "../../typings";
 import type { Command } from "../Command";
 import FilterOnMods from "./FilterOnMods.command";
 // import Infraction from "./Infraction.command";
@@ -20,7 +21,7 @@ const Config: Command = {
     usage: `<${subCommands.map((_v, k) => k).join(" | ")}> <..args>`,
     // examples: [...(Modlog.examples as string[]), ...(Modrole.examples as string[])],
     parentCommand: true,
-    modOnly: true,
+    requiredRole: RoleType.ADMIN,
     ownerOnly: true,
     subCommands,
     execute: () => void 0,

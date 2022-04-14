@@ -1,13 +1,14 @@
 import { stripIndents } from "common-tags";
 import ms from "ms";
 
+import { RoleType } from "../../typings";
 import type { Command } from "../Command";
 
 const Mute: Command = {
     name: "mute",
     description: "Mute a user.",
     usage: "<targetId> [...reason]",
-    modOnly: true,
+    requiredRole: RoleType.MOD,
     args: [
         {
             name: "targetId",

@@ -29,7 +29,7 @@ const Help: Command = {
 				${command.examples ? `**Examples:** ${command.examples.map((x) => `\`${command.parentCommand ? `${command.name} ` : ""}${x}\``).join(", ")}` : ""}
 				${command.userPermissions ? `**User Required Permissions:** ${command.userPermissions.map((x) => `\`${x}\``).join(", ")}` : ""}
 				${command.clientPermissions ? `**Client Required Permissions:** ${command.clientPermissions.map((x) => `\`${x}\``).join(", ")}` : ""}
-				**Mod Only:** \`${command.modOnly ?? false}\`
+				${command.requiredRole ? `**Required Role:** \`${command.requiredRole}\`` : ""}
 				**Has sub-commands:** \`${command.parentCommand ?? false}\`
 			`
             );
@@ -42,8 +42,8 @@ const Help: Command = {
             stripIndents`
 				A list of available commands.
 				For additional info on a command, type \`${commandCtx.server.prefix ?? process.env.DEFAULT_PREFIX}help [command]\`
-				
-				
+
+
 				Categories marked with * are commands that contain sub commands.
 
 				**Uncategorized:**

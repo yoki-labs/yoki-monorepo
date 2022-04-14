@@ -1,10 +1,11 @@
+import { RoleType } from "../typings";
 import type { Command } from "./Command";
 
 const Prefix: Command = {
     name: "prefix",
     description: "Change/view the prefix of this server",
     usage: "[newPrefix]",
-    modOnly: true,
+    requiredRole: RoleType.MOD,
     args: [{ name: "newPrefix", type: "string", optional: true }],
     execute: async (message, args, ctx, commandCtx) => {
         const newPrefix = args.newPrefix as string | null;

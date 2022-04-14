@@ -1,13 +1,14 @@
 import { stripIndents } from "common-tags";
 
 import { ContentFilterUtil } from "../../functions/content-filter";
+import { RoleType } from "../../typings";
 import type { Command } from "../Command";
 
 const History: Command = {
     name: "history",
     description: "Get the history for a user.",
     usage: "<targetId>",
-    modOnly: true,
+    requiredRole: RoleType.MOD,
     args: [
         {
             name: "targetId",

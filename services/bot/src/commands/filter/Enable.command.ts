@@ -1,3 +1,4 @@
+import { RoleType } from "../../typings";
 import type { Command } from "../Command";
 
 const Enable: Command = {
@@ -6,7 +7,7 @@ const Enable: Command = {
     description: "Enable the automod filter",
     usage: "",
     subCommand: true,
-    modOnly: true,
+    requiredRole: RoleType.ADMIN,
     execute: async (message, _args, ctx) => {
         return ctx.contentFilterUtil
             .enableFilter(message.serverId!)

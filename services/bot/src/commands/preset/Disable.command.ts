@@ -1,3 +1,4 @@
+import { RoleType } from "../../typings";
 import type { Command } from "../Command";
 
 const Enable: Command = {
@@ -6,7 +7,7 @@ const Enable: Command = {
     description: "Disable a preset",
     usage: "",
     subCommand: true,
-    modOnly: true,
+    requiredRole: RoleType.MOD,
     args: [
         {
             name: "preset",

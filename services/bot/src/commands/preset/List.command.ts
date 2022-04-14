@@ -1,5 +1,6 @@
 import { stripIndents } from "common-tags";
 
+import { RoleType } from "../../typings";
 import type { Command } from "../Command";
 
 const List: Command = {
@@ -8,7 +9,7 @@ const List: Command = {
     usage: "",
     subName: "list",
     subCommand: true,
-    modOnly: true,
+    requiredRole: RoleType.MOD,
     execute: async (message, _args, ctx) => {
         const allPresets = ctx.contentFilterUtil.presets;
         const enabledPresets = await ctx.contentFilterUtil.getEnabledPresets(message.serverId!);

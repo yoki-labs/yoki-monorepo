@@ -3,7 +3,7 @@ import type { WSChatMessageCreatedPayload } from "@guildedjs/guilded-api-typings
 import { stripIndents } from "common-tags";
 import { nanoid } from "nanoid";
 
-import { Context, RoleType } from "../typings";
+import type { Context } from "../typings";
 
 export default async (packet: WSChatMessageCreatedPayload, ctx: Context) => {
     const { message } = packet.d;
@@ -103,11 +103,13 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context) => {
     }
 
     const member = await ctx.serverUtil.getMember(message.serverId, message.createdBy);
-    if (command.modOnly && !ctx.operators.includes(message.createdBy)) {
-        const modRoles = await ctx.prisma.role.findMany({ where: { serverId: message.serverId, type: RoleType.MOD } });
-        if (!modRoles.some((role) => member.roleIds.includes(role.roleId))) return ctx.messageUtil.reply(message, "Oh no! Unfortunately, you are missing the mod role permission!");
-    }
-    if (command.ownerOnly && !ctx.operators.includes(message.createdBy)) return void 0;
+
+    if (!ctx.operators.includes(message.createdBy))
+        if (command.requiredRole) {
+            const modRoles = await ctx.prisma.role.findMany({ where: { serverId: message.serverId, type: command.requiredRole } });
+            if (!modRoles.some((role) => member.roleIds.includes(role.roleId)))
+                return ctx.messageUtil.reply(message, `Oh no! Unfortunately, you are missing the ${command.requiredRole} role permission!`);
+        } else if (command.ownerOnly) return void 0;
 
     try {
         await command.execute(message, resolvedArgs, ctx, { packet, server: serverFromDb, member });

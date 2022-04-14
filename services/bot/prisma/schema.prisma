@@ -108,6 +108,7 @@ enum LogChannelType {
 
 enum RoleType {
     MOD
+    ADMIN
     REACT
 }
 

@@ -1,4 +1,5 @@
 import { optionKeys, transformSeverityStringToEnum } from "../../functions/content-filter";
+import { RoleType } from "../../typings";
 import type { Command } from "../Command";
 
 const Add: Command = {
@@ -8,7 +9,7 @@ const Add: Command = {
     usage: "<phrase> [severity=warn] [infraction_points=5]",
     examples: ["test_word warn", "test_word_2 kick"],
     subCommand: true,
-    modOnly: true,
+    requiredRole: RoleType.ADMIN,
     args: [
         {
             name: "phrase",

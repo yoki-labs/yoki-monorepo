@@ -1,4 +1,4 @@
-import { LogChannelType } from "../../typings";
+import { LogChannelType, RoleType } from "../../typings";
 import type { Command } from "../Command";
 
 const Modlog: Command = {
@@ -7,6 +7,7 @@ const Modlog: Command = {
     usage: "modlog [newChannel]",
     subCommand: true,
     subName: "modlog",
+    requiredRole: RoleType.ADMIN,
     aliases: ["mod-log", "modlogs", "mod-logs"],
     args: [{ name: "newChannel", optional: true, type: "string" }],
     execute: async (message, args, ctx) => {
