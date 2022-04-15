@@ -7,7 +7,6 @@ RUN apk add --update \
 	&& curl -L https://yarnpkg.com/install.sh | bash
 
 COPY tsconfig.json ./
-
 WORKDIR /opt/build/services/bot
 
 COPY ./services/bot/package.json ./
@@ -16,7 +15,7 @@ RUN yarn install
 COPY ./services/bot/prisma/. ./prisma/
 RUN yarn generate
 
-COPY ./services/bot/tsconfig.json ./
+COPY ./services/bot/tsconfig.json ./services/bot/nodemon.json ./
 COPY ./services/bot/src/. ./src/
 RUN yarn build
 
@@ -29,5 +28,4 @@ COPY --from=0 ./opt/build/tsconfig.json .
 COPY --from=0 ./opt/build/services/bot/ services/bot/
 
 WORKDIR /usr/app/services/bot
-COPY ./services/bot/nodemon.json ./
 CMD ["yarn", "run", "start"]
