@@ -7,14 +7,14 @@ RUN apk add --update \
 	&& curl -L https://yarnpkg.com/install.sh | bash
 
 RUN chown node /opt/build
-USER node
 COPY --chown=node tsconfig.json ./
 
 WORKDIR /opt/build/services/bot
 
-COPY --chown=node  ./services/bot/package.json ./
+COPY --chown=node ./services/bot/package.json ./
 RUN yarn install
 
+USER node
 COPY --chown=node ./services/bot/prisma/. ./prisma/
 RUN yarn generate
 
