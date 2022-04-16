@@ -8,6 +8,7 @@ import RedisClient from "ioredis";
 import type { Command } from "./commands/Command";
 import ChatMessageCreated from "./events/ChatMessageCreated";
 import ChatMessageUpdated from "./events/ChatMessageUpdated";
+import TeamMemberUpdated from "./events/TeamMemberUpdated";
 import { ContentFilterUtil } from "./functions/content-filter";
 import { MessageUtil } from "./functions/message";
 import { ServerUtil } from "./functions/server";
@@ -33,6 +34,7 @@ export default class Client {
     readonly eventHandler: { [x: string]: (packet: any, ctx: Context) => void } = {
         ChatMessageCreated,
         ChatMessageUpdated,
+        TeamMemberUpdated,
     };
 
     init() {
