@@ -40,7 +40,7 @@ void (async (): Promise<void> => {
     }
 
     try {
-        await client.ws.connect();
+        await client.init();
     } catch (e) {
         console.error(e);
         return process.exit(1);

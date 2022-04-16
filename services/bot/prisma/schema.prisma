@@ -63,8 +63,7 @@ model CustomTag {
 }
 
 model Action {
-    id                Int       @id @default(autoincrement())
-    referenceId       String    @db.VarChar(255)
+    id                String    @id @db.VarChar(255)
     serverId          String    @db.VarChar(255)
     type              Severity
     logChannelId      String?   @db.VarChar(255)

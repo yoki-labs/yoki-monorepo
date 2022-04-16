@@ -20,7 +20,7 @@ const History: Command = {
         const [fetchedCase] = await ctx.prisma.action.findMany({
             where: {
                 serverId: message.serverId!,
-                referenceId: caseId,
+                id: caseId,
             },
         });
 

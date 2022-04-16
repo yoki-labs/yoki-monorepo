@@ -28,7 +28,7 @@ const History: Command = {
         return ctx.messageUtil.send(
             message.channelId,
             stripIndents`
-				${actions.map((x) => `**ID:** \`${x.referenceId}\`, **TYPE:** \`${x.type}\`, **REASON:** \`${x.reason}\`${(x.triggerWord && `||${x.triggerWord}||`) ?? ""}`).join("\n")}
+				${actions.map((x) => `**ID:** \`${x.id}\`, **TYPE:** \`${x.type}\`, **REASON:** \`${x.reason}\`${(x.triggerWord && `||${x.triggerWord}||`) ?? ""}`).join("\n")}
 				
 				**Total Infraction Points:** ${ContentFilterUtil.totalAllInfractionPoints(actions)}
 			`

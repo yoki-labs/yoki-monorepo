@@ -41,7 +41,7 @@ export class ServerUtil extends Util {
     addAction(data: Omit<Action, "id" | "referenceId" | "createdAt" | "updatedAt" | "logChannelI" | "expired" | "logChannelId" | "logChannelMessage">) {
         return this.prisma.action.create({
             data: {
-                referenceId: nanoid(17),
+                id: nanoid(17),
                 createdAt: new Date(),
                 updatedAt: null,
                 expired: false,
@@ -50,7 +50,7 @@ export class ServerUtil extends Util {
         });
     }
 
-    populateActionMessage(id: number, channelId: string, messageId: string) {
+    populateActionMessage(id: string, channelId: string, messageId: string) {
         return this.prisma.action.update({ where: { id }, data: { logChannelId: channelId, logChannelMessage: messageId } });
     }
 
