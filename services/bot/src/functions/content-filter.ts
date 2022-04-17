@@ -188,7 +188,9 @@ export class ContentFilterUtil extends Util {
 
         if (modLogChannel) await this.client.serverUtil.sendModLogMessage(modLogChannel.channelId, { ...createdCase, reasonMetaData: `||${triggeredWord.content}||` }, member);
 
-        filter();
+        try { 
+             await filter()
+        } catch() {}
 
         return this.severityAction[triggeredWord.severity]?.(member, server, content, filteredContent);
     }
