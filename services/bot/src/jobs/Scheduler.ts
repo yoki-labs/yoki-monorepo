@@ -1,8 +1,6 @@
 import type Client from "../Client";
 
-export abstract class Scheduler<K, T> {
-    public timeouts: Map<K, NodeJS.Timeout> = new Map();
-
+export abstract class Scheduler<T> {
     public abstract sweeper(): Promise<any>;
     public abstract sweep(input: T): Promise<any>;
     public constructor(public readonly client: Client, public readonly checkRate: number) {}
