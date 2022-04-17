@@ -32,11 +32,14 @@ const LogChannel: Command = {
     execute: async (message, args, ctx) => {
         const channelId = args.channelId as string;
         let logTypes = <string[]>args.logTypes;
+
+        // If there are logTypes, uppercase them all, then filter out duplicates. No idea why this had to specifically be two different lines.
         if (logTypes.length > 0) {
             logTypes = logTypes.map((logType) => logType.toUpperCase());
             logTypes = logTypes.filter((value, index) => logTypes.indexOf(value) === index);
         }
 
+        // If the user didn't supply a channelId. Get all log channels, use above cleanup method to filter duplicates and merge them, then list them.
         if (!channelId) {
             const logChannels = await ctx.serverUtil.getLogChannels(message.serverId!);
             if (logChannels.length <= 0) return ctx.messageUtil.send(message.channelId, `This server has no set log channels.`);
@@ -52,12 +55,20 @@ const LogChannel: Command = {
             );
         }
 
+        // Event subscribe handling.
         const failedTypes: string[] = [];
         const successfulTypes: string[] = [];
+
+        // If there aren't any logTypes or logTypes contains "ALL" default the entire list to ALL for optimization.
         if (logTypes.length <= 0 || logTypes.includes("ALL")) {
             logTypes = ["ALL"];
         }
 
+        // If the channel's already subscribed to all events.
+        // Else, loop through all logTypes, if it's a valid LogChannelType, and doesn't already exist, go ahead and subscribe.
+
+        // If it's successfully added, add the logType to the successfulTypes array.
+        // Else, add it to the failedTypes array, with a reason. `TYPE:ERROR`
         if (await ctx.prisma.logChannel.findFirst({ where: { channelId, type: LogChannelType.ALL } })) {
             failedTypes.push(`ALL_TYPES:CHANNEL_ALREADY_SUBSCRIBED_TO_ALL`);
         } else {
@@ -76,6 +87,7 @@ const LogChannel: Command = {
             }
         }
 
+        // Reply to the command, with the successful and failed types.
         return ctx.messageUtil.send(
             message.channelId,
             stripIndents`
