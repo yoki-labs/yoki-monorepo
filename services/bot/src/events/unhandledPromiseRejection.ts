@@ -4,14 +4,5 @@ import { stripIndents } from "common-tags";
 
 export default (err: Error, errorHandler: WebhookClient) => {
     console.error(err);
-    Error.captureStackTrace(err);
-    void errorHandler.send("Unhandled error!", [
-        new Embed()
-            .setDescription(
-                stripIndents`
-				${err.stack}
-			`
-            )
-            .setColor("RED"),
-    ]);
+    void errorHandler.send("Unhandled error!", [new Embed().setDescription(stripIndents`\n${err.stack ?? err.message}`).setColor("RED")]);
 };
