@@ -1,3 +1,4 @@
+import Embed from "@guildedjs/embeds";
 import type { ChatMessagePayload } from "@guildedjs/guilded-api-typings";
 import { stripIndents } from "common-tags";
 
@@ -190,7 +191,9 @@ export class ContentFilterUtil extends Util {
 
         try {
             await filter();
-        } catch (_) {}
+        } catch (err: any) {
+            if (err instanceof Error) await this.client.errorHandler.send("Error in filtering callback", [new Embed().setDescription(stripIndents`${err.stack}`).setColor("RED")]);
+        }
 
         return this.severityAction[triggeredWord.severity]?.(member, server, content, filteredContent);
     }
