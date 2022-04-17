@@ -16,7 +16,5 @@ export default async (event: WSTeamMemberUpdatedPayload, ctx: Context) => {
 
     // Filter only set nicknames/nickname may be null
     if (nickname)
-        return ctx.contentFilterUtil.scanContent(serverId, userId, nickname, FilteredContent.ServerContent, null, serverFromDb, () =>
-            ctx.rest.router.deleteMemberNickname(serverId, userId)
-        );
+        return ctx.contentFilterUtil.scanContent(userId, nickname, FilteredContent.ServerContent, null, serverFromDb, () => ctx.rest.router.deleteMemberNickname(serverId, userId));
 };

@@ -40,37 +40,35 @@ export class ContentFilterUtil extends Util {
         ],
     };
 
-    readonly severityAction: Record<
-        Severity,
-        (userId: string, serverId: string, member: CachedMember, server: Server, content: ChatMessagePayload | null, filteredContent: FilteredContent) => unknown | undefined
-    > = {
-        [Severity.BAN]: (userId, serverId) => {
-            return this.rest.router.banMember(serverId, userId);
-        },
-        [Severity.KICK]: (userId, serverId) => {
-            return this.rest.router.kickMember(serverId, userId);
-        },
-        [Severity.SOFTBAN]: async (userId, serverId) => {
-            await this.rest.router.banMember(serverId, userId);
-            return this.rest.router.unbanMember(serverId, userId);
-        },
-        [Severity.MUTE]: (userId, _sId, _cnt, server) => {
-            return server.muteRoleId && this.rest.router.assignRoleToMember(userId, server.muteRoleId);
-        },
-        [Severity.WARN]: (_uId, _sId, member, _serv, content, filteredContent) => {
-            if (filteredContent === FilteredContent.Message)
-                return this.client.messageUtil.send(content!.channelId, {
-                    content: stripIndents`
+    readonly severityAction: Record<Severity, (member: CachedMember, server: Server, content: ChatMessagePayload | null, filteredContent: FilteredContent) => unknown | undefined> =
+        {
+            [Severity.BAN]: (member, server) => {
+                return this.rest.router.banMember(server.serverId, member.user.id);
+            },
+            [Severity.KICK]: (member, server) => {
+                return this.rest.router.kickMember(server.serverId, member.user.id);
+            },
+            [Severity.SOFTBAN]: async (member, server) => {
+                await this.rest.router.banMember(server.serverId, member.user.id);
+                return this.rest.router.unbanMember(server.serverId, member.user.id);
+            },
+            [Severity.MUTE]: (member, server) => {
+                return server.muteRoleId && this.rest.router.assignRoleToMember(member.user.id, server.muteRoleId);
+            },
+            [Severity.WARN]: (member, _serv, content, filteredContent) => {
+                if (filteredContent === FilteredContent.Message)
+                    return this.client.messageUtil.send(content!.channelId, {
+                        content: stripIndents`
                     **Alert:** ${member.user.name}, you have used a filtered word.
                     This is a warning for you to not use it again, otherwise moderation action will be taken against you.
                     `,
-                    isPrivate: true,
-                    replyMessageIds: [content!.id],
-                });
-            // TODO: DM user
-            return 0;
-        },
-    };
+                        isPrivate: true,
+                        replyMessageIds: [content!.id],
+                    });
+                // TODO: DM user
+                return 0;
+            },
+        };
 
     addWordToFilter(data: Omit<ContentFilter, "id">) {
         return this.prisma.contentFilter.create({ data });
@@ -108,15 +106,7 @@ export class ContentFilterUtil extends Util {
         return this.prisma.preset.deleteMany({ where: { serverId, preset } });
     }
 
-    async ifExceedsInfractionThreshold(
-        total: number,
-        userId: string,
-        serverId: string,
-        member: CachedMember,
-        server: Server,
-        content: ChatMessagePayload | null,
-        filteredContent: FilteredContent
-    ) {
+    async ifExceedsInfractionThreshold(total: number, member: CachedMember, server: Server, content: ChatMessagePayload | null, filteredContent: FilteredContent) {
         // FIXME: Still can be minimized further with a loop or something else
         const severity =
             server.banInfractionThreshold && total >= server.banInfractionThreshold
@@ -129,14 +119,13 @@ export class ContentFilterUtil extends Util {
                 ? Severity.MUTE
                 : null;
 
-        if (severity) await this.severityAction[severity](userId, serverId, member, server, content, filteredContent);
+        if (severity) await this.severityAction[severity](member, server, content, filteredContent);
 
         return severity;
     }
 
     async scanMessage(message: ChatMessagePayload, server: Server) {
         return this.scanContent(
-            message.serverId!,
             message.createdByBotId || message.createdByWebhookId || message.createdBy,
             message.content,
             FilteredContent.Message,
@@ -149,7 +138,6 @@ export class ContentFilterUtil extends Util {
 
     async scanContent(
         this: ContentFilterUtil,
-        serverId: string,
         userId: string,
         text: string,
         filteredContent: FilteredContent,
@@ -158,6 +146,8 @@ export class ContentFilterUtil extends Util {
         filter: () => any
     ) {
         if (userId === this.client.userId) return void 0;
+        const { serverId } = server;
+
         const bannedWordsList = await this.getBannedWords(serverId);
         const enabledPresets = await this.getEnabledPresets(serverId);
 
@@ -183,7 +173,7 @@ export class ContentFilterUtil extends Util {
         const pastActions = await this.getMemberHistory(serverId, userId);
         const totalInfractionPoints = ContentFilterUtil.totalAllInfractionPoints(pastActions) + triggeredWord.infractionPoints;
         const modLogChannel = await this.client.serverUtil.getModLogChannel(serverId);
-        const ifExceeds = await this.ifExceedsInfractionThreshold(totalInfractionPoints, userId, serverId, member, server, content, filteredContent);
+        const ifExceeds = await this.ifExceedsInfractionThreshold(totalInfractionPoints, member, server, content, filteredContent);
 
         const createdCase = await this.client.serverUtil.addAction({
             serverId,
@@ -200,7 +190,7 @@ export class ContentFilterUtil extends Util {
 
         filter();
 
-        return this.severityAction[triggeredWord.severity]?.(userId, serverId, member, server, content, filteredContent);
+        return this.severityAction[triggeredWord.severity]?.(member, server, content, filteredContent);
     }
 
     static totalAllInfractionPoints(actions: Action[]) {
