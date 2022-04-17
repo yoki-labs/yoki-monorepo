@@ -16,6 +16,14 @@ export class ServerUtil extends Util {
         return this.prisma.logChannel.findFirst({ where: { serverId, type: LogChannelType.MOD_ACTION_LOG } });
     }
 
+    getModLogChannels(serverId: string) {
+        return this.prisma.logChannel.findMany({ where: { serverId, type: LogChannelType.MOD_ACTION_LOG } });
+    }
+
+    getLogChannels(serverId: string) {
+        return this.prisma.logChannel.findMany({ where: { serverId } });
+    }
+
     getMuteRole(serverId: string) {
         return this.prisma.server.findFirst({ select: { muteRoleId: true }, where: { serverId } });
     }

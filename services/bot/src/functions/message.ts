@@ -4,8 +4,9 @@ import Util from "./util";
 
 export class MessageUtil extends Util {
     logMessage(message: ChatMessagePayload) {
-        return this.prisma.message.create({
-            data: {
+        return this.prisma.message.upsert({
+            where: { messageId: message.id },
+            create: {
                 messageId: message.id,
                 authorId: message.createdBy,
                 channelId: message.channelId,
@@ -13,8 +14,12 @@ export class MessageUtil extends Util {
                 createdAt: message.createdAt,
                 embeds: [],
                 serverId: message.serverId!,
-                updatedAt: null,
+                updatedAt: message.updatedAt,
                 isBot: Boolean(message.createdByBotId ?? message.createdByWebhookId),
+            },
+            update: {
+                content: message.content,
+                updatedAt: message.updatedAt,
             },
         });
     }

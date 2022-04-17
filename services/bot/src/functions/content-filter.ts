@@ -140,7 +140,7 @@ export class ContentFilterUtil extends Util {
 
         const pastActions = await this.getMemberHistory(message.serverId!, message.createdBy);
         const totalInfractionPoints = ContentFilterUtil.totalAllInfractionPoints(pastActions) + triggeredWord.infractionPoints;
-        const modLogChannel = await this.client.serverUtil.getModLogChannel(message.serverId!);
+        const modLogChannels = await this.client.serverUtil.getModLogChannels(message.serverId!);
         const ifExceeds = await this.ifExceedsInfractionThreshold(totalInfractionPoints, server, message, member);
 
         const createdCase = await this.client.serverUtil.addAction({
@@ -154,7 +154,10 @@ export class ContentFilterUtil extends Util {
             infractionPoints: triggeredWord.infractionPoints,
         });
 
-        if (modLogChannel) await this.client.serverUtil.sendModLogMessage(modLogChannel.channelId, { ...createdCase, reasonMetaData: `||${triggeredWord.content}||` }, member);
+        if (modLogChannels)
+            modLogChannels.forEach((modLogChannel) =>
+                this.client.serverUtil.sendModLogMessage(modLogChannel.channelId, { ...createdCase, reasonMetaData: `||${triggeredWord.content}||` }, member)
+            );
         await this.rest.router.deleteChannelMessage(message.channelId!, message.id);
         return this.severityAction[triggeredWord.severity]?.(message, server, member);
     }
