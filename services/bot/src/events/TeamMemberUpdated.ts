@@ -9,10 +9,8 @@ export default async (event: WSTeamMemberUpdatedPayload, ctx: Context) => {
         serverId,
     } = event.d;
 
-    // FIXME: Once again, a function for this
-    let serverFromDb = await ctx.serverUtil.getServerFromDatabase(serverId);
+    const serverFromDb = await ctx.serverUtil.getServerFromDatabase(serverId);
     if (serverFromDb?.blacklisted || !serverFromDb?.flags?.includes("EARLY_ACCESS")) return void 0;
-    if (!serverFromDb) serverFromDb = await ctx.serverUtil.createFreshServerInDatabase(serverId);
 
     // Filter only set nicknames/nickname may be null
     if (nickname)
