@@ -133,7 +133,6 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context) => {
         const referenceId = nanoid();
         if (e instanceof Error) {
             console.error(e);
-            Error.captureStackTrace(e);
             void ctx.errorHandler.send("Error in command usage!", [
                 new Embed()
                     .setDescription(
@@ -144,7 +143,7 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context) => {
 						User: **${message.createdBy}**
 						Content: \`${message.content}\`
 						Error: \`\`\`
-						${e.stack}
+						${e.stack ?? e.message}
 						\`\`\`
 					`
                     )
