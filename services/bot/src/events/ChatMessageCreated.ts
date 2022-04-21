@@ -104,10 +104,12 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context) => {
                     break;
                 }
                 case "UUID": {
-                    if (!isUUID(args[i]) && !commandArg.optional) return handleIncorrectArg(i, commandArg);
+                    if (isUUID(args[i]) || (commandArg.optional && typeof args[i] == "undefined")) {
+                        resolvedArgs[commandArg.name] = args[i];
+                        break;
+                    }
 
-                    resolvedArgs[commandArg.name] = args[i];
-                    break;
+                    return handleIncorrectArg(i, commandArg);
                 }
                 default:
                     resolvedArgs[commandArg.name] = args[i];
