@@ -9,7 +9,7 @@ const Modlog: Command = {
     subName: "modlog",
     requiredRole: RoleType.ADMIN,
     aliases: ["mod-log", "modlogs", "mod-logs"],
-    args: [{ name: "newChannel", optional: true, type: "string" }],
+    args: [{ name: "newChannel", optional: true, type: "UUID" }],
     execute: async (message, args, ctx) => {
         const newChannel = args.newChannel as string;
         // if (newChannel && !isUUID(newChannel)) return ctx.messageUtil.send(message.channelId, "Oh no! That is not a valid channel ID.");

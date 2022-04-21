@@ -173,7 +173,8 @@ export class ContentFilterUtil extends Util {
 
         const pastActions = await this.getMemberHistory(serverId, userId);
         const totalInfractionPoints = ContentFilterUtil.totalAllInfractionPoints(pastActions) + triggeredWord.infractionPoints;
-        const modLogChannel = await this.client.serverUtil.getModLogChannel(serverId);
+
+        const modLogChannels = await this.client.serverUtil.getModLogChannels(serverId);
         const ifExceeds = await this.ifExceedsInfractionThreshold(totalInfractionPoints, member, server, content, filteredContent);
 
         const createdCase = await this.client.serverUtil.addAction({
@@ -187,7 +188,10 @@ export class ContentFilterUtil extends Util {
             infractionPoints: triggeredWord.infractionPoints,
         });
 
-        if (modLogChannel) await this.client.serverUtil.sendModLogMessage(modLogChannel.channelId, { ...createdCase, reasonMetaData: `||${triggeredWord.content}||` }, member);
+        if (modLogChannels)
+            modLogChannels.forEach((modLogChannel) =>
+                this.client.serverUtil.sendModLogMessage(modLogChannel.channelId, { ...createdCase, reasonMetaData: `||${triggeredWord.content}||` }, member)
+            );
 
         try {
             await filter();

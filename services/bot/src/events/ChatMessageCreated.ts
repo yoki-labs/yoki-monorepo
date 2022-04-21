@@ -4,6 +4,7 @@ import { stripIndents } from "common-tags";
 import { nanoid } from "nanoid";
 
 import type { Context } from "../typings";
+import { isUUID } from "../util";
 
 export default async (packet: WSChatMessageCreatedPayload, ctx: Context) => {
     const { message } = packet.d;
@@ -45,58 +46,73 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context) => {
         args = args.slice(1);
     }
 
-    const resolvedArgs: Record<string, string | number | boolean | null> = {};
+    function handleIncorrectArg(i: number, commandArg: any): void {
+        if (!command) return;
+
+        void ctx.messageUtil.send(
+            message.channelId,
+            stripIndents`
+                Sorry, your ${commandArg.name} was not valid! Was expecting a \`string\`, received \`${typeof args[i] === "undefined" ? "nothing" : args[i]}\`
+                **Usage:** \`${parentCommand.name}${command.name === parentCommand.name ? "" : ` ${command.subName ?? command.name}`} ${command.usage}\``
+        );
+    }
+
+    const resolvedArgs: Record<string, string | string[] | number | boolean | null> = {};
     if (command.args && command.args.length) {
         for (let i = 0; i < command.args.length; i++) {
             const commandArg = command.args[i];
-            if (commandArg.type === "rest" && typeof args[i] !== "string") {
-                if (!commandArg.optional)
-                    return ctx.messageUtil.send(
-                        message.channelId,
-                        stripIndents`
-						Sorry, your ${commandArg.name} was not valid! Was expecting a \`string\`, received \`${typeof args[i] === "undefined" ? "nothing" : args[i]}\`
-						**Usage:** \`${parentCommand.name}${command.name === parentCommand.name ? "" : ` ${command.subName ?? command.name}`} ${command.usage}\`
-					`
-                    );
-                resolvedArgs[commandArg.name] = args.slice(i).join(" ") ?? null;
-                break;
-            }
 
-            if (commandArg.type === "string" && typeof args[i] !== "string") {
-                if (!commandArg.optional)
-                    return ctx.messageUtil.send(
-                        message.channelId,
-                        stripIndents`
-							Sorry, your ${commandArg.name} was not valid! Was expecting a \`string\`, received \`${typeof args[i] === "undefined" ? "nothing" : args[i]}\`
-							**Usage:** \`${parentCommand.name}${command.name === parentCommand.name ? "" : ` ${command.subName ?? command.name}`} ${command.usage}\`
-						`
-                    );
-                resolvedArgs[commandArg.name] = args[i] ?? null;
-            } else if (commandArg.type === "number") {
-                if (typeof args[i] === "undefined" || Number.isNaN(Number(args[i]))) {
-                    if (!commandArg.optional)
-                        return ctx.messageUtil.send(
-                            message.channelId,
-                            stripIndents`
-								Incorrect usage! \`${commandArg.name}\` was not valid! Was expecting a \`number\`, received \`${args[i]}\`
-								**Usage:** \`${parentCommand.name}${command.name === parentCommand.name ? "" : ` ${command.subName ?? command.name}`} ${command.usage}\`
-							`
-                        );
+            // Optional check
+            if (commandArg.optional && typeof args[i] == "undefined") continue;
+
+            switch (commandArg.type) {
+                case "rest": {
+                    const restArgs = args.slice(i);
+                    if (restArgs.length <= 0) return handleIncorrectArg(i, commandArg);
+
+                    resolvedArgs[commandArg.name] = restArgs.join(" ") ?? null;
+                    break;
                 }
-                resolvedArgs[commandArg.name] = args[i] ? Number(args[i]) : null;
-            } else if (commandArg.type === "boolean") {
-                if (typeof args[i] === "undefined" || !["true", "enable", "yes", "disable", "false", "no"].includes(args[i]?.toLowerCase()))
-                    if (!commandArg.optional)
-                        return ctx.messageUtil.send(
-                            message.channelId,
-                            stripIndents`
-						Incorrect usage! \`${commandArg.name}\` was not valid! Was expecting a \`true/false\`, received \`${args[i]}\`
-						**Usage:** \`${parentCommand.name}${command.name === parentCommand.name ? "" : ` ${command.subName ?? command.name}`} ${command.usage}\`
-					`
-                        );
-                resolvedArgs[commandArg.name] = ["true", "yes", "enable"].includes(args[i]?.toLowerCase()) ? true : false;
-            } else {
-                resolvedArgs[commandArg.name] = args[i];
+                case "listRest": {
+                    const restArgs = args.slice(i);
+                    if (restArgs.length <= 0) return handleIncorrectArg(i, commandArg);
+
+                    let finalizedArray;
+                    if (restArgs.length > 0) {
+                        finalizedArray = commandArg.separator ? restArgs.join(" ").split(commandArg.separator) : restArgs;
+                    } else {
+                        finalizedArray = [];
+                    }
+
+                    resolvedArgs[commandArg.name] = finalizedArray;
+                    break;
+                }
+                case "string": {
+                    if (typeof args[i] !== "string") return handleIncorrectArg(i, commandArg);
+
+                    resolvedArgs[commandArg.name] = args[i] ?? null;
+                    break;
+                }
+                case "number": {
+                    if (Number.isNaN(Number(args[i]))) return handleIncorrectArg(i, commandArg);
+
+                    resolvedArgs[commandArg.name] = args[i] ? Number(args[i]) : null;
+                    break;
+                }
+                case "boolean": {
+                    if (!["true", "enable", "yes", "disable", "false", "no"].includes(args[i]?.toLowerCase())) return handleIncorrectArg(i, commandArg);
+
+                    resolvedArgs[commandArg.name] = ["true", "yes", "enable"].includes(args[i]?.toLowerCase());
+                    break;
+                }
+                case "UUID": {
+                    if (!isUUID(args[i])) return handleIncorrectArg(i, commandArg);
+
+                    resolvedArgs[commandArg.name] = args[i];
+                    break;
+                }
+                default:
+                    resolvedArgs[commandArg.name] = args[i];
             }
         }
     }

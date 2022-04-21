@@ -80,8 +80,7 @@ model Action {
 }
 
 model Message {
-    id        Int       @id @default(autoincrement())
-    messageId String    @db.VarChar(255)
+    messageId String    @id @db.VarChar(255)
     serverId  String    @db.VarChar(255)
     channelId String    @db.VarChar(255)
     authorId  String    @db.VarChar(255)
@@ -96,7 +95,6 @@ enum LogChannelType {
     ALL
     FALLBACK
     MOD_ACTION_LOG
-    FILTER
     MEMBER_ROLES_UPDATE
     MEMBER_UPDATE
     MEMBER_JOIN_LEAVE
