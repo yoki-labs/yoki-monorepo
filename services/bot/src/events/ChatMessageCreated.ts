@@ -62,17 +62,20 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context) => {
         for (let i = 0; i < command.args.length; i++) {
             const commandArg = command.args[i];
 
+            // Optional check
+            if (commandArg.optional && typeof args[i] == "undefined") continue;
+
             switch (commandArg.type) {
                 case "rest": {
                     const restArgs = args.slice(i);
-                    if (restArgs.length <= 0 && !commandArg.optional) return handleIncorrectArg(i, commandArg);
+                    if (restArgs.length <= 0) return handleIncorrectArg(i, commandArg);
 
                     resolvedArgs[commandArg.name] = restArgs.join(" ") ?? null;
                     break;
                 }
                 case "listRest": {
                     const restArgs = args.slice(i);
-                    if (restArgs.length <= 0 && !commandArg.optional) return handleIncorrectArg(i, commandArg);
+                    if (restArgs.length <= 0) return handleIncorrectArg(i, commandArg);
 
                     let finalizedArray;
                     if (restArgs.length > 0) {
@@ -85,31 +88,28 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context) => {
                     break;
                 }
                 case "string": {
-                    if (typeof args[i] !== "string" && !commandArg.optional) return handleIncorrectArg(i, commandArg);
+                    if (typeof args[i] !== "string") return handleIncorrectArg(i, commandArg);
 
                     resolvedArgs[commandArg.name] = args[i] ?? null;
                     break;
                 }
                 case "number": {
-                    if ((typeof args[i] === "undefined" || Number.isNaN(Number(args[i]))) && !commandArg.optional) return handleIncorrectArg(i, commandArg);
+                    if (Number.isNaN(Number(args[i]))) return handleIncorrectArg(i, commandArg);
 
                     resolvedArgs[commandArg.name] = args[i] ? Number(args[i]) : null;
                     break;
                 }
                 case "boolean": {
-                    if ((typeof args[i] === "undefined" || !["true", "enable", "yes", "disable", "false", "no"].includes(args[i]?.toLowerCase())) && !commandArg.optional)
-                        return handleIncorrectArg(i, commandArg);
+                    if (!["true", "enable", "yes", "disable", "false", "no"].includes(args[i]?.toLowerCase())) return handleIncorrectArg(i, commandArg);
 
                     resolvedArgs[commandArg.name] = ["true", "yes", "enable"].includes(args[i]?.toLowerCase());
                     break;
                 }
                 case "UUID": {
-                    if (isUUID(args[i]) || (commandArg.optional && typeof args[i] == "undefined")) {
-                        resolvedArgs[commandArg.name] = args[i];
-                        break;
-                    }
+                    if (!isUUID(args[i])) return handleIncorrectArg(i, commandArg);
 
-                    return handleIncorrectArg(i, commandArg);
+                    resolvedArgs[commandArg.name] = args[i];
+                    break;
                 }
                 default:
                     resolvedArgs[commandArg.name] = args[i];
