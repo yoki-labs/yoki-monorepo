@@ -16,9 +16,17 @@ export interface Command {
     subCommands?: Collection<string, Command>;
     clientPermissions?: string[];
     userPermissions?: string[];
-    args?: { name: string; type: "string" | "UUID" | "number" | "boolean" | "rest" | "listRest"; optional?: boolean; separator?: string; resolver?: (...content: any[]) => any }[];
+    args?: CommandArgument[];
     preRunCheck?: (message: ChatMessagePayload, args: string[], ctx: Context) => unknown;
     requiredRole?: RoleType;
     ownerOnly?: boolean;
     execute: (message: ChatMessagePayload, args: Record<string, string[] | string | number | boolean | null>, ctx: Context, raw: CommandContext) => unknown;
+}
+
+export interface CommandArgument {
+    name: string;
+    type: "string" | "UUID" | "number" | "boolean" | "rest" | "listRest";
+    optional?: boolean;
+    separator?: string;
+    resolver?: (...content: any[]) => any;
 }

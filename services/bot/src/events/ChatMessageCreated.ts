@@ -3,6 +3,7 @@ import type { WSChatMessageCreatedPayload } from "@guildedjs/guilded-api-typings
 import { stripIndents } from "common-tags";
 import { nanoid } from "nanoid";
 
+import type { CommandArgument } from "../commands/Command";
 import type { Context } from "../typings";
 import { isUUID } from "../util";
 
@@ -46,7 +47,7 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context) => {
         args = args.slice(1);
     }
 
-    function handleIncorrectArg(i: number, commandArg: any): void {
+    function handleIncorrectArg(i: number, commandArg: CommandArgument): void {
         if (!command) return;
 
         void ctx.messageUtil.send(
