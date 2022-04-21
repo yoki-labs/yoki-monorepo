@@ -21,7 +21,7 @@ function cleanupChannels(logChannels): Map<string, LogChannelType[]> {
 const LogChannel: Command = {
     name: "config-logchannel",
     description: "Set or view whether message updates are logged to the mod log channel.",
-    usage: "[channelId] [action] [logTypes]",
+    usage: "[channelId] [action] [logType | logType | logType]",
     subCommand: true,
     subName: "logchannel",
     requiredRole: RoleType.ADMIN,
@@ -69,11 +69,11 @@ const LogChannel: Command = {
 
         // If it's successfully added, add the logType to the successfulTypes array.
         // Else, add it to the failedTypes array, with a reason. `TYPE:ERROR`
-        if (await ctx.prisma.logChannel.findFirst({ where: { channelId, type: LogChannelType.ALL } })) {
-            failedTypes.push(`ALL_TYPES:CHANNEL_ALREADY_SUBSCRIBED_TO_ALL`);
+        if (await ctx.prisma.logChannel.findFirst({ where: { serverId: message.serverId, type: LogChannelType.ALL } })) {
+            failedTypes.push(`SERVER_ALREADY_SUBSCRIBED_TO_ALL`);
         } else {
             for (const logType of logTypes) {
-                if (LogChannelType[logType] && !(await ctx.prisma.logChannel.findFirst({ where: { channelId, type: LogChannelType[logType] } }))) {
+                if (LogChannelType[logType] && !(await ctx.prisma.logChannel.findFirst({ where: { serverId: message.serverId, type: LogChannelType[logType] } }))) {
                     try {
                         await ctx.prisma.logChannel.create({ data: { channelId, serverId: message.serverId!, type: LogChannelType[logType] } });
 
@@ -82,7 +82,7 @@ const LogChannel: Command = {
                         failedTypes.push(`${logType}:COULD_NOT_SUBSCRIBE`);
                     }
                 } else {
-                    failedTypes.push(`${logType}:${LogChannelType[logType] ? "CHANNEL_ALREADY_SUBSCRIBED_TO_LOG_TYPE" : "INVALID_LOG_TYPE"}`);
+                    failedTypes.push(`${logType}:${LogChannelType[logType] ? `${logType}:MAX_1_REACHED` : "INVALID_LOG_TYPE"}`);
                 }
             }
         }
