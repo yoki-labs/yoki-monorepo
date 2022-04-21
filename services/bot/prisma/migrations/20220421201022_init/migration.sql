@@ -1,5 +1,5 @@
 -- CreateEnum
-CREATE TYPE "LogChannelType" AS ENUM ('ALL', 'FALLBACK', 'MOD_ACTION_LOG', 'FILTER', 'MEMBER_ROLES_UPDATE', 'MEMBER_UPDATE', 'MEMBER_JOIN_LEAVE', 'CHAT_MESSAGE_UPDATE', 'CHAT_MESSAGE_DELETE', 'NOTIFICATION');
+CREATE TYPE "LogChannelType" AS ENUM ('ALL', 'FALLBACK', 'MOD_ACTION_LOG', 'MEMBER_ROLES_UPDATE', 'MEMBER_UPDATE', 'MEMBER_JOIN_LEAVE', 'CHAT_MESSAGE_UPDATE', 'CHAT_MESSAGE_DELETE', 'NOTIFICATION');
 
 -- CreateEnum
 CREATE TYPE "RoleType" AS ENUM ('MOD', 'ADMIN', 'REACT');
@@ -82,8 +82,7 @@ CREATE TABLE "CustomTag" (
 
 -- CreateTable
 CREATE TABLE "Action" (
-    "id" SERIAL NOT NULL,
-    "referenceId" VARCHAR(255) NOT NULL,
+    "id" VARCHAR(255) NOT NULL,
     "serverId" VARCHAR(255) NOT NULL,
     "type" "Severity" NOT NULL,
     "logChannelId" VARCHAR(255),
@@ -103,7 +102,6 @@ CREATE TABLE "Action" (
 
 -- CreateTable
 CREATE TABLE "Message" (
-    "id" SERIAL NOT NULL,
     "messageId" VARCHAR(255) NOT NULL,
     "serverId" VARCHAR(255) NOT NULL,
     "channelId" VARCHAR(255) NOT NULL,
@@ -114,7 +112,7 @@ CREATE TABLE "Message" (
     "createdAt" TIMESTAMP(3) NOT NULL,
     "updatedAt" TIMESTAMP(3),
 
-    CONSTRAINT "Message_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "Message_pkey" PRIMARY KEY ("messageId")
 );
 
 -- CreateIndex
