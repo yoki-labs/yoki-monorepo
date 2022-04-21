@@ -1,9 +1,11 @@
 import { Action, Severity } from "../typings";
 import { Scheduler } from "./Scheduler";
 
-export class MuteScheduler extends Scheduler<string, Action> {
+export class MuteScheduler extends Scheduler<Action> {
+    readonly name = "mute";
+
     public async sweep(action: Action): Promise<void> {
-        const guild = await this.client.serverUtil.getServerFromDatabase(action.serverId);
+        const guild = await this.client.serverUtil.getServerFromDatabase(action.serverId, false);
         if (!guild) return void 0;
         const member = await this.client.serverUtil.getMember(action.serverId, action.targetId);
         if (!member) return;

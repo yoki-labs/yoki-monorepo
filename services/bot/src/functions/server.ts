@@ -2,14 +2,19 @@ import { stripIndents } from "common-tags";
 import { nanoid } from "nanoid";
 import JSONCache from "redis-json";
 
-import { Action, CachedMember, LogChannelType } from "../typings";
+import { Action, CachedMember, LogChannelType, Server } from "../typings";
 import Util from "./util";
 
 export class ServerUtil extends Util {
     readonly cache = new JSONCache<CachedMember>(this.client.redis);
 
-    getServerFromDatabase(serverId: string) {
-        return this.prisma.server.findUnique({ where: { serverId } });
+    getServerFromDatabase(serverId: string, createIfNotExists?: true): Promise<Server>;
+    getServerFromDatabase(serverId: string, createIfNotExists: false): Promise<Server | null>;
+    getServerFromDatabase(serverId: string, createIfNotExists = true) {
+        return this.prisma.server.findUnique({ where: { serverId } }).then((server) => {
+            if (!server && createIfNotExists) return this.createFreshServerInDatabase(serverId);
+            return server ?? null;
+        });
     }
 
     getModLogChannel(serverId: string) {
