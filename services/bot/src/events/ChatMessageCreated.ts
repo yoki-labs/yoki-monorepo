@@ -64,8 +64,7 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context) => {
             const commandArg = command.args[i];
 
             // Optional check
-            if (commandArg.optional && typeof args[i] == "undefined") continue;
-
+            if (commandArg.type !== "listRest" && commandArg.optional && typeof args[i] == "undefined") continue;
             switch (commandArg.type) {
                 case "rest": {
                     const restArgs = args.slice(i);
@@ -76,7 +75,7 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context) => {
                 }
                 case "listRest": {
                     const restArgs = args.slice(i);
-                    if (restArgs.length <= 0) return handleIncorrectArg(i, commandArg);
+                    if (restArgs.length === 0 && !commandArg.optional) return handleIncorrectArg(i, commandArg);
 
                     let finalizedArray;
                     if (restArgs.length > 0) {

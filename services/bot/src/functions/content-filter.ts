@@ -3,7 +3,7 @@ import type { ChatMessagePayload } from "@guildedjs/guilded-api-typings";
 import { stripIndents } from "common-tags";
 
 import slursList from "../presets/slurs.json";
-import { Action, CachedMember, ContentFilter, ContentFilterScan, RoleType, Server, Severity } from "../typings";
+import { Action, CachedMember, ContentFilter, ContentFilterScan, LogChannelType, RoleType, Server, Severity } from "../typings";
 import Util from "./util";
 
 export const options = {
@@ -174,7 +174,7 @@ export class ContentFilterUtil extends Util {
         const pastActions = await this.getMemberHistory(serverId, userId);
         const totalInfractionPoints = ContentFilterUtil.totalAllInfractionPoints(pastActions) + triggeredWord.infractionPoints;
 
-        const modLogChannels = await this.client.serverUtil.getModLogChannels(serverId);
+        const modLogChannel = await this.client.serverUtil.getLogChannel(serverId, LogChannelType.MOD_ACTION_LOG);
         const ifExceeds = await this.ifExceedsInfractionThreshold(totalInfractionPoints, member, server, content, filteredContent);
 
         const createdCase = await this.client.serverUtil.addAction({
@@ -188,10 +188,10 @@ export class ContentFilterUtil extends Util {
             infractionPoints: triggeredWord.infractionPoints,
         });
 
-        if (modLogChannels)
-            modLogChannels.forEach((modLogChannel) =>
-                this.client.serverUtil.sendModLogMessage(modLogChannel.channelId, { ...createdCase, reasonMetaData: `||${triggeredWord.content}||` }, member)
-            );
+        if (modLogChannel)
+            void this.client.serverUtil
+                .sendModLogMessage(modLogChannel.channelId, { ...createdCase, reasonMetaData: `||${triggeredWord.content}||` }, member)
+                .catch((e) => console.error(`Error posting in modlog channel ${e.message}`));
 
         try {
             await filter();

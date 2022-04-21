@@ -1,7 +1,7 @@
 import { stripIndents } from "common-tags";
 import ms from "ms";
 
-import { RoleType } from "../../typings";
+import { LogChannelType, RoleType } from "../../typings";
 import type { Command } from "../Command";
 
 const Mute: Command = {
@@ -55,7 +55,7 @@ const Mute: Command = {
             expiresAt,
         });
 
-        const modlog = await ctx.serverUtil.getModLogChannel(message.serverId!);
+        const modlog = await ctx.serverUtil.getLogChannel(message.serverId!, LogChannelType.MOD_ACTION_LOG);
         if (modlog) await ctx.serverUtil.sendModLogMessage(modlog.channelId, newAction, commandCtx.member);
 
         return ctx.messageUtil.send(

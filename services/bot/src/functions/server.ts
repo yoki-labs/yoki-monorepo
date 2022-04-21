@@ -17,12 +17,8 @@ export class ServerUtil extends Util {
         });
     }
 
-    getModLogChannel(serverId: string) {
-        return this.prisma.logChannel.findFirst({ where: { serverId, type: LogChannelType.MOD_ACTION_LOG } });
-    }
-
-    getModLogChannels(serverId: string) {
-        return this.prisma.logChannel.findMany({ where: { serverId, type: LogChannelType.MOD_ACTION_LOG } });
+    getLogChannel(serverId: string, type: LogChannelType) {
+        return this.prisma.logChannel.findFirst({ where: { serverId, OR: [{ type }, { type: LogChannelType.ALL }] } });
     }
 
     getLogChannels(serverId: string) {

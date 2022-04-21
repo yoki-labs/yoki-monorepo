@@ -15,7 +15,7 @@ const Modlog: Command = {
         // if (newChannel && !isUUID(newChannel)) return ctx.messageUtil.send(message.channelId, "Oh no! That is not a valid channel ID.");
 
         if (!newChannel) {
-            const modLogChannel = await ctx.serverUtil.getModLogChannel(message.serverId!);
+            const modLogChannel = await ctx.serverUtil.getLogChannel(message.serverId!, LogChannelType.MOD_ACTION_LOG);
             return ctx.messageUtil.send(message.channelId, modLogChannel ? `The modlogs channel is set to: \`${modLogChannel!.channelId}\`` : `There is no modlogs channel set.`);
         }
 
