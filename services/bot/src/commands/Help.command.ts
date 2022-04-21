@@ -1,5 +1,6 @@
 import { stripIndents } from "common-tags";
 
+import { inlineCodeblock, listInlineCodeblock } from "../formatters";
 import type { Command } from "./Command";
 
 const Help: Command = {
@@ -22,15 +23,15 @@ const Help: Command = {
             return ctx.messageUtil.send(
                 message.channelId,
                 stripIndents`
-				**Name:** \`${command.name}\`
-				${command.aliases ? `**Aliases:** ${command.aliases.map((x) => `\`${x}\``).join(", ")}` : ""}
-				**Description:** \`${command.description}\`
-				**Usage:** \`${commandCtx.server.prefix ?? process.env.DEFAULT_PREFIX}${command.name} ${command.usage}\`
-				${command.examples ? `**Examples:** ${command.examples.map((x) => `\`${command.parentCommand ? `${command.name} ` : ""}${x}\``).join(", ")}` : ""}
-				${command.userPermissions ? `**User Required Permissions:** ${command.userPermissions.map((x) => `\`${x}\``).join(", ")}` : ""}
-				${command.clientPermissions ? `**Client Required Permissions:** ${command.clientPermissions.map((x) => `\`${x}\``).join(", ")}` : ""}
-				${command.requiredRole ? `**Required Role:** \`${command.requiredRole}\`` : ""}
-				**Has sub-commands:** \`${command.parentCommand ?? false}\`
+				**Name:** ${inlineCodeblock(command.name)}
+				${command.aliases ? `**Aliases:** ${listInlineCodeblock(command.aliases)}` : ""}
+				**Description:** ${inlineCodeblock(command.description)}
+				**Usage:** ${inlineCodeblock(`${commandCtx.server.prefix ?? process.env.DEFAULT_PREFIX}${command.name} ${command.usage}`)}
+				${command.examples ? `**Examples:** ${listInlineCodeblock(command.examples.map((x) => (command.parentCommand ? command.name : "") + x))}` : ""}
+				${command.userPermissions ? `**User Required Permissions:** ${listInlineCodeblock(command.userPermissions)}` : ""}
+				${command.clientPermissions ? `**Client Required Permissions:** ${listInlineCodeblock(command.clientPermissions)}` : ""}
+				${command.requiredRole ? `**Required Role:** ${inlineCodeblock(command.requiredRole)}` : ""}
+				**Has sub-commands:** ${inlineCodeblock(String(command.parentCommand))}
 			`
             );
         }
@@ -41,19 +42,19 @@ const Help: Command = {
             message.channelId,
             stripIndents`
 				A list of available commands.
-				For additional info on a command, type \`${commandCtx.server.prefix ?? process.env.DEFAULT_PREFIX}help [command]\`
+				For additional info on a command, type ${inlineCodeblock(`${commandCtx.server.prefix ?? process.env.DEFAULT_PREFIX}help [command]`)}
 
 
 				Categories marked with * are commands that contain sub commands.
 
 				**Uncategorized:**
-				${filteredCommands.map((x) => `\`${x.name}\``).join(", ")}
+				${listInlineCodeblock(filteredCommands.map((x) => x.name))}
 
 				${commandsWithSub
                     .map(
                         (x) => stripIndents`
 						**${x.name}\*:**
-						${x.subCommands!.map((command) => `\`${command.subName}\``).join(", ")}
+						${listInlineCodeblock(x.subCommands!.map((command) => command.subName as string))}
 					`
                     )
                     .join("\n")}

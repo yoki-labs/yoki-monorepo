@@ -1,10 +1,12 @@
+import Collection from "@discordjs/collection";
 import { stripIndents } from "common-tags";
 
-import { LogChannelType, RoleType } from "../../typings";
+import { inlineCodeblock, listInlineCodeblock } from "../../formatters";
+import { LogChannel as LogChannelPrisma, LogChannelType, RoleType } from "../../typings";
 import type { Command } from "../Command";
 
-function cleanupChannels(logChannels): Map<string, LogChannelType[]> {
-    const channels = new Map<string, LogChannelType[]>();
+function cleanupChannels(logChannels: LogChannelPrisma[]) {
+    const channels = new Collection<string, LogChannelType[]>();
 
     logChannels.forEach((channel) => {
         if (channels.has(channel.channelId)) {
@@ -31,7 +33,7 @@ const LogChannel: Command = {
     ],
     execute: async (message, args, ctx) => {
         const channelId = args.channelId as string;
-        let logTypes = <string[]>args.logTypes;
+        let logTypes = args.logTypes as string[];
 
         // If there are logTypes, uppercase them all, then filter out duplicates. No idea why this had to specifically be two different lines.
         if (logTypes.length > 0) {
@@ -44,23 +46,23 @@ const LogChannel: Command = {
             const logChannels = await ctx.serverUtil.getLogChannels(message.serverId!);
             if (logChannels.length <= 0) return ctx.messageUtil.send(message.channelId, `This server has no set log channels.`);
 
-            const formattedChannels: Map<string, LogChannelType[]> = await cleanupChannels(logChannels);
+            const formattedChannels: Collection<string, LogChannelType[]> = await cleanupChannels(logChannels);
 
             return ctx.messageUtil.send(
                 message.channelId,
                 stripIndents`
                     This server has the following log channels:
-                    ${Array.from(formattedChannels, ([channelId, channelTypes]) => `***${channelId}:*** \`${channelTypes.join("`, `")}\`\n`)}
+                    ${formattedChannels.map((v, k) => `***${k}:*** ${listInlineCodeblock(v)}`)}
                 `
             );
         }
 
         // Event subscribe handling.
-        const failedTypes: string[] = [];
+        const failedTypes: string[][] = [];
         const successfulTypes: string[] = [];
 
         // If there aren't any logTypes or logTypes contains "ALL" default the entire list to ALL for optimization.
-        if (logTypes.length <= 0 || logTypes.includes("ALL")) {
+        if (logTypes.length === 0 || logTypes.includes("ALL")) {
             logTypes = ["ALL"];
         }
 
@@ -69,23 +71,22 @@ const LogChannel: Command = {
 
         // If it's successfully added, add the logType to the successfulTypes array.
         // Else, add it to the failedTypes array, with a reason. `TYPE:ERROR`
-        if (await ctx.prisma.logChannel.findFirst({ where: { serverId: message.serverId, type: LogChannelType.ALL } })) {
+        /* if (await ctx.prisma.logChannel.findFirst({ where: { serverId: message.serverId, type: LogChannelType.ALL } })) {
             failedTypes.push(`SERVER_ALREADY_SUBSCRIBED_TO_ALL`);
-        } else {
-            for (const logType of logTypes) {
-                if (LogChannelType[logType] && !(await ctx.prisma.logChannel.findFirst({ where: { serverId: message.serverId, type: LogChannelType[logType] } }))) {
-                    try {
-                        await ctx.prisma.logChannel.create({ data: { channelId, serverId: message.serverId!, type: LogChannelType[logType] } });
-
-                        successfulTypes.push(logType);
-                    } catch (e) {
-                        failedTypes.push(`${logType}:COULD_NOT_SUBSCRIBE`);
-                    }
-                } else {
-                    failedTypes.push(`${logType}:${LogChannelType[logType] ? `${logType}:MAX_1_REACHED` : "INVALID_LOG_TYPE"}`);
+        } else {*/
+        for (const logType of logTypes) {
+            if (LogChannelType[logType] && !(await ctx.prisma.logChannel.findFirst({ where: { serverId: message.serverId, type: LogChannelType[logType] } }))) {
+                try {
+                    await ctx.prisma.logChannel.create({ data: { channelId, serverId: message.serverId!, type: LogChannelType[logType] } });
+                    successfulTypes.push(logType);
+                } catch (e) {
+                    failedTypes.push([logType, "INTERNAL_ERROR"]);
                 }
+            } else {
+                failedTypes.push([logType, LogChannelType[logType] ? `MAX_1_REACHED` : "INVALID_LOG_TYPE"]);
             }
         }
+        // }
 
         // Reply to the command, with the successful and failed types.
         return ctx.messageUtil.send(
@@ -93,10 +94,16 @@ const LogChannel: Command = {
             stripIndents`
                 ${
                     successfulTypes.length > 0
-                        ? `Successfully subscribed channel \`${channelId}\` to the following events: ${successfulTypes.map((type) => `\`${type}\``).join(", ")}`
+                        ? `Successfully subscribed channel ${inlineCodeblock(channelId)} to the following events: ${listInlineCodeblock(successfulTypes)}`
                         : ""
                 }
-                ${failedTypes.length > 0 ? `Failed to subscribe channel \`${channelId}\` to the following events: ${failedTypes.map((type) => `\`${type}\``).join(", ")}` : ""}
+                ${
+                    failedTypes.length > 0
+                        ? `Failed to subscribe channel \`${channelId}\` to the following events: ${listInlineCodeblock(
+                              failedTypes.map((x) => x[0])
+                          )} due to the following reason(s) ${listInlineCodeblock(failedTypes.map((x) => x[1]))}`
+                        : ""
+                }
             `
         );
     },
