@@ -26,7 +26,7 @@ export default async (packet: WSChatMessageUpdatedPayload, ctx: Context) => {
     try {
         await modLogWebhook.send("", [
             new Embed()
-                .setTitle("Message Updated!")
+                .setTitle("Updated Message!")
                 .setColor(Colors.YELLOW)
                 .setDescription(
                     stripIndents`

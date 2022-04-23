@@ -54,7 +54,7 @@ export class ContentFilterUtil extends Util {
                 return this.rest.router.unbanMember(server.serverId, member.user.id);
             },
             [Severity.MUTE]: (member, server) => {
-                return server.muteRoleId && this.rest.router.assignRoleToMember(member.user.id, server.muteRoleId);
+                return server.muteRoleId && this.rest.router.assignRoleToMember(server.serverId, member.user.id, server.muteRoleId);
             },
             [Severity.WARN]: (member, _serv, content, filteredContent) => {
                 if (filteredContent === FilteredContent.Message)
@@ -190,7 +190,7 @@ export class ContentFilterUtil extends Util {
 
         if (modLogChannel)
             void this.client.serverUtil
-                .sendModLogMessage(modLogChannel.channelId, { ...createdCase, reasonMetaData: `||${triggeredWord.content}||` }, member)
+                .sendModLogMessage(server.serverId, modLogChannel.channelId, { ...createdCase, reasonMetaData: `||${triggeredWord.content}||` }, member)
                 .catch((e) => console.error(`Error posting in modlog channel ${e.message}`));
 
         try {

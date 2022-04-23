@@ -22,7 +22,7 @@ export default async (packet: WSChatMessageDeletedPayload, ctx: Context) => {
     try {
         await modLogWebhook.send("", [
             new Embed()
-                .setTitle("Message Deleted!")
+                .setTitle("Deleted Message!")
                 .setColor(Colors.RED)
                 .setDescription(
                     stripIndents`

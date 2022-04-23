@@ -33,7 +33,7 @@ const Mute: Command = {
         const expiresAt = new Date(Date.now() + duration);
 
         try {
-            await ctx.rest.router.assignRoleToMember(message.createdBy, commandCtx.server.muteRoleId);
+            await ctx.rest.router.assignRoleToMember(message.serverId!, message.createdBy, commandCtx.server.muteRoleId);
         } catch (e) {
             return ctx.messageUtil.send(message.channelId, {
                 content: stripIndents`
@@ -41,6 +41,7 @@ const Mute: Command = {
 					\`${(e as Error).message}\`
 				`,
                 isPrivate: true,
+                replyMessageIds: [message.id],
             });
         }
 
@@ -56,7 +57,7 @@ const Mute: Command = {
         });
 
         const modlog = await ctx.serverUtil.getLogChannel(message.serverId!, LogChannelType.MOD_ACTION_LOG);
-        if (modlog) await ctx.serverUtil.sendModLogMessage(modlog.channelId, newAction, commandCtx.member);
+        if (modlog) await ctx.serverUtil.sendModLogMessage(message.serverId!, modlog.channelId, newAction, commandCtx.member);
 
         return ctx.messageUtil.send(
             message.channelId,

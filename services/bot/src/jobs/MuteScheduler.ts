@@ -11,7 +11,7 @@ export class MuteScheduler extends Scheduler<Action> {
         if (!member) return;
         if (guild.muteRoleId)
             void this.client.rest.router
-                .removeRoleFromMember(action.targetId, guild.muteRoleId)
+                .removeRoleFromMember(action.serverId, action.targetId, guild.muteRoleId)
                 .catch((e: Error) => console.log(`There was an error removing the mute (${action.id}) on ${member.user.name} (${member.user.id}). ${e.stack ?? e.message}`));
     }
 

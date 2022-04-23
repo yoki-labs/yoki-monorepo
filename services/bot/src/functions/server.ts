@@ -1,3 +1,4 @@
+import Embed from "@guildedjs/embeds";
 import { WebhookClient } from "@guildedjs/webhook-client";
 import { stripIndents } from "common-tags";
 import { nanoid } from "nanoid";
@@ -79,27 +80,31 @@ export class ServerUtil extends Util {
         return new WebhookClient({ id: newWebhookFromAPI.webhook.id, token: newWebhookFromAPI.webhook.token! });
     }
 
-    async sendModLogMessage(modLogChannelId: string, createdCase: Action & { reasonMetaData?: string }, member: CachedMember) {
-        const msg = await this.client.messageUtil.send(
-            modLogChannelId,
-            stripIndents`
-				**Target:** \`${member.user.name} (${createdCase.targetId})\`
-				**Type:** \`${createdCase.type}\`
-				**Reason:** \`${createdCase.reason ?? "NO REASON PROVIDED"}\` ${createdCase.reasonMetaData ?? ""}
-				${
-                    createdCase.expiresAt
-                        ? `**Expiration:** \`${createdCase.expiresAt.toLocaleDateString("en-US", {
-                              year: "numeric",
-                              month: "long",
-                              day: "numeric",
-                              hour: "2-digit",
-                              minute: "2-digit",
-                          })}\``
-                        : ""
-                }
-			`
-        );
-        await this.client.serverUtil.populateActionMessage(createdCase.id, msg.message.channelId, msg.message.id);
+    async sendModLogMessage(serverId: string, modLogChannelId: string, createdCase: Action & { reasonMetaData?: string }, member: CachedMember) {
+        const webhook = await this.client.serverUtil.getWebhook(serverId, modLogChannelId);
+        const msg = await webhook.send("", [
+            new Embed()
+                .setDescription(
+                    stripIndents`
+						**Target:** \`${member.user.name} (${createdCase.targetId})\`
+						**Type:** \`${createdCase.type}\`
+						**Reason:** \`${createdCase.reason ?? "NO REASON PROVIDED"}\` ${createdCase.reasonMetaData ?? ""}
+						${
+                            createdCase.expiresAt
+                                ? `**Expiration:** \`${createdCase.expiresAt.toLocaleDateString("en-US", {
+                                      year: "numeric",
+                                      month: "long",
+                                      day: "numeric",
+                                      hour: "2-digit",
+                                      minute: "2-digit",
+                                  })}\``
+                                : ""
+                        }
+					`
+                )
+                .setTimestamp(),
+        ]);
+        await this.client.serverUtil.populateActionMessage(createdCase.id, modLogChannelId, msg.id);
     }
 
     async getMember(serverId: string, userId: string, cache = true, force = false) {
