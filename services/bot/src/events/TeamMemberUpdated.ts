@@ -9,7 +9,7 @@ export default async (event: WSTeamMemberUpdatedPayload, ctx: Context) => {
         serverId,
     } = event.d;
 
-    const serverFromDb = await ctx.serverUtil.getServerFromDatabase(serverId);
+    const serverFromDb = await ctx.serverUtil.getServer(serverId);
     if (serverFromDb?.blacklisted || !serverFromDb?.flags?.includes("EARLY_ACCESS")) return void 0;
 
     // Filter only set nicknames/nickname may be null

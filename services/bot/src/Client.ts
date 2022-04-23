@@ -1,12 +1,13 @@
 import Collection from "@discordjs/collection";
-import REST from "@guildedjs/rest";
+import { RestManager } from "@guildedjs/rest";
 import { WebhookClient } from "@guildedjs/webhook-client";
-import WebSocketManager from "@guildedjs/ws";
+import { WebSocketManager } from "@guildedjs/ws";
 import { PrismaClient } from "@prisma/client";
 import RedisClient from "ioredis";
 
 import type { Command } from "./commands/Command";
 import ChatMessageCreated from "./events/ChatMessageCreated";
+import ChatMessageDeleted from "./events/ChatMessageDeleted";
 import ChatMessageUpdated from "./events/ChatMessageUpdated";
 import TeamMemberUpdated from "./events/TeamMemberUpdated";
 import { ContentFilterUtil } from "./functions/content-filter";
@@ -20,7 +21,7 @@ export default class Client {
     ownerId: string | null = null;
     operators: string[] = [];
     readonly ws = new WebSocketManager({ token: process.env.GUILDED_TOKEN });
-    readonly rest = new REST({ token: process.env.GUILDED_TOKEN });
+    readonly rest = new RestManager({ token: process.env.GUILDED_TOKEN });
     readonly prisma = new PrismaClient();
     readonly redis = new RedisClient(process.env.REDIS_URL ?? "cache:6379");
 
@@ -34,6 +35,7 @@ export default class Client {
     readonly eventHandler: { [x: string]: (packet: any, ctx: Context) => void } = {
         ChatMessageCreated,
         ChatMessageUpdated,
+        ChatMessageDeleted,
         TeamMemberUpdated,
     };
 

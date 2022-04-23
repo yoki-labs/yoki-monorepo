@@ -1,3 +1,4 @@
+import { WebhookClient } from "@guildedjs/webhook-client";
 import { stripIndents } from "common-tags";
 import { nanoid } from "nanoid";
 import JSONCache from "redis-json";
@@ -8,9 +9,9 @@ import Util from "./util";
 export class ServerUtil extends Util {
     readonly cache = new JSONCache<CachedMember>(this.client.redis);
 
-    getServerFromDatabase(serverId: string, createIfNotExists?: true): Promise<Server>;
-    getServerFromDatabase(serverId: string, createIfNotExists: false): Promise<Server | null>;
-    getServerFromDatabase(serverId: string, createIfNotExists = true) {
+    getServer(serverId: string, createIfNotExists?: true): Promise<Server>;
+    getServer(serverId: string, createIfNotExists: false): Promise<Server | null>;
+    getServer(serverId: string, createIfNotExists = true) {
         return this.prisma.server.findUnique({ where: { serverId } }).then((server) => {
             if (!server && createIfNotExists) return this.createFreshServerInDatabase(serverId);
             return server ?? null;
@@ -61,6 +62,21 @@ export class ServerUtil extends Util {
 
     populateActionMessage(id: string, channelId: string, messageId: string) {
         return this.prisma.action.update({ where: { id }, data: { logChannelId: channelId, logChannelMessage: messageId } });
+    }
+
+    async getWebhook(serverId: string, channelId: string, name?: string) {
+        const webhook = await this.prisma.webhook.findFirst({ where: { serverId, channelId } });
+        if (webhook) return new WebhookClient({ id: webhook.webhookId, token: webhook.webhookToken });
+        const newWebhookFromAPI = await this.rest.router.createWebhook(serverId, { channelId, name: `Yoki ${name ?? "Moderation"}` });
+        await this.prisma.webhook.create({
+            data: {
+                channelId,
+                serverId,
+                webhookId: newWebhookFromAPI.webhook.id,
+                webhookToken: newWebhookFromAPI.webhook.token!,
+            },
+        });
+        return new WebhookClient({ id: newWebhookFromAPI.webhook.id, token: newWebhookFromAPI.webhook.token! });
     }
 
     async sendModLogMessage(modLogChannelId: string, createdCase: Action & { reasonMetaData?: string }, member: CachedMember) {

@@ -71,7 +71,7 @@ export class ContentFilterUtil extends Util {
             },
         };
 
-    addWordToFilter(data: Omit<ContentFilter, "id">) {
+    addWordToFilter(data: Omit<ContentFilter, "id" | "createdAt">) {
         return this.prisma.contentFilter.create({ data });
     }
 

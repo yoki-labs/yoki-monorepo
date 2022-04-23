@@ -36,15 +36,12 @@ const Help: Command = {
             );
         }
 
-        const commandsWithSub = ctx.commands.filter((x) => Boolean(x.parentCommand && x.subCommands!.size));
+        const commandsWithSub = ctx.commands.filter((x) => !x.hidden && Boolean(x.parentCommand && x.subCommands!.size));
         const filteredCommands = ctx.commands.filter((x) => !x.subCommands?.size && !x.subCommand && !x.hidden);
         return ctx.messageUtil.send(
             message.channelId,
             stripIndents`
-				A list of available commands.
-				For additional info on a command, type ${inlineCodeblock(`${commandCtx.server.prefix ?? process.env.DEFAULT_PREFIX}help [command]`)}
-
-
+				A list of available commands. For additional info on a command, type ${inlineCodeblock(`${commandCtx.server.prefix ?? process.env.DEFAULT_PREFIX}help [command]`)}. 
 				Categories marked with * are commands that contain sub commands.
 
 				**Uncategorized:**

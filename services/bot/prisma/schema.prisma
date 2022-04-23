@@ -24,20 +24,34 @@ model Server {
     spamInfractionPoints       Int       @default(5)
     filterOnMods               Boolean   @default(false)
     prefix                     String?
+    createdAt                  DateTime  @default(now())
+    updatedAt                  DateTime? @updatedAt
 }
 
 model LogChannel {
     id        Int            @id @default(autoincrement())
     serverId  String         @db.VarChar(255)
     channelId String         @db.VarChar(255)
+    createdAt DateTime       @default(now())
     type      LogChannelType
 }
 
+model Webhook {
+    id           Int       @id @default(autoincrement())
+    webhookId    String    @db.VarChar(255)
+    webhookToken String    @db.VarChar(255)
+    channelId    String    @db.VarChar(255)
+    serverId     String    @db.VarChar(255)
+    createdAt    DateTime  @default(now())
+    updatedAt    DateTime? @updatedAt
+}
+
 model Role {
-    id       Int      @id @default(autoincrement())
-    serverId String   @db.VarChar(255)
-    roleId   Int      @db.Integer
-    type     RoleType
+    id        Int      @id @default(autoincrement())
+    serverId  String   @db.VarChar(255)
+    roleId    Int      @db.Integer
+    createdAt DateTime @default(now())
+    type      RoleType
 }
 
 model ContentFilter {
@@ -46,6 +60,7 @@ model ContentFilter {
     content          String   @db.VarChar(255)
     severity         Severity
     creatorId        String   @db.VarChar(255)
+    createdAt        DateTime @default(now())
     infractionPoints Int
 }
 
@@ -56,10 +71,12 @@ model Preset {
 }
 
 model CustomTag {
-    id       Int    @id @default(autoincrement())
-    serverId String @db.VarChar(255)
-    content  String @db.Text
-    name     String @db.VarChar(255)
+    id        Int       @id @default(autoincrement())
+    serverId  String    @db.VarChar(255)
+    content   String    @db.Text
+    name      String    @db.VarChar(255)
+    createdAt DateTime  @default(now())
+    updatedAt DateTime? @updatedAt
 }
 
 model Action {

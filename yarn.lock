@@ -2,11 +2,6 @@
 # yarn lockfile v1
 
 
-"@discordjs/collection@^0.1.6":
-  version "0.1.6"
-  resolved "https://registry.yarnpkg.com/@discordjs/collection/-/collection-0.1.6.tgz#9e9a7637f4e4e0688fd8b2b5c63133c91607682c"
-  integrity sha512-utRNxnd9kSS2qhyivo9lMlt5qgAUasH2gb7BEOn6p0efFh24gjGomHzWKMAPn2hEReOPQZCJaRKoURwRotKucQ==
-
 "@discordjs/collection@^0.5.0":
   version "0.5.0"
   resolved "https://registry.npmjs.org/@discordjs/collection/-/collection-0.5.0.tgz"
@@ -27,66 +22,37 @@
     minimatch "^3.0.4"
     strip-json-comments "^3.1.1"
 
-"@guildedjs/common@2.1.0", "@guildedjs/common@^2.1.0":
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/@guildedjs/common/-/common-2.1.0.tgz#026f18be1402ad75120bb15801bc05263880df9a"
-  integrity sha512-V9LYV38u+k8Cj0+bThUrTqVFQ6IB9ADjGQlCavX3QTEutOLf6SkZG6p1bBlVHOMrVZqj1a5k4hOfw6R0Y1gJVA==
-  dependencies:
-    "@discordjs/collection" "^0.5.0"
-    uuid "^8.3.2"
-
-"@guildedjs/common@^1.0.5-selfbot":
-  version "1.0.5-selfbot"
-  resolved "https://registry.yarnpkg.com/@guildedjs/common/-/common-1.0.5-selfbot.tgz#9bbcf5f3d1444988b655fc42fba9851561061592"
-  integrity sha512-Q31yziUQAwH+EfznJQp4FXcUhWid7gPS9XdFyIP/30YA/4NqQFDqVXYpH2F8wRjSTDfVJuXrYxCB8Nepxu3ghg==
-  dependencies:
-    "@discordjs/collection" "^0.1.6"
-    "@guildedjs/embeds" "^1.0.5-selfbot"
-    uuid "^8.3.2"
-
 "@guildedjs/embeds@^1.0.5-selfbot":
   version "1.0.5-selfbot"
   resolved "https://registry.yarnpkg.com/@guildedjs/embeds/-/embeds-1.0.5-selfbot.tgz#7aa46e273a0356f413bdca5a0e889721b1ceabd7"
   integrity sha512-sgySJaLm0r6ApGiumCfSqxF3UcRtUJf32pu9qHB1SuOJqgzNaIq3Xy4S48rMArSAEolm5nQxHMR/pY+OWMVHBw==
 
-"@guildedjs/guilded-api-typings@2.2.0", "@guildedjs/guilded-api-typings@^2.2.0":
-  version "2.2.0"
-  resolved "https://registry.yarnpkg.com/@guildedjs/guilded-api-typings/-/guilded-api-typings-2.2.0.tgz#17ad7add31c609d4780190ad23b0762ab609f3f5"
-  integrity sha512-yE86IiC4XFWmZA1vyF6v6NVAwOSSWK4vfVqRqDWPhlJzl8YMxWeBqU955Y1XmAICJA2OVAIz58X1VHA/pVNwlw==
+"@guildedjs/guilded-api-typings@2.3.0":
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/@guildedjs/guilded-api-typings/-/guilded-api-typings-2.3.0.tgz#bb489410150b8788bb270919bfba85f89d2977a2"
+  integrity sha512-Pqpc/aCd30LEggZPiZvnw1aNWY7x8q6ezhRHA3vqMac05EeiFeUEUQSaskSNNQxF/qmfKB+S4irINZdQp1L+tw==
 
-"@guildedjs/rest@2.2.1":
-  version "2.2.1"
-  resolved "https://registry.yarnpkg.com/@guildedjs/rest/-/rest-2.2.1.tgz#909277817576adcfee6875f0fcaa25863203f307"
-  integrity sha512-3OT5VBHIaHrsQUL3QD/Vvad7unoIBntnIXHMfnGOfJlrOqti3Ok9qBQf8e3AQRnWnUIYBzumHQy/A8QER8uN+w==
+"@guildedjs/rest@2.5.0":
+  version "2.5.0"
+  resolved "https://registry.yarnpkg.com/@guildedjs/rest/-/rest-2.5.0.tgz#f7ce1ee000ad435116b6298d801958f02faa132e"
+  integrity sha512-w/eAMyKJx8HcNT6YUwNvN2v2I7NVUB6fD+c0DZ9f02H2jgsq7i5lE9gxHve4MvKO0lOVxIp+4DAsR9bQ/URjzA==
   dependencies:
-    "@guildedjs/common" "2.1.0"
     node-fetch "^2.6.7"
     qs "^6.10.3"
 
-"@guildedjs/rest@^1.0.6-selfbot":
-  version "1.0.6-selfbot"
-  resolved "https://registry.yarnpkg.com/@guildedjs/rest/-/rest-1.0.6-selfbot.tgz#8fdfae00ca79e736677a4eb8e212ffd359fd7380"
-  integrity sha512-H8tbAObOUHNFGbtvxZt0TlXa7/cFWG7meXNUzY2ZjLYn2ktfjSGoVhcRxmztZJXLoQa96TdY7bG6Pi5MhOlVrg==
+"@guildedjs/webhook-client@0.2.0":
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/@guildedjs/webhook-client/-/webhook-client-0.2.0.tgz#489e5eb61d923d7af0ecdaac263e26b5b69d04fe"
+  integrity sha512-/b8DEA965oUj4rNVjdDUSi3muCEaXC//Fb7Omqi8NErrASlsXGfbVMJrrNgL2j5XhnZts0R2z6OWRFCCNyo0Ig==
   dependencies:
-    node-fetch "^2.6.1"
+    "@guildedjs/rest" "2.5.0"
 
-"@guildedjs/webhook-client@^1.0.6-selfbot":
-  version "1.0.6-selfbot"
-  resolved "https://registry.yarnpkg.com/@guildedjs/webhook-client/-/webhook-client-1.0.6-selfbot.tgz#2094fc43c8e94c44c57bc9d4d58dcc1ca7dd766d"
-  integrity sha512-FKtccexdBHo1GDgryjVa5Vr+ZNgbAQMi9R9RqCP++6cG9yC7Cejw97SQY87ZknpLzIHNfzxvlXbsE0X52af57g==
+"@guildedjs/ws@1.3.0":
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/@guildedjs/ws/-/ws-1.3.0.tgz#b2cd56cc5d1b2e0fb333e32ee8f9407cd7eb9bfe"
+  integrity sha512-5XP5KF8IE2SLiHVObFfcsdZXVzKlsCw/OZlFWnSOyw3iAo6bo842FJ4q1bZhMlY3jE3yjb9ZN+IMQPGeZLLjlw==
   dependencies:
-    "@guildedjs/common" "^1.0.5-selfbot"
-    "@guildedjs/embeds" "^1.0.5-selfbot"
-    "@guildedjs/rest" "^1.0.6-selfbot"
-    node-fetch "^2.6.1"
-
-"@guildedjs/ws@1.2.1":
-  version "1.2.1"
-  resolved "https://registry.yarnpkg.com/@guildedjs/ws/-/ws-1.2.1.tgz#2209d0534ab743bdcdbd2907f81a4cb5ca859b1b"
-  integrity sha512-fPDhbwhk9oXCBbQJ11eouNv8mbmPYj2U9ai+JBEOoy7Dk1CjRL2UarhuvqAae2Jb18ntoFrdJ2hZwz7l1NBCww==
-  dependencies:
-    "@guildedjs/common" "^2.1.0"
-    "@guildedjs/guilded-api-typings" "^2.2.0"
+    "@guildedjs/guilded-api-typings" "2.3.0"
     "@types/ws" "8.5.3"
     typed-emitter "2.1.0"
     ws "8.5.0"
@@ -164,14 +130,6 @@
     eslint-config-prettier "^8.5.0"
     eslint-plugin-prettier "^4.0.0"
     prettier "^2.6.0"
-    typescript "^4.6.2"
-
-"@sapphire/ts-config@^3.3.3":
-  version "3.3.3"
-  resolved "https://registry.npmjs.org/@sapphire/ts-config/-/ts-config-3.3.3.tgz"
-  integrity sha512-pL0Il7dOMspwOfScGMsdW+Qv3gKYrrEoLUdxHHTiuSqt9J4Oz+B5ezT3+HSorP/t3g8vYdbsB0zlfFvnVcJmSw==
-  dependencies:
-    tslib "^2.3.1"
     typescript "^4.6.2"
 
 "@sindresorhus/is@^0.14.0":
@@ -1619,7 +1577,7 @@ node-fetch@2.6.6:
   dependencies:
     whatwg-url "^5.0.0"
 
-node-fetch@^2.6.1, node-fetch@^2.6.7:
+node-fetch@^2.6.7:
   version "2.6.7"
   resolved "https://registry.npmjs.org/node-fetch/-/node-fetch-2.6.7.tgz"
   integrity sha512-ZjMPFEfVx5j+y2yF35Kzx5sF7kDzxuDj6ziH4FFbOp87zKDZNx8yExJIb05OGF4Nlt9IHFIMBkRl41VdvcNdbQ==
@@ -2171,7 +2129,7 @@ tslib@^1.8.1:
   resolved "https://registry.npmjs.org/tslib/-/tslib-1.14.1.tgz"
   integrity sha512-Xni35NKzjgMrwevysHTCArtLDpPvye8zV/0E4EyYn43P7/7qvQwPh9BGkHewbMulVntbigmcT7rdX3BNo9wRJg==
 
-tslib@^2.0.3, tslib@^2.1.0, tslib@^2.3.1:
+tslib@^2.0.3, tslib@^2.1.0:
   version "2.3.1"
   resolved "https://registry.npmjs.org/tslib/-/tslib-2.3.1.tgz"
   integrity sha512-77EbyPPpMz+FRFRuAFlWMtmgUWGe9UOG2Z25NqCwiIjRhOf5iKGuzSe5P2w1laq+FkRy4p+PCuVkJSGkzTEKVw==
@@ -2264,11 +2222,6 @@ url-parse-lax@^3.0.0:
   integrity sha1-FrXK/Afb42dsGxmZF3gj1lA6yww=
   dependencies:
     prepend-http "^2.0.0"
-
-uuid@^8.3.2:
-  version "8.3.2"
-  resolved "https://registry.npmjs.org/uuid/-/uuid-8.3.2.tgz"
-  integrity sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg==
 
 v8-compile-cache@^2.0.3:
   version "2.3.0"
