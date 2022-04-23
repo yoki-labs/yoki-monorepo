@@ -25,6 +25,8 @@ CREATE TABLE "Server" (
     "spamInfractionPoints" INTEGER NOT NULL DEFAULT 5,
     "filterOnMods" BOOLEAN NOT NULL DEFAULT false,
     "prefix" TEXT,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3),
 
     CONSTRAINT "Server_pkey" PRIMARY KEY ("id")
 );
@@ -34,9 +36,23 @@ CREATE TABLE "LogChannel" (
     "id" SERIAL NOT NULL,
     "serverId" VARCHAR(255) NOT NULL,
     "channelId" VARCHAR(255) NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "type" "LogChannelType" NOT NULL,
 
     CONSTRAINT "LogChannel_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Webhook" (
+    "id" SERIAL NOT NULL,
+    "webhookId" VARCHAR(255) NOT NULL,
+    "webhookToken" VARCHAR(255) NOT NULL,
+    "channelId" VARCHAR(255) NOT NULL,
+    "serverId" VARCHAR(255) NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3),
+
+    CONSTRAINT "Webhook_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -44,6 +60,7 @@ CREATE TABLE "Role" (
     "id" SERIAL NOT NULL,
     "serverId" VARCHAR(255) NOT NULL,
     "roleId" INTEGER NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "type" "RoleType" NOT NULL,
 
     CONSTRAINT "Role_pkey" PRIMARY KEY ("id")
@@ -56,6 +73,7 @@ CREATE TABLE "ContentFilter" (
     "content" VARCHAR(255) NOT NULL,
     "severity" "Severity" NOT NULL,
     "creatorId" VARCHAR(255) NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "infractionPoints" INTEGER NOT NULL,
 
     CONSTRAINT "ContentFilter_pkey" PRIMARY KEY ("id")
@@ -76,6 +94,8 @@ CREATE TABLE "CustomTag" (
     "serverId" VARCHAR(255) NOT NULL,
     "content" TEXT NOT NULL,
     "name" VARCHAR(255) NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3),
 
     CONSTRAINT "CustomTag_pkey" PRIMARY KEY ("id")
 );
