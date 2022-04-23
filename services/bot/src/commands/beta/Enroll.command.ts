@@ -1,3 +1,5 @@
+import { RoleType } from "@prisma/client";
+
 import type { Command } from "../Command";
 
 const Enroll: Command = {
@@ -8,15 +10,20 @@ const Enroll: Command = {
     hidden: true,
     subName: "enroll",
     ownerOnly: true,
-    args: [{ name: "serverId", type: "string" }],
+    args: [
+        { name: "serverId", type: "string" },
+        { name: "roleId", type: "string" },
+    ],
     execute: async (message, args, ctx) => {
         const serverId = args.serverId as string;
+        const roleId = args.roleId as number;
         const server = await ctx.serverUtil.getServer(serverId);
 
         if (server.flags.includes("EARLY_ACCESS")) return ctx.messageUtil.send(message.channelId, "That server is already in the early access!");
         server.flags.push("EARLY_ACCESS");
 
         await ctx.prisma.server.updateMany({ where: { id: server.id }, data: { flags: server.flags } });
+        await ctx.prisma.role.create({ data: { type: RoleType.ADMIN, serverId, roleId } });
         return ctx.messageUtil.send(message.channelId, `Server is now enrolled in the early access.`);
     },
 };
