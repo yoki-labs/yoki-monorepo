@@ -4,7 +4,7 @@ on:
         branches:
             - main
         paths:
-            - "services/**"
+            - "services/bot/**"
             - "docker/bot/**"
 jobs:
     docker:
