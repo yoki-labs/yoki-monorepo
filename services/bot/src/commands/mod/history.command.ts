@@ -2,6 +2,7 @@ import { stripIndents } from "common-tags";
 
 import { ContentFilterUtil } from "../../functions/content-filter";
 import { RoleType } from "../../typings";
+import { Category } from "../Category";
 import type { Command } from "../Command";
 
 const History: Command = {
@@ -9,6 +10,7 @@ const History: Command = {
     description: "Get the history for a user.",
     usage: "<targetId>",
     requiredRole: RoleType.MOD,
+    category: Category.Moderation,
     args: [
         {
             name: "targetId",

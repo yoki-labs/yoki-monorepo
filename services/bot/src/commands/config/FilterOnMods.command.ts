@@ -1,4 +1,5 @@
 import { RoleType } from "../../typings";
+import { Category } from "../Category";
 import type { Command } from "../Command";
 
 const FilterOnMods: Command = {
@@ -6,6 +7,7 @@ const FilterOnMods: Command = {
     description: "Set or view whether mods are filtered on this server.",
     usage: "filterOnMods [newSetting]",
     subCommand: true,
+    category: Category.Settings,
     subName: "filteronmods",
     requiredRole: RoleType.ADMIN,
     args: [{ name: "newSetting", optional: true, type: "boolean" }],

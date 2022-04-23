@@ -1,5 +1,6 @@
 import { optionKeys, transformSeverityStringToEnum } from "../../functions/content-filter";
 import { RoleType } from "../../typings";
+import { Category } from "../Category";
 import type { Command } from "../Command";
 
 const Add: Command = {
@@ -10,6 +11,7 @@ const Add: Command = {
     examples: ["test_word warn", "test_word_2 kick"],
     subCommand: true,
     requiredRole: RoleType.ADMIN,
+    category: Category.Moderation,
     args: [
         {
             name: "phrase",

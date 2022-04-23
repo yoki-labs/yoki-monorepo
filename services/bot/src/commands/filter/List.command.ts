@@ -1,4 +1,5 @@
 import { RoleType } from "../../typings";
+import { Category } from "../Category";
 import type { Command } from "../Command";
 
 const List: Command = {
@@ -7,6 +8,7 @@ const List: Command = {
     usage: "",
     subName: "list",
     subCommand: true,
+    category: Category.Moderation,
     requiredRole: RoleType.MOD,
     execute: async (message, _args, ctx) => {
         const bannedWords = await ctx.contentFilterUtil.getBannedWords(message.serverId!);

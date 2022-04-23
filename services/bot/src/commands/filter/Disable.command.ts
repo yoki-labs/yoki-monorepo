@@ -1,4 +1,5 @@
 import { RoleType } from "../../typings";
+import { Category } from "../Category";
 import type { Command } from "../Command";
 
 const Disable: Command = {
@@ -8,6 +9,7 @@ const Disable: Command = {
     usage: "",
     subCommand: true,
     requiredRole: RoleType.ADMIN,
+    category: Category.Moderation,
     execute: async (message, _args, ctx) => {
         return ctx.contentFilterUtil
             .enableFilter(message.serverId!)

@@ -8,7 +8,8 @@ export interface Command {
     subName?: string;
     hidden?: boolean;
     description: string;
-    usage: string;
+    usage?: string;
+    category?: string;
     examples?: string[];
     aliases?: string[];
     parentCommand?: boolean;

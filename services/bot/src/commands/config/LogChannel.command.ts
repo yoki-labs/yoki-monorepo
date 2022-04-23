@@ -3,6 +3,7 @@ import { stripIndents } from "common-tags";
 
 import { inlineCodeblock, listInlineCodeblock } from "../../formatters";
 import { LogChannel as LogChannelPrisma, LogChannelType, RoleType } from "../../typings";
+import { Category } from "../Category";
 import type { Command } from "../Command";
 
 function cleanupChannels(logChannels: LogChannelPrisma[]) {
@@ -26,6 +27,7 @@ const LogChannel: Command = {
     usage: "[channelId] [action] [logType | logType | logType]",
     subCommand: true,
     subName: "logchannel",
+    category: Category.Settings,
     requiredRole: RoleType.ADMIN,
     args: [
         { name: "channelId", optional: true, type: "UUID" },

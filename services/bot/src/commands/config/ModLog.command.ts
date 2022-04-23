@@ -1,4 +1,5 @@
 import { LogChannelType, RoleType } from "../../typings";
+import { Category } from "../Category";
 import type { Command } from "../Command";
 
 const Modlog: Command = {
@@ -7,6 +8,7 @@ const Modlog: Command = {
     usage: "modlog [newChannel]",
     subCommand: true,
     subName: "modlog",
+    category: Category.Settings,
     requiredRole: RoleType.ADMIN,
     aliases: ["mod-log", "modlogs", "mod-logs"],
     args: [{ name: "newChannel", optional: true, type: "UUID" }],

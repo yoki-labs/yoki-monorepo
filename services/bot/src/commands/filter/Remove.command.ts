@@ -1,4 +1,5 @@
 import { RoleType } from "../../typings";
+import { Category } from "../Category";
 import type { Command } from "../Command";
 
 const Delete: Command = {
@@ -7,6 +8,7 @@ const Delete: Command = {
     description: "Remove a word or phrase from the automod filter",
     usage: "<phrase>",
     subCommand: true,
+    category: Category.Moderation,
     requiredRole: RoleType.ADMIN,
     args: [
         {

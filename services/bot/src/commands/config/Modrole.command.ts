@@ -1,6 +1,7 @@
 import { RoleType } from "@prisma/client";
 import { stripIndents } from "common-tags";
 
+import { Category } from "../Category";
 import type { Command } from "../Command";
 
 const allowedTypes = ["MOD", "ADMIN"];
@@ -11,6 +12,7 @@ const Modrole: Command = {
     subCommand: true,
     usage: "modrole [newRole] [mod/admin]",
     subName: "modrole",
+    category: Category.Settings,
     requiredRole: RoleType.ADMIN,
     args: [
         { name: "newRole", type: "string", optional: true },

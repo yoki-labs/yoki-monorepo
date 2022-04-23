@@ -1,10 +1,12 @@
 import { RoleType } from "../../typings";
+import { Category } from "../Category";
 import type { Command } from "../Command";
 
 const Muterole: Command = {
     name: "config-muterole",
     description: "Set or view the mute role for this server.",
     usage: "muterole [newRole]",
+    category: Category.Settings,
     subCommand: true,
     subName: "muterole",
     requiredRole: RoleType.ADMIN,

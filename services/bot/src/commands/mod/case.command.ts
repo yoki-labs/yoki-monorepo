@@ -1,6 +1,7 @@
 import { stripIndents } from "common-tags";
 
 import { RoleType } from "../../typings";
+import { Category } from "../Category";
 import type { Command } from "../Command";
 
 const History: Command = {
@@ -8,6 +9,7 @@ const History: Command = {
     description: "Get the info for a case.",
     usage: "<caseId>",
     requiredRole: RoleType.MOD,
+    category: Category.Moderation,
     args: [
         {
             name: "caseId",

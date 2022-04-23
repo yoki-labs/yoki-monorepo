@@ -1,6 +1,7 @@
 import Collection from "@discordjs/collection";
 
 import { RoleType } from "../../typings";
+import { Category } from "../Category";
 import type { Command } from "../Command";
 import FilterOnMods from "./FilterOnMods.command";
 import LogChannel from "./LogChannel.command";
@@ -19,8 +20,9 @@ const subCommands = new Collection<string, Command>()
 
 const Config: Command = {
     name: "config",
+    category: Category.Settings,
     description: "Set server-wide settings",
-    usage: `<${subCommands.map((_v, k) => k).join(" | ")}> <..args>`,
+    aliases: ["settings"],
     // examples: [...(Modlog.examples as string[]), ...(Modrole.examples as string[])],
     parentCommand: true,
     requiredRole: RoleType.ADMIN,

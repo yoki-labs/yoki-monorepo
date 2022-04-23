@@ -2,13 +2,15 @@ import { stripIndents } from "common-tags";
 import ms from "ms";
 
 import { LogChannelType, RoleType } from "../../typings";
+import { Category } from "../Category";
 import type { Command } from "../Command";
 
 const Mute: Command = {
     name: "mute",
-    description: "Mute a user.",
-    usage: "<targetId> [...reason]",
+    description: "Mute a user for a specified amount of time (ex. 3h, 30m, 5d)",
+    usage: "<targetId> <time> [...reason]",
     requiredRole: RoleType.MOD,
+    category: Category.Moderation,
     args: [
         {
             name: "targetId",
