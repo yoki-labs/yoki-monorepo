@@ -12,11 +12,11 @@ const Enroll: Command = {
     ownerOnly: true,
     args: [
         { name: "serverId", type: "string" },
-        { name: "roleId", type: "string" },
+        { name: "roleId", type: "number" },
     ],
     execute: async (message, args, ctx) => {
         const serverId = args.serverId as string;
-        const roleId = args.roleId as number;
+        const roleId = Math.floor(args.roleId as number);
         const server = await ctx.serverUtil.getServer(serverId);
 
         if (server.flags.includes("EARLY_ACCESS")) return ctx.messageUtil.send(message.channelId, "That server is already in the early access!");
