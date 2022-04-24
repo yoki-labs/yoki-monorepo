@@ -113,15 +113,14 @@ export class ServerUtil extends Util {
             if (isCached) return isCached;
         }
 
-        return this.rest.router.getMember(serverId, userId).then((data) => {
-            if (cache)
-                void this.cache.set(
-                    buildMemberKey(serverId, userId),
-                    { roleIds: data.member.roleIds, user: { id: data.member.user.id, name: data.member.user.name } },
-                    { expire: 900 }
-                );
+        return this.rest.router.getMember(serverId, userId).then(async (data) => {
+            if (cache) await this.setMember(serverId, userId, data.member);
             return data.member;
         });
+    }
+
+    setMember(serverId: string, userId: string, data: CachedMember) {
+        return this.cache.set(buildMemberKey(serverId, userId), { roleIds: data.roleIds, user: { id: data.user.id, name: data.user.name } }, { expire: 900 });
     }
 }
 
