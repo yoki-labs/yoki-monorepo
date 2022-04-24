@@ -14,12 +14,14 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context) => {
     const serverFromDb = await ctx.serverUtil.getServer(message.serverId);
     if (serverFromDb?.blacklisted || !serverFromDb?.flags?.includes("EARLY_ACCESS")) return void 0;
 
-    if (!message.content.startsWith(serverFromDb.prefix ?? process.env.DEFAULT_PREFIX)) {
+    const prefix = serverFromDb.prefix ?? process.env.DEFAULT_PREFIX;
+
+    if (!message.content.startsWith(prefix)) {
         await ctx.messageUtil.logMessage(message);
         return ctx.contentFilterUtil.scanMessage(message, serverFromDb);
     }
 
-    let [commandName, ...args] = message.content.slice(process.env.DEFAULT_PREFIX.length).trim().split(/ +/g);
+    let [commandName, ...args] = message.content.slice(prefix.length).trim().split(/ +/g);
     if (!commandName) return void 0;
     commandName = commandName.toLowerCase();
 

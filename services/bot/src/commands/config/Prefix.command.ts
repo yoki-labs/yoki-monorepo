@@ -7,7 +7,7 @@ const Prefix: Command = {
     description: "Change/view the prefix of this server",
     usage: "[newPrefix]",
     category: Category.Settings,
-    requiredRole: RoleType.MOD,
+    requiredRole: RoleType.ADMIN,
     args: [{ name: "newPrefix", type: "string", optional: true }],
     execute: async (message, args, ctx, commandCtx) => {
         const newPrefix = args.newPrefix as string | null;

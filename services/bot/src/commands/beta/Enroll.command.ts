@@ -5,14 +5,14 @@ import type { Command } from "../Command";
 const Enroll: Command = {
     name: "beta-enroll",
     description: "Enroll a server into the beta.",
-    usage: "<serverId>",
+    usage: "<serverId> [roleId]",
     subCommand: true,
     hidden: true,
     subName: "enroll",
     ownerOnly: true,
     args: [
         { name: "serverId", type: "string" },
-        { name: "roleId", type: "number" },
+        { name: "roleId", type: "number", optional: true },
     ],
     execute: async (message, args, ctx) => {
         const serverId = args.serverId as string;
@@ -23,7 +23,7 @@ const Enroll: Command = {
         server.flags.push("EARLY_ACCESS");
 
         await ctx.prisma.server.updateMany({ where: { id: server.id }, data: { flags: server.flags } });
-        await ctx.prisma.role.create({ data: { type: RoleType.ADMIN, serverId, roleId } });
+        if (!isNaN(roleId)) await ctx.prisma.role.create({ data: { type: RoleType.ADMIN, serverId, roleId } });
         return ctx.messageUtil.send(message.channelId, `Server is now enrolled in the early access.`);
     },
 };
