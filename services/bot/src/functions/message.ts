@@ -16,6 +16,8 @@ export class MessageUtil extends Util {
                 serverId: message.serverId!,
                 updatedAt: message.updatedAt,
                 isBot: Boolean(message.createdByBotId ?? message.createdByWebhookId),
+                deleted: false,
+                deletedAt: null,
             },
             update: {
                 content: message.content,

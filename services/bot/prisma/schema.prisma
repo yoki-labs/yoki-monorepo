@@ -104,8 +104,10 @@ model Message {
     content   String    @db.Text
     embeds    Json      @db.JsonB
     isBot     Boolean
+    deleted   Boolean   @default(false)
     createdAt DateTime
     updatedAt DateTime?
+    deletedAt DateTime?
 }
 
 enum LogChannelType {

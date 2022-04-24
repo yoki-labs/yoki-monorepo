@@ -9,10 +9,12 @@ export default async (event: WSTeamMemberUpdatedPayload, ctx: Context) => {
         serverId,
     } = event.d;
 
+    // get server from database
     const serverFromDb = await ctx.serverUtil.getServer(serverId);
+    // check if server is in early access
     if (serverFromDb?.blacklisted || !serverFromDb?.flags?.includes("EARLY_ACCESS")) return void 0;
 
-    // Filter only set nicknames/nickname may be null
+    // if the member's nickname is updated, scan it for any harmful content
     if (nickname)
         return ctx.contentFilterUtil.scanContent(userId, nickname, FilteredContent.ServerContent, null, serverFromDb, () => ctx.rest.router.deleteMemberNickname(serverId, userId));
 };
