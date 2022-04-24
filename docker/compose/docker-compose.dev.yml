@@ -14,13 +14,6 @@ services:
             - yoki-postgres-data:/var/lib/postgresql/data
         ports:
             - 5432:5432
-    cache:
-        image: redislabs/redismod:latest
-        restart: unless-stopped
-        networks:
-            - main-network
-        ports:
-            - "6379:6379"
     bot:
         build:
             context: ../../
