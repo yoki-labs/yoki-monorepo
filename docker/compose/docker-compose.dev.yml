@@ -34,11 +34,7 @@ services:
         restart: "no"
         environment:
             DATABASE_URL: "postgresql://yoki_user:yoki_pass@db:5432/yoki?schema=public"
-        networks:
-            - main-network
 
-networks:
-    main-network:
-        driver: bridge
+
 volumes:
     yoki-postgres-data:
