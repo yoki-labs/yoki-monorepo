@@ -11,12 +11,12 @@ const Muterole: Command = {
     subName: "muterole",
     requiredRole: RoleType.ADMIN,
     args: [{ name: "newRole", optional: true, type: "string" }],
-    execute: async (message, args, ctx) => {
+    execute: async (message, args, ctx, commandCtx) => {
         const newRole = args.newRole ? Number(args.newRole as string) : null;
         // if (newChannel && !isUUID(newChannel)) return ctx.messageUtil.send(message.channelId, "Oh no! That is not a valid channel ID.");
 
         if (!newRole) {
-            const muteRole = await ctx.serverUtil.getMuteRole(message.serverId!);
+            const muteRole = commandCtx.server.muteRoleId;
             return ctx.messageUtil.send(message.channelId, muteRole ? `The mute role is set to: \`${muteRole.muteRoleId}\`` : `There is no mute role channel set.`);
         }
 
