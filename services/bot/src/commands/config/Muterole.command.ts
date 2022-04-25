@@ -17,7 +17,7 @@ const Muterole: Command = {
 
         if (!newRole) {
             const muteRole = commandCtx.server.muteRoleId;
-            return ctx.messageUtil.send(message.channelId, muteRole ? `The mute role is set to: \`${muteRole.muteRoleId}\`` : `There is no mute role channel set.`);
+            return ctx.messageUtil.send(message.channelId, muteRole ? `The mute role is set to: \`${muteRole}\`` : `There is no mute role channel set.`);
         }
 
         await ctx.prisma.server.updateMany({ data: { muteRoleId: newRole }, where: { serverId: message.serverId! } });
