@@ -2,6 +2,7 @@ import { stripIndents } from "common-tags";
 import ms from "ms";
 
 import { LogChannelType, RoleType } from "../../typings";
+import { isHashId } from "../../util";
 import { Category } from "../Category";
 import type { Command } from "../Command";
 
@@ -34,8 +35,16 @@ const Mute: Command = {
         if (!duration || duration <= 894000) return ctx.messageUtil.send(message.channelId, "Your mute duration must be longer than 15 minutes.");
         const expiresAt = new Date(Date.now() + duration);
 
+        if (!isHashId(targetId))
+            return ctx.messageUtil.send(message.channelId, {
+                content: stripIndents`
+                    Please provide the identifier of the user as \`targetId\`
+                `,
+                replyMessageIds: [message.id],
+            });
+
         try {
-            await ctx.rest.router.assignRoleToMember(message.serverId!, message.createdBy, commandCtx.server.muteRoleId);
+            await ctx.rest.router.assignRoleToMember(message.serverId!, targetId, commandCtx.server.muteRoleId);
         } catch (e) {
             return ctx.messageUtil.send(message.channelId, {
                 content: stripIndents`
@@ -63,9 +72,7 @@ const Mute: Command = {
 
         return ctx.messageUtil.send(
             message.channelId,
-            `User ${commandCtx.member.user.name} (${commandCtx.member.user.id}) has been muted for **${duration / 1000 / 60} minutes** for the reason of \`${
-                reason ?? "NO REASON PROVIDED"
-            }\`.`
+            `User by the ID of \`${targetId}\` has been muted for **${duration / 1000 / 60} minutes** for the reason of \`${reason ?? "NO REASON PROVIDED"}\`.`
         );
     },
 };
