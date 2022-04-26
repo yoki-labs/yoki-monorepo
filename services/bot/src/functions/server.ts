@@ -107,6 +107,11 @@ export class ServerUtil extends Util {
         await this.client.serverUtil.populateActionMessage(createdCase.id, modLogChannelId, msg.id);
     }
 
+    async sendModLogMessageIfPossible(serverId: string, member: CachedMember, action: Action, logType: LogChannelType = LogChannelType.MOD_ACTION_LOG) {
+        const modlog = await this.getLogChannel(serverId, logType);
+        if (modlog) await this.sendModLogMessage(serverId, modlog.channelId, action, member);
+    }
+
     async getMember(serverId: string, userId: string, cache = true, force = false) {
         if (!force) {
             const isCached = await this.cache.get(buildMemberKey(serverId, userId));

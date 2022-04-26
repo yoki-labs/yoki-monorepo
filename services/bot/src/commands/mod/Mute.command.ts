@@ -1,7 +1,7 @@
 import { stripIndents } from "common-tags";
 import ms from "ms";
 
-import { LogChannelType, RoleType } from "../../typings";
+import { RoleType } from "../../typings";
 import { isHashId } from "../../util";
 import { Category } from "../Category";
 import type { Command } from "../Command";
@@ -30,7 +30,7 @@ const Mute: Command = {
     execute: async (message, args, ctx, commandCtx) => {
         if (!commandCtx.server.muteRoleId) return ctx.messageUtil.send(message.channelId, "There is no mute role configured for this server.");
         const targetId = args.targetId as string;
-        const member = await ctx.serverUtil.getMember(message.serverId!< targetId);
+        const member = await ctx.serverUtil.getMember(message.serverId!, targetId);
         if (!member)
             return ctx.messageUtil.send(message.channelId, {
                 content: stripIndents`
@@ -75,8 +75,7 @@ const Mute: Command = {
             expiresAt,
         });
 
-        const modlog = await ctx.serverUtil.getLogChannel(message.serverId!, LogChannelType.MOD_ACTION_LOG);
-        if (modlog) await ctx.serverUtil.sendModLogMessage(message.serverId!, modlog.channelId, newAction, commandCtx.member);
+        await ctx.serverUtil.sendModLogMessageIfPossible(message.serverId!, commandCtx.member, newAction);
 
         return ctx.messageUtil.send(
             message.channelId,
