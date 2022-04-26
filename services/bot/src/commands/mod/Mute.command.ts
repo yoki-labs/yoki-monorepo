@@ -30,7 +30,7 @@ const Mute: Command = {
     execute: async (message, args, ctx, commandCtx) => {
         if (!commandCtx.server.muteRoleId) return ctx.messageUtil.send(message.channelId, "There is no mute role configured for this server.");
         const targetId = args.targetId as string;
-        const member = await ctx.serverUtil.getMember(targetId);
+        const member = await ctx.serverUtil.getMember(message.serverId!< targetId);
         if (!member)
             return ctx.messageUtil.send(message.channelId, {
                 content: stripIndents`
