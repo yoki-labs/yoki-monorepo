@@ -30,6 +30,14 @@ const Mute: Command = {
     execute: async (message, args, ctx, commandCtx) => {
         if (!commandCtx.server.muteRoleId) return ctx.messageUtil.send(message.channelId, "There is no mute role configured for this server.");
         const targetId = args.targetId as string;
+        const member = await ctx.serverUtil.getMember(targetId);
+        if (!member)
+            return ctx.messageUtil.send(message.channelId, {
+                content: stripIndents`
+                    That is not a valid user ID.
+                `,
+                replyMessageIds: [message.id],
+            });
         const reason = args.reason as string | null;
         const duration = ms(args.duration as string);
         if (!duration || duration <= 894000) return ctx.messageUtil.send(message.channelId, "Your mute duration must be longer than 15 minutes.");
