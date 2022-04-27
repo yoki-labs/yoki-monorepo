@@ -12,9 +12,9 @@ const FilterOnMods: Command = {
     requiredRole: RoleType.ADMIN,
     args: [{ name: "newSetting", optional: true, type: "boolean" }],
     execute: async (message, args, ctx, commandCtx) => {
-        const newSetting = (args.newSetting as boolean) ?? null;
+        const newSetting = args.newSetting as boolean;
 
-        if (!newSetting) {
+        if (typeof newSetting == "undefined") {
             return ctx.messageUtil.send(message.channelId, `Filter on mods is set to: \`${commandCtx.server.filterOnMods}\``);
         }
 
