@@ -141,7 +141,7 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context) => {
 						Reference ID: **${referenceId}**
 						Server: **${message.serverId}**
 						Channel: **${message.channelId}**
-						User: **${message.createdBy}**
+						User: **${message.createdBy}** (${member?.user.name})
 						Content: \`${message.content}\`
 						Error: \`\`\`
 						${e.stack ?? e.message}
