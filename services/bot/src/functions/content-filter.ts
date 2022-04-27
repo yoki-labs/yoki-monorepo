@@ -6,16 +6,7 @@ import slursList from "../presets/slurs.json";
 import { Action, CachedMember, ContentFilter, ContentFilterScan, LogChannelType, RoleType, Server, Severity } from "../typings";
 import Util from "./util";
 
-export const options = {
-    kick: Severity.KICK,
-    ban: Severity.BAN,
-    mute: Severity.MUTE,
-    softban: Severity.SOFTBAN,
-    warn: Severity.WARN,
-} as const;
-export const optionKeys = Object.keys(options);
-export const transformSeverityStringToEnum = (str: string) => options[str] as Severity;
-
+export const transformSeverityStringToEnum = (str: string): Severity | undefined => Severity[str.toUpperCase()];
 export enum FilteredContent {
     Message,
     ServerContent,
@@ -60,9 +51,9 @@ export class ContentFilterUtil extends Util {
                 if (filteredContent === FilteredContent.Message)
                     return this.client.messageUtil.send(content!.channelId, {
                         content: stripIndents`
-                    **Alert:** ${member.user.name}, you have used a filtered word.
-                    This is a warning for you to not use it again, otherwise moderation action will be taken against you.
-                    `,
+                    		**Alert:** ${member.user.name}, you have used a filtered word.
+                    		This is a warning for you to not use it again, otherwise moderation action will be taken against you.
+                    	`,
                         isPrivate: true,
                         replyMessageIds: [content!.id],
                     });
