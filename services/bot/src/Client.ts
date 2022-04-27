@@ -26,11 +26,14 @@ export default class Client {
     readonly redis = new RedisClient(process.env.REDIS_URL ?? "cache:6379");
 
     readonly timeouts = new Collection<string, NodeJS.Timeout>();
+    readonly intervals = new Collection<string, NodeJS.Timer>();
     readonly errorHandler = new WebhookClient(process.env.ERROR_WEBHOOK);
     readonly commands = new Collection<string, Command>();
     readonly messageUtil = new MessageUtil(this);
     readonly serverUtil = new ServerUtil(this);
     readonly contentFilterUtil = new ContentFilterUtil(this);
+
+    readonly muteHandler = new MuteScheduler(this, 15 * 60);
 
     readonly eventHandler: { [x: string]: (packet: any, ctx: Context) => void } = {
         ChatMessageCreated,
@@ -40,7 +43,7 @@ export default class Client {
     };
 
     init() {
-        new MuteScheduler(this, 15 * 60).init();
+        this.muteHandler.init();
         return this.ws.connect();
     }
 }
