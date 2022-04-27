@@ -36,6 +36,8 @@ export default class Client {
 
     // global collection of all timeouts within the bot so we can cancel them when the WS connection is severed
     readonly timeouts = new Collection<string, NodeJS.Timeout>();
+    // global collection of all intervals within the bot so we can cancel them when the WS connection is severed
+    readonly intervals = new Collection<string, NodeJS.Timer>();
     // webhook that sends to a specific channel for errors
     readonly errorHandler = new WebhookClient(process.env.ERROR_WEBHOOK);
     // global collection of all the bots commands (parent commands, sub commands, etc.)
