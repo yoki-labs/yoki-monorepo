@@ -7,12 +7,9 @@ export class MuteScheduler extends Scheduler<Action> {
     public async sweep(action: Action): Promise<void> {
         const guild = await this.client.serverUtil.getServer(action.serverId, false);
         if (!guild) return void 0;
-        const member = await this.client.serverUtil.getMember(action.serverId, action.targetId);
+        const member = await this.client.serverUtil.getMember(action.serverId, action.targetId).catch(() => null);
         if (!member) return;
-        if (guild.muteRoleId)
-            void this.client.rest.router
-                .removeRoleFromMember(action.serverId, action.targetId, guild.muteRoleId)
-                .catch((e: Error) => console.log(`There was an error removing the mute (${action.id}) on ${member.user.name} (${member.user.id}). ${e.stack ?? e.message}`));
+        if (guild.muteRoleId) return this.client.rest.router.removeRoleFromMember(action.serverId, action.targetId, guild.muteRoleId);
     }
 
     public async sweeper(): Promise<void> {
@@ -31,7 +28,10 @@ export class MuteScheduler extends Scheduler<Action> {
             const timeout = new Date(action.expiresAt!).getTime() - Date.now();
             this.client.timeouts.set(
                 action.id,
-                setTimeout(() => this.sweep(action), timeout < 1 ? 10000 : timeout)
+                setTimeout(
+                    () => this.sweep(action).catch((e: Error) => console.log(`There was an error removing the mute (${action.id}). ${e.stack ?? e.message}`)),
+                    timeout < 1 ? 10000 : timeout
+                )
             );
         }
 
