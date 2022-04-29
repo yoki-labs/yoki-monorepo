@@ -1,5 +1,5 @@
-import Embed from "@guildedjs/embeds";
 import type { WSChatMessageCreatedPayload } from "@guildedjs/guilded-api-typings";
+import { Embed } from "@guildedjs/webhook-client";
 import { stripIndents } from "common-tags";
 import { nanoid } from "nanoid";
 
@@ -13,7 +13,7 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context) => {
     if (message.createdByBotId || message.createdBy === ctx.userId || !message.serverId) return void 0;
 
     // get the server from the database
-    const serverFromDb = await ctx.serverUtil.getServer(message.serverId);
+    const serverFromDb = await ctx.dbUtil.getServer(message.serverId);
     // if the server is blacklisted or isn't in the early access, don't do anything
     if (serverFromDb?.blacklisted || !serverFromDb?.flags?.includes("EARLY_ACCESS")) return void 0;
 
@@ -23,7 +23,7 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context) => {
     // if the message does not start with the prefix
     if (!message.content.startsWith(prefix)) {
         // store the message in the database
-        await ctx.messageUtil.logMessage(message);
+        await ctx.dbUtil.storeMessage(message);
         // scan the message for any harmful content (filter list, presets)
         return ctx.contentFilterUtil.scanMessage(message, serverFromDb);
     }

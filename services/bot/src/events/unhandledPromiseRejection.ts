@@ -1,5 +1,4 @@
-import Embed from "@guildedjs/embeds";
-import type { WebhookClient } from "@guildedjs/webhook-client";
+import { Embed, WebhookClient } from "@guildedjs/webhook-client";
 import { stripIndents } from "common-tags";
 
 export default (err: Error, errorHandler: WebhookClient) => {

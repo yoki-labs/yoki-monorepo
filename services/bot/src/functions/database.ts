@@ -1,5 +1,8 @@
-import Util from "./util.ts";
-import { ContentFilter } from "../typings";
+import type { ChatMessagePayload } from "@guildedjs/guilded-api-typings";
+import { nanoid } from "nanoid";
+
+import { Action, ContentFilter, LogChannelType, Server } from "../typings";
+import Util from "./util";
 
 export class DatabaseUtil extends Util {
     addWordToFilter(data: Omit<ContentFilter, "id" | "createdAt">) {
@@ -77,6 +80,31 @@ export class DatabaseUtil extends Util {
                 muteInfractionThreshold: 15,
                 banInfractionThreshold: 30,
                 ...data,
+            },
+        });
+    }
+
+    // Store a message in the database
+    // This will either insert a whole new record, or update an existing record
+    storeMessage(message: ChatMessagePayload) {
+        return this.prisma.message.upsert({
+            where: { messageId: message.id },
+            create: {
+                messageId: message.id,
+                authorId: message.createdBy,
+                channelId: message.channelId,
+                content: message.content,
+                createdAt: message.createdAt,
+                embeds: [],
+                serverId: message.serverId!,
+                updatedAt: message.updatedAt,
+                isBot: Boolean(message.createdByBotId ?? message.createdByWebhookId),
+                deleted: false,
+                deletedAt: null,
+            },
+            update: {
+                content: message.content,
+                updatedAt: message.updatedAt,
             },
         });
     }

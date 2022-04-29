@@ -10,7 +10,7 @@ export default async (event: WSTeamMemberUpdatedPayload, ctx: Context) => {
     } = event.d;
 
     // get server from database
-    const serverFromDb = await ctx.serverUtil.getServer(serverId);
+    const serverFromDb = await ctx.dbUtil.getServer(serverId);
     // check if server is in early access
     if (serverFromDb?.blacklisted || !serverFromDb?.flags?.includes("EARLY_ACCESS")) return void 0;
 

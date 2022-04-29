@@ -11,7 +11,7 @@ const Enable: Command = {
     category: Category.Moderation,
     requiredRole: RoleType.ADMIN,
     execute: async (message, _args, ctx) => {
-        return ctx.contentFilterUtil
+        return ctx.dbUtil
             .enableFilter(message.serverId!)
             .then(() => ctx.messageUtil.send(message.channelId, "Successfully enabled the automod filter for this server."))
             .catch((e: Error) =>

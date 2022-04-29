@@ -4,7 +4,7 @@ import { buildMemberKey } from "../functions/server";
 import type { Context } from "../typings";
 
 export default async (event: WSTeamRolesUpdatedPayload, ctx: Context): Promise<void> => {
-    const server = await ctx.serverUtil.getServer(event.d.serverId);
+    const server = await ctx.dbUtil.getServer(event.d.serverId);
     // check if server is in early access
     if (server.blacklisted || !server.flags?.includes("EARLY_ACCESS")) return void 0;
 

@@ -1,35 +1,35 @@
-import Embed from "@guildedjs/embeds";
-import { WebhookClient } from "@guildedjs/webhook-client";
+import { Embed } from "@guildedjs/embeds";
 import { stripIndents } from "common-tags";
-import { nanoid } from "nanoid";
 import JSONCache from "redis-json";
 
-import { Action, CachedMember, LogChannelType, Server } from "../typings";
+import type { Action, CachedMember } from "../typings";
 import Util from "./util";
 
 export class ServerUtil extends Util {
     readonly cache = new JSONCache<CachedMember>(this.client.redis);
 
     // Get webhook information from either the database, or create one in the server
-    async getWebhook(serverId: string, channelId: string, name?: string) {
-        const webhook = await this.prisma.webhook.findFirst({ where: { serverId, channelId } });
-        if (webhook) return new WebhookClient({ id: webhook.webhookId, token: webhook.webhookToken });
-        const newWebhookFromAPI = await this.rest.router.createWebhook(serverId, { channelId, name: `Yoki ${name ?? "Moderation"}` });
-        await this.prisma.webhook.create({
-            data: {
-                channelId,
-                serverId,
-                webhookId: newWebhookFromAPI.webhook.id,
-                webhookToken: newWebhookFromAPI.webhook.token!,
-            },
-        });
-        return new WebhookClient({ id: newWebhookFromAPI.webhook.id, token: newWebhookFromAPI.webhook.token! });
-    }
+    // async getWebhook(serverId: string, channelId: string, name?: string): Promise<WebhookClient | null> {
+    //     const logChannel = await this.prisma.logChannel.findFirst({ select: { id: true, webhookId: true, webhookToken: true }, where: { serverId, channelId } });
+    //     if (!logChannel) return null;
+    //     if (logChannel.webhookId && logChannel.webhookToken) return new WebhookClient({ id: logChannel.webhookId, token: logChannel.webhookToken });
+    //     const newWebhookFromAPI = await this.rest.router.createWebhook(serverId, { channelId, name: `Yoki ${name ?? "Moderation"}` });
+    //     await this.prisma.logChannel.update({
+    //         where: { id: logChannel.id },
+    //         data: {
+    //             channelId,
+    //             serverId,
+    //             webhookId: newWebhookFromAPI.webhook.id,
+    //             webhookToken: newWebhookFromAPI.webhook.token!,
+    //         },
+    //     });
+    //     return new WebhookClient({ id: newWebhookFromAPI.webhook.id, token: newWebhookFromAPI.webhook.token! });
+    // }
 
     // Send a log message
-    async sendModLogMessage(serverId: string, modLogChannelId: string, createdCase: Action & { reasonMetaData?: string }, member: CachedMember) {
-        const webhook = await this.client.serverUtil.getWebhook(serverId, modLogChannelId);
-        const msg = await webhook.send("", [
+    async sendModLogMessage(modLogChannelId: string, createdCase: Action & { reasonMetaData?: string }, member: CachedMember) {
+        const msg = await this.client.messageUtil.send(
+            modLogChannelId,
             new Embed()
                 .setDescription(
                     stripIndents`
@@ -49,9 +49,9 @@ export class ServerUtil extends Util {
                         }
 					`
                 )
-                .setTimestamp(),
-        ]);
-        await this.client.serverUtil.populateActionMessage(createdCase.id, modLogChannelId, msg.id);
+                .setTimestamp()
+        );
+        await this.client.dbUtil.populateActionMessage(createdCase.id, modLogChannelId, msg.id);
     }
 
     // Get a member from either the cache or the API

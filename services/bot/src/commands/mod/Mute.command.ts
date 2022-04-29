@@ -64,19 +64,19 @@ const Mute: Command = {
             });
         }
 
-        const newAction = await ctx.serverUtil.addAction({
+        const newAction = await ctx.dbUtil.addAction({
             serverId: message.serverId!,
             executorId: message.createdBy,
             infractionPoints: 10,
             reason,
-            triggerWord: null,
+            triggerContent: null,
             targetId,
             type: "MUTE",
             expiresAt,
         });
 
-        const modlog = await ctx.serverUtil.getLogChannel(message.serverId!, LogChannelType.MOD_ACTION_LOG);
-        if (modlog) await ctx.serverUtil.sendModLogMessage(message.serverId!, modlog.channelId, newAction, commandCtx.member);
+        const modlog = await ctx.dbUtil.getLogChannel(message.serverId!, LogChannelType.MOD_ACTION_LOG);
+        if (modlog) await ctx.serverUtil.sendModLogMessage(modlog.channelId, newAction, commandCtx.member);
 
         return ctx.messageUtil.send(
             message.channelId,

@@ -1,12 +1,14 @@
 import { Action, Severity } from "../typings";
 import { Scheduler } from "./Scheduler";
 
+/** scheduler that clears expired cases */
 export class MuteScheduler extends Scheduler<Action> {
     readonly name = "mute";
 
+    /** revert an expired case */
     public async sweep(action: Action): Promise<void> {
         // get the server in the database
-        const guild = await this.client.serverUtil.getServer(action.serverId, false);
+        const guild = await this.client.dbUtil.getServer(action.serverId, false);
         if (!guild) return void 0;
         const member = await this.client.serverUtil.getMember(action.serverId, action.targetId).catch(() => null);
         if (!member) return;

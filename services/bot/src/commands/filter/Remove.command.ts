@@ -16,12 +16,12 @@ const Delete: Command = {
             type: "string",
         },
     ],
-    execute: async (message, args, { prisma, messageUtil, contentFilterUtil }) => {
+    execute: async (message, args, ctx) => {
         const phrase = args.phrase as string;
-        const existingEntry = await prisma.contentFilter.findFirst({ where: { serverId: message.serverId!, content: phrase } });
-        if (!existingEntry) return messageUtil.send(message.channelId, "This phrase is not in your server's filter!");
-        await contentFilterUtil.removeWordFromFilter(message.serverId!, phrase);
-        return messageUtil.send(message.channelId, `Successfully deleted \`${phrase}\` from the automod list!`);
+        const existingEntry = await ctx.prisma.contentFilter.findFirst({ where: { serverId: message.serverId!, content: phrase } });
+        if (!existingEntry) return ctx.messageUtil.send(message.channelId, "This phrase is not in your server's filter!");
+        await ctx.dbUtil.removeWordFromFilter(message.serverId!, phrase);
+        return ctx.messageUtil.send(message.channelId, `Successfully deleted \`${phrase}\` from the automod list!`);
     },
 };
 

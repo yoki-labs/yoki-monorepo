@@ -12,12 +12,15 @@ import ChatMessageUpdated from "./events/ChatMessageUpdated";
 import TeamMemberUpdated from "./events/TeamMemberUpdated";
 import teamRolesUpdated from "./events/teamRolesUpdated";
 import { ContentFilterUtil } from "./functions/content-filter";
+import { DatabaseUtil } from "./functions/database";
 import { MessageUtil } from "./functions/message";
 import { ServerUtil } from "./functions/server";
-import { DatabaseUtil } from "./functions/database";
 import { MuteScheduler } from "./jobs/MuteScheduler";
 import type { Context } from "./typings";
 
+/**
+ * Main class that stores utils, connections to various providers, and ws
+ */
 export default class Client {
     // user ID of the bot
     userId: string | null = null;
@@ -69,6 +72,7 @@ export default class Client {
         teamRolesUpdated,
     };
 
+    /** start the bot connection */
     init() {
         // starting the sweeper for mute scheduler
         this.muteHandler.init();
