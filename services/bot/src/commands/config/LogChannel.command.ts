@@ -54,7 +54,7 @@ const LogChannel: Command = {
                 message.channelId,
                 stripIndents`
                     This server has the following log channels:
-                    ${formattedChannels.map((v, k) => `***${k}:*** ${listInlineCodeblock(v)}`)}
+                    ${formattedChannels.map((v, k) => `***${k}:*** ${listInlineCodeblock(v)}`).join("\n")}
                 `
             );
         }
