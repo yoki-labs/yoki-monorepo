@@ -45,7 +45,7 @@ const LogChannel: Command = {
 
         // If the user didn't supply a channelId. Get all log channels, use above cleanup method to filter duplicates and merge them, then list them.
         if (!channelId) {
-            const logChannels = await ctx.serverUtil.getLogChannels(message.serverId!);
+            const logChannels = await ctx.dbUtil.getLogChannels(message.serverId!);
             if (logChannels.length <= 0) return ctx.messageUtil.send(message.channelId, `This server has no set log channels.`);
 
             const formattedChannels: Collection<string, LogChannelType[]> = await cleanupChannels(logChannels);

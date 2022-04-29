@@ -1,88 +1,35 @@
-import Embed from "@guildedjs/embeds";
-import { WebhookClient } from "@guildedjs/webhook-client";
+import { Embed } from "@guildedjs/embeds";
 import { stripIndents } from "common-tags";
-import { nanoid } from "nanoid";
 import JSONCache from "redis-json";
 
-import { Action, CachedMember, LogChannelType, Server } from "../typings";
+import type { Action, CachedMember } from "../typings";
 import Util from "./util";
 
 export class ServerUtil extends Util {
     readonly cache = new JSONCache<CachedMember>(this.client.redis);
 
-    getServer(serverId: string, createIfNotExists?: true): Promise<Server>;
-    getServer(serverId: string, createIfNotExists: false): Promise<Server | null>;
-    getServer(serverId: string, createIfNotExists = true) {
-        return this.prisma.server.findUnique({ where: { serverId } }).then((server) => {
-            if (!server && createIfNotExists) return this.createFreshServerInDatabase(serverId);
-            return server ?? null;
-        });
-    }
+    // Get webhook information from either the database, or create one in the server
+    // async getWebhook(serverId: string, channelId: string, name?: string): Promise<WebhookClient | null> {
+    //     const logChannel = await this.prisma.logChannel.findFirst({ select: { id: true, webhookId: true, webhookToken: true }, where: { serverId, channelId } });
+    //     if (!logChannel) return null;
+    //     if (logChannel.webhookId && logChannel.webhookToken) return new WebhookClient({ id: logChannel.webhookId, token: logChannel.webhookToken });
+    //     const newWebhookFromAPI = await this.rest.router.createWebhook(serverId, { channelId, name: `Yoki ${name ?? "Moderation"}` });
+    //     await this.prisma.logChannel.update({
+    //         where: { id: logChannel.id },
+    //         data: {
+    //             channelId,
+    //             serverId,
+    //             webhookId: newWebhookFromAPI.webhook.id,
+    //             webhookToken: newWebhookFromAPI.webhook.token!,
+    //         },
+    //     });
+    //     return new WebhookClient({ id: newWebhookFromAPI.webhook.id, token: newWebhookFromAPI.webhook.token! });
+    // }
 
-    getLogChannel(serverId: string, type: LogChannelType) {
-        return this.prisma.logChannel.findFirst({ where: { serverId, OR: [{ type }, { type: LogChannelType.ALL }] } });
-    }
-
-    getLogChannels(serverId: string) {
-        return this.prisma.logChannel.findMany({ where: { serverId } });
-    }
-
-    getMuteRole(serverId: string) {
-        return this.prisma.server.findFirst({ select: { muteRoleId: true }, where: { serverId } });
-    }
-
-    createFreshServerInDatabase(serverId: string, data?: Record<string, any>) {
-        return this.prisma.server.create({
-            data: {
-                serverId,
-                locale: "en-US",
-                premium: false,
-                blacklisted: false,
-                muteRoleId: null,
-                botJoinedAt: null,
-                filterEnabled: false,
-                kickInfractionThreshold: 20,
-                muteInfractionThreshold: 15,
-                banInfractionThreshold: 30,
-                ...data,
-            },
-        });
-    }
-
-    addAction(data: Omit<Action, "id" | "referenceId" | "createdAt" | "updatedAt" | "logChannelI" | "expired" | "logChannelId" | "logChannelMessage">) {
-        return this.prisma.action.create({
-            data: {
-                id: nanoid(17),
-                createdAt: new Date(),
-                updatedAt: null,
-                expired: false,
-                ...data,
-            },
-        });
-    }
-
-    populateActionMessage(id: string, channelId: string, messageId: string) {
-        return this.prisma.action.update({ where: { id }, data: { logChannelId: channelId, logChannelMessage: messageId } });
-    }
-
-    async getWebhook(serverId: string, channelId: string, name?: string) {
-        const webhook = await this.prisma.webhook.findFirst({ where: { serverId, channelId } });
-        if (webhook) return new WebhookClient({ id: webhook.webhookId, token: webhook.webhookToken });
-        const newWebhookFromAPI = await this.rest.router.createWebhook(serverId, { channelId, name: `Yoki ${name ?? "Moderation"}` });
-        await this.prisma.webhook.create({
-            data: {
-                channelId,
-                serverId,
-                webhookId: newWebhookFromAPI.webhook.id,
-                webhookToken: newWebhookFromAPI.webhook.token!,
-            },
-        });
-        return new WebhookClient({ id: newWebhookFromAPI.webhook.id, token: newWebhookFromAPI.webhook.token! });
-    }
-
-    async sendModLogMessage(serverId: string, modLogChannelId: string, createdCase: Action & { reasonMetaData?: string }, member: CachedMember) {
-        const webhook = await this.client.serverUtil.getWebhook(serverId, modLogChannelId);
-        const msg = await webhook.send("", [
+    // Send a log message
+    async sendModLogMessage(modLogChannelId: string, createdCase: Action & { reasonMetaData?: string }, member: CachedMember) {
+        const msg = await this.client.messageUtil.send(
+            modLogChannelId,
             new Embed()
                 .setDescription(
                     stripIndents`
@@ -102,11 +49,12 @@ export class ServerUtil extends Util {
                         }
 					`
                 )
-                .setTimestamp(),
-        ]);
-        await this.client.serverUtil.populateActionMessage(createdCase.id, modLogChannelId, msg.id);
+                .setTimestamp()
+        );
+        await this.client.dbUtil.populateActionMessage(createdCase.id, modLogChannelId, msg.id);
     }
 
+    // Get a member from either the cache or the API
     async getMember(serverId: string, userId: string, cache = true, force = false) {
         if (!force) {
             const isCached = await this.cache.get(buildMemberKey(serverId, userId));
@@ -119,6 +67,7 @@ export class ServerUtil extends Util {
         });
     }
 
+    // Cache this member
     setMember(serverId: string, userId: string, data: CachedMember) {
         return this.cache.set(buildMemberKey(serverId, userId), { roleIds: data.roleIds, user: { id: data.user.id, name: data.user.name } }, { expire: 900 });
     }

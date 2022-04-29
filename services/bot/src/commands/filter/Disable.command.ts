@@ -11,7 +11,7 @@ const Disable: Command = {
     requiredRole: RoleType.ADMIN,
     category: Category.Moderation,
     execute: async (message, _args, ctx) => {
-        return ctx.contentFilterUtil
+        return ctx.dbUtil
             .enableFilter(message.serverId!)
             .then(() => ctx.messageUtil.send(message.channelId, "Successfully disabled the automod filter for this server."))
             .catch((e: Error) =>

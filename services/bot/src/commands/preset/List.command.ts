@@ -12,7 +12,7 @@ const List: Command = {
     requiredRole: RoleType.MOD,
     execute: async (message, _args, ctx) => {
         const allPresets = ctx.contentFilterUtil.presets;
-        const enabledPresets = await ctx.contentFilterUtil.getEnabledPresets(message.serverId!);
+        const enabledPresets = await ctx.dbUtil.getEnabledPresets(message.serverId!);
         return ctx.messageUtil.send(
             message.channelId,
             stripIndents`

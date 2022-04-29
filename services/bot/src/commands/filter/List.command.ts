@@ -11,7 +11,7 @@ const List: Command = {
     category: Category.Moderation,
     requiredRole: RoleType.MOD,
     execute: async (message, _args, ctx) => {
-        const bannedWords = await ctx.contentFilterUtil.getBannedWords(message.serverId!);
+        const bannedWords = await ctx.dbUtil.getBannedWords(message.serverId!);
         return ctx.messageUtil.send(
             message.channelId,
             bannedWords.length

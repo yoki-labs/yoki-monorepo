@@ -1,3 +1,4 @@
+// common colors that the bot uses
 export enum Colors {
     ORANGE_RED = "ff3300",
     LIGHT_ORANGE = "ffa500",
