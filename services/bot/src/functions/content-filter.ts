@@ -13,6 +13,7 @@ export enum FilteredContent {
 }
 
 export class ContentFilterUtil extends Util {
+    // placeholder until we automate ingesting preset lists dynamically
     readonly presets = {
         slurs: [
             ...slursList.ban.map(
@@ -32,6 +33,8 @@ export class ContentFilterUtil extends Util {
         ],
     };
 
+    // An object mapping the Action type -> Action punishment
+    // Easy way for us to organize punishments into reusable code
     readonly severityAction: Record<Severity, (member: CachedMember, server: Server, content: ChatMessagePayload | null, filteredContent: FilteredContent) => unknown | undefined> =
         {
             [Severity.BAN]: (member, server) => {
@@ -62,8 +65,10 @@ export class ContentFilterUtil extends Util {
             },
         };
 
+    // check if the amount of points incurred by this user is higher than the allowed threshold for this server
     async ifExceedsInfractionThreshold(total: number, member: CachedMember, server: Server, content: ChatMessagePayload | null, filteredContent: FilteredContent) {
         // FIXME: Still can be minimized further with a loop or something else
+        // Check which threshold is exceeded if any
         const severity =
             server.banInfractionThreshold && total >= server.banInfractionThreshold
                 ? Severity.BAN
@@ -75,6 +80,7 @@ export class ContentFilterUtil extends Util {
                 ? Severity.MUTE
                 : null;
 
+        // Run the associated punishment with the exceeded threshold
         if (severity) await this.severityAction[severity](member, server, content, filteredContent);
 
         return severity;
@@ -92,6 +98,7 @@ export class ContentFilterUtil extends Util {
         );
     }
 
+    // This will scan any conten tthat is piped into it for breaking the content filter or preset list and will apply the associated punishment in the final param as a callback
     async scanContent(
         this: ContentFilterUtil,
         userId: string,
@@ -101,13 +108,18 @@ export class ContentFilterUtil extends Util {
         server: Server,
         filter: () => any
     ) {
+        // If the bot is the one who did this action, ignore.
         if (userId === this.client.userId) return void 0;
         const { serverId } = server;
 
+        // Get all the banned words in this server
         const bannedWordsList = await this.getBannedWords(serverId);
+        // Get all the enabled presets in this server
         const enabledPresets = await this.getEnabledPresets(serverId);
 
+        // Sanitize data into standard form
         const lowerCasedMessageContent = text.toLowerCase();
+        // Check if any word triggers the content filter (user provided words). Checks if message content includes a word
         const ifTriggersCustom: ContentFilterScan | undefined = bannedWordsList.find((word) => lowerCasedMessageContent.includes(word.content.toLowerCase()));
         let ifTriggersPreset: ContentFilterScan | undefined;
         if (!ifTriggersCustom) {

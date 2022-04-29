@@ -10,6 +10,7 @@ import Util from "./util";
 export class ServerUtil extends Util {
     readonly cache = new JSONCache<CachedMember>(this.client.redis);
 
+    // Get webhook information from either the database, or create one in the server
     async getWebhook(serverId: string, channelId: string, name?: string) {
         const webhook = await this.prisma.webhook.findFirst({ where: { serverId, channelId } });
         if (webhook) return new WebhookClient({ id: webhook.webhookId, token: webhook.webhookToken });
@@ -25,6 +26,7 @@ export class ServerUtil extends Util {
         return new WebhookClient({ id: newWebhookFromAPI.webhook.id, token: newWebhookFromAPI.webhook.token! });
     }
 
+    // Send a log message
     async sendModLogMessage(serverId: string, modLogChannelId: string, createdCase: Action & { reasonMetaData?: string }, member: CachedMember) {
         const webhook = await this.client.serverUtil.getWebhook(serverId, modLogChannelId);
         const msg = await webhook.send("", [
@@ -52,6 +54,7 @@ export class ServerUtil extends Util {
         await this.client.serverUtil.populateActionMessage(createdCase.id, modLogChannelId, msg.id);
     }
 
+    // Get a member from either the cache or the API
     async getMember(serverId: string, userId: string, cache = true, force = false) {
         if (!force) {
             const isCached = await this.cache.get(buildMemberKey(serverId, userId));
@@ -64,6 +67,7 @@ export class ServerUtil extends Util {
         });
     }
 
+    // Cache this member
     setMember(serverId: string, userId: string, data: CachedMember) {
         return this.cache.set(buildMemberKey(serverId, userId), { roleIds: data.roleIds, user: { id: data.user.id, name: data.user.name } }, { expire: 900 });
     }
