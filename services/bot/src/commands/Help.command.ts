@@ -32,17 +32,11 @@ const Help: Command = {
 					${command.aliases ? `**Aliases:** ${listInlineCodeblock(command.aliases)}` : ""}
 					**Description:** ${inlineCodeblock(command.description)}
 					**Usage:** ${inlineCodeblock(
-                        `${commandCtx.server.prefix ?? process.env.DEFAULT_PREFIX}${command.name} ${
+                        `${commandCtx.server.getPrefix()}${command.name} ${
                             command.usage ?? `<${command.subCommands?.size ? command.subCommands!.map((x) => x.subName!).join(" | ") : ""}> <...args>`
                         }`
                     )}
-					${
-                        command.examples
-                            ? `**Examples:** ${listInlineCodeblock(
-                                  command.examples.map((x) => `${commandCtx.server.prefix ?? process.env.DEFAULT_PREFIX}${command.parentCommand ? command.name : ""} ${x}`)
-                              )}`
-                            : ""
-                    }
+					${command.examples ? `**Examples:** ${listInlineCodeblock(command.examples.map((x) => `${commandCtx.server.getPrefix()}${command.parentCommand ? command.name : ""} ${x}`))}` : ""}
 					${command.userPermissions ? `**Required User Permissions:** ${listInlineCodeblock(command.userPermissions)}` : ""}
 					${command.clientPermissions ? `**Required Bot Permissions:** ${listInlineCodeblock(command.clientPermissions)}` : ""}
 					${command.requiredRole ? `**Required Role:** ${inlineCodeblock(command.requiredRole)}` : ""}
@@ -60,7 +54,7 @@ const Help: Command = {
         return ctx.messageUtil.send(
             message.channelId,
             new Embed().setDescription(stripIndents`
-				A list of available commands. For additional info on a command, type ${inlineCodeblock(`${commandCtx.server.prefix ?? process.env.DEFAULT_PREFIX}help [command]`)}. 
+				A list of available commands. For additional info on a command, type ${inlineCodeblock(`${commandCtx.server.getPrefix()}help [command]`)}. 
 
 				${commandCategoryMap
                     .map(

@@ -29,8 +29,7 @@ const Add: Command = {
         },
     ],
     execute: async (message, args, ctx, { server }) => {
-        if (!server.filterEnabled)
-            return ctx.messageUtil.send(message.channelId, `Automod filter is disabled! Please enable using \`${server.prefix ?? process.env.DEFAULT_PREFIX}filter enable\``);
+        if (!server.filterEnabled) return ctx.messageUtil.send(message.channelId, `Automod filter is disabled! Please enable using \`${server.getPrefix()}filter enable\``);
         const phrase = args.phrase as string;
         const severity = transformSeverityStringToEnum((args.severity as string | null) ?? "warn");
         const infractionPoints = (args.infraction_points as number | null) ?? 5;

@@ -48,10 +48,13 @@ export class DatabaseUtil extends Util {
     getServer(serverId: string, createIfNotExists?: true): Promise<Server>;
     getServer(serverId: string, createIfNotExists: false): Promise<Server | null>;
     getServer(serverId: string, createIfNotExists = true) {
-        return this.prisma.server.findUnique({ where: { serverId } }).then((server) => {
-            if (!server && createIfNotExists) return this.createFreshServerInDatabase(serverId);
-            return server ?? null;
-        });
+        return this.prisma.server
+            .findUnique({ where: { serverId } })
+            .then((server) => {
+                if (!server && createIfNotExists) return this.createFreshServerInDatabase(serverId);
+                return server ?? null;
+            })
+            .then((data) => (data ? { ...data, getPrefix: () => data.prefix ?? process.env.DEFAULT_PREFIX } : null));
     }
 
     getLogChannel(serverId: string, type: LogChannelType) {

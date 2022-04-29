@@ -1,6 +1,8 @@
 import { Embed } from "@guildedjs/embeds";
 import type { ChatMessagePayload, RESTPostChannelMessagesBody } from "@guildedjs/guilded-api-typings";
+import { stripIndents } from "common-tags";
 
+import type { Command, CommandArgument } from "../commands/Command";
 import { Util } from "./util";
 
 export class MessageUtil extends Util {
@@ -15,5 +17,14 @@ export class MessageUtil extends Util {
     reply(message: ChatMessagePayload, content: string | RESTPostChannelMessagesBody) {
         const opts: RESTPostChannelMessagesBody | string = typeof content === "string" ? { replyMessageIds: [message.id], content } : content;
         return this.rest.router.createChannelMessage(message.channelId, opts);
+    }
+
+    handleBadArg(channelId: string, arg: string | null, commandArg: CommandArgument, command: Command, parentCommand: Command) {
+        return this.send(
+            channelId,
+            stripIndents`
+                Sorry, your ${commandArg.name} was not valid! Was expecting a \`${commandArg.type}\`, received \`${arg ?? "nothing"}\`
+                **Usage:** \`${parentCommand.name}${command.name === parentCommand.name ? "" : ` ${command.subName ?? command.name}`} ${command.usage}\``
+        );
     }
 }

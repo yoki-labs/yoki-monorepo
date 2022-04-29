@@ -3,9 +3,22 @@ import { Embed } from "@guildedjs/webhook-client";
 import { stripIndents } from "common-tags";
 import { nanoid } from "nanoid";
 
-import type { CommandArgument } from "../commands/Command";
-import type { Context } from "../typings";
-import { isUUID } from "../util";
+import boolean from "../args/boolean";
+import listRest from "../args/listRest";
+import number from "../args/number";
+import rest from "../args/rest";
+import string from "../args/string";
+import UUID from "../args/UUID";
+import type { Context, ResolvedArgs } from "../typings";
+
+const argCasters: Record<string, (input: string, rawArgs: string[], index: number) => ResolvedArgs> = {
+    string,
+    number,
+    boolean,
+    listRest,
+    rest,
+    UUID,
+};
 
 export default async (packet: WSChatMessageCreatedPayload, ctx: Context) => {
     const { message } = packet.d;
@@ -18,7 +31,7 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context) => {
     if (serverFromDb?.blacklisted || !serverFromDb?.flags?.includes("EARLY_ACCESS")) return void 0;
 
     // the prefix of this server, otherwise the fallback default prefix
-    const prefix = serverFromDb.prefix ?? process.env.DEFAULT_PREFIX;
+    const prefix = serverFromDb.getPrefix();
 
     // if the message does not start with the prefix
     if (!message.content.startsWith(prefix)) {
@@ -48,9 +61,9 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context) => {
         if (!args[0])
             return ctx.messageUtil.send(
                 message.channelId,
-                `You must provide a sub command to run. Your options are: ${command.subCommands.map((x) => `\`${x.name.split("-")[1]}\``).join(", ")}. Example: \`${
-                    serverFromDb.prefix ?? process.env.DEFAULT_PREFIX
-                }${command.name}\``
+                `You must provide a sub command to run. Your options are: ${command.subCommands
+                    .map((x) => `\`${x.name.split("-")[1]}\``)
+                    .join(", ")}. Example: \`${serverFromDb.getPrefix()}${command.name}\``
             );
 
         // get the sub command by name
@@ -59,9 +72,9 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context) => {
         if (!subCommand)
             return ctx.messageUtil.send(
                 message.channelId,
-                `Invalid sub-command. Your options are ${command.subCommands.map((x) => `\`${x.name.split("-")[1]}\``).join(", ")}. Example: \`${
-                    serverFromDb.prefix ?? process.env.DEFAULT_PREFIX
-                }${command.name} ${command.subCommands.first()!.subName}\``
+                `Invalid sub-command. Your options are ${command.subCommands.map((x) => `\`${x.name.split("-")[1]}\``).join(", ")}. Example: \`${serverFromDb.getPrefix()}${
+                    command.name
+                } ${command.subCommands.first()!.subName}\``
             );
 
         // set the command to execute to the sub command
@@ -70,19 +83,8 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context) => {
         args = args.slice(1);
     }
 
-    // handle if the arg type provided is not valid
-    function handleIncorrectArg(i: number, commandArg: CommandArgument): void {
-        if (!command) return;
-        void ctx.messageUtil.send(
-            message.channelId,
-            stripIndents`
-                Sorry, your ${commandArg.name} was not valid! Was expecting a \`string\`, received \`${typeof args[i] === "undefined" ? "nothing" : args[i]}\`
-                **Usage:** \`${parentCommand.name}${command.name === parentCommand.name ? "" : ` ${command.subName ?? command.name}`} ${command.usage}\``
-        );
-    }
-
     // the object of casted args casted to their proper types
-    const resolvedArgs: Record<string, string | string[] | number | boolean | null> = {};
+    const resolvedArgs: Record<string, ResolvedArgs> = {};
     // if this command has accepts args
     if (command.args && command.args.length) {
         // go through all the specified arguments in the command
@@ -90,69 +92,16 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context) => {
             const commandArg = command.args[i];
 
             // if the argument is not a rest type, is optional, and the actual argument is undefined, continue next in the args
-            if (commandArg.type !== "listRest" && commandArg.optional && typeof args[i] == "undefined") continue;
+            if (commandArg.optional && typeof args[i] == "undefined") continue;
 
-            // check command argument type for casting
-            switch (commandArg.type) {
-                case "rest": {
-                    // get all the rest of the arguments starting from this arg to the end
-                    const restArgs = args.slice(i);
-                    // if there are no args, then notify the user that it's invalid
-                    if (restArgs.length === 0) return handleIncorrectArg(i, commandArg);
+            // run the caster and see if the arg is valid
+            const isValidArg = argCasters[commandArg.type]?.(args[i], args, i);
 
-                    // concatenate all the args into one string
-                    resolvedArgs[commandArg.name] = restArgs.join(" ") ?? null;
-                    break;
-                }
-                case "listRest": {
-                    // get all the rest of the arguments starting from this arg to the end
-                    const restArgs = args.slice(i);
-                    // if there are no args and the argument isn't optional, then notify the user that their input is invalid
-                    if (restArgs.length === 0 && !commandArg.optional) return handleIncorrectArg(i, commandArg);
+            // if the arg is not valid, inform the user
+            if (isValidArg === null) return ctx.messageUtil.handleBadArg(message.channelId, args[i], commandArg, command, parentCommand);
 
-                    let finalizedArray;
-                    if (restArgs.length > 0) {
-                        finalizedArray = commandArg.separator ? restArgs.join(" ").split(commandArg.separator) : restArgs;
-                    } else {
-                        finalizedArray = [];
-                    }
-
-                    resolvedArgs[commandArg.name] = finalizedArray;
-                    break;
-                }
-                case "string": {
-                    // if the argument is not a valid string (really any input other than undefined), notify the user that it's invalid
-                    if (typeof args[i] !== "string") return handleIncorrectArg(i, commandArg);
-                    // if optional, this will set the argument to null
-                    resolvedArgs[commandArg.name] = args[i] ?? null;
-                    break;
-                }
-                case "number": {
-                    const castedNumber = Number(args[i]);
-                    // if the argument is not properly castable to a number, then notify the user that their input is invalid
-                    if (Number.isNaN(castedNumber)) return handleIncorrectArg(i, commandArg);
-                    // if the argument is not undefined (and is a proper number), set the arg otherwise set to null cause it would be optional by then
-                    resolvedArgs[commandArg.name] = args[i] ? castedNumber : null;
-                    break;
-                }
-                case "boolean": {
-                    // if not a proper "yes/no" type input, notify the user
-                    if (!["true", "enable", "yes", "disable", "false", "no"].includes(args[i]?.toLowerCase())) return handleIncorrectArg(i, commandArg);
-                    // if the input is a truthy value, the argument will be set to true, otherwise false.
-                    resolvedArgs[commandArg.name] = ["true", "yes", "enable"].includes(args[i]?.toLowerCase());
-                    break;
-                }
-                case "UUID": {
-                    // check if the input is a proper UUID
-                    if (!isUUID(args[i])) return handleIncorrectArg(i, commandArg);
-                    // set the arg to the UUID
-                    resolvedArgs[commandArg.name] = args[i];
-                    break;
-                }
-                default:
-                    // if the argument type does not exist, just treat it like a string
-                    resolvedArgs[commandArg.name] = args[i];
-            }
+            // if the arg is valid, add it to the resolved args obj
+            resolvedArgs[commandArg.name] = isValidArg;
         }
     }
 
@@ -204,7 +153,7 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context) => {
             message.channelId,
             stripIndents`
 				**Oh no, something went wrong!**
-				This is potentially an issue on our end, please contact us and forward the following ID: \`${referenceId}\`
+				This is potentially an issue on our end, please contact us and forward the following ID and error: \`${referenceId}\` & \`${(e as any).message}\`
         	`
         );
     }
