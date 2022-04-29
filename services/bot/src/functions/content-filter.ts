@@ -62,42 +62,6 @@ export class ContentFilterUtil extends Util {
             },
         };
 
-    addWordToFilter(data: Omit<ContentFilter, "id" | "createdAt">) {
-        return this.prisma.contentFilter.create({ data });
-    }
-
-    removeWordFromFilter(serverId: string, content: string) {
-        return this.prisma.contentFilter.deleteMany({ where: { serverId, content } });
-    }
-
-    getBannedWords(serverId: string) {
-        return this.prisma.contentFilter.findMany({ where: { serverId } });
-    }
-
-    getMemberHistory(serverId: string, targetId: string) {
-        return this.prisma.action.findMany({ where: { targetId, serverId } });
-    }
-
-    enableFilter(serverId: string) {
-        return this.prisma.server.updateMany({ data: { filterEnabled: true }, where: { serverId } });
-    }
-
-    disableFilter(serverId: string) {
-        return this.prisma.server.updateMany({ data: { filterEnabled: false }, where: { serverId } });
-    }
-
-    getEnabledPresets(serverId: string) {
-        return this.prisma.preset.findMany({ where: { serverId } });
-    }
-
-    enablePreset(serverId: string, preset: string) {
-        return this.prisma.preset.create({ data: { serverId, preset } });
-    }
-
-    disablePreset(serverId: string, preset: string) {
-        return this.prisma.preset.deleteMany({ where: { serverId, preset } });
-    }
-
     async ifExceedsInfractionThreshold(total: number, member: CachedMember, server: Server, content: ChatMessagePayload | null, filteredContent: FilteredContent) {
         // FIXME: Still can be minimized further with a loop or something else
         const severity =

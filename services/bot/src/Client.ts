@@ -14,6 +14,7 @@ import teamRolesUpdated from "./events/teamRolesUpdated";
 import { ContentFilterUtil } from "./functions/content-filter";
 import { MessageUtil } from "./functions/message";
 import { ServerUtil } from "./functions/server";
+import { DatabaseUtil } from "./functions/database";
 import { MuteScheduler } from "./jobs/MuteScheduler";
 import type { Context } from "./typings";
 
@@ -48,6 +49,8 @@ export default class Client {
     readonly serverUtil = new ServerUtil(this);
     // utility methods for content filtering
     readonly contentFilterUtil = new ContentFilterUtil(this);
+    // utility methods for database interactions
+    readonly dbUtil = new DatabaseUtil(this);
 
     // scheduler that will check for (impending) expired mutes and remove them
     readonly muteHandler = new MuteScheduler(this, 15 * 60);

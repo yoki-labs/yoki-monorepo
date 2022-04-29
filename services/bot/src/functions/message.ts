@@ -26,10 +26,6 @@ export class MessageUtil extends Util {
         });
     }
 
-    getMessage(channelId: string, messageId: string) {
-        return this.prisma.message.findFirst({ where: { messageId, channelId } });
-    }
-
     send(channelId: string, content: string | RESTPostChannelMessagesBody) {
         return this.rest.router.createChannelMessage(channelId, content);
     }
