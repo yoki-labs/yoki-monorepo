@@ -1,4 +1,4 @@
-import { transformSeverityStringToEnum } from "../../functions/content-filter";
+import { transformSeverityStringToEnum } from "../../modules/content-filter";
 import { RoleType } from "../../typings";
 import { Category } from "../Category";
 import type { Command } from "../Command";

@@ -3,7 +3,7 @@ import { stripIndents } from "common-tags";
 import JSONCache from "redis-json";
 
 import type { Action, CachedMember } from "../typings";
-import Util from "./util";
+import { Util } from "./util";
 
 export class ServerUtil extends Util {
     readonly cache = new JSONCache<CachedMember>(this.client.redis);
@@ -35,7 +35,7 @@ export class ServerUtil extends Util {
                     stripIndents`
 						**Target:** \`${member.user.name} (${createdCase.targetId})\`
 						**Type:** \`${createdCase.type}\`
-						**Reason:** \`${createdCase.reason ?? "NO REASON PROVIDED"}\` ${createdCase.reasonMetaData ?? ""}
+						**Reason:** \`${createdCase.reason ?? "NO REASON PROVIDED"} ${createdCase.reasonMetaData ?? ""}\` 
 						${
                             createdCase.expiresAt
                                 ? `**Expiration:** \`${createdCase.expiresAt.toLocaleDateString("en-US", {

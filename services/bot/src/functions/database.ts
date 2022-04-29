@@ -2,7 +2,7 @@ import type { ChatMessagePayload } from "@guildedjs/guilded-api-typings";
 import { nanoid } from "nanoid";
 
 import { Action, ContentFilter, LogChannelType, Server } from "../typings";
-import Util from "./util";
+import { Util } from "./util";
 
 export class DatabaseUtil extends Util {
     addWordToFilter(data: Omit<ContentFilter, "id" | "createdAt">) {
@@ -99,7 +99,6 @@ export class DatabaseUtil extends Util {
                 serverId: message.serverId!,
                 updatedAt: message.updatedAt,
                 isBot: Boolean(message.createdByBotId ?? message.createdByWebhookId),
-                deleted: false,
                 deletedAt: null,
             },
             update: {
