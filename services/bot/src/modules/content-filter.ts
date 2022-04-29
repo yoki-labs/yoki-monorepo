@@ -2,9 +2,9 @@ import type { ChatMessagePayload } from "@guildedjs/guilded-api-typings";
 import { Embed } from "@guildedjs/webhook-client";
 import { stripIndents } from "common-tags";
 
+import { Util } from "../functions/util";
 import slursList from "../presets/slurs.json";
 import { Action, CachedMember, ContentFilterScan, LogChannelType, RoleType, Server, Severity } from "../typings";
-import Util from "./util";
 
 export const transformSeverityStringToEnum = (str: string): Severity | undefined => Severity[str.toUpperCase()];
 export enum FilteredContent {
@@ -55,7 +55,7 @@ export class ContentFilterUtil extends Util {
                     return this.client.messageUtil.send(content!.channelId, {
                         content: stripIndents`
                     		**Alert:** ${member.user.name}, you have used a filtered word.
-                    		This is a warning for you to not use it again, otherwise moderation action will be taken against you.
+                    		This is a warning for you to not use it again, otherwise moderation action may be taken against you.
                     	`,
                         isPrivate: true,
                         replyMessageIds: [content!.id],

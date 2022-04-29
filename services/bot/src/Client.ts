@@ -11,11 +11,11 @@ import ChatMessageDeleted from "./events/ChatMessageDeleted";
 import ChatMessageUpdated from "./events/ChatMessageUpdated";
 import TeamMemberUpdated from "./events/TeamMemberUpdated";
 import teamRolesUpdated from "./events/teamRolesUpdated";
-import { ContentFilterUtil } from "./functions/content-filter";
 import { DatabaseUtil } from "./functions/database";
 import { MessageUtil } from "./functions/message";
 import { ServerUtil } from "./functions/server";
 import { MuteScheduler } from "./jobs/MuteScheduler";
+import { ContentFilterUtil } from "./modules/content-filter";
 import type { Context } from "./typings";
 
 /**
@@ -46,14 +46,14 @@ export default class Client {
     readonly errorHandler = new WebhookClient(process.env.ERROR_WEBHOOK);
     // global collection of all the bots commands (parent commands, sub commands, etc.)
     readonly commands = new Collection<string, Command>();
+    // utility methods for database interactions
+    readonly dbUtil = new DatabaseUtil(this);
     // utility methods for message interactions
     readonly messageUtil = new MessageUtil(this);
     // utility methods for server interactions
     readonly serverUtil = new ServerUtil(this);
     // utility methods for content filtering
     readonly contentFilterUtil = new ContentFilterUtil(this);
-    // utility methods for database interactions
-    readonly dbUtil = new DatabaseUtil(this);
 
     // scheduler that will check for (impending) expired mutes and remove them
     readonly muteHandler = new MuteScheduler(this, 15 * 60);

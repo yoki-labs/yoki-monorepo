@@ -1,4 +1,5 @@
 import Collection from "@discordjs/collection";
+import { Embed } from "@guildedjs/embeds";
 import { stripIndents } from "common-tags";
 
 import { inlineCodeblock, listInlineCodeblock } from "../formatters";
@@ -58,7 +59,7 @@ const Help: Command = {
 
         return ctx.messageUtil.send(
             message.channelId,
-            stripIndents`
+            new Embed().setDescription(stripIndents`
 				A list of available commands. For additional info on a command, type ${inlineCodeblock(`${commandCtx.server.prefix ?? process.env.DEFAULT_PREFIX}help [command]`)}. 
 
 				${commandCategoryMap
@@ -68,8 +69,8 @@ const Help: Command = {
 						${listInlineCodeblock(commands.map((x) => x.name))}
 					`
                     )
-                    .join("\n")}
-		`
+                    .join("\n\n")}
+		`)
         );
     },
 };

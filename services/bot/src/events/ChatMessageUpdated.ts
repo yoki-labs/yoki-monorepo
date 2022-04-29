@@ -22,9 +22,9 @@ export default async (packet: WSChatMessageUpdatedPayload, ctx: Context) => {
     // scan the updated message content
     await ctx.contentFilterUtil.scanMessage(message, serverFromDb);
     // get the log channel for message updates
-    const modLogChannel = await ctx.dbUtil.getLogChannel(message.serverId!, LogChannelType.CHAT_MESSAGE_UPDATE);
+    const updatedMessageLogChannel = await ctx.dbUtil.getLogChannel(message.serverId!, LogChannelType.CHAT_MESSAGE_UPDATE);
     // if there is no log channel for message updates, then ignore
-    if (!modLogChannel) return void 0;
+    if (!updatedMessageLogChannel) return void 0;
     // get the old message from the database if we logged it before
     const oldMessage = await ctx.dbUtil.getMessage(message.channelId, message.id);
     // if we did log it in the past, update it with the new content (logMessage uses upsert)
@@ -35,7 +35,7 @@ export default async (packet: WSChatMessageUpdatedPayload, ctx: Context) => {
     try {
         // send embed in log channel
         await ctx.messageUtil.send(
-            modLogChannel.channelId,
+            updatedMessageLogChannel.channelId,
             new Embed()
                 .setTitle("Updated Message!")
                 .setColor(Colors.YELLOW)

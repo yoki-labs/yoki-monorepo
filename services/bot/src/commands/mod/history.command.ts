@@ -1,6 +1,6 @@
 import { stripIndents } from "common-tags";
 
-import { ContentFilterUtil } from "../../functions/content-filter";
+import { ContentFilterUtil } from "../../modules/content-filter";
 import { RoleType } from "../../typings";
 import { Category } from "../Category";
 import type { Command } from "../Command";

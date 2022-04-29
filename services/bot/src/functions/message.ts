@@ -1,7 +1,7 @@
 import { Embed } from "@guildedjs/embeds";
 import type { ChatMessagePayload, RESTPostChannelMessagesBody } from "@guildedjs/guilded-api-typings";
 
-import Util from "./util";
+import { Util } from "./util";
 
 export class MessageUtil extends Util {
     // Send a message using either string, embed object, or raw object
