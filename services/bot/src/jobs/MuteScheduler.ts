@@ -39,8 +39,6 @@ export class MuteScheduler extends Scheduler<Action> {
                 )
             );
         }
-
-        // set all (impending) expired cases would be set to expired
-        if (expiredCases) void this.client.prisma.action.updateMany({ data: { expired: true }, where: { id: { in: expiredCases.map((x) => x.id) } } });
+        if (expiredCases.length) void this.client.prisma.action.updateMany({ data: { expired: true }, where: { id: { in: expiredCases.map((x) => x.id) } } });
     }
 }
