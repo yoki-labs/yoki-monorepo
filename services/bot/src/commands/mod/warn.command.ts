@@ -48,12 +48,13 @@ const Warning: Command = {
 
         await ctx.serverUtil.sendModLogMessageIfPossible(message.serverId!, commandCtx.member, newAction);
 
-        return ctx.rest.router.createChannelMessage(message.channelId, {
+        return ctx.messageUtil.send(message.channelId, {
             content: "A new warning has been issued.",
             isPrivate: true,
             embeds: [
                 new Embed({
-                    title: "You have been warned",
+                    title: ":warning: You have been warned",
+                    color: ctx.messageUtil.colors.warn,
                     description: `<@${targetId}>, you have been manually warned by a staff member of this server.`,
                 }).addField("Reason", reason.length > 1021 ? `${reason.substr(0, 1021)}...` : reason),
             ],
@@ -63,7 +64,7 @@ const Warning: Command = {
 export default Warning;
 
 declare module "@guildedjs/guilded-api-typings" {
-    export interface ChatMessageContent {
+    export interface RESTPostChannelMessagesBody {
         isPrivate?: boolean;
         isSilent?: boolean;
         replyMessageIds?: string[];

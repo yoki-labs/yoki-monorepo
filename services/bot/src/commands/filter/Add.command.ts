@@ -1,3 +1,5 @@
+import Embed from "@guildedjs/embeds";
+
 import { optionKeys, transformSeverityStringToEnum } from "../../functions/content-filter";
 import { RoleType } from "../../typings";
 import { Category } from "../Category";
@@ -46,7 +48,16 @@ const Add: Command = {
             severity: transformSeverityStringToEnum(severity),
             infractionPoints,
         });
-        return messageUtil.send(message.channelId, `Successfully added \`${phrase}\` with the severity \`${severity}\` to the automod list!`);
+        return messageUtil.send(message.channelId, {
+            content: "Phrase added",
+            embeds: [
+                new Embed({
+                    title: ":white_check_mark: New phrase added",
+                    description: `Successfully added \`${phrase}\` with the severity \`${severity}\` to the automod list!`,
+                    color: messageUtil.colors.good,
+                }),
+            ],
+        });
     },
 };
 

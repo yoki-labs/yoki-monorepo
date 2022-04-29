@@ -1,4 +1,5 @@
-import { stripIndents } from "common-tags";
+import Embed from "@guildedjs/embeds";
+import type { APIEmbedField } from "@guildedjs/guilded-api-typings";
 
 import { RoleType } from "../../typings";
 import { Category } from "../Category";
@@ -27,25 +28,44 @@ const History: Command = {
         });
 
         if (!fetchedCase) return ctx.messageUtil.send(message.channelId, "A case with that ID does not exist!");
-        const member = await ctx.serverUtil.getMember(message.serverId!, fetchedCase.targetId);
         return ctx.messageUtil.send(
             message.channelId,
-            stripIndents`
-				**Target:** \`${member.user.name} (${member.user.id})\`
-				**Type:** \`${fetchedCase.type}\`
-				**Reason:** \`${fetchedCase.reason}\`
-				${
-                    fetchedCase.expiresAt
-                        ? `**Expiration:** \`${fetchedCase.expiresAt.toLocaleDateString("en-US", {
-                              year: "numeric",
-                              month: "long",
-                              day: "numeric",
-                              hour: "2-digit",
-                              minute: "2-digit",
-                          })} EST\``
-                        : ""
-                }
-			`
+            {
+                content: "Showing case's details",
+                isSilent: true,
+                embeds: [
+                    new Embed({
+                        title: `:scroll: Case \`${caseId}\``,
+                        description: `<@${fetchedCase.targetId}> has received ${fetchedCase.type} by <@${fetchedCase.executorId}>`,
+                        color: ctx.messageUtil.colors.bad,
+                        fields: [
+                            fetchedCase && {
+                                name: "Reason",
+                                value: (fetchedCase.reason as string).length > 1024 ? `${fetchedCase.reason?.substr(0, 1021)}...` : fetchedCase.reason,
+                            },
+                            fetchedCase.expiresAt && {
+                                name: "Expiration",
+                                value: `${fetchedCase.expiresAt.toLocaleDateString("en-US", {
+                                    year: "numeric",
+                                    month: "long",
+                                    day: "numeric",
+                                    hour: "2-digit",
+                                    minute: "2-digit",
+                                })} EST`,
+                            },
+                        ].filter(Boolean) as APIEmbedField[],
+                    }),
+                ],
+            }
+            // stripIndents`
+            // 	**Target:** \`${member.user.name} (${member.user.id})\`
+            // 	**Type:** \`${fetchedCase.type}\`
+            // 	**Reason:** \`${fetchedCase.reason}\`
+            // 	${
+            //         fetchedCase.expiresAt
+            //             : ""
+            //     }
+            // `
         );
     },
 };

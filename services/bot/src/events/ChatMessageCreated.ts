@@ -31,20 +31,56 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context) => {
     const parentCommand = command;
     if (command.parentCommand && command.subCommands?.size) {
         if (!args[0])
-            return ctx.messageUtil.send(
-                message.channelId,
-                `You must provide a sub command to run. Your options are: ${command.subCommands.map((x) => `\`${x.name.split("-")[1]}\``).join(", ")}. Example: \`${
-                    serverFromDb.prefix ?? process.env.DEFAULT_PREFIX
-                }${command.name}\``
-            );
+            return ctx.messageUtil.send(message.channelId, {
+                content: "Invalid command usage",
+                embeds: [
+                    new Embed({
+                        title: `:x: No sub-command specified`,
+                        description: `Please provide a sub-command.`,
+                        color: ctx.messageUtil.colors.dull,
+                        fields: [
+                            {
+                                name: "Available sub-commands",
+                                value: `- ${command.subCommands.map((x) => `\`${x.name.split("-")[1]}\``).join("\n- ")}`,
+                                inline: true,
+                            },
+                            {
+                                name: "Example",
+                                value: stripIndents`
+                                        ${serverFromDb.prefix ?? process.env.DEFAULT_PREFIX}${commandName} ${command.subCommands.firstKey()}
+                                    `,
+                                inline: true,
+                            },
+                        ],
+                    }),
+                ],
+            });
         const subCommand = command.subCommands.get(args[0]);
         if (!subCommand)
-            return ctx.messageUtil.send(
-                message.channelId,
-                `Invalid sub-command. Your options are ${command.subCommands.map((x) => `\`${x.name.split("-")[1]}\``).join(", ")}. Example: \`${
-                    serverFromDb.prefix ?? process.env.DEFAULT_PREFIX
-                }${command.name} ${command.subCommands.first()!.subName}\``
-            );
+            return ctx.messageUtil.send(message.channelId, {
+                content: "Invalid command usage",
+                embeds: [
+                    new Embed({
+                        title: `:x: Sub-command not found`,
+                        description: `The specified sub-command could not be found.`,
+                        color: ctx.messageUtil.colors.dull,
+                        fields: [
+                            {
+                                name: "Available sub-commands",
+                                value: `- ${command.subCommands.map((x) => `\`${x.name.split("-")[1]}\``).join("\n- ")}`,
+                                inline: true,
+                            },
+                            {
+                                name: "Example",
+                                value: stripIndents`
+                                        ${serverFromDb.prefix ?? process.env.DEFAULT_PREFIX}${commandName} ${command.subCommands.firstKey()}
+                                    `,
+                                inline: true,
+                            },
+                        ],
+                    }),
+                ],
+            });
         command = subCommand;
         args = args.slice(1);
     }

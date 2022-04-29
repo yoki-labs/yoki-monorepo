@@ -1,3 +1,5 @@
+import Embed from "@guildedjs/embeds";
+import type { APIEmbedField } from "@guildedjs/guilded-api-typings";
 import { stripIndents } from "common-tags";
 import ms from "ms";
 
@@ -77,10 +79,23 @@ const Mute: Command = {
 
         await ctx.serverUtil.sendModLogMessageIfPossible(message.serverId!, commandCtx.member, newAction);
 
-        return ctx.messageUtil.send(
-            message.channelId,
-            `User by the ID of \`${targetId}\` has been muted for **${duration / 1000 / 60} minutes** for the reason of \`${reason ?? "NO REASON PROVIDED"}\`.`
-        );
+        return ctx.messageUtil.send(message.channelId, {
+            content: "Mute has been received",
+            isPrivate: true,
+            embeds: [
+                new Embed({
+                    title: ":mute: You have been muted",
+                    description: `<@${targetId}>, you have been muted for **${duration / 60000}** minutes.`,
+                    color: ctx.messageUtil.colors.bad,
+                    fields: [
+                        reason && {
+                            name: "Reason",
+                            value: (reason as string).length > 1024 ? `${reason.substr(0, 1021)}...` : reason,
+                        },
+                    ].filter(Boolean) as APIEmbedField[],
+                }),
+            ],
+        });
     },
 };
 

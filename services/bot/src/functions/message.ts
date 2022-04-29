@@ -3,6 +3,15 @@ import type { ChatMessagePayload, RESTPostChannelMessagesBody } from "@guildedjs
 import Util from "./util";
 
 export class MessageUtil extends Util {
+    readonly colors = {
+        default: 0xeb6fa7,
+        good: 0x36ec36,
+        info: 0x3636ec,
+        warn: 0xec9b36,
+        bad: 0xec3636,
+        dull: 0x8a7b82,
+    };
+
     logMessage(message: ChatMessagePayload) {
         return this.prisma.message.upsert({
             where: { messageId: message.id },
