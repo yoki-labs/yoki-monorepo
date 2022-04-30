@@ -1,5 +1,6 @@
 import Collection from "@discordjs/collection";
 import { Embed } from "@guildedjs/embeds";
+import type { APIEmbedField } from "@guildedjs/guilded-api-typings";
 import { stripIndents } from "common-tags";
 
 import { inlineCodeblock, listInlineCodeblock } from "../formatters";
@@ -12,6 +13,7 @@ const Help: Command = {
     description: "Send a list of all commands",
     usage: "[commandName]",
     hidden: true,
+    aliases: ["h"],
     args: [
         {
             name: "commandName",
@@ -27,21 +29,35 @@ const Help: Command = {
 
             return ctx.messageUtil.send(
                 message.channelId,
-                stripIndents`
-					**Name:** ${inlineCodeblock(command.name)}
-					${command.aliases ? `**Aliases:** ${listInlineCodeblock(command.aliases)}` : ""}
-					**Description:** ${inlineCodeblock(command.description)}
-					**Usage:** ${inlineCodeblock(
-                        `${commandCtx.server.getPrefix()}${command.name} ${
-                            command.usage ?? `<${command.subCommands?.size ? command.subCommands!.map((x) => x.subName!).join(" | ") : ""}> <...args>`
-                        }`
-                    )}
-					${command.examples ? `**Examples:** ${listInlineCodeblock(command.examples.map((x) => `${commandCtx.server.getPrefix()}${command.parentCommand ? command.name : ""} ${x}`))}` : ""}
-					${command.userPermissions ? `**Required User Permissions:** ${listInlineCodeblock(command.userPermissions)}` : ""}
-					${command.clientPermissions ? `**Required Bot Permissions:** ${listInlineCodeblock(command.clientPermissions)}` : ""}
-					${command.requiredRole ? `**Required Role:** ${inlineCodeblock(command.requiredRole)}` : ""}
-					${command.subCommands?.size ? `**Subcommands:** ${listInlineCodeblock(command.subCommands!.map((x) => x.subName!))}` : ""}
-			`
+                new Embed({
+                    title: `${inlineCodeblock(command.name)} command`,
+                    description: command.description,
+                    color: ctx.messageUtil.colors.default,
+                    fields: [
+                        {
+                            name: `:scroll: Information`,
+                            value: stripIndents`
+                                ${
+                                    command.examples
+                                        ? `**Examples:** ${listInlineCodeblock(
+                                              command.examples.map((x) => `${commandCtx.server.getPrefix()}${command.parentCommand ? command.name : ""} ${x}`)
+                                          )}`
+                                        : ""
+                                }
+                                **Usage:** ${inlineCodeblock(
+                                    `${commandCtx.server.getPrefix()}${command.name} ${
+                                        command.usage ?? `<${command.subCommands?.size ? command.subCommands!.map((x) => x.subName!).join(" | ") : ""}> <...args>`
+                                    }`
+                                )}
+                                ${command.aliases ? `**Aliases:** ${listInlineCodeblock(command.aliases)}` : ""}
+                                ${command.subCommands?.size ? `**Subcommands:** ${listInlineCodeblock(command.subCommands!.map((x) => x.subName!))}` : ""}
+                                ${command.userPermissions ? `**Required User Permissions:** ${listInlineCodeblock(command.userPermissions)}` : ""}
+                                ${command.clientPermissions ? `**Required Bot Permissions:** ${listInlineCodeblock(command.clientPermissions)}` : ""}
+                                ${command.requiredRole ? `**Required Role:** ${inlineCodeblock(command.requiredRole)}` : ""}
+                            `,
+                        },
+                    ].filter(Boolean) as APIEmbedField[],
+                })
             );
         }
 
@@ -53,18 +69,31 @@ const Help: Command = {
 
         return ctx.messageUtil.send(
             message.channelId,
-            new Embed().setDescription(stripIndents`
-				A list of available commands. For additional info on a command, type ${inlineCodeblock(`${commandCtx.server.getPrefix()}help [command]`)}. 
-
-				${commandCategoryMap
+            new Embed({
+                title: "Command List",
+                description: commandCategoryMap
                     .map(
                         (commands, category) => stripIndents`
-						**${category}:**
-						${listInlineCodeblock(commands.map((x) => x.name))}
-					`
+                            **${category}:**
+                            ${listInlineCodeblock(commands.map((x) => x.name))}
+                        `
                     )
-                    .join("\n\n")}
-		`)
+                    .join("\n\n"),
+                color: ctx.messageUtil.colors.default,
+                fields: [
+                    {
+                        name: `:question: Command info`,
+                        value: `For additional info on a command, type ${inlineCodeblock(`${commandCtx.server.getPrefix()}help [command]`)}`,
+                        inline: true,
+                    },
+                    {
+                        name: `:link: [Join server](https://guilded.gg/Yoki) • [Invite bot](https://guilded.gg/Yoki)`,
+                        // value: `Get latest news about Yoki and receive support`,
+                        value: "",
+                        inline: true,
+                    },
+                ],
+            })
         );
     },
 };
