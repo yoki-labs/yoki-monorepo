@@ -27,8 +27,20 @@ const Warn: Command = {
 
         try {
             await ctx.messageUtil.send(message.channelId, {
-                content: `**Alert!** ${target.user.name}, you have been warned for \`${reason}\`.
-				Please re-read the rules for this server and ensure this behavior does not repeat`,
+                isPrivate: true,
+                embeds: [
+                    {
+                        title: ":warning: You have been warned",
+                        color: ctx.messageUtil.colors.warn,
+                        description: `<@${target.user.id}>, you have been manually warned by a staff member of this server.`,
+                        fields: [
+                            reason && {
+                                name: "Reason",
+                                value: (reason as string).length > 1021 ? `${(reason as string).substr(0, 1021)}...` : reason,
+                            },
+                        ].filter(Boolean) as APIEmbedField[],
+                    },
+                ],
             });
         } catch (e) {
             return ctx.messageUtil.send(message.channelId, {
@@ -56,19 +68,8 @@ const Warn: Command = {
 
         return ctx.messageUtil.send(message.channelId, {
             isPrivate: true,
-            embeds: [
-                {
-                    title: ":warning: You have been warned",
-                    color: ctx.messageUtil.colors.warn,
-                    description: `<@${target.user.id}>, you have been manually warned by a staff member of this server.`,
-                    fields: [
-                        reason && {
-                            name: "Reason",
-                            value: (reason as string).length > 1021 ? `${(reason as string).substr(0, 1021)}...` : reason,
-                        },
-                    ].filter(Boolean) as APIEmbedField[],
-                },
-            ],
+            content: `${target.user.name} (\`${target.user.id}\`) has been successfully warned.`,
+            replyMessageIds: [message.id],
         });
     },
 };

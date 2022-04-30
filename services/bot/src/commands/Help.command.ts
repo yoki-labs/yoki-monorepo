@@ -13,7 +13,6 @@ const Help: Command = {
     description: "Send a list of all commands",
     usage: "[commandName]",
     hidden: true,
-    aliases: ["h"],
     args: [
         {
             name: "commandName",
