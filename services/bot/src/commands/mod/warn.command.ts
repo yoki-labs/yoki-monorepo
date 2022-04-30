@@ -1,7 +1,5 @@
 import Embed from "@guildedjs/embeds";
-import { stripIndents } from "common-tags";
 
-import { isHashId } from "../../util";
 import { Category } from "../Category";
 import type { Command } from "../Command";
 import { RoleType } from ".prisma/client";
@@ -15,7 +13,7 @@ const Warning: Command = {
     args: [
         {
             name: "targetId",
-            type: "string",
+            type: "hashId",
         },
         {
             name: "reason",
@@ -26,14 +24,6 @@ const Warning: Command = {
     async execute(message, args, ctx, commandCtx) {
         const targetId: string = args.targetId as string;
         const reason: string = args.reason as string;
-
-        if (!isHashId(targetId))
-            return ctx.messageUtil.send(message.channelId, {
-                content: stripIndents`
-                    Please provide the identifier of the user as \`targetId\`
-                `,
-                replyMessageIds: [message.id],
-            });
 
         const newAction = await ctx.serverUtil.addAction({
             serverId: message.serverId!,

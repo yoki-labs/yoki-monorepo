@@ -4,7 +4,6 @@ import { stripIndents } from "common-tags";
 import ms from "ms";
 
 import { RoleType } from "../../typings";
-import { isHashId } from "../../util";
 import { Category } from "../Category";
 import type { Command } from "../Command";
 
@@ -17,7 +16,7 @@ const Mute: Command = {
     args: [
         {
             name: "targetId",
-            type: "string",
+            type: "hashId",
         },
         {
             name: "duration",
@@ -44,14 +43,6 @@ const Mute: Command = {
         const duration = ms(args.duration as string);
         if (!duration || duration <= 894000) return ctx.messageUtil.send(message.channelId, "Your mute duration must be longer than 15 minutes.");
         const expiresAt = new Date(Date.now() + duration);
-
-        if (!isHashId(targetId))
-            return ctx.messageUtil.send(message.channelId, {
-                content: stripIndents`
-                    Please provide the identifier of the user as \`targetId\`
-                `,
-                replyMessageIds: [message.id],
-            });
 
         try {
             await ctx.rest.router.assignRoleToMember(message.serverId!, targetId, commandCtx.server.muteRoleId);

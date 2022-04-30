@@ -8,7 +8,7 @@ const Remove: Command = {
     hidden: true,
     subName: "remove",
     ownerOnly: true,
-    args: [{ name: "serverId", type: "string" }],
+    args: [{ name: "serverId", type: "hashId" }],
     execute: async (message, args, ctx) => {
         const serverId = args.serverId as string;
         const server = await ctx.serverUtil.getServer(serverId);

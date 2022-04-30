@@ -14,7 +14,7 @@ const History: Command = {
     args: [
         {
             name: "targetId",
-            type: "string",
+            type: "hashId",
         },
     ],
     execute: async (message, args, ctx) => {

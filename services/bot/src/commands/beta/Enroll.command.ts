@@ -11,7 +11,7 @@ const Enroll: Command = {
     subName: "enroll",
     ownerOnly: true,
     args: [
-        { name: "serverId", type: "string" },
+        { name: "serverId", type: "hashId" },
         { name: "roleId", type: "number", optional: true },
     ],
     execute: async (message, args, ctx) => {

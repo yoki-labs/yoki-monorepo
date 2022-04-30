@@ -26,8 +26,17 @@ export interface Command {
 
 export interface CommandArgument {
     name: string;
-    type: "string" | "UUID" | "number" | "boolean" | "rest" | "listRest";
+    type: CommandArgumentType;
     optional?: boolean;
     separator?: string;
     resolver?: (...content: any[]) => any;
+}
+export type CommandArgumentType = "string" | "UUID" | "hashId" | "number" | "boolean" | "rest" | "listRest";
+
+export interface CommandArgumentDefinition {
+    friendlyName: string;
+    isCorrect(args: string[], index: number, preTransformed: any): boolean;
+    transform?(args: string[], index: number, preTransformed: any, commandArg: CommandArgument): any;
+    // To not do same thing twice
+    preTransform?(args: string[], index: number): any;
 }

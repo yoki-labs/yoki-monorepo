@@ -4,8 +4,8 @@ import { stripIndents } from "common-tags";
 import { nanoid } from "nanoid";
 
 import type { CommandArgument } from "../commands/Command";
+import { argumentDictionary } from "../commands/commandUtil";
 import type { Context } from "../typings";
-import { isUUID } from "../util";
 
 export default async (packet: WSChatMessageCreatedPayload, ctx: Context) => {
     const { message } = packet.d;
@@ -85,15 +85,29 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context) => {
         args = args.slice(1);
     }
 
-    function handleIncorrectArg(i: number, commandArg: CommandArgument): void {
+    function handleIncorrectArg(commandArg: CommandArgument): void {
         if (!command) return;
 
-        void ctx.messageUtil.send(
-            message.channelId,
-            stripIndents`
-                Sorry, your ${commandArg.name} was not valid! Was expecting a \`string\`, received \`${typeof args[i] === "undefined" ? "nothing" : args[i]}\`
-                **Usage:** \`${parentCommand.name}${command.name === parentCommand.name ? "" : ` ${command.subName ?? command.name}`} ${command.usage}\``
-        );
+        void ctx.messageUtil.send(message.channelId, {
+            content: "Incorrect command usage",
+            embeds: [
+                new Embed({
+                    title: ":x: Incorrect argument",
+                    description: `Sorry, but the usage of argument \`${commandArg.name}\` was not correct. Was expecting a ${argumentDictionary[commandArg.type].friendlyName}.`,
+                    color: ctx.messageUtil.colors.bad,
+                    fields: [
+                        {
+                            name: "Usage",
+                            value: stripIndents`
+                                \`\`\`clojure
+                                ${prefix}${parentCommand.name}${command.name === parentCommand.name ? "" : ` ${command.subName ?? command.name}`} ${command.usage}
+                                \`\`\`
+                            `,
+                        },
+                    ],
+                }),
+            ],
+        });
     }
 
     const resolvedArgs: Record<string, string | string[] | number | boolean | null> = {};
@@ -103,55 +117,13 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context) => {
 
             // Optional check
             if (commandArg.type !== "listRest" && commandArg.optional && typeof args[i] == "undefined") continue;
-            switch (commandArg.type) {
-                case "rest": {
-                    const restArgs = args.slice(i);
-                    if (restArgs.length <= 0) return handleIncorrectArg(i, commandArg);
 
-                    resolvedArgs[commandArg.name] = restArgs.join(" ") ?? null;
-                    break;
-                }
-                case "listRest": {
-                    const restArgs = args.slice(i);
-                    if (restArgs.length === 0 && !commandArg.optional) return handleIncorrectArg(i, commandArg);
+            const handler = argumentDictionary[commandArg.type];
 
-                    let finalizedArray;
-                    if (restArgs.length > 0) {
-                        finalizedArray = commandArg.separator ? restArgs.join(" ").split(commandArg.separator) : restArgs;
-                    } else {
-                        finalizedArray = [];
-                    }
+            const preTransformed = handler.preTransform?.(args, i) ?? args[i];
+            if (!handler.isCorrect(args, i, preTransformed)) return handleIncorrectArg(commandArg);
 
-                    resolvedArgs[commandArg.name] = finalizedArray;
-                    break;
-                }
-                case "string": {
-                    if (typeof args[i] !== "string") return handleIncorrectArg(i, commandArg);
-
-                    resolvedArgs[commandArg.name] = args[i] ?? null;
-                    break;
-                }
-                case "number": {
-                    if (Number.isNaN(Number(args[i]))) return handleIncorrectArg(i, commandArg);
-
-                    resolvedArgs[commandArg.name] = args[i] ? Number(args[i]) : null;
-                    break;
-                }
-                case "boolean": {
-                    if (!["true", "enable", "yes", "disable", "false", "no"].includes(args[i]?.toLowerCase())) return handleIncorrectArg(i, commandArg);
-
-                    resolvedArgs[commandArg.name] = ["true", "yes", "enable"].includes(args[i]?.toLowerCase());
-                    break;
-                }
-                case "UUID": {
-                    if (!isUUID(args[i])) return handleIncorrectArg(i, commandArg);
-
-                    resolvedArgs[commandArg.name] = args[i];
-                    break;
-                }
-                default:
-                    resolvedArgs[commandArg.name] = args[i];
-            }
+            resolvedArgs[commandArg.name] = handler.transform?.(args, i, preTransformed, commandArg) ?? preTransformed;
         }
     }
 
