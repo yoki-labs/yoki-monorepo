@@ -3,7 +3,7 @@ import { RestManager } from "@guildedjs/rest";
 import { WebhookClient } from "@guildedjs/webhook-client";
 import { WebSocketManager } from "@guildedjs/ws";
 import { Action, PrismaClient } from "@prisma/client";
-import EventEmitter from "events";
+import EventEmitter from "node:events";
 import RedisClient from "ioredis";
 import type TypedEmitter from "typed-emitter";
 
