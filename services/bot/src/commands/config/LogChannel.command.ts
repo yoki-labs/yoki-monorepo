@@ -30,23 +30,24 @@ const LogChannel: Command = {
     category: Category.Settings,
     requiredRole: RoleType.ADMIN,
     args: [
-        { name: "channelId", optional: true, type: "UUID" },
-        { name: "logTypes", optional: true, type: "listRest", separator: " | " },
+        { name: "channelId", type: "UUID", optional: true },
+        { name: "logTypes", optional: true, type: "listRest" },
     ],
     execute: async (message, args, ctx) => {
         const channelId = args.channelId as string;
-        let logTypes = args.logTypes as string[];
-
-        // If there are logTypes, uppercase them all, then filter out duplicates. No idea why this had to specifically be two different lines.
-        if (logTypes.length > 0) {
-            logTypes = logTypes.map((logType) => logType.toUpperCase());
-            logTypes = logTypes.filter((value, index) => logTypes.indexOf(value) === index);
-        }
+        let logTypes = args.logTypes as string[] | null;
 
         // If the user didn't supply a channelId. Get all log channels, use above cleanup method to filter duplicates and merge them, then list them.
-        if (!channelId) {
-            const logChannels = await ctx.serverUtil.getLogChannels(message.serverId!);
-            if (logChannels.length <= 0) return ctx.messageUtil.send(message.channelId, `This server has no set log channels.`);
+        if (!channelId || !logTypes) {
+            const logChannels = await ctx.dbUtil.getLogChannels(message.serverId!);
+            if (logChannels.length <= 0)
+                return ctx.messageUtil.send(
+                    message.channelId,
+                    stripIndents` 
+						There are no log channels set for this server.
+						You can set the following types: ${listInlineCodeblock(Object.values(LogChannelType))}
+					`
+                );
 
             const formattedChannels: Collection<string, LogChannelType[]> = await cleanupChannels(logChannels);
 
@@ -54,9 +55,15 @@ const LogChannel: Command = {
                 message.channelId,
                 stripIndents`
                     This server has the following log channels:
-                    ${formattedChannels.map((v, k) => `***${k}:*** ${listInlineCodeblock(v)}`)}
+                    ${formattedChannels.map((v, k) => `***${k}:*** ${listInlineCodeblock(v)}`).join("\n")}
                 `
             );
+        }
+
+        // If there are logTypes, uppercase them all, then filter out duplicates. No idea why this had to specifically be two different lines.
+        if (logTypes.length > 0) {
+            logTypes = logTypes.map((logType) => logType.toUpperCase());
+            logTypes = logTypes.filter((value, index) => logTypes!.indexOf(value) === index);
         }
 
         // Event subscribe handling.

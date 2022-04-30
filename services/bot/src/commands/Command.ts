@@ -1,7 +1,7 @@
 import type Collection from "@discordjs/collection";
 import type { ChatMessagePayload } from "@guildedjs/guilded-api-typings";
 
-import type { CommandContext, Context, RoleType } from "../typings";
+import type { CommandContext, Context, ResolvedArgs, RoleType } from "../typings";
 
 export interface Command {
     name: string;
@@ -21,17 +21,17 @@ export interface Command {
     preRunCheck?: (message: ChatMessagePayload, args: string[], ctx: Context) => unknown;
     requiredRole?: RoleType;
     ownerOnly?: boolean;
-    execute: (message: ChatMessagePayload, args: Record<string, string[] | string | number | boolean | null>, ctx: Context, raw: CommandContext) => unknown;
+    execute: (message: ChatMessagePayload, args: Record<string, ResolvedArgs>, ctx: Context, raw: CommandContext) => unknown;
 }
 
 export interface CommandArgument {
     name: string;
-    type: CommandArgumentType;
+    type: CommandArgType;
     optional?: boolean;
     separator?: string;
     resolver?: (...content: any[]) => any;
 }
-export type CommandArgumentType = "string" | "UUID" | "hashId" | "number" | "boolean" | "rest" | "listRest";
+export type CommandArgType = "string" | "UUID" | "memberID" | "number" | "boolean" | "rest" | "listRest";
 
 export interface CommandArgumentDefinition {
     friendlyName: string;

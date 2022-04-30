@@ -1,4 +1,4 @@
-import Embed from "@guildedjs/embeds";
+import { Embed } from "@guildedjs/embeds";
 
 import { RoleType } from "../../typings";
 import { Category } from "../Category";
@@ -13,31 +13,27 @@ const Disable: Command = {
     requiredRole: RoleType.ADMIN,
     category: Category.Moderation,
     execute: async (message, _args, ctx) => {
-        return ctx.contentFilterUtil
+        return ctx.dbUtil
             .enableFilter(message.serverId!)
             .then(() =>
-                ctx.messageUtil.send(message.channelId, {
-                    content: "Automod reconfigured",
-                    embeds: [
-                        new Embed({
-                            title: "Automod disabled",
-                            description: "Successfully disabled the automod filter for this server.",
-                            color: ctx.messageUtil.colors.good,
-                        }),
-                    ],
-                })
+                ctx.messageUtil.send(
+                    message.channelId,
+                    new Embed({
+                        title: "Automod disabled",
+                        description: "Successfully disabled the automod filter for this server.",
+                        color: ctx.messageUtil.colors.good,
+                    })
+                )
             )
             .catch((e: Error) =>
-                ctx.messageUtil.send(message.channelId, {
-                    content: "An error occurred while disabling automod",
-                    embeds: [
-                        new Embed({
-                            title: ":x: An error occurred",
-                            description: `There was an issue disabling automoderation for your server. Please forward this error to bot staff: \`${e.message}\``,
-                            color: ctx.messageUtil.colors.bad,
-                        }),
-                    ],
-                })
+                ctx.messageUtil.send(
+                    message.channelId,
+                    new Embed({
+                        title: ":x: An error occurred",
+                        description: `There was an issue disabling automoderation for your server. Please forward this error to bot staff: \`${e.message}\``,
+                        color: ctx.messageUtil.colors.bad,
+                    })
+                )
             );
     },
 };

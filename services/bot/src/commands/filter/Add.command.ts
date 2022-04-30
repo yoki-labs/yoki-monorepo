@@ -1,6 +1,6 @@
-import Embed from "@guildedjs/embeds";
+import { Embed } from "@guildedjs/embeds";
 
-import { optionKeys, transformSeverityStringToEnum } from "../../functions/content-filter";
+import { transformSeverityStringToEnum } from "../../modules/content-filter";
 import { RoleType } from "../../typings";
 import { Category } from "../Category";
 import type { Command } from "../Command";
@@ -30,34 +30,31 @@ const Add: Command = {
             optional: true,
         },
     ],
-    execute: async (message, args, { prisma, messageUtil, contentFilterUtil }, { server }) => {
-        if (!server.filterEnabled)
-            return messageUtil.send(message.channelId, `Automod filter is disabled! Please enable using \`${server.prefix ?? process.env.DEFAULT_PREFIX}filter enable\``);
+    execute: async (message, args, ctx, { server }) => {
+        if (!server.filterEnabled) return ctx.messageUtil.send(message.channelId, `Automod filter is disabled! Please enable using \`${server.getPrefix()}filter enable\``);
         const phrase = args.phrase as string;
-        const severity = (args.severity as string | null) ?? "warn";
+        const severity = transformSeverityStringToEnum((args.severity as string | null) ?? "warn");
         const infractionPoints = (args.infraction_points as number | null) ?? 5;
 
-        if (!optionKeys.includes(severity)) return messageUtil.send(message.channelId, "Sorry, but that is not a valid severity level!");
-        if (infractionPoints < 0 || infractionPoints > 100) return messageUtil.send(message.channelId, "Sorry, but the infraction points must be between 0 and 100.");
-        const doesExistAlready = await prisma.contentFilter.findFirst({ where: { serverId: message.serverId!, content: phrase } });
-        if (doesExistAlready) return messageUtil.send(message.channelId, "This word is already in your server's filter!");
-        await contentFilterUtil.addWordToFilter({
+        if (!severity) return ctx.messageUtil.send(message.channelId, "Sorry, but that is not a valid severity level!");
+        if (infractionPoints < 0 || infractionPoints > 100) return ctx.messageUtil.send(message.channelId, "Sorry, but the infraction points must be between 0 and 100.");
+        const doesExistAlready = await ctx.prisma.contentFilter.findFirst({ where: { serverId: message.serverId!, content: phrase } });
+        if (doesExistAlready) return ctx.messageUtil.send(message.channelId, "This word is already in your server's filter!");
+        await ctx.dbUtil.addWordToFilter({
             content: phrase,
             creatorId: message.createdBy,
             serverId: message.serverId!,
-            severity: transformSeverityStringToEnum(severity),
+            severity,
             infractionPoints,
         });
-        return messageUtil.send(message.channelId, {
-            content: "Phrase added",
-            embeds: [
-                new Embed({
-                    title: ":white_check_mark: New phrase added",
-                    description: `Successfully added \`${phrase}\` with the severity \`${severity}\` to the automod list!`,
-                    color: messageUtil.colors.good,
-                }),
-            ],
-        });
+        return ctx.messageUtil.send(
+            message.channelId,
+            new Embed({
+                title: ":white_check_mark: New phrase added",
+                description: `Successfully added \`${phrase}\` with the severity \`${severity}\` to the automod list!`,
+                color: ctx.messageUtil.colors.good,
+            })
+        );
     },
 };
 

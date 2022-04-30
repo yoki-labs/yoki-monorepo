@@ -29,21 +29,13 @@ model Server {
 }
 
 model LogChannel {
-    id        Int            @id @default(autoincrement())
-    serverId  String         @db.VarChar(255)
-    channelId String         @db.VarChar(255)
-    createdAt DateTime       @default(now())
-    type      LogChannelType
-}
-
-model Webhook {
-    id           Int       @id @default(autoincrement())
-    webhookId    String    @db.VarChar(255)
-    webhookToken String    @db.VarChar(255)
-    channelId    String    @db.VarChar(255)
-    serverId     String    @db.VarChar(255)
-    createdAt    DateTime  @default(now())
-    updatedAt    DateTime? @updatedAt
+    id           Int            @id @default(autoincrement())
+    serverId     String         @db.VarChar(255)
+    channelId    String         @db.VarChar(255)
+    createdAt    DateTime       @default(now())
+    type         LogChannelType
+    webhookId    String?        @db.VarChar(255)
+    webhookToken String?        @db.VarChar(255)
 }
 
 model Role {
@@ -87,7 +79,7 @@ model Action {
     logChannelMessage String?   @db.VarChar(255)
     executorId        String    @db.VarChar(255)
     reason            String?   @db.Text
-    triggerWord       String?   @db.Text
+    triggerContent    String?   @db.Text
     infractionPoints  Int
     targetId          String    @db.VarChar(255)
     createdAt         DateTime  @default(now())
@@ -106,11 +98,11 @@ model Message {
     isBot     Boolean
     createdAt DateTime
     updatedAt DateTime?
+    deletedAt DateTime?
 }
 
 enum LogChannelType {
     ALL
-    FALLBACK
     MOD_ACTION_LOG
     MEMBER_ROLES_UPDATE
     MEMBER_UPDATE

@@ -1,147 +1,171 @@
-import Embed from "@guildedjs/embeds";
+import { Embed as ChatEmbed } from "@guildedjs/embeds";
 import type { WSChatMessageCreatedPayload } from "@guildedjs/guilded-api-typings";
+import { Embed } from "@guildedjs/webhook-client";
 import { stripIndents } from "common-tags";
 import { nanoid } from "nanoid";
 
-import type { CommandArgument } from "../commands/Command";
-import { argumentDictionary } from "../commands/commandUtil";
-import type { Context } from "../typings";
+import boolean from "../args/boolean";
+import listRest from "../args/listRest";
+import memberID from "../args/member";
+import number from "../args/number";
+import rest from "../args/rest";
+import string from "../args/string";
+import UUID from "../args/UUID";
+import type { CommandArgType } from "../commands/Command";
+import type { Context, ResolvedArgs } from "../typings";
+
+const argCasters: Record<
+    CommandArgType,
+    (input: string, rawArgs: string[], index: number, ctx: Context, packet: WSChatMessageCreatedPayload) => ResolvedArgs | Promise<ResolvedArgs>
+> = {
+    string,
+    number,
+    boolean,
+    listRest,
+    rest,
+    UUID,
+    memberID,
+};
 
 export default async (packet: WSChatMessageCreatedPayload, ctx: Context) => {
     const { message } = packet.d;
+    // if the message wasn't sent in a server, or the person was a bot then don't do anything
     if (message.createdByBotId || message.createdBy === ctx.userId || !message.serverId) return void 0;
 
-    const serverFromDb = await ctx.serverUtil.getServer(message.serverId);
+    // get the server from the database
+    const serverFromDb = await ctx.dbUtil.getServer(message.serverId);
+    // if the server is blacklisted or isn't in the early access, don't do anything
     if (serverFromDb?.blacklisted || !serverFromDb?.flags?.includes("EARLY_ACCESS")) return void 0;
 
-    const prefix = serverFromDb.prefix ?? process.env.DEFAULT_PREFIX;
+    // the prefix of this server, otherwise the fallback default prefix
+    const prefix = serverFromDb.getPrefix();
 
+    // if the message does not start with the prefix
     if (!message.content.startsWith(prefix)) {
-        await ctx.messageUtil.logMessage(message);
+        // store the message in the database
+        await ctx.dbUtil.storeMessage(message);
+        // scan the message for any harmful content (filter list, presets)
         return ctx.contentFilterUtil.scanMessage(message, serverFromDb);
     }
 
+    // parse the message into the command name and args ("?test arg1 arg2 arg3" = [ "test", "arg1", "arg2", "arg3" ])
     let [commandName, ...args] = message.content.slice(prefix.length).trim().split(/ +/g);
+    // if no command name, don't do anything
     if (!commandName) return void 0;
+    // lowercase the command name
     commandName = commandName.toLowerCase();
 
+    // get the command by the name or if it's an alias of a command
     let command = ctx.commands.get(commandName) ?? ctx.commands.find((command) => command.aliases?.includes(commandName) ?? false);
+    // if not a valid command, don't do anything
     if (!command) return;
 
+    // for sub commands
     const parentCommand = command;
+    // if this is a command that has sub commands, run this
     if (command.parentCommand && command.subCommands?.size) {
+        // if no sub command, list all the available sub commands
         if (!args[0])
-            return ctx.messageUtil.send(message.channelId, {
-                content: "Invalid command usage",
-                embeds: [
-                    new Embed({
-                        title: `:x: No sub-command specified`,
-                        description: `Please provide a sub-command.`,
-                        color: ctx.messageUtil.colors.dull,
-                        fields: [
-                            {
-                                name: "Available sub-commands",
-                                value: `- ${command.subCommands.map((x) => `\`${x.name.split("-")[1]}\``).join("\n- ")}`,
-                                inline: true,
-                            },
-                            {
-                                name: "Example",
-                                value: stripIndents`
+            return ctx.messageUtil.send(
+                message.channelId,
+                new ChatEmbed({
+                    title: `:x: No sub-command specified`,
+                    description: `Please provide a sub-command.`,
+                    color: ctx.messageUtil.colors.dull,
+                    fields: [
+                        {
+                            name: "Available sub-commands",
+                            value: `- ${command.subCommands.map((x) => `\`${x.name.split("-")[1]}\``).join("\n- ")}`,
+                            inline: true,
+                        },
+                        {
+                            name: "Example",
+                            value: stripIndents`
                                         ${serverFromDb.prefix ?? process.env.DEFAULT_PREFIX}${commandName} ${command.subCommands.firstKey()}
                                     `,
-                                inline: true,
-                            },
-                        ],
-                    }),
-                ],
-            });
+                            inline: true,
+                        },
+                    ],
+                })
+            );
         const subCommand = command.subCommands.get(args[0]);
+        // if not a valid sub command, list all the proper ones
         if (!subCommand)
-            return ctx.messageUtil.send(message.channelId, {
-                content: "Invalid command usage",
-                embeds: [
-                    new Embed({
-                        title: `:x: Sub-command not found`,
-                        description: `The specified sub-command could not be found.`,
-                        color: ctx.messageUtil.colors.dull,
-                        fields: [
-                            {
-                                name: "Available sub-commands",
-                                value: `- ${command.subCommands.map((x) => `\`${x.name.split("-")[1]}\``).join("\n- ")}`,
-                                inline: true,
-                            },
-                            {
-                                name: "Example",
-                                value: stripIndents`
+            return ctx.messageUtil.send(
+                message.channelId,
+                new ChatEmbed({
+                    title: `:x: Sub-command not found`,
+                    description: `The specified sub-command could not be found.`,
+                    color: ctx.messageUtil.colors.dull,
+                    fields: [
+                        {
+                            name: "Available sub-commands",
+                            value: `- ${command.subCommands.map((x) => `\`${x.name.split("-")[1]}\``).join("\n- ")}`,
+                            inline: true,
+                        },
+                        {
+                            name: "Example",
+                            value: stripIndents`
                                         ${serverFromDb.prefix ?? process.env.DEFAULT_PREFIX}${commandName} ${command.subCommands.firstKey()}
                                     `,
-                                inline: true,
-                            },
-                        ],
-                    }),
-                ],
-            });
+                            inline: true,
+                        },
+                    ],
+                })
+            );
         command = subCommand;
+        // remove the sub command from the list of args, as that's the command name
         args = args.slice(1);
     }
 
-    function handleIncorrectArg(commandArg: CommandArgument): void {
-        if (!command) return;
-
-        void ctx.messageUtil.send(message.channelId, {
-            content: "Incorrect command usage",
-            embeds: [
-                new Embed({
-                    title: ":x: Incorrect argument",
-                    description: `Sorry, but the usage of argument \`${commandArg.name}\` was not correct. Was expecting a ${argumentDictionary[commandArg.type].friendlyName}.`,
-                    color: ctx.messageUtil.colors.bad,
-                    fields: [
-                        {
-                            name: "Usage",
-                            value: stripIndents`
-                                \`\`\`clojure
-                                ${prefix}${parentCommand.name}${command.name === parentCommand.name ? "" : ` ${command.subName ?? command.name}`} ${command.usage}
-                                \`\`\`
-                            `,
-                        },
-                    ],
-                }),
-            ],
-        });
-    }
-
-    const resolvedArgs: Record<string, string | string[] | number | boolean | null> = {};
-    if (command.args && command.args.length) {
+    // the object of casted args casted to their proper types
+    const resolvedArgs: Record<string, ResolvedArgs> = {};
+    // if this command has accepts args
+    if (command.args?.length) {
+        // go through all the specified arguments in the command
         for (let i = 0; i < command.args.length; i++) {
             const commandArg = command.args[i];
 
-            // Optional check
-            if (commandArg.type !== "listRest" && commandArg.optional && typeof args[i] == "undefined") continue;
+            // if the argument is not a rest type, is optional, and the actual argument is undefined, continue next in the args
+            if (commandArg.optional && typeof args[i] == "undefined") continue;
 
-            const handler = argumentDictionary[commandArg.type];
+            // run the caster and see if the arg is valid
+            const isValidArg = await argCasters[commandArg.type]?.(args[i], args, i, ctx, packet);
 
-            const preTransformed = handler.preTransform?.(args, i) ?? args[i];
-            if (!handler.isCorrect(args, i, preTransformed)) return handleIncorrectArg(commandArg);
+            // if the arg is not valid, inform the user
+            if (isValidArg === null) return ctx.messageUtil.handleBadArg(message.channelId, prefix, commandArg, command, parentCommand);
 
-            resolvedArgs[commandArg.name] = handler.transform?.(args, i, preTransformed, commandArg) ?? preTransformed;
+            // if the arg is valid, add it to the resolved args obj
+            resolvedArgs[commandArg.name] = isValidArg;
         }
     }
 
+    // fetch the member from either the server or the redis cache
     const member = await ctx.serverUtil.getMember(message.serverId, message.createdBy);
 
-    if (!ctx.operators.includes(message.createdBy))
+    // check if this user is not an operator
+    if (!ctx.operators.includes(message.createdBy)) {
+        // if this command requires a user to have a specific role, then check if they have it
         if (command.requiredRole) {
+            // get all the roles of the required type for this command
             const modRoles = await ctx.prisma.role.findMany({ where: { serverId: message.serverId, type: command.requiredRole } });
+            // check if the user has any of the roles of this required type
             if (!modRoles.some((role) => member.roleIds.includes(role.roleId)))
                 return ctx.messageUtil.reply(message, `Oh no! Unfortunately, you are missing the ${command.requiredRole} role permission!`);
+            // if this command is operator only, then silently ignore because of privacy reasons
         } else if (command.ownerOnly) return void 0;
+    }
 
     try {
+        // run the command with the message object, the casted arguments, the global context object (datbase, rest, ws),
+        // and the command context (raw packet, database server entry, member from API or cache)
         await command.execute(message, resolvedArgs, ctx, { packet, server: serverFromDb, member });
     } catch (e) {
+        // ID for error, not persisted in database at all
         const referenceId = nanoid();
         if (e instanceof Error) {
             console.error(e);
+            // send the error to the error channel
             void ctx.errorHandler.send("Error in command usage!", [
                 new Embed()
                     .setDescription(
@@ -149,7 +173,7 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context) => {
 						Reference ID: **${referenceId}**
 						Server: **${message.serverId}**
 						Channel: **${message.channelId}**
-						User: **${message.createdBy}**
+						User: **${message.createdBy}** (${member?.user.name})
 						Content: \`${message.content}\`
 						Error: \`\`\`
 						${e.stack ?? e.message}
@@ -159,12 +183,13 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context) => {
                     .setColor("RED"),
             ]);
         }
+        // notify the user that there was an error executing the command
         return ctx.messageUtil.send(
             message.channelId,
             stripIndents`
-        **Oh no, something went wrong!**
-        This is potentially an issue on our end, please contact us and forward the following ID: \`${referenceId}\`
-        `
+				**Oh no, something went wrong!**
+				This is potentially an issue on our end, please contact us and forward the following ID and error: \`${referenceId}\` & \`${(e as any).message}\`
+        	`
         );
     }
 

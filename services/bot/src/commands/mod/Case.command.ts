@@ -1,4 +1,3 @@
-import Embed from "@guildedjs/embeds";
 import type { APIEmbedField } from "@guildedjs/guilded-api-typings";
 
 import { RoleType } from "../../typings";
@@ -31,10 +30,9 @@ const History: Command = {
         return ctx.messageUtil.send(
             message.channelId,
             {
-                content: "Showing case's details",
                 isSilent: true,
                 embeds: [
-                    new Embed({
+                    {
                         title: `:scroll: Case \`${caseId}\``,
                         description: `<@${fetchedCase.targetId}> has received ${fetchedCase.type} by <@${fetchedCase.executorId}>`,
                         color: ctx.messageUtil.colors.bad,
@@ -54,7 +52,7 @@ const History: Command = {
                                 })} EST`,
                             },
                         ].filter(Boolean) as APIEmbedField[],
-                    }),
+                    },
                 ],
             }
             // stripIndents`

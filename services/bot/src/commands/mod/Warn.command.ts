@@ -1,15 +1,14 @@
 import type { APIEmbedField } from "@guildedjs/guilded-api-typings";
 import { stripIndents } from "common-tags";
-import ms from "ms";
 
 import { CachedMember, RoleType } from "../../typings";
 import { Category } from "../Category";
 import type { Command } from "../Command";
 
-const Mute: Command = {
-    name: "mute",
-    description: "Mute a user for a specified amount of time (ex. 3h, 30m, 5d)",
-    usage: "<targetId> <time> [...reason]",
+const Warn: Command = {
+    name: "warn",
+    description: "Warn a user",
+    usage: "<targetId> [...reason]",
     requiredRole: RoleType.MOD,
     category: Category.Moderation,
     args: [
@@ -18,29 +17,23 @@ const Mute: Command = {
             type: "memberID",
         },
         {
-            name: "duration",
-            type: "string",
-        },
-        {
             name: "reason",
             type: "rest",
-            optional: true,
         },
     ],
-    execute: async (message, args, ctx, commandCtx) => {
-        if (!commandCtx.server.muteRoleId) return ctx.messageUtil.send(message.channelId, "There is no mute role configured for this server.");
+    execute: async (message, args, ctx) => {
         const target = args.target as CachedMember;
         const reason = args.reason as string | null;
-        const duration = ms(args.duration as string);
-        if (!duration || duration <= 894000) return ctx.messageUtil.send(message.channelId, "Your mute duration must be longer than 15 minutes.");
-        const expiresAt = new Date(Date.now() + duration);
 
         try {
-            await ctx.rest.router.assignRoleToMember(message.serverId!, target.user.id, commandCtx.server.muteRoleId);
+            await ctx.messageUtil.send(message.channelId, {
+                content: `**Alert!** ${target.user.name}, you have been warned for \`${reason}\`.
+				Please re-read the rules for this server and ensure this behavior does not repeat`,
+            });
         } catch (e) {
             return ctx.messageUtil.send(message.channelId, {
                 content: stripIndents`
-					There was an issue muting this user. This is most likely due to misconfigured permissions for your server.
+					There was an issue warning this user.
 					\`${(e as Error).message}\`
 				`,
                 isPrivate: true,
@@ -55,22 +48,23 @@ const Mute: Command = {
             reason,
             triggerContent: null,
             targetId: target.user.id,
-            type: "MUTE",
-            expiresAt,
+            type: "WARN",
+            expiresAt: null,
         });
+
         ctx.emitter.emit("ActionIssued", newAction, target, ctx);
 
         return ctx.messageUtil.send(message.channelId, {
             isPrivate: true,
             embeds: [
                 {
-                    title: ":mute: You have been muted",
-                    description: `<@${target.user.id}>, you have been muted for **${duration / 60000}** minutes.`,
-                    color: ctx.messageUtil.colors.bad,
+                    title: ":warning: You have been warned",
+                    color: ctx.messageUtil.colors.warn,
+                    description: `<@${target.user.id}>, you have been manually warned by a staff member of this server.`,
                     fields: [
                         reason && {
                             name: "Reason",
-                            value: (reason as string).length > 1024 ? `${reason.substr(0, 1021)}...` : reason,
+                            value: (reason as string).length > 1021 ? `${(reason as string).substr(0, 1021)}...` : reason,
                         },
                     ].filter(Boolean) as APIEmbedField[],
                 },
@@ -79,4 +73,14 @@ const Mute: Command = {
     },
 };
 
-export default Mute;
+export default Warn;
+
+// declare module "@guildedjs/guilded-api-typings" {
+//     export interface RESTPostChannelMessagesBody {
+//         isPrivate?: boolean;
+//         isSilent?: boolean;
+//         replyMessageIds?: string[];
+//         content: string;
+//         embeds?: Embed[];
+//     }
+// }

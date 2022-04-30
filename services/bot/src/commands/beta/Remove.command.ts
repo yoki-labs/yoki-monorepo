@@ -8,10 +8,10 @@ const Remove: Command = {
     hidden: true,
     subName: "remove",
     ownerOnly: true,
-    args: [{ name: "serverId", type: "hashId" }],
+    args: [{ name: "serverId", type: "string" }],
     execute: async (message, args, ctx) => {
         const serverId = args.serverId as string;
-        const server = await ctx.serverUtil.getServer(serverId);
+        const server = await ctx.dbUtil.getServer(serverId);
 
         if (!server.flags.includes("EARLY_ACCESS")) return ctx.messageUtil.send(message.channelId, "That server is not in the early access!");
         server.flags.filter((x) => x !== "EARLY_ACCESS");

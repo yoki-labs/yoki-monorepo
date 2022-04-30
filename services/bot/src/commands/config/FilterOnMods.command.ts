@@ -5,7 +5,7 @@ import type { Command } from "../Command";
 const FilterOnMods: Command = {
     name: "config-filteronmods",
     description: "Set or view whether mods are filtered on this server.",
-    usage: "filterOnMods [newSetting]",
+    usage: "[newSetting]",
     subCommand: true,
     category: Category.Settings,
     subName: "filteronmods",

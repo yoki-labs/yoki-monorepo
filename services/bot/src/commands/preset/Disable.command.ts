@@ -23,7 +23,7 @@ const Enable: Command = {
                 `That preset is not enabled. The enabled presets for your server are: ${allPresets.map((x) => `\`${x.preset}\``).join(", ")}`
             );
 
-        return ctx.contentFilterUtil
+        return ctx.dbUtil
             .disablePreset(message.serverId!, preset)
             .then(() => ctx.messageUtil.send(message.channelId, `Successfully disabled the \`${preset}\` preset for this server.`))
             .catch((e: Error) =>

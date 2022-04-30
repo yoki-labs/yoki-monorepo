@@ -1,4 +1,4 @@
-import Embed from "@guildedjs/embeds";
+import { Embed } from "@guildedjs/embeds";
 
 import { RoleType } from "../../typings";
 import { Category } from "../Category";
@@ -18,31 +18,27 @@ const Delete: Command = {
             type: "string",
         },
     ],
-    execute: async (message, args, { prisma, messageUtil, contentFilterUtil }) => {
+    execute: async (message, args, ctx) => {
         const phrase = args.phrase as string;
-        const existingEntry = await prisma.contentFilter.findFirst({ where: { serverId: message.serverId!, content: phrase } });
+        const existingEntry = await ctx.prisma.contentFilter.findFirst({ where: { serverId: message.serverId!, content: phrase } });
         if (!existingEntry)
-            return messageUtil.send(message.channelId, {
-                content: "Phrase can't be deleted",
-                embeds: [
-                    new Embed({
-                        title: ":x: Phrase not found",
-                        description: "This phrase is not in your server's filter!",
-                        color: messageUtil.colors.bad,
-                    }),
-                ],
-            });
-        await contentFilterUtil.removeWordFromFilter(message.serverId!, phrase);
-        return messageUtil.send(message.channelId, {
-            content: "Phrase deleted",
-            embeds: [
+            return ctx.messageUtil.send(
+                message.channelId,
                 new Embed({
-                    title: ":white_check_mark: Phrase deleted",
-                    description: `Successfully deleted \`${phrase}\` from the automod list!`,
-                    color: messageUtil.colors.good,
-                }),
-            ],
-        });
+                    title: ":x: Phrase not found",
+                    description: "This phrase is not in your server's filter!",
+                    color: ctx.messageUtil.colors.bad,
+                })
+            );
+        await ctx.dbUtil.removeWordFromFilter(message.serverId!, phrase);
+        return ctx.messageUtil.send(
+            message.channelId,
+            new Embed({
+                title: ":white_check_mark: Phrase deleted",
+                description: `Successfully deleted \`${phrase}\` from the automod list!`,
+                color: ctx.messageUtil.colors.good,
+            })
+        );
     },
 };
 

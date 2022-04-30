@@ -1,7 +1,7 @@
 import { stripIndents } from "common-tags";
 
-import { ContentFilterUtil } from "../../functions/content-filter";
-import { RoleType } from "../../typings";
+import { ContentFilterUtil } from "../../modules/content-filter";
+import { CachedMember, RoleType } from "../../typings";
 import { Category } from "../Category";
 import type { Command } from "../Command";
 
@@ -14,15 +14,15 @@ const History: Command = {
     args: [
         {
             name: "targetId",
-            type: "hashId",
+            type: "memberID",
         },
     ],
     execute: async (message, args, ctx) => {
-        const targetId = args.targetId as string;
+        const target = args.targetId as CachedMember;
         const actions = await ctx.prisma.action.findMany({
             where: {
                 serverId: message.serverId!,
-                targetId,
+                targetId: target.user.id,
             },
         });
 
@@ -30,7 +30,7 @@ const History: Command = {
         return ctx.messageUtil.send(
             message.channelId,
             stripIndents`
-				${actions.map((x) => `**ID:** \`${x.id}\`, **TYPE:** \`${x.type}\`, **REASON:** \`${x.reason}\`${(x.triggerWord && `||${x.triggerWord}||`) ?? ""}`).join("\n")}
+				${actions.map((x) => `**ID:** \`${x.id}\`, **TYPE:** \`${x.type}\`, **REASON:** \`${x.reason}\`${(x.triggerContent && `||${x.triggerContent}||`) ?? ""}`).join("\n")}
 
 				**Total Infraction Points:** ${ContentFilterUtil.totalAllInfractionPoints(actions)}
 			`
