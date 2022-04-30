@@ -1,8 +1,7 @@
 import { stripIndents } from "common-tags";
 import ms from "ms";
 
-import { LogChannelType, RoleType } from "../../typings";
-import { isHashId } from "../../util";
+import { CachedMember, RoleType } from "../../typings";
 import { Category } from "../Category";
 import type { Command } from "../Command";
 
@@ -14,8 +13,8 @@ const Mute: Command = {
     category: Category.Moderation,
     args: [
         {
-            name: "targetId",
-            type: "string",
+            name: "target",
+            type: "memberID",
         },
         {
             name: "duration",
@@ -29,30 +28,14 @@ const Mute: Command = {
     ],
     execute: async (message, args, ctx, commandCtx) => {
         if (!commandCtx.server.muteRoleId) return ctx.messageUtil.send(message.channelId, "There is no mute role configured for this server.");
-        const targetId = args.targetId as string;
-        const member = await ctx.serverUtil.getMember(message.serverId!, targetId);
-        if (!member)
-            return ctx.messageUtil.send(message.channelId, {
-                content: stripIndents`
-                    That is not a valid user ID.
-                `,
-                replyMessageIds: [message.id],
-            });
+        const target = args.target as CachedMember;
         const reason = args.reason as string | null;
         const duration = ms(args.duration as string);
         if (!duration || duration <= 894000) return ctx.messageUtil.send(message.channelId, "Your mute duration must be longer than 15 minutes.");
         const expiresAt = new Date(Date.now() + duration);
 
-        if (!isHashId(targetId))
-            return ctx.messageUtil.send(message.channelId, {
-                content: stripIndents`
-                    Please provide the identifier of the user as \`targetId\`
-                `,
-                replyMessageIds: [message.id],
-            });
-
         try {
-            await ctx.rest.router.assignRoleToMember(message.serverId!, targetId, commandCtx.server.muteRoleId);
+            await ctx.rest.router.assignRoleToMember(message.serverId!, target.user.id, commandCtx.server.muteRoleId);
         } catch (e) {
             return ctx.messageUtil.send(message.channelId, {
                 content: stripIndents`
@@ -70,17 +53,15 @@ const Mute: Command = {
             infractionPoints: 10,
             reason,
             triggerContent: null,
-            targetId,
+            targetId: target.user.id,
             type: "MUTE",
             expiresAt,
         });
-
-        const modlog = await ctx.dbUtil.getLogChannel(message.serverId!, LogChannelType.MOD_ACTION_LOG);
-        if (modlog) await ctx.serverUtil.sendModLogMessage(modlog.channelId, newAction, commandCtx.member);
+        ctx.emitter.emit("ActionIssued", newAction, target, ctx);
 
         return ctx.messageUtil.send(
             message.channelId,
-            `User by the ID of \`${targetId}\` has been muted for **${duration / 1000 / 60} minutes** for the reason of \`${reason ?? "NO REASON PROVIDED"}\`.`
+            `User ${target.user.name} (${target.user.id}) has been muted for **${duration / 1000 / 60} minutes** for the reason of \`${reason ?? "NO REASON PROVIDED"}\`.`
         );
     },
 };

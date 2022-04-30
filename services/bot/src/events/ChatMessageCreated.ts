@@ -5,19 +5,25 @@ import { nanoid } from "nanoid";
 
 import boolean from "../args/boolean";
 import listRest from "../args/listRest";
+import memberID from "../args/member";
 import number from "../args/number";
 import rest from "../args/rest";
 import string from "../args/string";
 import UUID from "../args/UUID";
+import type { CommandArgType } from "../commands/Command";
 import type { Context, ResolvedArgs } from "../typings";
 
-const argCasters: Record<string, (input: string, rawArgs: string[], index: number) => ResolvedArgs> = {
+const argCasters: Record<
+    CommandArgType,
+    (input: string, rawArgs: string[], index: number, ctx: Context, packet: WSChatMessageCreatedPayload) => ResolvedArgs | Promise<ResolvedArgs>
+> = {
     string,
     number,
     boolean,
     listRest,
     rest,
     UUID,
+    memberID,
 };
 
 export default async (packet: WSChatMessageCreatedPayload, ctx: Context) => {
@@ -86,7 +92,7 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context) => {
     // the object of casted args casted to their proper types
     const resolvedArgs: Record<string, ResolvedArgs> = {};
     // if this command has accepts args
-    if (command.args && command.args.length) {
+    if (command.args?.length) {
         // go through all the specified arguments in the command
         for (let i = 0; i < command.args.length; i++) {
             const commandArg = command.args[i];
@@ -95,7 +101,7 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context) => {
             if (commandArg.optional && typeof args[i] == "undefined") continue;
 
             // run the caster and see if the arg is valid
-            const isValidArg = argCasters[commandArg.type]?.(args[i], args, i);
+            const isValidArg = await argCasters[commandArg.type]?.(args[i], args, i, ctx, packet);
 
             // if the arg is not valid, inform the user
             if (isValidArg === null) return ctx.messageUtil.handleBadArg(message.channelId, args[i], commandArg, command, parentCommand);

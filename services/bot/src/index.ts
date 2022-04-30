@@ -22,6 +22,9 @@ const client = new Client();
 // And any unhandled objects are simply ignored thanks to optional chaining
 client.ws.emitter.on("gatewayEvent", (event, data) => client.eventHandler[event]?.(data, client));
 
+// This is for any custom events that we emit
+client.emitter.on("ActionIssued", client.customEventHandler.ActionIssued);
+
 // This event accepts the welcome data that allows us to get the botId and creatorId
 client.ws.emitter.on("ready", (data) => Welcome(data, client));
 

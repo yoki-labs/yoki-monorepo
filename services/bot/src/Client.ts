@@ -2,10 +2,13 @@ import Collection from "@discordjs/collection";
 import { RestManager } from "@guildedjs/rest";
 import { WebhookClient } from "@guildedjs/webhook-client";
 import { WebSocketManager } from "@guildedjs/ws";
-import { PrismaClient } from "@prisma/client";
+import { Action, PrismaClient } from "@prisma/client";
+import EventEmitter from "events";
 import RedisClient from "ioredis";
+import type TypedEmitter from "typed-emitter";
 
 import type { Command } from "./commands/Command";
+import ActionIssued from "./events/ActionIssued";
 import ChatMessageCreated from "./events/ChatMessageCreated";
 import ChatMessageDeleted from "./events/ChatMessageDeleted";
 import ChatMessageUpdated from "./events/ChatMessageUpdated";
@@ -16,7 +19,7 @@ import { MessageUtil } from "./functions/message";
 import { ServerUtil } from "./functions/server";
 import { MuteScheduler } from "./jobs/MuteScheduler";
 import { ContentFilterUtil } from "./modules/content-filter";
-import type { Context } from "./typings";
+import type { CachedMember, Context } from "./typings";
 
 /**
  * Main class that stores utils, connections to various providers, and ws
@@ -72,6 +75,11 @@ export default class Client {
         teamRolesUpdated,
     };
 
+    readonly emitter = new EventEmitter() as TypedEmitter<ClientCustomEvents>;
+    readonly customEventHandler = {
+        ActionIssued,
+    };
+
     /** start the bot connection */
     init() {
         // starting the sweeper for mute scheduler
@@ -80,3 +88,8 @@ export default class Client {
         return this.ws.connect();
     }
 }
+
+// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
+type ClientCustomEvents = {
+    ActionIssued: (data: Action & { reasonMetaData?: string }, member: CachedMember | null, client: Client) => unknown;
+};

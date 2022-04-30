@@ -37,8 +37,9 @@ const Eval: Command = {
     hidden: true,
     usage: "",
     ownerOnly: true,
-    execute: async (message, _args, ctx, commandCtx) => {
-        const code = commandCtx.packet.d.message.content.slice(`${commandCtx.server.getPrefix()}eval`.length).trim();
+    args: [{ type: "rest", name: "code" }],
+    execute: async (message, args, ctx) => {
+        const code = args.code as string;
         console.log(code);
         if (!code) return ctx.messageUtil.send(message.channelId, "Gotta give me something to eval there chief.");
         let evaled;

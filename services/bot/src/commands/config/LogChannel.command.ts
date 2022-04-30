@@ -30,7 +30,7 @@ const LogChannel: Command = {
     category: Category.Settings,
     requiredRole: RoleType.ADMIN,
     args: [
-        { name: "channelId", type: "UUID" },
+        { name: "channelId", type: "UUID", optional: true },
         { name: "logTypes", optional: true, type: "listRest" },
     ],
     execute: async (message, args, ctx) => {

@@ -1,8 +1,6 @@
-import { Embed } from "@guildedjs/embeds";
-import { stripIndents } from "common-tags";
 import JSONCache from "redis-json";
 
-import type { Action, CachedMember } from "../typings";
+import type { CachedMember } from "../typings";
 import { Util } from "./util";
 
 export class ServerUtil extends Util {
@@ -25,34 +23,6 @@ export class ServerUtil extends Util {
     //     });
     //     return new WebhookClient({ id: newWebhookFromAPI.webhook.id, token: newWebhookFromAPI.webhook.token! });
     // }
-
-    // Send a log message
-    async sendModLogMessage(modLogChannelId: string, createdCase: Action & { reasonMetaData?: string }, member: CachedMember) {
-        const msg = await this.client.messageUtil.send(
-            modLogChannelId,
-            new Embed()
-                .setDescription(
-                    stripIndents`
-						**Target:** \`${member.user.name} (${createdCase.targetId})\`
-						**Type:** \`${createdCase.type}\`
-						**Reason:** \`${createdCase.reason ?? "NO REASON PROVIDED"} ${createdCase.reasonMetaData ?? ""}\` 
-						${
-                            createdCase.expiresAt
-                                ? `**Expiration:** \`${createdCase.expiresAt.toLocaleDateString("en-US", {
-                                      year: "numeric",
-                                      month: "long",
-                                      day: "numeric",
-                                      hour: "2-digit",
-                                      minute: "2-digit",
-                                  })}\``
-                                : ""
-                        }
-					`
-                )
-                .setTimestamp()
-        );
-        await this.client.dbUtil.populateActionMessage(createdCase.id, modLogChannelId, msg.id);
-    }
 
     // Get a member from either the cache or the API
     async getMember(serverId: string, userId: string, cache = true, force = false) {

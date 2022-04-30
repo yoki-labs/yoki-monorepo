@@ -4,7 +4,7 @@ import { stripIndents } from "common-tags";
 
 import { Util } from "../functions/util";
 import slursList from "../presets/slurs.json";
-import { Action, CachedMember, ContentFilterScan, LogChannelType, RoleType, Server, Severity } from "../typings";
+import { Action, CachedMember, ContentFilterScan, RoleType, Server, Severity } from "../typings";
 
 export const transformSeverityStringToEnum = (str: string): Severity | undefined => Severity[str.toUpperCase()];
 export enum FilteredContent {
@@ -157,9 +157,6 @@ export class ContentFilterUtil extends Util {
         // Total up all the infraction points from all these infractions
         const totalInfractionPoints = ContentFilterUtil.totalAllInfractionPoints(pastActions) + triggeredWord.infractionPoints;
 
-        // Get the mod log channel for this server
-        const modLogChannel = await this.client.dbUtil.getLogChannel(serverId, LogChannelType.MOD_ACTION_LOG);
-
         // Check whether this member exceeds the infraction threshold for this server
         const ifExceeds = await this.ifExceedsInfractionThreshold(totalInfractionPoints, server);
 
@@ -183,10 +180,7 @@ export class ContentFilterUtil extends Util {
         });
 
         // If a modlog channel is set
-        if (modLogChannel)
-            void this.client.serverUtil
-                .sendModLogMessage(modLogChannel.channelId, { ...createdCase, reasonMetaData: `||${triggeredWord.content}||` }, member)
-                .catch((e) => console.error(`Error posting in modlog channel ${e.message}`));
+        this.client.emitter.emit("ActionIssued", createdCase, member, this.client);
 
         try {
             // Perform resulting action, for message filtering it's deleting the original message
