@@ -1,20 +1,12 @@
 import { Embed } from "@guildedjs/embeds";
-import type { ChatMessagePayload, RESTPostChannelMessagesBody } from "@guildedjs/guilded-api-typings";
+import type { ChatMessagePayload, EmbedPayload, RESTPostChannelMessagesBody } from "@guildedjs/guilded-api-typings";
 import { stripIndents } from "common-tags";
 
+import { Colors } from "../color";
 import type { Command, CommandArgument } from "../commands/Command";
 import { Util } from "./util";
 
 export class MessageUtil extends Util {
-    readonly colors = {
-        default: 0xeb6fa7,
-        good: 0x36ec36,
-        info: 0x3636ec,
-        warn: 0xec9b36,
-        bad: 0xec3636,
-        dull: 0x8a7b82,
-    };
-
     // Send a message using either string, embed object, or raw object
     send(channelId: string, content: string | RESTPostChannelMessagesBody | Embed) {
         return this.rest.router
@@ -29,23 +21,56 @@ export class MessageUtil extends Util {
     }
 
     handleBadArg(channelId: string, prefix: string, commandArg: CommandArgument, command: Command, parentCommand: Command) {
-        return this.send(
+        return this.sendCautionBlock(
             channelId,
-            new Embed({
-                title: ":x: Incorrect argument",
-                description: `Sorry, but the usage of argument \`${commandArg.name}\` was not correct. Was expecting a ${commandArg.type}.`,
-                color: this.colors.bad,
+            "Incorrect argument",
+            `Sorry, but the usage of argument \`${commandArg.name}\` was not correct. Was expecting a ${commandArg.type}.`,
+            {
                 fields: [
                     {
                         name: "Usage",
                         value: stripIndents`
-                                \`\`\`clojure
-                                ${prefix}${parentCommand.name}${command.name === parentCommand.name ? "" : ` ${command.subName ?? command.name}`} ${command.usage}
-                                \`\`\`
-                            `,
+                            \`\`\`clojure
+                            ${prefix}${parentCommand.name}${command.name === parentCommand.name ? "" : ` ${command.subName ?? command.name}`} ${command.usage}
+                            \`\`\`
+                        `,
                     },
                 ],
-            })
+            }
         );
+    }
+
+    sendThemedBlock(channelId: string, title: string, description: string, color: number, embedPartial?: EmbedPayload, messagePartial?: Partial<RESTPostChannelMessagesBody>) {
+        return this.send(channelId, {
+            ...messagePartial,
+            embeds: [
+                {
+                    title,
+                    description,
+                    color,
+                    ...embedPartial,
+                },
+            ],
+        });
+    }
+
+    sendCautionBlock(channelId: string, title: string, description: string, embedPartial?: EmbedPayload, messagePartial?: Partial<RESTPostChannelMessagesBody>) {
+        return this.sendThemedBlock(channelId, `:x: ${title}`, description, Colors.red, embedPartial, messagePartial);
+    }
+
+    sendWarningBlock(channelId: string, title: string, description: string, embedPartial?: EmbedPayload, messagePartial?: Partial<RESTPostChannelMessagesBody>) {
+        return this.sendThemedBlock(channelId, `:warning: ${title}`, description, Colors.yellow, embedPartial, messagePartial);
+    }
+
+    sendNullBlock(channelId: string, title: string, description: string, embedPartial?: EmbedPayload, messagePartial?: Partial<RESTPostChannelMessagesBody>) {
+        return this.sendThemedBlock(channelId, `:shrug_gil: ${title}`, description, Colors.dull, embedPartial, messagePartial);
+    }
+
+    sendContentBlock(channelId: string, title: string, description: string, embedPartial?: EmbedPayload, messagePartial?: Partial<RESTPostChannelMessagesBody>) {
+        return this.sendThemedBlock(channelId, `:scroll: ${title}`, description, Colors.pink, embedPartial, messagePartial);
+    }
+
+    sendSuccessBlock(channelId: string, title: string, description: string, embedPartial?: EmbedPayload, messagePartial?: Partial<RESTPostChannelMessagesBody>) {
+        return this.sendThemedBlock(channelId, `:white_check_mark: ${title}`, description, Colors.green, embedPartial, messagePartial);
     }
 }

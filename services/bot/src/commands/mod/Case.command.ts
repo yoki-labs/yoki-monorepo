@@ -26,44 +26,32 @@ const History: Command = {
             },
         });
 
-        if (!fetchedCase) return ctx.messageUtil.send(message.channelId, "A case with that ID does not exist!");
-        return ctx.messageUtil.send(
+        if (!fetchedCase) return ctx.messageUtil.sendCautionBlock(message.channelId, "Unknown case", "A case with that ID does not exist!");
+        return ctx.messageUtil.sendContentBlock(
             message.channelId,
+            `Case \`${caseId}\``,
+            `<@${fetchedCase.targetId}> has received ${fetchedCase.type} by <@${fetchedCase.executorId}>`,
+            {
+                fields: [
+                    fetchedCase && {
+                        name: "Reason",
+                        value: (fetchedCase.reason as string).length > 1024 ? `${fetchedCase.reason?.substr(0, 1021)}...` : fetchedCase.reason,
+                    },
+                    fetchedCase.expiresAt && {
+                        name: "Expiration",
+                        value: `${fetchedCase.expiresAt.toLocaleDateString("en-US", {
+                            year: "numeric",
+                            month: "long",
+                            day: "numeric",
+                            hour: "2-digit",
+                            minute: "2-digit",
+                        })} EST`,
+                    },
+                ].filter(Boolean) as APIEmbedField[],
+            },
             {
                 isSilent: true,
-                embeds: [
-                    {
-                        title: `:scroll: Case \`${caseId}\``,
-                        description: `<@${fetchedCase.targetId}> has received ${fetchedCase.type} by <@${fetchedCase.executorId}>`,
-                        color: ctx.messageUtil.colors.bad,
-                        fields: [
-                            fetchedCase && {
-                                name: "Reason",
-                                value: (fetchedCase.reason as string).length > 1024 ? `${fetchedCase.reason?.substr(0, 1021)}...` : fetchedCase.reason,
-                            },
-                            fetchedCase.expiresAt && {
-                                name: "Expiration",
-                                value: `${fetchedCase.expiresAt.toLocaleDateString("en-US", {
-                                    year: "numeric",
-                                    month: "long",
-                                    day: "numeric",
-                                    hour: "2-digit",
-                                    minute: "2-digit",
-                                })} EST`,
-                            },
-                        ].filter(Boolean) as APIEmbedField[],
-                    },
-                ],
             }
-            // stripIndents`
-            // 	**Target:** \`${member.user.name} (${member.user.id})\`
-            // 	**Type:** \`${fetchedCase.type}\`
-            // 	**Reason:** \`${fetchedCase.reason}\`
-            // 	${
-            //         fetchedCase.expiresAt
-            //             : ""
-            //     }
-            // `
         );
     },
 };

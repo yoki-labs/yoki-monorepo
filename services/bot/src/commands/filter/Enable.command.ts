@@ -1,5 +1,6 @@
 import { Embed } from "@guildedjs/embeds";
 
+import { Colors } from "../../color";
 import { RoleType } from "../../typings";
 import { Category } from "../Category";
 import type { Command } from "../Command";
@@ -21,18 +22,15 @@ const Enable: Command = {
                     new Embed({
                         title: ":white_check_mark: Automod enabled",
                         description: "Successfully enabled the automod filter for this server.",
-                        color: ctx.messageUtil.colors.good,
+                        color: Colors.green,
                     })
                 )
             )
             .catch((e: Error) =>
-                ctx.messageUtil.send(
+                ctx.messageUtil.sendCautionBlock(
                     message.channelId,
-                    new Embed({
-                        title: ":x: An error occurred",
-                        description: `There was an issue enabling automoderation for your server. Please forward this error to bot staff: \`${e.message}\``,
-                        color: ctx.messageUtil.colors.good,
-                    })
+                    "An error occurred",
+                    `There was an issue enabling automoderation for your server. Please forward this error to bot staff: \`${e.message}\``
                 )
             );
     },

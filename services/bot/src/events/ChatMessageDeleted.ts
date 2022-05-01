@@ -30,13 +30,13 @@ export default async (packet: WSChatMessageDeletedPayload, ctx: Context) => {
             deletedMessageLogChannel.channelId,
             new Embed()
                 .setTitle("Deleted Message!")
-                .setColor(Colors.RED)
+                .setColor(Colors.red)
                 .setDescription(
                     stripIndents`
 					**ID:** ${inlineCodeblock(message.id)}
 					**Author:** ${inlineCodeblock(oldMember?.user.name ?? "Could not find data")} (${inlineCodeblock(deletedMessage?.authorId ?? "Could not find data")})
-					**Deleted Message:** 
-					${codeblock(deletedMessage ? (deletedMessage.content.length > 900 ? `${deletedMessage.content.slice(0, 900)}...` : deletedMessage.content) : "Could not find message content.")} 
+					**Deleted Message:**
+					${codeblock(deletedMessage ? (deletedMessage.content.length > 900 ? `${deletedMessage.content.slice(0, 900)}...` : deletedMessage.content) : "Could not find message content.")}
 				`
                 )
                 .setTimestamp()

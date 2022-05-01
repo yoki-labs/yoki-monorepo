@@ -2,6 +2,7 @@ import type { APIEmbedField } from "@guildedjs/guilded-api-typings";
 import { stripIndents } from "common-tags";
 import ms from "ms";
 
+import { Colors } from "../../color";
 import { CachedMember, RoleType } from "../../typings";
 import { Category } from "../Category";
 import type { Command } from "../Command";
@@ -60,22 +61,23 @@ const Mute: Command = {
         });
         ctx.emitter.emit("ActionIssued", newAction, target, ctx);
 
-        return ctx.messageUtil.send(message.channelId, {
-            isPrivate: true,
-            embeds: [
-                {
-                    title: ":mute: You have been muted",
-                    description: `<@${target.user.id}>, you have been muted for **${duration / 60000}** minutes.`,
-                    color: ctx.messageUtil.colors.bad,
-                    fields: [
-                        reason && {
-                            name: "Reason",
-                            value: (reason as string).length > 1024 ? `${reason.substr(0, 1021)}...` : reason,
-                        },
-                    ].filter(Boolean) as APIEmbedField[],
-                },
-            ],
-        });
+        return ctx.messageUtil.sendThemedBlock(
+            message.channelId,
+            ":mute: You have been muted",
+            `<@${target.user.id}>, you have been muted for **${duration / 60000}** minutes.`,
+            Colors.red,
+            {
+                fields: [
+                    reason && {
+                        name: "Reason",
+                        value: (reason as string).length > 1024 ? `${reason.substr(0, 1021)}...` : reason,
+                    },
+                ].filter(Boolean) as APIEmbedField[],
+            },
+            {
+                isPrivate: true,
+            }
+        );
     },
 };
 

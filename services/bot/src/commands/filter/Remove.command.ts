@@ -1,5 +1,3 @@
-import { Embed } from "@guildedjs/embeds";
-
 import { RoleType } from "../../typings";
 import { Category } from "../Category";
 import type { Command } from "../Command";
@@ -21,24 +19,9 @@ const Delete: Command = {
     execute: async (message, args, ctx) => {
         const phrase = args.phrase as string;
         const existingEntry = await ctx.prisma.contentFilter.findFirst({ where: { serverId: message.serverId!, content: phrase } });
-        if (!existingEntry)
-            return ctx.messageUtil.send(
-                message.channelId,
-                new Embed({
-                    title: ":x: Phrase not found",
-                    description: "This phrase is not in your server's filter!",
-                    color: ctx.messageUtil.colors.bad,
-                })
-            );
+        if (!existingEntry) return ctx.messageUtil.sendCautionBlock(message.channelId, "Phrase not found", "This phrase is not in your server's filter!");
         await ctx.dbUtil.removeWordFromFilter(message.serverId!, phrase);
-        return ctx.messageUtil.send(
-            message.channelId,
-            new Embed({
-                title: ":white_check_mark: Phrase deleted",
-                description: `Successfully deleted \`${phrase}\` from the automod list!`,
-                color: ctx.messageUtil.colors.good,
-            })
-        );
+        return ctx.messageUtil.sendSuccessBlock(message.channelId, "Phrase deleted", `Successfully deleted \`${phrase}\` from the automod list!`);
     },
 };
 

@@ -1,4 +1,3 @@
-import { Embed as ChatEmbed } from "@guildedjs/embeds";
 import type { WSChatMessageCreatedPayload } from "@guildedjs/guilded-api-typings";
 import { Embed } from "@guildedjs/webhook-client";
 import { stripIndents } from "common-tags";
@@ -66,53 +65,41 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context) => {
     if (command.parentCommand && command.subCommands?.size) {
         // if no sub command, list all the available sub commands
         if (!args[0])
-            return ctx.messageUtil.send(
-                message.channelId,
-                new ChatEmbed({
-                    title: `:x: No sub-command specified`,
-                    description: `Please provide a sub-command.`,
-                    color: ctx.messageUtil.colors.dull,
-                    fields: [
-                        {
-                            name: "Available sub-commands",
-                            value: `- ${command.subCommands.map((x) => `\`${x.name.split("-")[1]}\``).join("\n- ")}`,
-                            inline: true,
-                        },
-                        {
-                            name: "Example",
-                            value: stripIndents`
-                                        ${serverFromDb.prefix ?? process.env.DEFAULT_PREFIX}${commandName} ${command.subCommands.firstKey()}
-                                    `,
-                            inline: true,
-                        },
-                    ],
-                })
-            );
+            return ctx.messageUtil.sendCautionBlock(message.channelId, `No sub-command specified`, `Please provide a sub-command.`, {
+                fields: [
+                    {
+                        name: "Available sub-commands",
+                        value: `- ${command.subCommands.map((x) => `\`${x.name.split("-")[1]}\``).join("\n- ")}`,
+                        inline: true,
+                    },
+                    {
+                        name: "Example",
+                        value: stripIndents`
+                                ${serverFromDb.getPrefix()}${commandName} ${command.subCommands.firstKey()}
+                            `,
+                        inline: true,
+                    },
+                ],
+            });
         const subCommand = command.subCommands.get(args[0]);
         // if not a valid sub command, list all the proper ones
         if (!subCommand)
-            return ctx.messageUtil.send(
-                message.channelId,
-                new ChatEmbed({
-                    title: `:x: Sub-command not found`,
-                    description: `The specified sub-command could not be found.`,
-                    color: ctx.messageUtil.colors.dull,
-                    fields: [
-                        {
-                            name: "Available sub-commands",
-                            value: `- ${command.subCommands.map((x) => `\`${x.name.split("-")[1]}\``).join("\n- ")}`,
-                            inline: true,
-                        },
-                        {
-                            name: "Example",
-                            value: stripIndents`
-                                        ${serverFromDb.prefix ?? process.env.DEFAULT_PREFIX}${commandName} ${command.subCommands.firstKey()}
+            return ctx.messageUtil.sendCautionBlock(message.channelId, `Sub-command not found`, `The specified sub-command could not be found.`, {
+                fields: [
+                    {
+                        name: "Available sub-commands",
+                        value: `- ${command.subCommands.map((x) => `\`${x.name.split("-")[1]}\``).join("\n- ")}`,
+                        inline: true,
+                    },
+                    {
+                        name: "Example",
+                        value: stripIndents`
+                                        ${serverFromDb.getPrefix()}${commandName} ${command.subCommands.firstKey()}
                                     `,
-                            inline: true,
-                        },
-                    ],
-                })
-            );
+                        inline: true,
+                    },
+                ],
+            });
         command = subCommand;
         // remove the sub command from the list of args, as that's the command name
         args = args.slice(1);

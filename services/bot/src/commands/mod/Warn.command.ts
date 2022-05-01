@@ -26,22 +26,22 @@ const Warn: Command = {
         const reason = args.reason as string | null;
 
         try {
-            await ctx.messageUtil.send(message.channelId, {
-                isPrivate: true,
-                embeds: [
-                    {
-                        title: ":warning: You have been warned",
-                        color: ctx.messageUtil.colors.warn,
-                        description: `<@${target.user.id}>, you have been manually warned by a staff member of this server.`,
-                        fields: [
-                            reason && {
-                                name: "Reason",
-                                value: (reason as string).length > 1021 ? `${(reason as string).substr(0, 1021)}...` : reason,
-                            },
-                        ].filter(Boolean) as APIEmbedField[],
-                    },
-                ],
-            });
+            await ctx.messageUtil.sendWarningBlock(
+                message.channelId,
+                ":warning: You have been warned",
+                `<@${target.user.id}>, you have been manually warned by a staff member of this server.`,
+                {
+                    fields: [
+                        reason && {
+                            name: "Reason",
+                            value: (reason as string).length > 1021 ? `${(reason as string).substr(0, 1021)}...` : reason,
+                        },
+                    ].filter(Boolean) as APIEmbedField[],
+                },
+                {
+                    isPrivate: true,
+                }
+            );
         } catch (e) {
             return ctx.messageUtil.send(message.channelId, {
                 content: stripIndents`
@@ -75,13 +75,3 @@ const Warn: Command = {
 };
 
 export default Warn;
-
-// declare module "@guildedjs/guilded-api-typings" {
-//     export interface RESTPostChannelMessagesBody {
-//         isPrivate?: boolean;
-//         isSilent?: boolean;
-//         replyMessageIds?: string[];
-//         content: string;
-//         embeds?: Embed[];
-//     }
-// }

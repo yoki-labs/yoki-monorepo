@@ -1,5 +1,3 @@
-import { Embed } from "@guildedjs/embeds";
-
 import { transformSeverityStringToEnum } from "../../modules/content-filter";
 import { RoleType } from "../../typings";
 import { Category } from "../Category";
@@ -47,14 +45,7 @@ const Add: Command = {
             severity,
             infractionPoints,
         });
-        return ctx.messageUtil.send(
-            message.channelId,
-            new Embed({
-                title: ":white_check_mark: New phrase added",
-                description: `Successfully added \`${phrase}\` with the severity \`${severity}\` to the automod list!`,
-                color: ctx.messageUtil.colors.good,
-            })
-        );
+        return ctx.messageUtil.sendSuccessBlock(message.channelId, "New phrase added", `Successfully added \`${phrase}\` with the severity \`${severity}\` to the automod list!`);
     },
 };
 

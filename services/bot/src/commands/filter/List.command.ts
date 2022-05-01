@@ -1,5 +1,6 @@
 import { Embed } from "@guildedjs/embeds";
 
+import { Colors } from "../../color";
 import { RoleType } from "../../typings";
 import { Category } from "../Category";
 import type { Command } from "../Command";
@@ -21,12 +22,12 @@ const List: Command = {
                     ? {
                           title: ":scroll: Banned words",
                           description: `These are the custom banned words for this server: ${bannedWords.map((word) => `\`${word.content}\``).join(", ")}`,
-                          color: ctx.messageUtil.colors.default,
+                          color: Colors.pink,
                       }
                     : {
-                          title: ":scroll: No banned words",
+                          title: ":shrug-gil: No banned words",
                           description: `There are no custom banned words for this server.`,
-                          color: ctx.messageUtil.colors.dull,
+                          color: Colors.dull,
                       }
             )
         );
