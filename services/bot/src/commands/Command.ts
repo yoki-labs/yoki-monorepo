@@ -32,11 +32,3 @@ export interface CommandArgument {
     resolver?: (...content: any[]) => any;
 }
 export type CommandArgType = "string" | "UUID" | "memberID" | "number" | "boolean" | "rest" | "listRest";
-
-export interface CommandArgumentDefinition {
-    friendlyName: string;
-    isCorrect(args: string[], index: number, preTransformed: any): boolean;
-    transform?(args: string[], index: number, preTransformed: any, commandArg: CommandArgument): any;
-    // To not do same thing twice
-    preTransform?(args: string[], index: number): any;
-}

@@ -1,6 +1,3 @@
-import { Embed } from "@guildedjs/embeds";
-
-import { Colors } from "../../color";
 import { RoleType } from "../../typings";
 import { Category } from "../Category";
 import type { Command } from "../Command";
@@ -15,22 +12,14 @@ const List: Command = {
     requiredRole: RoleType.MOD,
     execute: async (message, _args, ctx) => {
         const bannedWords = await ctx.dbUtil.getBannedWords(message.serverId!);
-        return ctx.messageUtil.send(
-            message.channelId,
-            new Embed(
-                bannedWords.length
-                    ? {
-                          title: ":scroll: Banned words",
-                          description: `These are the custom banned words for this server: ${bannedWords.map((word) => `\`${word.content}\``).join(", ")}`,
-                          color: Colors.pink,
-                      }
-                    : {
-                          title: ":shrug-gil: No banned words",
-                          description: `There are no custom banned words for this server.`,
-                          color: Colors.dull,
-                      }
-            )
-        );
+
+        return bannedWords.length
+            ? ctx.messageUtil.sendContentBlock(
+                  message.channelId,
+                  "Banned words",
+                  `These are the custom banned words for this server: ${bannedWords.map((word) => `\`${word.content}\``).join(", ")}`
+              )
+            : ctx.messageUtil.sendNullBlock(message.channelId, "No banned words", `There are no custom banned words for this server.`);
     },
 };
 
