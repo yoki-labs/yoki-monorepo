@@ -38,12 +38,12 @@ export default async (packet: WSChatMessageUpdatedPayload, ctx: Context) => {
             updatedMessageLogChannel.channelId,
             new Embed()
                 .setTitle("Updated Message!")
-                .setColor(Colors.YELLOW)
+                .setColor(Colors.yellow)
                 .setDescription(
                     stripIndents`
 					**ID:** ${inlineCodeblock(message.id)}
 					**Author:** ${inlineCodeblock(oldMember?.user.name ?? "unknown name")} (${inlineCodeblock(message.createdBy ?? message.createdByBotId ?? message.createdByWebhookId)})
-					**Old Message:** 
+					**Old Message:**
 					${
                         // this slices the old message content (if it exists, otherwise default) to 900 if it's longer, for Guilded API limits
                         codeblock(
@@ -53,12 +53,12 @@ export default async (packet: WSChatMessageUpdatedPayload, ctx: Context) => {
                                     : oldMessage.content
                                 : "Could not find old version of this message."
                         )
-                    } 
-					**New Message:** 
+                    }
+					**New Message:**
 					${
                         // this slices the message content to 900 if it's longer, for Guilded API limits
                         codeblock(message.content.length > 900 ? `${message.content.slice(0, 900)}...` : message.content)
-                    } 
+                    }
 				`
                 )
                 .setTimestamp()

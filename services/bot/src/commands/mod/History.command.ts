@@ -1,7 +1,7 @@
 import { stripIndents } from "common-tags";
 
 import { ContentFilterUtil } from "../../modules/content-filter";
-import { RoleType } from "../../typings";
+import { CachedMember, RoleType } from "../../typings";
 import { Category } from "../Category";
 import type { Command } from "../Command";
 
@@ -14,19 +14,19 @@ const History: Command = {
     args: [
         {
             name: "targetId",
-            type: "string",
+            type: "memberID",
         },
     ],
     execute: async (message, args, ctx) => {
-        const targetId = args.targetId as string;
+        const target = args.targetId as CachedMember;
         const actions = await ctx.prisma.action.findMany({
             where: {
                 serverId: message.serverId!,
-                targetId,
+                targetId: target.user.id,
             },
         });
 
-        if (!actions.length) return ctx.messageUtil.send(message.channelId, "Squeaky clean history!");
+        if (!actions.length) return ctx.messageUtil.sendNullBlock(message.channelId, "This user has no history", "Squeaky clean history!");
         return ctx.messageUtil.send(
             message.channelId,
             stripIndents`

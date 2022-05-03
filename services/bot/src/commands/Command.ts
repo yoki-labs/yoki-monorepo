@@ -31,5 +31,4 @@ export interface CommandArgument {
     separator?: string;
     resolver?: (...content: any[]) => any;
 }
-
-export type CommandArgType = "string" | "UUID" | "number" | "boolean" | "rest" | "listRest" | "memberID";
+export type CommandArgType = "string" | "UUID" | "memberID" | "number" | "boolean" | "rest" | "listRest";

@@ -65,25 +65,41 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context) => {
     if (command.parentCommand && command.subCommands?.size) {
         // if no sub command, list all the available sub commands
         if (!args[0])
-            return ctx.messageUtil.send(
-                message.channelId,
-                `You must provide a sub command to run. Your options are: ${command.subCommands
-                    .map((x) => `\`${x.name.split("-")[1]}\``)
-                    .join(", ")}. Example: \`${serverFromDb.getPrefix()}${command.name}\``
-            );
-
-        // get the sub command by name
+            return ctx.messageUtil.sendCautionBlock(message.channelId, `No sub-command specified`, `Please provide a sub-command.`, {
+                fields: [
+                    {
+                        name: "Available sub-commands",
+                        value: `- ${command.subCommands.map((x) => `\`${x.name.split("-")[1]}\``).join("\n- ")}`,
+                        inline: true,
+                    },
+                    {
+                        name: "Example",
+                        value: stripIndents`
+                                ${serverFromDb.getPrefix()}${commandName} ${command.subCommands.firstKey()}
+                            `,
+                        inline: true,
+                    },
+                ],
+            });
         const subCommand = command.subCommands.get(args[0]);
         // if not a valid sub command, list all the proper ones
         if (!subCommand)
-            return ctx.messageUtil.send(
-                message.channelId,
-                `Invalid sub-command. Your options are ${command.subCommands.map((x) => `\`${x.name.split("-")[1]}\``).join(", ")}. Example: \`${serverFromDb.getPrefix()}${
-                    command.name
-                } ${command.subCommands.first()!.subName}\``
-            );
-
-        // set the command to execute to the sub command
+            return ctx.messageUtil.sendCautionBlock(message.channelId, `Sub-command not found`, `The specified sub-command could not be found.`, {
+                fields: [
+                    {
+                        name: "Available sub-commands",
+                        value: `- ${command.subCommands.map((x) => `\`${x.name.split("-")[1]}\``).join("\n- ")}`,
+                        inline: true,
+                    },
+                    {
+                        name: "Example",
+                        value: stripIndents`
+                                        ${serverFromDb.getPrefix()}${commandName} ${command.subCommands.firstKey()}
+                                    `,
+                        inline: true,
+                    },
+                ],
+            });
         command = subCommand;
         // remove the sub command from the list of args, as that's the command name
         args = args.slice(1);
@@ -104,7 +120,7 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context) => {
             const isValidArg = await argCasters[commandArg.type]?.(args[i], args, i, ctx, packet);
 
             // if the arg is not valid, inform the user
-            if (isValidArg === null) return ctx.messageUtil.handleBadArg(message.channelId, args[i], commandArg, command, parentCommand);
+            if (isValidArg === null) return ctx.messageUtil.handleBadArg(message.channelId, prefix, commandArg, command, parentCommand);
 
             // if the arg is valid, add it to the resolved args obj
             resolvedArgs[commandArg.name] = isValidArg;

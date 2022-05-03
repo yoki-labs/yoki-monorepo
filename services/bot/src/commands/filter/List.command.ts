@@ -12,12 +12,14 @@ const List: Command = {
     requiredRole: RoleType.MOD,
     execute: async (message, _args, ctx) => {
         const bannedWords = await ctx.dbUtil.getBannedWords(message.serverId!);
-        return ctx.messageUtil.send(
-            message.channelId,
-            bannedWords.length
-                ? `These are the custom banned words for this server: ${bannedWords.map((word) => `||${word.content}||`).join(", ")}`
-                : "There are no custom banned words for this server"
-        );
+
+        return bannedWords.length
+            ? ctx.messageUtil.sendContentBlock(
+                  message.channelId,
+                  "Banned words",
+                  `These are the custom banned words for this server: ${bannedWords.map((word) => `\`${word.content}\``).join(", ")}`
+              )
+            : ctx.messageUtil.sendNullBlock(message.channelId, "No banned words", `There are no custom banned words for this server.`);
     },
 };
 

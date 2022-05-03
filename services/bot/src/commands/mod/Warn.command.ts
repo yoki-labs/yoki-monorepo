@@ -1,3 +1,4 @@
+import type { APIEmbedField } from "@guildedjs/guilded-api-typings";
 import { stripIndents } from "common-tags";
 
 import { CachedMember, RoleType } from "../../typings";
@@ -25,10 +26,22 @@ const Warn: Command = {
         const reason = args.reason as string | null;
 
         try {
-            await ctx.messageUtil.send(message.channelId, {
-                content: `**Alert!** ${target.user.name}, you have been warned for \`${reason}\`. 
-				Please re-read the rules for this server and ensure this behavior does not repeat`,
-            });
+            await ctx.messageUtil.sendWarningBlock(
+                message.channelId,
+                ":warning: You have been warned",
+                `<@${target.user.id}>, you have been manually warned by a staff member of this server.`,
+                {
+                    fields: [
+                        reason && {
+                            name: "Reason",
+                            value: (reason as string).length > 1021 ? `${(reason as string).substr(0, 1021)}...` : reason,
+                        },
+                    ].filter(Boolean) as APIEmbedField[],
+                },
+                {
+                    isPrivate: true,
+                }
+            );
         } catch (e) {
             return ctx.messageUtil.send(message.channelId, {
                 content: stripIndents`
@@ -54,9 +67,9 @@ const Warn: Command = {
         ctx.emitter.emit("ActionIssued", newAction, target, ctx);
 
         return ctx.messageUtil.send(message.channelId, {
-            content: `User ${target.user.name} (${target.user.id}) has been warned for the reason of \`${reason}\``,
-            replyMessageIds: [message.id],
             isPrivate: true,
+            content: `${target.user.name} (\`${target.user.id}\`) has been successfully warned.`,
+            replyMessageIds: [message.id],
         });
     },
 };

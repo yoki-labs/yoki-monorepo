@@ -1,5 +1,4 @@
 import Collection from "@discordjs/collection";
-import { Embed } from "@guildedjs/embeds";
 import { stripIndents } from "common-tags";
 
 import { inlineCodeblock, listInlineCodeblock } from "../formatters";
@@ -25,23 +24,30 @@ const Help: Command = {
             const command = ctx.commands.get(commandName) ?? ctx.commands.find((command) => command.aliases?.includes(commandName) ?? false);
             if (!command) return ctx.messageUtil.send(message.channelId, "Could not find that command!");
 
-            return ctx.messageUtil.send(
+            return ctx.messageUtil.sendContentBlock(
                 message.channelId,
+                `${inlineCodeblock(command.name)} command`,
                 stripIndents`
-					**Name:** ${inlineCodeblock(command.name)}
-					${command.aliases ? `**Aliases:** ${listInlineCodeblock(command.aliases)}` : ""}
-					**Description:** ${inlineCodeblock(command.description)}
-					**Usage:** ${inlineCodeblock(
+                    ${command.description}
+
+                    ${
+                        command.examples
+                            ? `**Examples:** ${listInlineCodeblock(
+                                  command.examples.map((x) => `${commandCtx.server.getPrefix()}${command.parentCommand ? command.name : ""} ${x}`)
+                              )}`
+                            : ""
+                    }
+                    **Usage:** ${inlineCodeblock(
                         `${commandCtx.server.getPrefix()}${command.name} ${
                             command.usage ?? `<${command.subCommands?.size ? command.subCommands!.map((x) => x.subName!).join(" | ") : ""}> <...args>`
                         }`
                     )}
-					${command.examples ? `**Examples:** ${listInlineCodeblock(command.examples.map((x) => `${commandCtx.server.getPrefix()}${command.parentCommand ? command.name : ""} ${x}`))}` : ""}
-					${command.userPermissions ? `**Required User Permissions:** ${listInlineCodeblock(command.userPermissions)}` : ""}
-					${command.clientPermissions ? `**Required Bot Permissions:** ${listInlineCodeblock(command.clientPermissions)}` : ""}
-					${command.requiredRole ? `**Required Role:** ${inlineCodeblock(command.requiredRole)}` : ""}
-					${command.subCommands?.size ? `**Subcommands:** ${listInlineCodeblock(command.subCommands!.map((x) => x.subName!))}` : ""}
-			`
+                    ${command.aliases ? `**Aliases:** ${listInlineCodeblock(command.aliases)}` : ""}
+                    ${command.subCommands?.size ? `**Subcommands:** ${listInlineCodeblock(command.subCommands!.map((x) => x.subName!))}` : ""}
+                    ${command.userPermissions ? `**Required User Permissions:** ${listInlineCodeblock(command.userPermissions)}` : ""}
+                    ${command.clientPermissions ? `**Required Bot Permissions:** ${listInlineCodeblock(command.clientPermissions)}` : ""}
+                    ${command.requiredRole ? `**Required Role:** ${inlineCodeblock(command.requiredRole)}` : ""}
+                `
             );
         }
 
@@ -51,20 +57,32 @@ const Help: Command = {
             commandCategoryMap.set(category ?? "uncategorized", commands);
         });
 
-        return ctx.messageUtil.send(
+        return ctx.messageUtil.sendContentBlock(
             message.channelId,
-            new Embed().setDescription(stripIndents`
-				A list of available commands. For additional info on a command, type ${inlineCodeblock(`${commandCtx.server.getPrefix()}help [command]`)}. 
-
-				${commandCategoryMap
-                    .map(
-                        (commands, category) => stripIndents`
-						**${category}:**
-						${listInlineCodeblock(commands.map((x) => x.name))}
-					`
-                    )
-                    .join("\n\n")}
-		`)
+            "Command List",
+            commandCategoryMap
+                .map(
+                    (commands, category) => stripIndents`
+                            **${category}:**
+                            ${listInlineCodeblock(commands.map((x) => x.name))}
+                        `
+                )
+                .join("\n\n"),
+            {
+                fields: [
+                    {
+                        name: `:question: Command info`,
+                        value: `For additional info on a command, type ${inlineCodeblock(`${commandCtx.server.getPrefix()}help [command]`)}`,
+                        inline: true,
+                    },
+                    {
+                        name: `:link: [Join server](https://guilded.gg/Yoki) • [Invite bot](https://guilded.gg/Yoki)`,
+                        // value: `Get latest news about Yoki and receive support`,
+                        value: "",
+                        inline: true,
+                    },
+                ],
+            }
         );
     },
 };

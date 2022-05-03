@@ -45,7 +45,7 @@ const Add: Command = {
             severity,
             infractionPoints,
         });
-        return ctx.messageUtil.send(message.channelId, `Successfully added \`${phrase}\` with the severity \`${severity}\` to the automod list!`);
+        return ctx.messageUtil.sendSuccessBlock(message.channelId, "New phrase added", `Successfully added \`${phrase}\` with the severity \`${severity}\` to the automod list!`);
     },
 };
 

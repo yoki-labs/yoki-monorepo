@@ -1,4 +1,4 @@
-import { stripIndents } from "common-tags";
+import type { APIEmbedField } from "@guildedjs/guilded-api-typings";
 
 import { RoleType } from "../../typings";
 import { Category } from "../Category";
@@ -26,26 +26,32 @@ const History: Command = {
             },
         });
 
-        if (!fetchedCase) return ctx.messageUtil.send(message.channelId, "A case with that ID does not exist!");
-        const member = await ctx.serverUtil.getMember(message.serverId!, fetchedCase.targetId);
-        return ctx.messageUtil.send(
+        if (!fetchedCase) return ctx.messageUtil.sendCautionBlock(message.channelId, "Unknown case", "A case with that ID does not exist!");
+        return ctx.messageUtil.sendContentBlock(
             message.channelId,
-            stripIndents`
-				**Target:** \`${member.user.name} (${member.user.id})\`
-				**Type:** \`${fetchedCase.type}\`
-				**Reason:** \`${fetchedCase.reason}\`
-				${
-                    fetchedCase.expiresAt
-                        ? `**Expiration:** \`${fetchedCase.expiresAt.toLocaleDateString("en-US", {
-                              year: "numeric",
-                              month: "long",
-                              day: "numeric",
-                              hour: "2-digit",
-                              minute: "2-digit",
-                          })} EST\``
-                        : ""
-                }
-			`
+            `Case \`${caseId}\``,
+            `<@${fetchedCase.targetId}> has received ${fetchedCase.type} by <@${fetchedCase.executorId}>`,
+            {
+                fields: [
+                    fetchedCase && {
+                        name: "Reason",
+                        value: (fetchedCase.reason as string).length > 1024 ? `${fetchedCase.reason?.substr(0, 1021)}...` : fetchedCase.reason,
+                    },
+                    fetchedCase.expiresAt && {
+                        name: "Expiration",
+                        value: `${fetchedCase.expiresAt.toLocaleDateString("en-US", {
+                            year: "numeric",
+                            month: "long",
+                            day: "numeric",
+                            hour: "2-digit",
+                            minute: "2-digit",
+                        })} EST`,
+                    },
+                ].filter(Boolean) as APIEmbedField[],
+            },
+            {
+                isSilent: true,
+            }
         );
     },
 };
