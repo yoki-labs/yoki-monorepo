@@ -34,13 +34,14 @@ export default async (packet: WSChatMessageUpdatedPayload, ctx: Context) => {
 
     try {
         // send embed in log channel
-        await ctx.messageUtil.send(
-            updatedMessageLogChannel.channelId,
-            new Embed()
-                .setTitle("Updated Message!")
-                .setColor(Colors.yellow)
-                .setDescription(
-                    stripIndents`
+        await ctx.messageUtil
+            .send(
+                updatedMessageLogChannel.channelId,
+                new Embed()
+                    .setTitle("Updated Message!")
+                    .setColor(Colors.yellow)
+                    .setDescription(
+                        stripIndents`
 					**ID:** ${inlineCodeblock(message.id)}
 					**Author:** ${inlineCodeblock(oldMember?.user.name ?? "unknown name")} (${inlineCodeblock(message.createdBy ?? message.createdByBotId ?? message.createdByWebhookId)})
 					**Old Message:**
@@ -60,9 +61,10 @@ export default async (packet: WSChatMessageUpdatedPayload, ctx: Context) => {
                         codeblock(message.content.length > 900 ? `${message.content.slice(0, 900)}...` : message.content)
                     }
 				`
-                )
-                .setTimestamp()
-        );
+                    )
+                    .setTimestamp()
+            )
+            .catch(() => null);
     } catch (e) {
         const referenceId = nanoid();
         if (e instanceof Error) {
