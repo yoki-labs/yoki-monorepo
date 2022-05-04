@@ -38,20 +38,19 @@ const Help: Command = {
                 command = parentCommand;
             }
 
+            const commandUsageName = parentCommand.name === command.name ? command.name : `${parentCommand.name}${command.subName ? ` ${command.subName}` : ""}`;
             return ctx.messageUtil.sendContentBlock(
                 message.channelId,
-                `${inlineCodeblock(parentCommand.name === command.name ? `${parentCommand.name}${command.subName ? ` ${command.subName}` : ""}` : command.name)} command`,
+                `${inlineCodeblock(commandUsageName)} command`,
                 [
                     command.description,
                     " ",
-                    command.examples
-                        ? `**Examples:** ${listInlineCodeblock(command.examples.map((x) => `${commandCtx.server.getPrefix()}${command.parentCommand ? command.name : ""} ${x}`))}`
-                        : null,
                     `**Usage:** ${inlineCodeblock(
-                        `${commandCtx.server.getPrefix()}${command.name} ${
+                        `${commandCtx.server.getPrefix()}${commandUsageName} ${
                             command.usage ?? `<${command.subCommands?.size ? command.subCommands!.map((x) => x.subName!).join(" | ") : ""}> <...args>`
                         }`
                     )}`,
+                    command.examples ? `**Examples:** ${listInlineCodeblock(command.examples.map((x) => `${commandCtx.server.getPrefix()}${commandUsageName} ${x}`))}` : null,
                     command.aliases ? `**Aliases:** ${listInlineCodeblock(command.aliases)}` : null,
                     command.subCommands?.size ? `**Subcommands:** ${listInlineCodeblock(command.subCommands!.map((x) => x.subName!))}` : null,
                     command.clientPermissions ? `**Required Bot Permissions:** ${listInlineCodeblock(command.clientPermissions)}` : null,
