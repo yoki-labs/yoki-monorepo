@@ -34,9 +34,15 @@ export default async (packet: WSChatMessageDeletedPayload, ctx: Context) => {
                 .setDescription(
                     stripIndents`
 					**ID:** ${inlineCodeblock(message.id)}
-					**Author:** ${inlineCodeblock(oldMember?.user.name ?? "Could not find data")} (${inlineCodeblock(deletedMessage?.authorId ?? "Could not find data")})
-					**Deleted Message:**
-					${codeblock(deletedMessage ? (deletedMessage.content.length > 900 ? `${deletedMessage.content.slice(0, 900)}...` : deletedMessage.content) : "Could not find message content.")}
+					${
+                        deletedMessage
+                            ? `
+							**Author:** ${inlineCodeblock(oldMember?.user.name ?? "Could not find data")} (${inlineCodeblock(deletedMessage?.authorId ?? "Could not find data")})
+							**Deleted Message:**
+							${codeblock(deletedMessage ? (deletedMessage.content.length > 900 ? `${deletedMessage.content.slice(0, 900)}...` : deletedMessage.content) : "Could not find message content.")}
+							`
+                            : "*Data for this message could not be found. May be older than 14 days.*"
+                    }
 				`
                 )
                 .setTimestamp()
