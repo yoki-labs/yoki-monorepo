@@ -17,37 +17,48 @@ const Help: Command = {
             type: "string",
             optional: true,
         },
+        {
+            name: "subName",
+            type: "string",
+            optional: true,
+        },
     ],
     execute: (message, args, ctx, commandCtx) => {
-        const commandName = args.commandName as string | null;
+        const commandName = (args.commandName as string | null)?.toLowerCase();
+        const subName = (args.subName as string | null)?.toLowerCase();
         if (commandName) {
-            const command = ctx.commands.get(commandName) ?? ctx.commands.find((command) => command.aliases?.includes(commandName) ?? false);
-            if (!command) return ctx.messageUtil.send(message.channelId, "Could not find that command!");
+            const parentCommand = ctx.commands.get(commandName) ?? ctx.commands.find((command) => command.aliases?.includes(commandName) ?? false);
+            if (!parentCommand) return ctx.messageUtil.send(message.channelId, "Could not find that command!");
+            let command: Command;
+            if (subName) {
+                const subCommand = parentCommand.subCommands?.get(subName) ?? null;
+                if (!subCommand) return ctx.messageUtil.send(message.channelId, "Could not find that sub command!");
+                command = subCommand;
+            } else {
+                command = parentCommand;
+            }
 
             return ctx.messageUtil.sendContentBlock(
                 message.channelId,
-                `${inlineCodeblock(command.name)} command`,
-                stripIndents`
-                    ${command.description}
-
-                    ${
-                        command.examples
-                            ? `**Examples:** ${listInlineCodeblock(
-                                  command.examples.map((x) => `${commandCtx.server.getPrefix()}${command.parentCommand ? command.name : ""} ${x}`)
-                              )}`
-                            : ""
-                    }
-                    **Usage:** ${inlineCodeblock(
+                `${inlineCodeblock(parentCommand.name === command.name ? `${parentCommand.name}${command.subName ? ` ${command.subName}` : ""}` : command.name)} command`,
+                [
+                    command.description,
+                    " ",
+                    command.examples
+                        ? `**Examples:** ${listInlineCodeblock(command.examples.map((x) => `${commandCtx.server.getPrefix()}${command.parentCommand ? command.name : ""} ${x}`))}`
+                        : null,
+                    `**Usage:** ${inlineCodeblock(
                         `${commandCtx.server.getPrefix()}${command.name} ${
                             command.usage ?? `<${command.subCommands?.size ? command.subCommands!.map((x) => x.subName!).join(" | ") : ""}> <...args>`
                         }`
-                    )}
-                    ${command.aliases ? `**Aliases:** ${listInlineCodeblock(command.aliases)}` : ""}
-                    ${command.subCommands?.size ? `**Subcommands:** ${listInlineCodeblock(command.subCommands!.map((x) => x.subName!))}` : ""}
-                    ${command.userPermissions ? `**Required User Permissions:** ${listInlineCodeblock(command.userPermissions)}` : ""}
-                    ${command.clientPermissions ? `**Required Bot Permissions:** ${listInlineCodeblock(command.clientPermissions)}` : ""}
-                    ${command.requiredRole ? `**Required Role:** ${inlineCodeblock(command.requiredRole)}` : ""}
-                `
+                    )}`,
+                    command.aliases ? `**Aliases:** ${listInlineCodeblock(command.aliases)}` : null,
+                    command.subCommands?.size ? `**Subcommands:** ${listInlineCodeblock(command.subCommands!.map((x) => x.subName!))}` : null,
+                    command.clientPermissions ? `**Required Bot Permissions:** ${listInlineCodeblock(command.clientPermissions)}` : null,
+                    command.requiredRole ? `**Required Role:** ${inlineCodeblock(command.requiredRole)}` : null,
+                ]
+                    .filter(Boolean)
+                    .join("\n")
             );
         }
 
@@ -60,29 +71,19 @@ const Help: Command = {
         return ctx.messageUtil.sendContentBlock(
             message.channelId,
             "Command List",
-            commandCategoryMap
+            `For additional info on a command, type ${inlineCodeblock(`${commandCtx.server.getPrefix()}help [command]`)}
+
+            ${commandCategoryMap
                 .map(
                     (commands, category) => stripIndents`
                             **${category}:**
                             ${listInlineCodeblock(commands.map((x) => x.name))}
                         `
                 )
-                .join("\n\n"),
-            {
-                fields: [
-                    {
-                        name: `:question: Command info`,
-                        value: `For additional info on a command, type ${inlineCodeblock(`${commandCtx.server.getPrefix()}help [command]`)}`,
-                        inline: true,
-                    },
-                    {
-                        name: `:link: [Join server](https://guilded.gg/Yoki) • [Invite bot](https://guilded.gg/Yoki)`,
-                        // value: `Get latest news about Yoki and receive support`,
-                        value: "",
-                        inline: true,
-                    },
-                ],
-            }
+                .join("\n\n")}
+				
+			:link: [Join server](https://guilded.gg/Yoki) • [Invite bot](https://guilded.gg/Yoki)
+			`
         );
     },
 };
