@@ -12,6 +12,7 @@ import string from "../args/string";
 import UUID from "../args/UUID";
 import type { CommandArgType } from "../commands/Command";
 import type { Context, ResolvedArgs } from "../typings";
+import { roleValues } from "../util";
 
 const argCasters: Record<
     CommandArgType,
@@ -135,9 +136,11 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context) => {
         // if this command requires a user to have a specific role, then check if they have it
         if (command.requiredRole) {
             // get all the roles of the required type for this command
-            const modRoles = await ctx.prisma.role.findMany({ where: { serverId: message.serverId, type: command.requiredRole } });
+            const modRoles = await ctx.prisma.role.findMany({ where: { serverId: message.serverId } });
+            const userModRoles = modRoles.filter((modRole) => member.roleIds.includes(modRole.roleId));
+            const requiredValue = roleValues[command.requiredRole];
             // check if the user has any of the roles of this required type
-            if (!modRoles.some((role) => member.roleIds.includes(role.roleId)))
+            if (!userModRoles.some((role) => roleValues[role.type] >= requiredValue))
                 return ctx.messageUtil.reply(message, `Oh no! Unfortunately, you are missing the ${command.requiredRole} role permission!`);
             // if this command is operator only, then silently ignore because of privacy reasons
         } else if (command.ownerOnly) return void 0;
