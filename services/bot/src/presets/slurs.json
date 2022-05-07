@@ -25,7 +25,6 @@
         "autist",
         "n1gger",
         "chink",
-        "jap",
         "gypsy",
         "nigger",
         "nigga",
@@ -108,5 +107,5 @@
         "chili shitter",
         "wh0re"
     ],
-    "warn": ["retard", "TEST_SLUR"]
+    "warn": ["retard"]
 }
