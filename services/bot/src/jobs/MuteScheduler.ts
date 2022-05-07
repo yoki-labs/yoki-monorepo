@@ -12,7 +12,28 @@ export class MuteScheduler extends Scheduler<Action> {
         if (!guild) return void 0;
         const member = await this.client.serverUtil.getMember(action.serverId, action.targetId).catch(() => null);
         if (!member) return;
-        if (guild.muteRoleId) return this.client.rest.router.removeRoleFromMember(action.serverId, action.targetId, guild.muteRoleId);
+        if (guild.muteRoleId) {
+            return (
+                this.client.rest.router
+                    .removeRoleFromMember(action.serverId, action.targetId, guild.muteRoleId)
+                    // to notify them that they can chat now
+                    .then(
+                        async () =>
+                            void (
+                                action.channelId &&
+                                (await this.client.messageUtil.sendInfoBlock(
+                                    action.channelId,
+                                    "You have been unmuted",
+                                    `<@${action.targetId}>, you have been automatically unmuted.`,
+                                    undefined,
+                                    {
+                                        isPrivate: true,
+                                    }
+                                ))
+                            )
+                    )
+            );
+        }
     }
 
     // sweeps for all impending expiring mutes and removes them
@@ -28,7 +49,9 @@ export class MuteScheduler extends Scheduler<Action> {
             },
         });
 
-        console.log(`Sweeping mutes, ${expiredCases.length} case(s) found expired. ${expiredCases.length > 0 ? `IDS: ${expiredCases.map((x) => x.id).join(", ")}` : ""}`);
+        if (!expiredCases.length) return console.log(`Did not find any mutes to sweep`);
+
+        console.log(`Sweeping mutes, ${expiredCases.length} case(s) found expired. IDS: ${expiredCases.map((x) => x.id).join(", ")}`);
         // go through all expired cases
         for (const action of expiredCases) {
             // how long until the case expires in ms
@@ -41,6 +64,7 @@ export class MuteScheduler extends Scheduler<Action> {
                 )
             );
         }
-        if (expiredCases.length) void this.client.prisma.action.updateMany({ data: { expired: true }, where: { id: { in: expiredCases.map((x) => x.id) } } });
+        const { count } = await this.client.prisma.action.updateMany({ data: { expired: true }, where: { id: { in: expiredCases.map((x) => x.id) } } });
+        console.log(`Swept ${count} mutes`);
     }
 }

@@ -16,5 +16,7 @@ export default async (event: WSTeamMemberUpdatedPayload, ctx: Context) => {
 
     // if the member's nickname is updated, scan it for any harmful content
     if (nickname)
-        return ctx.contentFilterUtil.scanContent(userId, nickname, FilteredContent.ServerContent, null, serverFromDb, () => ctx.rest.router.deleteMemberNickname(serverId, userId));
+        return ctx.contentFilterUtil.scanContent(userId, nickname, FilteredContent.ServerContent, null, null, serverFromDb, () =>
+            ctx.rest.router.deleteMemberNickname(serverId, userId)
+        );
 };

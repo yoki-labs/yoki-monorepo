@@ -8,7 +8,7 @@ import type { Command } from "../Command";
 const Warn: Command = {
     name: "warn",
     description: "Warn a user",
-    usage: "<targetId> [...reason]",
+    usage: "<targetId> [infraction points] [...reason]",
     requiredRole: RoleType.MOD,
     category: Category.Moderation,
     args: [
@@ -17,18 +17,28 @@ const Warn: Command = {
             type: "memberID",
         },
         {
+            name: "infractionPoints",
+            type: "string",
+            optional: true,
+        },
+        {
             name: "reason",
             type: "rest",
+            optional: true,
         },
     ],
     execute: async (message, args, ctx) => {
         const target = args.target as CachedMember;
-        const reason = args.reason as string | null;
+        const reasonArg = args.reason as string | null;
+        const infractionPointsArg = Number(args.infractionPoints);
+
+        const reason = Number.isNaN(infractionPointsArg) && args.infractionPoints ? `${args.infractionPoints as string} ${reasonArg}`.trimEnd() : reasonArg;
+        const infractionPoints = infractionPointsArg || 10;
 
         try {
             await ctx.messageUtil.sendWarningBlock(
                 message.channelId,
-                ":warning: You have been warned",
+                "You have been warned",
                 `<@${target.user.id}>, you have been manually warned by a staff member of this server.`,
                 {
                     fields: [
@@ -56,8 +66,9 @@ const Warn: Command = {
         const newAction = await ctx.dbUtil.addAction({
             serverId: message.serverId!,
             executorId: message.createdBy,
-            infractionPoints: 10,
+            infractionPoints,
             reason,
+            channelId: null,
             triggerContent: null,
             targetId: target.user.id,
             type: "WARN",

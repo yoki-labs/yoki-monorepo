@@ -56,6 +56,7 @@ const Mute: Command = {
             reason,
             triggerContent: null,
             targetId: target.user.id,
+            channelId: message.channelId,
             type: "MUTE",
             expiresAt,
         });
