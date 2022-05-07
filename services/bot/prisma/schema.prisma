@@ -81,6 +81,7 @@ model Action {
     reason            String?   @db.Text
     triggerContent    String?   @db.Text
     infractionPoints  Int
+    channelId         String?   @db.VarChar(255)
     targetId          String    @db.VarChar(255)
     createdAt         DateTime  @default(now())
     updatedAt         DateTime? @updatedAt

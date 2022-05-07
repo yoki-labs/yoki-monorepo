@@ -87,6 +87,7 @@ export class ContentFilterUtil extends Util {
             message.createdByBotId || message.createdByWebhookId || message.createdBy,
             message.content,
             FilteredContent.Message,
+            message.channelId,
             message,
             server,
             // Filter
@@ -100,6 +101,7 @@ export class ContentFilterUtil extends Util {
         userId: string,
         text: string,
         filteredContent: FilteredContent,
+        channelId: string | null,
         content: ChatMessagePayload | null,
         server: Server,
         resultingAction: () => unknown
@@ -171,6 +173,8 @@ export class ContentFilterUtil extends Util {
             reason: `${ifExceeds ? `[AUTOMOD] ${ifExceeds} threshold exceeded, used phrase:` : `[AUTOMOD] content filter tripped, used phrase:`}`,
             // The offending content
             triggerContent: triggeredWord.content,
+            // The place where unmute messages will happen
+            channelId,
             // The offending user
             targetId: userId,
             // Whether this case will expire (mutes)

@@ -70,6 +70,10 @@ export class MessageUtil extends Util {
         return this.sendThemedBlock(channelId, `:scroll: ${title}`, description, Colors.pink, embedPartial, messagePartial);
     }
 
+    sendInfoBlock(channelId: string, title: string, description: string, embedPartial?: EmbedPayload, messagePartial?: Partial<RESTPostChannelMessagesBody>) {
+        return this.sendThemedBlock(channelId, `:information_source: ${title}`, description, Colors.blue, embedPartial, messagePartial);
+    }
+
     sendSuccessBlock(channelId: string, title: string, description: string, embedPartial?: EmbedPayload, messagePartial?: Partial<RESTPostChannelMessagesBody>) {
         return this.sendThemedBlock(channelId, `:white_check_mark: ${title}`, description, Colors.green, embedPartial, messagePartial);
     }
