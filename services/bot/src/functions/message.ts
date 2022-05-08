@@ -1,7 +1,7 @@
 import { Embed } from "@guildedjs/embeds";
 import type { ChatMessagePayload, EmbedPayload, RESTPostChannelMessagesBody } from "@guildedjs/guilded-api-typings";
 import { stripIndents } from "common-tags";
-import { inspect } from "util";
+import { inspect } from "node:util";
 
 import { Colors } from "../color";
 import type { Command, CommandArgument } from "../commands/Command";
