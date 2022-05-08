@@ -1,7 +1,6 @@
 import { Embed } from "@guildedjs/embeds";
 import type { ChatMessagePayload, EmbedPayload, RESTPostChannelMessagesBody } from "@guildedjs/guilded-api-typings";
 import { stripIndents } from "common-tags";
-import { inspect } from "node:util";
 
 import { Colors } from "../color";
 import type { Command, CommandArgument } from "../commands/Command";
@@ -12,8 +11,7 @@ export class MessageUtil extends Util {
     send(channelId: string, content: string | RESTPostChannelMessagesBody | Embed) {
         return this.rest.router
             .createChannelMessage(channelId, content instanceof Embed ? { embeds: [content.toJSON()] } : typeof content === "string" ? { content } : content)
-            .then((x) => x.message)
-            .catch((err: Error) => this.client.errorHandler.send(`Error sending message to ${channelId} of content: \`${inspect(content)}\` because of ${err.message}`));
+            .then((x) => x.message);
     }
 
     // Reply to a message
