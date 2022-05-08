@@ -40,6 +40,14 @@
     node-fetch "^2.6.7"
     qs "^6.10.3"
 
+"@guildedjs/rest@2.6.0":
+  version "2.6.0"
+  resolved "https://registry.yarnpkg.com/@guildedjs/rest/-/rest-2.6.0.tgz#6c68537fb536d8cdfb118333f0cd10fe6feb5db7"
+  integrity sha512-ZbEEzfb2yGxpIbdmr2/giUhREFjn3ZOnl8ka+deaV5lKWvlIo8anQwq2a0j8inZnN9kAlhhyMqGi/n14HXIRTg==
+  dependencies:
+    node-fetch "^2.6.7"
+    qs "^6.10.3"
+
 "@guildedjs/webhook-client@0.3.0":
   version "0.3.0"
   resolved "https://registry.yarnpkg.com/@guildedjs/webhook-client/-/webhook-client-0.3.0.tgz#d6abfbe880db4c9ffc2e610e3f6539e5c0a5adcb"
