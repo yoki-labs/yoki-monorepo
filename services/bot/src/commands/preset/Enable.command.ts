@@ -5,7 +5,7 @@ const Enable: Command = {
     name: "preset-enable",
     subName: "enable",
     description: "Enable a preset",
-    usage: "",
+    usage: "<preset-to-enable>",
     subCommand: true,
     requiredRole: RoleType.MOD,
     args: [
