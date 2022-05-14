@@ -10,7 +10,7 @@ import { Severity } from ".prisma/client";
 const Unmute: Command = {
     name: "unmute",
     description: "Removes a mute from the specified user",
-    usage: "<targetId>",
+    usage: "<targetId> [reason]",
     requiredRole: RoleType.MOD,
     category: Category.Moderation,
     args: [
@@ -21,6 +21,7 @@ const Unmute: Command = {
         {
             name: "reason",
             type: "rest",
+            optional: true,
         },
     ],
     execute: async (message, args, ctx, commandCtx) => {
