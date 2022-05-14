@@ -13,14 +13,15 @@ const List: Command = {
     execute: async (message, _args, ctx) => {
         const allPresets = ctx.contentFilterUtil.presets;
         const enabledPresets = await ctx.dbUtil.getEnabledPresets(message.serverId!);
-        return ctx.messageUtil.send(
-            message.channelId,
+        return ctx.messageUtil.replyWithContent(
+            message,
+            `Presets`,
             stripIndents`
-				All Preset Options: ${Object.keys(allPresets)
+				**All Preset Options**: ${Object.keys(allPresets)
                     .map((preset) => `\`${preset}\``)
                     .join(", ")}
 
-				Enabled Presets: ${enabledPresets.map((preset) => `\`${preset.preset}\``).join(", ")}
+				**Enabled Presets:** ${enabledPresets.map((preset) => `\`${preset.preset}\``).join(", ") || "None"}
 			`
         );
     },

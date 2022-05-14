@@ -5,9 +5,7 @@ const Invite: Command = {
     description: "Get a link for inviting the bot.",
     usage: "",
     execute: (message, _args, ctx) => {
-        return ctx.messageUtil.send(message.channelId, {
-            content: "Here is the link for inviting the bot: [here](https://yoki-labs.xyz/yoki/invite)",
-            replyMessageIds: [message.id],
+        return ctx.messageUtil.replyWithContent(message, `Invite the bot`, `[**Click here**](https://yoki-labs.xyz/yoki/invite) to invite Yoki to your server.`, undefined, {
             isPrivate: true,
         });
     },

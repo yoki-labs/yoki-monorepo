@@ -13,13 +13,9 @@ const Enable: Command = {
     execute: async (message, _args, ctx) => {
         return ctx.dbUtil
             .enableFilter(message.serverId!)
-            .then(() => ctx.messageUtil.sendSuccessBlock(message.channelId, "Automod enabled", "Successfully enabled the automod filter for this server."))
+            .then(() => ctx.messageUtil.replyWithSuccess(message, `Automod enabled`, `Successfully enabled the automod filter for this server.`))
             .catch((e: Error) =>
-                ctx.messageUtil.sendCautionBlock(
-                    message.channelId,
-                    "An error occurred",
-                    `There was an issue enabling automoderation for your server. Please forward this error to bot staff: \`${e.message}\``
-                )
+                ctx.messageUtil.replyWithError(message, `There was an issue enabling automoderation for your server. Please forward this error to bot staff: \`${e.message}\``)
             );
     },
 };

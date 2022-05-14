@@ -18,14 +18,14 @@ const Enable: Command = {
         const preset = args.preset as string;
         const allPresets = Object.keys(ctx.contentFilterUtil.presets);
         if (!allPresets.includes(preset))
-            return ctx.messageUtil.send(message.channelId, `That is not a valid preset. Your options are: ${allPresets.map((x) => `\`${x}\``).join(", ")}`);
+            return ctx.messageUtil.replyWithAlert(message, `No such preset`, `That is not a valid preset. Your options are: ${allPresets.map((x) => `\`${x}\``).join(", ")}`);
 
         return ctx.dbUtil
             .enablePreset(message.serverId!, preset)
-            .then(() => ctx.messageUtil.send(message.channelId, `Successfully enabled the \`${preset}\` preset for this server.`))
+            .then(() => ctx.messageUtil.replyWithSuccess(message, `Preset enabled`, `Successfully enabled the \`${preset}\` preset for this server.`))
             .catch((e: Error) =>
-                ctx.messageUtil.send(
-                    message.channelId,
+                ctx.messageUtil.replyWithError(
+                    message,
                     `There was an issue enabling the \`${preset}\` preset for your server. Please forward this error to bot staff: \`${e.message}\``
                 )
             );

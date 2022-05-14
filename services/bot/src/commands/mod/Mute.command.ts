@@ -30,24 +30,25 @@ const Mute: Command = {
         },
     ],
     execute: async (message, args, ctx, commandCtx) => {
-        if (!commandCtx.server.muteRoleId) return ctx.messageUtil.send(message.channelId, "There is no mute role configured for this server.");
+        if (!commandCtx.server.muteRoleId) return ctx.messageUtil.replyWithAlert(message, `No mute role set`, `There is no mute role configured for this server.`);
         const target = args.target as CachedMember;
         const reason = args.reason as string | null;
         const duration = ms(args.duration as string);
-        if (!duration || duration <= 894000) return ctx.messageUtil.send(message.channelId, "Your mute duration must be longer than 15 minutes.");
+        if (!duration || duration <= 894000) return ctx.messageUtil.replyWithAlert(message, `Duration must be longer`, `Your mute duration must be longer than 15 minutes.`);
         const expiresAt = new Date(Date.now() + duration);
 
         try {
             await ctx.rest.router.assignRoleToMember(message.serverId!, target.user.id, commandCtx.server.muteRoleId);
         } catch (e) {
-            return ctx.messageUtil.send(message.channelId, {
-                content: stripIndents`
+            return ctx.messageUtil.replyWithError(
+                message,
+                stripIndents`
 					There was an issue muting this user. This is most likely due to misconfigured permissions for your server.
 					\`${(e as Error).message}\`
 				`,
-                isPrivate: true,
-                replyMessageIds: [message.id],
-            });
+                undefined,
+                { isPrivate: true }
+            );
         }
 
         const newAction = await ctx.dbUtil.addAction({
@@ -63,7 +64,7 @@ const Mute: Command = {
         });
         ctx.emitter.emit("ActionIssued", newAction, target, ctx);
 
-        await ctx.messageUtil.sendThemedBlock(
+        await ctx.messageUtil.sendValueBlock(
             message.channelId,
             ":mute: You have been muted",
             `<@${target.user.id}>, you have been muted for **${duration / 60000}** minutes.`,
@@ -81,10 +82,8 @@ const Mute: Command = {
             }
         );
 
-        return ctx.messageUtil.send(message.channelId, {
+        return ctx.messageUtil.replyWithSuccess(message, `User muted`, `${target.user.name} (${inlineCodeblock(target.user.id)}) has been muted successfully.`, undefined, {
             isPrivate: true,
-            content: `${target.user.name} (${inlineCodeblock(target.user.id)}) has been muted successfully.`,
-            replyMessageIds: [message.id],
         });
     },
 };

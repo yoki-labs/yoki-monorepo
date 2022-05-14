@@ -13,15 +13,16 @@ const Muterole: Command = {
     args: [{ name: "newRole", optional: true, type: "string" }],
     execute: async (message, args, ctx, commandCtx) => {
         const newRole = args.newRole ? Number(args.newRole as string) : null;
-        // if (newChannel && !isUUID(newChannel)) return ctx.messageUtil.send(message.channelId, "Oh no! That is not a valid role ID.");
 
         if (!newRole) {
             const muteRole = commandCtx.server.muteRoleId;
-            return ctx.messageUtil.send(message.channelId, muteRole ? `The mute role is set to: \`${muteRole}\`` : `There is no mute role set.`);
+            return muteRole
+                ? ctx.messageUtil.replyWithContent(message, `Mute role`, `The mute role is set to role \`${muteRole}\`.`)
+                : ctx.messageUtil.replyWithNullState(message, `No mute role`, `There is no mute role set.`);
         }
 
         await ctx.prisma.server.updateMany({ data: { muteRoleId: newRole }, where: { serverId: message.serverId! } });
-        return ctx.messageUtil.send(message.channelId, `Successfully set the mute role to \`${newRole}\``);
+        return ctx.messageUtil.replyWithSuccess(message, `Mute role set`, `Successfully set \`${newRole}\` as the mute role`);
     },
 };
 

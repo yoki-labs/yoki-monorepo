@@ -4,6 +4,7 @@ import { stripIndents } from "common-tags";
 
 import { Colors } from "../color";
 import type { Command, CommandArgument } from "../commands/Command";
+import { StateImages } from "../images";
 import { Util } from "./util";
 
 export class MessageUtil extends Util {
@@ -20,27 +21,22 @@ export class MessageUtil extends Util {
         return this.rest.router.createChannelMessage(message.channelId, opts);
     }
 
-    handleBadArg(channelId: string, prefix: string, commandArg: CommandArgument, command: Command, parentCommand: Command) {
-        return this.sendCautionBlock(
-            channelId,
-            "Incorrect argument",
-            `Sorry, but the usage of argument \`${commandArg.name}\` was not correct. Was expecting a ${commandArg.type}.`,
-            {
-                fields: [
-                    {
-                        name: "Usage",
-                        value: stripIndents`
+    handleBadArg(message: ChatMessagePayload, prefix: string, commandArg: CommandArgument, command: Command, parentCommand: Command) {
+        return this.replyWithAlert(message, `Incorrect argument`, `Sorry, but the usage of argument \`${commandArg.name}\` was not correct. Was expecting a ${commandArg.type}.`, {
+            fields: [
+                {
+                    name: "Usage",
+                    value: stripIndents`
                             \`\`\`clojure
                             ${prefix}${parentCommand.name}${command.name === parentCommand.name ? "" : ` ${command.subName ?? command.name}`} ${command.usage}
                             \`\`\`
                         `,
-                    },
-                ],
-            }
-        );
+                },
+            ],
+        });
     }
 
-    sendThemedBlock(channelId: string, title: string, description: string, color: number, embedPartial?: EmbedPayload, messagePartial?: Partial<RESTPostChannelMessagesBody>) {
+    sendValueBlock(channelId: string, title: string, description: string, color: number, embedPartial?: EmbedPayload, messagePartial?: Partial<RESTPostChannelMessagesBody>) {
         return this.send(channelId, {
             ...messagePartial,
             embeds: [
@@ -54,27 +50,80 @@ export class MessageUtil extends Util {
         });
     }
 
-    sendCautionBlock(channelId: string, title: string, description: string, embedPartial?: EmbedPayload, messagePartial?: Partial<RESTPostChannelMessagesBody>) {
-        return this.sendThemedBlock(channelId, `:x: ${title}`, description, Colors.red, embedPartial, messagePartial);
+    sendStateBlock(
+        channelId: string,
+        title: string,
+        description: string,
+        color: number,
+        thumbnail: string,
+        embedPartial?: EmbedPayload,
+        messagePartial?: Partial<RESTPostChannelMessagesBody>
+    ) {
+        return this.sendValueBlock(channelId, title, description, color, { thumbnail: { url: thumbnail }, ...embedPartial }, messagePartial);
+    }
+
+    replyWithValueBlock(
+        message: ChatMessagePayload,
+        title: string,
+        description: string,
+        color: number,
+        embedPartial?: EmbedPayload,
+        messagePartial?: Partial<RESTPostChannelMessagesBody>
+    ) {
+        return this.sendValueBlock(message.channelId, title, description, color, embedPartial, { replyMessageIds: [message.id], ...messagePartial });
+    }
+
+    replyWithStateBlock(
+        message: ChatMessagePayload,
+        title: string,
+        description: string,
+        color: number,
+        thumbnail: string,
+        embedPartial?: EmbedPayload,
+        messagePartial?: Partial<RESTPostChannelMessagesBody>
+    ) {
+        return this.sendStateBlock(message.channelId, title, description, color, thumbnail, embedPartial, { replyMessageIds: [message.id], ...messagePartial });
+    }
+
+    // State blocks
+    replyWithAlert(message: ChatMessagePayload, title: string, description: string, embedPartial?: EmbedPayload, messagePartial?: Partial<RESTPostChannelMessagesBody>) {
+        return this.replyWithStateBlock(message, title, description, Colors.orangeRed, StateImages.notFound, embedPartial, messagePartial);
+    }
+
+    replyWithError(message: ChatMessagePayload, description: string, embedPartial?: EmbedPayload, messagePartial?: Partial<RESTPostChannelMessagesBody>) {
+        return this.replyWithStateBlock(message, `Oh no, something went wrong!`, description, Colors.red, StateImages.error, embedPartial, messagePartial);
+    }
+
+    replyWithUnpermitted(message: ChatMessagePayload, description: string, embedPartial?: EmbedPayload, messagePartial?: Partial<RESTPostChannelMessagesBody>) {
+        return this.replyWithStateBlock(message, `Can't do that!`, description, Colors.red, StateImages.stop, embedPartial, messagePartial);
     }
 
     sendWarningBlock(channelId: string, title: string, description: string, embedPartial?: EmbedPayload, messagePartial?: Partial<RESTPostChannelMessagesBody>) {
-        return this.sendThemedBlock(channelId, `:warning: ${title}`, description, Colors.yellow, embedPartial, messagePartial);
+        return this.sendStateBlock(channelId, title, description, Colors.yellow, StateImages.stop, embedPartial, messagePartial);
     }
 
-    sendNullBlock(channelId: string, title: string, description: string, embedPartial?: EmbedPayload, messagePartial?: Partial<RESTPostChannelMessagesBody>) {
-        return this.sendThemedBlock(channelId, `:shrug_gil: ${title}`, description, Colors.dull, embedPartial, messagePartial);
+    replyWithNullState(message: ChatMessagePayload, title: string, description: string, embedPartial?: EmbedPayload, messagePartial?: Partial<RESTPostChannelMessagesBody>) {
+        return this.replyWithStateBlock(message, title, description, Colors.dull, StateImages.nothingHere, embedPartial, messagePartial);
     }
 
-    sendContentBlock(channelId: string, title: string, description: string, embedPartial?: EmbedPayload, messagePartial?: Partial<RESTPostChannelMessagesBody>) {
-        return this.sendThemedBlock(channelId, `:scroll: ${title}`, description, Colors.pink, embedPartial, messagePartial);
+    replyWithContent(message: ChatMessagePayload, title: string, description: string, embedPartial?: EmbedPayload, messagePartial?: Partial<RESTPostChannelMessagesBody>) {
+        return this.replyWithStateBlock(message, title, description, Colors.pink, StateImages.scroll, embedPartial, messagePartial);
     }
 
     sendInfoBlock(channelId: string, title: string, description: string, embedPartial?: EmbedPayload, messagePartial?: Partial<RESTPostChannelMessagesBody>) {
-        return this.sendThemedBlock(channelId, `:information_source: ${title}`, description, Colors.blue, embedPartial, messagePartial);
+        return this.sendStateBlock(channelId, title, description, Colors.blue, StateImages.scroll, embedPartial, messagePartial);
     }
 
-    sendSuccessBlock(channelId: string, title: string, description: string, embedPartial?: EmbedPayload, messagePartial?: Partial<RESTPostChannelMessagesBody>) {
-        return this.sendThemedBlock(channelId, `:white_check_mark: ${title}`, description, Colors.green, embedPartial, messagePartial);
+    replyWithInfo(message: ChatMessagePayload, title: string, description: string, embedPartial?: EmbedPayload, messagePartial?: Partial<RESTPostChannelMessagesBody>) {
+        return this.replyWithStateBlock(message, title, description, Colors.blue, StateImages.scroll, embedPartial, messagePartial);
+    }
+
+    // Value blocks
+    replyWithDisabledState(message: ChatMessagePayload, title: string, description: string, embedPartial?: EmbedPayload, messagePartial?: Partial<RESTPostChannelMessagesBody>) {
+        return this.replyWithValueBlock(message, `:no_entry: ${title}`, description, Colors.dullRed, embedPartial, messagePartial);
+    }
+
+    replyWithSuccess(message: ChatMessagePayload, title: string, description: string, embedPartial?: EmbedPayload, messagePartial?: Partial<RESTPostChannelMessagesBody>) {
+        return this.replyWithValueBlock(message, `:white_check_mark: ${title}`, description, Colors.green, embedPartial, messagePartial);
     }
 }

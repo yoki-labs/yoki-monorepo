@@ -26,7 +26,7 @@ const History: Command = {
             },
         });
 
-        if (!actions.length) return ctx.messageUtil.sendNullBlock(message.channelId, "This user has no history", "Squeaky clean history!");
+        if (!actions.length) return ctx.messageUtil.replyWithNullState(message, `Squeaky clean history!`, `This user does not have any moderation history associated with them.`);
         return ctx.messageUtil.send(
             message.channelId,
             stripIndents`

@@ -11,6 +11,7 @@ import rest from "../args/rest";
 import string from "../args/string";
 import UUID from "../args/UUID";
 import type { CommandArgType } from "../commands/Command";
+import { inlineCodeblock } from "../formatters";
 import type { Context, ResolvedArgs } from "../typings";
 import { roleValues } from "../util";
 
@@ -66,7 +67,7 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context) => {
     if (command.parentCommand && command.subCommands?.size) {
         // if no sub command, list all the available sub commands
         if (!args[0])
-            return ctx.messageUtil.sendCautionBlock(message.channelId, `No sub-command specified`, `Please provide a sub-command.`, {
+            return ctx.messageUtil.replyWithContent(message, `${inlineCodeblock(commandName)} command`, command.description, {
                 fields: [
                     {
                         name: "Available sub-commands",
@@ -85,7 +86,7 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context) => {
         const subCommand = command.subCommands.get(args[0]);
         // if not a valid sub command, list all the proper ones
         if (!subCommand)
-            return ctx.messageUtil.sendCautionBlock(message.channelId, `Sub-command not found`, `The specified sub-command could not be found.`, {
+            return ctx.messageUtil.replyWithAlert(message, `No such sub-command`, `The specified sub-command could not be found.`, {
                 fields: [
                     {
                         name: "Available sub-commands",
@@ -121,7 +122,7 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context) => {
             const isValidArg = await argCasters[commandArg.type]?.(args[i], args, i, ctx, packet);
 
             // if the arg is not valid, inform the user
-            if (isValidArg === null) return ctx.messageUtil.handleBadArg(message.channelId, prefix, commandArg, command, parentCommand);
+            if (isValidArg === null) return ctx.messageUtil.handleBadArg(message, prefix, commandArg, command, parentCommand);
 
             // if the arg is valid, add it to the resolved args obj
             resolvedArgs[commandArg.name] = isValidArg;
@@ -141,7 +142,7 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context) => {
             const requiredValue = roleValues[command.requiredRole];
             // check if the user has any of the roles of this required type
             if (!userModRoles.some((role) => roleValues[role.type] >= requiredValue))
-                return ctx.messageUtil.reply(message, `Oh no! Unfortunately, you are missing the ${command.requiredRole} role permission!`);
+                return ctx.messageUtil.replyWithUnpermitted(message, `Unfortunately, you are missing the ${command.requiredRole} role permission!`);
             // if this command is operator only, then silently ignore because of privacy reasons
         } else if (command.ownerOnly) return void 0;
     }
@@ -174,12 +175,9 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context) => {
             ]);
         }
         // notify the user that there was an error executing the command
-        return ctx.messageUtil.send(
-            message.channelId,
-            stripIndents`
-				**Oh no, something went wrong!**
-				This is potentially an issue on our end, please contact us and forward the following ID and error: \`${referenceId}\` & \`${(e as any).message}\`
-        	`
+        return ctx.messageUtil.replyWithError(
+            message,
+            `This is potentially an issue on our end, please contact us and forward the following ID and error: \`${referenceId}\` & \`${(e as any).message}\``
         );
     }
 

@@ -15,11 +15,17 @@ const FilterOnMods: Command = {
         const newSetting = args.newSetting as boolean;
 
         if (typeof newSetting == "undefined") {
-            return ctx.messageUtil.send(message.channelId, `Filter on mods is set to: \`${commandCtx.server.filterOnMods}\``);
+            return commandCtx.server.filterOnMods
+                ? ctx.messageUtil.replyWithSuccess(message, `Filter enabled`, `Messages sent by mods will be filtered.`)
+                : ctx.messageUtil.replyWithDisabledState(message, `Filter disabled`, `Messages sent by mods will __not__ be filtered.`);
         }
 
         await ctx.prisma.server.updateMany({ data: { filterOnMods: newSetting }, where: { serverId: message.serverId! } });
-        return ctx.messageUtil.send(message.channelId, `Successfully set filter on mods to \`${newSetting}\``);
+        return ctx.messageUtil.replyWithSuccess(
+            message,
+            `Filter settings modified`,
+            newSetting ? `Messages sent by mods from now on will be filtered.` : `Messages sent by mods will no longer be filtered.`
+        );
     },
 };
 

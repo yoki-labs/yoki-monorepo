@@ -53,14 +53,15 @@ const Warn: Command = {
                 }
             );
         } catch (e) {
-            return ctx.messageUtil.send(message.channelId, {
-                content: stripIndents`
+            return ctx.messageUtil.replyWithError(
+                message,
+                stripIndents`
 					There was an issue warning this user.
 					\`${(e as Error).message}\`
 				`,
-                isPrivate: true,
-                replyMessageIds: [message.id],
-            });
+                undefined,
+                { isPrivate: true }
+            );
         }
 
         const newAction = await ctx.dbUtil.addAction({
@@ -77,10 +78,8 @@ const Warn: Command = {
 
         ctx.emitter.emit("ActionIssued", newAction, target, ctx);
 
-        return ctx.messageUtil.send(message.channelId, {
+        return ctx.messageUtil.replyWithSuccess(message, `User warned`, `${target.user.name} (\`${target.user.id}\`) has been successfully warned.`, undefined, {
             isPrivate: true,
-            content: `${target.user.name} (\`${target.user.id}\`) has been successfully warned.`,
-            replyMessageIds: [message.id],
         });
     },
 };

@@ -41,9 +41,10 @@ const LogChannel: Command = {
         if (!channelId || !logTypes) {
             const logChannels = await ctx.dbUtil.getLogChannels(message.serverId!);
             if (logChannels.length <= 0)
-                return ctx.messageUtil.send(
-                    message.channelId,
-                    stripIndents` 
+                return ctx.messageUtil.replyWithNullState(
+                    message,
+                    `No log channels`,
+                    stripIndents`
 						There are no log channels set for this server.
 						You can set the following types: ${listInlineCodeblock(Object.values(LogChannelType))}
 					`
@@ -51,8 +52,9 @@ const LogChannel: Command = {
 
             const formattedChannels: Collection<string, LogChannelType[]> = await cleanupChannels(logChannels);
 
-            return ctx.messageUtil.send(
-                message.channelId,
+            return ctx.messageUtil.replyWithContent(
+                message,
+                `A few log channels`,
                 stripIndents`
                     This server has the following log channels:
                     ${formattedChannels.map((v, k) => `***${k}:*** ${listInlineCodeblock(v)}`).join("\n")}
@@ -98,8 +100,9 @@ const LogChannel: Command = {
         // }
 
         // Reply to the command, with the successful and failed types.
-        return ctx.messageUtil.send(
-            message.channelId,
+        return ctx.messageUtil[successfulTypes.length > 0 ? "replyWithSuccessBlock" : "replyWithCautionBlock"](
+            message,
+            `Subscription (not) set`,
             stripIndents`
                 ${
                     successfulTypes.length > 0

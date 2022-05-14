@@ -29,15 +29,17 @@ const Add: Command = {
         },
     ],
     execute: async (message, args, ctx, { server }) => {
-        if (!server.filterEnabled) return ctx.messageUtil.send(message.channelId, `Automod filter is disabled! Please enable using \`${server.getPrefix()}filter enable\``);
+        if (!server.filterEnabled)
+            return ctx.messageUtil.replyWithAlert(message, `Enable filtering`, `Automod filter is disabled! Please enable using \`${server.getPrefix()}filter enable\``);
         const phrase = args.phrase as string;
         const severity = transformSeverityStringToEnum((args.severity as string | null) ?? "warn");
         const infractionPoints = (args.infraction_points as number | null) ?? 5;
 
-        if (!severity) return ctx.messageUtil.send(message.channelId, "Sorry, but that is not a valid severity level!");
-        if (infractionPoints < 0 || infractionPoints > 100) return ctx.messageUtil.send(message.channelId, "Sorry, but the infraction points must be between 0 and 100.");
+        if (!severity) return ctx.messageUtil.replyWithAlert(message, `No such severity level`, `Sorry, but that is not a valid severity level!`);
+        if (infractionPoints < 0 || infractionPoints > 100)
+            return ctx.messageUtil.replyWithAlert(message, `Points over the limit`, `Sorry, but the infraction points must be between 0 and 100.`);
         const doesExistAlready = await ctx.prisma.contentFilter.findFirst({ where: { serverId: message.serverId!, content: phrase } });
-        if (doesExistAlready) return ctx.messageUtil.send(message.channelId, "This word is already in your server's filter!");
+        if (doesExistAlready) return ctx.messageUtil.replyWithAlert(message, `Already added`, `This word is already in your server's filter!`);
         await ctx.dbUtil.addWordToFilter({
             content: phrase,
             creatorId: message.createdBy,
@@ -45,7 +47,7 @@ const Add: Command = {
             severity,
             infractionPoints,
         });
-        return ctx.messageUtil.sendSuccessBlock(message.channelId, "New phrase added", `Successfully added \`${phrase}\` with the severity \`${severity}\` to the automod list!`);
+        return ctx.messageUtil.replyWithSuccess(message, `New phrase added`, `Successfully added \`${phrase}\` with the severity \`${severity}\` to the automod list!`);
     },
 };
 

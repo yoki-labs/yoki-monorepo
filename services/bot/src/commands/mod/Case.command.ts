@@ -26,9 +26,9 @@ const History: Command = {
             },
         });
 
-        if (!fetchedCase) return ctx.messageUtil.sendCautionBlock(message.channelId, "Unknown case", "A case with that ID does not exist!");
-        return ctx.messageUtil.sendContentBlock(
-            message.channelId,
+        if (!fetchedCase) return ctx.messageUtil.replyWithAlert(message, `Unknown case`, `A case with that ID does not exist!`);
+        return ctx.messageUtil.replyWithContent(
+            message,
             `Case \`${caseId}\``,
             `<@${fetchedCase.targetId}> has received ${fetchedCase.type} by <@${fetchedCase.executorId}>`,
             {

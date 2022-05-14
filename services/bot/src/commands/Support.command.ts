@@ -5,9 +5,7 @@ const Support: Command = {
     description: "Get a link for our support server.",
     usage: "",
     execute: (message, _args, ctx) => {
-        return ctx.messageUtil.send(message.channelId, {
-            content: "Here is the link to our support server: https://yoki-labs.xyz/invite",
-            replyMessageIds: [message.id],
+        return ctx.messageUtil.replyWithContent(message, `Support server`, `[**Click here**](https://yoki-labs.xyz/invite) to join our support server.`, undefined, {
             isPrivate: true,
         });
     },

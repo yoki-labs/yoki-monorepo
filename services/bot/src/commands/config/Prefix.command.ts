@@ -11,11 +11,14 @@ const Prefix: Command = {
     args: [{ name: "newPrefix", type: "string", optional: true }],
     execute: async (message, args, ctx, commandCtx) => {
         const newPrefix = args.newPrefix as string | null;
-        if (!newPrefix) return ctx.messageUtil.send(message.channelId, `The prefix for this server is: \`${commandCtx.server.prefix}\``);
+        if (!newPrefix) {
+            const { prefix } = commandCtx.server;
+            return prefix
+                ? ctx.messageUtil.replyWithNullState(message, `No server prefix`, `This server does not have any prefix set.`)
+                : ctx.messageUtil.replyWithContent(message, `Server prefix`, `The prefix for this server is \`${prefix?.replaceAll("`", "'")}\``);
+        }
         await ctx.prisma.server.update({ where: { id: commandCtx.server.id }, data: { prefix: newPrefix } });
-        return ctx.messageUtil.send(message.channelId, {
-            content: `The new prefix for this server is \`${newPrefix}\``,
-        });
+        return ctx.messageUtil.replyWithSuccess(message, `Server prefix set`, `The new prefix for this server is \`${newPrefix.replaceAll("`", "'")}\``);
     },
 };
 

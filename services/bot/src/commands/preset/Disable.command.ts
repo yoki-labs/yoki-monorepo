@@ -18,17 +18,18 @@ const Enable: Command = {
         const preset = args.preset as string;
         const allPresets = await ctx.prisma.preset.findMany({ where: { serverId: message.serverId! } });
         if (!allPresets.map((x) => x.preset).includes(preset))
-            return ctx.messageUtil.send(
-                message.channelId,
+            return ctx.messageUtil.replyWithAlert(
+                message,
+                `Can't be disabled`,
                 `That preset is not enabled. The enabled presets for your server are: ${allPresets.map((x) => `\`${x.preset}\``).join(", ")}`
             );
 
         return ctx.dbUtil
             .disablePreset(message.serverId!, preset)
-            .then(() => ctx.messageUtil.send(message.channelId, `Successfully disabled the \`${preset}\` preset for this server.`))
+            .then(() => ctx.messageUtil.replyWithSuccess(message, `Preset enabled`, `Successfully disabled the \`${preset}\` preset for this server.`))
             .catch((e: Error) =>
-                ctx.messageUtil.send(
-                    message.channelId,
+                ctx.messageUtil.replyWithError(
+                    message,
                     `There was an issue disabling the \`${preset}\` preset for your server. Please forward this error to bot staff: \`${e.message}\``
                 )
             );

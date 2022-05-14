@@ -19,9 +19,9 @@ const Delete: Command = {
     execute: async (message, args, ctx) => {
         const phrase = args.phrase as string;
         const existingEntry = await ctx.prisma.contentFilter.findFirst({ where: { serverId: message.serverId!, content: phrase } });
-        if (!existingEntry) return ctx.messageUtil.sendCautionBlock(message.channelId, "Phrase not found", "This phrase is not in your server's filter!");
+        if (!existingEntry) return ctx.messageUtil.replyWithAlert(message, `Phrase not found`, `This phrase is not in your server's filter!`);
         await ctx.dbUtil.removeWordFromFilter(message.serverId!, phrase);
-        return ctx.messageUtil.sendSuccessBlock(message.channelId, "Phrase deleted", `Successfully deleted \`${phrase}\` from the automod list!`);
+        return ctx.messageUtil.replyWithSuccess(message, `Phrase deleted`, `Successfully deleted \`${phrase}\` from the automod list!`);
     },
 };
 

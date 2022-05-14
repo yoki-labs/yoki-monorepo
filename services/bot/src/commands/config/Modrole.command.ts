@@ -1,5 +1,4 @@
 import { RoleType } from "@prisma/client";
-import { stripIndents } from "common-tags";
 
 import { Category } from "../Category";
 import type { Command } from "../Command";
@@ -25,17 +24,16 @@ const Modrole: Command = {
 
         if (!newRole) {
             const modRoles = await ctx.prisma.role.findMany({ where: { serverId: message.serverId, type: staffLevel } });
-            return ctx.messageUtil.send(
-                message.channelId,
-                modRoles.length
-                    ? stripIndents`
-					The ${staffLevel} roles for this server:
-					${modRoles.map((modRole) => `\`${modRole.roleId}\``).join("\n")}`
-                    : `There are no ${staffLevel} roles configured for this server`
-            );
+            return modRoles.length
+                ? ctx.messageUtil.replyWithContent(
+                      message,
+                      `Staff roles`,
+                      `Here are the staff roles for this server:\n- ${modRoles.map((modRole) => `\`${modRole.roleId}\` (${modRole.type})`).join("\n- ")}`
+                  )
+                : ctx.messageUtil.replyWithNullState(message, `No staff roles`, `There are no staff roles set for this server yet.`);
         }
         const existing = await ctx.prisma.role.findMany({ where: { serverId: message.serverId, roleId: newRole, type: staffLevel } });
-        if (existing.find((x) => x.roleId === newRole)) return ctx.messageUtil.send(message.channelId, "That is already a mod role!");
+        if (existing.find((x) => x.roleId === newRole)) return ctx.messageUtil.replyWithAlert(message, `Already a staff role`, `This role has already been set as ${staffLevel}.`);
 
         const newModRole = await ctx.prisma.role.create({
             data: {
@@ -45,7 +43,7 @@ const Modrole: Command = {
             },
         });
 
-        return ctx.messageUtil.send(message.channelId, `Successfully set the ${staffLevel} role to \`${newModRole.roleId}\``);
+        return ctx.messageUtil.replyWithSuccess(message, `Staff role added`, `Successfully set the ${staffLevel} role to \`${newModRole.roleId}\``);
     },
 };
 

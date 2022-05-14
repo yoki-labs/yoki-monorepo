@@ -41,7 +41,7 @@ const Eval: Command = {
     execute: async (message, args, ctx) => {
         const code = args.code as string;
         console.log(code);
-        if (!code) return ctx.messageUtil.send(message.channelId, "Gotta give me something to eval there chief.");
+        if (!code) return ctx.messageUtil.replyWithAlert(message, `Code needed`, `Gotta give me something to eval there, chief.`);
         let evaled;
         try {
             evaled = await eval(`(async () => {${code}})()`); // eslint-disable-line no-eval
@@ -51,12 +51,12 @@ const Eval: Command = {
         const clean = await _clean(evaled);
         const final = format(code, clean);
 
-        if (final.length > 2000) {
+        if (final.length > 2048) {
             const key = await _tooLong(clean);
-            return ctx.messageUtil.send(message.channelId, `Output exceeded 2000 characters (${final.length}). https://paste.discord.land/${key}.js`);
+            return ctx.messageUtil.replyWithContent(message, `Output over the limit`, `Output exceeded 2048 characters (${final.length}). https://paste.discord.land/${key}.js`);
         }
 
-        return ctx.messageUtil.send(message.channelId, final);
+        return ctx.messageUtil.replyWithContent(message, `Eval results`, final);
     },
 };
 

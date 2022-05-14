@@ -14,12 +14,12 @@ const List: Command = {
         const bannedWords = await ctx.dbUtil.getBannedWords(message.serverId!);
 
         return bannedWords.length
-            ? ctx.messageUtil.sendContentBlock(
-                  message.channelId,
-                  "Banned words",
+            ? ctx.messageUtil.replyWithContent(
+                  message,
+                  `Banned words`,
                   `These are the custom banned words for this server: ${bannedWords.map((word) => `\`${word.content}\``).join(", ")}`
               )
-            : ctx.messageUtil.sendNullBlock(message.channelId, "No banned words", `There are no custom banned words for this server.`);
+            : ctx.messageUtil.replyWithNullState(message, `No banned words`, `There are no custom banned words for this server.`);
     },
 };
 

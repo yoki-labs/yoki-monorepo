@@ -52,14 +52,13 @@ export class ContentFilterUtil extends Util {
             },
             [Severity.WARN]: (member, _serv, content, filteredContent) => {
                 if (filteredContent === FilteredContent.Message)
-                    return this.client.messageUtil.send(content!.channelId, {
-                        content: stripIndents`
-                    		**Alert:** ${member.user.name}, you have used a filtered word.
-                    		This is a warning for you to not use it again, otherwise moderation action may be taken against you.
-                    	`,
-                        isPrivate: true,
-                        replyMessageIds: [content!.id],
-                    });
+                    return this.client.messageUtil.sendWarningBlock(
+                        content!.channelId,
+                        `Cannot use that word`,
+                        `**Alert:** <@${member.user.id}>, you have used a filtered word. This is a warning for you to not use it again, otherwise moderation actions may be taken against you.`,
+                        undefined,
+                        { isPrivate: true }
+                    );
                 // TODO: DM user
                 return 0;
             },

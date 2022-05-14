@@ -28,19 +28,19 @@ const Help: Command = {
         const subName = (args.subName as string | null)?.toLowerCase();
         if (commandName) {
             const parentCommand = ctx.commands.get(commandName) ?? ctx.commands.find((command) => command.aliases?.includes(commandName) ?? false);
-            if (!parentCommand) return ctx.messageUtil.send(message.channelId, "Could not find that command!");
+            if (!parentCommand) return ctx.messageUtil.replyWithAlert(message, `No such command`, `Could not find that command!`);
             let command: Command;
             if (subName) {
                 const subCommand = parentCommand.subCommands?.get(subName) ?? null;
-                if (!subCommand) return ctx.messageUtil.send(message.channelId, "Could not find that sub command!");
+                if (!subCommand) return ctx.messageUtil.replyWithAlert(message, `No such sub-command`, `Could not find that sub command!`);
                 command = subCommand;
             } else {
                 command = parentCommand;
             }
 
             const commandUsageName = parentCommand.name === command.name ? command.name : `${parentCommand.name}${command.subName ? ` ${command.subName}` : ""}`;
-            return ctx.messageUtil.sendContentBlock(
-                message.channelId,
+            return ctx.messageUtil.replyWithContent(
+                message,
                 `${inlineCodeblock(commandUsageName)} command`,
                 [
                     command.description,
@@ -67,9 +67,9 @@ const Help: Command = {
             commandCategoryMap.set(category ?? "uncategorized", commands);
         });
 
-        return ctx.messageUtil.sendContentBlock(
-            message.channelId,
-            "Command List",
+        return ctx.messageUtil.replyWithContent(
+            message,
+            `Command List`,
             `For additional info on a command, type ${inlineCodeblock(`${commandCtx.server.getPrefix()}help [command]`)}
 
             ${commandCategoryMap
@@ -80,7 +80,7 @@ const Help: Command = {
                         `
                 )
                 .join("\n\n")}
-				
+
 			:link: [Join server](https://guilded.gg/Yoki) • [Invite bot](https://guilded.gg/Yoki)
 			`
         );
