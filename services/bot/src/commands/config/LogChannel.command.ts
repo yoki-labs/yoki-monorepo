@@ -62,6 +62,9 @@ const LogChannel: Command = {
             );
         }
 
+        const channel = await ctx.rest.router.getChannel(channelId).catch(() => null);
+        if (!channel)
+            return ctx.messageUtil.replyWithAlert(message, "Sorry! That is not a valid channel!", "Please ensure that the provided ID belongs to a channel that I can see!");
         // If there are logTypes, uppercase them all, then filter out duplicates. No idea why this had to specifically be two different lines.
         if (logTypes.length > 0) {
             logTypes = logTypes.map((logType) => logType.toUpperCase());

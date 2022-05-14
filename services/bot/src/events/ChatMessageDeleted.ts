@@ -53,7 +53,7 @@ export default async (packet: WSChatMessageDeletedPayload, ctx: Context) => {
         // send error to the error webhook
         if (e instanceof Error) {
             console.error(e);
-            void ctx.errorHandler.send("Error in logging message update!", [
+            void ctx.errorHandler.send("Error in logging message deletion!", [
                 new WebhookEmbed()
                     .setDescription(
                         stripIndents`

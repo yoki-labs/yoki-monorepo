@@ -42,7 +42,7 @@ export class MessageUtil extends Util {
             embeds: [
                 {
                     title,
-                    description,
+                    description: stripIndents`${description}`,
                     color,
                     ...embedPartial,
                 },
