@@ -103,9 +103,9 @@ const LogChannel: Command = {
         // }
 
         // Reply to the command, with the successful and failed types.
-        return ctx.messageUtil[successfulTypes.length > 0 ? "replyWithSuccessBlock" : "replyWithCautionBlock"](
+        return ctx.messageUtil[successfulTypes.length > 0 ? "replyWithSuccess" : "replyWithAlert"](
             message,
-            `Subscription (not) set`,
+            successfulTypes.length > 0 ? `Subscriptions added` : `No subscriptions added`,
             stripIndents`
                 ${
                     successfulTypes.length > 0
