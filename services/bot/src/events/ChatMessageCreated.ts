@@ -44,7 +44,7 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context) => {
     // if the message does not start with the prefix
     if (!message.content.startsWith(prefix)) {
         // store the message in the database
-        await ctx.dbUtil.storeMessage(message);
+        await ctx.dbUtil.storeMessage(message).catch(console.log);
         // scan the message for any harmful content (filter list, presets)
         return ctx.contentFilterUtil.scanMessage(message, serverFromDb);
     }

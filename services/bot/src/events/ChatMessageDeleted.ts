@@ -37,9 +37,14 @@ export default async (packet: WSChatMessageDeletedPayload, ctx: Context) => {
 					${
                         deletedMessage
                             ? `**Author:** ${inlineCodeblock(oldMember?.user.name ?? "Could not find data")} (${inlineCodeblock(deletedMessage?.authorId ?? "Could not find data")})
-							**Content:**
-							${codeblock(deletedMessage ? (deletedMessage.content.length > 900 ? `${deletedMessage.content.slice(0, 900)}...` : deletedMessage.content) : "Could not find message content.")}
-							${(deletedMessage.embeds as Prisma.JsonArray)?.length ? "_This message contains embeds._" : ""}`
+							${
+                                deletedMessage.content
+                                    ? `**Content:**
+										${codeblock(deletedMessage.content.length > 900 ? `${deletedMessage.content.slice(0, 900)}...` : deletedMessage.content)}`
+                                    : (deletedMessage.embeds as Prisma.JsonArray)?.length
+                                    ? "_This message contains embeds._"
+                                    : "Could not find message content."
+                            }`
                             : "*Data for this message could not be found. May be older than 14 days.*"
                     }
 				`
