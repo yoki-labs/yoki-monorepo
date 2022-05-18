@@ -1,7 +1,7 @@
 import { Embed } from "@guildedjs/embeds";
 import type { WSChatMessageDeletedPayload } from "@guildedjs/guilded-api-typings";
 import { Embed as WebhookEmbed } from "@guildedjs/webhook-client";
-import { LogChannelType } from "@prisma/client";
+import { LogChannelType, Prisma } from "@prisma/client";
 import { stripIndents } from "common-tags";
 import { nanoid } from "nanoid";
 
@@ -36,11 +36,10 @@ export default async (packet: WSChatMessageDeletedPayload, ctx: Context) => {
 					**ID:** ${inlineCodeblock(message.id)}
 					${
                         deletedMessage
-                            ? `
-							**Author:** ${inlineCodeblock(oldMember?.user.name ?? "Could not find data")} (${inlineCodeblock(deletedMessage?.authorId ?? "Could not find data")})
-							**Deleted Message:**
+                            ? `**Author:** ${inlineCodeblock(oldMember?.user.name ?? "Could not find data")} (${inlineCodeblock(deletedMessage?.authorId ?? "Could not find data")})
+							**Content:**
 							${codeblock(deletedMessage ? (deletedMessage.content.length > 900 ? `${deletedMessage.content.slice(0, 900)}...` : deletedMessage.content) : "Could not find message content.")}
-							`
+							${(deletedMessage.embeds as Prisma.JsonArray)?.length ? "_This message contains embeds._" : ""}`
                             : "*Data for this message could not be found. May be older than 14 days.*"
                     }
 				`
