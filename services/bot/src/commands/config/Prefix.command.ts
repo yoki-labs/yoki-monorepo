@@ -5,10 +5,10 @@ import type { Command } from "../Command";
 const Prefix: Command = {
     name: "prefix",
     description: "Change/view the prefix of this server",
-    usage: "[newPrefix]",
+    usage: "[new prefix]",
     category: Category.Settings,
     requiredRole: RoleType.ADMIN,
-    args: [{ name: "newPrefix", type: "string", optional: true }],
+    args: [{ name: "newPrefix", type: "string", optional: true, max: 20 }],
     execute: async (message, args, ctx, commandCtx) => {
         const newPrefix = args.newPrefix as string | null;
         if (!newPrefix) {

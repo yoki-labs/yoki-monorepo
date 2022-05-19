@@ -29,6 +29,7 @@ export interface CommandArgument {
     type: CommandArgType;
     optional?: boolean;
     separator?: string;
+    max?: number;
     resolver?: (...content: any[]) => any;
 }
 export type CommandArgType = "string" | "UUID" | "memberID" | "number" | "boolean" | "rest" | "listRest";

@@ -22,18 +22,25 @@ export class MessageUtil extends Util {
     }
 
     handleBadArg(message: ChatMessagePayload, prefix: string, commandArg: CommandArgument, command: Command, parentCommand: Command) {
-        return this.replyWithAlert(message, `Incorrect argument`, `Sorry, but the usage of argument \`${commandArg.name}\` was not correct. Was expecting a ${commandArg.type}.`, {
-            fields: [
-                {
-                    name: "Usage",
-                    value: stripIndents`
-                            \`\`\`clojure
-                            ${prefix}${parentCommand.name}${command.name === parentCommand.name ? "" : ` ${command.subName ?? command.name}`} ${command.usage}
-                            \`\`\`
-                        `,
-                },
-            ],
-        });
+        return this.replyWithAlert(
+            message,
+            `Incorrect argument`,
+            `Sorry, but the usage of argument \`${commandArg.name}\` was not correct. Was expecting a ${commandArg.type}${
+                commandArg.max ? ` with the limit of ${commandArg.max}` : ""
+            }.`,
+            {
+                fields: [
+                    {
+                        name: "Usage",
+                        value: stripIndents`
+                                \`\`\`clojure
+                                ${prefix}${parentCommand.name}${command.name === parentCommand.name ? "" : ` ${command.subName ?? command.name}`} ${command.usage}
+                                \`\`\`
+                            `,
+                    },
+                ],
+            }
+        );
     }
 
     sendValueBlock(channelId: string, title: string, description: string, color: number, embedPartial?: EmbedPayload, messagePartial?: Partial<RESTPostChannelMessagesBody>) {

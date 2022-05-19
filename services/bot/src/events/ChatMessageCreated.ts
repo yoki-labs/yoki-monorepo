@@ -15,7 +15,7 @@ import { inlineCodeblock } from "../formatters";
 import type { Context, ResolvedArgs } from "../typings";
 import { roleValues } from "../util";
 
-const argCasters: Record<
+const argCast: Record<
     CommandArgType,
     (input: string, rawArgs: string[], index: number, ctx: Context, packet: WSChatMessageCreatedPayload) => ResolvedArgs | Promise<ResolvedArgs>
 > = {
@@ -119,13 +119,14 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context) => {
             if (commandArg.optional && typeof args[i] == "undefined") continue;
 
             // run the caster and see if the arg is valid
-            const isValidArg = await argCasters[commandArg.type]?.(args[i], args, i, ctx, packet);
+            const castArg = await argCast[commandArg.type]?.(args[i], args, i, ctx, packet);
 
             // if the arg is not valid, inform the user
-            if (isValidArg === null) return ctx.messageUtil.handleBadArg(message, prefix, commandArg, command, parentCommand);
+            if (castArg === null || (commandArg.max && ((castArg as any).length ?? castArg) > commandArg.max))
+                return ctx.messageUtil.handleBadArg(message, prefix, commandArg, command, parentCommand);
 
             // if the arg is valid, add it to the resolved args obj
-            resolvedArgs[commandArg.name] = isValidArg;
+            resolvedArgs[commandArg.name] = castArg;
         }
     }
 

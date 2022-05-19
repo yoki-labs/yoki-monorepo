@@ -25,6 +25,7 @@ const Warn: Command = {
             name: "reason",
             type: "rest",
             optional: true,
+            max: 500,
         },
     ],
     execute: async (message, args, ctx) => {
