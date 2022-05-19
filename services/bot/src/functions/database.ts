@@ -1,4 +1,5 @@
 import type { ChatMessagePayload } from "@guildedjs/guilded-api-typings";
+import type { Prisma } from "@prisma/client";
 import { nanoid } from "nanoid";
 
 import { Action, ContentFilter, LogChannelType, Server } from "../typings";
@@ -98,7 +99,7 @@ export class DatabaseUtil extends Util {
                 channelId: message.channelId,
                 content: message.content,
                 createdAt: message.createdAt,
-                embeds: [],
+                embeds: message.embeds?.length ? (message.embeds as Prisma.JsonArray) : undefined,
                 serverId: message.serverId!,
                 updatedAt: message.updatedAt,
                 isBot: Boolean(message.createdByBotId ?? message.createdByWebhookId),
@@ -107,6 +108,7 @@ export class DatabaseUtil extends Util {
             update: {
                 content: message.content,
                 updatedAt: message.updatedAt,
+                embeds: JSON.stringify(message.embeds),
             },
         });
     }

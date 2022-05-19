@@ -47,7 +47,7 @@ export default async (packet: WSChatMessageUpdatedPayload, ctx: Context) => {
 					${
                         // this slices the old message content (if it exists, otherwise default) to 900 if it's longer, for Guilded API limits
                         codeblock(
-                            oldMessage
+                            oldMessage?.content
                                 ? oldMessage.content.length > 900
                                     ? `${oldMessage.content.slice(0, 900)}...`
                                     : oldMessage.content
