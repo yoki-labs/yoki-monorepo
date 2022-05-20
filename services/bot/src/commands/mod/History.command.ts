@@ -1,14 +1,18 @@
-import { stripIndents } from "common-tags";
-
 import { ContentFilterUtil } from "../../modules/content-filter";
 import { CachedMember, RoleType } from "../../typings";
 import { Category } from "../Category";
 import type { Command } from "../Command";
 
+// ID -- 17; Text -- 24; Max reason -- 100; Max filtered word length -- 59
+const maxReason = 100;
+const maxFiltered = 59;
+// How many cases to show per page
+const maxCases = Math.floor(2048 / (41 + maxReason + maxFiltered));
+
 const History: Command = {
     name: "history",
     description: "Get the history for a user.",
-    usage: "<targetId>",
+    usage: "<targetId> [page]",
     requiredRole: RoleType.MOD,
     category: Category.Moderation,
     args: [
@@ -16,9 +20,15 @@ const History: Command = {
             name: "targetId",
             type: "memberID",
         },
+        {
+            name: "page",
+            type: "number",
+            optional: true,
+        },
     ],
     execute: async (message, args, ctx) => {
         const target = args.targetId as CachedMember;
+        const page = args.page ? Math.floor((args.page as number) - 1) : 1;
         const actions = await ctx.prisma.action.findMany({
             where: {
                 serverId: message.serverId!,
@@ -26,14 +36,30 @@ const History: Command = {
             },
         });
 
-        if (!actions.length) return ctx.messageUtil.replyWithNullState(message, `Squeaky clean history!`, `This user does not have any moderation history associated with them.`);
-        return ctx.messageUtil.send(
-            message.channelId,
-            stripIndents`
-				${actions.map((x) => `**ID:** \`${x.id}\`, **TYPE:** \`${x.type}\`, **REASON:** \`${x.reason}\`${(x.triggerContent && `||${x.triggerContent}||`) ?? ""}`).join("\n")}
+        // -1, -2, etc.
+        if (page < 0) return ctx.messageUtil.replyWithAlert(message, `Specify appropriate page`, `The page number must not be below \`1\`.`);
 
-				**Total Infraction Points:** ${ContentFilterUtil.totalAllInfractionPoints(actions)}
-			`
+        if (!actions.length) return ctx.messageUtil.replyWithNullState(message, `Squeaky clean history!`, `This user does not have any moderation history associated with them.`);
+        return ctx.messageUtil.replyWithPaginatedContent(
+            message,
+            `User's History`,
+            actions.map((x) => {
+                const trimmedReason = x.reason && x.reason.length > maxReason ? `${x.reason.substring(0, maxReason)}...` : x.reason;
+
+                return `[\`${x.id}\`] Received \`${x.type}\` for ${trimmedReason ? `\`${trimmedReason}\` ` : "no provided reason "}${
+                    (x.triggerContent && `||${x.triggerContent.length > maxFiltered ? `${x.triggerContent}...` : x.triggerContent}||`) ?? ""
+                }`;
+            }),
+            maxCases,
+            page,
+            {
+                fields: [
+                    {
+                        name: "Total Infraction Points",
+                        value: ContentFilterUtil.totalAllInfractionPoints(actions).toString(),
+                    },
+                ],
+            }
         );
     },
 };

@@ -133,4 +133,33 @@ export class MessageUtil extends Util {
     replyWithSuccess(message: ChatMessagePayload, title: string, description: string, embedPartial?: EmbedPayload, messagePartial?: Partial<RESTPostChannelMessagesBody>) {
         return this.replyWithValueBlock(message, `:white_check_mark: ${title}`, description, Colors.green, embedPartial, messagePartial);
     }
+
+    // Special blocks
+    replyWithPaginatedContent(
+        message: ChatMessagePayload,
+        title: string,
+        items: string[],
+        itemsPerPage: number,
+        page = 0,
+        embedPartial?: EmbedPayload,
+        messagePartial?: Partial<RESTPostChannelMessagesBody>
+    ) {
+        // Math.ceil(21 / 10) => Math.ceil(2.1) => 3
+        const possiblePages = Math.ceil(items.length / itemsPerPage);
+
+        const incrementedPage = page + 1;
+
+        // If there is no such page
+        if (incrementedPage > possiblePages) return this.replyWithNullState(message, `No items in this page`, `There are no items at page \`${page}\`.`, undefined, messagePartial);
+
+        const startingIndex = itemsPerPage * page;
+        const endingIndex = itemsPerPage * incrementedPage;
+
+        return this.replyWithContent(message, title, items.slice(startingIndex, endingIndex).join("\n"), {
+            ...embedPartial,
+            footer: {
+                text: `Page ${incrementedPage}/${possiblePages}`,
+            },
+        });
+    }
 }
