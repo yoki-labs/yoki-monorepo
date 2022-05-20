@@ -30,6 +30,7 @@ export interface CommandArgument {
     optional?: boolean;
     separator?: string;
     max?: number;
+    values?: any;
     resolver?: (...content: any[]) => any;
 }
-export type CommandArgType = "string" | "UUID" | "memberID" | "number" | "boolean" | "rest" | "listRest";
+export type CommandArgType = "string" | "UUID" | "memberID" | "number" | "boolean" | "enum" | "rest" | "enumList";

@@ -1,6 +1,8 @@
 import Collection from "@discordjs/collection";
+import type { ChatMessagePayload } from "@guildedjs/guilded-api-typings";
 import { stripIndents } from "common-tags";
 
+import type Client from "../../Client";
 import { inlineCodeblock, listInlineCodeblock } from "../../formatters";
 import { LogChannel as LogChannelPrisma, LogChannelType, RoleType } from "../../typings";
 import { Category } from "../Category";
@@ -21,6 +23,11 @@ function cleanupChannels(logChannels: LogChannelPrisma[]) {
     return channels;
 }
 
+// With the ability to remove it
+const LogChannelArgs = Object.assign({}, LogChannelType, { REMOVE: "REMOVE" });
+
+type LogChannelArgEnum = keyof typeof LogChannelArgs;
+
 const LogChannel: Command = {
     name: "config-logchannel",
     description: "Set or view whether message updates are logged to the mod log channel.",
@@ -31,76 +38,49 @@ const LogChannel: Command = {
     requiredRole: RoleType.ADMIN,
     args: [
         { name: "channelId", type: "UUID", optional: true },
-        { name: "logTypes", optional: true, type: "listRest" },
+        { name: "logTypes", optional: true, type: "enumList", values: LogChannelArgs },
     ],
     execute: async (message, args, ctx) => {
         const channelId = args.channelId as string;
-        let logTypes = args.logTypes as string[] | null;
+        let logTypes = args.logTypes as LogChannelArgEnum[] | null;
 
         // If the user didn't supply a channelId. Get all log channels, use above cleanup method to filter duplicates and merge them, then list them.
-        if (!channelId || !logTypes) {
-            const logChannels = await ctx.dbUtil.getLogChannels(message.serverId!);
-            if (logChannels.length <= 0)
-                return ctx.messageUtil.replyWithNullState(
-                    message,
-                    `No log channels`,
-                    stripIndents`
-						There are no log channels set for this server.
-						You can set the following types: ${listInlineCodeblock(Object.values(LogChannelType))}
-					`
-                );
-
-            const formattedChannels: Collection<string, LogChannelType[]> = await cleanupChannels(logChannels);
-
-            return ctx.messageUtil.replyWithContent(
-                message,
-                `A few log channels`,
-                stripIndents`
-                    This server has the following log channels:
-                    ${formattedChannels.map((v, k) => `***${k}:*** ${listInlineCodeblock(v)}`).join("\n")}
-                `
-            );
-        }
+        if (!channelId || !logTypes) return replyWithChannelList(message, ctx);
 
         const channel = await ctx.rest.router.getChannel(channelId).catch(() => null);
         if (!channel)
             return ctx.messageUtil.replyWithAlert(message, "Sorry! That is not a valid channel!", "Please ensure that the provided ID belongs to a channel that I can see!");
+
         // If there are logTypes, uppercase them all, then filter out duplicates. No idea why this had to specifically be two different lines.
         if (logTypes.length > 0) {
-            logTypes = logTypes.map((logType) => logType.toUpperCase());
             logTypes = logTypes.filter((value, index) => logTypes!.indexOf(value) === index);
         }
 
-        // Event subscribe handling.
-        const failedTypes: string[][] = [];
-        const successfulTypes: string[] = [];
-
         // If there aren't any logTypes or logTypes contains "ALL" default the entire list to ALL for optimization.
-        if (logTypes.length === 0 || logTypes.includes("ALL")) {
+        if (logTypes.includes("REMOVE")) {
+            // Unspecified means unsubscribe from all
+            const toUnsubscribeFrom = logTypes.length === 1 ? undefined : { in: logTypes.filter((x) => x !== "REMOVE") as LogChannelType[] };
+
+            await ctx.prisma.logChannel.deleteMany({
+                where: {
+                    channelId,
+                    serverId: message.serverId!,
+                    type: toUnsubscribeFrom,
+                },
+            });
+
+            return ctx.messageUtil.replyWithSuccess(
+                message,
+                `Unsubscribed`,
+                toUnsubscribeFrom
+                    ? `Following events were unsubscribed from the channel ${inlineCodeblock(channelId)}: ${toUnsubscribeFrom.in.map((x) => inlineCodeblock(x)).join(", ")}`
+                    : `All events were unsubscribed from the channel ${inlineCodeblock(channelId)}.`
+            );
+        } else if (logTypes.length === 0 || logTypes.includes("ALL")) {
             logTypes = ["ALL"];
         }
 
-        // If the channel's already subscribed to all events.
-        // Else, loop through all logTypes, if it's a valid LogChannelType, and doesn't already exist, go ahead and subscribe.
-
-        // If it's successfully added, add the logType to the successfulTypes array.
-        // Else, add it to the failedTypes array, with a reason. `TYPE:ERROR`
-        /* if (await ctx.prisma.logChannel.findFirst({ where: { serverId: message.serverId, type: LogChannelType.ALL } })) {
-            failedTypes.push(`SERVER_ALREADY_SUBSCRIBED_TO_ALL`);
-        } else {*/
-        for (const logType of logTypes) {
-            if (LogChannelType[logType] && !(await ctx.prisma.logChannel.findFirst({ where: { serverId: message.serverId, type: LogChannelType[logType] } }))) {
-                try {
-                    await ctx.prisma.logChannel.create({ data: { channelId, serverId: message.serverId!, type: LogChannelType[logType] } });
-                    successfulTypes.push(logType);
-                } catch (e) {
-                    failedTypes.push([logType, "INTERNAL_ERROR"]);
-                }
-            } else {
-                failedTypes.push([logType, LogChannelType[logType] ? `MAX_1_REACHED` : "INVALID_LOG_TYPE"]);
-            }
-        }
-        // }
+        const [successfulTypes, failedTypes] = await subscribeToLogs(ctx, message, logTypes as LogChannelType[]);
 
         // Reply to the command, with the successful and failed types.
         return ctx.messageUtil[successfulTypes.length > 0 ? "replyWithSuccess" : "replyWithAlert"](
@@ -123,5 +103,59 @@ const LogChannel: Command = {
         );
     },
 };
+
+async function subscribeToLogs(ctx: Client, message: ChatMessagePayload, logTypes: LogChannelType[]): Promise<[string[], string[][]]> {
+    // Event subscribe handling.
+    const failedTypes: string[][] = [];
+    const successfulTypes: string[] = [];
+
+    // If the channel's already subscribed to all events.
+    // Else, loop through all logTypes, if it's a valid LogChannelType, and doesn't already exist, go ahead and subscribe.
+
+    // If it's successfully added, add the logType to the successfulTypes array.
+    // Else, add it to the failedTypes array, with a reason. `TYPE:ERROR`
+    /* if (await ctx.prisma.logChannel.findFirst({ where: { serverId: message.serverId, type: LogChannelType.ALL } })) {
+        failedTypes.push(`SERVER_ALREADY_SUBSCRIBED_TO_ALL`);
+    } else {*/
+    for (const logType of logTypes) {
+        if (LogChannelType[logType] && !(await ctx.prisma.logChannel.findFirst({ where: { serverId: message.serverId, type: LogChannelType[logType] } }))) {
+            try {
+                await ctx.prisma.logChannel.create({ data: { channelId: message.channelId, serverId: message.serverId!, type: LogChannelType[logType] } });
+                successfulTypes.push(logType);
+            } catch (e) {
+                failedTypes.push([logType, "INTERNAL_ERROR"]);
+            }
+        } else {
+            failedTypes.push([logType, LogChannelType[logType] ? `MAX_1_REACHED` : "INVALID_LOG_TYPE"]);
+        }
+    }
+    // }
+    return [successfulTypes, failedTypes];
+}
+
+// Gives channel list or nothing
+async function replyWithChannelList(message: ChatMessagePayload, ctx: Client) {
+    const logChannels = await ctx.dbUtil.getLogChannels(message.serverId!);
+    if (logChannels.length <= 0)
+        return ctx.messageUtil.replyWithNullState(
+            message,
+            `No log channels`,
+            stripIndents`
+                There are no log channels set for this server.
+                You can set the following types: ${listInlineCodeblock(Object.values(LogChannelType))}
+            `
+        );
+
+    const formattedChannels: Collection<string, LogChannelType[]> = await cleanupChannels(logChannels);
+
+    return ctx.messageUtil.replyWithContent(
+        message,
+        `Log channels`,
+        stripIndents`
+            This server has the following log channels:
+            ${formattedChannels.map((v, k) => `***${k}:*** ${listInlineCodeblock(v)}`).join("\n")}
+        `
+    );
+}
 
 export default LogChannel;

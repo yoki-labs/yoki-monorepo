@@ -4,25 +4,27 @@ import { stripIndents } from "common-tags";
 import { nanoid } from "nanoid";
 
 import boolean from "../args/boolean";
-import listRest from "../args/listRest";
+import enumArg from "../args/enum";
+import enumList from "../args/enumList";
 import memberID from "../args/member";
 import number from "../args/number";
 import rest from "../args/rest";
 import string from "../args/string";
 import UUID from "../args/UUID";
-import type { CommandArgType } from "../commands/Command";
+import type { CommandArgType, CommandArgument } from "../commands/Command";
 import { inlineCodeblock } from "../formatters";
 import type { Context, ResolvedArgs } from "../typings";
 import { roleValues } from "../util";
 
 const argCast: Record<
     CommandArgType,
-    (input: string, rawArgs: string[], index: number, ctx: Context, packet: WSChatMessageCreatedPayload) => ResolvedArgs | Promise<ResolvedArgs>
+    (input: string, rawArgs: string[], index: number, ctx: Context, packet: WSChatMessageCreatedPayload, argument: CommandArgument) => ResolvedArgs | Promise<ResolvedArgs>
 > = {
     string,
     number,
     boolean,
-    listRest,
+    enum: enumArg,
+    enumList,
     rest,
     UUID,
     memberID,
@@ -119,10 +121,10 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context) => {
             if (commandArg.optional && typeof args[i] == "undefined") continue;
 
             // run the caster and see if the arg is valid
-            const castArg = await argCast[commandArg.type]?.(args[i], args, i, ctx, packet);
+            const castArg = await argCast[commandArg.type]?.(args[i], args, i, ctx, packet, commandArg);
 
             // if the arg is not valid, inform the user
-            if (castArg === null || (commandArg.max && ((castArg as any).length ?? castArg) > commandArg.max))
+            if (typeof castArg == "undefined" || (commandArg.max && ((castArg as any).length ?? castArg) > commandArg.max))
                 return ctx.messageUtil.handleBadArg(message, prefix, commandArg, command, parentCommand);
 
             // if the arg is valid, add it to the resolved args obj

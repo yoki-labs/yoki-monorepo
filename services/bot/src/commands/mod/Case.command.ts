@@ -1,13 +1,18 @@
 import type { APIEmbedField } from "@guildedjs/guilded-api-typings";
 
+import { inlineCodeblock } from "../../formatters";
 import { RoleType } from "../../typings";
 import { Category } from "../Category";
 import type { Command } from "../Command";
 
+enum CaseAction {
+    REMOVE,
+}
+
 const History: Command = {
     name: "case",
     description: "Get the info for a case.",
-    usage: "<caseId>",
+    usage: "<caseId> ['remove']",
     requiredRole: RoleType.MOD,
     category: Category.Moderation,
     args: [
@@ -15,9 +20,16 @@ const History: Command = {
             name: "caseId",
             type: "string",
         },
+        {
+            name: "action",
+            type: "enum",
+            values: CaseAction,
+            optional: true,
+        },
     ],
     execute: async (message, args, ctx) => {
         const caseId = args.caseId as string;
+        const action = args.action as CaseAction | null;
 
         const [fetchedCase] = await ctx.prisma.action.findMany({
             where: {
@@ -27,6 +39,18 @@ const History: Command = {
         });
 
         if (!fetchedCase) return ctx.messageUtil.replyWithAlert(message, `Unknown case`, `A case with that ID does not exist!`);
+
+        // Delete
+        if (action === CaseAction.REMOVE) {
+            await ctx.prisma.action.delete({
+                where: {
+                    id: caseId,
+                },
+            });
+            return ctx.messageUtil.replyWithSuccess(message, `Case deleted`, `Case ${inlineCodeblock(caseId)} has been successfully deleted.`);
+        }
+
+        // View
         return ctx.messageUtil.replyWithContent(
             message,
             `Case \`${caseId}\``,
