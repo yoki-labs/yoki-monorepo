@@ -150,7 +150,8 @@ export class MessageUtil extends Util {
         const incrementedPage = page + 1;
 
         // If there is no such page
-        if (incrementedPage > possiblePages) return this.replyWithNullState(message, `No items in this page`, `There are no items at page \`${page}\`.`, undefined, messagePartial);
+        if (incrementedPage > possiblePages)
+            return this.replyWithNullState(message, `No items in this page`, `There are no items at page \`${incrementedPage}\`.`, undefined, messagePartial);
 
         const startingIndex = itemsPerPage * page;
         const endingIndex = itemsPerPage * incrementedPage;

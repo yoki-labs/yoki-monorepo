@@ -4,10 +4,10 @@ import { Category } from "../Category";
 import type { Command } from "../Command";
 
 // ID -- 17; Text -- 24; Max reason -- 100; Max filtered word length -- 59
-const maxReason = 100;
-const maxFiltered = 59;
+const maxReason = 120;
+const maxFiltered = 50;
 // How many cases to show per page
-const maxCases = Math.floor(2048 / (41 + maxReason + maxFiltered));
+const maxCases = Math.floor(2048 / (30 + maxReason + maxFiltered));
 
 const History: Command = {
     name: "history",
@@ -28,7 +28,7 @@ const History: Command = {
     ],
     execute: async (message, args, ctx) => {
         const target = args.targetId as CachedMember;
-        const page = args.page ? Math.floor((args.page as number) - 1) : 1;
+        const page = args.page ? Math.floor((args.page as number) - 1) : 0;
         const actions = await ctx.prisma.action.findMany({
             where: {
                 serverId: message.serverId!,
@@ -46,7 +46,7 @@ const History: Command = {
             actions.map((x) => {
                 const trimmedReason = x.reason && x.reason.length > maxReason ? `${x.reason.substring(0, maxReason)}...` : x.reason;
 
-                return `[\`${x.id}\`] Received \`${x.type}\` for ${trimmedReason ? `\`${trimmedReason}\` ` : "no provided reason "}${
+                return `[\`${x.id}\`] ${x.type} for ${trimmedReason ? `\`${trimmedReason}\` ` : "no provided reason "}${
                     (x.triggerContent && `||${x.triggerContent.length > maxFiltered ? `${x.triggerContent}...` : x.triggerContent}||`) ?? ""
                 }`;
             }),
