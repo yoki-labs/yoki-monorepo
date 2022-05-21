@@ -6,6 +6,7 @@ const Muterole: Command = {
     name: "config-muterole",
     description: "Set or view the mute role for this server.",
     usage: "[newRole]",
+    examples: ["12345678", ""],
     category: Category.Settings,
     subCommand: true,
     subName: "muterole",

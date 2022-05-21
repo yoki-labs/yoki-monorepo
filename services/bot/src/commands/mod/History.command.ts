@@ -12,7 +12,9 @@ const maxCases = Math.floor(2048 / (30 + maxReason + maxFiltered));
 const History: Command = {
     name: "history",
     description: "Get the history for a user.",
-    usage: "<targetId> [page]",
+    usage: "<targetId> [page number]",
+    examples: ["R40Mp0Wd", "R40Mp0Wd 2"],
+    aliases: ["modactions", "actions", "hs"],
     requiredRole: RoleType.MOD,
     category: Category.Moderation,
     args: [

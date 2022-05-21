@@ -10,6 +10,7 @@ const Modrole: Command = {
     description: "Add a mod role.",
     subCommand: true,
     usage: "[newRole] [mod/admin]",
+    examples: ["12345678", "12345678 admin"],
     subName: "modrole",
     category: Category.Settings,
     requiredRole: RoleType.ADMIN,

@@ -31,7 +31,8 @@ type LogChannelArgEnum = keyof typeof LogChannelArgs;
 const LogChannel: Command = {
     name: "config-logchannel",
     description: "Set or view whether message updates are logged to the mod log channel.",
-    usage: "[channelId] [action] [logType | logType | logType]",
+    usage: "[channelId] [log type | log type | log type]",
+    examples: ["channel_id all", "channel_id chat_message_update | chat_message_delete", "channel_id remove", "channel_id chat_message_update | remove"],
     subCommand: true,
     subName: "logchannel",
     category: Category.Settings,

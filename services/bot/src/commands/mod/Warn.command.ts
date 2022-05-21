@@ -11,6 +11,7 @@ const Warn: Command = {
     usage: "<targetId> [infraction points] [...reason]",
     requiredRole: RoleType.MOD,
     category: Category.Moderation,
+    aliases: ["alert", "w"],
     args: [
         {
             name: "target",

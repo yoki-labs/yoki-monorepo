@@ -63,7 +63,10 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context, server:
     // if this is a command that has sub commands, run this
     if (command.parentCommand && command.subCommands?.size) {
         // if no sub command, list all the available sub commands
-        if (!args[0])
+        if (!args[0]) {
+            const subCommandName = command.subCommands.firstKey();
+            const subCommand = command.subCommands.get(subCommandName as string)!;
+
             return ctx.messageUtil.replyWithContent(message, `${inlineCodeblock(commandName)} command`, command.description, {
                 fields: [
                     {
@@ -74,12 +77,15 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context, server:
                     {
                         name: "Example",
                         value: stripIndents`
-                                ${prefix}${commandName} ${command.subCommands.firstKey()}
+                                \`\`\`md
+                                ${prefix}${commandName} ${subCommandName} ${subCommand.examples ? subCommand.examples[0] : ""}
+                                \`\`\`
                             `,
                         inline: true,
                     },
                 ],
             });
+        }
         const subCommand = command.subCommands.get(args[0]);
         // if not a valid sub command, list all the proper ones
         if (!subCommand)

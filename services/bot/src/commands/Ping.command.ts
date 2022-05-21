@@ -4,6 +4,7 @@ const Ping: Command = {
     name: "ping",
     description: "Send a ping message",
     usage: "",
+    aliases: ["p"],
     execute: (message, _args, ctx) => {
         return ctx.messageUtil.send(message.channelId, { content: "PONG!", replyMessageIds: [message.id] }).then((pingMessage) =>
             ctx.rest.router.updateChannelMessage(pingMessage.channelId, pingMessage.id, {

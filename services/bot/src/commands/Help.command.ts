@@ -10,6 +10,8 @@ const Help: Command = {
     name: "help",
     description: "Send a list of all commands",
     usage: "[commandName]",
+    examples: ["", "ping"],
+    aliases: ["commands", "command", "all", "h"],
     hidden: true,
     args: [
         {

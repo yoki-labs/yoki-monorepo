@@ -12,7 +12,9 @@ enum CaseAction {
 const History: Command = {
     name: "case",
     description: "Get the info for a case.",
-    usage: "<caseId> ['remove']",
+    usage: "<caseId> [remove]",
+    examples: ["123456789-1234567", "123456789-1234567 remove"],
+    aliases: ["modaction", "action", "c"],
     requiredRole: RoleType.MOD,
     category: Category.Moderation,
     args: [

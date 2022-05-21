@@ -6,6 +6,7 @@ const Prefix: Command = {
     name: "prefix",
     description: "Change/view the prefix of this server",
     usage: "[new prefix]",
+    examples: ["y?", ""],
     category: Category.Settings,
     requiredRole: RoleType.ADMIN,
     args: [{ name: "newPrefix", type: "string", optional: true, max: 20 }],
