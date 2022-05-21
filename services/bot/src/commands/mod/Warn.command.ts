@@ -1,4 +1,4 @@
-import type { APIEmbedField } from "@guildedjs/guilded-api-typings";
+import type { EmbedField } from "@guildedjs/guilded-api-typings";
 import { stripIndents } from "common-tags";
 
 import { CachedMember, RoleType } from "../../typings";
@@ -47,7 +47,7 @@ const Warn: Command = {
                             name: "Reason",
                             value: (reason as string).length > 1021 ? `${(reason as string).substr(0, 1021)}...` : reason,
                         },
-                    ].filter(Boolean) as APIEmbedField[],
+                    ].filter(Boolean) as EmbedField[],
                 },
                 {
                     isPrivate: true,

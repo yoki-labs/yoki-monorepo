@@ -20,7 +20,15 @@ const client = new Client();
 // Under client.eventHandler, we register a bunch of events that we can execute
 // This makes it simple to add new events to our bot by just creating a file and adding it to that object.
 // And any unhandled objects are simply ignored thanks to optional chaining
-client.ws.emitter.on("gatewayEvent", (event, data) => client.eventHandler[event]?.(data, client));
+client.ws.emitter.on("gatewayEvent", async (event, data) => {
+    const { serverId } = data.d as { serverId?: string | null };
+    if (!serverId) return;
+
+    const serverFromDb = await client.dbUtil.getServer(serverId);
+    if (serverFromDb?.blacklisted || !serverFromDb?.flags?.includes("EARLY_ACCESS")) return void 0;
+
+    return client.eventHandler[event]?.(data, client, serverFromDb);
+});
 
 // This is for any custom events that we emit
 client.emitter.on("ActionIssued", client.customEventHandler.ActionIssued);

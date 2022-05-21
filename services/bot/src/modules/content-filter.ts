@@ -8,8 +8,10 @@ import { Action, CachedMember, ContentFilterScan, RoleType, Server, Severity } f
 
 export const transformSeverityStringToEnum = (str: string): Severity | undefined => Severity[str.toUpperCase()];
 export enum FilteredContent {
-    Message,
-    ServerContent,
+    Message = 0,
+    Channel = 1,
+    ChannelContent = 2,
+    ServerContent = 3,
 }
 
 export class ContentFilterUtil extends Util {
@@ -35,34 +37,34 @@ export class ContentFilterUtil extends Util {
 
     // An object mapping the Action type -> Action punishment
     // Easy way for us to organize punishments into reusable code
-    readonly severityAction: Record<Severity, (member: CachedMember, server: Server, content: ChatMessagePayload | null, filteredContent: FilteredContent) => unknown | undefined> =
-        {
-            [Severity.BAN]: (member, server) => {
-                return this.rest.router.banMember(server.serverId, member.user.id);
-            },
-            [Severity.KICK]: (member, server) => {
-                return this.rest.router.kickMember(server.serverId, member.user.id);
-            },
-            [Severity.SOFTBAN]: async (member, server) => {
-                await this.rest.router.banMember(server.serverId, member.user.id);
-                return this.rest.router.unbanMember(server.serverId, member.user.id);
-            },
-            [Severity.MUTE]: (member, server) => {
-                return server.muteRoleId && this.rest.router.assignRoleToMember(server.serverId, member.user.id, server.muteRoleId);
-            },
-            [Severity.WARN]: (member, _serv, content, filteredContent) => {
-                if (filteredContent === FilteredContent.Message)
-                    return this.client.messageUtil.sendWarningBlock(
-                        content!.channelId,
-                        `Cannot use that word`,
-                        `**Alert:** <@${member.user.id}>, you have used a filtered word. This is a warning for you to not use it again, otherwise moderation actions may be taken against you.`,
-                        undefined,
-                        { isPrivate: true }
-                    );
-                // TODO: DM user
-                return 0;
-            },
-        };
+    readonly severityAction: Record<Severity, (member: CachedMember, server: Server, channelId: string | null, filteredContent: FilteredContent) => unknown | undefined> = {
+        [Severity.BAN]: (member, server) => {
+            return this.rest.router.banMember(server.serverId, member.user.id);
+        },
+        [Severity.KICK]: (member, server) => {
+            return this.rest.router.kickMember(server.serverId, member.user.id);
+        },
+        [Severity.SOFTBAN]: async (member, server) => {
+            await this.rest.router.banMember(server.serverId, member.user.id);
+            return this.rest.router.unbanMember(server.serverId, member.user.id);
+        },
+        [Severity.MUTE]: (member, server) => {
+            return server.muteRoleId && this.rest.router.assignRoleToMember(server.serverId, member.user.id, server.muteRoleId);
+        },
+        [Severity.WARN]: (member, _serv, channelId, filteredContent) => {
+            // When channels and messages get filtered
+            if (filteredContent < FilteredContent.ChannelContent)
+                return this.client.messageUtil.sendWarningBlock(
+                    channelId!,
+                    `Cannot use that word`,
+                    `**Alert:** <@${member.user.id}>, you have used a filtered word. This is a warning for you to not use it again, otherwise moderation actions may be taken against you.`,
+                    undefined,
+                    { isPrivate: true }
+                );
+            // TODO: DM user
+            return 0;
+        },
+    };
 
     // check if the amount of points incurred by this user is higher than the allowed threshold for this server
     ifExceedsInfractionThreshold(total: number, server: Server) {
@@ -87,7 +89,6 @@ export class ContentFilterUtil extends Util {
             message.content,
             FilteredContent.Message,
             message.channelId,
-            message,
             server,
             // Filter
             () => this.rest.router.deleteChannelMessage(message.channelId, message.id)
@@ -101,7 +102,6 @@ export class ContentFilterUtil extends Util {
         text: string,
         filteredContent: FilteredContent,
         channelId: string | null,
-        content: ChatMessagePayload | null,
         server: Server,
         resultingAction: () => unknown
     ) {
@@ -195,8 +195,8 @@ export class ContentFilterUtil extends Util {
         // Execute the punishing action. If this is a threshold exceeding, execute the punishment associated with the exceeded threshold
         // Otherwise, execute the action associated with this specific filter word or preset entry
         return ifExceeds
-            ? this.severityAction[ifExceeds](member, server, content, filteredContent)
-            : this.severityAction[triggeredWord.severity]?.(member, server, content, filteredContent);
+            ? this.severityAction[ifExceeds](member, server, channelId, filteredContent)
+            : this.severityAction[triggeredWord.severity]?.(member, server, channelId, filteredContent);
     }
 
     // Total up all infraction points from an array of infractions

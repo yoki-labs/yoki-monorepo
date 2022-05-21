@@ -13,7 +13,7 @@ import string from "../args/string";
 import UUID from "../args/UUID";
 import type { CommandArgType, CommandArgument } from "../commands/Command";
 import { inlineCodeblock } from "../formatters";
-import type { Context, ResolvedArgs } from "../typings";
+import type { Context, ResolvedArgs, Server } from "../typings";
 import { roleValues } from "../util";
 
 const argCast: Record<
@@ -30,25 +30,20 @@ const argCast: Record<
     memberID,
 };
 
-export default async (packet: WSChatMessageCreatedPayload, ctx: Context) => {
+export default async (packet: WSChatMessageCreatedPayload, ctx: Context, server: Server) => {
     const { message } = packet.d;
     // if the message wasn't sent in a server, or the person was a bot then don't do anything
     if (message.createdByBotId || message.createdBy === ctx.userId || !message.serverId) return void 0;
 
-    // get the server from the database
-    const serverFromDb = await ctx.dbUtil.getServer(message.serverId);
-    // if the server is blacklisted or isn't in the early access, don't do anything
-    if (serverFromDb?.blacklisted || !serverFromDb?.flags?.includes("EARLY_ACCESS")) return void 0;
-
     // the prefix of this server, otherwise the fallback default prefix
-    const prefix = serverFromDb.getPrefix();
+    const prefix = server.getPrefix();
 
     // if the message does not start with the prefix
     if (!message.content.startsWith(prefix)) {
         // store the message in the database
         await ctx.dbUtil.storeMessage(message).catch(console.log);
         // scan the message for any harmful content (filter list, presets)
-        return ctx.contentFilterUtil.scanMessage(message, serverFromDb);
+        return ctx.contentFilterUtil.scanMessage(message, server);
     }
 
     // parse the message into the command name and args ("?test arg1 arg2 arg3" = [ "test", "arg1", "arg2", "arg3" ])
@@ -79,7 +74,7 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context) => {
                     {
                         name: "Example",
                         value: stripIndents`
-                                ${serverFromDb.getPrefix()}${commandName} ${command.subCommands.firstKey()}
+                                ${prefix}${commandName} ${command.subCommands.firstKey()}
                             `,
                         inline: true,
                     },
@@ -98,7 +93,7 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context) => {
                     {
                         name: "Example",
                         value: stripIndents`
-                                        ${serverFromDb.getPrefix()}${commandName} ${command.subCommands.firstKey()}
+                                        ${prefix}${commandName} ${command.subCommands.firstKey()}
                                     `,
                         inline: true,
                     },
@@ -153,7 +148,7 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context) => {
     try {
         // run the command with the message object, the casted arguments, the global context object (datbase, rest, ws),
         // and the command context (raw packet, database server entry, member from API or cache)
-        await command.execute(message, resolvedArgs, ctx, { packet, server: serverFromDb, member });
+        await command.execute(message, resolvedArgs, ctx, { packet, server, member });
     } catch (e) {
         // ID for error, not persisted in database at all
         const referenceId = nanoid();

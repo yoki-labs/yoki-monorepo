@@ -7,20 +7,15 @@ import { nanoid } from "nanoid";
 
 import { Colors } from "../color";
 import { codeblock, inlineCodeblock } from "../formatters";
-import type { Context } from "../typings";
+import type { Context, Server } from "../typings";
 
-export default async (packet: WSChatMessageUpdatedPayload, ctx: Context) => {
+export default async (packet: WSChatMessageUpdatedPayload, ctx: Context, server: Server) => {
     const { message } = packet.d;
     // if this message isn't updated in a server, or if the author is a bot, ignore
     if (message.createdByBotId || message.createdBy === ctx.userId || !message.serverId) return void 0;
 
-    // get the server from the database
-    const serverFromDb = await ctx.dbUtil.getServer(message.serverId);
-    // if the server is blacklisted or isn't in the early access
-    if (serverFromDb?.blacklisted || !serverFromDb?.flags?.includes("EARLY_ACCESS")) return void 0;
-
     // scan the updated message content
-    await ctx.contentFilterUtil.scanMessage(message, serverFromDb);
+    await ctx.contentFilterUtil.scanMessage(message, server);
     // get the log channel for message updates
     const updatedMessageLogChannel = await ctx.dbUtil.getLogChannel(message.serverId!, LogChannelType.CHAT_MESSAGE_UPDATE);
     // if there is no log channel for message updates, then ignore

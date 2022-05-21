@@ -1,4 +1,4 @@
-import type { APIEmbedField } from "@guildedjs/guilded-api-typings";
+import type { EmbedField } from "@guildedjs/guilded-api-typings";
 
 import { inlineCodeblock } from "../../formatters";
 import { RoleType } from "../../typings";
@@ -71,7 +71,7 @@ const History: Command = {
                             minute: "2-digit",
                         })} EST`,
                     },
-                ].filter(Boolean) as APIEmbedField[],
+                ].filter(Boolean) as EmbedField[],
             },
             {
                 isSilent: true,

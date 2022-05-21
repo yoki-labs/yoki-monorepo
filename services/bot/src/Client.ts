@@ -12,6 +12,7 @@ import ActionIssued from "./events/ActionIssued";
 import ChatMessageCreated from "./events/ChatMessageCreated";
 import ChatMessageDeleted from "./events/ChatMessageDeleted";
 import ChatMessageUpdated from "./events/ChatMessageUpdated";
+import ListItemEvent from "./events/ListItemEvent";
 import TeamMemberUpdated from "./events/TeamMemberUpdated";
 import teamRolesUpdated from "./events/teamRolesUpdated";
 import { DatabaseUtil } from "./functions/database";
@@ -19,7 +20,7 @@ import { MessageUtil } from "./functions/message";
 import { ServerUtil } from "./functions/server";
 import { MuteScheduler } from "./jobs/MuteScheduler";
 import { ContentFilterUtil } from "./modules/content-filter";
-import type { CachedMember, Context } from "./typings";
+import type { CachedMember, Context, Server } from "./typings";
 
 /**
  * Main class that stores utils, connections to various providers, and ws
@@ -62,7 +63,7 @@ export default class Client {
     readonly muteHandler = new MuteScheduler(this, 15 * 60);
 
     // events that this bot handles, directly from the ws manager
-    readonly eventHandler: { [x: string]: (packet: any, ctx: Context) => void } = {
+    readonly eventHandler: { [x: string]: (packet: any, ctx: Context, server: Server) => void } = {
         // handles messages sent
         ChatMessageCreated,
         // handles messages updated
@@ -71,6 +72,9 @@ export default class Client {
         ChatMessageDeleted,
         // handles nickname updates and other member data
         TeamMemberUpdated,
+        // List item name changes
+        ListItemCreated: ListItemEvent,
+        ListItemUpdated: ListItemEvent,
         // handles members getting new roles
         teamRolesUpdated,
     };
