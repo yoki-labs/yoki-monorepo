@@ -17,7 +17,7 @@ export default async (data: Action & { reasonMetaData?: string }, member: Cached
                 stripIndents`
 					**Target:** \`${member.user.name} (${data.targetId})\`
 					**Type:** \`${data.type}\`
-					**Reason:** \`${data.reason ?? "NO REASON PROVIDED"} ${data.reasonMetaData ?? ""}\` 
+					**Reason:** \`${data.reason ?? "NO REASON PROVIDED"}\`  ${data.reasonMetaData ?? ""}
 					${
                         data.expiresAt
                             ? `**Expiration:** \`${data.expiresAt.toLocaleDateString("en-US", {
