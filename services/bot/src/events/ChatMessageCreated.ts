@@ -140,15 +140,17 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context, server:
     if (!ctx.operators.includes(message.createdBy)) {
         // if this command requires a user to have a specific role, then check if they have it
         if (command.requiredRole) {
-            // get all the roles of the required type for this command
-            const modRoles = await ctx.prisma.role.findMany({ where: { serverId: message.serverId } });
-            const userModRoles = modRoles.filter((modRole) => member.roleIds.includes(modRole.roleId));
-            const requiredValue = roleValues[command.requiredRole];
-            // check if the user has any of the roles of this required type
-            if (!userModRoles.some((role) => roleValues[role.type] >= requiredValue))
-                return ctx.messageUtil.replyWithUnpermitted(message, `Unfortunately, you are missing the ${command.requiredRole} role permission!`);
-            // if this command is operator only, then silently ignore because of privacy reasons
-        } else if (command.ownerOnly) return void 0;
+            if (!member.isOwner) {
+                // get all the roles of the required type for this command
+                const modRoles = await ctx.prisma.role.findMany({ where: { serverId: message.serverId } });
+                const userModRoles = modRoles.filter((modRole) => member.roleIds.includes(modRole.roleId));
+                const requiredValue = roleValues[command.requiredRole];
+                // check if the user has any of the roles of this required type
+                if (!userModRoles.some((role) => roleValues[role.type] >= requiredValue))
+                    return ctx.messageUtil.replyWithUnpermitted(message, `Unfortunately, you are missing the ${command.requiredRole} role permission!`);
+                // if this command is operator only, then silently ignore because of privacy reasons
+            }
+        } else if (command.devOnly) return void 0;
     }
 
     try {

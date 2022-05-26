@@ -26,7 +26,7 @@ const Config: Command = {
     // examples: [...(Modlog.examples as string[]), ...(Modrole.examples as string[])],
     parentCommand: true,
     requiredRole: RoleType.ADMIN,
-    ownerOnly: true,
+    devOnly: true,
     subCommands,
     execute: () => void 0,
 };

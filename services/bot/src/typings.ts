@@ -16,6 +16,7 @@ export interface CommandContext {
 export interface CachedMember {
     roleIds: number[];
     user: { id: string; name: string };
+    isOwner?: boolean;
 }
 
 // re-exporting enums, types, etc. from prisma incase we switch ORMs so we can easily replace them

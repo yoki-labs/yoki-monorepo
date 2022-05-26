@@ -36,7 +36,7 @@ const Eval: Command = {
     description: "[PRIVATE]",
     hidden: true,
     usage: "",
-    ownerOnly: true,
+    devOnly: true,
     args: [{ type: "rest", name: "code" }],
     execute: async (message, args, ctx) => {
         const code = args.code as string;

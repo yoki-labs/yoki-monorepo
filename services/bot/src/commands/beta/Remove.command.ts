@@ -7,7 +7,7 @@ const Remove: Command = {
     subCommand: true,
     hidden: true,
     subName: "remove",
-    ownerOnly: true,
+    devOnly: true,
     args: [{ name: "serverId", type: "string" }],
     execute: async (message, args, ctx) => {
         const serverId = args.serverId as string;

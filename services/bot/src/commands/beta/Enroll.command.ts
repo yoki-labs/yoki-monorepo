@@ -9,7 +9,7 @@ const Enroll: Command = {
     subCommand: true,
     hidden: true,
     subName: "enroll",
-    ownerOnly: true,
+    devOnly: true,
     args: [
         { name: "serverId", type: "string" },
         { name: "roleId", type: "number", optional: true },

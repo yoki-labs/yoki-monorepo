@@ -5,7 +5,7 @@ const Kill: Command = {
     description: "Turn the bot off",
     hidden: true,
     usage: "",
-    ownerOnly: true,
+    devOnly: true,
     execute: (message, _args, ctx) => {
         ctx.errorHandler.send("Bot is shutting down!").catch(() => void 0);
         ctx.ws.destroy();

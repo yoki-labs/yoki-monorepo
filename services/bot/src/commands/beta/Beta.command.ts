@@ -12,7 +12,7 @@ const Beta: Command = {
     usage: `<${subCommands.map((_v, k) => k).join(" | ")}> <..args>`,
     parentCommand: true,
     hidden: true,
-    ownerOnly: true,
+    devOnly: true,
     subCommands,
     execute: () => void 0,
 };

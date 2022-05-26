@@ -20,7 +20,7 @@ export interface Command {
     args?: CommandArgument[];
     preRunCheck?: (message: ChatMessagePayload, args: string[], ctx: Context) => unknown;
     requiredRole?: RoleType;
-    ownerOnly?: boolean;
+    devOnly?: boolean;
     execute: (message: ChatMessagePayload, args: Record<string, ResolvedArgs>, ctx: Context, raw: CommandContext) => unknown;
 }
 
