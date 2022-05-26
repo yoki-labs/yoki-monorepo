@@ -18,7 +18,7 @@ const Unmute: Command = {
     args: [
         {
             name: "target",
-            type: "memberID",
+            type: "member",
         },
         {
             name: "reason",

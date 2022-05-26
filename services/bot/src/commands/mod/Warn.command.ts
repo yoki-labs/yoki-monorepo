@@ -15,7 +15,7 @@ const Warn: Command = {
     args: [
         {
             name: "target",
-            type: "memberID",
+            type: "member",
         },
         {
             name: "infractionPoints",

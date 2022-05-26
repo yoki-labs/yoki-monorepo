@@ -19,8 +19,8 @@ const History: Command = {
     category: Category.Moderation,
     args: [
         {
-            name: "targetId",
-            type: "memberID",
+            name: "target",
+            type: "member",
         },
         {
             name: "page",
@@ -29,7 +29,7 @@ const History: Command = {
         },
     ],
     execute: async (message, args, ctx) => {
-        const target = args.targetId as CachedMember;
+        const target = args.target as CachedMember;
         const page = args.page ? Math.floor((args.page as number) - 1) : 0;
         const actions = await ctx.prisma.action.findMany({
             where: {

@@ -19,7 +19,7 @@ const Mute: Command = {
     args: [
         {
             name: "target",
-            type: "memberID",
+            type: "member",
         },
         {
             name: "duration",
