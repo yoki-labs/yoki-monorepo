@@ -106,7 +106,7 @@ export class ContentFilterUtil extends Util {
         resultingAction: () => unknown
     ) {
         // If the bot is the one who did this action, ignore.
-        if (userId === this.client.userId) return void 0;
+        if (userId == this.client.userId) return void 0;
         const { serverId } = server;
 
         // Get all the banned words in this server
@@ -177,7 +177,7 @@ export class ContentFilterUtil extends Util {
             // The offending user
             targetId: userId,
             // Whether this case will expire (mutes)
-            expiresAt: (ifExceeds ?? triggeredWord.severity) === Severity.MUTE ? new Date(Date.now() + 1000 * 60 * 60 * 12) : null,
+            expiresAt: (ifExceeds ?? triggeredWord.severity) == Severity.MUTE ? new Date(Date.now() + 1000 * 60 * 60 * 12) : null,
             // The amount of infraction points this specific word gives
             infractionPoints: triggeredWord.infractionPoints,
         });

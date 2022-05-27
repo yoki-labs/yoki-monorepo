@@ -43,7 +43,7 @@ const History: Command = {
         if (!fetchedCase) return ctx.messageUtil.replyWithAlert(message, `Unknown case`, `A case with that ID does not exist!`);
 
         // Delete
-        if (action === CaseAction.REMOVE) {
+        if (action == CaseAction.REMOVE) {
             await ctx.prisma.action.delete({
                 where: {
                     id: caseId,

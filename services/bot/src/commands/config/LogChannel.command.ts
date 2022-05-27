@@ -54,13 +54,13 @@ const LogChannel: Command = {
 
         // If there are logTypes, uppercase them all, then filter out duplicates. No idea why this had to specifically be two different lines.
         if (logTypes.length > 0) {
-            logTypes = logTypes.filter((value, index) => logTypes!.indexOf(value) === index);
+            logTypes = logTypes.filter((value, index) => logTypes!.indexOf(value) == index);
         }
 
         // If there aren't any logTypes or logTypes contains "ALL" default the entire list to ALL for optimization.
         if (logTypes.includes("REMOVE")) {
             // Unspecified means unsubscribe from all
-            const toUnsubscribeFrom = logTypes.length === 1 ? undefined : { in: logTypes.filter((x) => x !== "REMOVE") as LogChannelType[] };
+            const toUnsubscribeFrom = logTypes.length == 1 ? undefined : { in: logTypes.filter((x) => x != "REMOVE") as LogChannelType[] };
 
             await ctx.prisma.logChannel.deleteMany({
                 where: {
@@ -77,7 +77,7 @@ const LogChannel: Command = {
                     ? `Following events were unsubscribed from the channel ${inlineCode(channelId)}: ${toUnsubscribeFrom.in.map((x) => inlineCode(x)).join(", ")}`
                     : `All events were unsubscribed from the channel ${inlineCode(channelId)}.`
             );
-        } else if (logTypes.length === 0 || logTypes.includes("ALL")) {
+        } else if (logTypes.length == 0 || logTypes.includes("ALL")) {
             logTypes = ["ALL"];
         }
 

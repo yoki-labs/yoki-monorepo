@@ -12,13 +12,13 @@ export class MessageUtil extends Util {
     // Send a message using either string, embed object, or raw object
     send(channelId: string, content: string | RESTPostChannelMessagesBody | Embed) {
         return this.rest.router
-            .createChannelMessage(channelId, content instanceof Embed ? { embeds: [content.toJSON()] } : typeof content === "string" ? { content } : content)
+            .createChannelMessage(channelId, content instanceof Embed ? { embeds: [content.toJSON()] } : typeof content == "string" ? { content } : content)
             .then((x) => x.message);
     }
 
     // Reply to a message
     reply(message: ChatMessagePayload, content: string | RESTPostChannelMessagesBody) {
-        const opts: RESTPostChannelMessagesBody | string = typeof content === "string" ? { replyMessageIds: [message.id], content } : content;
+        const opts: RESTPostChannelMessagesBody | string = typeof content == "string" ? { replyMessageIds: [message.id], content } : content;
         return this.rest.router.createChannelMessage(message.channelId, opts);
     }
 
@@ -35,7 +35,7 @@ export class MessageUtil extends Util {
                         name: "Usage",
                         value: stripIndents`
                                 \`\`\`clojure
-                                ${prefix}${parentCommand.name}${command.name === parentCommand.name ? "" : ` ${command.subName ?? command.name}`} ${command.usage}
+                                ${prefix}${parentCommand.name}${command.name == parentCommand.name ? "" : ` ${command.subName ?? command.name}`} ${command.usage}
                                 \`\`\`
                             `,
                     },
