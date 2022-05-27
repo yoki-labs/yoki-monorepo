@@ -35,7 +35,7 @@ const Modrole: Command = {
                 : ctx.messageUtil.replyWithNullState(message, `No staff roles`, `There are no staff roles set for this server yet.`);
         }
         const existing = await ctx.prisma.role.findMany({ where: { serverId: message.serverId, roleId: newRole, type: staffLevel } });
-        if (existing.find((x) => x.roleId == newRole)) return ctx.messageUtil.replyWithAlert(message, `Already a staff role`, `This role has already been set as ${staffLevel}.`);
+        if (existing.find((x) => x.roleId === newRole)) return ctx.messageUtil.replyWithAlert(message, `Already a staff role`, `This role has already been set as ${staffLevel}.`);
 
         const newModRole = await ctx.prisma.role.create({
             data: {

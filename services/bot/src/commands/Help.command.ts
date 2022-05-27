@@ -40,7 +40,7 @@ const Help: Command = {
                 command = parentCommand;
             }
 
-            const commandUsageName = parentCommand.name == command.name ? command.name : `${parentCommand.name}${command.subName ? ` ${command.subName}` : ""}`;
+            const commandUsageName = parentCommand.name === command.name ? command.name : `${parentCommand.name}${command.subName ? ` ${command.subName}` : ""}`;
             return ctx.messageUtil.replyWithInfo(
                 message,
                 `${inlineCode(commandUsageName)} command`,
@@ -65,7 +65,7 @@ const Help: Command = {
 
         const commandCategoryMap: Collection<string, Command[]> = new Collection();
         [...categories, undefined].forEach((category) => {
-            const commands = Array.from(ctx.commands.filter((x) => x.category == category && !x.subCommand && !x.hidden).values());
+            const commands = Array.from(ctx.commands.filter((x) => x.category === category && !x.subCommand && !x.hidden).values());
             commandCategoryMap.set(category ?? "uncategorized", commands);
         });
 

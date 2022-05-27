@@ -7,7 +7,7 @@ import type { Command } from "./Command";
 
 const _clean = async (text: any) => {
     if (text?.then && text.catch) text = await text;
-    if (typeof text != "string") text = inspect(text, { depth: 0 });
+    if (typeof text !== "string") text = inspect(text, { depth: 0 });
 
     return (text as string)
         .replace(/`/g, inlineCode(String.fromCharCode(8203)))

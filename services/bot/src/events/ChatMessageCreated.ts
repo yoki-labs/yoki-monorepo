@@ -33,7 +33,7 @@ const argCast: Record<
 export default async (packet: WSChatMessageCreatedPayload, ctx: Context, server: Server) => {
     const { message } = packet.d;
     // if the message wasn't sent in a server, or the person was a bot then don't do anything
-    if (message.createdByBotId || message.createdBy == ctx.userId || !message.serverId) return void 0;
+    if (message.createdByBotId || message.createdBy === ctx.userId || !message.serverId) return void 0;
 
     // the prefix of this server, otherwise the fallback default prefix
     const prefix = server.getPrefix();

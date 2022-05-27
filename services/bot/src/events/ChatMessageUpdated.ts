@@ -11,7 +11,7 @@ import type { Context, Server } from "../typings";
 export default async (packet: WSChatMessageUpdatedPayload, ctx: Context, server: Server) => {
     const { message } = packet.d;
     // if this message isn't updated in a server, or if the author is a bot, ignore
-    if (message.createdByBotId || message.createdBy == ctx.userId || !message.serverId) return void 0;
+    if (message.createdByBotId || message.createdBy === ctx.userId || !message.serverId) return void 0;
 
     // scan the updated message content
     await ctx.contentFilterUtil.scanMessage(message, server);

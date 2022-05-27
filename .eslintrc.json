@@ -16,7 +16,6 @@
         "simple-import-sort/imports": "warn",
         "simple-import-sort/exports": "warn",
         "unused-imports/no-unused-imports": "error",
-        "eqeqeq": "off",
         "unused-imports/no-unused-vars": [
             "warn",
             {
