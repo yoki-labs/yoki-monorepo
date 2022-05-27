@@ -149,7 +149,7 @@ async function replyWithChannelList(message: ChatMessagePayload, ctx: Client) {
 
     const formattedChannels: Collection<string, LogChannelType[]> = await cleanupChannels(logChannels);
 
-    return ctx.messageUtil.replyWithContent(
+    return ctx.messageUtil.replyWithInfo(
         message,
         `Log channels`,
         stripIndents`

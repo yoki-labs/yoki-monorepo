@@ -26,7 +26,7 @@ const Modrole: Command = {
         if (!newRole) {
             const modRoles = await ctx.prisma.role.findMany({ where: { serverId: message.serverId, type: staffLevel } });
             return modRoles.length
-                ? ctx.messageUtil.replyWithContent(
+                ? ctx.messageUtil.replyWithInfo(
                       message,
                       `Staff roles`,
                       `Here are the staff roles for this server:\n- ${modRoles.map((modRole) => `\`${modRole.roleId}\` (${modRole.type})`).join("\n- ")}`

@@ -1,4 +1,3 @@
-import { Embed } from "@guildedjs/embeds";
 import type { WSChatMessageDeletedPayload } from "@guildedjs/guilded-api-typings";
 import { Embed as WebhookEmbed } from "@guildedjs/webhook-client";
 import { LogChannelType, Prisma } from "@prisma/client";
@@ -26,30 +25,25 @@ export default async (packet: WSChatMessageDeletedPayload, ctx: Context) => {
 
     try {
         // send the log channel message with the content/data of the deleted message
-        await ctx.messageUtil.send(
+        await ctx.messageUtil.sendLog(
             deletedMessageLogChannel.channelId,
-            new Embed()
-                .setTitle("Deleted Message!")
-                .setColor(Colors.red)
-                .setDescription(
-                    stripIndents`
-					**ID:** ${inlineCodeblock(message.id)}
-					${
-                        deletedMessage
-                            ? `**Author:** ${inlineCodeblock(oldMember?.user.name ?? "Could not find data")} (${inlineCodeblock(deletedMessage?.authorId ?? "Could not find data")})
-							${
-                                deletedMessage.content
-                                    ? `**Content:**
-										${codeblock(deletedMessage.content.length > 900 ? `${deletedMessage.content.slice(0, 900)}...` : deletedMessage.content)}`
-                                    : (deletedMessage.embeds as Prisma.JsonArray)?.length
-                                    ? "_This message contains embeds._"
-                                    : "Could not find message content."
-                            }`
-                            : "*Data for this message could not be found. May be older than 14 days.*"
-                    }
-				`
-                )
-                .setTimestamp()
+            "Message Deleted",
+            stripIndents`
+                **ID:** ${inlineCodeblock(message.id)}
+                ${deletedMessage ? `**Author:** ${oldMember ? `<@${oldMember.user.id}>` : "Unknown author"}` : ``}
+            `,
+            Colors.red,
+            message.deletedAt,
+            [
+                {
+                    name: "Content",
+                    value: deletedMessage?.content
+                        ? codeblock(deletedMessage.content.length > 1012 ? `${deletedMessage.content.slice(0, 1012)}...` : deletedMessage.content)
+                        : (deletedMessage?.embeds as Prisma.JsonArray)?.length
+                        ? `_This message contains embeds._`
+                        : `Could not find message content. This message may be older than 14 days.`,
+                },
+            ]
         );
     } catch (e) {
         // generate ID for this error, not persisted in database

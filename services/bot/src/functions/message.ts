@@ -1,5 +1,5 @@
 import { Embed } from "@guildedjs/embeds";
-import type { ChatMessagePayload, EmbedPayload, RESTPostChannelMessagesBody } from "@guildedjs/guilded-api-typings";
+import type { ChatMessagePayload, EmbedField, EmbedPayload, RESTPostChannelMessagesBody } from "@guildedjs/guilded-api-typings";
 import { stripIndents } from "common-tags";
 
 import { Colors } from "../color";
@@ -69,6 +69,21 @@ export class MessageUtil extends Util {
         return this.sendValueBlock(channelId, title, description, color, { thumbnail: { url: thumbnail }, ...embedPartial }, messagePartial);
     }
 
+    sendLog(channelId: string, title: string, description: string, color: number, occurred: string, fields?: EmbedField[]) {
+        return this.send(channelId, {
+            embeds: [
+                {
+                    title,
+                    description,
+                    color,
+                    fields,
+                    timestamp: occurred,
+                },
+            ],
+            isSilent: true,
+        });
+    }
+
     replyWithValueBlock(
         message: ChatMessagePayload,
         title: string,
@@ -113,16 +128,12 @@ export class MessageUtil extends Util {
         return this.replyWithStateBlock(message, title, description, Colors.dull, StateImages.nothingHere, embedPartial, messagePartial);
     }
 
-    replyWithContent(message: ChatMessagePayload, title: string, description: string, embedPartial?: EmbedPayload, messagePartial?: Partial<RESTPostChannelMessagesBody>) {
-        return this.replyWithStateBlock(message, title, description, Colors.pink, StateImages.scroll, embedPartial, messagePartial);
+    replyWithInfo(message: ChatMessagePayload, title: string, description: string, embedPartial?: EmbedPayload, messagePartial?: Partial<RESTPostChannelMessagesBody>) {
+        return this.replyWithStateBlock(message, title, description, Colors.blockBackground, StateImages.scroll, embedPartial, messagePartial);
     }
 
     sendInfoBlock(channelId: string, title: string, description: string, embedPartial?: EmbedPayload, messagePartial?: Partial<RESTPostChannelMessagesBody>) {
-        return this.sendStateBlock(channelId, title, description, Colors.blue, StateImages.scroll, embedPartial, messagePartial);
-    }
-
-    replyWithInfo(message: ChatMessagePayload, title: string, description: string, embedPartial?: EmbedPayload, messagePartial?: Partial<RESTPostChannelMessagesBody>) {
-        return this.replyWithStateBlock(message, title, description, Colors.blue, StateImages.scroll, embedPartial, messagePartial);
+        return this.sendStateBlock(channelId, title, description, Colors.blockBackground, StateImages.scroll, embedPartial, messagePartial);
     }
 
     // Value blocks
@@ -156,7 +167,7 @@ export class MessageUtil extends Util {
         const startingIndex = itemsPerPage * page;
         const endingIndex = itemsPerPage * incrementedPage;
 
-        return this.replyWithContent(message, title, items.slice(startingIndex, endingIndex).join("\n"), {
+        return this.replyWithInfo(message, title, items.slice(startingIndex, endingIndex).join("\n"), {
             ...embedPartial,
             footer: {
                 text: `Page ${incrementedPage}/${possiblePages}`,

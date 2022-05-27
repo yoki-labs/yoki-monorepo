@@ -1,4 +1,3 @@
-import { Embed } from "@guildedjs/embeds";
 import type { WSChatMessageUpdatedPayload } from "@guildedjs/guilded-api-typings";
 import { Embed as WebhookEmbed } from "@guildedjs/webhook-client";
 import { LogChannelType } from "@prisma/client";
@@ -6,7 +5,7 @@ import { stripIndents } from "common-tags";
 import { nanoid } from "nanoid";
 
 import { Colors } from "../color";
-import { codeblock, inlineCodeblock } from "../formatters";
+import { inlineCodeblock, quoteMarkdown } from "../formatters";
 import type { Context, Server } from "../typings";
 
 export default async (packet: WSChatMessageUpdatedPayload, ctx: Context, server: Server) => {
@@ -24,39 +23,32 @@ export default async (packet: WSChatMessageUpdatedPayload, ctx: Context, server:
     const oldMessage = await ctx.dbUtil.getMessage(message.channelId, message.id);
     // if we did log it in the past, update it with the new content (logMessage uses upsert)
     if (oldMessage) await ctx.dbUtil.storeMessage(message);
-    // get the member associated with the message
-    const oldMember = await ctx.serverUtil.getMember(message.serverId!, message.createdBy).catch(() => null);
 
     try {
         // send embed in log channel
-        await ctx.messageUtil.send(
+        await ctx.messageUtil.sendLog(
             updatedMessageLogChannel.channelId,
-            new Embed()
-                .setTitle("Updated Message!")
-                .setColor(Colors.yellow)
-                .setDescription(
-                    stripIndents`
-					**ID:** ${inlineCodeblock(message.id)}
-					**Author:** ${inlineCodeblock(oldMember?.user.name ?? "unknown name")} (${inlineCodeblock(message.createdBy ?? message.createdByBotId ?? message.createdByWebhookId)})
-					**Old Message:**
-					${
-                        // this slices the old message content (if it exists, otherwise default) to 900 if it's longer, for Guilded API limits
-                        codeblock(
-                            oldMessage?.content
-                                ? oldMessage.content.length > 900
-                                    ? `${oldMessage.content.slice(0, 900)}...`
-                                    : oldMessage.content
-                                : "Could not find old version of this message."
-                        )
-                    }
-					**New Message:**
-					${
-                        // this slices the message content to 900 if it's longer, for Guilded API limits
-                        codeblock(message.content.length > 900 ? `${message.content.slice(0, 900)}...` : message.content)
-                    }
-				`
-                )
-                .setTimestamp()
+            `Message edited`,
+            stripIndents`
+                **ID:** ${inlineCodeblock(message.id)}
+                **Author:** ${message.createdByWebhookId ? `Webhook` : `<@${message.createdBy}>`}
+            `,
+            Colors.yellow,
+            message.updatedAt!,
+            [
+                {
+                    name: `Old Message`,
+                    value: oldMessage
+                        ? oldMessage.content
+                            ? quoteMarkdown(oldMessage.content, 1012)
+                            : `This message does not contain text content.`
+                        : `Could not find old version of this message.`,
+                },
+                {
+                    name: `New message`,
+                    value: message.content ? quoteMarkdown(message.content, 1012) : `This message does not contain text content.`,
+                },
+            ]
         );
     } catch (e) {
         ctx.prisma.logChannel.deleteMany({ where: { channelId: updatedMessageLogChannel.channelId } }).catch(() => null);

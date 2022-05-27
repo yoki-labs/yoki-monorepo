@@ -1,6 +1,7 @@
 // common colors that the bot uses
 export const Colors = {
     pink: 0xeb6fa7,
+    blockBackground: 0x32343d,
     orangeRed: 0xf86d43,
     lightOrange: 0xffa500,
     red: 0xec3636,

@@ -5,7 +5,7 @@ const Support: Command = {
     description: "Get a link for our support server.",
     usage: "",
     execute: (message, _args, ctx) => {
-        return ctx.messageUtil.replyWithContent(message, `Support server`, `[**Click here**](https://yoki.gg/support) to join our support server.`, undefined, {
+        return ctx.messageUtil.replyWithInfo(message, `Support server`, `[**Click here**](https://yoki.gg/support) to join our support server.`, undefined, {
             isPrivate: true,
         });
     },

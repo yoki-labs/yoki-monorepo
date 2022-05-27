@@ -13,7 +13,7 @@ const List: Command = {
     execute: async (message, _args, ctx) => {
         const allPresets = ctx.contentFilterUtil.presets;
         const enabledPresets = await ctx.dbUtil.getEnabledPresets(message.serverId!);
-        return ctx.messageUtil.replyWithContent(
+        return ctx.messageUtil.replyWithInfo(
             message,
             `Presets`,
             stripIndents`

@@ -14,7 +14,7 @@ const List: Command = {
         const bannedWords = await ctx.dbUtil.getBannedWords(message.serverId!);
 
         return bannedWords.length
-            ? ctx.messageUtil.replyWithContent(
+            ? ctx.messageUtil.replyWithInfo(
                   message,
                   `Banned words`,
                   `These are the custom banned words for this server: ${bannedWords.map((word) => `\`${word.content}\``).join(", ")}`

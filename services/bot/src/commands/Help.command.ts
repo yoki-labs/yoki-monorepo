@@ -41,7 +41,7 @@ const Help: Command = {
             }
 
             const commandUsageName = parentCommand.name === command.name ? command.name : `${parentCommand.name}${command.subName ? ` ${command.subName}` : ""}`;
-            return ctx.messageUtil.replyWithContent(
+            return ctx.messageUtil.replyWithInfo(
                 message,
                 `${inlineCodeblock(commandUsageName)} command`,
                 [
@@ -69,7 +69,7 @@ const Help: Command = {
             commandCategoryMap.set(category ?? "uncategorized", commands);
         });
 
-        return ctx.messageUtil.replyWithContent(
+        return ctx.messageUtil.replyWithInfo(
             message,
             `Command List`,
             `For additional info on a command, type ${inlineCodeblock(`${commandCtx.server.getPrefix()}help [command]`)}

@@ -53,15 +53,15 @@ const History: Command = {
         }
 
         // View
-        return ctx.messageUtil.replyWithContent(
+        return ctx.messageUtil.replyWithInfo(
             message,
             `Case \`${caseId}\``,
             `<@${fetchedCase.targetId}> has received ${fetchedCase.type} by <@${fetchedCase.executorId}>`,
             {
                 fields: [
-                    fetchedCase && {
+                    fetchedCase.reason && {
                         name: "Reason",
-                        value: (fetchedCase.reason as string).length > 1024 ? `${fetchedCase.reason?.substr(0, 1021)}...` : fetchedCase.reason,
+                        value: (fetchedCase.reason as string).length > 1024 ? `${fetchedCase.reason.substr(0, 1021)}...` : fetchedCase.reason,
                     },
                     fetchedCase.expiresAt && {
                         name: "Expiration",

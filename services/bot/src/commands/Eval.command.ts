@@ -53,10 +53,10 @@ const Eval: Command = {
 
         if (final.length > 2048) {
             const key = await _tooLong(clean);
-            return ctx.messageUtil.replyWithContent(message, `Output over the limit`, `Output exceeded 2048 characters (${final.length}). https://paste.discord.land/${key}.js`);
+            return ctx.messageUtil.replyWithInfo(message, `Output over the limit`, `Output exceeded 2048 characters (${final.length}). https://paste.discord.land/${key}.js`);
         }
 
-        return ctx.messageUtil.replyWithContent(message, `Eval results`, final);
+        return ctx.messageUtil.replyWithInfo(message, `Eval results`, final);
     },
 };
 

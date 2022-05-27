@@ -18,7 +18,7 @@ const Muterole: Command = {
         if (!newRole) {
             const muteRole = commandCtx.server.muteRoleId;
             return muteRole
-                ? ctx.messageUtil.replyWithContent(message, `Mute role`, `The mute role is set to role \`${muteRole}\`.`)
+                ? ctx.messageUtil.replyWithInfo(message, `Mute role`, `The mute role is set to role \`${muteRole}\`.`)
                 : ctx.messageUtil.replyWithNullState(message, `No mute role`, `There is no mute role set.`);
         }
 
