@@ -5,7 +5,7 @@ import { stripIndents } from "common-tags";
 import { nanoid } from "nanoid";
 
 import { Colors } from "../color";
-import { inlineCodeblock, quoteMarkdown } from "../formatters";
+import { inlineCode, quoteMarkdown } from "../formatters";
 import type { Context, Server } from "../typings";
 
 export default async (packet: WSChatMessageUpdatedPayload, ctx: Context, server: Server) => {
@@ -30,7 +30,7 @@ export default async (packet: WSChatMessageUpdatedPayload, ctx: Context, server:
             updatedMessageLogChannel.channelId,
             `Message edited`,
             stripIndents`
-                **ID:** ${inlineCodeblock(message.id)}
+                **ID:** ${inlineCode(message.id)}
                 **Author:** ${message.createdByWebhookId ? `Webhook` : `<@${message.createdBy}>`}
             `,
             Colors.yellow,
@@ -59,10 +59,10 @@ export default async (packet: WSChatMessageUpdatedPayload, ctx: Context, server:
                 new WebhookEmbed()
                     .setDescription(
                         stripIndents`
-						Reference ID: **${referenceId}**
-						Server: **${message.serverId}**
-						Channel: **${message.channelId}**
-						User: **${message.createdBy}**
+						Reference ID: ${inlineCode(referenceId)}
+						Server: ${inlineCode(message.serverId)}
+						Channel: ${inlineCode(message.channelId)}
+						User: ${inlineCode(message.createdBy)}
 						Error: \`\`\`
 						${e.stack ?? e.message}
 						\`\`\`

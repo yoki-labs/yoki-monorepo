@@ -5,7 +5,7 @@ import { stripIndents } from "common-tags";
 import { nanoid } from "nanoid";
 
 import { Colors } from "../color";
-import { codeblock, inlineCodeblock } from "../formatters";
+import { codeBlock, inlineCode } from "../formatters";
 import type { Context } from "../typings";
 
 export default async (packet: WSChatMessageDeletedPayload, ctx: Context) => {
@@ -29,7 +29,7 @@ export default async (packet: WSChatMessageDeletedPayload, ctx: Context) => {
             deletedMessageLogChannel.channelId,
             "Message Deleted",
             stripIndents`
-                **ID:** ${inlineCodeblock(message.id)}
+                **ID:** ${inlineCode(message.id)}
                 ${deletedMessage ? `**Author:** ${oldMember ? `<@${oldMember.user.id}>` : "Unknown author"}` : ``}
             `,
             Colors.red,
@@ -38,7 +38,7 @@ export default async (packet: WSChatMessageDeletedPayload, ctx: Context) => {
                 {
                     name: "Content",
                     value: deletedMessage?.content
-                        ? codeblock(deletedMessage.content.length > 1012 ? `${deletedMessage.content.slice(0, 1012)}...` : deletedMessage.content)
+                        ? codeBlock(deletedMessage.content.length > 1012 ? `${deletedMessage.content.slice(0, 1012)}...` : deletedMessage.content)
                         : (deletedMessage?.embeds as Prisma.JsonArray)?.length
                         ? `_This message contains embeds._`
                         : `Could not find message content. This message may be older than 14 days.`,
@@ -55,10 +55,10 @@ export default async (packet: WSChatMessageDeletedPayload, ctx: Context) => {
                 new WebhookEmbed()
                     .setDescription(
                         stripIndents`
-						Reference ID: **${referenceId}**
-						Server: **${deletedMessage?.serverId ?? "not cached"}**
-						Channel: **${message.channelId}**
-						User: **${deletedMessage?.authorId ?? "not cached"}**
+						Reference ID: ${inlineCode(referenceId)}
+						Server: ${inlineCode(deletedMessage?.serverId ?? "not cached")}
+						Channel: ${inlineCode(message.channelId)}
+						User: ${inlineCode(deletedMessage?.authorId ?? "not cached")}
 						Error: \`\`\`
 						${e.stack ?? e.message}
 						\`\`\`

@@ -1,7 +1,7 @@
 import type { EmbedField } from "@guildedjs/guilded-api-typings";
 import { stripIndents } from "common-tags";
 
-import { inlineCodeblock } from "../../formatters";
+import { inlineCode } from "../../formatters";
 import { CachedMember, RoleType } from "../../typings";
 import { Category } from "../Category";
 import type { Command } from "../Command";
@@ -39,7 +39,7 @@ const Unmute: Command = {
                 message,
                 stripIndents`
 					There was an issue removing mute from this user. This is most likely due to misconfigured permissions for your server.
-					\`${(e as Error).message}\`
+					${inlineCode((e as Error).message)}
 				`,
                 undefined,
                 { isPrivate: true }
@@ -74,7 +74,7 @@ const Unmute: Command = {
             }
         );
 
-        return ctx.messageUtil.replyWithSuccess(message, `User unmuted`, `${target.user.name} (${inlineCodeblock(target.user.id)}) has been unmuted successfully.`, undefined, {
+        return ctx.messageUtil.replyWithSuccess(message, `User unmuted`, `${target.user.name} (${inlineCode(target.user.id)}) has been unmuted successfully.`, undefined, {
             isPrivate: true,
         });
     },

@@ -1,3 +1,4 @@
+import { inlineCode } from "../../formatters";
 import { RoleType } from "../../typings";
 import type { Command } from "../Command";
 
@@ -18,15 +19,15 @@ const Enable: Command = {
         const preset = args.preset as string;
         const allPresets = Object.keys(ctx.contentFilterUtil.presets);
         if (!allPresets.includes(preset))
-            return ctx.messageUtil.replyWithAlert(message, `No such preset`, `That is not a valid preset. Your options are: ${allPresets.map((x) => `\`${x}\``).join(", ")}`);
+            return ctx.messageUtil.replyWithAlert(message, `No such preset`, `That is not a valid preset. Your options are: ${allPresets.map((x) => inlineCode(x)).join(", ")}`);
 
         return ctx.dbUtil
             .enablePreset(message.serverId!, preset)
-            .then(() => ctx.messageUtil.replyWithSuccess(message, `Preset enabled`, `Successfully enabled the \`${preset}\` preset for this server.`))
+            .then(() => ctx.messageUtil.replyWithSuccess(message, `Preset enabled`, `Successfully enabled the ${inlineCode(preset)} preset for this server.`))
             .catch((e: Error) =>
                 ctx.messageUtil.replyWithError(
                     message,
-                    `There was an issue enabling the \`${preset}\` preset for your server. Please forward this error to bot staff: \`${e.message}\``
+                    `There was an issue enabling the ${inlineCode(preset)} preset for your server. Please forward this error to bot staff: ${inlineCode(e.message)}`
                 )
             );
     },

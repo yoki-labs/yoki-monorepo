@@ -1,5 +1,6 @@
 import { RoleType } from "@prisma/client";
 
+import { inlineCode } from "../../formatters";
 import { Category } from "../Category";
 import type { Command } from "../Command";
 
@@ -29,7 +30,7 @@ const Modrole: Command = {
                 ? ctx.messageUtil.replyWithInfo(
                       message,
                       `Staff roles`,
-                      `Here are the staff roles for this server:\n- ${modRoles.map((modRole) => `\`${modRole.roleId}\` (${modRole.type})`).join("\n- ")}`
+                      `Here are the staff roles for this server:\n- ${modRoles.map((modRole) => `${inlineCode(modRole.roleId)} (${modRole.type})`).join("\n- ")}`
                   )
                 : ctx.messageUtil.replyWithNullState(message, `No staff roles`, `There are no staff roles set for this server yet.`);
         }
@@ -44,7 +45,7 @@ const Modrole: Command = {
             },
         });
 
-        return ctx.messageUtil.replyWithSuccess(message, `Staff role added`, `Successfully set the ${staffLevel} role to \`${newModRole.roleId}\``);
+        return ctx.messageUtil.replyWithSuccess(message, `Staff role added`, `Successfully set the ${staffLevel} role to ${inlineCode(newModRole.roleId)}`);
     },
 };
 

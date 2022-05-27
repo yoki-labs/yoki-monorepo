@@ -1,6 +1,6 @@
 import type { EmbedField } from "@guildedjs/guilded-api-typings";
 
-import { inlineCodeblock } from "../../formatters";
+import { inlineCode } from "../../formatters";
 import { RoleType } from "../../typings";
 import { Category } from "../Category";
 import type { Command } from "../Command";
@@ -49,13 +49,13 @@ const History: Command = {
                     id: caseId,
                 },
             });
-            return ctx.messageUtil.replyWithSuccess(message, `Case deleted`, `Case ${inlineCodeblock(caseId)} has been successfully deleted.`);
+            return ctx.messageUtil.replyWithSuccess(message, `Case deleted`, `Case ${inlineCode(caseId)} has been successfully deleted.`);
         }
 
         // View
         return ctx.messageUtil.replyWithInfo(
             message,
-            `Case \`${caseId}\``,
+            `Case ${inlineCode(caseId)}`,
             `<@${fetchedCase.targetId}> has received ${fetchedCase.type} by <@${fetchedCase.executorId}>`,
             {
                 fields: [

@@ -1,3 +1,4 @@
+import { inlineCode } from "../../formatters";
 import { transformSeverityStringToEnum } from "../../modules/content-filter";
 import { RoleType } from "../../typings";
 import { Category } from "../Category";
@@ -47,7 +48,11 @@ const Add: Command = {
             severity,
             infractionPoints,
         });
-        return ctx.messageUtil.replyWithSuccess(message, `New phrase added`, `Successfully added \`${phrase}\` with the severity \`${severity}\` to the automod list!`);
+        return ctx.messageUtil.replyWithSuccess(
+            message,
+            `New phrase added`,
+            `Successfully added ${inlineCode(phrase)} with the severity ${inlineCode(severity)} to the automod list!`
+        );
     },
 };
 

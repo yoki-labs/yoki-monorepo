@@ -1,7 +1,7 @@
 import Collection from "@discordjs/collection";
 import { stripIndents } from "common-tags";
 
-import { inlineCodeblock, listInlineCodeblock } from "../formatters";
+import { inlineCode, listInlineCode } from "../formatters";
 import { Category } from "./Category";
 import type { Command } from "./Command";
 const categories = Object.values(Category);
@@ -43,20 +43,20 @@ const Help: Command = {
             const commandUsageName = parentCommand.name === command.name ? command.name : `${parentCommand.name}${command.subName ? ` ${command.subName}` : ""}`;
             return ctx.messageUtil.replyWithInfo(
                 message,
-                `${inlineCodeblock(commandUsageName)} command`,
+                `${inlineCode(commandUsageName)} command`,
                 [
                     command.description,
                     " ",
-                    `**Usage:** ${inlineCodeblock(
+                    `**Usage:** ${inlineCode(
                         `${commandCtx.server.getPrefix()}${commandUsageName} ${
                             command.usage ?? `<${command.subCommands?.size ? command.subCommands!.map((x) => x.subName!).join(" | ") : ""}> <...args>`
                         }`
                     )}`,
-                    command.examples ? `**Examples:** ${listInlineCodeblock(command.examples.map((x) => `${commandCtx.server.getPrefix()}${commandUsageName} ${x}`))}` : null,
-                    command.aliases ? `**Aliases:** ${listInlineCodeblock(command.aliases)}` : null,
-                    command.subCommands?.size ? `**Subcommands:** ${listInlineCodeblock(command.subCommands!.map((x) => x.subName!))}` : null,
-                    command.clientPermissions ? `**Required Bot Permissions:** ${listInlineCodeblock(command.clientPermissions)}` : null,
-                    command.requiredRole ? `**Required Role:** ${inlineCodeblock(command.requiredRole)}` : null,
+                    command.examples ? `**Examples:** ${listInlineCode(command.examples.map((x) => `${commandCtx.server.getPrefix()}${commandUsageName} ${x}`))}` : null,
+                    command.aliases ? `**Aliases:** ${listInlineCode(command.aliases)}` : null,
+                    command.subCommands?.size ? `**Subcommands:** ${listInlineCode(command.subCommands!.map((x) => x.subName!))}` : null,
+                    command.clientPermissions ? `**Required Bot Permissions:** ${listInlineCode(command.clientPermissions)}` : null,
+                    command.requiredRole ? `**Required Role:** ${inlineCode(command.requiredRole)}` : null,
                 ]
                     .filter(Boolean)
                     .join("\n")
@@ -72,13 +72,13 @@ const Help: Command = {
         return ctx.messageUtil.replyWithInfo(
             message,
             `Command List`,
-            `For additional info on a command, type ${inlineCodeblock(`${commandCtx.server.getPrefix()}help [command]`)}
+            `For additional info on a command, type ${inlineCode(`${commandCtx.server.getPrefix()}help [command]`)}
 
             ${commandCategoryMap
                 .map(
                     (commands, category) => stripIndents`
                             **${category}:**
-                            ${listInlineCodeblock(commands.map((x) => x.name))}
+                            ${listInlineCode(commands.map((x) => x.name))}
                         `
                 )
                 .join("\n\n")}

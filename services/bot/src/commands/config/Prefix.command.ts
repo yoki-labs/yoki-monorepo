@@ -1,3 +1,4 @@
+import { inlineCode } from "../../formatters";
 import { RoleType } from "../../typings";
 import { Category } from "../Category";
 import type { Command } from "../Command";
@@ -16,10 +17,10 @@ const Prefix: Command = {
             const { prefix } = commandCtx.server;
             return prefix
                 ? ctx.messageUtil.replyWithNullState(message, `No server prefix`, `This server does not have any prefix set.`)
-                : ctx.messageUtil.replyWithInfo(message, `Server prefix`, `The prefix for this server is \`${prefix?.replaceAll("`", "'")}\``);
+                : ctx.messageUtil.replyWithInfo(message, `Server prefix`, `The prefix for this server is ${inlineCode(prefix?.replaceAll("`", "'"))}`);
         }
         await ctx.prisma.server.update({ where: { id: commandCtx.server.id }, data: { prefix: newPrefix } });
-        return ctx.messageUtil.replyWithSuccess(message, `Server prefix set`, `The new prefix for this server is \`${newPrefix.replaceAll("`", "'")}\``);
+        return ctx.messageUtil.replyWithSuccess(message, `Server prefix set`, `The new prefix for this server is ${inlineCode(newPrefix.replaceAll("`", "'"))}`);
     },
 };
 

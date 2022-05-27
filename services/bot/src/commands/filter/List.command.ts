@@ -1,3 +1,4 @@
+import { inlineCode } from "../../formatters";
 import { RoleType } from "../../typings";
 import { Category } from "../Category";
 import type { Command } from "../Command";
@@ -17,7 +18,7 @@ const List: Command = {
             ? ctx.messageUtil.replyWithInfo(
                   message,
                   `Banned words`,
-                  `These are the custom banned words for this server: ${bannedWords.map((word) => `\`${word.content}\``).join(", ")}`
+                  `These are the custom banned words for this server: ${bannedWords.map((word) => inlineCode(word.content)).join(", ")}`
               )
             : ctx.messageUtil.replyWithNullState(message, `No banned words`, `There are no custom banned words for this server.`);
     },

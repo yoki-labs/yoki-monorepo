@@ -3,7 +3,7 @@ import { stripIndents } from "common-tags";
 import ms from "ms";
 
 import { Colors } from "../../color";
-import { inlineCodeblock } from "../../formatters";
+import { bold, inlineCode } from "../../formatters";
 import { CachedMember, RoleType } from "../../typings";
 import { Category } from "../Category";
 import type { Command } from "../Command";
@@ -47,7 +47,7 @@ const Mute: Command = {
                 message,
                 stripIndents`
 					There was an issue muting this user. This is most likely due to misconfigured permissions for your server.
-					\`${(e as Error).message}\`
+					${inlineCode((e as Error).message)}
 				`,
                 undefined,
                 { isPrivate: true }
@@ -65,12 +65,12 @@ const Mute: Command = {
             type: "MUTE",
             expiresAt,
         });
-        ctx.emitter.emit("ActionIssued", newAction, target, ctx);
+        ctx.emitter.emit("ActionIssued", newAction, ctx);
 
         await ctx.messageUtil.sendValueBlock(
             message.channelId,
             ":mute: You have been muted",
-            `<@${target.user.id}>, you have been muted for **${duration / 60000}** minutes.`,
+            `<@${target.user.id}>, you have been muted for ${bold(duration / 60000)} minutes.`,
             Colors.red,
             {
                 fields: [
@@ -85,7 +85,7 @@ const Mute: Command = {
             }
         );
 
-        return ctx.messageUtil.replyWithSuccess(message, `User muted`, `${target.user.name} (${inlineCodeblock(target.user.id)}) has been muted successfully.`, undefined, {
+        return ctx.messageUtil.replyWithSuccess(message, `User muted`, `${target.user.name} (${inlineCode(target.user.id)}) has been muted successfully.`, undefined, {
             isPrivate: true,
         });
     },

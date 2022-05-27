@@ -1,6 +1,7 @@
 import type { EmbedField } from "@guildedjs/guilded-api-typings";
 import { stripIndents } from "common-tags";
 
+import { inlineCode } from "../../formatters";
 import { CachedMember, RoleType } from "../../typings";
 import { Category } from "../Category";
 import type { Command } from "../Command";
@@ -59,7 +60,7 @@ const Warn: Command = {
                 message,
                 stripIndents`
 					There was an issue warning this user.
-					\`${(e as Error).message}\`
+					${inlineCode((e as Error).message)}
 				`,
                 undefined,
                 { isPrivate: true }
@@ -78,9 +79,9 @@ const Warn: Command = {
             expiresAt: null,
         });
 
-        ctx.emitter.emit("ActionIssued", newAction, target, ctx);
+        ctx.emitter.emit("ActionIssued", newAction, ctx);
 
-        return ctx.messageUtil.replyWithSuccess(message, `User warned`, `${target.user.name} (\`${target.user.id}\`) has been successfully warned.`, undefined, {
+        return ctx.messageUtil.replyWithSuccess(message, `User warned`, `${target.user.name} (${inlineCode(target.user.id)}) has been successfully warned.`, undefined, {
             isPrivate: true,
         });
     },

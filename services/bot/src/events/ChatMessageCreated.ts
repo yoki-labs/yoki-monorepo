@@ -12,7 +12,7 @@ import rest from "../args/rest";
 import string from "../args/string";
 import UUID from "../args/UUID";
 import type { CommandArgType, CommandArgument } from "../commands/Command";
-import { inlineCodeblock } from "../formatters";
+import { codeBlock, inlineCode } from "../formatters";
 import type { Context, ResolvedArgs, Server } from "../typings";
 import { roleValues } from "../util";
 
@@ -67,11 +67,11 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context, server:
             const subCommandName = command.subCommands.firstKey();
             const subCommand = command.subCommands.get(subCommandName as string)!;
 
-            return ctx.messageUtil.replyWithInfo(message, `${inlineCodeblock(commandName)} command`, command.description, {
+            return ctx.messageUtil.replyWithInfo(message, `${inlineCode(commandName)} command`, command.description, {
                 fields: [
                     {
                         name: "Available sub-commands",
-                        value: `- ${command.subCommands.map((x) => `\`${x.name.split("-")[1]}\``).join("\n- ")}`,
+                        value: `- ${command.subCommands.map((x) => inlineCode(x.name.split("-")[1])).join("\n- ")}`,
                         inline: true,
                     },
                     {
@@ -93,7 +93,7 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context, server:
                 fields: [
                     {
                         name: "Available sub-commands",
-                        value: `- ${command.subCommands.map((x) => `\`${x.name.split("-")[1]}\``).join("\n- ")}`,
+                        value: `- ${command.subCommands.map((x) => inlineCode(x.name.split("-")[1])).join("\n- ")}`,
                         inline: true,
                     },
                     {
@@ -165,23 +165,23 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context, server:
                 new Embed()
                     .setDescription(
                         stripIndents`
-						Reference ID: **${referenceId}**
-						Server: **${message.serverId}**
-						Channel: **${message.channelId}**
-						User: **${message.createdBy}** (${member?.user.name})
-						Content: \`${message.content}\`
+						Reference ID: ${inlineCode(referenceId)}
+						Server: ${inlineCode(message.serverId)}
+						Channel: ${inlineCode(message.channelId)}
+						User: ${inlineCode(message.createdBy)} (${inlineCode(member?.user.name)})
 						Error: \`\`\`
 						${e.stack ?? e.message}
 						\`\`\`
 					`
                     )
+                    .addField(`Content`, codeBlock(message.content?.length > 1018 ? `${message.content.substring(0, 1018)}...` : message.content))
                     .setColor("RED"),
             ]);
         }
         // notify the user that there was an error executing the command
         return ctx.messageUtil.replyWithError(
             message,
-            `This is potentially an issue on our end, please contact us and forward the following ID and error: \`${referenceId}\` & \`${(e as any).message}\``
+            `This is potentially an issue on our end, please contact us and forward the following ID and error: ${inlineCode(referenceId)} & ${inlineCode((e as any).message)}`
         );
     }
 

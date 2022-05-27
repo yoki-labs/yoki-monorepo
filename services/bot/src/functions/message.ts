@@ -4,6 +4,7 @@ import { stripIndents } from "common-tags";
 
 import { Colors } from "../color";
 import type { Command, CommandArgument } from "../commands/Command";
+import { inlineCode } from "../formatters";
 import { StateImages } from "../images";
 import { Util } from "./util";
 
@@ -25,7 +26,7 @@ export class MessageUtil extends Util {
         return this.replyWithAlert(
             message,
             `Incorrect argument`,
-            `Sorry, but the usage of argument \`${commandArg.name}\` was not correct. Was expecting a ${commandArg.type}${
+            `Sorry, but the usage of argument ${inlineCode(commandArg.name)} was not correct. Was expecting a ${commandArg.type}${
                 commandArg.max ? ` with the limit of ${commandArg.max}` : ""
             }.`,
             {
@@ -162,7 +163,7 @@ export class MessageUtil extends Util {
 
         // If there is no such page
         if (incrementedPage > possiblePages)
-            return this.replyWithNullState(message, `No items in this page`, `There are no items at page \`${incrementedPage}\`.`, undefined, messagePartial);
+            return this.replyWithNullState(message, `No items in this page`, `There are no items at page ${inlineCode(incrementedPage)}.`, undefined, messagePartial);
 
         const startingIndex = itemsPerPage * page;
         const endingIndex = itemsPerPage * incrementedPage;

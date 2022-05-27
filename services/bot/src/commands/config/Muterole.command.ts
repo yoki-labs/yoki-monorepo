@@ -1,3 +1,4 @@
+import { inlineCode } from "../../formatters";
 import { RoleType } from "../../typings";
 import { Category } from "../Category";
 import type { Command } from "../Command";
@@ -18,12 +19,12 @@ const Muterole: Command = {
         if (!newRole) {
             const muteRole = commandCtx.server.muteRoleId;
             return muteRole
-                ? ctx.messageUtil.replyWithInfo(message, `Mute role`, `The mute role is set to role \`${muteRole}\`.`)
+                ? ctx.messageUtil.replyWithInfo(message, `Mute role`, `The mute role is set to role ${inlineCode(muteRole)}.`)
                 : ctx.messageUtil.replyWithNullState(message, `No mute role`, `There is no mute role set.`);
         }
 
         await ctx.prisma.server.updateMany({ data: { muteRoleId: newRole }, where: { serverId: message.serverId! } });
-        return ctx.messageUtil.replyWithSuccess(message, `Mute role set`, `Successfully set \`${newRole}\` as the mute role`);
+        return ctx.messageUtil.replyWithSuccess(message, `Mute role set`, `Successfully set ${inlineCode(newRole)} as the mute role`);
     },
 };
 

@@ -20,7 +20,7 @@ import { MessageUtil } from "./functions/message";
 import { ServerUtil } from "./functions/server";
 import { MuteScheduler } from "./jobs/MuteScheduler";
 import { ContentFilterUtil } from "./modules/content-filter";
-import type { CachedMember, Context, Server } from "./typings";
+import type { Context, Server } from "./typings";
 
 /**
  * Main class that stores utils, connections to various providers, and ws
@@ -95,5 +95,5 @@ export default class Client {
 
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 type ClientCustomEvents = {
-    ActionIssued: (data: Action & { reasonMetaData?: string }, member: CachedMember | null, client: Client) => unknown;
+    ActionIssued: (data: Action & { reasonMetaData?: string }, client: Client) => unknown;
 };

@@ -3,30 +3,31 @@ import { Action, LogChannelType } from "@prisma/client";
 import { stripIndents } from "common-tags";
 
 import type Client from "../Client";
-import type { CachedMember } from "../typings";
+import { inlineCode } from "../formatters";
 
-export default async (data: Action & { reasonMetaData?: string }, member: CachedMember | null, client: Client) => {
+export default async (data: Action & { reasonMetaData?: string }, client: Client) => {
     const modLogChannel = await client.dbUtil.getLogChannel(data.serverId, LogChannelType.MOD_ACTION_LOG);
     if (!modLogChannel) return;
-    member ??= await client.serverUtil.getMember(data.serverId, data.targetId);
 
     const message = await client.messageUtil.send(
         modLogChannel.channelId,
         new Embed()
             .setDescription(
                 stripIndents`
-					**Target:** \`${member.user.name} (${data.targetId})\`
-					**Type:** \`${data.type}\`
-					**Reason:** \`${data.reason ?? "NO REASON PROVIDED"}\`  ${data.reasonMetaData ?? ""}
+					**Target:** <@${data.targetId}>
+					**Type:** ${inlineCode(data.type)}
+					**Reason:** ${data.reason ? inlineCode(data.reason) : "No reason provided."}  ${data.reasonMetaData ?? ""}
 					${
                         data.expiresAt
-                            ? `**Expiration:** \`${data.expiresAt.toLocaleDateString("en-US", {
-                                  year: "numeric",
-                                  month: "long",
-                                  day: "numeric",
-                                  hour: "2-digit",
-                                  minute: "2-digit",
-                              })}\``
+                            ? `**Expiration:** ${inlineCode(
+                                  data.expiresAt.toLocaleDateString("en-US", {
+                                      year: "numeric",
+                                      month: "long",
+                                      day: "numeric",
+                                      hour: "2-digit",
+                                      minute: "2-digit",
+                                  })
+                              )}`
                             : ""
                     }
 				`

@@ -1,3 +1,4 @@
+import { inlineCode } from "../../formatters";
 import { RoleType } from "../../typings";
 import type { Command } from "../Command";
 
@@ -21,16 +22,16 @@ const Enable: Command = {
             return ctx.messageUtil.replyWithAlert(
                 message,
                 `Can't be disabled`,
-                `That preset is not enabled. The enabled presets for your server are: ${allPresets.map((x) => `\`${x.preset}\``).join(", ")}`
+                `That preset is not enabled. The enabled presets for your server are: ${allPresets.map((x) => inlineCode(x.preset)).join(", ")}`
             );
 
         return ctx.dbUtil
             .disablePreset(message.serverId!, preset)
-            .then(() => ctx.messageUtil.replyWithSuccess(message, `Preset enabled`, `Successfully disabled the \`${preset}\` preset for this server.`))
+            .then(() => ctx.messageUtil.replyWithSuccess(message, `Preset enabled`, `Successfully disabled the ${inlineCode(preset)} preset for this server.`))
             .catch((e: Error) =>
                 ctx.messageUtil.replyWithError(
                     message,
-                    `There was an issue disabling the \`${preset}\` preset for your server. Please forward this error to bot staff: \`${e.message}\``
+                    `There was an issue disabling the ${inlineCode(preset)} preset for your server. Please forward this error to bot staff: ${inlineCode(e.message)}`
                 )
             );
     },

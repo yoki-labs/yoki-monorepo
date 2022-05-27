@@ -1,3 +1,4 @@
+import { inlineCode } from "../../formatters";
 import { RoleType } from "../../typings";
 import { Category } from "../Category";
 import type { Command } from "../Command";
@@ -21,7 +22,7 @@ const Delete: Command = {
         const existingEntry = await ctx.prisma.contentFilter.findFirst({ where: { serverId: message.serverId!, content: phrase } });
         if (!existingEntry) return ctx.messageUtil.replyWithAlert(message, `Phrase not found`, `This phrase is not in your server's filter!`);
         await ctx.dbUtil.removeWordFromFilter(message.serverId!, phrase);
-        return ctx.messageUtil.replyWithSuccess(message, `Phrase deleted`, `Successfully deleted \`${phrase}\` from the automod list!`);
+        return ctx.messageUtil.replyWithSuccess(message, `Phrase deleted`, `Successfully deleted ${inlineCode(phrase)} from the automod list!`);
     },
 };
 

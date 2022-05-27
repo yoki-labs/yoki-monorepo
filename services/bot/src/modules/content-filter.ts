@@ -183,7 +183,7 @@ export class ContentFilterUtil extends Util {
         });
 
         // If a modlog channel is set
-        this.client.emitter.emit("ActionIssued", { ...createdCase, reasonMetaData: `||${triggeredWord.content}||` }, member, this.client);
+        this.client.emitter.emit("ActionIssued", { ...createdCase, reasonMetaData: `||${triggeredWord.content}||` }, this.client);
 
         try {
             // Perform resulting action, for message filtering it's deleting the original message

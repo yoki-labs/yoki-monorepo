@@ -1,3 +1,4 @@
+import { inlineCode } from "../../formatters";
 import { RoleType } from "../../typings";
 import { Category } from "../Category";
 import type { Command } from "../Command";
@@ -15,7 +16,10 @@ const Enable: Command = {
             .enableFilter(message.serverId!)
             .then(() => ctx.messageUtil.replyWithSuccess(message, `Automod enabled`, `Successfully enabled the automod filter for this server.`))
             .catch((e: Error) =>
-                ctx.messageUtil.replyWithError(message, `There was an issue enabling automoderation for your server. Please forward this error to bot staff: \`${e.message}\``)
+                ctx.messageUtil.replyWithError(
+                    message,
+                    `There was an issue enabling automoderation for your server. Please forward this error to bot staff: ${inlineCode(e.message)}`
+                )
             );
     },
 };

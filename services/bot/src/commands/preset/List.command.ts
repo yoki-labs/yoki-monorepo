@@ -1,5 +1,6 @@
 import { stripIndents } from "common-tags";
 
+import { inlineCode } from "../../formatters";
 import { RoleType } from "../../typings";
 import type { Command } from "../Command";
 
@@ -18,10 +19,10 @@ const List: Command = {
             `Presets`,
             stripIndents`
 				**All Preset Options**: ${Object.keys(allPresets)
-                    .map((preset) => `\`${preset}\``)
+                    .map((preset) => inlineCode(preset))
                     .join(", ")}
 
-				**Enabled Presets:** ${enabledPresets.map((preset) => `\`${preset.preset}\``).join(", ") || "None"}
+				**Enabled Presets:** ${enabledPresets.map((preset) => inlineCode(preset.preset)).join(", ") || "None"}
 			`
         );
     },

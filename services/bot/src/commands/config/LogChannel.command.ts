@@ -3,7 +3,7 @@ import type { ChatMessagePayload } from "@guildedjs/guilded-api-typings";
 import { stripIndents } from "common-tags";
 
 import type Client from "../../Client";
-import { inlineCodeblock, listInlineCodeblock } from "../../formatters";
+import { inlineCode, listInlineCode } from "../../formatters";
 import { LogChannel as LogChannelPrisma, LogChannelType, RoleType } from "../../typings";
 import { Category } from "../Category";
 import type { Command } from "../Command";
@@ -74,8 +74,8 @@ const LogChannel: Command = {
                 message,
                 `Unsubscribed`,
                 toUnsubscribeFrom
-                    ? `Following events were unsubscribed from the channel ${inlineCodeblock(channelId)}: ${toUnsubscribeFrom.in.map((x) => inlineCodeblock(x)).join(", ")}`
-                    : `All events were unsubscribed from the channel ${inlineCodeblock(channelId)}.`
+                    ? `Following events were unsubscribed from the channel ${inlineCode(channelId)}: ${toUnsubscribeFrom.in.map((x) => inlineCode(x)).join(", ")}`
+                    : `All events were unsubscribed from the channel ${inlineCode(channelId)}.`
             );
         } else if (logTypes.length === 0 || logTypes.includes("ALL")) {
             logTypes = ["ALL"];
@@ -88,16 +88,12 @@ const LogChannel: Command = {
             message,
             successfulTypes.length > 0 ? `Subscriptions added` : `No subscriptions added`,
             stripIndents`
-                ${
-                    successfulTypes.length > 0
-                        ? `Successfully subscribed channel ${inlineCodeblock(channelId)} to the following events: ${listInlineCodeblock(successfulTypes)}`
-                        : ""
-                }
+                ${successfulTypes.length > 0 ? `Successfully subscribed channel ${inlineCode(channelId)} to the following events: ${listInlineCode(successfulTypes)}` : ""}
                 ${
                     failedTypes.length > 0
-                        ? `Failed to subscribe channel \`${channelId}\` to the following events: ${listInlineCodeblock(
+                        ? `Failed to subscribe channel ${inlineCode(channelId)} to the following events: ${listInlineCode(
                               failedTypes.map((x) => x[0])
-                          )} due to the following reason(s) ${listInlineCodeblock(failedTypes.map((x) => x[1]))}`
+                          )} due to the following reason(s) ${listInlineCode(failedTypes.map((x) => x[1]))}`
                         : ""
                 }
             `
@@ -143,7 +139,7 @@ async function replyWithChannelList(message: ChatMessagePayload, ctx: Client) {
             `No log channels`,
             stripIndents`
                 There are no log channels set for this server.
-                You can set the following types: ${listInlineCodeblock(Object.values(LogChannelType))}
+                You can set the following types: ${listInlineCode(Object.values(LogChannelType))}
             `
         );
 
@@ -154,7 +150,7 @@ async function replyWithChannelList(message: ChatMessagePayload, ctx: Client) {
         `Log channels`,
         stripIndents`
             This server has the following log channels:
-            ${formattedChannels.map((v, k) => `***${k}:*** ${listInlineCodeblock(v)}`).join("\n")}
+            ${formattedChannels.map((v, k) => `***${k}:*** ${listInlineCode(v)}`).join("\n")}
         `
     );
 }

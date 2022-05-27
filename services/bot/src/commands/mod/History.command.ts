@@ -1,3 +1,4 @@
+import { inlineCode } from "../../formatters";
 import { ContentFilterUtil } from "../../modules/content-filter";
 import { CachedMember, RoleType } from "../../typings";
 import { Category } from "../Category";
@@ -48,7 +49,7 @@ const History: Command = {
             actions.map((x) => {
                 const trimmedReason = x.reason && x.reason.length > maxReason ? `${x.reason.substring(0, maxReason)}...` : x.reason;
 
-                return `[\`${x.id}\`] ${x.type} for ${trimmedReason ? `\`${trimmedReason}\` ` : "no provided reason "}${
+                return `[${inlineCode(x.id)}] ${x.type} for ${trimmedReason ? inlineCode(trimmedReason) : "no provided reason "}${
                     (x.triggerContent && `||${x.triggerContent.length > maxFiltered ? `${x.triggerContent}...` : x.triggerContent}||`) ?? ""
                 }`;
             }),
