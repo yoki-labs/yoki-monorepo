@@ -6,7 +6,7 @@ import { Category } from "../Category";
 import type { Command } from "../Command";
 
 enum CaseAction {
-    REMOVE,
+    REMOVE = 1,
 }
 
 const History: Command = {
