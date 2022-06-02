@@ -45,7 +45,7 @@ const History: Command = {
         if (!actions.length) return ctx.messageUtil.replyWithNullState(message, `Squeaky clean history!`, `This user does not have any moderation history associated with them.`);
         return ctx.messageUtil.replyWithPaginatedContent(
             message,
-            `User's History`,
+            `${inlineCode(target.user.name.replaceAll("`", "'"))}'s History`,
             actions.map((x) => {
                 const trimmedReason = x.reason && x.reason.length > maxReason ? `${x.reason.substring(0, maxReason)}...` : x.reason;
 

@@ -85,9 +85,17 @@ const Mute: Command = {
             }
         );
 
-        return ctx.messageUtil.replyWithSuccess(message, `User muted`, `${target.user.name} (${inlineCode(target.user.id)}) has been muted successfully.`, undefined, {
-            isPrivate: true,
-        });
+        await ctx.messageUtil.sendSuccessBlock(
+            message.channelId,
+            `User muted`,
+            `<@${message.createdBy}>, you have successfully muted ${target.user.name} (${inlineCode(target.user.id)}).`,
+            undefined,
+            {
+                isPrivate: true,
+            }
+        );
+
+        return ctx.rest.router.deleteChannelMessage(message.channelId, message.id);
     },
 };
 

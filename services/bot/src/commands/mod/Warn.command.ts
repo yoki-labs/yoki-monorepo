@@ -81,9 +81,17 @@ const Warn: Command = {
 
         ctx.emitter.emit("ActionIssued", newAction, ctx);
 
-        return ctx.messageUtil.replyWithSuccess(message, `User warned`, `${target.user.name} (${inlineCode(target.user.id)}) has been successfully warned.`, undefined, {
-            isPrivate: true,
-        });
+        await ctx.messageUtil.sendSuccessBlock(
+            message.channelId,
+            `User warned`,
+            `<@${message.createdBy}>, you have successfully warned ${target.user.name} (${inlineCode(target.user.id)}).`,
+            undefined,
+            {
+                isPrivate: true,
+            }
+        );
+
+        return ctx.rest.router.deleteChannelMessage(message.channelId, message.id);
     },
 };
 

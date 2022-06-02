@@ -69,12 +69,10 @@ const Help: Command = {
             commandCategoryMap.set(category ?? "uncategorized", commands);
         });
 
-        return ctx.messageUtil.replyWithInfo(
+        return ctx.messageUtil.replyWithBotInfo(
             message,
             `Command List`,
-            `For additional info on a command, type ${inlineCode(`${commandCtx.server.getPrefix()}help [command]`)}
-
-            ${commandCategoryMap
+            `${commandCategoryMap
                 .map(
                     (commands, category) => stripIndents`
                             **${category}:**
@@ -84,7 +82,12 @@ const Help: Command = {
                 .join("\n\n")}
 
 			:link: [Join server](https://guilded.gg/Yoki) • [Invite bot](https://guilded.gg/Yoki)
-			`
+			`,
+            {
+                footer: {
+                    text: `For additional info on a command, type ${inlineCode(`${commandCtx.server.getPrefix()}help [command]`)}`,
+                },
+            }
         );
     },
 };

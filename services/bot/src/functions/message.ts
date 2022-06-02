@@ -5,7 +5,7 @@ import { stripIndents } from "common-tags";
 import { Colors } from "../color";
 import type { Command, CommandArgument } from "../commands/Command";
 import { inlineCode } from "../formatters";
-import { StateImages } from "../images";
+import { BotImages, StateImages } from "../images";
 import { Util } from "./util";
 
 export class MessageUtil extends Util {
@@ -50,7 +50,7 @@ export class MessageUtil extends Util {
             embeds: [
                 {
                     title,
-                    description: stripIndents`${description}`,
+                    description,
                     color,
                     ...embedPartial,
                 },
@@ -63,11 +63,11 @@ export class MessageUtil extends Util {
         title: string,
         description: string,
         color: number,
-        thumbnail: string,
+        thumbnail: string | undefined,
         embedPartial?: EmbedPayload,
         messagePartial?: Partial<RESTPostChannelMessagesBody>
     ) {
-        return this.sendValueBlock(channelId, title, description, color, { thumbnail: { url: thumbnail }, ...embedPartial }, messagePartial);
+        return this.sendValueBlock(channelId, title, description, color, { thumbnail: thumbnail ? { url: thumbnail as string } : undefined, ...embedPartial }, messagePartial);
     }
 
     sendLog(channelId: string, title: string, description: string, color: number, occurred: string, fields?: EmbedField[]) {
@@ -101,7 +101,7 @@ export class MessageUtil extends Util {
         title: string,
         description: string,
         color: number,
-        thumbnail: string,
+        thumbnail: string | undefined,
         embedPartial?: EmbedPayload,
         messagePartial?: Partial<RESTPostChannelMessagesBody>
     ) {
@@ -126,20 +126,38 @@ export class MessageUtil extends Util {
     }
 
     replyWithNullState(message: ChatMessagePayload, title: string, description: string, embedPartial?: EmbedPayload, messagePartial?: Partial<RESTPostChannelMessagesBody>) {
-        return this.replyWithStateBlock(message, title, description, Colors.dull, StateImages.nothingHere, embedPartial, messagePartial);
+        return this.replyWithStateBlock(message, title, description, Colors.blockBackground, StateImages.nothingHere, embedPartial, messagePartial);
     }
 
     replyWithInfo(message: ChatMessagePayload, title: string, description: string, embedPartial?: EmbedPayload, messagePartial?: Partial<RESTPostChannelMessagesBody>) {
-        return this.replyWithStateBlock(message, title, description, Colors.blockBackground, StateImages.scroll, embedPartial, messagePartial);
+        return this.replyWithStateBlock(message, title, description, Colors.blockBackground, undefined, embedPartial, messagePartial);
+    }
+
+    replyWithBotInfo(message: ChatMessagePayload, title: string, description: string, embedPartial?: EmbedPayload, messagePartial?: Partial<RESTPostChannelMessagesBody>) {
+        return this.send(message.channelId, {
+            embeds: [
+                {
+                    author: {
+                        name: `Yoki's ${title}`,
+                        icon_url: BotImages.avatar,
+                    },
+                    description,
+                    color: Colors.blockBackground,
+                    ...embedPartial,
+                },
+            ],
+            replyMessageIds: [message.id],
+            ...messagePartial,
+        });
     }
 
     sendInfoBlock(channelId: string, title: string, description: string, embedPartial?: EmbedPayload, messagePartial?: Partial<RESTPostChannelMessagesBody>) {
-        return this.sendStateBlock(channelId, title, description, Colors.blockBackground, StateImages.scroll, embedPartial, messagePartial);
+        return this.sendStateBlock(channelId, title, description, Colors.blockBackground, undefined, embedPartial, messagePartial);
     }
 
     // Value blocks
-    replyWithDisabledState(message: ChatMessagePayload, title: string, description: string, embedPartial?: EmbedPayload, messagePartial?: Partial<RESTPostChannelMessagesBody>) {
-        return this.replyWithValueBlock(message, `:no_entry: ${title}`, description, Colors.dullRed, embedPartial, messagePartial);
+    sendSuccessBlock(channelId: string, title: string, description: string, embedPartial?: EmbedPayload, messagePartial?: Partial<RESTPostChannelMessagesBody>) {
+        return this.sendStateBlock(channelId, `:white_check_mark: ${title}`, description, Colors.green, undefined, embedPartial, messagePartial);
     }
 
     replyWithSuccess(message: ChatMessagePayload, title: string, description: string, embedPartial?: EmbedPayload, messagePartial?: Partial<RESTPostChannelMessagesBody>) {

@@ -74,9 +74,17 @@ const Unmute: Command = {
             }
         );
 
-        return ctx.messageUtil.replyWithSuccess(message, `User unmuted`, `${target.user.name} (${inlineCode(target.user.id)}) has been unmuted successfully.`, undefined, {
-            isPrivate: true,
-        });
+        await ctx.messageUtil.sendSuccessBlock(
+            message.channelId,
+            `User unmuted`,
+            `<@${message.createdBy}>, you have successfully unmuted ${target.user.name} (${inlineCode(target.user.id)}).`,
+            undefined,
+            {
+                isPrivate: true,
+            }
+        );
+
+        return ctx.rest.router.deleteChannelMessage(message.channelId, message.id);
     },
 };
 
