@@ -17,3 +17,5 @@ min/
 *.env
 docs/
 .env.prod
+
+.next/
