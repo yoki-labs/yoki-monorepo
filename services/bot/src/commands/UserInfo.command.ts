@@ -31,11 +31,11 @@ const UserInfo: Command = {
                         },
                         {
                             name: "Username (nickname)",
-                            value: `${target.user.name} (${target.nickname}) `,
+                            value: `${target.user.name}${target.nickname ? ` ${target.nickname}` : ""}`,
                             inline: true,
                         },
                         {
-                            name: "Is owner of server",
+                            name: "Owns this server",
                             value: String(target.isOwner ?? false),
                             inline: true,
                         },
@@ -63,7 +63,7 @@ const UserInfo: Command = {
                         },
                         {
                             name: "Roles",
-                            value: `${target.roleIds.map((x) => `<@&${x}>`).join(", ")}`,
+                            value: `${target.roleIds.map((x) => `<@${x}>`).join(", ")}`,
                             inline: true,
                         },
                     ])
