@@ -7,7 +7,7 @@
     "scripts": {
         "build": "yarn workspaces run build",
         "lint": "eslint -c .eslintrc.backend.json services/bot scripts/ && eslint -c .eslintrc.web.json services/website",
-        "lint:fix": "yarn lint --fix",
+        "lint:fix": "eslint -c .eslintrc.backend.json services/bot scripts/ --fix && eslint -c .eslintrc.web.json services/website --fix",
         "prepare": "husky install",
         "prettier": "prettier --write **/*.{ts,js,json,yml,yaml,md}",
         "generate": "cd services/bot && yarn generate",
