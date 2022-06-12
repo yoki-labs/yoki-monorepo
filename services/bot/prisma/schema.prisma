@@ -120,6 +120,7 @@ enum RoleType {
 }
 
 enum Severity {
+    NOTE
     WARN
     MUTE
     KICK
