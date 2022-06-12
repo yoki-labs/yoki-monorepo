@@ -5,11 +5,12 @@ import { inlineCode } from "../../formatters";
 import { CachedMember, RoleType } from "../../typings";
 import { Category } from "../Category";
 import type { Command } from "../Command";
+import { getInfractionsFrom } from "../../moderation-util";
 
 const Warn: Command = {
     name: "warn",
     description: "Warn a user",
-    usage: "<targetId> [infraction points] [...reason]",
+    usage: "<target's ID> [infraction points] [...reason]",
     requiredRole: RoleType.MOD,
     category: Category.Moderation,
     aliases: ["alert", "w"],
@@ -32,11 +33,8 @@ const Warn: Command = {
     ],
     execute: async (message, args, ctx) => {
         const target = args.target as CachedMember;
-        const reasonArg = args.reason as string | null;
-        const infractionPointsArg = Number(args.infractionPoints);
 
-        const reason = Number.isNaN(infractionPointsArg) && args.infractionPoints ? `${args.infractionPoints as string} ${reasonArg}`.trimEnd() : reasonArg;
-        const infractionPoints = infractionPointsArg || 10;
+        const [reason, infractionPoints] = getInfractionsFrom(args);
 
         try {
             await ctx.messageUtil.sendWarningBlock(
@@ -67,19 +65,13 @@ const Warn: Command = {
             );
         }
 
-        const newAction = await ctx.dbUtil.addAction({
-            serverId: message.serverId!,
-            executorId: message.createdBy,
-            infractionPoints,
+        await ctx.dbUtil.addActionFromMessage(message, {
             reason,
-            channelId: null,
-            triggerContent: null,
+            infractionPoints,
             targetId: target.user.id,
             type: "WARN",
             expiresAt: null,
         });
-
-        ctx.emitter.emit("ActionIssued", newAction, ctx);
 
         await ctx.messageUtil.sendSuccessBlock(
             message.channelId,

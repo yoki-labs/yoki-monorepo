@@ -125,6 +125,20 @@ export class DatabaseUtil extends Util {
         });
     }
 
+    async addActionFromMessage(message: ChatMessagePayload, data: Pick<Action, "type" | "reason" | "targetId" | "infractionPoints" | "expiresAt">) {
+        const action = await this.addAction({
+            serverId: message.serverId!,
+            executorId: message.createdBy,
+            channelId: null,
+            triggerContent: null,
+            ...data,
+        });
+
+        this.client.emitter.emit("ActionIssued", action, this.client);
+
+        return action;
+    }
+
     populateActionMessage(id: string, channelId: string, messageId: string) {
         return this.prisma.action.update({ where: { id }, data: { logChannelId: channelId, logChannelMessage: messageId } });
     }
