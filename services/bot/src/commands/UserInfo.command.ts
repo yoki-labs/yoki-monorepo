@@ -31,7 +31,7 @@ const UserInfo: Command = {
                         },
                         {
                             name: "Username (nickname)",
-                            value: `${target.user.name}${target.nickname ? ` ${target.nickname}` : ""}`,
+                            value: `${target.user.name}${target.nickname ? ` (${target.nickname})` : ""}`,
                             inline: true,
                         },
                         {

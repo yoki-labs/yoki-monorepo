@@ -67,6 +67,7 @@ export class ContentFilterUtil extends Util {
             // TODO: DM user
             return 0;
         },
+        [Severity.NOTE]: () => {},
     };
 
     // check if the amount of points incurred by this user is higher than the allowed threshold for this server
