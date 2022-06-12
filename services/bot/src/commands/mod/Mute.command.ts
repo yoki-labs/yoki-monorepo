@@ -54,18 +54,13 @@ const Mute: Command = {
             );
         }
 
-        const newAction = await ctx.dbUtil.addAction({
-            serverId: message.serverId!,
-            executorId: message.createdBy,
+        await ctx.dbUtil.addActionFromMessage(message, {
             infractionPoints: 10,
             reason,
-            triggerContent: null,
             targetId: target.user.id,
-            channelId: message.channelId,
             type: "MUTE",
             expiresAt,
         });
-        ctx.emitter.emit("ActionIssued", newAction, ctx);
 
         await ctx.messageUtil.sendValueBlock(
             message.channelId,

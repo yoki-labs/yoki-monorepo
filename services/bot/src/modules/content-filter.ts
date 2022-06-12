@@ -37,7 +37,10 @@ export class ContentFilterUtil extends Util {
 
     // An object mapping the Action type -> Action punishment
     // Easy way for us to organize punishments into reusable code
-    readonly severityAction: Record<Severity, (member: CachedMember, server: Server, channelId: string | null, filteredContent: FilteredContent) => unknown | undefined> = {
+    readonly severityAction: Record<
+        Exclude<Severity, "NOTE">,
+        (member: CachedMember, server: Server, channelId: string | null, filteredContent: FilteredContent) => unknown | undefined
+    > = {
         [Severity.BAN]: (member, server) => {
             return this.rest.router.banMember(server.serverId, member.user.id);
         },
