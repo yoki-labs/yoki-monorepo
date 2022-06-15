@@ -13,6 +13,8 @@ import ChatMessageCreated from "./events/ChatMessageCreated";
 import ChatMessageDeleted from "./events/ChatMessageDeleted";
 import ChatMessageUpdated from "./events/ChatMessageUpdated";
 import ListItemEvent from "./events/ListItemEvent";
+import TeamMemberJoined from "./events/TeamMemberJoined";
+import TeamMemberRemoved from "./events/TeamMemberRemoved";
 import TeamMemberUpdated from "./events/TeamMemberUpdated";
 import teamRolesUpdated from "./events/teamRolesUpdated";
 import { DatabaseUtil } from "./functions/database";
@@ -71,6 +73,8 @@ export default class Client {
         // handles messages deleted
         ChatMessageDeleted,
         // handles nickname updates and other member data
+        TeamMemberJoined,
+        TeamMemberRemoved,
         TeamMemberUpdated,
         // List item name changes
         ListItemCreated: ListItemEvent,

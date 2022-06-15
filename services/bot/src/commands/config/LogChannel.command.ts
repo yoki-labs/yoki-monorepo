@@ -85,7 +85,7 @@ const LogChannel: Command = {
             logTypes = ["ALL"];
         }
 
-        const [successfulTypes, failedTypes] = await subscribeToLogs(ctx, message, logTypes as LogChannelType[]);
+        const [successfulTypes, failedTypes] = await subscribeToLogs(ctx, message, channelId, logTypes as LogChannelType[]);
 
         // Reply to the command, with the successful and failed types.
         return ctx.messageUtil[successfulTypes.length > 0 ? "replyWithSuccess" : "replyWithAlert"](
@@ -105,7 +105,7 @@ const LogChannel: Command = {
     },
 };
 
-async function subscribeToLogs(ctx: Client, message: ChatMessagePayload, logTypes: LogChannelType[]): Promise<[string[], string[][]]> {
+async function subscribeToLogs(ctx: Client, message: ChatMessagePayload, channelId: string, logTypes: LogChannelType[]): Promise<[string[], string[][]]> {
     // Event subscribe handling.
     const failedTypes: string[][] = [];
     const successfulTypes: string[] = [];
@@ -121,7 +121,7 @@ async function subscribeToLogs(ctx: Client, message: ChatMessagePayload, logType
     for (const logType of logTypes) {
         if (LogChannelType[logType] && !(await ctx.prisma.logChannel.findFirst({ where: { serverId: message.serverId, type: LogChannelType[logType] } }))) {
             try {
-                await ctx.prisma.logChannel.create({ data: { channelId: message.channelId, serverId: message.serverId!, type: LogChannelType[logType] } });
+                await ctx.prisma.logChannel.create({ data: { channelId, serverId: message.serverId!, type: LogChannelType[logType] } });
                 successfulTypes.push(logType);
             } catch (e) {
                 failedTypes.push([logType, "INTERNAL_ERROR"]);

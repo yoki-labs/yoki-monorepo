@@ -1,0 +1,62 @@
+import type { WSTeamMemberRemovedPayload } from "@guildedjs/guilded-api-typings";
+import { Embed as WebhookEmbed } from "@guildedjs/webhook-client";
+import { LogChannelType } from "@prisma/client";
+import { stripIndents } from "common-tags";
+import { nanoid } from "nanoid";
+
+import { Colors } from "../color";
+import { inlineCode } from "../formatters";
+import type { Context } from "../typings";
+
+export default async (packet: WSTeamMemberRemovedPayload, ctx: Context) => {
+    const { userId, serverId, isBan, isKick } = packet.d;
+
+    // check if there's a log channel channel for message deletions
+    const memberLeaveLogChannel = await ctx.prisma.logChannel.findFirst({ where: { serverId: packet.d.serverId, type: LogChannelType.MEMBER_JOIN_LEAVE } });
+    if (!memberLeaveLogChannel) return void 0;
+
+    // Cached member who left
+    const leavingMember = await ctx.serverUtil.getMember(serverId, userId);
+
+    const memberName = leavingMember?.user.name;
+
+    const action = isBan ? "Banned" : isKick ? "Kicked" : "Left";
+
+    try {
+        // send the log channel message with the content/data of the deleted message
+        await ctx.messageUtil.sendLog(
+            memberLeaveLogChannel.channelId,
+            `User Left`,
+            stripIndents`
+                **ID:** ${inlineCode(userId)}
+                **User:** <@${userId}>
+                **Username:** ${memberName ? inlineCode(memberName) : "*Unknown*"}
+                **Action Type:** ${action}
+            `,
+            Colors.red,
+            new Date().toISOString()
+        );
+    } catch (e) {
+        // generate ID for this error, not persisted in database
+        const referenceId = nanoid();
+        // send error to the error webhook
+        if (e instanceof Error) {
+            console.error(e);
+            void ctx.errorHandler.send("Error in logging message deletion!", [
+                new WebhookEmbed()
+                    .setDescription(
+                        stripIndents`
+						Reference ID: ${inlineCode(referenceId)}
+						Server: ${inlineCode(serverId)}
+						User: ${inlineCode(userId)}
+						Error: \`\`\`
+						${e.stack ?? e.message}
+						\`\`\`
+					`
+                    )
+                    .setColor("RED"),
+            ]);
+        }
+    }
+    return void 0;
+};
