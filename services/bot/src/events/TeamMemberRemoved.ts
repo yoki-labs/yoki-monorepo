@@ -15,11 +15,6 @@ export default async (packet: WSTeamMemberRemovedPayload, ctx: Context) => {
     const memberLeaveLogChannel = await ctx.prisma.logChannel.findFirst({ where: { serverId: packet.d.serverId, type: LogChannelType.MEMBER_JOIN_LEAVE } });
     if (!memberLeaveLogChannel) return void 0;
 
-    // Cached member who left
-    const leavingMember = await ctx.serverUtil.getMember(serverId, userId);
-
-    const memberName = leavingMember?.user.name;
-
     const action = isBan ? "Banned" : isKick ? "Kicked" : "Left";
 
     try {
@@ -28,10 +23,8 @@ export default async (packet: WSTeamMemberRemovedPayload, ctx: Context) => {
             memberLeaveLogChannel.channelId,
             `User Left`,
             stripIndents`
-                **ID:** ${inlineCode(userId)}
-                **User:** <@${userId}>
-                **Username:** ${memberName ? inlineCode(memberName) : "*Unknown*"}
-                **Action Type:** ${action}
+                **User:** <@${userId}> (${inlineCode(userId)})
+                ${action ? `**Action Type:** ${action}` : ""}
             `,
             Colors.red,
             new Date().toISOString()
@@ -42,7 +35,7 @@ export default async (packet: WSTeamMemberRemovedPayload, ctx: Context) => {
         // send error to the error webhook
         if (e instanceof Error) {
             console.error(e);
-            void ctx.errorHandler.send("Error in logging message deletion!", [
+            void ctx.errorHandler.send("Error in logging member leave event!", [
                 new WebhookEmbed()
                     .setDescription(
                         stripIndents`

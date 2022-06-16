@@ -7,6 +7,7 @@ import { nanoid } from "nanoid";
 import { Colors } from "../color";
 import { inlineCode } from "../formatters";
 import type { Context, Server } from "../typings";
+import { FormatDate, suspicious as sus } from "../util";
 
 export default async (packet: WSTeamMemberJoinedPayload, ctx: Context, server: Server) => {
     const { member, serverId } = packet.d;
@@ -18,6 +19,8 @@ export default async (packet: WSTeamMemberJoinedPayload, ctx: Context, server: S
     // check if there's a log channel channel for member joins
     const memberJoinLogChannel = await ctx.prisma.logChannel.findFirst({ where: { serverId: packet.d.serverId, type: LogChannelType.MEMBER_JOIN_LEAVE } });
     if (!memberJoinLogChannel) return void 0;
+    const creationDate = new Date(member.user.createdAt);
+    const suspicious = sus(creationDate);
 
     try {
         // send the log channel message with the content/data of the deleted message
@@ -25,11 +28,11 @@ export default async (packet: WSTeamMemberJoinedPayload, ctx: Context, server: S
             memberJoinLogChannel.channelId,
             "User Joined",
             stripIndents`
-                **ID:** ${inlineCode(member.user.id)}
-                **User:** <@${member.user.id}>
-                **User is:** ${member.user.type ?? "user"}
+                **User:** <@${member.user.id}> (${inlineCode(member.user.id)})
+                **Type** ${member.user.type ?? "user"}
+				**Account Created:** \`${FormatDate(creationDate)} ${suspicious ? "(recent)" : ""}\`
             `,
-            Colors.green,
+            suspicious ? Colors.yellow : Colors.green,
             member.joinedAt
         );
     } catch (e) {
