@@ -27,7 +27,7 @@ export class ServerUtil extends Util {
     // Get a member from either the cache or the API
     async getMember(serverId: string, userId: string, cache = true, force = false) {
         if (!force) {
-            const isCached = await this.cache.get(buildMemberKey(serverId, userId));
+            const isCached = await this.getCachedMember(serverId, userId);
             if (isCached) return isCached;
         }
 
@@ -35,6 +35,11 @@ export class ServerUtil extends Util {
             if (cache) await this.setMember(serverId, userId, data.member);
             return data.member;
         });
+    }
+
+    // Only get cached member
+    async getCachedMember(serverId: string, userId: string) {
+        return this.cache.get(buildMemberKey(serverId, userId));
     }
 
     // Cache this member
