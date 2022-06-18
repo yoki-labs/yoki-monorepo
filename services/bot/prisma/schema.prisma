@@ -96,7 +96,7 @@ model Message {
     serverId  String    @db.VarChar(255)
     channelId String    @db.VarChar(255)
     authorId  String    @db.VarChar(255)
-    content   String?   @db.Text
+    content   String    @db.Text
     embeds    Json?     @db.JsonB
     isBot     Boolean
     createdAt DateTime
