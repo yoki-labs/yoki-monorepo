@@ -1,8 +1,8 @@
 import { inlineCode } from "../../formatters";
+import { getInfractionsFrom } from "../../moderation-util";
 import { CachedMember, RoleType } from "../../typings";
 import { Category } from "../Category";
 import type { Command } from "../Command";
-import { getInfractionsFrom } from "../../moderation-util";
 
 const Note: Command = {
     name: "note",

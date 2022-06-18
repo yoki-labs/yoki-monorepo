@@ -2,10 +2,10 @@ import type { EmbedField } from "@guildedjs/guilded-api-typings";
 import { stripIndents } from "common-tags";
 
 import { inlineCode } from "../../formatters";
+import { getInfractionsFrom } from "../../moderation-util";
 import { CachedMember, RoleType } from "../../typings";
 import { Category } from "../Category";
 import type { Command } from "../Command";
-import { getInfractionsFrom } from "../../moderation-util";
 
 const Warn: Command = {
     name: "warn",

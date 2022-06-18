@@ -1,5 +1,5 @@
 import type { ChatMessagePayload } from "@guildedjs/guilded-api-typings";
-import type { Prisma } from "@prisma/client";
+import type { Prisma, Severity } from "@prisma/client";
 import { nanoid } from "nanoid";
 
 import { Action, ContentFilter, LogChannelType, Server } from "../typings";
@@ -34,8 +34,8 @@ export class DatabaseUtil extends Util {
         return this.prisma.preset.findMany({ where: { serverId } });
     }
 
-    enablePreset(serverId: string, preset: string) {
-        return this.prisma.preset.create({ data: { serverId, preset } });
+    enablePreset(serverId: string, preset: string, severity: Severity) {
+        return this.prisma.preset.create({ data: { serverId, preset, severity } });
     }
 
     disablePreset(serverId: string, preset: string) {

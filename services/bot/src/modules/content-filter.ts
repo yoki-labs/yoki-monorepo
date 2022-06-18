@@ -18,18 +18,10 @@ export class ContentFilterUtil extends Util {
     // placeholder until we automate ingesting preset lists dynamically
     readonly presets = {
         slurs: [
-            ...slursList.ban.map(
-                (banSlur): ContentFilterScan => ({
-                    content: banSlur,
-                    infractionPoints: 0,
-                    severity: Severity.BAN,
-                })
-            ),
-            ...slursList.warn.map(
-                (warnSlur): ContentFilterScan => ({
-                    content: warnSlur,
+            ...slursList.map(
+                (slur): Omit<ContentFilterScan, "severity"> => ({
+                    content: slur,
                     infractionPoints: 5,
-                    severity: Severity.WARN,
                 })
             ),
         ],
@@ -99,15 +91,7 @@ export class ContentFilterUtil extends Util {
     }
 
     // This will scan any conten tthat is piped into it for breaking the content filter or preset list and will apply the associated punishment in the final param as a callback
-    async scanContent(
-        this: ContentFilterUtil,
-        userId: string,
-        text: string,
-        filteredContent: FilteredContent,
-        channelId: string | null,
-        server: Server,
-        resultingAction: () => unknown
-    ) {
+    async scanContent(userId: string, text: string, filteredContent: FilteredContent, channelId: string | null, server: Server, resultingAction: () => unknown) {
         // If the bot is the one who did this action, ignore.
         if (userId === this.client.userId) return void 0;
         const { serverId } = server;
@@ -133,7 +117,7 @@ export class ContentFilterUtil extends Util {
                 const temp = presetFilterList.find((word) => lowerCasedMessageContent.includes(word.content.toLowerCase()));
                 if (temp) {
                     // if the content does violate a preset, hoist the triggering word
-                    ifTriggersPreset = temp;
+                    ifTriggersPreset = { ...temp, severity: enabledPreset.severity ?? Severity.WARN };
                     break;
                 }
             }
