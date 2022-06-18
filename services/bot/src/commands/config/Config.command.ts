@@ -3,6 +3,7 @@ import Collection from "@discordjs/collection";
 import { RoleType } from "../../typings";
 import { Category } from "../Category";
 import type { Command } from "../Command";
+import AntiHoist from "./AntiHoist.command";
 import FilterOnMods from "./FilterOnMods.command";
 import LogChannel from "./LogChannel.command";
 // import Infraction from "./Infraction.command";
@@ -16,7 +17,8 @@ const subCommands = new Collection<string, Command>()
     .set("modrole", Modrole)
     .set("muterole", Muterole)
     .set("filteronmods", FilterOnMods)
-    .set("logchannel", LogChannel);
+    .set("logchannel", LogChannel)
+    .set("antihoist", AntiHoist);
 
 const Config: Command = {
     name: "config",
