@@ -23,3 +23,5 @@ export function FormatDate(date: Date) {
 export function suspicious(date: Date) {
     return date.getTime() > new Date().getTime() - 8.64e7;
 }
+
+export const IMAGE_REGEX = /!\[(?:.*?)]\((https?:\/\/\S+\.\w+)\)/g;

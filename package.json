@@ -6,8 +6,8 @@
     "author": "Zaid \"Nico\" <contact@nico.engineer>",
     "scripts": {
         "build": "yarn workspaces run build",
-        "lint": "eslint -c .eslintrc.backend.json services/bot scripts/ && eslint -c .eslintrc.web.json services/website",
-        "lint:fix": "eslint -c .eslintrc.backend.json services/bot scripts/ --fix && eslint -c .eslintrc.web.json services/website --fix",
+        "lint": "eslint -c .eslintrc.json services/bot scripts/ && eslint -c .eslintrc.web.json services/website",
+        "lint:fix": "eslint -c .eslintrc.json services/bot scripts/ --fix && eslint -c .eslintrc.web.json services/website --fix",
         "prepare": "husky install",
         "prettier": "prettier --write **/*.{ts,js,json,yml,yaml,md}",
         "generate": "cd services/bot && yarn generate",
@@ -22,7 +22,7 @@
         "dotenv": "^16.0.0",
         "eslint": "8.11.0",
         "eslint-config-prettier": "8.5.0",
-		"eslint-config-next": "12.1.6",
+        "eslint-config-next": "12.1.6",
         "eslint-plugin-prettier": "4.0.0",
         "eslint-plugin-simple-import-sort": "^7.0.0",
         "eslint-plugin-unused-imports": "^2.0.0",
@@ -37,7 +37,7 @@
     },
     "workspaces": [
         "services/bot",
-		"services/website"
+        "services/website"
     ],
     "prettier": {
         "endOfLine": "auto",
@@ -46,6 +46,7 @@
         "tabWidth": 4
     },
     "lint-staged": {
-        "*.{js,ts}": "npx eslint --fix"
+        "services/bot/**/*.{js,ts}": "npx eslint -c .eslintrc.json --fix",
+        "services/website/**/*.{ts,tsx}": "npx eslint -c .eslintrc.web.json --fix"
     }
 }

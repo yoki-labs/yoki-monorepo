@@ -4,3 +4,5 @@ types/
 *.d.ts
 packages/**/*.js
 *.json
+
+next.config.js

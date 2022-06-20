@@ -1,4 +1,5 @@
 import Collection from "@discordjs/collection";
+
 import { RoleType } from "../../typings";
 import { Category } from "../Category";
 import type { Command } from "../Command";

@@ -1,4 +1,5 @@
 import { stripIndents } from "common-tags";
+
 import { inlineCode } from "../../formatters";
 import { CachedMember, RoleType } from "../../typings";
 import { Category } from "../Category";
