@@ -19,6 +19,7 @@ const View: Command = {
     description: "Get the history of a user.",
     usage: "<targetId> [page number]",
     examples: ["R40Mp0Wd", "R40Mp0Wd 2"],
+    subCommand: true,
     aliases: ["see", "all", "v"],
     requiredRole: RoleType.MOD,
     category: Category.Moderation,

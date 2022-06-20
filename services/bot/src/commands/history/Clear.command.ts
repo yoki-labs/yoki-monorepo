@@ -9,6 +9,7 @@ const Clear: Command = {
     description: "Get the history of a user.",
     usage: "<targetId>",
     examples: ["R40Mp0Wd"],
+    subCommand: true,
     aliases: ["purge", "c"],
     requiredRole: RoleType.ADMIN,
     category: Category.Moderation,
