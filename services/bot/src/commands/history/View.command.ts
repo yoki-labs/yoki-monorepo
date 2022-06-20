@@ -1,3 +1,4 @@
+import type { Action } from "@prisma/client";
 import { inlineCode } from "../../formatters";
 import { ContentFilterUtil } from "../../modules/content-filter";
 import { CachedMember, RoleType } from "../../typings";
@@ -5,17 +6,19 @@ import { Category } from "../Category";
 import type { Command } from "../Command";
 
 // ID -- 17; Text -- 24; Max reason -- 100; Max filtered word length -- 59
-const maxReason = 120;
-const maxFiltered = 50;
+const maxReason = 100;
+const maxFiltered = 59;
+const maxCase = 17 + 24 + maxReason + maxFiltered;
 // How many cases to show per page
-const maxCases = Math.floor(2048 / (30 + maxReason + maxFiltered));
+const maxCases = Math.floor(2048 / maxCase);
 
-const History: Command = {
-    name: "history",
-    description: "Get the history for a user.",
+const View: Command = {
+    name: "history-view",
+    subName: "view",
+    description: "Get the history of a user.",
     usage: "<targetId> [page number]",
     examples: ["R40Mp0Wd", "R40Mp0Wd 2"],
-    aliases: ["modactions", "actions", "hs"],
+    aliases: ["see", "all", "v"],
     requiredRole: RoleType.MOD,
     category: Category.Moderation,
     args: [
@@ -43,28 +46,29 @@ const History: Command = {
         if (page < 0) return ctx.messageUtil.replyWithAlert(message, `Specify appropriate page`, `The page number must not be below \`1\`.`);
 
         if (!actions.length) return ctx.messageUtil.replyWithNullState(message, `Squeaky clean history!`, `This user does not have any moderation history associated with them.`);
-        return ctx.messageUtil.replyWithPaginatedContent(
-            message,
-            `${inlineCode(target.user.name.replaceAll("`", "'"))}'s History`,
-            actions.map((x) => {
+        return ctx.messageUtil.replyWithPaginatedContent<Action>({
+            replyTo: message,
+            title: `${inlineCode(target.user.name.replaceAll("`", "'"))}'s History`,
+            items: actions,
+            itemMapping: (x) => {
                 const trimmedReason = x.reason && x.reason.length > maxReason ? `${x.reason.substring(0, maxReason)}...` : x.reason;
 
                 return `[${inlineCode(x.id)}] ${x.type} for ${trimmedReason ? inlineCode(trimmedReason) : "no provided reason "}${
                     (x.triggerContent && `||${x.triggerContent.length > maxFiltered ? `${x.triggerContent}...` : x.triggerContent}||`) ?? ""
                 }`;
-            }),
-            maxCases,
+            },
+            itemsPerPage: maxCases,
             page,
-            {
+            embed: {
                 fields: [
                     {
                         name: "Total Infraction Points",
                         value: ContentFilterUtil.totalAllInfractionPoints(actions).toString(),
                     },
                 ],
-            }
-        );
+            },
+        });
     },
 };
 
-export default History;
+export default View;

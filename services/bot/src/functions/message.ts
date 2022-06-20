@@ -165,15 +165,20 @@ export class MessageUtil extends Util {
     }
 
     // Special blocks
-    replyWithPaginatedContent(
-        message: ChatMessagePayload,
-        title: string,
-        items: string[],
-        itemsPerPage: number,
-        page = 0,
-        embedPartial?: EmbedPayload,
-        messagePartial?: Partial<RESTPostChannelMessagesBody>
-    ) {
+    replyWithPaginatedContent<T>(info: {
+        replyTo: ChatMessagePayload;
+        title: string;
+        items: T[];
+        itemsPerPage: number;
+        itemMapping: (item: T) => string | T;
+        page?: number;
+        embed?: EmbedPayload;
+        message?: Partial<RESTPostChannelMessagesBody>;
+    }) {
+        const { replyTo: message, title, items, itemsPerPage, itemMapping, page: pageOrNull, embed: embedPartial, message: messagePartial } = info;
+
+        const page = pageOrNull ?? 0;
+
         // Math.ceil(21 / 10) => Math.ceil(2.1) => 3
         const possiblePages = Math.ceil(items.length / itemsPerPage);
 
@@ -186,10 +191,10 @@ export class MessageUtil extends Util {
         const startingIndex = itemsPerPage * page;
         const endingIndex = itemsPerPage * incrementedPage;
 
-        return this.replyWithInfo(message, title, items.slice(startingIndex, endingIndex).join("\n"), {
+        return this.replyWithInfo(message, title, items.slice(startingIndex, endingIndex).map(itemMapping).join("\n"), {
             ...embedPartial,
             footer: {
-                text: `Page ${incrementedPage}/${possiblePages}`,
+                text: `Page ${incrementedPage}/${possiblePages} ‧ ${items.length} total items`,
             },
         });
     }

@@ -9,7 +9,7 @@ enum CaseAction {
     REMOVE = 1,
 }
 
-const History: Command = {
+const Case: Command = {
     name: "case",
     description: "Get the info for a case.",
     usage: "<caseId> [remove]",
@@ -82,4 +82,4 @@ const History: Command = {
     },
 };
 
-export default History;
+export default Case;
