@@ -23,9 +23,9 @@ That was a lot of jargon, I admit. To simplify it a lot: development in the dock
 -   Clone the repository `git clone https://github.com/Yoki-Labs/yoki.git`
 -   Cd in and install the packages `cd yoki && yarn install`
 -   Populate the [environment variables in a .env file in the root](#environment-variables)
--   Start the database `./run.sh db`
--   Run the migrations `cd services/bot && yarn migrate:dev`
--   And finally, start the bot. In the root, run `./run.sh` (you can stop everything using `./run.sh down` (add the -v flag to the end if you want to wipe the database))
+-   Start the database `yarn dev:db`
+-   Run the migrations `yarn migrate:dev`
+-   And finally, start the bot. In the root, run `yarn dev:start` (you can stop everything using `yarn dev:down` (add the -v flag to the end if you want to wipe the database))
 
 ## Environment Variables
 

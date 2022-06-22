@@ -6,12 +6,20 @@
     "author": "Zaid \"Nico\" <contact@nico.engineer>",
     "scripts": {
         "build": "yarn workspaces run build",
-        "lint": "eslint -c .eslintrc.json services/bot scripts/ && eslint -c .eslintrc.web.json services/website",
-        "lint:fix": "eslint -c .eslintrc.json services/bot scripts/ --fix && eslint -c .eslintrc.web.json services/website --fix",
+        "lint": "eslint -c .eslintrc.json services/bot services/nsfw scripts/ && eslint -c .eslintrc.web.json services/website",
+        "lint:fix": "eslint -c .eslintrc.json services/bot services/nsfw scripts/ --fix && eslint -c .eslintrc.web.json services/website --fix",
         "prepare": "husky install",
         "prettier": "prettier --write **/*.{ts,js,json,yml,yaml,md}",
         "generate": "cd services/bot && yarn generate",
-        "refresh": "ts-node scripts/refresh.ts"
+        "refresh": "ts-node scripts/refresh.ts",
+        "dev:start": "cd docker/compose && docker-compose -f docker-compose.yml -f docker-compose.dev.yml up -d --build && docker-compose -f docker-compose.yml -f docker-compose.dev.yml logs --follow bot nsfw ",
+        "dev:db": "cd docker/compose && docker-compose -f docker-compose.yml -f docker-compose.dev.yml up -d --build db",
+        "dev:down": "cd docker/compose && docker-compose -f docker-compose.yml -f docker-compose.dev.yml down",
+        "dev:logs": "cd docker/compose && docker-compose -f docker-compose.yml -f docker-compose.dev.yml logs -f bot nsfw",
+        "prod:start": "cd docker/compose && docker-compose up -d --build",
+        "prod:down": "cd docker/compose && docker-compose down",
+        "prod:logs": "cd docker/compose && docker-compose logs -f bot nsfw",
+        "migrate:dev": "cd services/bot && yarn migrate:dev"
     },
     "devDependencies": {
         "@sapphire/eslint-config": "^4.3.2",

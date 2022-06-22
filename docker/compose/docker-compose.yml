@@ -8,6 +8,17 @@ services:
       - ../../.env
     networks:
       - main-network
+  nsfw:
+    image: ghcr.io/yoki-labs/yoki/nsfw:latest
+    container_name: YOKI_NSFW
+    platform: linux/amd64
+    restart: unless-stopped
+    env_file:
+      - ../../.env
+    networks:
+      - main-network
+    ports:
+      - "4433:4433"
   cache:
     image: redislabs/redismod:latest
     restart: unless-stopped
