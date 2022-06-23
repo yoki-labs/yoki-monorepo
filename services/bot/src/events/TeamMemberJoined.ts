@@ -13,7 +13,7 @@ export default async (packet: WSTeamMemberJoinedPayload, ctx: Context, server: S
     const { member, serverId } = packet.d;
 
     if (["!", "."].some((x) => member.user.name.includes(x)))
-        return ctx.rest.router.updateMemberNickname(packet.d.serverId, packet.d.member.user.id, packet.d.member.user.name.slice(1).trim());
+        return ctx.rest.router.updateMemberNickname(packet.d.serverId, packet.d.member.user.id, packet.d.member.user.name.slice(1).trim() || "NON-HOISTING NAME");
 
     // Re-add mute
     if (server.muteRoleId && (await ctx.prisma.action.findFirst({ where: { serverId, targetId: member.user.id, type: Severity.MUTE, expired: false } })))

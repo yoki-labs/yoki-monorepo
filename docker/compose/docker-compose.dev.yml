@@ -27,17 +27,17 @@ services:
         restart: "no"
         environment:
             DATABASE_URL: "postgresql://yoki_user:yoki_pass@db:5432/yoki?schema=public"
-    # nsfw: 
-    #     build:
-    #         context: ../../
-    #         dockerfile: ./docker/nsfw/Dockerfile
-    #     platform: linux/x86_64
-    #     command: sh -c "yarn add global typescript && yarn run dev"
-    #     volumes:
-    #         - "../../services/nsfw/src:/usr/app/services/nsfw/src"
-    #     restart: "no"
-    #     environment:
-    #         TOKEN_SECRET: "TESTTOKENSECRET"
+    nsfw: 
+        build:
+            context: ../../
+            dockerfile: ./docker/nsfw/Dockerfile
+        platform: linux/x86_64
+        command: sh -c "yarn add global typescript && yarn run dev"
+        volumes:
+            - "../../services/nsfw/src:/usr/app/services/nsfw/src"
+        restart: "no"
+        environment:
+            TOKEN_SECRET: "TESTTOKENSECRET"
 
 
 volumes:

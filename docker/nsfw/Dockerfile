@@ -1,10 +1,14 @@
-FROM node:16-alpine
+FROM node:16-buster-slim
 WORKDIR /opt/build
 
-RUN apk add --update \
-	&& apk add --no-cache libc6-compat gcompat ca-certificates \
-	&& apk add --no-cache --virtual .build-deps curl bash jq \
-	&& curl -L https://yarnpkg.com/install.sh | bash
+RUN apt-get update && \ 
+	apt-get install -y build-essential \
+	wget \
+	python3 \
+	make \
+	gcc \ 
+	libc6-dev \
+	jq
 
 COPY tsconfig.json ./
 WORKDIR /opt/build/services/nsfw
@@ -18,8 +22,16 @@ RUN yarn build
 
 RUN yarn remove $(cat package.json | jq -r '.devDependencies | keys | join(" ")')
 
-FROM node:16-alpine
+FROM node:16-buster-slim
 WORKDIR /usr/app
+
+RUN apt-get update && \ 
+	apt-get install -y build-essential \
+	wget \
+	python3 \
+	make \
+	gcc \ 
+	libc6-dev 
 
 COPY --from=0 ./opt/build/tsconfig.json .
 COPY --from=0 ./opt/build/services/nsfw/ services/nsfw/

@@ -36,4 +36,4 @@ const load_model = async () => {
 };
 
 // Keep the model in memory, make sure it's loaded only once
-void load_model().then(() => app.listen(4443));
+void load_model().then(() => app.listen(4433));

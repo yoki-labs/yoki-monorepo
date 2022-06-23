@@ -12,7 +12,7 @@ jobs:
         runs-on: ubuntu-latest
         strategy:
             matrix:
-                service-name: [bot]
+                service-name: [bot, nsfw]
         steps:
             - name: Checkout
               uses: actions/checkout@v2
@@ -37,7 +37,6 @@ jobs:
                   push: true
                   tags: ghcr.io/${{ github.repository }}/${{ matrix.service-name }}:latest
                   file: docker/${{ matrix.service-name }}/Dockerfile
-
     deploy:
         name: Deploy to Production
         needs: [docker]
@@ -82,4 +81,4 @@ jobs:
                       cd yoki
                       cd docker/compose && docker-compose pull
                       cd ../../
-                      ./run-prod.sh
+                      yarn prod:start
