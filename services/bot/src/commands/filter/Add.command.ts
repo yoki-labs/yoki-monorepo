@@ -1,6 +1,7 @@
 import { inlineCode } from "../../formatters";
 import { transformSeverityStringToEnum } from "../../modules/content-filter";
 import { RoleType } from "../../typings";
+import { getFilterFromSyntax } from "../../util";
 import { Category } from "../Category";
 import type { Command } from "../Command";
 
@@ -32,19 +33,24 @@ const Add: Command = {
     execute: async (message, args, ctx, { server }) => {
         if (!server.filterEnabled)
             return ctx.messageUtil.replyWithAlert(message, `Enable filtering`, `Automod filter is disabled! Please enable using \`${server.getPrefix()}filter enable\``);
-        const phrase = args.phrase as string;
+        const phrase = (args.phrase as string).toLowerCase();
         const severity = transformSeverityStringToEnum((args.severity as string | null) ?? "warn");
         const infractionPoints = (args.infraction_points as number | null) ?? 5;
 
         if (!severity) return ctx.messageUtil.replyWithAlert(message, `No such severity level`, `Sorry, but that is not a valid severity level!`);
         if (infractionPoints < 0 || infractionPoints > 100)
             return ctx.messageUtil.replyWithAlert(message, `Points over the limit`, `Sorry, but the infraction points must be between 0 and 100.`);
-        const doesExistAlready = await ctx.prisma.contentFilter.findFirst({ where: { serverId: message.serverId!, content: phrase } });
+
+        const [content, matching] = getFilterFromSyntax(phrase);
+
+        const doesExistAlready = await ctx.prisma.contentFilter.findFirst({ where: { serverId: message.serverId!, content, matching } });
         if (doesExistAlready) return ctx.messageUtil.replyWithAlert(message, `Already added`, `This word is already in your server's filter!`);
+
         await ctx.dbUtil.addWordToFilter({
-            content: phrase,
+            content,
             creatorId: message.createdBy,
             serverId: message.serverId!,
+            matching,
             severity,
             infractionPoints,
         });
@@ -56,4 +62,8 @@ const Add: Command = {
     },
 };
 
+console.log("Exporting add:", Add);
+
 export default Add;
+
+console.log("Exported add:", Add);

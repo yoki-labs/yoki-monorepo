@@ -1,5 +1,6 @@
 import { inlineCode } from "../../formatters";
 import { RoleType } from "../../typings";
+import { getFilterFromSyntax } from "../../util";
 import { Category } from "../Category";
 import type { Command } from "../Command";
 
@@ -18,8 +19,11 @@ const Delete: Command = {
         },
     ],
     execute: async (message, args, ctx) => {
-        const phrase = args.phrase as string;
-        const existingEntry = await ctx.prisma.contentFilter.findFirst({ where: { serverId: message.serverId!, content: phrase } });
+        const phrase = (args.phrase as string).toLowerCase();
+
+        const [content, matching] = getFilterFromSyntax(phrase);
+
+        const existingEntry = await ctx.prisma.contentFilter.findFirst({ where: { serverId: message.serverId!, content, matching } });
         if (!existingEntry) return ctx.messageUtil.replyWithAlert(message, `Phrase not found`, `This phrase is not in your server's filter!`);
         await ctx.dbUtil.removeWordFromFilter(message.serverId!, phrase);
         return ctx.messageUtil.replyWithSuccess(message, `Phrase deleted`, `Successfully deleted ${inlineCode(phrase)} from the automod list!`);

@@ -1,7 +1,7 @@
 import { Embed } from "@guildedjs/embeds";
 import type { TeamMemberPayload } from "@guildedjs/guilded-api-typings";
-import { Colors } from "../color";
 
+import { Colors } from "../color";
 import type { Command } from "./Command";
 
 const UserInfo: Command = {

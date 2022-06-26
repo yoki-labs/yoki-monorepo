@@ -48,12 +48,13 @@ model Role {
 }
 
 model ContentFilter {
-    id               Int      @id @default(autoincrement())
-    serverId         String   @db.VarChar(255)
-    content          String   @db.VarChar(255)
+    id               Int            @id @default(autoincrement())
+    serverId         String         @db.VarChar(255)
+    content          String         @db.VarChar(255)
     severity         Severity
-    creatorId        String   @db.VarChar(255)
-    createdAt        DateTime @default(now())
+    matching         FilterMatching @default(WORD)
+    creatorId        String         @db.VarChar(255)
+    createdAt        DateTime       @default(now())
     infractionPoints Int
 }
 
@@ -128,6 +129,14 @@ enum Severity {
     KICK
     SOFTBAN
     BAN
+}
+
+enum FilterMatching {
+    PHRASE
+    WORD
+    PREFIX
+    INFIX
+    POSTFIX
 }
 
 enum PremiumType {

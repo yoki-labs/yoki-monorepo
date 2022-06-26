@@ -1,3 +1,5 @@
+import { ContentFilter, FilterMatching } from "@prisma/client";
+
 import { RoleType } from ".prisma/client";
 
 export const isUUID = (str: string) => /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/.test(str);
@@ -25,3 +27,23 @@ export function suspicious(date: Date) {
 }
 
 export const IMAGE_REGEX = /!\[[^\]]*\]\((?<filename>.*?)(?=\"|\))(?<optionalpart>\".*\")?\)/g;
+
+export function getFilterFromSyntax(word: string): [string, FilterMatching] {
+    const isPrefixed = word.endsWith("*");
+    const isSuffixed = word.startsWith("*");
+
+    return isPrefixed && isSuffixed
+        ? [word.substring(1, word.length - 1), FilterMatching.INFIX]
+        : isPrefixed
+        ? [word.substring(0, word.length - 1), FilterMatching.PREFIX]
+        : isSuffixed
+        ? [word.substring(1), FilterMatching.POSTFIX]
+        : [word, FilterMatching.WORD];
+}
+
+export function filterToString(filter: ContentFilter) {
+    return filter.matching === FilterMatching.INFIX
+        ? `*${filter.content}*`
+        : // *word, word* or word
+          `${filter.matching === FilterMatching.POSTFIX ? "*" : ""}${filter.content}${filter.matching === FilterMatching.PREFIX ? "*" : ""}`;
+}
