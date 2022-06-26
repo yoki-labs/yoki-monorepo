@@ -53,7 +53,9 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context, server:
             // Filter
             resultingAction: () => ctx.rest.router.deleteChannelMessage(message.channelId, message.id),
         });
-        return ctx.contentFilterUtil.scanMessageMedia({ channelId: message.channelId, messageId: message.id, userId: message.createdBy, content: message.content });
+        if (server.premium)
+            await ctx.contentFilterUtil.scanMessageMedia({ channelId: message.channelId, messageId: message.id, userId: message.createdBy, content: message.content });
+        return;
     }
 
     // parse the message into the command name and args ("?test arg1 arg2 arg3" = [ "test", "arg1", "arg2", "arg3" ])

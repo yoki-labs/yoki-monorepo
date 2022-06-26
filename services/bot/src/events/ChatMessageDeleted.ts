@@ -30,6 +30,7 @@ export default async (packet: WSChatMessageDeletedPayload, ctx: Context) => {
             "Message Deleted",
             stripIndents`
                 **ID:** ${inlineCode(message.id)}
+				**Channel:** ${inlineCode(message.channelId)}
                 ${deletedMessage ? `**Author:** ${oldMember ? `<@${oldMember.user.id}>` : "Unknown author"}` : ``}
             `,
             Colors.red,
