@@ -18,11 +18,12 @@ const List: Command = {
             message,
             `Presets`,
             stripIndents`
-				**All Preset Options**: ${Object.keys(allPresets)
+				**Enabled Presets:** ${enabledPresets.map((preset) => inlineCode(preset.preset)).join(", ") || "None"}
+				
+				All Preset Options: ${Object.keys(allPresets)
                     .map((preset) => inlineCode(preset))
                     .join(", ")}
 
-				**Enabled Presets:** ${enabledPresets.map((preset) => inlineCode(preset.preset)).join(", ") || "None"}
 			`
         );
     },

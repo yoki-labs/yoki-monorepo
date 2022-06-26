@@ -1,8 +1,9 @@
 import { Embed } from "@guildedjs/webhook-client";
 import { stripIndents } from "common-tags";
+import { readdirSync } from "fs";
+import { join } from "path";
 
 import { Util } from "../functions/util";
-import slursList from "../presets/slurs.json";
 import { Action, CachedMember, ContentFilterScan, RoleType, Server, Severity } from "../typings";
 import { IMAGE_REGEX } from "../util";
 import { ImageFilterUtil } from "./image-filter";
@@ -15,20 +16,25 @@ export enum FilteredContent {
     ServerContent = 3,
 }
 
+const presets = (() => {
+    const dirPath = join(__dirname, "..", "presets");
+    const files = readdirSync(dirPath, { withFileTypes: true });
+    const loadedPresets: Record<string, Omit<ContentFilterScan, "severity">[]> = {};
+    for (const file of files.filter((x) => x.name.endsWith(".json"))) {
+        loadedPresets[file.name.split(".")[0]] = (require(join(dirPath, file.name)) as string[]).map(
+            (slur): Omit<ContentFilterScan, "severity"> => ({
+                content: slur,
+                infractionPoints: 5,
+            })
+        );
+        console.log(`Loaded preset ${file.name}`);
+    }
+    return loadedPresets;
+})();
+
 export class ContentFilterUtil extends Util {
     readonly imageFilterUtil = new ImageFilterUtil(this.client);
-
-    // placeholder until we automate ingesting preset lists dynamically
-    readonly presets = {
-        slurs: [
-            ...slursList.map(
-                (slur): Omit<ContentFilterScan, "severity"> => ({
-                    content: slur,
-                    infractionPoints: 5,
-                })
-            ),
-        ],
-    };
+    readonly presets = presets;
 
     // An object mapping the Action type -> Action punishment
     // Easy way for us to organize punishments into reusable code

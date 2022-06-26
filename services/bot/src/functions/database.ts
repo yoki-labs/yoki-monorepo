@@ -75,7 +75,7 @@ export class DatabaseUtil extends Util {
             data: {
                 serverId,
                 locale: "en-US",
-                premium: false,
+                premium: null,
                 blacklisted: false,
                 muteRoleId: null,
                 botJoinedAt: null,

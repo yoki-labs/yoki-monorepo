@@ -8,25 +8,25 @@ datasource db {
 }
 
 model Server {
-    id                         Int       @id @default(autoincrement())
-    serverId                   String    @unique @db.VarChar(255)
-    botJoinedAt                DateTime? @default(now())
-    premium                    Boolean   @default(false)
-    locale                     String    @default("en-US")
+    id                         Int          @id @default(autoincrement())
+    serverId                   String       @unique @db.VarChar(255)
+    botJoinedAt                DateTime?    @default(now())
+    premium                    PremiumType?
+    locale                     String       @default("en-US")
     muteRoleId                 Int?
-    filterEnabled              Boolean   @default(false)
-    blacklisted                Boolean   @default(false)
+    filterEnabled              Boolean      @default(false)
+    blacklisted                Boolean      @default(false)
     flags                      String[]
-    muteInfractionThreshold    Int?      @default(10)
-    kickInfractionThreshold    Int?      @default(15)
-    banInfractionThreshold     Int?      @default(45)
-    softbanInfractionThreshold Int?      @default(25)
-    spamInfractionPoints       Int       @default(5)
-    filterOnMods               Boolean   @default(false)
-    antiHoist                  Boolean   @default(false)
+    muteInfractionThreshold    Int?         @default(10)
+    kickInfractionThreshold    Int?         @default(15)
+    banInfractionThreshold     Int?         @default(45)
+    softbanInfractionThreshold Int?         @default(25)
+    spamInfractionPoints       Int          @default(5)
+    filterOnMods               Boolean      @default(false)
+    antiHoist                  Boolean      @default(false)
     prefix                     String?
-    createdAt                  DateTime  @default(now())
-    updatedAt                  DateTime? @updatedAt
+    createdAt                  DateTime     @default(now())
+    updatedAt                  DateTime?    @updatedAt
 }
 
 model LogChannel {
@@ -128,4 +128,9 @@ enum Severity {
     KICK
     SOFTBAN
     BAN
+}
+
+enum PremiumType {
+    Gold
+    Silver
 }
