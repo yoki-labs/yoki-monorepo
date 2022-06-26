@@ -9,7 +9,7 @@ import type { Command } from "../Command";
 // ID -- 17; Text -- 24; Max reason -- 100; Max filtered word length -- 59
 const maxReason = 100;
 const maxFiltered = 59;
-const maxCase = 17 + 24 + maxReason + maxFiltered;
+const maxCase = 17 + 26 + maxReason + maxFiltered;
 // How many cases to show per page
 const maxCases = Math.floor(2048 / maxCase);
 
@@ -50,12 +50,12 @@ const View: Command = {
         if (!actions.length) return ctx.messageUtil.replyWithNullState(message, `Squeaky clean history!`, `This user does not have any moderation history associated with them.`);
         return ctx.messageUtil.replyWithPaginatedContent<Action>({
             replyTo: message,
-            title: `${inlineCode(target.user.name.replaceAll("`", "'"))}'s History`,
             items: actions,
+            title: `${target.user.name}'s History`,
             itemMapping: (x) => {
                 const trimmedReason = x.reason && x.reason.length > maxReason ? `${x.reason.substring(0, maxReason)}...` : x.reason;
 
-                return `[${inlineCode(x.id)}] ${x.type} for ${trimmedReason ? inlineCode(trimmedReason) : "no provided reason "}${
+                return `[${inlineCode(x.id)}] **${x.type}** for ${trimmedReason ?? "no provided reason"} ${
                     (x.triggerContent && `||${x.triggerContent.length > maxFiltered ? `${x.triggerContent}...` : x.triggerContent}||`) ?? ""
                 }`;
             },

@@ -1,5 +1,6 @@
 import { Embed } from "@guildedjs/embeds";
 import type { TeamMemberPayload } from "@guildedjs/guilded-api-typings";
+import { Colors } from "../color";
 
 import type { Command } from "./Command";
 
@@ -23,6 +24,7 @@ const UserInfo: Command = {
             embeds: [
                 new Embed()
                     .setTitle(`${target.user.name}'s info`)
+                    .setColor(Colors.blockBackground)
                     .addFields([
                         {
                             name: "ID",
