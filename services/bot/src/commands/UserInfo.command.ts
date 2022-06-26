@@ -63,7 +63,7 @@ const UserInfo: Command = {
                         },
                         {
                             name: "Roles",
-                            value: `${target.roleIds.map((x) => `<@${x}>`).join(", ")}`,
+                            value: `${target.roleIds.map((x) => `<@${x}>`).join(" ")}`,
                             inline: true,
                         },
                     ])
