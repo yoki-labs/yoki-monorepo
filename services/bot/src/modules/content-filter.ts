@@ -165,7 +165,7 @@ export class ContentFilterUtil extends Util {
         const member = await this.client.serverUtil.getMember(serverId, userId);
 
         // Get all the mod roles in this server
-        const modRoles = await this.prisma.role.findMany({ where: { serverId, type: RoleType.MOD } });
+        const modRoles = await this.prisma.role.findMany({ where: { serverId } });
 
         // If the server doesn't have "filterOnMods" setting enabled and a mod violates the filter/preset, ignore
         if (!server.filterOnMods && modRoles.some((modRole) => member.roleIds.includes(modRole.roleId))) return;
