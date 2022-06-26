@@ -4,7 +4,7 @@ import { stripIndents } from "common-tags";
 import { readdirSync } from "fs";
 import { join } from "path";
 
-import { Util } from "../functions/util";
+import { Util } from "../helpers/util";
 import { Action, CachedMember, ContentFilterScan, PresetFile, Server, Severity } from "../typings";
 import { IMAGE_REGEX } from "../util";
 import { ImageFilterUtil } from "./image-filter";

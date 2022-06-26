@@ -6,7 +6,7 @@ const Enable: Command = {
     name: "preset-disable",
     subName: "disable",
     description: "Disable a preset",
-    usage: "",
+    usage: "<preset>",
     subCommand: true,
     requiredRole: RoleType.MOD,
     args: [
