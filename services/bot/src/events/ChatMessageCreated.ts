@@ -13,6 +13,7 @@ import string from "../args/string";
 import UUID from "../args/UUID";
 import type { CommandArgType, CommandArgument } from "../commands/Command";
 import { codeBlock, inlineCode } from "../formatters";
+import { FilteredContent } from "../modules/content-filter";
 import type { Context, ResolvedArgs, Server } from "../typings";
 import { roleValues } from "../util";
 
@@ -43,7 +44,16 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context, server:
         // store the message in the database
         await ctx.dbUtil.storeMessage(message).catch(console.log);
         // scan the message for any harmful content (filter list, presets)
-        return ctx.contentFilterUtil.scanMessage(message, server);
+        await ctx.contentFilterUtil.scanContent({
+            userId: message.createdByBotId || message.createdByWebhookId || message.createdBy,
+            text: message.content,
+            filteredContent: FilteredContent.Message,
+            channelId: message.channelId,
+            server,
+            // Filter
+            resultingAction: () => ctx.rest.router.deleteChannelMessage(message.channelId, message.id),
+        });
+        return ctx.contentFilterUtil.scanMessageMedia({ channelId: message.channelId, messageId: message.id, userId: message.createdBy, content: message.content });
     }
 
     // parse the message into the command name and args ("?test arg1 arg2 arg3" = [ "test", "arg1", "arg2", "arg3" ])

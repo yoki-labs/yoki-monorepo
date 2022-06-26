@@ -1,10 +1,11 @@
-import type { ChatMessagePayload } from "@guildedjs/guilded-api-typings";
 import { Embed } from "@guildedjs/webhook-client";
 import { stripIndents } from "common-tags";
 
 import { Util } from "../functions/util";
 import slursList from "../presets/slurs.json";
 import { Action, CachedMember, ContentFilterScan, RoleType, Server, Severity } from "../typings";
+import { IMAGE_REGEX } from "../util";
+import { ImageFilterUtil } from "./image-filter";
 
 export const transformSeverityStringToEnum = (str: string): Severity | undefined => Severity[str.toUpperCase()];
 export enum FilteredContent {
@@ -15,6 +16,8 @@ export enum FilteredContent {
 }
 
 export class ContentFilterUtil extends Util {
+    readonly imageFilterUtil = new ImageFilterUtil(this.client);
+
     // placeholder until we automate ingesting preset lists dynamically
     readonly presets = {
         slurs: [
@@ -78,20 +81,42 @@ export class ContentFilterUtil extends Util {
         return severity;
     }
 
-    async scanMessage(message: ChatMessagePayload, server: Server) {
-        return this.scanContent(
-            message.createdByBotId || message.createdByWebhookId || message.createdBy,
-            message.content,
-            FilteredContent.Message,
-            message.channelId,
-            server,
-            // Filter
-            () => this.rest.router.deleteChannelMessage(message.channelId, message.id)
-        );
+    async scanMessageMedia({ channelId, messageId, userId, content }: { channelId: string; messageId: string; userId: string; content: string }): Promise<void> {
+        const matches = [...content.matchAll(IMAGE_REGEX)];
+        if (!matches.length) return;
+        console.log(userId);
+        for (const [_, url] of matches) {
+            const result = await this.imageFilterUtil.scanImage(url).catch(() => void 0);
+            if (result) {
+                this.client.rest.router.deleteChannelMessage(channelId, messageId).catch(() => null);
+                await this.client.messageUtil.sendWarningBlock(
+                    channelId,
+                    "Inappropriate Image!",
+                    `<@${userId}>, our filters have detected that an image attached to your message is inappropriate and has been deleted.`,
+                    undefined,
+                    { isPrivate: true }
+                );
+                return;
+            }
+        }
     }
 
     // This will scan any conten tthat is piped into it for breaking the content filter or preset list and will apply the associated punishment in the final param as a callback
-    async scanContent(userId: string, text: string, filteredContent: FilteredContent, channelId: string | null, server: Server, resultingAction: () => unknown) {
+    async scanContent({
+        userId,
+        text,
+        filteredContent,
+        channelId,
+        server,
+        resultingAction,
+    }: {
+        userId: string;
+        text: string;
+        filteredContent: FilteredContent;
+        channelId: string | null;
+        server: Server;
+        resultingAction: () => unknown;
+    }) {
         // If the bot is the one who did this action, ignore.
         if (userId === this.client.userId) return void 0;
         const { serverId } = server;

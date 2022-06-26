@@ -61,7 +61,7 @@ void (async (): Promise<void> => {
         const existingMainServer = await client.prisma.server.findMany({ where: { serverId: process.env.MAIN_SERVER } });
         if (!existingMainServer.length) await client.dbUtil.createFreshServerInDatabase(process.env.MAIN_SERVER, { flags: ["EARLY_ACCESS"] });
     } catch (e) {
-        console.log("ERROR!: You have not applied the migrations. You must run 'yarn migrate:dev' in the services/bot directory. Exiting...");
+        console.log("ERROR!: You have not applied the migrations. You must run 'yarn migrate:dev'. Exiting...");
         return process.exit(1);
     }
 

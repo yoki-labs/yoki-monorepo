@@ -6,6 +6,7 @@ import { nanoid } from "nanoid";
 
 import { Colors } from "../color";
 import { inlineCode, quoteMarkdown } from "../formatters";
+import { FilteredContent } from "../modules/content-filter";
 import type { Context, Server } from "../typings";
 
 export default async (packet: WSChatMessageUpdatedPayload, ctx: Context, server: Server) => {
@@ -14,7 +15,15 @@ export default async (packet: WSChatMessageUpdatedPayload, ctx: Context, server:
     if (message.createdByBotId || message.createdBy === ctx.userId || !message.serverId) return void 0;
 
     // scan the updated message content
-    await ctx.contentFilterUtil.scanMessage(message, server);
+    await ctx.contentFilterUtil.scanContent({
+        userId: message.createdByBotId || message.createdByWebhookId || message.createdBy,
+        text: message.content,
+        filteredContent: FilteredContent.Message,
+        channelId: message.channelId,
+        server,
+        // Filter
+        resultingAction: () => ctx.rest.router.deleteChannelMessage(message.channelId, message.id),
+    });
     // get the log channel for message updates
     const updatedMessageLogChannel = await ctx.dbUtil.getLogChannel(message.serverId!, LogChannelType.CHAT_MESSAGE_UPDATE);
     // if there is no log channel for message updates, then ignore

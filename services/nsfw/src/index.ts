@@ -9,6 +9,7 @@ config({ path: join(__dirname, "..", "..", "..", ".env") });
 import express from "express";
 import fetch from "node-fetch";
 import * as nsfwJS from "nsfwjs";
+import { inspect } from "util";
 
 import { convert } from "./convertImage";
 import { validateOptions } from "./util";
@@ -18,8 +19,10 @@ app.use(express.json());
 let _model: nsfwJS.NSFWJS;
 
 app.post("/nsfw", validateOptions<{ imageURL: string }>([["imageURL", "string", false]]), async (req, res) => {
-    if (!req.body.imageURL) res.status(400).json({ error: { message: "You must provide an image URL to lookup." } });
-    const image = await (await fetch(req.body.imageURL)).buffer();
+    const { imageURL } = req.body;
+    if (!imageURL) res.status(400).json({ error: { message: "You must provide an image URL to lookup." } });
+    console.log(`Scanning image ${imageURL}`);
+    const image = await (await fetch(imageURL)).buffer();
     const parsedImage = await convert(image);
     const predictions = await _model.classify(parsedImage);
     parsedImage.dispose();
@@ -28,6 +31,7 @@ app.post("/nsfw", validateOptions<{ imageURL: string }>([["imageURL", "string", 
     for (const prediction of predictions) {
         response[prediction.className.toLowerCase()] = prediction.probability;
     }
+    console.log(`total predictions ${inspect(response)}`);
     return res.json(response);
 });
 

@@ -24,4 +24,4 @@ export function suspicious(date: Date) {
     return date.getTime() > new Date().getTime() - 8.64e7;
 }
 
-export const IMAGE_REGEX = /!\[(?:.*?)]\((https?:\/\/\S+\.\w+)\)/g;
+export const IMAGE_REGEX = /!\[[^\]]*\]\((?<filename>.*?)(?=\"|\))(?<optionalpart>\".*\")?\)/g;

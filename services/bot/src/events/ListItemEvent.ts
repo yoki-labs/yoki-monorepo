@@ -9,7 +9,12 @@ export default async (event: WSListItemCreated, ctx: Context, server: Server) =>
     } = event.d;
 
     // If it's a thread
-    return ctx.contentFilterUtil.scanContent(createdBy, note ? `${message}\n${note.content}` : message, FilteredContent.ChannelContent, channelId, server, () =>
-        ctx.rest.router.deleteListItem(channelId as string, id as string)
-    );
+    return ctx.contentFilterUtil.scanContent({
+        userId: createdBy,
+        text: note ? `${message}\n${note.content}` : message,
+        filteredContent: FilteredContent.ChannelContent,
+        channelId,
+        server,
+        resultingAction: () => ctx.rest.router.deleteListItem(channelId as string, id as string),
+    });
 };

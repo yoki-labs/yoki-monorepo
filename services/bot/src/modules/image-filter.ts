@@ -1,0 +1,26 @@
+import fetch from "node-fetch";
+
+import { Util } from "../functions/util";
+
+interface ImageScanResult {
+    hentai: number;
+    porn: number;
+    drawing: number;
+    sexy: number;
+    neutral: number;
+}
+
+export class ImageFilterUtil extends Util {
+    readonly hostURL = process.env.IMAGE_SCANNER_URL ?? "http://nsfw:4433/nsfw";
+
+    public async scanImage(imageURL: string) {
+        const req: ImageScanResult = await fetch(this.hostURL, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ imageURL }) })
+            .then((x) => x.json() as Promise<ImageScanResult>)
+            .catch((e) => {
+                console.log(e);
+                return { hentai: 0, porn: 0, drawing: 0, sexy: 0, neutral: 0 };
+            });
+
+        return req.hentai >= 0.75 || req.porn >= 0.75;
+    }
+}
