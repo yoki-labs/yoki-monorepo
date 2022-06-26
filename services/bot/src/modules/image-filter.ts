@@ -1,6 +1,6 @@
 import fetch from "node-fetch";
 
-import { Util } from "../functions/util";
+import { Util } from "../helpers/util";
 
 interface ImageScanResult {
     hentai: number;
