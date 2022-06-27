@@ -143,7 +143,7 @@ export class ContentFilterUtil extends Util {
 
         // Sanitize data into standard form
         const lowerCasedMessageContent = text.toLowerCase();
-        const split = lowerCasedMessageContent.split(/[ \t\n-.,—]/g);
+        const split = lowerCasedMessageContent.split(/[ \t\n-.?!,—]/g);
         // Check if any word triggers the content filter (user provided words). Checks if message content includes a word
         const ifTriggersCustom: ContentFilterScan | undefined = bannedWordsList.find((word) => this.tripsFilter(word, lowerCasedMessageContent, split));
 
