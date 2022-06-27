@@ -60,10 +60,6 @@ export default async (packet: WSChatMessageUpdatedPayload, ctx: Context, server:
             ]
         );
     } catch (e) {
-        ctx.prisma.logChannel
-            .deleteMany({ where: { channelId: updatedMessageLogChannel.channelId } })
-            .then(() => ctx.errorHandler.send(`DELETED LOG CHANNEL ${updatedMessageLogChannel.channelId}`))
-            .catch(() => null);
         const referenceId = nanoid();
         if (e instanceof Error) {
             console.error(e);
