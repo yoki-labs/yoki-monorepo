@@ -13,6 +13,7 @@ import string from "../args/string";
 import UUID from "../args/UUID";
 import type { CommandArgType, CommandArgument } from "../commands/Command";
 import { codeBlock, inlineCode } from "../formatters";
+import { languages } from "../language";
 import { FilteredContent } from "../modules/content-filter";
 import type { Context, ResolvedArgs, Server } from "../typings";
 import { roleValues } from "../util";
@@ -166,7 +167,7 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context, server:
     try {
         // run the command with the message object, the casted arguments, the global context object (datbase, rest, ws),
         // and the command context (raw packet, database server entry, member from API or cache)
-        await command.execute(message, resolvedArgs, ctx, { packet, server, member });
+        await command.execute(message, resolvedArgs, ctx, { packet, server, member, language: languages[server.language] });
     } catch (e) {
         // ID for error, not persisted in database at all
         const referenceId = nanoid();

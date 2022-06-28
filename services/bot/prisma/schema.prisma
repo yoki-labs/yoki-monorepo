@@ -25,6 +25,7 @@ model Server {
     filterOnMods               Boolean      @default(false)
     antiHoist                  Boolean      @default(false)
     prefix                     String?
+    language                   Language     @default(EN_US)
     createdAt                  DateTime     @default(now())
     updatedAt                  DateTime?    @updatedAt
 }
@@ -142,4 +143,9 @@ enum FilterMatching {
 enum PremiumType {
     Gold
     Silver
+}
+
+enum Language {
+    EN_US
+    LT_LT
 }

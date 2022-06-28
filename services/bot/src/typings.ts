@@ -10,6 +10,7 @@ export interface CommandContext {
     packet: WSChatMessageCreatedPayload;
     server: Server;
     member: CachedMember;
+    language: LanguageDictionary;
 }
 
 // member cached in redis
@@ -28,3 +29,8 @@ export type Server = DBServer & { getPrefix: () => string };
 export type ResolvedArgs = string | string[] | number | boolean | CachedMember | null | undefined;
 
 export type PresetFile = Record<FilterMatching, string[]>;
+export declare interface LanguageDictionary {
+    name: string;
+    terms: Record<string, string>;
+    getTerm(name: string, ...args: any[]): string;
+}

@@ -1,0 +1,9 @@
+{
+    "name": "English (USA)",
+    "terms": {
+        "ping": "PONG!",
+        "pingTimed": "PONG! Took me {0} seconds.",
+        "languageChangedTitle": "Language changed",
+        "languageChangedDescription": "The language of Yoki has been changed to English (USA)."
+    }
+}
