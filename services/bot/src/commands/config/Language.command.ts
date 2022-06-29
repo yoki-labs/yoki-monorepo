@@ -18,7 +18,7 @@ const ConfigLanguage: Command = {
     execute: async (message, args, ctx) => {
         const newSetting = args.newSetting as Language;
 
-        await ctx.prisma.server.updateMany({ data: { language: newSetting }, where: { serverId: message.serverId! } });
+        await ctx.prisma.server.updateMany({ data: { locale: newSetting }, where: { serverId: message.serverId! } });
 
         const newLanguage = languages[newSetting];
 

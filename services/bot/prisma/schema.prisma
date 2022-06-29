@@ -12,7 +12,7 @@ model Server {
     serverId                   String       @unique @db.VarChar(255)
     botJoinedAt                DateTime?    @default(now())
     premium                    PremiumType?
-    locale                     String       @default("en-US")
+    locale                     Language     @default(EN_US)
     muteRoleId                 Int?
     filterEnabled              Boolean      @default(false)
     blacklisted                Boolean      @default(false)
@@ -25,7 +25,6 @@ model Server {
     filterOnMods               Boolean      @default(false)
     antiHoist                  Boolean      @default(false)
     prefix                     String?
-    language                   Language     @default(EN_US)
     createdAt                  DateTime     @default(now())
     updatedAt                  DateTime?    @updatedAt
 }

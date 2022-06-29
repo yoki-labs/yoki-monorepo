@@ -1,5 +1,5 @@
 import type { ChatMessagePayload } from "@guildedjs/guilded-api-typings";
-import type { Prisma, Severity } from "@prisma/client";
+import { Language, Prisma, Severity } from "@prisma/client";
 import { nanoid } from "nanoid";
 
 import { Action, ContentFilter, LogChannelType, Server } from "../typings";
@@ -74,7 +74,7 @@ export class DatabaseUtil extends Util {
         return this.prisma.server.create({
             data: {
                 serverId,
-                locale: "en-US",
+                locale: Language.EN_US,
                 premium: null,
                 blacklisted: false,
                 muteRoleId: null,
