@@ -46,7 +46,7 @@ const Reply: Command = {
             ],
             isPrivate: true,
         });
-        await ctx.prisma.modmailMessage.create({
+        const createdModmailMessage = await ctx.prisma.modmailMessage.create({
             data: {
                 authorId: message.createdBy,
                 channelId: message.channelId,
@@ -62,7 +62,7 @@ const Reply: Command = {
                 {
                     description: content,
                     footer: {
-                        text: `Ticket #${isCurrentChannelModmail.id}`,
+                        text: `Message ID ${createdModmailMessage.originalMessageId}`,
                     },
                     ...baseEmbedData,
                 },

@@ -3,6 +3,7 @@ import Collection from "@discordjs/collection";
 import { Category } from "../Category";
 import type { Command } from "../Command";
 import Close from "./Close.command";
+import Edit from "./Edit.command";
 import Reply from "./Reply.command";
 
 const Modmail: Command = {
@@ -11,8 +12,8 @@ const Modmail: Command = {
     aliases: ["m"],
     examples: ["modmail reply Hi, what can I help you with?"],
     parentCommand: true,
-    category: Category.Settings,
-    subCommands: new Collection<string, Command>().set("reply", Reply).set("close", Close),
+    category: Category.Moderation,
+    subCommands: new Collection<string, Command>().set("reply", Reply).set("close", Close).set("edit", Edit),
     execute: () => void 0,
 };
 
