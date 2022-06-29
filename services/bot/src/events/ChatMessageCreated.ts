@@ -11,6 +11,7 @@ import number from "../args/number";
 import rest from "../args/rest";
 import string from "../args/string";
 import UUID from "../args/UUID";
+import { Colors } from "../color";
 import type { CommandArgType, CommandArgument } from "../commands/Command";
 import { codeBlock, inlineCode } from "../formatters";
 import { FilteredContent } from "../modules/content-filter";
@@ -35,6 +36,40 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context, server:
     const { message } = packet.d;
     // if the message wasn't sent in a server, or the person was a bot then don't do anything
     if (message.createdByBotId || message.createdBy === ctx.userId || !message.serverId) return void 0;
+
+    const isModmailChannel = await ctx.prisma.modmailThread.findFirst({
+        where: { serverId: message.serverId!, userFacingChannelId: message.channelId, openerId: message.createdBy, closed: false },
+    });
+    if (isModmailChannel) {
+        void ctx.rest.router.deleteChannelMessage(message.channelId, message.id);
+        const member = await ctx.serverUtil.getMember(message.serverId, message.createdBy, true, true);
+        const newModmailMessage = await ctx.rest.router.createChannelMessage(isModmailChannel.modFacingChannelId, {
+            embeds: [
+                {
+                    description: message.content,
+                    author: {
+                        icon_url: member.user.avatar,
+                        name: `${member.user.name} (${member.user.id})`,
+                    },
+                    color: Colors.yellow,
+                    footer: {
+                        text: `Ticket #${isModmailChannel.id}`,
+                    },
+                    timestamp: new Date().toISOString(),
+                },
+            ],
+        });
+        return ctx.prisma.modmailMessage.create({
+            data: {
+                authorId: message.createdBy,
+                channelId: message.channelId,
+                content: message.content,
+                originalMessageId: message.id,
+                sentMessageId: newModmailMessage.message.id,
+                modmailThreadId: isModmailChannel.id,
+            },
+        });
+    }
 
     // the prefix of this server, otherwise the fallback default prefix
     const prefix = server.getPrefix();
@@ -181,9 +216,7 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context, server:
 						Server: ${inlineCode(message.serverId)}
 						Channel: ${inlineCode(message.channelId)}
 						User: ${inlineCode(message.createdBy)} (${inlineCode(member?.user.name)})
-						Error: \`\`\`
-						${e.stack ?? e.message}
-						\`\`\`
+						Error: \`\`\`${e.stack ?? e.message}\`\`\`
 					`
                     )
                     .addField(`Content`, codeBlock(message.content?.length > 1018 ? `${message.content.substring(0, 1018)}...` : message.content))

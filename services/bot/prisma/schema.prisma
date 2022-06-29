@@ -27,6 +27,7 @@ model Server {
     prefix                     String?
     createdAt                  DateTime     @default(now())
     updatedAt                  DateTime?    @updatedAt
+    modmailGroupId             String?      @db.VarChar(255)
 }
 
 model LogChannel {
@@ -105,6 +106,36 @@ model Message {
     deletedAt DateTime?
 }
 
+model ReactionAction {
+    id         Int                @id @default(autoincrement())
+    channelId  String             @db.VarChar(255)
+    serverId   String             @db.VarChar(255)
+    messageId  String             @db.VarChar(255)
+    emoteId    Int                @db.Integer
+    actionType ReactionActionType
+}
+
+model ModmailThread {
+    id                  Int              @id @default(autoincrement())
+    serverId            String           @db.VarChar(255)
+    userFacingChannelId String           @db.VarChar(255)
+    modFacingChannelId  String           @db.VarChar(255)
+    openerId            String           @db.VarChar(255)
+    handlingModerators  String[]
+    closed              Boolean          @default(false)
+    messages            ModmailMessage[]
+}
+
+model ModmailMessage {
+    originalMessageId String        @id @db.VarChar(255)
+    sentMessageId     String        @db.VarChar(255)
+    channelId         String        @db.VarChar(255)
+    authorId          String        @db.VarChar(255)
+    content           String        @db.Text
+    modmailThread     ModmailThread @relation(fields: [modmailThreadId], references: [id])
+    modmailThreadId   Int
+}
+
 enum LogChannelType {
     ALL
     MOD_ACTION_LOG
@@ -137,6 +168,10 @@ enum FilterMatching {
     PREFIX
     INFIX
     POSTFIX
+}
+
+enum ReactionActionType {
+    MODMAIL
 }
 
 enum PremiumType {

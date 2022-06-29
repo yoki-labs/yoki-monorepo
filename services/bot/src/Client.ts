@@ -9,6 +9,7 @@ import type TypedEmitter from "typed-emitter";
 
 import type { Command } from "./commands/Command";
 import ActionIssued from "./events/ActionIssued";
+import ChannelMessageReactionCreated from "./events/ChannelMessageReactionCreated";
 import ChatMessageCreated from "./events/ChatMessageCreated";
 import ChatMessageDeleted from "./events/ChatMessageDeleted";
 import ChatMessageUpdated from "./events/ChatMessageUpdated";
@@ -81,6 +82,8 @@ export default class Client {
         ListItemUpdated: ListItemEvent,
         // handles members getting new roles
         teamRolesUpdated,
+        // handles reactions
+        ChannelMessageReactionCreated,
     };
 
     readonly emitter = new EventEmitter() as TypedEmitter<ClientCustomEvents>;

@@ -80,6 +80,7 @@ export class DatabaseUtil extends Util {
                 muteRoleId: null,
                 botJoinedAt: null,
                 filterEnabled: false,
+                modmailGroupId: null,
                 kickInfractionThreshold: 20,
                 muteInfractionThreshold: 15,
                 banInfractionThreshold: 30,

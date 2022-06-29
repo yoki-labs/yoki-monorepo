@@ -62,8 +62,4 @@ const Add: Command = {
     },
 };
 
-console.log("Exporting add:", Add);
-
 export default Add;
-
-console.log("Exported add:", Add);
