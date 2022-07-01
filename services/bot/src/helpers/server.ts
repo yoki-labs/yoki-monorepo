@@ -1,3 +1,4 @@
+import type { TeamMemberPayload } from "@guildedjs/guilded-api-typings";
 import JSONCache from "redis-json";
 
 import type { CachedMember } from "../typings";
@@ -25,7 +26,8 @@ export class ServerUtil extends Util {
     // }
 
     // Get a member from either the cache or the API
-    async getMember(serverId: string, userId: string, cache = true, force = false) {
+    async getMember(serverId: string, userId: string, cache?: boolean, force?: true): Promise<TeamMemberPayload>;
+    async getMember(serverId: string, userId: string, cache = true, force = false): Promise<CachedMember> {
         if (!force) {
             const isCached = await this.getCachedMember(serverId, userId);
             if (isCached) return isCached;
