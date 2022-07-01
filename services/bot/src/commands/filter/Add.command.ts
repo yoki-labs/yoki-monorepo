@@ -1,5 +1,6 @@
+import { Severity } from "@prisma/client";
+
 import { inlineCode } from "../../formatters";
-import { transformSeverityStringToEnum } from "../../modules/content-filter";
 import { RoleType } from "../../typings";
 import { getFilterFromSyntax } from "../../util";
 import { Category } from "../Category";
@@ -21,8 +22,9 @@ const Add: Command = {
         },
         {
             name: "severity",
-            type: "string",
+            type: "enum",
             optional: true,
+            values: Severity,
         },
         {
             name: "infraction_points",
@@ -34,7 +36,7 @@ const Add: Command = {
         if (!server.filterEnabled)
             return ctx.messageUtil.replyWithAlert(message, `Enable filtering`, `Automod filter is disabled! Please enable using \`${server.getPrefix()}filter enable\``);
         const phrase = (args.phrase as string).toLowerCase();
-        const severity = transformSeverityStringToEnum((args.severity as string | null) ?? "warn");
+        const severity = (args.severity as Severity | null) ?? Severity.WARN;
         const infractionPoints = (args.infraction_points as number | null) ?? 5;
 
         if (!severity) return ctx.messageUtil.replyWithAlert(message, `No such severity level`, `Sorry, but that is not a valid severity level!`);

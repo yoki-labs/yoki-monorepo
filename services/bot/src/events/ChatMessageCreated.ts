@@ -172,7 +172,7 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context, server:
             const castArg = await argCast[commandArg.type]?.(args[i], args, i, ctx, packet, commandArg);
 
             // if the arg is not valid, inform the user
-            if (!castArg || (commandArg.max && ((castArg as any).length ?? castArg) > commandArg.max))
+            if (typeof castArg == "undefined" || (commandArg.max && ((castArg as any).length ?? castArg) > commandArg.max))
                 return ctx.messageUtil.handleBadArg(message, prefix, commandArg, command, parentCommand);
 
             // if the arg is valid, add it to the resolved args obj
