@@ -1,4 +1,5 @@
 import { stripIndents } from "common-tags";
+import i18next from "i18next";
 
 import { inlineCode } from "../../formatters";
 import { CachedMember, RoleType } from "../../typings";
@@ -34,7 +35,7 @@ const Ban: Command = {
             return ctx.messageUtil.replyWithError(
                 message,
                 stripIndents`
-					${i18n.__("ban.error")}
+					${i18next.t("ban.error")}
 					${inlineCode((e as Error).message)}
 				`,
                 undefined,
@@ -52,8 +53,11 @@ const Ban: Command = {
 
         await ctx.messageUtil.sendSuccessBlock(
             message.channelId,
-            i18n.__("ban.targetTitle"),
-            i18n.__("ban.targetDescription", message.createdBy, target.user.name, inlineCode(target.user.id)),
+            i18next.t("ban.targetTitle"),
+            i18next.t("ban.targetDescription", {
+                authorId: message.createdBy,
+                target,
+            }),
             undefined,
             {
                 isPrivate: true,

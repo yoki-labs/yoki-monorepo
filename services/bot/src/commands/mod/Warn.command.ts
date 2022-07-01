@@ -1,6 +1,6 @@
 import type { EmbedField } from "@guildedjs/guilded-api-typings";
 import { stripIndents } from "common-tags";
-import i18n from "i18n";
+import i18next from "i18next";
 
 import { inlineCode } from "../../formatters";
 import { getInfractionsFrom } from "../../moderation-util";
@@ -32,7 +32,7 @@ const Warn: Command = {
             max: 500,
         },
     ],
-    execute: async (message, args, ctx) => {
+    execute: async (message, args, ctx, commandCtx) => {
         const target = args.target as CachedMember;
 
         const [reason, infractionPoints] = getInfractionsFrom(args);
@@ -40,12 +40,14 @@ const Warn: Command = {
         try {
             await ctx.messageUtil.sendWarningBlock(
                 message.channelId,
-                i18n.__("warn.title"),
-                i18n.__("warn.description", target.user.id),
+                i18next.t("warn.title"),
+                i18next.t("warn.description", {
+                    target,
+                }),
                 {
                     fields: [
                         reason && {
-                            name: i18n.__("moderation.reason"),
+                            name: i18next.t("moderation.reason"),
                             value: (reason as string).length > 1021 ? `${(reason as string).substr(0, 1021)}...` : reason,
                         },
                     ].filter(Boolean) as EmbedField[],
@@ -58,7 +60,7 @@ const Warn: Command = {
             return ctx.messageUtil.replyWithError(
                 message,
                 stripIndents`
-					${i18n.__("warn.error")}
+					${i18next.t("warn.error", { lng: commandCtx.server.locale })}
 					${inlineCode((e as Error).message)}
 				`,
                 undefined,
@@ -76,8 +78,11 @@ const Warn: Command = {
 
         await ctx.messageUtil.sendSuccessBlock(
             message.channelId,
-            i18n.__("warn.targetTitle"),
-            i18n.__("warn.targetDescription", message.createdBy, target.user.name, inlineCode(target.user.id)),
+            i18next.t("warn.targetTitle"),
+            i18next.t("warn.targetDescription", {
+                authorId: message.createdBy,
+                target: target.user,
+            }),
             undefined,
             {
                 isPrivate: true,

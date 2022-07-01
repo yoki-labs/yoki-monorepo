@@ -1,5 +1,5 @@
 import { stripIndents } from "common-tags";
-import i18n from "i18n";
+import i18next from "i18next";
 
 import { inlineCode } from "../../formatters";
 import { CachedMember, RoleType } from "../../typings";
@@ -35,7 +35,7 @@ const Kick: Command = {
             return ctx.messageUtil.replyWithError(
                 message,
                 stripIndents`
-					${i18n.__("kick.error")}
+					${i18next.t("kick.error")}
 					${inlineCode((e as Error).message)}
 				`,
                 undefined,
@@ -53,8 +53,11 @@ const Kick: Command = {
 
         await ctx.messageUtil.sendSuccessBlock(
             message.channelId,
-            i18n.__("mute.targetTitle"),
-            i18n.__("mute.targetDescription", message.createdBy, target.user.name, inlineCode(target.user.id)),
+            i18next.t("kick.targetTitle"),
+            i18next.t("kick.targetDescription", {
+                authorId: message.createdBy,
+                target,
+            }),
             undefined,
             {
                 isPrivate: true,

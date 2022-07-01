@@ -24,6 +24,7 @@ services:
             - cache
         volumes:
             - "../../services/bot/src:/usr/app/services/bot/src"
+            - "../../services/bot/locales:/usr/app/services/bot/locales"       
         restart: "no"
         environment:
             DATABASE_URL: "postgresql://yoki_user:yoki_pass@db:5432/yoki?schema=public"

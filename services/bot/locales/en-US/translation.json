@@ -1,0 +1,59 @@
+{
+    "commands": {
+        "ping": {
+            "response": "PONG!",
+            "timed": "PONG! Took me {{ seconds }} seconds."
+        },
+        "config": {
+            "language": {
+                "changedTitle": "Language changed",
+                "changedDescription": "The language of Yoki has been changed to English (USA).",
+                "unspecifiedTitle": "Server languages",
+                "unspecifiedAll": "All languages",
+                "unspecifiedCurrent": "Current language"
+            }
+        },
+        "moderation": {
+            "reason": "Reason"
+        },
+        "mute": {
+            "title": "You have been muted",
+            "description": "{{ target }}, you have been muted for %s minutes.",
+            "targetTitle": "User muted",
+            "targetDescription": "<@{{ authorId }}>, you have successfully muted {{ target.user.name }} ({{ target.user.id }}).",
+            "noRoleTitle": "No mute role set",
+            "noRoleDescription": "There is no mute role configured for this server.",
+            "badDurationTitle": "Duration must be longer",
+            "badDurationDescription": "Your mute duration must be longer than 15 minutes.",
+            "error": "There was an issue muting this user. This is most likely due to misconfigured permissions for your server."
+        },
+        "unmute": {
+            "title": "You have been unmuted",
+            "description": "<@{{ target.user.id }}>, you have been manually unmuted by a staff member of this server.",
+            "targetTitle": "User unmuted",
+            "targetDescription": "<@{{ authorId }}>, you have successfully unmuted {{ target.user.name }} ({{ target.user.id }}).",
+            "error": "There was an issue removing mute from this user. This is most likely due to misconfigured permissions for your server."
+        },
+        "note": {
+            "title": "Moderation note added",
+            "description": "<@{{ authorId }}>, you have successfully added a new moderation note on {{ target.user.name }} ({{ target.user.id }})."
+        },
+        "warn": {
+            "title": "You have been warned",
+            "description": "<@{{ target.user.id }}>, you have been manually warned by a staff member of this server.",
+            "targetTitle": "User warned",
+            "targetDescription": "{{ authorId }}, you have successfully warned {{ target.user.name }} ({{ target.user.id }}).",
+            "error": "There was an issue warning this user."
+        },
+        "kick": {
+            "targetTitle": "User kicked",
+            "targetDescription": "{{ authorId }}, you have successfully kicked {{ target.user.name }} ({{ target.user.id }}).",
+            "error": "There was an issue kicking this user. This is most likely due to misconfigured permissions for your server."
+        },
+        "ban": {
+            "targetTitle": "User banned",
+            "targetDescription": "{{ authorId }}, you have successfully banned {{ target.user.name }} ({{ target.user.id }}).",
+            "error": "There was an issue banning this user. This is most likely due to misconfigured permissions for your server."
+        }
+    }
+}

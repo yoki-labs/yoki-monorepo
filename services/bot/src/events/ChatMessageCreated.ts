@@ -1,7 +1,6 @@
 import type { WSChatMessageCreatedPayload } from "@guildedjs/guilded-api-typings";
 import { Embed } from "@guildedjs/webhook-client";
 import { stripIndents } from "common-tags";
-import i18n from "i18n";
 import { nanoid } from "nanoid";
 
 import boolean from "../args/boolean";
@@ -33,8 +32,6 @@ const argCast: Record<
 };
 
 export default async (packet: WSChatMessageCreatedPayload, ctx: Context, server: Server) => {
-    i18n.setLocale(server.locale);
-
     const { message } = packet.d;
     // if the message wasn't sent in a server, or the person was a bot then don't do anything
     if (message.createdByBotId || message.createdBy === ctx.userId || !message.serverId) return void 0;

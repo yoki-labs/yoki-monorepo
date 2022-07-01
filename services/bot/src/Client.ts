@@ -3,8 +3,11 @@ import { RestManager } from "@guildedjs/rest";
 import { WebhookClient } from "@guildedjs/webhook-client";
 import { WebSocketManager } from "@guildedjs/ws";
 import { Action, PrismaClient } from "@prisma/client";
+import i18next from "i18next";
+import FSBackend from "i18next-fs-backend";
 import RedisClient from "ioredis";
 import EventEmitter from "node:events";
+import { join } from "node:path";
 import type TypedEmitter from "typed-emitter";
 
 import type { Command } from "./commands/Command";
@@ -89,7 +92,18 @@ export default class Client {
     };
 
     /** start the bot connection */
-    init() {
+    async init() {
+        await i18next.use(FSBackend).init({
+            backend: {
+                loadPath: join(__dirname, "..", "locales", "{{lng}}", "{{ns}}.json"),
+            },
+            cleanCode: true,
+            fallbackLng: ["en-US"],
+            defaultNS: "translation",
+            lng: "en-US",
+            ns: ["translation"],
+        });
+
         // starting the sweeper for mute scheduler
         this.muteHandler.init();
         // connecting to the WS gateway

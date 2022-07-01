@@ -1,14 +1,14 @@
 import { Language } from "@prisma/client";
 import { stripIndents } from "common-tags";
-import i18n from "i18n";
+import i18next from "i18next";
 
 import { inlineCode } from "../../formatters";
-import { languageNames } from "../../language";
 import { RoleType } from "../../typings";
+import { languageNames } from "../../util";
 import { Category } from "../Category";
 import type { Command } from "../Command";
 
-const allLanguages = Object.keys(languageNames);
+const allLanguages = Object.keys(Language);
 
 const ConfigLanguage: Command = {
     name: "config-language",
@@ -26,20 +26,18 @@ const ConfigLanguage: Command = {
         if (!newSetting)
             return ctx.messageUtil.replyWithInfo(
                 message,
-                i18n.__("config.language.unspecifiedTitle"),
+                i18next.t("config.language.unspecifiedTitle"),
                 stripIndents`
-                    **${i18n.__("config.language.unspecifiedCurrent")}:** ${languageNames[commandCtx.server.locale]}
+                    **${i18next.t("config.language.unspecifiedCurrent")}:** ${languageNames[commandCtx.server.locale]}
 
-                    **${i18n.__("config.language.unspecifiedAll")}:**
+                    **${i18next.t("config.language.unspecifiedAll")}:**
                     ${allLanguages.map((lang) => `${inlineCode(lang)}: ${languageNames[lang]}`).join("\n")}
                 `
             );
 
         await ctx.prisma.server.updateMany({ data: { locale: newSetting }, where: { serverId: message.serverId! } });
 
-        i18n.setLocale(newSetting);
-
-        return ctx.messageUtil.replyWithSuccess(message, i18n.__("config.language.changedTitle"), i18n.__("config.language.changedDescription"));
+        return ctx.messageUtil.replyWithSuccess(message, i18next.t("config.language.changedTitle"), i18next.t("config.language.changedDescription"));
     },
 };
 

@@ -1,4 +1,4 @@
-import i18n from "i18n";
+import i18next from "i18next";
 
 import { bold } from "../formatters";
 import type { Command } from "./Command";
@@ -9,11 +9,11 @@ const Ping: Command = {
     usage: "",
     aliases: ["p"],
     execute: (message, _args, ctx) => {
-        return ctx.messageUtil.send(message.channelId, { content: i18n.__("ping"), replyMessageIds: [message.id] }).then((pingMessage) => {
+        return ctx.messageUtil.send(message.channelId, { content: i18next.t("ping"), replyMessageIds: [message.id] }).then((pingMessage) => {
             const msecDelta = new Date(pingMessage.createdAt).getTime() - new Date(message.createdAt).getTime();
 
             return ctx.rest.router.updateChannelMessage(pingMessage.channelId, pingMessage.id, {
-                content: i18n.__("ping.timed", bold(msecDelta / 1000)),
+                content: i18next.t("ping.timed", bold(msecDelta / 1000)),
             });
         });
     },

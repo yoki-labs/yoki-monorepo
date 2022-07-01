@@ -1,5 +1,6 @@
 import type { EmbedField } from "@guildedjs/guilded-api-typings";
 import { stripIndents } from "common-tags";
+import i18next from "i18next";
 
 import { inlineCode } from "../../formatters";
 import { CachedMember, RoleType } from "../../typings";
@@ -28,7 +29,7 @@ const Unmute: Command = {
         },
     ],
     execute: async (message, args, ctx, commandCtx) => {
-        if (!commandCtx.server.muteRoleId) return ctx.messageUtil.replyWithAlert(message, i18n.__("mute.noRoleTitle"), i18n.__("mute.noRoleDescription"));
+        if (!commandCtx.server.muteRoleId) return ctx.messageUtil.replyWithAlert(message, i18next.t("mute.noRoleTitle"), i18next.t("mute.noRoleDescription"));
         const target = args.target as CachedMember;
         const reason = args.reason as string | null;
 
@@ -38,7 +39,7 @@ const Unmute: Command = {
             return ctx.messageUtil.replyWithError(
                 message,
                 stripIndents`
-					${i18n.__("unmute.error")}
+					${i18next.t("unmute.error")}
 					${inlineCode((e as Error).message)}
 				`,
                 undefined,
@@ -59,12 +60,12 @@ const Unmute: Command = {
 
         await ctx.messageUtil.sendInfoBlock(
             message.channelId,
-            i18n.__("unmute.title"),
-            i18n.__("unmute.description", target.user.id),
+            i18next.t("unmute.title"),
+            i18next.t("unmute.description", { target }),
             {
                 fields: [
                     reason && {
-                        name: i18n.__("moderation.reason"),
+                        name: i18next.t("moderation.reason"),
                         value: (reason as string).length > 1024 ? `${reason.substr(0, 1021)}...` : reason,
                     },
                 ].filter(Boolean) as EmbedField[],
@@ -76,8 +77,11 @@ const Unmute: Command = {
 
         await ctx.messageUtil.sendSuccessBlock(
             message.channelId,
-            i18n.__("unmute.targetTitle"),
-            i18n.__("unmute.targetDescription", message.createdBy, target.user.name, inlineCode(target.user.id)),
+            i18next.t("unmute.targetTitle"),
+            i18next.t("unmute.targetDescription", {
+                authorId: message.createdBy,
+                target,
+            }),
             undefined,
             {
                 isPrivate: true,

@@ -1,4 +1,4 @@
-import { ContentFilter, FilterMatching } from "@prisma/client";
+import { ContentFilter, FilterMatching, Language } from "@prisma/client";
 
 import { RoleType } from ".prisma/client";
 
@@ -48,3 +48,8 @@ export function filterToString(filter: ContentFilter) {
         : // *word, word* or word
           `${filter.matching === FilterMatching.POSTFIX ? "*" : ""}${filter.content}${filter.matching === FilterMatching.PREFIX ? "*" : ""}`;
 }
+
+export const languageNames: Record<Language, string> = {
+    EN_US: "English (USA)",
+    LT_LT: "Lietuvių",
+};

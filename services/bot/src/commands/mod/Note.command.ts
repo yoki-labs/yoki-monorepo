@@ -1,6 +1,5 @@
-import i18n from "i18n";
+import i18next from "i18next";
 
-import { inlineCode } from "../../formatters";
 import { getInfractionsFrom } from "../../moderation-util";
 import { CachedMember, RoleType } from "../../typings";
 import { Category } from "../Category";
@@ -43,15 +42,9 @@ const Note: Command = {
             expiresAt: null,
         });
 
-        await ctx.messageUtil.sendSuccessBlock(
-            message.channelId,
-            i18n.__("note.title"),
-            i18n.__("note.description", message.createdBy, target.user.name, inlineCode(target.user.id)),
-            undefined,
-            {
-                isPrivate: true,
-            }
-        );
+        await ctx.messageUtil.sendSuccessBlock(message.channelId, i18next.t("note.title"), i18next.t("note.description", { authorId: message.createdBy, target }), undefined, {
+            isPrivate: true,
+        });
 
         return ctx.rest.router.deleteChannelMessage(message.channelId, message.id);
     },
