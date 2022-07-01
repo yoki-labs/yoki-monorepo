@@ -1,9 +1,6 @@
 {
-    "name": "English (USA)",
-    "terms": {
-        "ping": "PONG!",
-        "pingTimed": "PONG! Took me {0} seconds.",
-        "languageChangedTitle": "Language changed",
-        "languageChangedDescription": "The language of Yoki has been changed to English (USA)."
-    }
+    "ping": "PONG!",
+    "ping.timed": "PONG! Took me %s seconds.",
+    "config.language.changedTitle": "Language changed",
+    "config.language.changedDescription": "The language of Yoki has been changed to English (USA)."
 }

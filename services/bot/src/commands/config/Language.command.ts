@@ -1,9 +1,14 @@
 import { Language } from "@prisma/client";
+import { stripIndents } from "common-tags";
+import i18n from "i18n";
 
-import { getTerm, languages } from "../../language";
+import { inlineCode } from "../../formatters";
+import { languageNames } from "../../language";
 import { RoleType } from "../../typings";
 import { Category } from "../Category";
 import type { Command } from "../Command";
+
+const allLanguages = Object.keys(languageNames);
 
 const ConfigLanguage: Command = {
     name: "config-language",
@@ -14,15 +19,27 @@ const ConfigLanguage: Command = {
     category: Category.Settings,
     subName: "language",
     requiredRole: RoleType.ADMIN,
-    args: [{ name: "newSetting", type: "enum", values: Language }],
-    execute: async (message, args, ctx) => {
-        const newSetting = args.newSetting as Language;
+    args: [{ name: "newSetting", type: "enum", values: Language, optional: true }],
+    execute: async (message, args, ctx, commandCtx) => {
+        const newSetting = args.newSetting as Language | null;
+
+        if (!newSetting)
+            return ctx.messageUtil.replyWithInfo(
+                message,
+                "Available languages",
+                stripIndents`
+                    **Current language:** ${languageNames[commandCtx.server.locale]}
+
+                    **Here are available languages:**
+                    ${allLanguages.map((lang) => `${inlineCode(lang)}: ${languageNames[lang]}`).join("\n")}
+                `
+            );
 
         await ctx.prisma.server.updateMany({ data: { locale: newSetting }, where: { serverId: message.serverId! } });
 
-        const newLanguage = languages[newSetting];
+        i18n.setLocale(newSetting);
 
-        return ctx.messageUtil.replyWithSuccess(message, getTerm(newLanguage, "languageChangedTitle"), getTerm(newLanguage, "languageChangedDescription"));
+        return ctx.messageUtil.replyWithSuccess(message, i18n.__("config.language.changedTitle"), i18n.__("config.language.changedDescription"));
     },
 };
 

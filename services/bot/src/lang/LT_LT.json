@@ -1,9 +1,6 @@
 {
-    "name": "Lietuvių",
-    "terms": {
-        "ping": "PONG!",
-        "pingTimed": "PONG! Man prireikė {0} sekundžių.",
-        "languageChangedTitle": "Kalba pakeista",
-        "languageChangedDescription": "Joki'o kalba buvo pakeista į lietuvių."
-    }
+    "ping": "PONG!",
+    "ping.timed": "PONG! Man prireikė %s sekundžių.",
+    "config.language.changedTitle": "Kalba pakeista",
+    "config.language.changedDescription": "Joki'o kalba buvo pakeista į lietuvių."
 }
