@@ -1,6 +1,45 @@
 {
     "ping": "PONG!",
     "ping.timed": "PONG! Took me %s seconds.",
+
     "config.language.changedTitle": "Language changed",
-    "config.language.changedDescription": "The language of Yoki has been changed to English (USA)."
+    "config.language.changedDescription": "The language of Yoki has been changed to English (USA).",
+    "config.language.unspecifiedTitle": "Server languages",
+    "config.language.unspecifiedAll": "All languages",
+    "config.language.unspecifiedCurrent": "Current language",
+
+    "moderation.reason": "Reason",
+
+    "mute.title": "You have been muted",
+    "mute.description": "<@%s>, you have been muted for %s minutes.",
+    "mute.targetTitle": "User muted",
+    "mute.targetDescription": "<@%s>, you have successfully muted %s (%s)",
+    "mute.noRoleTitle": "No mute role set",
+    "mute.noRoleDescription": "There is no mute role configured for this server.",
+    "mute.badDurationTitle": "Duration must be longer",
+    "mute.badDurationDescription": "Your mute duration must be longer than 15 minutes.",
+    "mute.error": "There was an issue muting this user. This is most likely due to misconfigured permissions for your server.",
+
+    "unmute.title": "You have been unmuted",
+    "unmute.description": "<@%s>, you have been manually unmuted by a staff member of this server.",
+    "unmute.targetTitle": "User unmuted",
+    "unmute.targetDescription": "<@%s>, you have successfully unmuted %s (%s).",
+    "unmute.error": "There was an issue removing mute from this user. This is most likely due to misconfigured permissions for your server.",
+
+    "note.title": "Moderation note added",
+    "note.description": "<@%s>, you have successfully added a new moderation note on %s (%s).",
+
+    "warn.title": "You have been warned",
+    "warn.description": "<@%s>, you have been manually warned by a staff member of this server.",
+    "warn.targetTitle": "User warned",
+    "warn.targetDescription": "<@%s>, you have successfully warned %s (%s).",
+    "warn.error": "There was an issue warning this user.",
+
+    "kick.targetTitle": "User kicked",
+    "kick.targetDescription": "<@%s>, you have successfully kicked %s (%s).",
+    "kick.error": "There was an issue kicking this user. This is most likely due to misconfigured permissions for your server.",
+
+    "ban.targetTitle": "User banned",
+    "ban.targetDescription": "<@%s>, you have successfully banned %s (%s).",
+    "ban.error": "There was an issue banning this user. This is most likely due to misconfigured permissions for your server."
 }

@@ -1,5 +1,6 @@
 import type { EmbedField } from "@guildedjs/guilded-api-typings";
 import { stripIndents } from "common-tags";
+import i18n from "i18n";
 import ms from "ms";
 
 import { Colors } from "../../color";
@@ -33,11 +34,11 @@ const Mute: Command = {
         },
     ],
     execute: async (message, args, ctx, commandCtx) => {
-        if (!commandCtx.server.muteRoleId) return ctx.messageUtil.replyWithAlert(message, `No mute role set`, `There is no mute role configured for this server.`);
+        if (!commandCtx.server.muteRoleId) return ctx.messageUtil.replyWithAlert(message, i18n.__("mute.noRoleTitle"), i18n.__("mute.noRoleDescription"));
         const target = args.target as CachedMember;
         const reason = args.reason as string | null;
         const duration = ms(args.duration as string);
-        if (!duration || duration <= 894000) return ctx.messageUtil.replyWithAlert(message, `Duration must be longer`, `Your mute duration must be longer than 15 minutes.`);
+        if (!duration || duration <= 894000) return ctx.messageUtil.replyWithAlert(message, i18n.__("mute.badDurationTitle"), i18n.__("mute.badDurationDescription"));
         const expiresAt = new Date(Date.now() + duration);
 
         try {
@@ -46,7 +47,7 @@ const Mute: Command = {
             return ctx.messageUtil.replyWithError(
                 message,
                 stripIndents`
-					There was an issue muting this user. This is most likely due to misconfigured permissions for your server.
+					${i18n.__("mute.error")}
 					${inlineCode((e as Error).message)}
 				`,
                 undefined,
@@ -64,13 +65,13 @@ const Mute: Command = {
 
         await ctx.messageUtil.sendValueBlock(
             message.channelId,
-            ":mute: You have been muted",
-            `<@${target.user.id}>, you have been muted for ${bold(duration / 60000)} minutes.`,
+            i18n.__("mute.title"),
+            i18n.__("mute.description", target.user.id, bold(duration / 60000)),
             Colors.red,
             {
                 fields: [
                     reason && {
-                        name: "Reason",
+                        name: i18n.__("moderation.reason"),
                         value: (reason as string).length > 1024 ? `${reason.substr(0, 1021)}...` : reason,
                     },
                 ].filter(Boolean) as EmbedField[],
@@ -82,8 +83,8 @@ const Mute: Command = {
 
         await ctx.messageUtil.sendSuccessBlock(
             message.channelId,
-            `User muted`,
-            `<@${message.createdBy}>, you have successfully muted ${target.user.name} (${inlineCode(target.user.id)}).`,
+            i18n.__("mute.targetTitle"),
+            i18n.__("mute.targetDescription", message.createdBy, target.user.name, inlineCode(target.user.id)),
             undefined,
             {
                 isPrivate: true,

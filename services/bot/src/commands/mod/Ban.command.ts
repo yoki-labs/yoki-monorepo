@@ -34,7 +34,7 @@ const Ban: Command = {
             return ctx.messageUtil.replyWithError(
                 message,
                 stripIndents`
-					There was an issue banning this user. This is most likely due to misconfigured permissions for your server.
+					${i18n.__("ban.error")}
 					${inlineCode((e as Error).message)}
 				`,
                 undefined,
@@ -52,8 +52,8 @@ const Ban: Command = {
 
         await ctx.messageUtil.sendSuccessBlock(
             message.channelId,
-            `User banned`,
-            `<@${message.createdBy}>, you have successfully banned ${target.user.name} (${inlineCode(target.user.id)}).`,
+            i18n.__("ban.targetTitle"),
+            i18n.__("ban.targetDescription", message.createdBy, target.user.name, inlineCode(target.user.id)),
             undefined,
             {
                 isPrivate: true,

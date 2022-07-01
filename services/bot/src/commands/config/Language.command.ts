@@ -26,11 +26,11 @@ const ConfigLanguage: Command = {
         if (!newSetting)
             return ctx.messageUtil.replyWithInfo(
                 message,
-                "Available languages",
+                i18n.__("config.language.unspecifiedTitle"),
                 stripIndents`
-                    **Current language:** ${languageNames[commandCtx.server.locale]}
+                    **${i18n.__("config.language.unspecifiedCurrent")}:** ${languageNames[commandCtx.server.locale]}
 
-                    **Here are available languages:**
+                    **${i18n.__("config.language.unspecifiedAll")}:**
                     ${allLanguages.map((lang) => `${inlineCode(lang)}: ${languageNames[lang]}`).join("\n")}
                 `
             );

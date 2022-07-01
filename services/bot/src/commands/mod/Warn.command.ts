@@ -1,5 +1,6 @@
 import type { EmbedField } from "@guildedjs/guilded-api-typings";
 import { stripIndents } from "common-tags";
+import i18n from "i18n";
 
 import { inlineCode } from "../../formatters";
 import { getInfractionsFrom } from "../../moderation-util";
@@ -39,12 +40,12 @@ const Warn: Command = {
         try {
             await ctx.messageUtil.sendWarningBlock(
                 message.channelId,
-                "You have been warned",
-                `<@${target.user.id}>, you have been manually warned by a staff member of this server.`,
+                i18n.__("warn.title"),
+                i18n.__("warn.description", target.user.id),
                 {
                     fields: [
                         reason && {
-                            name: "Reason",
+                            name: i18n.__("moderation.reason"),
                             value: (reason as string).length > 1021 ? `${(reason as string).substr(0, 1021)}...` : reason,
                         },
                     ].filter(Boolean) as EmbedField[],
@@ -57,7 +58,7 @@ const Warn: Command = {
             return ctx.messageUtil.replyWithError(
                 message,
                 stripIndents`
-					There was an issue warning this user.
+					${i18n.__("warn.error")}
 					${inlineCode((e as Error).message)}
 				`,
                 undefined,
@@ -75,8 +76,8 @@ const Warn: Command = {
 
         await ctx.messageUtil.sendSuccessBlock(
             message.channelId,
-            `User warned`,
-            `<@${message.createdBy}>, you have successfully warned ${target.user.name} (${inlineCode(target.user.id)}).`,
+            i18n.__("warn.targetTitle"),
+            i18n.__("warn.targetDescription", message.createdBy, target.user.name, inlineCode(target.user.id)),
             undefined,
             {
                 isPrivate: true,

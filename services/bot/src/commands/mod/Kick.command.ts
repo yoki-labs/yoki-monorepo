@@ -1,4 +1,5 @@
 import { stripIndents } from "common-tags";
+import i18n from "i18n";
 
 import { inlineCode } from "../../formatters";
 import { CachedMember, RoleType } from "../../typings";
@@ -34,7 +35,7 @@ const Kick: Command = {
             return ctx.messageUtil.replyWithError(
                 message,
                 stripIndents`
-					There was an issue kicking this user. This is most likely due to misconfigured permissions for your server.
+					${i18n.__("kick.error")}
 					${inlineCode((e as Error).message)}
 				`,
                 undefined,
@@ -52,8 +53,8 @@ const Kick: Command = {
 
         await ctx.messageUtil.sendSuccessBlock(
             message.channelId,
-            `User kicked`,
-            `<@${message.createdBy}>, you have successfully kicked ${target.user.name} (${inlineCode(target.user.id)}).`,
+            i18n.__("mute.targetTitle"),
+            i18n.__("mute.targetDescription", message.createdBy, target.user.name, inlineCode(target.user.id)),
             undefined,
             {
                 isPrivate: true,

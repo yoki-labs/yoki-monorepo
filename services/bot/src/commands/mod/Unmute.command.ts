@@ -28,7 +28,7 @@ const Unmute: Command = {
         },
     ],
     execute: async (message, args, ctx, commandCtx) => {
-        if (!commandCtx.server.muteRoleId) return ctx.messageUtil.replyWithAlert(message, `No mute role set`, `There is no mute role configured for this server.`);
+        if (!commandCtx.server.muteRoleId) return ctx.messageUtil.replyWithAlert(message, i18n.__("mute.noRoleTitle"), i18n.__("mute.noRoleDescription"));
         const target = args.target as CachedMember;
         const reason = args.reason as string | null;
 
@@ -38,7 +38,7 @@ const Unmute: Command = {
             return ctx.messageUtil.replyWithError(
                 message,
                 stripIndents`
-					There was an issue removing mute from this user. This is most likely due to misconfigured permissions for your server.
+					${i18n.__("unmute.error")}
 					${inlineCode((e as Error).message)}
 				`,
                 undefined,
@@ -59,12 +59,12 @@ const Unmute: Command = {
 
         await ctx.messageUtil.sendInfoBlock(
             message.channelId,
-            "You have been unmuted",
-            `<@${target.user.id}>, you have been manually unmuted by a staff member of this server.`,
+            i18n.__("unmute.title"),
+            i18n.__("unmute.description", target.user.id),
             {
                 fields: [
                     reason && {
-                        name: "Reason",
+                        name: i18n.__("moderation.reason"),
                         value: (reason as string).length > 1024 ? `${reason.substr(0, 1021)}...` : reason,
                     },
                 ].filter(Boolean) as EmbedField[],
@@ -76,8 +76,8 @@ const Unmute: Command = {
 
         await ctx.messageUtil.sendSuccessBlock(
             message.channelId,
-            `User unmuted`,
-            `<@${message.createdBy}>, you have successfully unmuted ${target.user.name} (${inlineCode(target.user.id)}).`,
+            i18n.__("unmute.targetTitle"),
+            i18n.__("unmute.targetDescription", message.createdBy, target.user.name, inlineCode(target.user.id)),
             undefined,
             {
                 isPrivate: true,

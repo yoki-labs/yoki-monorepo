@@ -1,3 +1,5 @@
+import i18n from "i18n";
+
 import { inlineCode } from "../../formatters";
 import { getInfractionsFrom } from "../../moderation-util";
 import { CachedMember, RoleType } from "../../typings";
@@ -43,8 +45,8 @@ const Note: Command = {
 
         await ctx.messageUtil.sendSuccessBlock(
             message.channelId,
-            `Moderation note added`,
-            `<@${message.createdBy}>, you have successfully added a new moderation note on ${target.user.name} (${inlineCode(target.user.id)}).`,
+            i18n.__("note.title"),
+            i18n.__("note.description", message.createdBy, target.user.name, inlineCode(target.user.id)),
             undefined,
             {
                 isPrivate: true,

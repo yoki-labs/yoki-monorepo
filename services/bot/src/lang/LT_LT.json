@@ -1,6 +1,15 @@
 {
     "ping": "PONG!",
     "ping.timed": "PONG! Man prireikė %s sekundžių.",
+
     "config.language.changedTitle": "Kalba pakeista",
-    "config.language.changedDescription": "Joki'o kalba buvo pakeista į lietuvių."
+    "config.language.changedDescription": "Joki'o kalba buvo pakeista į lietuvių.",
+    "config.language.unspecifiedTitle": "Serverio kalbos",
+    "config.language.unspecifiedAll": "Visos kalbos",
+    "config.language.unspecifiedCurrent": "Dabartinė kalba",
+
+    "moderation.reason": "Priežastis",
+
+    "mute.title": ":mute: Jūs buvote nutildytas",
+    "mute.description": "<@%s>, jūs buvote nutildytas ir jums reikės laukti %s minučių."
 }
