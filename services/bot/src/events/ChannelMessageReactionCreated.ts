@@ -1,6 +1,7 @@
 import type { WSChannelMessageReactionCreatedPayload } from "@guildedjs/guilded-api-typings";
 import { ReactionActionType, Server } from "@prisma/client";
 import { stripIndents } from "common-tags";
+import { nanoid } from "nanoid";
 
 import { Colors } from "../color";
 import type { Context } from "../typings";
@@ -29,6 +30,7 @@ export default async (packet: WSChannelMessageReactionCreatedPayload, ctx: Conte
 
             await ctx.prisma.modmailThread.create({
                 data: {
+                    id: nanoid(13),
                     modFacingChannelId: newChannel.channel.id,
                     userFacingChannelId: channelId,
                     serverId,

@@ -39,7 +39,7 @@ const Eval: Command = {
     usage: "",
     devOnly: true,
     args: [{ type: "rest", name: "code" }],
-    execute: async (message, args, ctx) => {
+    execute: async (message, args, ctx, _commandCtx) => {
         const code = args.code as string;
         console.log(code);
         if (!code) return ctx.messageUtil.replyWithAlert(message, `Code needed`, `Gotta give me something to eval there, chief.`);

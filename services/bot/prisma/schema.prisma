@@ -116,7 +116,7 @@ model ReactionAction {
 }
 
 model ModmailThread {
-    id                  Int              @id @default(autoincrement())
+    id                  String           @id @db.VarChar(255)
     serverId            String           @db.VarChar(255)
     userFacingChannelId String           @db.VarChar(255)
     modFacingChannelId  String           @db.VarChar(255)
@@ -124,6 +124,8 @@ model ModmailThread {
     handlingModerators  String[]
     closed              Boolean          @default(false)
     messages            ModmailMessage[]
+    createdAt           DateTime         @default(now())
+    updatedAt           DateTime?        @updatedAt
 }
 
 model ModmailMessage {
@@ -131,9 +133,10 @@ model ModmailMessage {
     sentMessageId     String        @db.VarChar(255)
     channelId         String        @db.VarChar(255)
     authorId          String        @db.VarChar(255)
+    createdAt         DateTime      @default(now())
     content           String        @db.Text
     modmailThread     ModmailThread @relation(fields: [modmailThreadId], references: [id])
-    modmailThreadId   Int
+    modmailThreadId   String
 }
 
 enum LogChannelType {

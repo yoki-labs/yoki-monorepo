@@ -1,0 +1,53 @@
+import type { ModmailThread } from "@prisma/client";
+
+import { inlineCode } from "../../formatters";
+import { RoleType } from "../../typings";
+import { Category } from "../Category";
+import type { Command } from "../Command";
+
+const History: Command = {
+    name: "modmail-history",
+    subName: "history",
+    description: "Get the modmail history for a user",
+    usage: "<userId>",
+    examples: ["0mqNyllA"],
+    subCommand: true,
+    requiredRole: RoleType.MOD,
+    category: Category.Moderation,
+    args: [
+        {
+            name: "userId",
+            type: "string",
+        },
+        {
+            name: "page",
+            type: "number",
+            optional: true,
+        },
+    ],
+    execute: async (message, args, ctx) => {
+        const userId = args.userId as string;
+        const page = args.page ? Math.floor((args.page as number) - 1) : 0;
+
+        const threads = await ctx.prisma.modmailThread.findMany({
+            where: {
+                serverId: message.serverId!,
+                openerId: userId,
+            },
+        });
+
+        // -1, -2, etc.
+        if (page < 0) return ctx.messageUtil.replyWithAlert(message, `Specify appropriate page`, `The page number must not be below \`1\`.`);
+        if (!threads.length) return ctx.messageUtil.replyWithNullState(message, `No threads`, `This user does not have any modmail history associated with them.`);
+        return ctx.messageUtil.replyWithPaginatedContent<ModmailThread>({
+            replyTo: message,
+            items: threads,
+            title: `${userId}'s History`,
+            itemMapping: (x) => inlineCode(x.id),
+            itemsPerPage: 10,
+            page,
+        });
+    },
+};
+
+export default History;

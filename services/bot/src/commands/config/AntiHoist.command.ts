@@ -13,9 +13,9 @@ const AntiHoist: Command = {
     requiredRole: RoleType.ADMIN,
     args: [{ name: "newSetting", optional: true, type: "boolean" }],
     execute: async (message, args, ctx, commandCtx) => {
-        const newSetting = args.newSetting as boolean;
+        const newSetting = args.newSetting as boolean | null;
 
-        if (typeof newSetting == "undefined") {
+        if (!newSetting) {
             const verb = commandCtx.server.antiHoist ? `will` : `won't`;
 
             return ctx.messageUtil.replyWithInfo(message, `Hoisters ${verb} be filtered`, `Members that have a \`!\` or a \`.\` in the front of their name ${verb} be filtered.`);

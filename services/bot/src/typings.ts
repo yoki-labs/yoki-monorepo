@@ -25,6 +25,6 @@ export { Action, ContentFilter, LogChannel, LogChannelType, RoleType, Severity }
 // presets object
 export type ContentFilterScan = Pick<ContentFilter, "content" | "matching" | "infractionPoints" | "severity">;
 export type Server = DBServer & { getPrefix: () => string };
-export type ResolvedArgs = string | string[] | number | boolean | CachedMember | null | undefined;
+export type ResolvedArgs = string | string[] | number | boolean | CachedMember | null;
 
 export type PresetFile = Record<FilterMatching, string[]>;

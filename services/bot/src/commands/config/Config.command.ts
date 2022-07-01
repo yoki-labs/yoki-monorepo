@@ -6,6 +6,7 @@ import type { Command } from "../Command";
 import AntiHoist from "./AntiHoist.command";
 import FilterOnMods from "./FilterOnMods.command";
 import LogChannel from "./LogChannel.command";
+import ModmailGroup from "./ModmailGroup.command";
 // import Infraction from "./Infraction.command";
 // import Modlog from "./ModLog.command";
 import Modrole from "./Modrole.command";
@@ -18,7 +19,8 @@ const subCommands = new Collection<string, Command>()
     .set("muterole", Muterole)
     .set("filteronmods", FilterOnMods)
     .set("logchannel", LogChannel)
-    .set("antihoist", AntiHoist);
+    .set("antihoist", AntiHoist)
+    .set("modmailgroup", ModmailGroup);
 
 const Config: Command = {
     name: "config",
