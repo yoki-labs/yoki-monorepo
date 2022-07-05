@@ -34,6 +34,41 @@ export default async (packet: WSChatMessageUpdatedPayload, ctx: Context, server:
     if (oldMessage) await ctx.dbUtil.storeMessage(message);
 
     try {
+        let logContent = [
+            {
+                name: `Old Message`,
+                value: oldMessage
+                    ? oldMessage.content
+                        ? quoteMarkdown(oldMessage.content, 1012)
+                        : `This message does not contain text content.`
+                    : `Could not find old version of this message.`,
+            },
+            {
+                name: `New message`,
+                value: message.content ? quoteMarkdown(message.content, 1012) : `This message does not contain text content.`,
+            },
+        ];
+        if ((oldMessage?.content.length ?? 0) > 1000 || message.content.length > 1000) {
+            const uploadToBucket = await ctx.s3
+                .upload({
+                    Bucket: process.env.S3_BUCKET,
+                    Key: `logs/message-update-${message.serverId}-${message.id}.txt`,
+                    Body: Buffer.from(stripIndents`
+						Old: ${oldMessage?.content ?? "None"}
+						------------------------------------
+						New: ${message.content}
+					`),
+                    ContentType: "text/plain",
+                    ACL: "public-read",
+                })
+                .promise();
+            logContent = [
+                {
+                    name: "Message Log",
+                    value: `This log is too big to display in Guilded. You can find the full log [here](${uploadToBucket.Location})`,
+                },
+            ];
+        }
         // send embed in log channel
         await ctx.messageUtil.sendLog(
             updatedMessageLogChannel.channelId,
@@ -44,20 +79,7 @@ export default async (packet: WSChatMessageUpdatedPayload, ctx: Context, server:
             `,
             Colors.yellow,
             message.updatedAt!,
-            [
-                {
-                    name: `Old Message`,
-                    value: oldMessage
-                        ? oldMessage.content
-                            ? quoteMarkdown(oldMessage.content, 1012)
-                            : `This message does not contain text content.`
-                        : `Could not find old version of this message.`,
-                },
-                {
-                    name: `New message`,
-                    value: message.content ? quoteMarkdown(message.content, 1012) : `This message does not contain text content.`,
-                },
-            ]
+            logContent
         );
     } catch (e) {
         const referenceId = nanoid();

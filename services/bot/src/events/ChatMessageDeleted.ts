@@ -24,6 +24,32 @@ export default async (packet: WSChatMessageDeletedPayload, ctx: Context) => {
     const oldMember = deletedMessage ? await ctx.serverUtil.getMember(deletedMessage.serverId!, deletedMessage.authorId).catch(() => null) : null;
 
     try {
+        const logContent = [
+            {
+                name: "Content",
+                value: deletedMessage?.content
+                    ? codeBlock(deletedMessage.content.length > 1012 ? `${deletedMessage.content.slice(0, 1012)}...` : deletedMessage.content)
+                    : (deletedMessage?.embeds as Prisma.JsonArray)?.length
+                    ? `_This message contains embeds._`
+                    : `Could not find message content. This message may be older than 14 days.`,
+            },
+        ];
+
+        if (deletedMessage && (deletedMessage?.content.length ?? 0) > 1000) {
+            const uploadToBucket = await ctx.s3
+                .upload({
+                    Bucket: process.env.S3_BUCKET,
+                    Key: `logs/message-delete-${message.serverId}-${message.id}.txt`,
+                    Body: Buffer.from(stripIndents`
+						Content: ${deletedMessage.content}
+						------------------------------------
+					`),
+                    ContentType: "text/plain",
+                    ACL: "public-read",
+                })
+                .promise();
+            logContent[0].value = `This log is too big to display in Guilded. You can find the full log [here](${uploadToBucket.Location})`;
+        }
         // send the log channel message with the content/data of the deleted message
         await ctx.messageUtil.sendLog(
             deletedMessageLogChannel.channelId,
@@ -35,16 +61,7 @@ export default async (packet: WSChatMessageDeletedPayload, ctx: Context) => {
             `,
             Colors.red,
             message.deletedAt,
-            [
-                {
-                    name: "Content",
-                    value: deletedMessage?.content
-                        ? codeBlock(deletedMessage.content.length > 1012 ? `${deletedMessage.content.slice(0, 1012)}...` : deletedMessage.content)
-                        : (deletedMessage?.embeds as Prisma.JsonArray)?.length
-                        ? `_This message contains embeds._`
-                        : `Could not find message content. This message may be older than 14 days.`,
-                },
-            ]
+            logContent
         );
     } catch (e) {
         // generate ID for this error, not persisted in database
