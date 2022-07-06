@@ -1,4 +1,4 @@
-import type { WSChatMessageCreatedPayload } from "@guildedjs/guilded-api-typings";
+import type { ServerChannelPayload, WSChatMessageCreatedPayload } from "@guildedjs/guilded-api-typings";
 import type { ContentFilter, FilterMatching, Server as DBServer } from "@prisma/client";
 
 import type Client from "./Client";
@@ -25,6 +25,6 @@ export { Action, ContentFilter, LogChannel, LogChannelType, RoleType, Severity }
 // presets object
 export type ContentFilterScan = Pick<ContentFilter, "content" | "matching" | "infractionPoints" | "severity">;
 export type Server = DBServer & { getPrefix: () => string };
-export type ResolvedArgs = string | string[] | number | boolean | CachedMember | null;
+export type ResolvedArgs = string | string[] | number | boolean | CachedMember | ServerChannelPayload | null;
 
 export type PresetFile = Record<FilterMatching, string[]>;

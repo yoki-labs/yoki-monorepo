@@ -4,6 +4,7 @@ import { stripIndents } from "common-tags";
 import { nanoid } from "nanoid";
 
 import boolean from "../args/boolean";
+import channel from "../args/channel";
 import enumArg from "../args/enum";
 import enumList from "../args/enumList";
 import member from "../args/member";
@@ -30,6 +31,7 @@ const argCast: Record<
     rest,
     UUID,
     member,
+    channel,
 };
 
 export default async (packet: WSChatMessageCreatedPayload, ctx: Context, server: Server) => {
