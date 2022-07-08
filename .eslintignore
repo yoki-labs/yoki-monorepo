@@ -2,7 +2,8 @@
 dist/
 types/
 *.d.ts
-packages/**/*.js
 *.json
 
 next.config.js
+postcss.config.js
+tailwind.config.js

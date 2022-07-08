@@ -12,7 +12,7 @@ export default function Navbar() {
             </a>
 
             <div className="flex w-auto text-right text-bold mt-0">
-                <ul className="text-white text-lg flex flex-row space-x-14">
+                <ul className="flex flex-row space-x-14">
                     <NavbarItem text="Home" dest="/" />
                     <NavbarItem text="Features" dest="/features" />
                     <NavbarItem text="Commands" dest="/commands" />
@@ -20,7 +20,10 @@ export default function Navbar() {
             </div>
 
             <div className="pr-2 md:pr-16">
-                <button type="button" className="text-white text-right border-custom-guilded border-.5 font-medium rounded-md text-lg md:text-md px-6 py-2.5">
+                <button
+                    type="button"
+                    className="transition ease-in-out text-white text-right border-custom-guilded border-.5 font-medium rounded-md text-lg md:text-md px-6 py-2.5 hover:scale-110"
+                >
                     Invite Now
                 </button>
             </div>
