@@ -9,7 +9,7 @@ const prisma = new PrismaClient();
 void (async () => {
     console.log("Running old message removal...");
     const runDate = new Date();
-    const removalDates = new Date(runDate.setMonth(runDate.getMonth() - 1));
+    const removalDates = new Date(runDate.setDate(runDate.getDate() - 14));
     try {
         const removalCount = await prisma.message.deleteMany({
             where: {
@@ -18,7 +18,7 @@ void (async () => {
                 },
             },
         });
-        console.log(removalCount);
+        console.log(`Successfully removed ${removalCount.count} messages`);
     } catch (e: any) {
         console.log("There was an issue performing the removal.");
         console.error(e);
