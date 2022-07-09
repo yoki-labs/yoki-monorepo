@@ -16,6 +16,7 @@ export default function Navbar() {
                     <NavbarItem text="Home" dest="/" />
                     <NavbarItem text="Features" dest="/features" />
                     <NavbarItem text="Commands" dest="/commands" />
+                    <NavbarItem text="Premium" dest="/premium" />
                 </ul>
             </div>
 

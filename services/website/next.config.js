@@ -12,6 +12,11 @@ const nextConfig = {
             destination: "https://www.guilded.gg/Yoki?i=pmbOB8VA",
             permanent: true,
         },
+        {
+            source: "/premium",
+            destination: "https://www.guilded.gg/Yoki/subscriptions",
+            permanent: true,
+        },
     ],
     eslint: {
         // Warning: This allows production builds to successfully complete even if

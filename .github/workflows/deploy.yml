@@ -6,6 +6,7 @@ on:
             - main
         paths:
             - "services/**"
+            - "!services/website/**"
             - "docker/**"
 jobs:
     docker:
