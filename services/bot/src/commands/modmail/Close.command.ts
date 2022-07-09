@@ -56,7 +56,7 @@ const Close: Command = {
                     ACL: "public-read",
                 })
                 .promise();
-            return ctx.messageUtil.send(
+            await ctx.messageUtil.send(
                 modmailLogChannel.channelId,
                 stripIndents`
 					Thread #${isCurrentChannelModmail.id} closed on ${new Date().toLocaleDateString("en-US", {
