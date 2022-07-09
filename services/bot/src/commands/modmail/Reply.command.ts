@@ -62,7 +62,7 @@ const Reply: Command = {
                 {
                     description: content,
                     footer: {
-                        text: `Message ID ${createdModmailMessage.originalMessageId}`,
+                        text: `Ticket ${createdModmailMessage.originalMessageId}`,
                     },
                     ...baseEmbedData,
                 },

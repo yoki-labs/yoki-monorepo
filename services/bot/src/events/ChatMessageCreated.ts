@@ -55,7 +55,7 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context, server:
                     },
                     color: Colors.yellow,
                     footer: {
-                        text: `Ticket #${isModmailChannel.id}`,
+                        text: message.id,
                     },
                     timestamp: new Date().toISOString(),
                 },
