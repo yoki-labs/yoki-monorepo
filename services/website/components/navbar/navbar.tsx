@@ -1,0 +1,34 @@
+import Image from "next/image";
+
+import NavbarItem from "./navbarItem";
+
+export default function Navbar() {
+    return (
+        <nav className="flex flex-wrap items-center justify-between py-5 px-5 md:px-20">
+            <a href="/" className="flex items-center">
+                <div className="whitespace-nowrap pl-2 md:pl-20 my-auto text-4xl md:text-6xl select-none">
+                    <Image src="/face.png" className="rounded-full" width="70" height="70" alt="Yoki Face" />
+                </div>
+            </a>
+
+            <div className="md:flex w-auto text-right text-bold mt-0 hidden">
+                <ul className="flex flex-row space-x-14">
+                    <NavbarItem text="Home" dest="/" />
+                    <NavbarItem text="Features" dest="/features" />
+                    <NavbarItem text="Commands" dest="/commands" />
+                </ul>
+            </div>
+
+            <div className="pr-2 md:pr-16">
+                <a href="/invite">
+                    <button
+                        type="button"
+                        className="transition ease-in-out text-white text-right border-custom-guilded border-.5 font-medium rounded-md text-lg md:text-md px-6 py-2.5 hover:scale-110"
+                    >
+                        Invite Now
+                    </button>
+                </a>
+            </div>
+        </nav>
+    );
+}
