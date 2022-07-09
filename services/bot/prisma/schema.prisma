@@ -148,6 +148,7 @@ enum LogChannelType {
     CHAT_MESSAGE_UPDATE
     CHAT_MESSAGE_DELETE
     NOTIFICATION
+    MODMAIL_LOG
 }
 
 enum RoleType {
