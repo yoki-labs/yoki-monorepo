@@ -1,0 +1,4 @@
+export default function CTAButton(props: { bgColor?: "gradient"; text: string }) {
+    const bgColor = props.bgColor === "gradient" ? "from-[#F3B741] to-[#DFC546] text-black" : "border-[.5px] border-custom-guilded text-white";
+    return <button className={`transition ease-in-out hover:scale-110 px-14 py-3 bg-gradient-to-r rounded-md ${bgColor}`}>{props.text}</button>;
+}
