@@ -25,6 +25,19 @@ const Close: Command = {
                     Bucket: process.env.S3_BUCKET,
                     Key: `logs/message-update-${message.serverId}-${message.id}.txt`,
                     Body: Buffer.from(stripIndents`
+						-------------
+						Opener: ${isCurrentChannelModmail.openerId}
+						Server: ${isCurrentChannelModmail.serverId}
+						Created At: ${isCurrentChannelModmail.createdAt.toLocaleDateString("en-US", {
+                            year: "numeric",
+                            month: "long",
+                            day: "numeric",
+                            hour: "2-digit",
+                            minute: "2-digit",
+                            timeZoneName: "short",
+                        })}
+						-------------
+
 						${modmailMessages
                             .map(
                                 (x) =>
