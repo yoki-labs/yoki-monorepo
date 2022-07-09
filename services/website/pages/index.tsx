@@ -16,7 +16,7 @@ const Home: NextPage = () => {
             </Head>
             <Navbar />
             <div className="px-16 py-20 grid grid-cols-10">
-                <div className="text-center col-span-6">
+                <div className="text-center col-span-10 md:col-span-6">
                     <h1 className="text-4xl text-white font-bold">
                         Meet <span className="text-custom-guilded">Yoki</span>, your <br />
                         moderation companion
@@ -33,9 +33,9 @@ const Home: NextPage = () => {
                         <FeatureListItem text="Server & Moderation action logging" />
                         <FeatureListItem text="Modmail & Support" />
                     </div>
-                    <div className="pt-8 space-x-4">
-                        <CTAButton bgColor="gradient" text="Invite now" />
-                        <CTAButton text="Get support" />
+                    <div className="pt-8 space-x-4 space-y-2">
+                        <CTAButton bgColor="gradient" text="Invite now" link="/invite" />
+                        <CTAButton text="Get support" link="support" />
                     </div>
                     <p className="px-8 pt-8 text-gray-50 text-sm">
                         Made by{" "}
