@@ -3,6 +3,7 @@ import { RestManager } from "@guildedjs/rest";
 import { WebhookClient } from "@guildedjs/webhook-client";
 import { WebSocketManager } from "@guildedjs/ws";
 import { Action, PrismaClient } from "@prisma/client";
+import { S3 } from "aws-sdk";
 import RedisClient from "ioredis";
 import EventEmitter from "node:events";
 import type TypedEmitter from "typed-emitter";
@@ -44,6 +45,13 @@ export default class Client {
     readonly prisma = new PrismaClient();
     // cache connection
     readonly redis = new RedisClient(process.env.REDIS_URL ?? "cache:6379");
+    // s3 bucket
+    readonly s3 = new S3({
+        credentials: {
+            accessKeyId: process.env.S3_KEY_ID,
+            secretAccessKey: process.env.S3_SECRET_KEY,
+        },
+    });
 
     // global collection of all timeouts within the bot so we can cancel them when the WS connection is severed
     readonly timeouts = new Collection<string, NodeJS.Timeout>();

@@ -5,5 +5,8 @@ declare namespace NodeJS {
         DEFAULT_PREFIX: string;
         ERROR_WEBHOOK: string;
         MAIN_SERVER: string;
+        S3_KEY_ID: string;
+        S3_SECRET_KEY: string;
+        S3_BUCKET: string;
     }
 }

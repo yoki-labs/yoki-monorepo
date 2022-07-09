@@ -33,4 +33,4 @@ export interface CommandArgument {
     values?: any;
     resolver?: (...content: any[]) => any;
 }
-export type CommandArgType = "string" | "UUID" | "member" | "number" | "boolean" | "enum" | "rest" | "enumList";
+export type CommandArgType = "string" | "UUID" | "member" | "number" | "boolean" | "enum" | "rest" | "enumList" | "channel";

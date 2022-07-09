@@ -4,6 +4,7 @@ import { stripIndents } from "common-tags";
 import { nanoid } from "nanoid";
 
 import boolean from "../args/boolean";
+import channel from "../args/channel";
 import enumArg from "../args/enum";
 import enumList from "../args/enumList";
 import member from "../args/member";
@@ -30,6 +31,7 @@ const argCast: Record<
     rest,
     UUID,
     member,
+    channel,
 };
 
 export default async (packet: WSChatMessageCreatedPayload, ctx: Context, server: Server) => {
@@ -172,7 +174,7 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context, server:
             const castArg = await argCast[commandArg.type]?.(args[i], args, i, ctx, packet, commandArg);
 
             // if the arg is not valid, inform the user
-            if (typeof castArg == "undefined" || (commandArg.max && ((castArg as any).length ?? castArg) > commandArg.max))
+            if (castArg === null || (commandArg.max && ((castArg as any).length ?? castArg) > commandArg.max))
                 return ctx.messageUtil.handleBadArg(message, prefix, commandArg, command, parentCommand);
 
             // if the arg is valid, add it to the resolved args obj
