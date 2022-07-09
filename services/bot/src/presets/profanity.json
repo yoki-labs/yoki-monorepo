@@ -1,4 +1,8 @@
 {
+    "PHRASE": [
+        "kill yourself",
+        "kiss your sister"
+    ],
     "PREFIX": [
         "fuck",
         "f##k",
@@ -32,6 +36,7 @@
         "bitch"
     ],
     "WORD": [
+        "kys",
         "ass",
         "fcuk",
         "fucc",
@@ -46,6 +51,14 @@
         "asshole",
         "douchebag",
         "cunt",
-        "cvnt"
+        "cvnt",
+        "bigot",
+        "b1got",
+        "big0t",
+        "b1g0t",
+        "l1bt4rd",
+        "libt4rd",
+        "l1btard",
+        "libtard"
     ]
 }
