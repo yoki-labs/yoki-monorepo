@@ -5,9 +5,15 @@ const Invite: Command = {
     description: "Get a link for inviting the bot.",
     usage: "",
     execute: (message, _args, ctx) => {
-        return ctx.messageUtil.replyWithInfo(message, `Invite the bot`, `[**Click here**](https://yoki.gg/invite) to invite Yoki to your server.`, undefined, {
-            isPrivate: true,
-        });
+        return ctx.messageUtil.replyWithInfo(
+            message,
+            `Invite the bot`,
+            `[**Click here**](https://www.guilded.gg/b/7af0dd87-f6c8-43b1-b1bb-8917c82d5cfd) to invite Yoki to your server.`,
+            undefined,
+            {
+                isPrivate: true,
+            }
+        );
     },
 };
 
