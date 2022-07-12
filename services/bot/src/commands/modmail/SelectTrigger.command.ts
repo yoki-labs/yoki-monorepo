@@ -9,7 +9,7 @@ const SelectTrigger: Command = {
     subName: "sendtrigger",
     description: "Select a modmail thread trigger",
     usage: "<channel-id> <message-id> <emote-id>",
-    examples: ["9fd03b10-c4a1-4c3a-814a-5f6a7b39c632 90002554"],
+    examples: ["17bce2fd-1a95-44b5-abc3-b2ff115c62fb 9fd03b10-c4a1-4c3a-814a-5f6a7b39c632 90002554"],
     subCommand: true,
     requiredRole: RoleType.MOD,
     category: Category.Moderation,
