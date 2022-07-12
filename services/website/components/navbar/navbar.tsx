@@ -14,7 +14,6 @@ export default function Navbar() {
             <div className="md:flex w-auto text-right text-bold mt-0 hidden">
                 <ul className="flex flex-row space-x-14">
                     <NavbarItem text="Home" dest="/" />
-                    <NavbarItem text="Features" dest="/features" />
                     <NavbarItem text="Commands" dest="/commands" />
                     <NavbarItem text="Premium" dest="/premium" />
                 </ul>

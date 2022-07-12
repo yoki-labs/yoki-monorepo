@@ -3,6 +3,8 @@
     "compilerOptions": {
         "outDir": "./dist",
         "sourceMap": true,
+		"inlineSources": true,
+		"sourceRoot": "./dist",
         "noImplicitAny": false,
         "skipLibCheck": true,
 		"declaration": false,

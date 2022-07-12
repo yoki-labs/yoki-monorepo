@@ -8,7 +8,7 @@ const SendTrigger: Command = {
     name: "modmail-sendtrigger",
     subName: "sendtrigger",
     description: "Send a modmail thread trigger",
-    usage: "<#channel> <emoteId>",
+    usage: "<channel-id> <message-id> <emote-id>",
     examples: ["9fd03b10-c4a1-4c3a-814a-5f6a7b39c632 90002554"],
     subCommand: true,
     requiredRole: RoleType.MOD,
