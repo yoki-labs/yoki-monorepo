@@ -32,8 +32,8 @@ const Commands: NextPage<{ commandByCategory: GroupedCommands }> = ({ commandByC
     return (
         <div className="pt-8 space-y-5 px-14">
             {Object.keys(commandByCategory).map((category) => (
-                <div className="space-y-5" key={category}>
-                    <h1 className="text-3xl text-white font-bold pb-2">{category.charAt(0).toUpperCase() + category.slice(1)}</h1>
+                <div className="space-y-5 text-white " key={category}>
+                    <h1 className="text-3xl font-bold pb-2">{category.charAt(0).toUpperCase() + category.slice(1)}</h1>
                     {commandByCategory[category ?? "general"].map((command, index) => {
                         return (
                             <Accordion

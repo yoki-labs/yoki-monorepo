@@ -4,10 +4,10 @@ import { RoleType } from "../../typings";
 import { Category } from "../Category";
 import type { Command } from "../Command";
 
-const SendTrigger: Command = {
-    name: "modmail-sendtrigger",
+const SelectTrigger: Command = {
+    name: "modmail-selecttrigger",
     subName: "sendtrigger",
-    description: "Send a modmail thread trigger",
+    description: "Select a modmail thread trigger",
     usage: "<channel-id> <message-id> <emote-id>",
     examples: ["9fd03b10-c4a1-4c3a-814a-5f6a7b39c632 90002554"],
     subCommand: true,
@@ -62,4 +62,4 @@ const SendTrigger: Command = {
     },
 };
 
-export default SendTrigger;
+export default SelectTrigger;

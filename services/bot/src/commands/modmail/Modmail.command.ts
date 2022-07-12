@@ -6,7 +6,7 @@ import Close from "./Close.command";
 import Edit from "./Edit.command";
 import History from "./History.command";
 import Reply from "./Reply.command";
-import SendTrigger from "./SendTrigger.command";
+import SendTrigger from "./SelectTrigger.command";
 
 const Modmail: Command = {
     name: "modmail",
@@ -15,7 +15,7 @@ const Modmail: Command = {
     examples: ["modmail reply Hi, what can I help you with?"],
     parentCommand: true,
     category: Category.Moderation,
-    subCommands: new Collection<string, Command>().set("reply", Reply).set("close", Close).set("edit", Edit).set("history", History).set("sendtrigger", SendTrigger),
+    subCommands: new Collection<string, Command>().set("reply", Reply).set("close", Close).set("edit", Edit).set("history", History).set("selecttrigger", SendTrigger),
     execute: () => void 0,
 };
 
