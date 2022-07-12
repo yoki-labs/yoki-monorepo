@@ -32,8 +32,8 @@ const Commands: NextPage<{ commandByCategory: GroupedCommands }> = ({ commandByC
     return (
         <div className="pt-8 space-y-5 px-14">
             {Object.keys(commandByCategory).map((category) => (
-                <div className="space-y-5 text-white " key={category}>
-                    <h1 className="text-3xl font-bold pb-2">{category.charAt(0).toUpperCase() + category.slice(1)}</h1>
+                <div className="space-y-5" key={category}>
+                    <h1 className="text-3xl text-white font-bold pb-2">{category.charAt(0).toUpperCase() + category.slice(1)}</h1>
                     {commandByCategory[category ?? "general"].map((command, index) => {
                         return (
                             <Accordion
@@ -42,19 +42,19 @@ const Commands: NextPage<{ commandByCategory: GroupedCommands }> = ({ commandByC
                                 className="bg-custom-gray text-white rounded-md w-full md:w-full py-1 px-10"
                             >
                                 <AccordionHeader onClick={() => handleOpen(`${category}-${index}`)}>
-                                    <h1 className="text-xl font-semibold">{command.name}</h1>
+                                    <h1 className="text-xl text-white font-semibold">{command.name}</h1>
                                 </AccordionHeader>
                                 <AccordionBody>
-                                    <p>Description: {command.description}</p>
-                                    <p>Examples: {command.examples?.join(", ") ?? `?${command.name}`}</p>
-                                    <p>Usage: {`?${command.name}${command.usage ? ` ${command.usage}` : ""}`}</p>
-                                    <p>Aliases: {command.aliases?.join(", ") ?? "N/A"}</p>
-                                    <p>Subcommands: {command.subCommands?.map((x) => x.name).join(", ") ?? "None"}</p>
-                                    <p>Required Role: {command.requiredRole ?? "None"}</p>
+                                    <p className="text-white">Description: {command.description}</p>
+                                    <p className="text-white">Examples: {command.examples?.join(", ") ?? `?${command.name}`}</p>
+                                    <p className="text-white">Usage: {`?${command.name}${command.usage ? ` ${command.usage}` : ""}`}</p>
+                                    <p className="text-white">Aliases: {command.aliases?.join(", ") ?? "N/A"}</p>
+                                    <p className="text-white">Subcommands: {command.subCommands?.map((x) => x.name).join(", ") ?? "None"}</p>
+                                    <p className="text-white">Required Role: {command.requiredRole ?? "None"}</p>
                                     {command.args?.length ? (
                                         <div className="pt-4">
-                                            <p className="text-xl">Args:</p>
-                                            <ol className="list-decimal pl-8 pt-1">
+                                            <p className="text-xl text-white">Args:</p>
+                                            <ol className="list-decimal text-white pl-8 pt-1">
                                                 {command.args.map((x) => (
                                                     <li key={`${category}-${index}-${x.name}`}>
                                                         {x.name} - {x.type}
