@@ -1,0 +1,44 @@
+import { readdirSync } from "fs";
+import { join } from "path";
+
+import type { PresetPattern, PresetPatternObject } from "./typings";
+
+const wordRest = ["", "[\\W]*"];
+
+export default (() => {
+    const dirPath = join(__dirname, "presets");
+    const files = readdirSync(dirPath, { withFileTypes: true });
+    // const loadedPresets: Record<string, Omit<ContentFilterScan, "severity">[]> = {};
+    const loadedPresets: Record<string, RegExp> = {};
+    for (const file of files.filter((x) => x.name.endsWith(".json"))) {
+        const preset = require(join(dirPath, file.name)) as PresetPattern[];
+        const presetName = file.name.split(".")[0];
+
+        loadedPresets[presetName] = new RegExp(transformPreset(preset), "s");
+
+        console.log(`Preset ${file.name}: ${loadedPresets[presetName]}`);
+
+        console.log(`Loaded preset ${file.name}`);
+    }
+    return loadedPresets;
+})();
+
+// ["abc", "def"] => "abc|def"
+function transformPreset(patterns: PresetPattern[]) {
+    return patterns.map(transformPresetValue).join("|");
+}
+
+// "abc" => "abc"
+// ["abc", "def"] => "abc[...]+def"
+// { type: "PREFIX", _: [ "abc", "def" ] } => "(?:abc[\\W]+|def[\\W]+)"
+function transformPresetValue(pattern: PresetPattern): string {
+    return Array.isArray(pattern) ? (pattern as string[]).join("[\\s:\\-+~'.,?!]") : typeof pattern === "object" ? transformPresetObject(pattern as PresetPatternObject) : pattern;
+}
+
+function transformPresetObject(pattern: PresetPatternObject): string {
+    // Get boolean and convert it to number (0 or 1), which is now an index of wordRest
+    const prefix = Number(["PREFIX", "INFIX"].includes(pattern.type));
+    const postfix = Number(["POSTFIX", "INFIX"].includes(pattern.type));
+
+    return `(?:${wordRest[postfix]}${transformPreset(pattern._)}${wordRest[prefix]})`;
+}

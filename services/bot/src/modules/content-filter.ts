@@ -1,11 +1,10 @@
 import { Embed } from "@guildedjs/webhook-client";
 import { ContentFilter, FilterMatching } from "@prisma/client";
 import { stripIndents } from "common-tags";
-import { readdirSync } from "fs";
-import { join } from "path";
 
 import { Util } from "../helpers/util";
-import { Action, CachedMember, ContentFilterScan, PresetFile, Server, Severity } from "../typings";
+import presets from "../presets";
+import { Action, CachedMember, ContentFilterScan, Server, Severity } from "../typings";
 import { IMAGE_REGEX } from "../util";
 import { ImageFilterUtil } from "./image-filter";
 
@@ -16,30 +15,6 @@ export enum FilteredContent {
     ChannelContent = 2,
     ServerContent = 3,
 }
-
-const presets = (() => {
-    const dirPath = join(__dirname, "..", "presets");
-    const files = readdirSync(dirPath, { withFileTypes: true });
-    const loadedPresets: Record<string, Omit<ContentFilterScan, "severity">[]> = {};
-    for (const file of files.filter((x) => x.name.endsWith(".json"))) {
-        const preset = require(join(dirPath, file.name)) as PresetFile;
-        const presetName = file.name.split(".")[0];
-
-        loadedPresets[presetName] = (Object.keys(preset) as FilterMatching[])
-            // Of each matching type get a list of slurs
-            .map((matching): Omit<ContentFilterScan, "severity">[] =>
-                preset[matching].map((slur) => ({
-                    content: slur,
-                    infractionPoints: 5,
-                    matching,
-                }))
-            )
-            // Throw together the slurs of all times
-            .reduce((x, y) => x.concat(y));
-        console.log(`Loaded preset ${file.name}`);
-    }
-    return loadedPresets;
-})();
 
 export class ContentFilterUtil extends Util {
     readonly imageFilterUtil = new ImageFilterUtil(this.client);
@@ -145,7 +120,7 @@ export class ContentFilterUtil extends Util {
         const lowerCasedMessageContent = text.toLowerCase();
         const split = lowerCasedMessageContent.split(/[ \t\n-.?!,—]/g);
         // Check if any word triggers the content filter (user provided words). Checks if message content includes a word
-        const ifTriggersCustom: ContentFilterScan | undefined = bannedWordsList.find((word) => this.tripsFilter(word, lowerCasedMessageContent, split));
+        const ifTriggersCustom: ContentFilterScan | undefined = bannedWordsList.find((word) => this.tripsFilter(word, split));
 
         // This will check if the message content contains any words listed in any enabled presets
         let ifTriggersPreset: ContentFilterScan | undefined;
@@ -153,12 +128,13 @@ export class ContentFilterUtil extends Util {
         if (!ifTriggersCustom) {
             for (const enabledPreset of enabledPresets) {
                 // Get the enabled preset list (slurs, etc.)
-                const presetFilterList = this.presets[enabledPreset.preset as keyof typeof this.presets];
-                // Same check as the custom filter one, just checks if the message content contains any words from the preset list
-                const temp = presetFilterList.find((word) => this.tripsFilter(word, lowerCasedMessageContent, split));
-                if (temp) {
+                const presetPattern = this.presets[enabledPreset.preset as keyof typeof this.presets];
+                // Find first word that is matched with preset's regex
+                const foundPresetWord = presetPattern.exec(lowerCasedMessageContent);
+
+                if (foundPresetWord !== null) {
                     // if the content does violate a preset, hoist the triggering word
-                    ifTriggersPreset = { ...temp, severity: enabledPreset.severity ?? Severity.WARN };
+                    ifTriggersPreset = { content: foundPresetWord[0], matching: FilterMatching.WORD, infractionPoints: 5, severity: enabledPreset.severity ?? Severity.WARN };
                     break;
                 }
             }
@@ -227,8 +203,9 @@ export class ContentFilterUtil extends Util {
             : this.severityAction[triggeredWord.severity]?.(member, server, channelId, filteredContent);
     }
 
-    tripsFilter(contentFilter: ContentFilter | Omit<ContentFilterScan, "severity">, message: string, words: string[]) {
-        return contentFilter.matching === FilterMatching.PHRASE ? message.includes(contentFilter.content) : words.some((word) => this.matchesFilter(contentFilter, word));
+    tripsFilter(contentFilter: ContentFilter | Omit<ContentFilterScan, "severity">, words: string[]) {
+        // return contentFilter.matching === FilterMatching.WORD ? message.includes(contentFilter.content) :
+        return words.some((word) => this.matchesFilter(contentFilter, word));
     }
 
     matchesFilter(contentFilter: ContentFilter | Omit<ContentFilterScan, "severity">, phrase: string) {

@@ -27,4 +27,8 @@ export type ContentFilterScan = Pick<ContentFilter, "content" | "matching" | "in
 export type Server = DBServer & { getPrefix: () => string };
 export type ResolvedArgs = string | string[] | number | boolean | CachedMember | ServerChannelPayload | null;
 
-export type PresetFile = Record<FilterMatching, string[]>;
+export declare interface PresetPatternObject {
+    type: FilterMatching;
+    _: PresetPattern[];
+}
+export type PresetPattern = string | string[] | PresetPatternObject;

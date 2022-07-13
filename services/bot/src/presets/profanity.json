@@ -1,64 +1,38 @@
-{
-    "PHRASE": [
-        "kill yourself",
-        "kiss your sister"
-    ],
-    "PREFIX": [
-        "fuck",
-        "f##k",
-        "fck",
-        "f**k",
-        "f*ck",
-        "f#ck",
-        "fvck",
-        "shit",
-        "sh1t",
-        "b17ch",
-        "b1tch",
-        "bi7ch",
-        "bitch"
-    ],
-    "POSTFIX": [
-        "fuck",
-        "f##k",
-        "f**k",
-        "f*ck",
-        "f#ck",
-        "fvck",
-        "fucker",
-        "fcker",
-        "fvcker",
-        "shit",
-        "sh1t",
-        "b17ch",
-        "b1tch",
-        "bi7ch",
-        "bitch"
-    ],
-    "WORD": [
-        "kys",
-        "ass",
-        "fcuk",
-        "fucc",
-        "fuct",
-        "mofo",
-        "shitcunt",
-        "sh1tcunt",
-        "shitcvnt",
-        "sh1tcvnt",
-        "headass",
-        "dumbass",
-        "asshole",
-        "douchebag",
-        "cunt",
-        "cvnt",
-        "bigot",
-        "b1got",
-        "big0t",
-        "b1g0t",
-        "l1bt4rd",
-        "libt4rd",
-        "l1btard",
-        "libtard"
-    ]
-}
+[
+    ["k[i1]+l+", "y[o0]u?r[sz]+[ei]*l+f+"],
+    {
+        "type": "PREFIX",
+        "_": [
+            "f[uv#*]*[c#*]*k+([e3]r)?",
+            "sh[i1]+t+",
+            "b[i1]+[t7]ch"
+        ]
+    },
+    {
+        "type": "POSTFIX",
+        "_": [
+            "f[uv#*]*[c#*]*k+([e3]r)?",
+            "sh[i1]+t+",
+            "b[i1]+[t7]ch"
+        ]
+    },
+    {
+        "type": "WORD",
+        "_": [
+            "kys",
+            "a[s$]{2,}",
+            "fc[uv]k",
+            "f[uv]cc",
+            "mofo",
+            "sh[i1]tc[uv]nt",
+            "h[e3]ada[s$]{2,}",
+            "dumba[s$]{2,}",
+            "a[s$]{2,}h[o0]l[e3]",
+            "d[o0]uch[e3]b[a4]g",
+            "c[uv]nt",
+            "b[i1]g[o0]t",
+            "l[i1]bt[a4]rd",
+            "c[uv]c[kc]servative"
+        ]
+    }
+]
