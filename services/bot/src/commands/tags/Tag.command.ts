@@ -2,19 +2,17 @@ import Collection from "@discordjs/collection";
 
 import type { Command } from "../Command";
 import Add from "./Add.command";
-import Info from "./Info.command";
 import List from "./List.command";
 import Remove from "./Remove.command";
-import Show from "./Show.command";
 
 const Tag: Command = {
     name: "tag",
     description: "Parent command for tag related commands",
-    usage: "<add | list | delete> <..args>",
-    examples: ["add test-word warn", "add another-test-word ban"],
-    aliases: ["words"],
+    usage: "<add | list | remove> <..args>",
+    examples: ["add tag-1 this is the content for tag 1"],
+    aliases: ["snippets", "customcommands", "tags"],
     parentCommand: true,
-    subCommands: new Collection<string, Command>().set("add", Add).set("remove", Remove).set("list", List).set("info", Info).set("show", Show),
+    subCommands: new Collection<string, Command>().set("add", Add).set("remove", Remove).set("list", List),
     execute: () => void 0,
 };
 

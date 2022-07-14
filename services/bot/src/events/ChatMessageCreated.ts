@@ -105,7 +105,11 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context, server:
     // get the command by the name or if it's an alias of a command
     let command = ctx.commands.get(commandName) ?? ctx.commands.find((command) => command.aliases?.includes(commandName) ?? false);
     // if not a valid command, don't do anything
-    if (!command) return;
+    if (!command) {
+        const customCommand = await ctx.prisma.customTag.findFirst({ where: { serverId: message.serverId!, name: commandName } });
+        if (!customCommand) return;
+        return ctx.messageUtil.send(message.channelId, customCommand.content);
+    }
 
     // for sub commands
     const parentCommand = command;

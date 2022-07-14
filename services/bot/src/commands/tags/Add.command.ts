@@ -1,0 +1,38 @@
+import { RoleType } from "@prisma/client";
+
+import { inlineCode } from "../../formatters";
+import type { Command } from "../Command";
+
+const Add: Command = {
+    name: "tag-add",
+    subName: "add",
+    description: "Add a custom tag",
+    usage: "<tag-name> <...tag-content>",
+    subCommand: true,
+    requiredRole: RoleType.MOD,
+    args: [
+        {
+            name: "tagName",
+            type: "string",
+        },
+        {
+            name: "tagContent",
+            type: "rest",
+        },
+    ],
+    execute: async (message, args, ctx) => {
+        const tagName = args.tagName as string;
+        const tagContent = args.tagContent as string;
+
+        if (tagName.length > 120) return ctx.messageUtil.replyWithError(message, "Tag name is too long! Please shorten it to under 120 characters.");
+        if (tagContent.length > 800) return ctx.messageUtil.replyWithError(message, "Tag content is too long! Please shorten it to under 800 characters.");
+
+        const doesAlreadyExist = await ctx.prisma.customTag.findFirst({ where: { serverId: message.serverId!, name: tagName } });
+        if (doesAlreadyExist) return ctx.messageUtil.replyWithError(message, "There is already a tag with that name.");
+
+        await ctx.prisma.customTag.create({ data: { content: tagContent, name: tagName, serverId: message.serverId! } });
+        return ctx.messageUtil.replyWithSuccess(message, "Tag created!", `A tag with the name ${inlineCode(tagName)} has been created.`);
+    },
+};
+
+export default Add;
