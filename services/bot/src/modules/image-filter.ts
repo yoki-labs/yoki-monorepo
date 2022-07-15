@@ -21,6 +21,6 @@ export class ImageFilterUtil extends Util {
                 return { hentai: 0, porn: 0, drawing: 0, sexy: 0, neutral: 0 };
             });
 
-        return req.hentai >= 0.75 || req.porn >= 0.75;
+        return req.hentai >= 0.5 || req.porn >= 0.65;
     }
 }
