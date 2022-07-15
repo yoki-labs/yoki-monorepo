@@ -7,9 +7,9 @@ config({ path: join(__dirname, "..", "..", "..", ".env") });
 });
 
 import express from "express";
+import { inspect } from "node:util";
 import fetch from "node-fetch";
 import * as nsfwJS from "nsfwjs";
-import { inspect } from "util";
 
 import { convert } from "./convertImage";
 import { validateOptions } from "./util";
@@ -17,7 +17,7 @@ import { validateOptions } from "./util";
 const app = express();
 app.use(express.json());
 let _model: nsfwJS.NSFWJS;
-
+// empty comment
 app.post("/nsfw", validateOptions<{ imageURL: string }>([["imageURL", "string", false]]), async (req, res) => {
     const { imageURL } = req.body;
     if (!imageURL) res.status(400).json({ error: { message: "You must provide an image URL to lookup." } });

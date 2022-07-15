@@ -45,6 +45,7 @@
     },
     "workspaces": [
         "services/bot",
+        "services/nsfw",
         "services/website"
     ],
     "prettier": {
