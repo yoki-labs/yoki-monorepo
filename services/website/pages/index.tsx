@@ -18,11 +18,13 @@ const Home: NextPage = () => {
                         make your communities safer
                     </p>
                 </div>
-                <div className="pt-6 text-white space-y-2 text-center">
-                    <FeatureListItem text="Moderation & Automoderation features" />
-                    <FeatureListItem text="Content filtering & Image scanning" />
-                    <FeatureListItem text="Server & Moderation action logging" />
-                    <FeatureListItem text="Modmail & Support" />
+                <div className="pt-6 text-white text-center">
+                    <div className="inline-block space-y-2 text-left">
+                        <FeatureListItem text="Moderation + automod" />
+                        <FeatureListItem text="Content filtering + image scanning" />
+                        <FeatureListItem text="Server + moderation logs" />
+                        <FeatureListItem text="Modmail + support" />
+                    </div>
                 </div>
                 <div className="pt-8 space-x-4 space-y-2">
                     <CTAButton bgColor="gradient" text="Invite now" link="/invite" />
