@@ -11,6 +11,7 @@ import ModmailGroup from "./ModmailGroup.command";
 // import Modlog from "./ModLog.command";
 import Modrole from "./Modrole.command";
 import Muterole from "./Muterole.command";
+import NsfwScan from "./NsfwScan";
 
 const subCommands = new Collection<string, Command>()
     // .set("infraction", Infraction)
@@ -20,7 +21,8 @@ const subCommands = new Collection<string, Command>()
     .set("filteronmods", FilterOnMods)
     .set("logchannel", LogChannel)
     .set("antihoist", AntiHoist)
-    .set("modmailgroup", ModmailGroup);
+    .set("modmailgroup", ModmailGroup)
+    .set("nsfwscan", NsfwScan);
 
 const Config: Command = {
     name: "config",

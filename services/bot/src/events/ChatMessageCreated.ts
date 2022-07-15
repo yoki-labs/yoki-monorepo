@@ -90,7 +90,7 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context, server:
             // Filter
             resultingAction: () => ctx.rest.router.deleteChannelMessage(message.channelId, message.id),
         });
-        if (server.premium)
+        if (server.premium && server.removeNsfw)
             await ctx.contentFilterUtil.scanMessageMedia({ channelId: message.channelId, messageId: message.id, userId: message.createdBy, content: message.content });
         return;
     }

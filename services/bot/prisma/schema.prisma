@@ -12,6 +12,7 @@ model Server {
     serverId                   String       @unique @db.VarChar(255)
     botJoinedAt                DateTime?    @default(now())
     premium                    PremiumType?
+    removeNsfw                 Boolean      @default(false)
     locale                     String       @default("en-US")
     muteRoleId                 Int?
     filterEnabled              Boolean      @default(false)
