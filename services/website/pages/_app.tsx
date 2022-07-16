@@ -5,6 +5,7 @@ import type { AppProps } from "next/app";
 import Head from "next/head";
 import stripIndent from "strip-indent";
 
+import Footer from "../components/footer/Footer";
 import Navbar from "../components/navbar/navbar";
 const ogDescription = stripIndent(`The first moderation bot on Guilded.
 🛑 Moderation + automod
@@ -40,6 +41,9 @@ function MyApp({ Component, pageProps }: AppProps) {
             </Head>
             <Navbar />
             <Component {...pageProps} />
+            <div className="px-20">
+                <Footer />
+            </div>
         </>
     );
 }

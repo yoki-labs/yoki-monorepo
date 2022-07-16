@@ -7,7 +7,7 @@ export default function Navbar() {
         <nav className="flex flex-wrap items-center justify-between py-5 px-5 md:px-20">
             <a href="/" className="flex items-center">
                 <div className="whitespace-nowrap pl-2 md:pl-20 my-auto text-4xl md:text-6xl select-none">
-                    <Image src="/face.png" className="rounded-full" width="70" height="70" alt="Yoki Face" />
+                    <Image src="/face.png" className="rounded-full transition" width="70" height="70" alt="Yoki Face" />
                 </div>
             </a>
 

@@ -17,6 +17,16 @@ const nextConfig = {
             destination: "https://www.guilded.gg/Yoki/subscriptions",
             permanent: true,
         },
+        {
+            source: "/docs",
+            destination: "https://www.guilded.gg/Yoki/groups/2dXLMBPd/channels/0a2069b9-2e7d-45da-9121-ab3b463f9af2/docs",
+            permanent: false,
+        },
+        {
+            source: "/feedback",
+            destination: "https://www.guilded.gg/Yoki/groups/2dXLMBPd/channels/c8532cb8-fe5f-4aa9-abf8-267142c199d8/forums",
+            permanent: false,
+        },
     ],
     eslint: {
         // Warning: This allows production builds to successfully complete even if
