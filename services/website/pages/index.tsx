@@ -9,20 +9,20 @@ import YokiPreview from "../components/previews/YokiPreview";
 const Home: NextPage = () => {
     return (
         <>
-            <div className="px-16 pb-20">
+            <div className="px-8 md:px-16 pb-20">
                 <div className="py-20 grid grid-cols-10">
                     <div className="text-center col-span-10 md:col-span-6">
                         <h1 className="text-4xl text-white font-bold">
                             Meet <span className="text-custom-guilded">Yoki</span>, your <br />
                             moderation companion
                         </h1>
-                        <div className="pt-6">
+                        <div className="pt-10 md:pt-6">
                             <p className="text-md text-white text-slate-300">
                                 Yoki has a powerful set of moderation tools to <br />
                                 make your communities safer
                             </p>
                         </div>
-                        <div className="pt-6 text-white text-center pl-6 md:pl-0">
+                        <div className="pt-10 md:pt-6 text-white text-center pl-6 md:pl-0">
                             <div className="inline-block space-y-2 text-left">
                                 <FeatureListItem text="Moderation + automod" />
                                 <FeatureListItem text="Content filtering + image scanning" />
@@ -30,7 +30,7 @@ const Home: NextPage = () => {
                                 <FeatureListItem text="Modmail + support" />
                             </div>
                         </div>
-                        <div className="pt-8 space-x-4 space-y-2">
+                        <div className="pt-10 md:space-x-4 md:inline-flex">
                             <CTAButton bgColor="gradient" text="Invite now" link="/invite" />
                             <CTAButton text="Get support" link="support" />
                         </div>
