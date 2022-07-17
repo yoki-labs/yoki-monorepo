@@ -112,9 +112,10 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context, server:
     }
 
     // for sub commands
-    const parentCommand = command;
-    // if this is a command that has sub commands, run this
-    if (command.parentCommand && command.subCommands?.size) {
+    let parentCommand;
+
+    while (command.parentCommand && command.subCommands?.size) {
+        parentCommand = command;
         // if no sub command, list all the available sub commands
         if (!args[0]) {
             const subCommandName = command.subCommands.firstKey();
