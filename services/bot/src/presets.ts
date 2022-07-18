@@ -16,8 +16,6 @@ export default (() => {
 
         loadedPresets[presetName] = new RegExp(transformPreset(preset), "s");
 
-        console.log(`Preset ${file.name}: ${loadedPresets[presetName]}`);
-
         console.log(`Loaded preset ${file.name}`);
     }
     return loadedPresets;
