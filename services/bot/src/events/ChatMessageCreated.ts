@@ -173,10 +173,10 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context, server:
             const commandArg = command.args[i];
 
             // if the argument is not a rest type, is optional, and the actual argument is undefined, continue next in the args
-            if (commandArg.optional && typeof args[i] == "undefined") continue;
+            if (commandArg.optional && args.length <= i) continue;
 
             // run the caster and see if the arg is valid
-            const castArg = await argCast[commandArg.type]?.(args[i], args, i, ctx, packet, commandArg);
+            const castArg = args[i] ? await argCast[commandArg.type](args[i], args, i, ctx, packet, commandArg) : null;
 
             // if the arg is not valid, inform the user
             if (castArg === null || (commandArg.max && ((castArg as any).length ?? castArg) > commandArg.max))

@@ -12,6 +12,7 @@ import ModmailGroup from "./ModmailGroup.command";
 import Modrole from "./Modrole.command";
 import Muterole from "./Muterole.command";
 import NsfwScan from "./NsfwScan";
+import Threshold from "./Threshold.command";
 
 const subCommands = new Collection<string, Command>()
     // .set("infraction", Infraction)
@@ -22,6 +23,7 @@ const subCommands = new Collection<string, Command>()
     .set("logchannel", LogChannel)
     .set("antihoist", AntiHoist)
     .set("modmailgroup", ModmailGroup)
+    .set("threshold", Threshold)
     .set("nsfwscan", NsfwScan);
 
 const Config: Command = {
