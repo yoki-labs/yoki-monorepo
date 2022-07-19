@@ -18,7 +18,7 @@ const Home: NextPage = () => {
                         </h1>
                         <div className="pt-10 md:pt-6">
                             <p className="text-md text-white text-slate-300">
-                                Yoki has a powerful set of moderation tools to <br />
+                                Yoki has a powerful set of tools to <br />
                                 make your communities safer
                             </p>
                         </div>
