@@ -13,7 +13,7 @@ const Disable: Command = {
     category: Category.Moderation,
     execute: async (message, _args, ctx) => {
         return ctx.dbUtil
-            .enableFilter(message.serverId!)
+            .disableFilter(message.serverId!)
             .then(() => ctx.messageUtil.replyWithSuccess(message, `Automod disabled`, `Successfully disabled the automod filter for this server.`))
             .catch((e: Error) =>
                 ctx.messageUtil.replyWithError(

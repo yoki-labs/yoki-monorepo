@@ -27,7 +27,7 @@ const Enable: Command = {
 
         return ctx.dbUtil
             .disablePreset(message.serverId!, preset)
-            .then(() => ctx.messageUtil.replyWithSuccess(message, `Preset enabled`, `Successfully disabled the ${inlineCode(preset)} preset for this server.`))
+            .then(() => ctx.messageUtil.replyWithSuccess(message, `Preset disabled`, `Successfully disabled the ${inlineCode(preset)} preset for this server.`))
             .catch((e: Error) =>
                 ctx.messageUtil.replyWithError(
                     message,
