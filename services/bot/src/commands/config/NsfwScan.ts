@@ -18,12 +18,12 @@ const NsfwScan: Command = {
         const newSetting = args.newSetting as boolean | null;
 
         if (!newSetting) {
-            const verb = commandCtx.server.removeNsfw ? `will` : `won't`;
+            const verb = commandCtx.server.scanNSFW ? `will` : `won't`;
 
             return ctx.messageUtil.replyWithInfo(message, `NSFW Images ${verb} be filtered`, `Images with NSFW content ${verb} be filtered.`);
         }
 
-        await ctx.prisma.server.updateMany({ data: { removeNsfw: newSetting }, where: { serverId: message.serverId! } });
+        await ctx.prisma.server.updateMany({ data: { scanNSFW: newSetting }, where: { serverId: message.serverId! } });
         return ctx.messageUtil.replyWithSuccess(message, `NSFW scanning settings modified`, `NSFW images ${newSetting ? "will" : "won't"} now be removed.`);
     },
 };
