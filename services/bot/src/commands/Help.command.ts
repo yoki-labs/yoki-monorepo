@@ -72,7 +72,7 @@ const Help: Command = {
         return ctx.messageUtil.replyWithBotInfo(
             message,
             `Command List`,
-            `${commandCategoryMap
+            stripIndents`${commandCategoryMap
                 .map(
                     (commands, category) => stripIndents`
                             **${category}:**
@@ -81,7 +81,7 @@ const Help: Command = {
                 )
                 .join("\n\n")}
 
-			:link: [Join server](https://guilded.gg/Yoki) • [Invite bot](https://guilded.gg/Yoki)
+			:link: [Join server](https://yoki.gg/support) • [Invite bot](https://yoki.gg/invite)
 			`,
             {
                 footer: {
