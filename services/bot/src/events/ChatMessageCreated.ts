@@ -112,7 +112,7 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context, server:
     }
 
     // for sub commands
-    let parentCommand;
+    let parentCommand = command;
 
     while (command.parentCommand && command.subCommands?.size) {
         parentCommand = command;
