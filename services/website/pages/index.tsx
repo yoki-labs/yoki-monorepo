@@ -10,7 +10,7 @@ const Home: NextPage = () => {
     return (
         <>
             <div className="px-8 md:px-16 pb-20">
-                <div className="py-20 grid grid-cols-10">
+                <div className="py-14 grid grid-cols-10 animate-in slide-in-from-bottom fade-in-25 duration-1000">
                     <div className="text-center col-span-10 md:col-span-6">
                         <h1 className="text-4xl text-white font-bold">
                             Meet <span className="text-custom-guilded">Yoki</span>, your <br />

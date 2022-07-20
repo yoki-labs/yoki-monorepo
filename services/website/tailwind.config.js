@@ -22,5 +22,5 @@ module.exports = withMT({
             },
         },
     },
-    plugins: [],
+    plugins: [require("tailwindcss-animate")],
 });
