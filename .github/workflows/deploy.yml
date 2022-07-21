@@ -83,3 +83,7 @@ jobs:
                   yarn migrate:prod:ci
               env:
                   DATABASE_URL: ${{ secrets.DATABASE_MIGRATION_URL }}
+
+            - name: Trigger deploy
+              run: |
+                  curl -X POST https://portainer.yoki-labs.xyz/api/stacks/webhooks/795d9c1a-5ae9-4a9e-8eca-3a2acca9dbd4
