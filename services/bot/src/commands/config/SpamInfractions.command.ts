@@ -14,7 +14,7 @@ const SpamInfractions: Command = {
     requiredRole: RoleType.ADMIN,
     args: [{ name: "infractionPoints", optional: true, type: "number" }],
     execute: async (message, args, ctx, { server }) => {
-        const infractionPoints = args.infractionPoints as number | undefined;
+        const infractionPoints = args.infractionPoints as number | null;
 
         if (!infractionPoints)
             return ctx.messageUtil.replyWithInfo(message, `Spam infraction points`, `Spam infraction points have been set to ${inlineCode(server.spamInfractionPoints)}.`);

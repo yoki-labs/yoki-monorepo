@@ -9,7 +9,7 @@ import { FilteredContent } from "./content-filter";
 export class SpamFilterUtil extends BaseFilterUtil {
     readonly spamPeriod = 5000;
 
-    messageCounter: Record<string, { count: number; timeout: NodeJS.Timeout }> = {};
+    messageCounter = new Map<string, { count: number; timeout: NodeJS.Timeout }>();
 
     checkForMessageSpam(server: Server, message: ChatMessagePayload) {
         return this.checkForSpam(server, message.createdBy, message.channelId);
@@ -19,23 +19,21 @@ export class SpamFilterUtil extends BaseFilterUtil {
         // Only do it for a specific server
         const key = `${server.serverId}:${userId}`;
 
-        const instance = this.messageCounter[key];
+        const instance = this.messageCounter.get(key);
 
-        if (instance) {
-            if (++instance.count >= server.spamFrequency) {
-                clearTimeout(instance.timeout);
-                delete this.messageCounter[key];
+        if (instance && ++instance.count >= server.spamFrequency) {
+            clearTimeout(instance.timeout);
+            this.messageCounter.delete(key);
 
-                // Warn/mute/kick/ban
-                await this.dealWithSpam(server, channelId, userId);
-            }
+            // Warn/mute/kick/ban
+            await this.dealWithSpam(server, channelId, userId);
         }
         // Have not sent messages in "awhile"
         else
-            this.messageCounter[key] = {
+            this.messageCounter.set(key, {
                 count: 1,
-                timeout: setTimeout(() => delete this.messageCounter[key], this.spamPeriod),
-            };
+                timeout: setTimeout(() => this.messageCounter.delete(key), this.spamPeriod),
+            });
     }
 
     async dealWithSpam(server: Server, channelId: string | null, userId: string) {

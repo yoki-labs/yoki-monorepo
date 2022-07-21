@@ -14,9 +14,9 @@ const SpamFrequency: Command = {
     requiredRole: RoleType.ADMIN,
     args: [{ name: "frequency", optional: true, type: "number" }],
     execute: async (message, args, ctx, { server }) => {
-        const frequency = args.frequency as number | undefined;
+        const frequency = args.frequency as number | null;
 
-        if (frequency === undefined)
+        if (frequency === null)
             return ctx.messageUtil.replyWithInfo(message, `Spam frequency`, `Spam frequency has been set to ${inlineCode(server.spamFrequency)} messages per 5 seconds.`);
         // Cannot make people auto-muted over 1 message
         else if (frequency < 2)
