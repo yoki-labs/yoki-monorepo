@@ -18,6 +18,7 @@ model Server {
     blacklisted                Boolean       @default(false)
     antiRaidEnabled            Boolean       @default(false)
     antiRaidResponse           ResponseType?
+    antiRaidAgeFilter          Int?
     flags                      String[]
     muteInfractionThreshold    Int?          @default(10)
     kickInfractionThreshold    Int?          @default(15)
