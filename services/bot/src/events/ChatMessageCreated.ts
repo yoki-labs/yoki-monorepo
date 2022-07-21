@@ -90,6 +90,9 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context, server:
             // Filter
             resultingAction: () => ctx.rest.router.deleteChannelMessage(message.channelId, message.id),
         });
+        // Spam prevention
+        if (server.filterEnabled) await ctx.spamFilterUtil.checkForMessageSpam(server, message);
+
         if (server.premium && server.scanNSFW)
             await ctx.contentFilterUtil.scanMessageMedia({ channelId: message.channelId, messageId: message.id, userId: message.createdBy, content: message.content });
         return;

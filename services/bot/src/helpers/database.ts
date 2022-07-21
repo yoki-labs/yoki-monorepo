@@ -114,7 +114,7 @@ export class DatabaseUtil extends Util {
         });
     }
 
-    addAction(data: Omit<Action, "id" | "referenceId" | "createdAt" | "updatedAt" | "logChannelI" | "expired" | "logChannelId" | "logChannelMessage">) {
+    addAction(data: Omit<Action, "id" | "referenceId" | "createdAt" | "updatedAt" | "expired" | "logChannelId" | "logChannelMessage">) {
         return this.prisma.action.create({
             data: {
                 id: nanoid(17),
@@ -126,18 +126,22 @@ export class DatabaseUtil extends Util {
         });
     }
 
-    async addActionFromMessage(message: ChatMessagePayload, data: Pick<Action, "type" | "reason" | "targetId" | "infractionPoints" | "expiresAt">) {
-        const action = await this.addAction({
+    async emitAction(data: Omit<Action, "id" | "referenceId" | "createdAt" | "updatedAt" | "expired" | "logChannelId" | "logChannelMessage">) {
+        const action = await this.addAction(data);
+
+        this.client.emitter.emit("ActionIssued", action, this.client);
+
+        return action;
+    }
+
+    addActionFromMessage(message: ChatMessagePayload, data: Pick<Action, "type" | "reason" | "targetId" | "infractionPoints" | "expiresAt">) {
+        return this.emitAction({
             serverId: message.serverId!,
             executorId: message.createdBy,
             channelId: null,
             triggerContent: null,
             ...data,
         });
-
-        this.client.emitter.emit("ActionIssued", action, this.client);
-
-        return action;
     }
 
     populateActionMessage(id: string, channelId: string, messageId: string) {

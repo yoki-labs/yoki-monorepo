@@ -33,6 +33,7 @@ model Server {
     modmailEnabled             Boolean       @default(false)
     modmailGroupId             String?       @db.VarChar(255)
     scanNSFW                   Boolean       @default(false)
+    spamFrequency              Int           @default(9)
 }
 
 model LogChannel {

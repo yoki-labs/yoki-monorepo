@@ -11,6 +11,8 @@ import ModmailGroup from "./ModmailGroup.command";
 import Modrole from "./Modrole.command";
 import Muterole from "./Muterole.command";
 import NsfwScan from "./NsfwScan";
+import SpamFrequency from "./SpamFrequency.command";
+import SpamInfractions from "./SpamInfractions.command";
 import Threshold from "./Threshold.command";
 
 const subCommands = new Collection<string, Command>()
@@ -22,6 +24,8 @@ const subCommands = new Collection<string, Command>()
     .set("logchannel", LogChannel)
     .set("modmailgroup", ModmailGroup)
     .set("threshold", Threshold)
+    .set("spamfrequency", SpamFrequency)
+    .set("spaminfractions", SpamInfractions)
     .set("nsfwscan", NsfwScan);
 
 const Config: Command = {
