@@ -1,4 +1,4 @@
-import { ContentFilter, FilterMatching } from "@prisma/client";
+import { ContentFilter, FilterMatching, ResponseType } from "@prisma/client";
 
 import { RoleType } from ".prisma/client";
 
@@ -48,3 +48,16 @@ export function filterToString(filter: ContentFilter) {
         : // *word, word* or word
           `${filter.matching === FilterMatching.POSTFIX ? "*" : ""}${filter.content}${filter.matching === FilterMatching.PREFIX ? "*" : ""}`;
 }
+
+export const antiRaidResponseMap = {
+    captcha: ResponseType.CAPTCHA,
+    kick: ResponseType.KICK,
+} as const;
+export const antiRaidResponseTransformer = (str: string) => antiRaidResponseMap[str];
+export const typeToDBPropMap = {
+    modmail: "modmailEnabled",
+    automod: "filterEnabled",
+    antiraid: "antiRaidEnabled",
+    antihoist: "antiHoistEnabled",
+};
+export const typeToDBPropKeys = Object.keys(typeToDBPropMap);

@@ -8,27 +8,30 @@ datasource db {
 }
 
 model Server {
-    id                         Int          @id @default(autoincrement())
-    serverId                   String       @unique @db.VarChar(255)
-    botJoinedAt                DateTime?    @default(now())
+    id                         Int           @id @default(autoincrement())
+    serverId                   String        @unique @db.VarChar(255)
+    botJoinedAt                DateTime?     @default(now())
     premium                    PremiumType?
-    locale                     String       @default("en-US")
+    locale                     String        @default("en-US")
     muteRoleId                 Int?
-    filterEnabled              Boolean      @default(false)
-    blacklisted                Boolean      @default(false)
+    filterEnabled              Boolean       @default(false)
+    blacklisted                Boolean       @default(false)
+    antiRaidEnabled            Boolean       @default(false)
+    antiRaidResponse           ResponseType?
     flags                      String[]
-    muteInfractionThreshold    Int?         @default(10)
-    kickInfractionThreshold    Int?         @default(15)
-    banInfractionThreshold     Int?         @default(45)
-    softbanInfractionThreshold Int?         @default(25)
-    spamInfractionPoints       Int          @default(5)
-    filterOnMods               Boolean      @default(false)
-    antiHoist                  Boolean      @default(false)
+    muteInfractionThreshold    Int?          @default(10)
+    kickInfractionThreshold    Int?          @default(15)
+    banInfractionThreshold     Int?          @default(45)
+    softbanInfractionThreshold Int?          @default(25)
+    spamInfractionPoints       Int           @default(5)
+    filterOnMods               Boolean       @default(false)
+    antiHoistEnabled           Boolean       @default(false)
     prefix                     String?
-    createdAt                  DateTime     @default(now())
-    updatedAt                  DateTime?    @updatedAt
-    modmailGroupId             String?      @db.VarChar(255)
-    scanNSFW                   Boolean      @default(false)
+    createdAt                  DateTime      @default(now())
+    updatedAt                  DateTime?     @updatedAt
+    modmailEnabled             Boolean       @default(false)
+    modmailGroupId             String?       @db.VarChar(255)
+    scanNSFW                   Boolean       @default(false)
 }
 
 model LogChannel {
@@ -181,4 +184,9 @@ enum ReactionActionType {
 enum PremiumType {
     Gold
     Silver
+}
+
+enum ResponseType {
+    CAPTCHA
+    KICK
 }
