@@ -2,10 +2,11 @@ import { Embed } from "@guildedjs/webhook-client";
 import { ContentFilter, FilterMatching } from "@prisma/client";
 import { stripIndents } from "common-tags";
 
-import { Util } from "../helpers/util";
+import { Colors } from "../color";
 import presets from "../presets";
-import { Action, CachedMember, ContentFilterScan, Server, Severity } from "../typings";
+import { ContentFilterScan, Server, Severity } from "../typings";
 import { IMAGE_REGEX } from "../util";
+import BaseFilterUtil from "./base-filter";
 import { ImageFilterUtil } from "./image-filter";
 
 export const transformSeverityStringToEnum = (str: string): Severity | undefined => Severity[str.toUpperCase()];
@@ -16,60 +17,9 @@ export enum FilteredContent {
     ServerContent = 3,
 }
 
-export class ContentFilterUtil extends Util {
+export class ContentFilterUtil extends BaseFilterUtil {
     readonly imageFilterUtil = new ImageFilterUtil(this.client);
     readonly presets = presets;
-
-    // An object mapping the Action type -> Action punishment
-    // Easy way for us to organize punishments into reusable code
-    readonly severityAction: Record<
-        Exclude<Severity, "NOTE">,
-        (member: CachedMember, server: Server, channelId: string | null, filteredContent: FilteredContent) => unknown | undefined
-    > = {
-        [Severity.BAN]: (member, server) => {
-            return this.rest.router.banMember(server.serverId, member.user.id);
-        },
-        [Severity.KICK]: (member, server) => {
-            return this.rest.router.kickMember(server.serverId, member.user.id);
-        },
-        [Severity.SOFTBAN]: async (member, server) => {
-            await this.rest.router.banMember(server.serverId, member.user.id);
-            return this.rest.router.unbanMember(server.serverId, member.user.id);
-        },
-        [Severity.MUTE]: (member, server) => {
-            return server.muteRoleId && this.rest.router.assignRoleToMember(server.serverId, member.user.id, server.muteRoleId);
-        },
-        [Severity.WARN]: (member, _serv, channelId, filteredContent) => {
-            // When channels and messages get filtered
-            if (filteredContent < FilteredContent.ChannelContent)
-                return this.client.messageUtil.sendWarningBlock(
-                    channelId!,
-                    `Cannot use that word`,
-                    `**Alert:** <@${member.user.id}>, you have used a filtered word. This is a warning for you to not use it again, otherwise moderation actions may be taken against you.`,
-                    undefined,
-                    { isPrivate: true }
-                );
-            // TODO: DM user
-            return 0;
-        },
-    };
-
-    // check if the amount of points incurred by this user is higher than the allowed threshold for this server
-    ifExceedsInfractionThreshold(total: number, server: Server) {
-        // FIXME: Still can be minimized further with a loop or something else
-        // Check which threshold is exceeded if any
-        const severity =
-            server.banInfractionThreshold && total >= server.banInfractionThreshold
-                ? Severity.BAN
-                : server.softbanInfractionThreshold && total >= server.softbanInfractionThreshold
-                ? Severity.SOFTBAN
-                : server.kickInfractionThreshold && total >= server.kickInfractionThreshold
-                ? Severity.KICK
-                : server.muteInfractionThreshold && total >= server.muteInfractionThreshold
-                ? Severity.MUTE
-                : null;
-        return severity;
-    }
 
     async scanMessageMedia({ channelId, messageId, userId, content }: { channelId: string; messageId: string; userId: string; content: string }): Promise<void> {
         const matches = [...content.matchAll(IMAGE_REGEX)];
@@ -156,14 +106,8 @@ export class ContentFilterUtil extends Util {
         // If the server doesn't have "filterOnMods" setting enabled and a mod violates the filter/preset, ignore
         if (!server.filterOnMods && modRoles.some((modRole) => member.roleIds.includes(modRole.roleId))) return;
 
-        // Get this member's past infraction history
-        const pastActions = await this.dbUtil.getMemberHistory(serverId, userId);
-
-        // Total up all the infraction points from all these infractions
-        const totalInfractionPoints = ContentFilterUtil.totalAllInfractionPoints(pastActions) + triggeredWord.infractionPoints;
-
         // Check whether this member exceeds the infraction threshold for this server
-        const ifExceeds = await this.ifExceedsInfractionThreshold(totalInfractionPoints, server);
+        const ifExceeds = await this.getMemberExceedsThreshold(server, userId, triggeredWord.infractionPoints);
 
         // Add this action to the database
         const createdCase = await this.client.dbUtil.addAction({
@@ -199,8 +143,8 @@ export class ContentFilterUtil extends Util {
         // Execute the punishing action. If this is a threshold exceeding, execute the punishment associated with the exceeded threshold
         // Otherwise, execute the action associated with this specific filter word or preset entry
         return ifExceeds
-            ? this.severityAction[ifExceeds](member, server, channelId, filteredContent)
-            : this.severityAction[triggeredWord.severity]?.(member, server, channelId, filteredContent);
+            ? this.severityAction[ifExceeds](member.user.id, server, channelId, filteredContent)
+            : this.severityAction[triggeredWord.severity]?.(member.user.id, server, channelId, filteredContent);
     }
 
     tripsFilter(contentFilter: ContentFilter | Omit<ContentFilterScan, "severity">, words: string[]) {
@@ -219,8 +163,34 @@ export class ContentFilterUtil extends Util {
             : phrase.startsWith(contentFilter.content);
     }
 
-    // Total up all infraction points from an array of infractions
-    static totalAllInfractionPoints(actions: Action[]) {
-        return actions.reduce((prev, curr) => prev + curr.infractionPoints, 0);
+    override onUserWarn(userId: string, _serv: Server, channelId: string | null, filteredContent: FilteredContent) {
+        // When channels and messages get filtered
+        if (filteredContent < FilteredContent.ChannelContent)
+            return this.client.messageUtil.sendWarningBlock(
+                channelId!,
+                `Cannot use that word`,
+                `**Alert:** <@${userId}>, you have used a filtered word. This is a warning for you to not use it again, otherwise moderation actions may be taken against you.`,
+                undefined,
+                { isPrivate: true }
+            );
+        // TODO: DM user
+        return 0;
+    }
+
+    override onUserMute(userId: string, _serv: Server, channelId: string | null, filteredContent: FilteredContent) {
+        // When channels and messages get filtered
+        if (filteredContent < FilteredContent.ChannelContent)
+            return this.client.messageUtil.sendValueBlock(
+                channelId!,
+                `:mute: You have been muted`,
+                `**Alert:** <@${userId}>, you have been muted for using filtered word excessively.`,
+                Colors.red,
+                undefined,
+                {
+                    isPrivate: true,
+                }
+            );
+        // TODO: DM user
+        return 0;
     }
 }
