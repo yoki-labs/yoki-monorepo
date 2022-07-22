@@ -34,6 +34,8 @@ function transformPresetValue(pattern: PresetPattern): string {
 }
 
 function transformPresetObject(pattern: PresetPatternObject): string {
+    if (pattern.type === "WORD") return `(?:^|\\W+)(?:${transformPreset(pattern._)})(?:$|\\W+)`;
+
     // Get boolean and convert it to number (0 or 1), which is now an index of wordRest
     const prefix = Number(["PREFIX", "INFIX"].includes(pattern.type));
     const postfix = Number(["POSTFIX", "INFIX"].includes(pattern.type));
