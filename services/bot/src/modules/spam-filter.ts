@@ -21,19 +21,19 @@ export class SpamFilterUtil extends BaseFilterUtil {
 
         const instance = this.messageCounter.get(key);
 
-        if (instance && ++instance.count >= server.spamFrequency) {
+        // Have not sent messages in "awhile"
+        if (!instance)
+            this.messageCounter.set(key, {
+                count: 1,
+                timeout: setTimeout(() => this.messageCounter.delete(key), this.spamPeriod),
+            });
+        else if (++instance.count >= server.spamFrequency) {
             clearTimeout(instance.timeout);
             this.messageCounter.delete(key);
 
             // Warn/mute/kick/ban
             await this.dealWithSpam(server, channelId, userId);
         }
-        // Have not sent messages in "awhile"
-        else
-            this.messageCounter.set(key, {
-                count: 1,
-                timeout: setTimeout(() => this.messageCounter.delete(key), this.spamPeriod),
-            });
     }
 
     async dealWithSpam(server: Server, channelId: string | null, userId: string) {
