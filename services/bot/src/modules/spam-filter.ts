@@ -43,7 +43,7 @@ export class SpamFilterUtil extends BaseFilterUtil {
 
         await this.dbUtil.emitAction({
             type: actionType,
-            reason: `[AUTOMOD] Spam filter tripped`,
+            reason: `[AUTOMOD] Spam filter tripped.${memberExceeds ? `${actionType} threshold exceeded.` : ""}`,
             serverId: server.serverId,
             channelId,
             targetId: userId,
