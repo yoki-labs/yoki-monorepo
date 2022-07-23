@@ -14,10 +14,7 @@ const Prefix: Command = {
     execute: async (message, args, ctx, commandCtx) => {
         const newPrefix = args.newPrefix as string | null;
         if (!newPrefix) {
-            const { prefix } = commandCtx.server;
-            return prefix
-                ? ctx.messageUtil.replyWithInfo(message, `Server prefix`, `The prefix for this server is ${inlineCode(prefix?.replaceAll("`", "'"))}`)
-                : ctx.messageUtil.replyWithNullState(message, `No server prefix`, `This server does not have any prefix set.`);
+            return ctx.messageUtil.replyWithInfo(message, "Prefix", `The prefix for this server is ${inlineCode(commandCtx.server.prefix ?? process.env.DEFAULT_PREFIX)}`);
         }
         await ctx.prisma.server.update({ where: { id: commandCtx.server.id }, data: { prefix: newPrefix } });
         return ctx.messageUtil.replyWithSuccess(message, `Server prefix set`, `The new prefix for this server is ${inlineCode(newPrefix.replaceAll("`", "'"))}`);
