@@ -1,5 +1,5 @@
 import { RoleType } from "../../typings";
-import { typeToDBPropKeys } from "../../util";
+import { typeToDBPropKeys, typeToDBPropMap } from "../../util";
 import { Category } from "../Category";
 import type { Command } from "../Command";
 
@@ -13,7 +13,7 @@ const List: Command = {
     requiredRole: RoleType.ADMIN,
     execute: async (message, _args, ctx, commandCtx) => {
         const serverDbProps = Object.keys(commandCtx.server).filter((x) => typeToDBPropKeys.includes(x));
-        return ctx.messageUtil.replyWithInfo(message, "Enabled modules", serverDbProps.join(", "));
+        return ctx.messageUtil.replyWithInfo(message, "Enabled modules", `${serverDbProps.join(", ")}\n\nAvailable Modules: ${Object.keys(typeToDBPropMap).join(", ")}`);
     },
 };
 
