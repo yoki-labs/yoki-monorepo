@@ -13,9 +13,9 @@ const FilterOnMods: Command = {
     requiredRole: RoleType.ADMIN,
     args: [{ name: "newSetting", optional: true, type: "boolean" }],
     execute: async (message, args, ctx, commandCtx) => {
-        const newSetting = args.newSetting as boolean;
+        const newSetting = args.newSetting as boolean | null;
 
-        if (typeof newSetting == "undefined") {
+        if (newSetting === null) {
             const verb = commandCtx.server.filterOnMods ? `will` : `won't`;
 
             return ctx.messageUtil.replyWithInfo(message, `Mods ${verb} be filtered`, `Messages and content posted by staff members ${verb} be filtered.`);

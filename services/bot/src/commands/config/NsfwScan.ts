@@ -17,7 +17,7 @@ const NsfwScan: Command = {
 
         const newSetting = args.newSetting as boolean | null;
 
-        if (!newSetting) {
+        if (newSetting === null) {
             const verb = commandCtx.server.scanNSFW ? `will` : `won't`;
 
             return ctx.messageUtil.replyWithInfo(message, `NSFW Images ${verb} be filtered`, `Images with NSFW content ${verb} be filtered.`);
