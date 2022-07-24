@@ -1,0 +1,91 @@
+import type { ChatMessagePayload } from "@guildedjs/guilded-api-typings";
+import { stripIndents } from "common-tags";
+
+import type Client from "../../../Client";
+import { inlineCode, listInlineCode } from "../../../formatters";
+import { LogChannelType, RoleType } from "../../../typings";
+import { Category } from "../../Category";
+import type { Command } from "../../Command";
+
+// With the ability to remove it
+const LogChannelArgs = Object.assign({}, LogChannelType);
+
+type LogChannelArgEnum = keyof typeof LogChannelArgs;
+
+const Remove: Command = {
+    name: "logchannel-remove",
+    description: "List all possible Log Channel Types.",
+    subCommand: true,
+    category: Category.Settings,
+    subName: "remove",
+    requiredRole: RoleType.ADMIN,
+    args: [
+        { name: "channelId", optional: false, type: "UUID" },
+        { name: "logTypes", optional: true, type: "enumList", values: LogChannelArgs}
+    ],
+    execute: async (message, args, ctx) => {
+        const channelId = args.channelId as string;
+        let logTypes: LogChannelArgEnum[] = args.logTypes === null ? [] : args.logTypes as LogChannelArgEnum[];
+
+        const channel = await ctx.rest.router.getChannel(channelId).catch(() => null);
+        if (!channel) return ctx.messageUtil.replyWithAlert(
+            message,
+            "Sorry! That is not a valid channel!",
+            "Please ensure that the provided ID belongs to a channel that I can see! I also require `MANAGE CHANNEL` permissions to be able to grab that channel!"
+        );
+
+        // If there are logTypes, uppercase them all, then filter out duplicates. No idea why this had to specifically be two different lines.
+        if (logTypes && logTypes.length > 0) {
+            logTypes = logTypes.filter((value, index) => logTypes!.indexOf(value) === index);
+        }
+
+        // If logTypes is empty or includes ALL, shorten it to only ALL to clean up the process.
+        if (logTypes?.length === 0 || logTypes?.includes("ALL")) {
+            await ctx.prisma.logChannel.findMany({ where: { channelId, serverId: message.serverId } }).then(logChannels => logChannels.forEach((logChannel) => {
+                logTypes?.push(logChannel.type)
+            }))
+        }
+
+        const [successfulTypes, failedTypes] = await unsubscribeToLogs(ctx, message, channelId, logTypes as LogChannelType[]);
+
+        // Reply to the command, with the successful and failed types.
+        return ctx.messageUtil[successfulTypes.length > 0 ? "replyWithSuccess" : "replyWithAlert"](
+            message,
+            successfulTypes.length > 0 ? `Subscriptions removed` : `No subscriptions removed`,
+            stripIndents`
+                ${successfulTypes.length > 0 ? `Successfully unsubscribed channel ${inlineCode(channelId)} from the following events: ${listInlineCode(successfulTypes)}` : ""}
+                ${
+                failedTypes.length > 0
+                    ? `Failed to unsubscribe channel ${inlineCode(channelId)} from the following events: ${listInlineCode(
+                        failedTypes.map((x) => x[0])
+                    )} due to the following reason(s) ${listInlineCode(failedTypes.map((x) => x[1]))}`
+                    : ""
+            }
+            `
+        );
+    },
+};
+
+async function unsubscribeToLogs(ctx: Client, message: ChatMessagePayload, channelId: string, logTypes: LogChannelType[]): Promise<[string[], string[][]]> {
+    // Event unsubscribe handling.
+    const failedTypes: string[][] = [];
+    const successfulTypes: string[] = [];
+
+    for (const logType of logTypes) {
+        if (LogChannelType[logType] && (await ctx.prisma.logChannel.findFirst({ where: { serverId: message.serverId, type: LogChannelType[logType] } }))) {
+            try {
+                await ctx.prisma.logChannel.deleteMany({ where: { channelId, serverId: message.serverId!, type: LogChannelType[logType] } });
+                successfulTypes.push(logType);
+            } catch (e) {
+                failedTypes.push([logType, "INTERNAL_ERROR"]);
+            }
+        } else {
+            failedTypes.push([logType, LogChannelType[logType] ? "CHANNEL_NOT_SUBSCRIBED" : "INVALID_LOG_TYPE"]);
+        }
+    }
+
+    return [successfulTypes, failedTypes];
+    
+}
+
+export default Remove;
