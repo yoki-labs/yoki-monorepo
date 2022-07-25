@@ -78,6 +78,9 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context, server:
 
     // if the message does not start with the prefix
     if (!message.content.startsWith(prefix)) {
+        const member = await ctx.serverUtil.getMember(packet.d.serverId, packet.d.message.createdBy);
+        if (member.user.type === "bot") return;
+
         // store the message in the database
         await ctx.dbUtil.storeMessage(message).catch(console.log);
         // scan the message for any harmful content (filter list, presets)
@@ -195,6 +198,7 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context, server:
 
     // fetch the member from either the server or the redis cache
     const member = await ctx.serverUtil.getMember(message.serverId, message.createdBy);
+
 
     // check if this user is not an operator
     if (!ctx.operators.includes(message.createdBy)) {
