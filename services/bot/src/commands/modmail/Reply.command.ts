@@ -6,7 +6,7 @@ import { Category } from "../Category";
 import type { Command } from "../Command";
 
 const Reply: Command = {
-    name: "modmail-reply",
+    name: "reply",
     subName: "reply",
     description: "Reply in a modmail thread",
     usage: "<...content>",
