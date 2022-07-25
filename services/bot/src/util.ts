@@ -59,5 +59,6 @@ export const typeToDBPropMap = {
     automod: "filterEnabled",
     antiraid: "antiRaidEnabled",
     antihoist: "antiHoistEnabled",
+    nsfwscan: "scanNSFW",
 };
 export const typeToDBPropKeys = Object.keys(typeToDBPropMap);
