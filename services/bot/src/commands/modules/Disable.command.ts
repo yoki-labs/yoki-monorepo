@@ -12,6 +12,12 @@ const Disable: Command = {
     subCommand: true,
     requiredRole: RoleType.ADMIN,
     category: Category.Moderation,
+    args: [
+        {
+            name: "module",
+            type: "string",
+        },
+    ],
     execute: async (message, args, ctx, commandCtx) => {
         const module = args.module as string;
         if (!typeToDBPropKeys.includes(module))
