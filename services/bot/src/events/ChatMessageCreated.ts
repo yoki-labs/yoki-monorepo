@@ -78,8 +78,8 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context, server:
 
     // if the message does not start with the prefix
     if (!message.content.startsWith(prefix)) {
-        const member = await ctx.serverUtil.getMember(packet.d.serverId, packet.d.message.createdBy);
-        if (member.user.type === "bot") return;
+        const member = await ctx.serverUtil.getMember(message.serverId, message.createdBy).catch(() => null)
+        if (member?.user.type === "bot") return;
 
         // store the message in the database
         await ctx.dbUtil.storeMessage(message).catch(console.log);
