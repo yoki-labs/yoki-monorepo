@@ -13,6 +13,8 @@ export default async (packet: WSChatMessageUpdatedPayload, ctx: Context, server:
     const { message } = packet.d;
     // if this message isn't updated in a server, or if the author is a bot, ignore
     if (message.createdByBotId || message.createdBy === ctx.userId || !message.serverId) return void 0;
+    const member = await ctx.serverUtil.getMember(packet.d.serverId, packet.d.message.createdBy).catch(() => null);
+    if (member?.user.type === "bot") return;
 
     // scan the updated message content
     await ctx.contentFilterUtil.scanContent({

@@ -22,6 +22,7 @@ export default async (packet: WSChatMessageDeletedPayload, ctx: Context) => {
     if (deletedMessage) await ctx.prisma.message.updateMany({ where: { messageId: deletedMessage.messageId }, data: { deletedAt: packet.d.message.deletedAt } });
     // if there is a database entry for the message, get the member from the server so we can get their name and roles etc.
     const oldMember = deletedMessage ? await ctx.serverUtil.getMember(deletedMessage.serverId!, deletedMessage.authorId).catch(() => null) : null;
+    if (oldMember?.user.type === "bot") return;
 
     try {
         const logContent = [
@@ -30,8 +31,8 @@ export default async (packet: WSChatMessageDeletedPayload, ctx: Context) => {
                 value: deletedMessage?.content
                     ? codeBlock(deletedMessage.content.length > 1012 ? `${deletedMessage.content.slice(0, 1012)}...` : deletedMessage.content)
                     : (deletedMessage?.embeds as Prisma.JsonArray)?.length
-                    ? `_This message contains embeds._`
-                    : `Could not find message content. This message may be older than 14 days.`,
+                        ? `_This message contains embeds._`
+                        : `Could not find message content. This message may be older than 14 days.`,
             },
         ];
 
