@@ -18,7 +18,7 @@ services:
         build:
             context: ../../
             dockerfile: ./docker/bot/Dockerfile
-        command: sh -c "yarn add global typescript && yarn run dev"
+        command: "yarn run dev"
         depends_on:
             - db
             - cache
@@ -27,18 +27,18 @@ services:
         restart: "no"
         environment:
             DATABASE_URL: "postgresql://yoki_user:yoki_pass@db:5432/yoki?schema=public"
-    nsfw: 
+            BUILD_ENV: development
+    nsfw:
         build:
             context: ../../
             dockerfile: ./docker/nsfw/Dockerfile
         platform: linux/x86_64
-        command: sh -c "yarn add global typescript && yarn run dev"
+        command: "yarn run dev"
         volumes:
             - "../../services/nsfw/src:/usr/app/services/nsfw/src"
         restart: "no"
         environment:
             TOKEN_SECRET: "TESTTOKENSECRET"
-
 
 volumes:
     yoki-postgres-data:

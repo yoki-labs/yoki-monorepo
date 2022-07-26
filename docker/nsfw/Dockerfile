@@ -20,7 +20,7 @@ COPY ./services/nsfw/tsconfig.json ./services/nsfw/nodemon.json ./
 COPY ./services/nsfw/src/. ./src/
 RUN yarn build
 
-RUN yarn remove $(cat package.json | jq -r '.devDependencies | keys | join(" ")')
+RUN if [[ "$BUILD_ENV" = "development" ]] ; then yarn remove $(cat package.json | jq -r '.devDependencies | keys | join(" ")') ; fi
 
 FROM node:16-buster-slim
 WORKDIR /usr/app
