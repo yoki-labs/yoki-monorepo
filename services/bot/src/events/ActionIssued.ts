@@ -4,6 +4,7 @@ import { stripIndents } from "common-tags";
 
 import type Client from "../Client";
 import { inlineCode } from "../formatters";
+import { FormatDate } from "../util";
 
 export default async (data: Action & { reasonMetaData?: string }, client: Client) => {
     const modLogChannel = await client.dbUtil.getLogChannel(data.serverId, LogChannelType.MOD_ACTION_LOG);
@@ -17,19 +18,9 @@ export default async (data: Action & { reasonMetaData?: string }, client: Client
 					**Target:** <@${data.targetId}>
 					**Type:** ${inlineCode(data.type)}
 					**Reason:** ${data.reason ? inlineCode(data.reason) : "No reason provided."}  ${data.reasonMetaData ?? ""}
-					${
-                        data.expiresAt
-                            ? `**Expiration:** ${inlineCode(
-                                  data.expiresAt.toLocaleDateString("en-US", {
-                                      year: "numeric",
-                                      month: "long",
-                                      day: "numeric",
-                                      hour: "2-digit",
-                                      minute: "2-digit",
-                                      timeZoneName: "short",
-                                  })
-                              )}`
-                            : ""
+					${data.expiresAt
+                        ? `**Expiration:** ${inlineCode(FormatDate(data.expiresAt))}`
+                        : ""
                     }
 				`
             )

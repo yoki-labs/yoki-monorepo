@@ -2,6 +2,7 @@ import type { EmbedField } from "@guildedjs/guilded-api-typings";
 
 import { inlineCode } from "../../formatters";
 import { RoleType } from "../../typings";
+import { FormatDate } from "../../util";
 import { Category } from "../Category";
 import type { Command } from "../Command";
 
@@ -65,13 +66,7 @@ const Case: Command = {
                     },
                     fetchedCase.expiresAt && {
                         name: "Expiration",
-                        value: `${fetchedCase.expiresAt.toLocaleDateString("en-US", {
-                            year: "numeric",
-                            month: "long",
-                            day: "numeric",
-                            hour: "2-digit",
-                            minute: "2-digit",
-                        })} EST`,
+                        value: `${FormatDate(fetchedCase.expiresAt)} EST`,
                     },
                 ].filter(Boolean) as EmbedField[],
             },

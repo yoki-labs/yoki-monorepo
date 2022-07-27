@@ -1,6 +1,7 @@
 import { stripIndents } from "common-tags";
 
 import { LogChannelType, RoleType } from "../../typings";
+import { FormatDate } from "../../util";
 import { Category } from "../Category";
 import type { Command } from "../Command";
 
@@ -28,27 +29,13 @@ const Close: Command = {
 						-------------
 						Opener: ${isCurrentChannelModmail.openerId}
 						Server: ${isCurrentChannelModmail.serverId}
-						Created At: ${isCurrentChannelModmail.createdAt.toLocaleDateString("en-US", {
-                            year: "numeric",
-                            month: "long",
-                            day: "numeric",
-                            hour: "2-digit",
-                            minute: "2-digit",
-                            timeZoneName: "short",
-                        })}
+						Created At: ${FormatDate(isCurrentChannelModmail.createdAt)}
 						-------------
 
 						${modmailMessages
                             .map(
                                 (x) =>
-                                    `[${x.authorId}][${x.createdAt.toLocaleDateString("en-US", {
-                                        year: "numeric",
-                                        month: "long",
-                                        day: "numeric",
-                                        hour: "2-digit",
-                                        minute: "2-digit",
-                                        timeZoneName: "short",
-                                    })}] ${x.content}`
+                                    `[${x.authorId}][${FormatDate(x.createdAt)}] ${x.content}`
                             )
                             .join("\n")}
 					`),
@@ -59,14 +46,7 @@ const Close: Command = {
             await ctx.messageUtil.send(
                 modmailLogChannel.channelId,
                 stripIndents`
-					Thread #${isCurrentChannelModmail.id} closed on ${new Date().toLocaleDateString("en-US", {
-                    year: "numeric",
-                    month: "long",
-                    day: "numeric",
-                    hour: "2-digit",
-                    minute: "2-digit",
-                    timeZoneName: "short",
-                })} with chat log available [here](${uploadedLog.Location})
+					Thread #${isCurrentChannelModmail.id} closed on ${FormatDate(new Date())} with chat log available [here](${uploadedLog.Location})
 				`
             );
         }

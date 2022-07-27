@@ -2,6 +2,7 @@ import { Embed } from "@guildedjs/embeds";
 import type { TeamMemberPayload } from "@guildedjs/guilded-api-typings";
 
 import { Colors } from "../color";
+import { FormatDate } from "../util";
 import type { Command } from "./Command";
 
 const UserInfo: Command = {
@@ -43,24 +44,12 @@ const UserInfo: Command = {
                         },
                         {
                             name: "Account Age",
-                            value: `${new Date(target.user.createdAt).toLocaleDateString("en-US", {
-                                year: "numeric",
-                                month: "long",
-                                day: "numeric",
-                                hour: "2-digit",
-                                minute: "2-digit",
-                            })} EST`,
+                            value: `${FormatDate(new Date(target.user.createdAt))} EST`,
                             inline: false,
                         },
                         {
                             name: "Joined Server",
-                            value: `${new Date(target.joinedAt).toLocaleDateString("en-US", {
-                                year: "numeric",
-                                month: "long",
-                                day: "numeric",
-                                hour: "2-digit",
-                                minute: "2-digit",
-                            })} EST`,
+                            value: `${FormatDate(new Date(target.joinedAt))} EST`,
                             inline: true,
                         },
                         {

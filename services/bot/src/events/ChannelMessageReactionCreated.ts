@@ -5,6 +5,7 @@ import { nanoid } from "nanoid";
 
 import { Colors } from "../color";
 import type { Context } from "../typings";
+import { FormatDate } from "../util";
 
 export default async (packet: WSChannelMessageReactionCreatedPayload, ctx: Context, server: Server) => {
     const { reaction, serverId } = packet.d;
@@ -47,20 +48,8 @@ export default async (packet: WSChannelMessageReactionCreatedPayload, ctx: Conte
                         description: stripIndents`
 							**User:** ${member.user.name}${member.nickname ? ` (${member.nickname})` : ""}
 							**ID:** ${member.user.id}
-							**Account Created:** ${new Date(member.user.createdAt).toLocaleDateString("en-US", {
-                                year: "numeric",
-                                month: "long",
-                                day: "numeric",
-                                hour: "2-digit",
-                                minute: "2-digit",
-                            })} EST
-							**Joined:** ${new Date(member.joinedAt).toLocaleDateString("en-US", {
-                                year: "numeric",
-                                month: "long",
-                                day: "numeric",
-                                hour: "2-digit",
-                                minute: "2-digit",
-                            })} EST
+							**Account Created:** ${FormatDate(new Date(member.user.createdAt))} EST
+							**Joined:** ${FormatDate(new Date(member.joinedAt))} EST
 							**Roles:** ${member.roleIds.map((x) => `<@${x}>`).join(" ")}
 						`,
                     },
