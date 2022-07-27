@@ -14,7 +14,7 @@ import { FormatDate, suspicious as sus } from "../util";
 export default async (packet: WSTeamMemberJoinedPayload, ctx: Context, server: Server) => {
     const { member, serverId } = packet.d;
 
-    if (["!", "."].some((x) => member.user.name.includes(x)))
+    if (["!", "."].some((x) => member.user.name.trim().startsWith(x)))
         await ctx.rest.router.updateMemberNickname(packet.d.serverId, packet.d.member.user.id, packet.d.member.user.name.slice(1).trim() || "NON-HOISTING NAME");
 
     // Re-add mute

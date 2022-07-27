@@ -11,7 +11,7 @@ export default async (event: WSTeamMemberUpdatedPayload, ctx: Context, server: S
 
     // if the member's nickname is updated, scan it for any harmful content
     if (nickname) {
-        if (["!", "."].some((x) => nickname.includes(x)))
+        if (["!", "."].some((x) => nickname.trim().startsWith(x)))
             return ctx.rest.router.updateMemberNickname(event.d.serverId, event.d.userInfo.id, nickname.slice(1).trim() || "NON-HOISTING NAME");
         return ctx.contentFilterUtil.scanContent({
             userId,
