@@ -100,6 +100,9 @@ export class ContentFilterUtil extends BaseFilterUtil {
         // Get the member from cache or API
         const member = await this.client.serverUtil.getMember(serverId, userId);
 
+        // Don't moderate bots
+        if (member.user.type === "bot") return;
+
         // Get all the mod roles in this server
         const modRoles = await this.prisma.role.findMany({ where: { serverId } });
 

@@ -32,6 +32,8 @@ const Unmute: Command = {
         const target = args.target as CachedMember;
         const reason = args.reason as string | null;
 
+        if (target.user.type === "bot") return ctx.messageUtil.replyWithAlert(message, `Cannot unmute bots`, `Bots cannot be unmuted.`);
+
         try {
             await ctx.rest.router.removeRoleFromMember(message.serverId!, target.user.id, commandCtx.server.muteRoleId);
         } catch (e) {

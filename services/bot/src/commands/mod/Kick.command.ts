@@ -42,13 +42,15 @@ const Kick: Command = {
             );
         }
 
-        await ctx.dbUtil.addActionFromMessage(message, {
-            infractionPoints: 10,
-            reason,
-            targetId: target.user.id,
-            type: "KICK",
-            expiresAt: null,
-        });
+        // Don't need a history for bots
+        if (target.user.type !== "bot")
+            await ctx.dbUtil.addActionFromMessage(message, {
+                infractionPoints: 10,
+                reason,
+                targetId: target.user.id,
+                type: "KICK",
+                expiresAt: null,
+            });
 
         await ctx.messageUtil.sendSuccessBlock(
             message.channelId,

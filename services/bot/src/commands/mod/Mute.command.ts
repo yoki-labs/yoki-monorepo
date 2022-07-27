@@ -54,31 +54,34 @@ const Mute: Command = {
             );
         }
 
-        await ctx.dbUtil.addActionFromMessage(message, {
-            infractionPoints: 10,
-            reason,
-            targetId: target.user.id,
-            type: "MUTE",
-            expiresAt,
-        });
+        // We don't need history for bots
+        if (target.user.type !== "bot") {
+            await ctx.dbUtil.addActionFromMessage(message, {
+                infractionPoints: 10,
+                reason,
+                targetId: target.user.id,
+                type: "MUTE",
+                expiresAt,
+            });
 
-        await ctx.messageUtil.sendValueBlock(
-            message.channelId,
-            ":mute: You have been muted",
-            `<@${target.user.id}>, you have been muted for ${bold(duration / 60000)} minutes.`,
-            Colors.red,
-            {
-                fields: [
-                    reason && {
-                        name: "Reason",
-                        value: (reason as string).length > 1024 ? `${reason.substr(0, 1021)}...` : reason,
-                    },
-                ].filter(Boolean) as EmbedField[],
-            },
-            {
-                isPrivate: true,
-            }
-        );
+            await ctx.messageUtil.sendValueBlock(
+                message.channelId,
+                ":mute: You have been muted",
+                `<@${target.user.id}>, you have been muted for ${bold(duration / 60000)} minutes.`,
+                Colors.red,
+                {
+                    fields: [
+                        reason && {
+                            name: "Reason",
+                            value: (reason as string).length > 1024 ? `${reason.substr(0, 1021)}...` : reason,
+                        },
+                    ].filter(Boolean) as EmbedField[],
+                },
+                {
+                    isPrivate: true,
+                }
+            );
+        }
 
         await ctx.messageUtil.sendSuccessBlock(
             message.channelId,

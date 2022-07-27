@@ -37,6 +37,19 @@ export class SpamFilterUtil extends BaseFilterUtil {
     }
 
     async dealWithSpam(server: Server, channelId: string | null, userId: string) {
+        // By now, we assume the member has spammed
+        // Get the member from cache or API
+        const member = await this.client.serverUtil.getMember(server.serverId, userId);
+
+        // Don't moderate bots
+        if (member.user.type === "bot") return;
+
+        // Get all the mod roles in this server
+        const modRoles = await this.prisma.role.findMany({ where: { serverId: server.serverId } });
+
+        // If the server doesn't have "filterOnMods" setting enabled and a mod spams, ignore
+        if (!server.filterOnMods && modRoles.some((modRole) => member.roleIds.includes(modRole.roleId))) return;
+
         const memberExceeds = await this.getMemberExceedsThreshold(server, userId, server.spamInfractionPoints);
 
         const actionType = memberExceeds || Severity.WARN;

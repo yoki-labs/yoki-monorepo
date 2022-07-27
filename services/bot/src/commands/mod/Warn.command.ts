@@ -36,6 +36,8 @@ const Warn: Command = {
 
         const [reason, infractionPoints] = getInfractionsFrom(args);
 
+        if (target.user.type === "bot") return ctx.messageUtil.replyWithAlert(message, `Cannot warn bots`, `Bots cannot be warned.`);
+
         try {
             await ctx.messageUtil.sendWarningBlock(
                 message.channelId,

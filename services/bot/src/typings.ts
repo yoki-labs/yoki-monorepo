@@ -15,7 +15,7 @@ export interface CommandContext {
 // member cached in redis
 export interface CachedMember {
     roleIds: number[];
-    user: { id: string; name: string };
+    user: { id: string; name: string; type?: "bot" | "user" };
     isOwner?: boolean;
 }
 

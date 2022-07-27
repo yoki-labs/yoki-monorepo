@@ -28,15 +28,17 @@ const Ban: Command = {
         const target = args.target as CachedMember;
         const reason = args.reason as string | null;
 
+        if (target.user.type === "bot") return ctx.messageUtil.replyWithAlert(message, `Cannot ban bots`, `Bots cannot be banned from the server.`);
+
         try {
             await ctx.rest.router.banMember(message.serverId!, target.user.id);
         } catch (e) {
             return ctx.messageUtil.replyWithError(
                 message,
                 stripIndents`
-					There was an issue banning this user. This is most likely due to misconfigured permissions for your server.
-					${inlineCode((e as Error).message)}
-				`,
+                There was an issue banning this user. This is most likely due to misconfigured permissions for your server.
+                ${inlineCode((e as Error).message)}
+            `,
                 undefined,
                 { isPrivate: true }
             );
