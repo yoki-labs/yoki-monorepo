@@ -3,9 +3,11 @@ import Collection from "@discordjs/collection";
 import { RoleType } from "../../typings";
 import { Category } from "../Category";
 import type { Command } from "../Command";
-import Challenge from "./Response.command";
+import Age from "./Age.command";
+import Challenge from "./Challenge.command";
+import Channel from "./Channel.command";
 
-const subCommands = new Collection<string, Command>().set("challenge", Challenge);
+const subCommands = new Collection<string, Command>().set("challenge", Challenge).set("age", Age).set("channel", Channel);
 
 const Antiraid: Command = {
     name: "antiraid",
