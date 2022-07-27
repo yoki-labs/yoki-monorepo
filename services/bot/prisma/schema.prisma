@@ -19,6 +19,7 @@ model Server {
     antiRaidEnabled            Boolean       @default(false)
     antiRaidResponse           ResponseType?
     antiRaidAgeFilter          Int?
+    antiRaidChallengeChannel   String?       @db.VarChar(255)
     flags                      String[]
     muteInfractionThreshold    Int?          @default(10)
     kickInfractionThreshold    Int?          @default(15)
@@ -143,6 +144,13 @@ model ModmailMessage {
     content           String        @db.Text
     modmailThread     ModmailThread @relation(fields: [modmailThreadId], references: [id])
     modmailThreadId   String
+}
+
+model Captcha {
+    id             String @id @db.VarChar(255)
+    value          String @db.VarChar(255)
+    serverId       String @db.VarChar(255)
+    triggeringUser String @db.VarChar(255)
 }
 
 enum LogChannelType {

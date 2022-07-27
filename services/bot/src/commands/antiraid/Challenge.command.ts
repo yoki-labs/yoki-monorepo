@@ -20,19 +20,21 @@ const Challenge: Command = {
     subCommand: true,
     subName: "challenge",
     requiredRole: RoleType.ADMIN,
-    args: [{ name: "responseType", type: "string", optional: true }],
+    args: [{ name: "challenge", type: "string", optional: true }],
     execute: async (message, args, ctx, commandCtx) => {
-        const challenge = args.challenge as string;
+        const challenge = (args.challenge as string | null)?.toLowerCase();
+        if (!challenge) return ctx.messageUtil.replyWithInfo(message, "Current challenge", `The bot challenges new members who fail the age account filter check by ${commandCtx.server.antiRaidResponse ? responseTypes[commandCtx.server.antiRaidResponse] : "doing nothing."}`)
         if (!responseTypes.includes(challenge))
             return ctx.messageUtil.replyWithError(message, `Your response type must be one of the following: ${responseTypes.map((x) => `\`${x}\``).join(", ")}`);
         const transformedChallenge = antiRaidResponseTransformer(challenge);
 
+        if (challenge === "captcha") return ctx.messageUtil.replyWithError(message, "You need to set a mute role using `?config muterole`, otherwise unverified members would still have access to your community.")
         if (commandCtx.server.antiRaidResponse === transformedChallenge) return ctx.messageUtil.replyWithError(message, "You already have the anti-raid response set to this.");
         await ctx.prisma.server.update({ where: { id: commandCtx.server.id }, data: { antiRaidResponse: transformedChallenge } });
         return ctx.messageUtil.replyWithSuccess(
             message,
             "Successfully set anti-raid response",
-            `The bot will now present new members who fail the age account filter check by ${responseTypesDescriptions[transformedChallenge]}`
+            `The bot will now challenge new members who fail the age account filter check by ${responseTypesDescriptions[transformedChallenge]}`
         );
     },
 };
