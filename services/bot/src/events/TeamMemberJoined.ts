@@ -36,7 +36,7 @@ export default async (packet: WSTeamMemberJoinedPayload, ctx: Context, server: S
                 const createdCaptcha = await ctx.prisma.captcha.create({
                     data: { id: nanoid(), serverId: packet.d.serverId, triggeringUser: packet.d.member.user.id, value: captcha.value },
                 });
-                if (server.muteRoleId) await ctx.rest.router.assignRoleToMember(serverId, member.user.id, server.muteRoleId);
+                if (server.muteRoleId) await ctx.rest.router.assignRoleToMember(serverId, member.user.id, server.muteRoleId).catch(() => null);
                 const uploadToBucket = await ctx.s3
                     .upload({
                         Bucket: process.env.S3_BUCKET,
