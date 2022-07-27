@@ -32,30 +32,35 @@ export default async (packet: WSTeamMemberJoinedPayload, ctx: Context, server: S
         switch (server.antiRaidResponse ?? "KICK") {
             case "CAPTCHA": {
                 if (!server.antiRaidChallengeChannel) return;
-                const captcha = new Captcha();
-                const createdCaptcha = await ctx.prisma.captcha.create({
-                    data: { id: nanoid(), serverId: packet.d.serverId, triggeringUser: packet.d.member.user.id, value: captcha.value },
-                });
-                if (server.muteRoleId) await ctx.rest.router.assignRoleToMember(serverId, member.user.id, server.muteRoleId).catch(() => null);
-                const uploadToBucket = await ctx.s3
-                    .upload({
-                        Bucket: process.env.S3_BUCKET,
-                        Key: `captcha/${createdCaptcha.id}`,
-                        Body: Buffer.from(captcha.dataURL.replace(/^data:image\/\w+;base64,/, ""), "base64"),
-                        ContentEncoding: "base64",
-                        ContentType: "image/jpeg",
-                        ACL: "public-read",
-                    })
-                    .promise();
+                let userCaptcha = await ctx.prisma.captcha.findFirst({ where: { serverId, triggeringUser: userId, solved: false } });
+                if (!userCaptcha) {
+                    const captcha = new Captcha();
+                    const id = nanoid();
+                    if (server.muteRoleId) await ctx.rest.router.assignRoleToMember(serverId, member.user.id, server.muteRoleId).catch(() => null);
+                    const uploadToBucket = await ctx.s3
+                        .upload({
+                            Bucket: process.env.S3_BUCKET,
+                            Key: `captcha/${id}`,
+                            Body: Buffer.from(captcha.dataURL.replace(/^data:image\/\w+;base64,/, ""), "base64"),
+                            ContentEncoding: "base64",
+                            ContentType: "image/jpeg",
+                            ACL: "public-read",
+                        })
+                        .promise();
+                    const createdCaptcha = await ctx.prisma.captcha.create({
+                        data: { id, serverId: packet.d.serverId, triggeringUser: packet.d.member.user.id, value: captcha.value.toLowerCase(), url: uploadToBucket.Location },
+                    });
+                    userCaptcha = createdCaptcha;
+                }
                 await ctx.messageUtil.send(server.antiRaidChallengeChannel, {
                     isPrivate: true,
                     embeds: [
                         new Embed()
                             .setTitle("Halt! Please complete this captcha")
                             .setDescription(
-                                `<@${member.user.id}> Your account has tripped the anti-raid filter and requires further verification to ensure you are not a bot.\n\n Please run the following command with the code below: \`?solve insert-code-here\`.\nExample: \`?solve ahS9fjW\``
+                                `<@${member.user.id}> Your account has tripped the anti-raid filter and requires further verification to ensure you are not a bot.\n\n Please run the following command with the code below: \`${server.getPrefix()}solve insert-code-here\`.\nExample: \`?solve ahS9fjW\``
                             )
-                            .setImage(uploadToBucket.Location)
+                            .setImage(userCaptcha.url)
                             .toJSON(),
                     ],
                 });

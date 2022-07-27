@@ -147,10 +147,13 @@ model ModmailMessage {
 }
 
 model Captcha {
-    id             String @id @db.VarChar(255)
-    value          String @db.VarChar(255)
-    serverId       String @db.VarChar(255)
-    triggeringUser String @db.VarChar(255)
+    id             String   @id @db.VarChar(255)
+    value          String   @db.VarChar(255)
+    serverId       String   @db.VarChar(255)
+    triggeringUser String   @db.VarChar(255)
+    url            String   @db.Text
+    solved         Boolean  @default(false)
+    createdAt      DateTime @default(now())
 }
 
 enum LogChannelType {
