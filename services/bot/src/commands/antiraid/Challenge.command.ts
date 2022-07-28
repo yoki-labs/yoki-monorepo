@@ -28,7 +28,7 @@ const Challenge: Command = {
             return ctx.messageUtil.replyWithError(message, `Your response type must be one of the following: ${responseTypes.map((x) => `\`${x}\``).join(", ")}`);
         const transformedChallenge = antiRaidResponseTransformer(challenge);
 
-        if (challenge === "captcha") return ctx.messageUtil.replyWithError(message, "You need to set a mute role using `?config muterole`, otherwise unverified members would still have access to your community.")
+        if (challenge === "captcha" && !commandCtx.server.muteRoleId) return ctx.messageUtil.replyWithError(message, "You need to set a mute role using `?config muterole`, otherwise unverified members would still have access to your community.")
         if (commandCtx.server.antiRaidResponse === transformedChallenge) return ctx.messageUtil.replyWithError(message, "You already have the anti-raid response set to this.");
         await ctx.prisma.server.update({ where: { id: commandCtx.server.id }, data: { antiRaidResponse: transformedChallenge } });
         return ctx.messageUtil.replyWithSuccess(
