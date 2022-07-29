@@ -11,7 +11,7 @@ export default (() => {
     // const loadedPresets: Record<string, Omit<ContentFilterScan, "severity">[]> = {};
     const loadedPresets: Record<string, RegExp> = {};
     for (const file of files.filter((x) => x.name.endsWith(".json"))) {
-        const preset = require(join(dirPath, file.name)) as PresetPattern[];
+        const preset = require(join(dirPath, "..", file.name)) as PresetPattern[];
         const presetName = file.name.split(".")[0];
 
         loadedPresets[presetName] = new RegExp(transformPreset(preset), "s");
