@@ -4,7 +4,7 @@ import { LogChannelType } from "@prisma/client";
 import { stripIndents } from "common-tags";
 
 import type Client from "../../../Client";
-import { listInlineCode } from "../../../formatters";
+import { listInlineCode } from "../../../utils/formatters";
 import { LogChannel as LogChannelPrisma, RoleType } from "../../../typings";
 import { Category } from "../../Category";
 import type { Command } from "../../Command";

@@ -1,7 +1,7 @@
 import { ResponseType } from "@prisma/client";
 
 import { RoleType } from "../../typings";
-import { antiRaidResponseTransformer } from "../../util";
+import { antiRaidResponseTransformer } from "../../utils/util";
 import { Category } from "../Category";
 import type { Command } from "../Command";
 

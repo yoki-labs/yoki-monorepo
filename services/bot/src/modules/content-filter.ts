@@ -2,10 +2,10 @@ import { Embed } from "@guildedjs/webhook-client";
 import { ContentFilter, FilterMatching } from "@prisma/client";
 import { stripIndents } from "common-tags";
 
-import { Colors } from "../color";
-import presets from "../presets";
+import { Colors } from "../utils/color";
+import presets from "../utils/presets";
 import { ContentFilterScan, Server, Severity } from "../typings";
-import { IMAGE_REGEX } from "../util";
+import { IMAGE_REGEX } from "../utils/util";
 import BaseFilterUtil from "./base-filter";
 import { ImageFilterUtil } from "./image-filter";
 
@@ -160,10 +160,10 @@ export class ContentFilterUtil extends BaseFilterUtil {
         return contentFilter.matching === FilterMatching.WORD
             ? phrase === contentFilter.content
             : contentFilter.matching === FilterMatching.INFIX
-            ? phrase.includes(contentFilter.content)
-            : contentFilter.matching === FilterMatching.POSTFIX
-            ? phrase.endsWith(contentFilter.content)
-            : phrase.startsWith(contentFilter.content);
+                ? phrase.includes(contentFilter.content)
+                : contentFilter.matching === FilterMatching.POSTFIX
+                    ? phrase.endsWith(contentFilter.content)
+                    : phrase.startsWith(contentFilter.content);
     }
 
     override onUserWarn(userId: string, _serv: Server, channelId: string | null, filteredContent: FilteredContent) {

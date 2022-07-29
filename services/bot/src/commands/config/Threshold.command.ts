@@ -1,6 +1,6 @@
 import { Severity } from "@prisma/client";
 
-import { inlineCode } from "../../formatters";
+import { inlineCode } from "../../utils/formatters";
 import { RoleType } from "../../typings";
 import { Category } from "../Category";
 import type { Command } from "../Command";

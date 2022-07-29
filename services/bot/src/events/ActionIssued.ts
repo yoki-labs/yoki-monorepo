@@ -3,8 +3,8 @@ import { Action, LogChannelType } from "@prisma/client";
 import { stripIndents } from "common-tags";
 
 import type Client from "../Client";
-import { inlineCode } from "../formatters";
-import { FormatDate } from "../util";
+import { inlineCode } from "../utils/formatters";
+import { FormatDate } from "../utils/util";
 
 export default async (data: Action & { reasonMetaData?: string }, client: Client) => {
     const modLogChannel = await client.dbUtil.getLogChannel(data.serverId, LogChannelType.MOD_ACTION_LOG);

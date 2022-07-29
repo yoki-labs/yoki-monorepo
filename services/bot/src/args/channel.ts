@@ -1,7 +1,7 @@
 import type { WSChatMessageCreatedPayload } from "@guildedjs/guilded-api-typings";
 
 import type { Context } from "../typings";
-import { isUUID } from "../util";
+import { isUUID } from "../utils/util";
 
 export default async (input: string, _, __, ctx: Context, packet: WSChatMessageCreatedPayload) => {
     const channelMentionOrId = packet.d.message.mentions?.channels?.[0]?.id ?? input;

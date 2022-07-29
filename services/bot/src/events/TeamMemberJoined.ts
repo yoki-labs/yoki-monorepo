@@ -6,10 +6,10 @@ import { LogChannelType, Severity } from "@prisma/client";
 import { stripIndents } from "common-tags";
 import { nanoid } from "nanoid";
 
-import { Colors } from "../color";
-import { inlineCode } from "../formatters";
+import { Colors } from "../utils/color";
+import { inlineCode } from "../utils/formatters";
 import type { Context, Server } from "../typings";
-import { FormatDate, suspicious as sus } from "../util";
+import { FormatDate, suspicious as sus } from "../utils/util";
 
 export default async (packet: WSTeamMemberJoinedPayload, ctx: Context, server: Server) => {
     const { member, serverId } = packet.d;

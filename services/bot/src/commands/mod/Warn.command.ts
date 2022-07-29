@@ -1,8 +1,8 @@
 import type { EmbedField } from "@guildedjs/guilded-api-typings";
 import { stripIndents } from "common-tags";
 
-import { inlineCode } from "../../formatters";
-import { getInfractionsFrom } from "../../moderation-util";
+import { inlineCode } from "../../utils/formatters";
+import { getInfractionsFrom } from "../../utils/moderation";
 import { CachedMember, RoleType } from "../../typings";
 import { Category } from "../Category";
 import type { Command } from "../Command";

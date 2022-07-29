@@ -2,7 +2,7 @@ import { stripIndents } from "common-tags";
 import { inspect } from "node:util";
 import fetch from "node-fetch";
 
-import { inlineCode } from "../formatters";
+import { inlineCode } from "../utils/formatters";
 import type { Command } from "./Command";
 
 const _clean = async (text: any) => {

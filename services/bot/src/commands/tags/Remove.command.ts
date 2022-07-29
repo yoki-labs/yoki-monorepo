@@ -1,6 +1,6 @@
 import { RoleType } from "@prisma/client";
 
-import { inlineCode } from "../../formatters";
+import { inlineCode } from "../../utils/formatters";
 import type { Command } from "../Command";
 
 const Remove: Command = {

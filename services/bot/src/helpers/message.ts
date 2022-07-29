@@ -2,10 +2,10 @@ import { Embed } from "@guildedjs/embeds";
 import type { ChatMessagePayload, EmbedField, EmbedPayload, RESTPostChannelMessagesBody } from "@guildedjs/guilded-api-typings";
 import { stripIndents } from "common-tags";
 
-import { Colors } from "../color";
+import { Colors } from "../utils/color";
 import type { Command, CommandArgument } from "../commands/Command";
-import { inlineCode } from "../formatters";
-import { BotImages, StateImages } from "../images";
+import { inlineCode } from "../utils/formatters";
+import { BotImages, StateImages } from "../utils/images";
 import { Util } from "./util";
 
 export class MessageUtil extends Util {
@@ -26,8 +26,7 @@ export class MessageUtil extends Util {
         return this.replyWithAlert(
             message,
             `Incorrect argument`,
-            `Sorry, but the usage of argument ${inlineCode(commandArg.name)} was not correct. Was expecting a ${commandArg.type}${
-                commandArg.max ? ` with the limit of ${commandArg.max}` : ""
+            `Sorry, but the usage of argument ${inlineCode(commandArg.name)} was not correct. Was expecting a ${commandArg.type}${commandArg.max ? ` with the limit of ${commandArg.max}` : ""
             }.`,
             {
                 fields: [

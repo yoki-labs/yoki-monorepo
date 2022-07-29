@@ -1,5 +1,5 @@
-import { inlineCode } from "../../formatters";
-import { getInfractionsFrom } from "../../moderation-util";
+import { inlineCode } from "../../utils/formatters";
+import { getInfractionsFrom } from "../../utils/moderation";
 import { CachedMember, RoleType } from "../../typings";
 import { Category } from "../Category";
 import type { Command } from "../Command";

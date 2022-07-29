@@ -1,6 +1,6 @@
 import type { Action } from "@prisma/client";
 
-import { inlineCode } from "../../formatters";
+import { inlineCode } from "../../utils/formatters";
 import { ContentFilterUtil } from "../../modules/content-filter";
 import { CachedMember, RoleType } from "../../typings";
 import { Category } from "../Category";
@@ -55,9 +55,8 @@ const View: Command = {
             itemMapping: (x) => {
                 const trimmedReason = x.reason && x.reason.length > maxReason ? `${x.reason.substring(0, maxReason)}...` : x.reason;
 
-                return `[${inlineCode(x.id)}] **${x.type}** for ${trimmedReason ?? "no provided reason"} ${
-                    (x.triggerContent && `||${x.triggerContent.length > maxFiltered ? `${x.triggerContent}...` : x.triggerContent}||`) ?? ""
-                }`;
+                return `[${inlineCode(x.id)}] **${x.type}** for ${trimmedReason ?? "no provided reason"} ${(x.triggerContent && `||${x.triggerContent.length > maxFiltered ? `${x.triggerContent}...` : x.triggerContent}||`) ?? ""
+                    }`;
             },
             itemsPerPage: maxCases,
             page,

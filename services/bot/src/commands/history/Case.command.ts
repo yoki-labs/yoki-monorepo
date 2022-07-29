@@ -1,8 +1,8 @@
 import type { EmbedField } from "@guildedjs/guilded-api-typings";
 
-import { inlineCode } from "../../formatters";
+import { inlineCode } from "../../utils/formatters";
 import { RoleType } from "../../typings";
-import { FormatDate } from "../../util";
+import { FormatDate } from "../../utils/util";
 import { Category } from "../Category";
 import type { Command } from "../Command";
 

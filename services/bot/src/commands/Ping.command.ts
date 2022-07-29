@@ -1,4 +1,4 @@
-import { bold } from "../formatters";
+import { bold } from "../utils/formatters";
 import type { Command } from "./Command";
 
 const Ping: Command = {

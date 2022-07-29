@@ -2,7 +2,7 @@ import type { ChatMessagePayload } from "@guildedjs/guilded-api-typings";
 import { stripIndents } from "common-tags";
 
 import type Client from "../../../Client";
-import { inlineCode, listInlineCode } from "../../../formatters";
+import { inlineCode, listInlineCode } from "../../../utils/formatters";
 import { LogChannelType, RoleType } from "../../../typings";
 import { Category } from "../../Category";
 import type { Command } from "../../Command";
@@ -21,7 +21,7 @@ const Remove: Command = {
     requiredRole: RoleType.ADMIN,
     args: [
         { name: "channelId", optional: false, type: "UUID" },
-        { name: "logTypes", optional: true, type: "enumList", values: LogChannelArgs}
+        { name: "logTypes", optional: true, type: "enumList", values: LogChannelArgs }
     ],
     execute: async (message, args, ctx) => {
         const channelId = args.channelId as string;
@@ -54,13 +54,12 @@ const Remove: Command = {
             successfulTypes.length > 0 ? `Subscriptions removed` : `No subscriptions removed`,
             stripIndents`
                 ${successfulTypes.length > 0 ? `Successfully unsubscribed channel ${inlineCode(channelId)} from the following events: ${listInlineCode(successfulTypes)}` : ""}
-                ${
-                failedTypes.length > 0
+                ${failedTypes.length > 0
                     ? `Failed to unsubscribe channel ${inlineCode(channelId)} from the following events: ${listInlineCode(
                         failedTypes.map((x) => x[0])
                     )} due to the following reason(s) ${listInlineCode(failedTypes.map((x) => x[1]))}`
                     : ""
-            }
+                }
             `
         );
     },
@@ -85,7 +84,7 @@ async function unsubscribeToLogs(ctx: Client, message: ChatMessagePayload, chann
     }
 
     return [successfulTypes, failedTypes];
-    
+
 }
 
 export default Remove;

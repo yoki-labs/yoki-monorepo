@@ -12,12 +12,12 @@ import number from "../args/number";
 import rest from "../args/rest";
 import string from "../args/string";
 import UUID from "../args/UUID";
-import { Colors } from "../color";
+import { Colors } from "../utils/color";
 import type { CommandArgType, CommandArgument } from "../commands/Command";
-import { codeBlock, inlineCode } from "../formatters";
+import { codeBlock, inlineCode } from "../utils/formatters";
 import { FilteredContent } from "../modules/content-filter";
 import type { Context, ResolvedArgs, Server } from "../typings";
-import { roleValues } from "../util";
+import { roleValues } from "../utils/util";
 
 const argCast: Record<
     CommandArgType,

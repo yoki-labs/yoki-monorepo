@@ -1,7 +1,7 @@
 import { readdirSync } from "fs";
 import { join } from "path";
 
-import type { PresetPattern, PresetPatternObject } from "./typings";
+import type { PresetPattern, PresetPatternObject } from "../typings";
 
 const wordRest = ["", "[\\W]*"];
 

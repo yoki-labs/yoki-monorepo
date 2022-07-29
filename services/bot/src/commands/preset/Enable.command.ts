@@ -1,4 +1,4 @@
-import { inlineCode } from "../../formatters";
+import { inlineCode } from "../../utils/formatters";
 import { transformSeverityStringToEnum } from "../../modules/content-filter";
 import { RoleType } from "../../typings";
 import type { Command } from "../Command";

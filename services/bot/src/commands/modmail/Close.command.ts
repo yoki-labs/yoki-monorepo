@@ -1,7 +1,7 @@
 import { stripIndents } from "common-tags";
 
 import { LogChannelType, RoleType } from "../../typings";
-import { FormatDate } from "../../util";
+import { FormatDate } from "../../utils/util";
 import { Category } from "../Category";
 import type { Command } from "../Command";
 

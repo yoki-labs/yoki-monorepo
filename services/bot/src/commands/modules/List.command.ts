@@ -1,5 +1,5 @@
 import { RoleType } from "../../typings";
-import { typeToDBPropKeys, typeToDBPropMap } from "../../util";
+import { typeToDBPropKeys, typeToDBPropMap } from "../../utils/util";
 import { Category } from "../Category";
 import type { Command } from "../Command";
 

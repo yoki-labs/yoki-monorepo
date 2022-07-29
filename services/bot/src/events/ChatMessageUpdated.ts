@@ -4,8 +4,8 @@ import { LogChannelType } from "@prisma/client";
 import { stripIndents } from "common-tags";
 import { nanoid } from "nanoid";
 
-import { Colors } from "../color";
-import { inlineCode, quoteMarkdown } from "../formatters";
+import { Colors } from "../utils/color";
+import { inlineCode, quoteMarkdown } from "../utils/formatters";
 import { FilteredContent } from "../modules/content-filter";
 import type { Context, Server } from "../typings";
 

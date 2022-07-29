@@ -1,7 +1,7 @@
 import Collection from "@discordjs/collection";
 import { stripIndents } from "common-tags";
 
-import { inlineCode, listInlineCode } from "../formatters";
+import { inlineCode, listInlineCode } from "../utils/formatters";
 import { Category } from "./Category";
 import type { Command } from "./Command";
 const categories = Object.values(Category);
@@ -48,8 +48,7 @@ const Help: Command = {
                     command.description,
                     " ",
                     `**Usage:** ${inlineCode(
-                        `${commandCtx.server.getPrefix()}${commandUsageName} ${
-                            command.usage ?? `<${command.subCommands?.size ? command.subCommands!.map((x) => x.subName!).join(" | ") : ""}> <...args>`
+                        `${commandCtx.server.getPrefix()}${commandUsageName} ${command.usage ?? `<${command.subCommands?.size ? command.subCommands!.map((x) => x.subName!).join(" | ") : ""}> <...args>`
                         }`
                     )}`,
                     command.examples ? `**Examples:** ${listInlineCode(command.examples.map((x) => `${commandCtx.server.getPrefix()}${commandUsageName} ${x}`))}` : null,
