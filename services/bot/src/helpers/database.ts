@@ -4,7 +4,7 @@ import { nanoid } from "nanoid";
 
 import { Action, ContentFilter, LogChannelType, Server } from "../typings";
 import { Util } from "./util";
-
+// test
 export class DatabaseUtil extends Util {
     addWordToFilter(data: Omit<ContentFilter, "id" | "createdAt">) {
         return this.prisma.contentFilter.create({ data });
