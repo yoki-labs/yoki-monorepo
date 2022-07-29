@@ -6,12 +6,12 @@ import type { PresetPattern, PresetPatternObject } from "../typings";
 const wordRest = ["", "[\\W]*"];
 
 export default (() => {
-    const dirPath = join(__dirname, "presets");
+    const dirPath = join(__dirname, "..", "presets");
     const files = readdirSync(dirPath, { withFileTypes: true });
     // const loadedPresets: Record<string, Omit<ContentFilterScan, "severity">[]> = {};
     const loadedPresets: Record<string, RegExp> = {};
     for (const file of files.filter((x) => x.name.endsWith(".json"))) {
-        const preset = require(join(dirPath, "..", file.name)) as PresetPattern[];
+        const preset = require(join(dirPath, file.name)) as PresetPattern[];
         const presetName = file.name.split(".")[0];
 
         loadedPresets[presetName] = new RegExp(transformPreset(preset), "s");
