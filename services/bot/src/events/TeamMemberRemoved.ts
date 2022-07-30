@@ -12,7 +12,7 @@ export default async (packet: WSTeamMemberRemovedPayload, ctx: Context) => {
     const { userId, serverId, isBan, isKick } = packet.d;
 
     // check if there's a log channel channel for message deletions
-    const memberLeaveLogChannel = await ctx.prisma.logChannel.findFirst({ where: { serverId: packet.d.serverId, type: LogChannelType.MEMBER_JOIN_LEAVE } });
+    const memberLeaveLogChannel = await ctx.dbUtil.getLogChannel(serverId!, LogChannelType.MEMBER_JOIN_LEAVE);
     if (!memberLeaveLogChannel) return void 0;
 
     const action = isBan ? "Banned" : isKick ? "Kicked" : "Left";

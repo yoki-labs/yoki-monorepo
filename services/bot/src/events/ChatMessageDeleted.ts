@@ -12,7 +12,7 @@ export default async (packet: WSChatMessageDeletedPayload, ctx: Context) => {
     const { message } = packet.d;
 
     // check if there's a log channel channel for message deletions
-    const deletedMessageLogChannel = await ctx.prisma.logChannel.findFirst({ where: { serverId: message.serverId, type: LogChannelType.CHAT_MESSAGE_DELETE } });
+    const deletedMessageLogChannel = await ctx.dbUtil.getLogChannel(message.serverId!, LogChannelType.CHAT_MESSAGE_DELETE);
     if (!deletedMessageLogChannel) return void 0;
 
     // get the database entry for the deleted message

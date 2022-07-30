@@ -12,7 +12,7 @@ export default async (event: WSTeamRolesUpdatedPayload, ctx: Context): Promise<v
     const { serverId, memberRoleIds } = event.d;
 
     // check if there's a log channel channel for message deletions
-    const roleUpdateLogChannel = await ctx.prisma.logChannel.findFirst({ where: { serverId, type: LogChannelType.MEMBER_ROLES_UPDATE } });
+    const roleUpdateLogChannel = await ctx.dbUtil.getLogChannel(serverId!, LogChannelType.MEMBER_ROLES_UPDATE);
     if (roleUpdateLogChannel) {
         // Prevent showcasing too many
         const cappedRoleChanges = memberRoleIds.slice(0, 5);

@@ -22,7 +22,7 @@ export default async (packet: WSTeamMemberJoinedPayload, ctx: Context, server: S
         await ctx.rest.router.assignRoleToMember(serverId, member.user.id, server.muteRoleId);
 
     // check if there's a log channel channel for member joins
-    const memberJoinLogChannel = await ctx.prisma.logChannel.findFirst({ where: { serverId: packet.d.serverId, type: LogChannelType.MEMBER_JOIN_LEAVE } });
+    const memberJoinLogChannel = await ctx.dbUtil.getLogChannel(serverId!, LogChannelType.MEMBER_JOIN_LEAVE);
     if (!memberJoinLogChannel) return void 0;
     const creationDate = new Date(member.user.createdAt);
     const suspicious = sus(creationDate);

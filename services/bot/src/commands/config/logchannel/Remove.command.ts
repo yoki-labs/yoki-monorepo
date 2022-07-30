@@ -71,7 +71,7 @@ async function unsubscribeToLogs(ctx: Client, message: ChatMessagePayload, chann
     const successfulTypes: string[] = [];
 
     for (const logType of logTypes) {
-        if (LogChannelType[logType] && (await ctx.prisma.logChannel.findFirst({ where: { serverId: message.serverId, type: LogChannelType[logType] } }))) {
+        if (LogChannelType[logType] && (await ctx.dbUtil.getLogChannel(message.serverId!, LogChannelType[logType]))) {
             try {
                 await ctx.prisma.logChannel.deleteMany({ where: { channelId, serverId: message.serverId!, type: LogChannelType[logType] } });
                 successfulTypes.push(logType);
