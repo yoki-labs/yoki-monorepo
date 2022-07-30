@@ -4,9 +4,9 @@ import { LogChannelType, Prisma } from "@prisma/client";
 import { stripIndents } from "common-tags";
 import { nanoid } from "nanoid";
 
+import type { Context } from "../typings";
 import { Colors } from "../utils/color";
 import { codeBlock, inlineCode } from "../utils/formatters";
-import type { Context } from "../typings";
 
 export default async (packet: WSChatMessageDeletedPayload, ctx: Context) => {
     const { message } = packet.d;

@@ -2,9 +2,9 @@ import type { EmbedField } from "@guildedjs/guilded-api-typings";
 import { stripIndents } from "common-tags";
 import ms from "ms";
 
+import { CachedMember, RoleType } from "../../typings";
 import { Colors } from "../../utils/color";
 import { bold, inlineCode } from "../../utils/formatters";
-import { CachedMember, RoleType } from "../../typings";
 import { Category } from "../Category";
 import type { Command } from "../Command";
 

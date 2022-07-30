@@ -1,6 +1,6 @@
+import { CachedMember, RoleType } from "../../typings";
 import { inlineCode } from "../../utils/formatters";
 import { getInfractionsFrom } from "../../utils/moderation";
-import { CachedMember, RoleType } from "../../typings";
 import { Category } from "../Category";
 import type { Command } from "../Command";
 

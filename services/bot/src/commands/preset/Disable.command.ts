@@ -1,5 +1,5 @@
-import { inlineCode } from "../../utils/formatters";
 import { RoleType } from "../../typings";
+import { inlineCode } from "../../utils/formatters";
 import type { Command } from "../Command";
 
 const Enable: Command = {

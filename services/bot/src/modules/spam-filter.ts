@@ -1,8 +1,8 @@
 import type { ChatMessagePayload } from "@guildedjs/guilded-api-typings";
 import { Severity } from "@prisma/client";
 
-import { Colors } from "../utils/color";
 import type { Server } from "../typings";
+import { Colors } from "../utils/color";
 import BaseFilterUtil from "./base-filter";
 import { FilteredContent } from "./content-filter";
 

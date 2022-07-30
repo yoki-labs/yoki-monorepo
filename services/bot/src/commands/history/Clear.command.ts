@@ -1,5 +1,5 @@
-import { inlineCode } from "../../utils/formatters";
 import { CachedMember, RoleType } from "../../typings";
+import { inlineCode } from "../../utils/formatters";
 import { Category } from "../Category";
 import type { Command } from "../Command";
 

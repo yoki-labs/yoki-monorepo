@@ -4,9 +4,9 @@ import { LogChannelType } from "@prisma/client";
 import { stripIndents } from "common-tags";
 import { nanoid } from "nanoid";
 
+import type { Context } from "../typings";
 import { Colors } from "../utils/color";
 import { inlineCode } from "../utils/formatters";
-import type { Context } from "../typings";
 
 export default async (event: WSTeamRolesUpdatedPayload, ctx: Context): Promise<void> => {
     const { serverId, memberRoleIds } = event.d;

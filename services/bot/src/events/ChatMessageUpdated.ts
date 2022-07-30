@@ -4,10 +4,10 @@ import { LogChannelType } from "@prisma/client";
 import { stripIndents } from "common-tags";
 import { nanoid } from "nanoid";
 
-import { Colors } from "../utils/color";
-import { inlineCode, quoteMarkdown } from "../utils/formatters";
 import { FilteredContent } from "../modules/content-filter";
 import type { Context, Server } from "../typings";
+import { Colors } from "../utils/color";
+import { inlineCode, quoteMarkdown } from "../utils/formatters";
 
 export default async (packet: WSChatMessageUpdatedPayload, ctx: Context, server: Server) => {
     const { message } = packet.d;

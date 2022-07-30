@@ -2,8 +2,8 @@ import type { ChatMessagePayload } from "@guildedjs/guilded-api-typings";
 import { stripIndents } from "common-tags";
 
 import type Client from "../../../Client";
-import { inlineCode, listInlineCode } from "../../../utils/formatters";
 import { LogChannelType, RoleType } from "../../../typings";
+import { inlineCode, listInlineCode } from "../../../utils/formatters";
 import { Category } from "../../Category";
 import type { Command } from "../../Command";
 
