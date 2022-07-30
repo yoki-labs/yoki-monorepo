@@ -6,9 +6,9 @@ import { LogChannelType, Severity } from "@prisma/client";
 import { stripIndents } from "common-tags";
 import { nanoid } from "nanoid";
 
+import type { Context, Server } from "../typings";
 import { Colors } from "../utils/color";
 import { inlineCode } from "../utils/formatters";
-import type { Context, Server } from "../typings";
 import { FormatDate, suspicious as sus } from "../utils/util";
 
 export default async (packet: WSTeamMemberJoinedPayload, ctx: Context, server: Server) => {
@@ -22,7 +22,7 @@ export default async (packet: WSTeamMemberJoinedPayload, ctx: Context, server: S
         await ctx.rest.router.assignRoleToMember(serverId, member.user.id, server.muteRoleId);
 
     // check if there's a log channel channel for member joins
-    const memberJoinLogChannel = await ctx.prisma.logChannel.findFirst({ where: { serverId: packet.d.serverId, type: LogChannelType.MEMBER_JOIN_LEAVE } });
+    const memberJoinLogChannel = await ctx.dbUtil.getLogChannel(serverId!, LogChannelType.MEMBER_JOIN_LEAVE);
     if (!memberJoinLogChannel) return void 0;
     const creationDate = new Date(member.user.createdAt);
     const suspicious = sus(creationDate);

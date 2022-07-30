@@ -3,8 +3,8 @@ import { ReactionActionType, Server } from "@prisma/client";
 import { stripIndents } from "common-tags";
 import { nanoid } from "nanoid";
 
-import { Colors } from "../utils/color";
 import type { Context } from "../typings";
+import { Colors } from "../utils/color";
 import { FormatDate } from "../utils/util";
 
 export default async (packet: WSChannelMessageReactionCreatedPayload, ctx: Context, server: Server) => {

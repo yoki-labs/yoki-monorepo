@@ -1,7 +1,7 @@
 import { stripIndents } from "common-tags";
 
-import { Colors } from "../../utils/color";
 import { RoleType } from "../../typings";
+import { Colors } from "../../utils/color";
 import { Category } from "../Category";
 import type { Command } from "../Command";
 

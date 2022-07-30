@@ -4,15 +4,15 @@ import { LogChannelType } from "@prisma/client";
 import { stripIndents } from "common-tags";
 import { nanoid } from "nanoid";
 
+import type { Context } from "../typings";
 import { Colors } from "../utils/color";
 import { inlineCode } from "../utils/formatters";
-import type { Context } from "../typings";
 
 export default async (event: WSTeamRolesUpdatedPayload, ctx: Context): Promise<void> => {
     const { serverId, memberRoleIds } = event.d;
 
     // check if there's a log channel channel for message deletions
-    const roleUpdateLogChannel = await ctx.prisma.logChannel.findFirst({ where: { serverId, type: LogChannelType.MEMBER_ROLES_UPDATE } });
+    const roleUpdateLogChannel = await ctx.dbUtil.getLogChannel(serverId!, LogChannelType.MEMBER_ROLES_UPDATE);
     if (roleUpdateLogChannel) {
         // Prevent showcasing too many
         const cappedRoleChanges = memberRoleIds.slice(0, 5);

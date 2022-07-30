@@ -1,8 +1,8 @@
 import type { Action } from "@prisma/client";
 
-import { inlineCode } from "../../utils/formatters";
 import { ContentFilterUtil } from "../../modules/content-filter";
 import { CachedMember, RoleType } from "../../typings";
+import { inlineCode } from "../../utils/formatters";
 import { Category } from "../Category";
 import type { Command } from "../Command";
 

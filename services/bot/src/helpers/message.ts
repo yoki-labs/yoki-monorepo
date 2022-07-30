@@ -2,8 +2,8 @@ import { Embed } from "@guildedjs/embeds";
 import type { ChatMessagePayload, EmbedField, EmbedPayload, RESTPostChannelMessagesBody } from "@guildedjs/guilded-api-typings";
 import { stripIndents } from "common-tags";
 
-import { Colors } from "../utils/color";
 import type { Command, CommandArgument } from "../commands/Command";
+import { Colors } from "../utils/color";
 import { inlineCode } from "../utils/formatters";
 import { BotImages, StateImages } from "../utils/images";
 import { Util } from "./util";

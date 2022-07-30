@@ -2,9 +2,9 @@ import { Embed } from "@guildedjs/webhook-client";
 import { ContentFilter, FilterMatching } from "@prisma/client";
 import { stripIndents } from "common-tags";
 
+import { ContentFilterScan, Server, Severity } from "../typings";
 import { Colors } from "../utils/color";
 import presets from "../utils/presets";
-import { ContentFilterScan, Server, Severity } from "../typings";
 import { IMAGE_REGEX } from "../utils/util";
 import BaseFilterUtil from "./base-filter";
 import { ImageFilterUtil } from "./image-filter";
