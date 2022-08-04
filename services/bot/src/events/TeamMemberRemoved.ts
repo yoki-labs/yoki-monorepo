@@ -11,8 +11,8 @@ import { inlineCode } from "../utils/formatters";
 export default async (packet: WSTeamMemberRemovedPayload, ctx: Context) => {
     const { userId, serverId, isBan, isKick } = packet.d;
 
-    // check if there's a log channel channel for message deletions
-    const memberLeaveLogChannel = await ctx.dbUtil.getLogChannel(serverId!, LogChannelType.MEMBER_JOIN_LEAVE);
+    // check if there's a log channel channel for member leaves
+    const memberLeaveLogChannel = await ctx.dbUtil.getLogChannel(serverId!, LogChannelType.MEMBER_LEAVE);
     if (!memberLeaveLogChannel) return void 0;
 
     const action = isBan ? "Banned" : isKick ? "Kicked" : "Left";
