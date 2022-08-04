@@ -11,25 +11,28 @@ import { inlineCode } from "../utils/formatters";
 export default async (event: WSTeamRolesUpdatedPayload, ctx: Context): Promise<void> => {
     const { serverId, memberRoleIds } = event.d;
 
+    // Prevent repeation of `getCachedMember`
+    const memberCaches = {};
+
+    for (const memberRoleId of memberRoleIds) memberCaches[memberRoleId.userId] = await ctx.serverUtil.getCachedMember(serverId, memberRoleId.userId);
+
     // check if there's a log channel channel for message deletions
     const roleUpdateLogChannel = await ctx.dbUtil.getLogChannel(serverId!, LogChannelType.MEMBER_ROLES_UPDATE);
     if (roleUpdateLogChannel) {
         // Prevent showcasing too many
         const cappedRoleChanges = memberRoleIds.slice(0, 5);
 
-        const roleDifferences = await Promise.all(
-            cappedRoleChanges.map(async ({ userId, roleIds }) => {
-                const previousState = await ctx.serverUtil.getCachedMember(serverId, userId);
+        const roleDifferences = cappedRoleChanges.map(({ userId, roleIds }) => {
+            const previousState = memberCaches[userId];
 
-                if (!previousState) return { userId, roleIds };
+            if (!previousState) return { userId, roleIds };
 
-                // Array difference
-                const addedRoles = roleIds.filter((currentRole) => !previousState.roleIds.includes(currentRole));
-                const removedRoles = previousState.roleIds.filter((previousRole) => !roleIds.includes(previousRole));
+            // Array difference
+            const addedRoles = roleIds.filter((currentRole) => !previousState.roleIds.includes(currentRole));
+            const removedRoles = previousState.roleIds.filter((previousRole) => !roleIds.includes(previousRole));
 
-                return { addedRoles, removedRoles, roleIds, userId };
-            })
-        );
+            return { addedRoles, removedRoles, roleIds, userId };
+        });
 
         try {
             // send the log channel message with the content/data of the deleted message
@@ -86,11 +89,12 @@ export default async (event: WSTeamRolesUpdatedPayload, ctx: Context): Promise<v
     // go through all the updated members
     for (const user of memberRoleIds) {
         // check if this member is cached in our redis, indicates that they have some sort of elevated permission role
-        const ifCached = await ctx.serverUtil.getCachedMember(serverId, user.userId);
-        // if they're not cached, continue on to the next member
-        if (!ifCached) continue;
-        // update the cache with the old data but with updated roleIds
-        await ctx.serverUtil.setMember(serverId, user.userId, { ...ifCached, roleIds: user.roleIds });
-        console.log(`Updating cache for user ${ifCached.user.name} (${ifCached.user.id}) with new roles ${user.roleIds}`);
+        const cachedMember = memberCaches[user.userId];
+
+        if (cachedMember) {
+            // update the cache with the old data but with updated roleIds
+            await ctx.serverUtil.setMember(serverId, user.userId, { ...cachedMember, roleIds: user.roleIds });
+            console.log(`Updating cache for user ${cachedMember.user.name} (${cachedMember.user.id}) with new roles ${user.roleIds}`);
+        } else await ctx.serverUtil.getMember(serverId, user.userId, true, true);
     }
 };
