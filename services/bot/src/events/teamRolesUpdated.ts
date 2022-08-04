@@ -21,17 +21,13 @@ export default async (event: WSTeamRolesUpdatedPayload, ctx: Context): Promise<v
             cappedRoleChanges.map(async ({ userId, roleIds }) => {
                 const previousState = await ctx.serverUtil.getCachedMember(serverId, userId);
 
-                console.log("Previous state", previousState);
-                console.log("Current roles", roleIds);
+                if (!previousState) return { userId, roleIds };
 
-                if (!previousState) return { userId };
-
-                // FIXME/Needs REVIEW: Inefficient?
-                // Dumdum array difference
+                // Array difference
                 const addedRoles = roleIds.filter((currentRole) => !previousState.roleIds.includes(currentRole));
                 const removedRoles = previousState.roleIds.filter((previousRole) => !roleIds.includes(previousRole));
 
-                return { addedRoles, removedRoles, userId };
+                return { addedRoles, removedRoles, roleIds, userId };
             })
         );
 
@@ -50,16 +46,17 @@ export default async (event: WSTeamRolesUpdatedPayload, ctx: Context): Promise<v
                 Colors.blue,
                 new Date().toISOString(),
                 roleDifferences.map((obj) => {
-                    const { userId, addedRoles, removedRoles } = obj;
-
-                    console.log("Difference:", obj);
+                    const { userId, addedRoles, removedRoles, roleIds } = obj;
 
                     return {
                         name: `<@${userId}> (${inlineCode(userId)})`,
-                        value: stripIndents`
-                            ${addedRoles?.length ? `**Added:** ${addedRoles.map((role) => `<@${role}>`).join(", ")}` : ""}
-                            ${removedRoles?.length ? `**Removed:** ${removedRoles.map((role) => `<@${role}>`).join(", ")}` : ""}
-                        `,
+                        value:
+                            addedRoles || removedRoles
+                                ? stripIndents`
+                                    ${addedRoles?.length ? `**Added:** ${addedRoles.map((role) => `<@${role}>`).join(", ")}` : ""}
+                                    ${removedRoles?.length ? `**Removed:** ${removedRoles.map((role) => `<@${role}>`).join(", ")}` : ""}
+                                  `
+                                : `Unknown role difference. Current roles: ${roleIds.map((role) => `<@${role}>`).join(", ")}`,
                     };
                 })
             );
