@@ -58,7 +58,9 @@ export default async (packet: WSTeamMemberJoinedPayload, ctx: Context, server: S
                         new Embed()
                             .setTitle("Halt! Please complete this captcha")
                             .setDescription(
-                                `<@${member.user.id}> Your account has tripped the anti-raid filter and requires further verification to ensure you are not a bot.\n\n Please run the following command with the code below: \`${server.getPrefix()}solve insert-code-here\`.\nExample: \`?solve ahS9fjW\``
+                                `<@${
+                                    member.user.id
+                                }> Your account has tripped the anti-raid filter and requires further verification to ensure you are not a bot.\n\n Please run the following command with the code below: \`${server.getPrefix()}solve insert-code-here\`.\nExample: \`?solve ahS9fjW\``
                             )
                             .setImage(userCaptcha.url)
                             .toJSON(),
@@ -99,6 +101,7 @@ export default async (packet: WSTeamMemberJoinedPayload, ctx: Context, server: S
                 **User:** <@${member.user.id}> (${inlineCode(member.user.id)})
                 **Type** ${member.user.type ?? "user"}
 				**Account Created:** \`${FormatDate(creationDate)} ${suspicious ? "(recent)" : ""}\`
+				**Joined at:** \`${FormatDate(new Date(member.joinedAt))}\`
             `,
             suspicious ? Colors.yellow : Colors.green,
             member.joinedAt
