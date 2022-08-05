@@ -99,7 +99,7 @@ export default async (packet: WSTeamMemberJoinedPayload, ctx: Context, server: S
             "User Joined",
             stripIndents`
                 **User:** <@${member.user.id}> (${inlineCode(member.user.id)})
-                **Type** ${member.user.type ?? "user"}
+                **Type:** ${member.user.type ?? "user"}
 				**Account Created:** \`${FormatDate(creationDate)} ${suspicious ? "(recent)" : ""}\`
 				**Joined at:** \`${FormatDate(new Date(member.joinedAt))}\`
             `,
