@@ -2,6 +2,17 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --grey: rgb(32 34 39);
+  --light-grey: #dcdcdc;
+  --grey-fade: #8080802a;
+  --guilded-yellow: rgb(249 216 73);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
 body {
 	background-color: #191B1F;
 }
