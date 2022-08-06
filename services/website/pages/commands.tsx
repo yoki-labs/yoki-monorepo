@@ -74,7 +74,10 @@ const Commands: NextPage<{ commandByCategory: GroupedCommands }> = ({ commandByC
                                             </div>
                                         </div>
                                         <div className="flex flex-col py-2">
-                                            <span>ALIASES:</span> {command.aliases?.map((a, i) => <code key={`alias-${command.name}-${i}`}>{a}</code>) ?? "None!"}
+                                            <span>ALIASES:</span>
+                                            <div className="mt-2 flex flex-col gap-1">
+                                                {command.aliases?.map((a, i) => <code key={`alias-${command.name}-${i}`}>{a}</code>) ?? "None!"}
+                                            </div>
                                         </div>
                                         <div className="flex flex-col py-2">
                                             <span>SUB COMMANDS:</span>
