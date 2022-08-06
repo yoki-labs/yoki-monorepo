@@ -5,7 +5,7 @@ import commands from "../commands.json";
 import Accordion from "../components/accordion/Accordion";
 import { AccordionBodyContent, AccordionHeaderText } from "../components/accordion/styles";
 import { Command } from "../lib/Command";
-import { CommandNavigation, CommandTop, UpArrow } from "../styles/components/commands";
+import { Category, CommandNavigation, CommandTop, UpArrow } from "../styles/components/commands";
 
 interface GroupedCommands {
     [x: string]: Command[];
@@ -30,7 +30,7 @@ const Commands: NextPage<{ commandByCategory: GroupedCommands }> = ({ commandByC
 
     return (
         <div className="flex flex-col lg:flex-row justify-center md:px-20 mx-auto scroll-smooth">
-            <div className="md:pt-4 mx-6 md:mx-0">
+            <div className="md:pt-4 px-6 md:mx-0">
                 <CommandNavigation className="pt-4">
                     <h1 className="text-3xl pb-4">Categories</h1>
                     <CommandTop
@@ -51,12 +51,14 @@ const Commands: NextPage<{ commandByCategory: GroupedCommands }> = ({ commandByC
                     ))}
                 </CommandNavigation>
             </div>
-            <div className="pt-8 flex flex-col gap-10 space-y-5 px-6 md:px-14">
+            <div className="pt-8 flex flex-col gap-10 space-y-5 px-6 lg:px-14">
                 {categories.map((category) => (
                     <div className="space-y-5" key={category}>
-                        <h1 className="text-3xl text-white text-custom-guilded pb-2" id={category}>
-                            {category.charAt(0).toUpperCase() + category.slice(1)}
-                        </h1>
+                        <Category className="text-3xl text-white pb-2" id={category}>
+                            <a href={`#${category}`} onClick={() => setActiveItem(category)}>
+                                {category.charAt(0).toUpperCase() + category.slice(1)}
+                            </a>
+                        </Category>
                         {commandByCategory[category ?? "general"].map((command, index) => (
                             <Accordion key={`${category}-${index}`}>
                                 <AccordionHeaderText>{command.name}</AccordionHeaderText>
