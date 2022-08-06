@@ -3,7 +3,7 @@ import styled from "styled-components";
 export const NavbarWrapper = styled.div`
     z-index: 10;
     margin: 0 auto;
-    width: clamp(350px, 95vw, 900px);
+    width: 100vw;
     height: 100%;
 
     top: 1rem;
