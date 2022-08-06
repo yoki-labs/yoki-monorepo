@@ -2,10 +2,16 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
-import { Hamburger, NavbarItemList, NavbarWrapper } from "./styles";
+import { Hamburger, NavbarItemList, NavbarWrapper, SideNavbar, SideNavbarBg, SideNavbarBody, SideNavbarFooter, SideNavbarHeader, SideNavbarItem } from "./styles";
 
 export default function Navbar() {
     const [scrollY, setScrollY] = useState(0);
+    const [sidebarOpen, setSidebarOpen] = useState(false);
+
+    const toggleSidebar = () => {
+        console.log(sidebarOpen);
+        setSidebarOpen(!sidebarOpen);
+    };
 
     useEffect(() => {
         const handleSroll = () => {
@@ -27,8 +33,8 @@ export default function Navbar() {
             <nav>
                 <div className={scrollY > 20 ? "wrapper scrolled" : "wrapper"}>
                     <Link href="/">
-                        <div className="select-none">
-                            <Image src="/face.png" className="rounded-full transition" width="70" height="70" alt="Yoki Face" />
+                        <div className="flex select-none">
+                            <Image src="/face.png" className="rounded-full" width="50" height="50" alt="Yoki Face" />
                         </div>
                     </Link>
                     <NavbarItemList>
@@ -45,9 +51,52 @@ export default function Navbar() {
                             <a className="link invite">Invite</a>
                         </Link>
                     </NavbarItemList>
-                    <Hamburger></Hamburger>
+                    <Hamburger onClick={() => toggleSidebar()}>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </Hamburger>
                 </div>
             </nav>
+            <SideNavbarBg className={sidebarOpen ? "opened " : ""} onClick={() => toggleSidebar()}></SideNavbarBg>
+            <SideNavbar className={sidebarOpen ? "opened " : ""}>
+                <SideNavbarHeader>
+                    <SideNavbarItem className="flex justify-between header">
+                        <div className="flex gap-2 items-center">
+                            <Image src="/face.png" className="rounded-full" width="50" height="50" alt="Yoki Face" />
+                            <span className="text-white text-2xl">Yoki</span>
+                        </div>
+                        <Hamburger className={sidebarOpen ? "sidenav opened" : "sidenav"} onClick={() => toggleSidebar()}>
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </Hamburger>
+                    </SideNavbarItem>
+                </SideNavbarHeader>
+                <SideNavbarBody className={sidebarOpen ? "opened " : ""}>
+                    <SideNavbarItem onClick={() => toggleSidebar()}>
+                        <Link href="/">
+                            <a className="link">Home</a>
+                        </Link>
+                    </SideNavbarItem>
+                    <SideNavbarItem onClick={() => toggleSidebar()}>
+                        <Link href="/commands">
+                            <a className="link">Commands</a>
+                        </Link>
+                    </SideNavbarItem>
+                    <SideNavbarItem onClick={() => toggleSidebar()}>
+                        <Link href="/premium">
+                            <a className="premium">Premium</a>
+                        </Link>
+                    </SideNavbarItem>
+                    <SideNavbarItem onClick={() => toggleSidebar()}>
+                        <Link href="/invite">
+                            <a className="invite">Invite</a>
+                        </Link>
+                    </SideNavbarItem>
+                </SideNavbarBody>
+                <SideNavbarFooter></SideNavbarFooter>
+            </SideNavbar>
         </NavbarWrapper>
     );
 }

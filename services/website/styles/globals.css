@@ -4,6 +4,7 @@
 
 :root {
   --grey: rgb(32 34 39);
+  --grey-bg: #191B1F;
   --light-grey: #dcdcdc;
   --grey-fade: #8080802a;
   --guilded-yellow: rgb(249 216 73);
