@@ -1,34 +1,53 @@
 import Image from "next/image";
+import Link from "next/link";
+import { useEffect, useState } from "react";
 
-import NavbarItem from "./navbarItem";
+import { Hamburger, NavbarItemList, NavbarWrapper } from "./styles";
 
 export default function Navbar() {
+    const [scrollY, setScrollY] = useState(0);
+
+    useEffect(() => {
+        const handleSroll = () => {
+            setScrollY(window.scrollY);
+        };
+
+        // Invoke for onmount y position
+        handleSroll();
+
+        window.addEventListener("scroll", handleSroll);
+
+        return () => {
+            window.removeEventListener("scroll", handleSroll);
+        };
+    }, []);
+
     return (
-        <nav className="flex flex-wrap items-center justify-between py-5 px-5 md:px-20">
-            <a href="/" className="flex items-center">
-                <div className="whitespace-nowrap pl-2 md:pl-20 my-auto text-4xl md:text-6xl select-none">
-                    <Image src="/face.png" className="rounded-full transition" width="70" height="70" alt="Yoki Face" />
+        <NavbarWrapper>
+            <nav>
+                <div className={scrollY > 20 ? "wrapper scrolled" : "wrapper"}>
+                    <Link href="/">
+                        <div className="select-none">
+                            <Image src="/face.png" className="rounded-full transition" width="70" height="70" alt="Yoki Face" />
+                        </div>
+                    </Link>
+                    <NavbarItemList>
+                        <Link href="/">
+                            <a className="link">Home</a>
+                        </Link>
+                        <Link href="/commands">
+                            <a className="link">Commands</a>
+                        </Link>
+                        <Link href="/premium">
+                            <a className="link premium">Premium</a>
+                        </Link>
+                        <Link href="/invite">
+                            <a className="link invite">Invite</a>
+                        </Link>
+                    </NavbarItemList>
+                    <Hamburger></Hamburger>
                 </div>
-            </a>
-
-            <div className="md:flex w-auto text-right text-bold mt-0 hidden">
-                <ul className="flex flex-row space-x-14">
-                    <NavbarItem text="Home" dest="/" />
-                    <NavbarItem text="Commands" dest="/commands" />
-                    <NavbarItem text="Premium" dest="/premium" />
-                </ul>
-            </div>
-
-            <div className="pr-2 md:pr-16">
-                <a href="/invite">
-                    <button
-                        type="button"
-                        className="transition ease-in-out text-white text-right border-custom-guilded border-.5 font-medium rounded-md text-lg md:text-md px-6 py-2.5 hover:scale-110"
-                    >
-                        Invite Now
-                    </button>
-                </a>
-            </div>
-        </nav>
+            </nav>
+        </NavbarWrapper>
     );
 }
