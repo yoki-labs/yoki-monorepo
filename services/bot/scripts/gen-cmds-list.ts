@@ -18,7 +18,7 @@ void (async () => {
                     name: command.name,
                     category: command.category,
                     description: command.description,
-                    usage: command.usage ?? `?${command.name} <${command.subCommands?.size ? command.subCommands!.map((x) => x.subName!).join(" | ") : ""}> <...args>`,
+                    usage: command.usage ?? `<${command.subCommands?.size ? command.subCommands!.map((x) => x.subName!).join(" | ") : ""}> <...args>`,
                     args: command.args,
                     examples: command.examples?.map((x) => `?${command.name} ${x}`),
                     requiredRole: command.requiredRole,
