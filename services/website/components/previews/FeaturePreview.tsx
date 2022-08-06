@@ -11,12 +11,11 @@ export default function FeaturePreview(props: { header: string; description: str
                 <p>{props.description}</p>
             </div>
         );
-    const imgTransition = props.position === "left" ? "slide-in-from-right" : "slide-in-from-left";
 
     return (
         <div className="py-20 md:grid grid-cols-10 place-items-center">
             {props.position === "left" && description}
-            <img className={`col-span-6 py-8 animate-in ${imgTransition} duration-700`} src={props.src} width="471" height="143" />
+            <img className={`col-span-6 py-8`} src={props.src} width="471" height="143" />
             {props.position === "right" && description}
         </div>
     );
