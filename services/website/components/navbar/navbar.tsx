@@ -14,17 +14,17 @@ export default function Navbar() {
     };
 
     useEffect(() => {
-        const handleSroll = () => {
+        const handleScroll = () => {
             setScrollY(window.scrollY);
         };
 
         // Invoke for onmount y position
-        handleSroll();
+        handleScroll();
 
-        window.addEventListener("scroll", handleSroll);
+        window.addEventListener("scroll", handleScroll);
 
         return () => {
-            window.removeEventListener("scroll", handleSroll);
+            window.removeEventListener("scroll", handleScroll);
         };
     }, []);
 
