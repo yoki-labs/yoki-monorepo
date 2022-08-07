@@ -7,13 +7,12 @@ export const CommandNavigation = styled.div`
     min-width: 250px;
 
     position: sticky;
-    top: 1rem;
+    top: 8rem;
 
     height: fit-content;
     color: white;
 
     padding: 20px;
-    margin-top: 1rem;
     border-radius: 5px;
     background-color: var(--grey);
 
@@ -56,4 +55,9 @@ export const CommandTop = styled.a`
         cursor: pointer;
         background-color: var(--grey-fade);
     }
+`;
+
+export const Category = styled.h1`
+    color: var(--guilded-yellow);
+    scroll-margin-top: 8rem;
 `;
