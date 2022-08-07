@@ -8,10 +8,7 @@ export default function Navbar() {
     const [scrollY, setScrollY] = useState(0);
     const [sidebarOpen, setSidebarOpen] = useState(false);
 
-    const toggleSidebar = () => {
-        console.log(sidebarOpen);
-        setSidebarOpen(!sidebarOpen);
-    };
+    const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
 
     useEffect(() => {
         const handleScroll = () => {
