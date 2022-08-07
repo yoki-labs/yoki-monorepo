@@ -14,14 +14,22 @@ import string from "../args/string";
 import UUID from "../args/UUID";
 import type { CommandArgType, CommandArgument } from "../commands/Command";
 import { FilteredContent } from "../modules/content-filter";
-import type { Context, ResolvedArgs, Server } from "../typings";
+import type { Context, ResolvedArgs, Server, UsedMentions } from "../typings";
 import { Colors } from "../utils/color";
 import { codeBlock, inlineCode } from "../utils/formatters";
 import { roleValues } from "../utils/util";
 
 const argCast: Record<
     CommandArgType,
-    (input: string, rawArgs: string[], index: number, ctx: Context, packet: WSChatMessageCreatedPayload, argument: CommandArgument) => ResolvedArgs | Promise<ResolvedArgs>
+    (
+        input: string,
+        rawArgs: string[],
+        index: number,
+        ctx: Context,
+        packet: WSChatMessageCreatedPayload,
+        argument: CommandArgument,
+        usedMentions: UsedMentions
+    ) => ResolvedArgs | Promise<ResolvedArgs>
 > = {
     string,
     number,
@@ -78,7 +86,7 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context, server:
 
     // if the message does not start with the prefix
     if (!message.content.startsWith(prefix)) {
-        const member = await ctx.serverUtil.getMember(message.serverId, message.createdBy).catch(() => null)
+        const member = await ctx.serverUtil.getMember(message.serverId, message.createdBy).catch(() => null);
         if (member?.user.type === "bot") return;
 
         // store the message in the database
@@ -172,6 +180,7 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context, server:
 
     // the object of casted args casted to their proper types
     const resolvedArgs: Record<string, ResolvedArgs> = {};
+    const usedMentions: UsedMentions = { user: 0, role: 0, channel: 0 };
     // if this command has accepts args
     if (command.args?.length) {
         // go through all the specified arguments in the command
@@ -185,7 +194,7 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context, server:
             }
 
             // run the caster and see if the arg is valid
-            const castArg = args[i] ? await argCast[commandArg.type](args[i], args, i, ctx, packet, commandArg) : null;
+            const castArg = args[i] ? await argCast[commandArg.type](args[i], args, i, ctx, packet, commandArg, usedMentions) : null;
 
             // if the arg is not valid, inform the user
             if (castArg === null || (commandArg.max && ((castArg as any).length ?? castArg) > commandArg.max))
@@ -198,7 +207,6 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context, server:
 
     // fetch the member from either the server or the redis cache
     const member = await ctx.serverUtil.getMember(message.serverId, message.createdBy);
-
 
     // check if this user is not an operator
     if (!ctx.operators.includes(message.createdBy)) {

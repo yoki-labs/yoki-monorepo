@@ -17,6 +17,7 @@ export interface CachedMember {
     roleIds: number[];
     user: { id: string; name: string; type?: "bot" | "user" };
     isOwner?: boolean;
+    nickname?: string;
 }
 
 // re-exporting enums, types, etc. from prisma incase we switch ORMs so we can easily replace them
@@ -26,6 +27,11 @@ export { Action, ContentFilter, LogChannel, LogChannelType, RoleType, Severity }
 export type ContentFilterScan = Pick<ContentFilter, "content" | "matching" | "infractionPoints" | "severity">;
 export type Server = DBServer & { getPrefix: () => string };
 export type ResolvedArgs = string | string[] | number | boolean | CachedMember | ServerChannelPayload | null;
+export interface UsedMentions {
+    user: number;
+    role: number;
+    channel: number;
+}
 
 export declare interface PresetPatternObject {
     type: FilterMatching;

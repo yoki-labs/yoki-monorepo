@@ -48,7 +48,7 @@ export class ServerUtil extends Util {
     setMember(serverId: string, userId: string, data: CachedMember) {
         return this.cache.set(
             buildMemberKey(serverId, userId),
-            { roleIds: data.roleIds, user: { id: data.user.id, name: data.user.name, type: data.user.type }, isOwner: data.isOwner ?? undefined },
+            { roleIds: data.roleIds, user: { id: data.user.id, name: data.user.name, type: data.user.type }, isOwner: data.isOwner ?? undefined, nickname: data.nickname },
             { expire: 900 }
         );
     }

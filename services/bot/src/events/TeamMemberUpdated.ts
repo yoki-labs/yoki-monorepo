@@ -9,6 +9,11 @@ export default async (event: WSTeamMemberUpdatedPayload, ctx: Context, server: S
         serverId,
     } = event.d;
 
+    // Change member cache
+    const cachedMember = await ctx.serverUtil.getCachedMember(serverId, userId);
+
+    if (cachedMember) await ctx.serverUtil.setMember(serverId, userId, { ...cachedMember, nickname });
+
     // if the member's nickname is updated, scan it for any harmful content
     if (nickname) {
         if (["!", "."].some((x) => nickname.trim().startsWith(x)))
