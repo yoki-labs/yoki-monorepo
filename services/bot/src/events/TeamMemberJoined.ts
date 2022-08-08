@@ -28,7 +28,7 @@ export default async (packet: WSTeamMemberJoinedPayload, ctx: Context, server: S
     const suspicious = sus(creationDate);
     const userId = packet.d.member.user.id;
 
-    if (server.antiRaidAgeFilter && Date.now() - new Date(packet.d.member.user.createdAt).getTime() <= server.antiRaidAgeFilter) {
+    if (server.antiRaidEnabled && server.antiRaidAgeFilter && Date.now() - new Date(packet.d.member.user.createdAt).getTime() <= server.antiRaidAgeFilter) {
         switch (server.antiRaidResponse ?? "KICK") {
             case "CAPTCHA": {
                 if (!server.antiRaidChallengeChannel) return;
