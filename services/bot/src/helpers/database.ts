@@ -58,8 +58,9 @@ export class DatabaseUtil extends Util {
             .then((data) => (data ? { ...data, getPrefix: () => data.prefix ?? process.env.DEFAULT_PREFIX } : null));
     }
 
-    getLogChannel(serverId: string, type: LogChannelType) {
-        return this.prisma.logChannel.findFirst({ where: { serverId, OR: [{ type }, { type: LogChannelType.ALL }] } });
+    async getLogChannel(serverId: string, type: LogChannelType) {
+        const logchannel = await this.prisma.logChannel.findFirst({ where: { serverId, type } });
+        return logchannel ?? this.prisma.logChannel.findFirst({ where: { serverId, type: LogChannelType.ALL } });
     }
 
     getLogChannels(serverId: string) {
