@@ -80,7 +80,7 @@ const Unmute: Command = {
             );
         } catch (error) {
             console.error(error);
-            successMessage = `<@${message.createdBy}>, you have successfully unmuted ${target.user.name} (${inlineCode(target.user.id)}).\nI was unable to notify them.`;
+            successMessage += "\nI was unable to notify them.";
         }
 
         await ctx.messageUtil.sendSuccessBlock(message.channelId, `User unmuted`, successMessage, undefined, {

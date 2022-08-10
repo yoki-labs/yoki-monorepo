@@ -88,7 +88,7 @@ const Mute: Command = {
             );
         } catch (error) {
             console.error(error);
-            successMessage = `<@${message.createdBy}> I was able to mute the user.\nI was unable to notify them.`;
+            successMessage += "\nI was unable to notify them.";
         }
 
         await ctx.messageUtil.sendSuccessBlock(message.channelId, `User muted`, successMessage, undefined, {
