@@ -59,33 +59,33 @@ const Unmute: Command = {
             },
         });
 
-        await ctx.messageUtil.sendInfoBlock(
-            message.channelId,
-            "You have been unmuted",
-            `<@${target.user.id}>, you have been manually unmuted by a staff member of this server.`,
-            {
-                fields: [
-                    reason && {
-                        name: "Reason",
-                        value: (reason as string).length > 1024 ? `${reason.substr(0, 1021)}...` : reason,
-                    },
-                ].filter(Boolean) as EmbedField[],
-            },
-            {
-                isPrivate: true,
-            }
-        );
+        let successMessage = `<@${message.createdBy}>, you have successfully unmuted ${target.user.name} (${inlineCode(target.user.id)}).`;
 
-        await ctx.messageUtil.sendSuccessBlock(
-            message.channelId,
-            `User unmuted`,
-            `<@${message.createdBy}>, you have successfully unmuted ${target.user.name} (${inlineCode(target.user.id)}).`,
-            undefined,
-            {
-                isPrivate: true,
-            }
-        );
+        try {
+            await ctx.messageUtil.sendInfoBlock(
+                message.channelId,
+                "You have been unmuted",
+                `<@${target.user.id}>, you have been manually unmuted by a staff member of this server.`,
+                {
+                    fields: [
+                        reason && {
+                            name: "Reason",
+                            value: (reason as string).length > 1024 ? `${reason.substr(0, 1021)}...` : reason,
+                        },
+                    ].filter(Boolean) as EmbedField[],
+                },
+                {
+                    isPrivate: true,
+                }
+            );
+        } catch (error) {
+            console.error(error);
+            successMessage = `<@${message.createdBy}>, you have successfully unmuted ${target.user.name} (${inlineCode(target.user.id)}).\nI was unable to notify them.`;
+        }
 
+        await ctx.messageUtil.sendSuccessBlock(message.channelId, `User unmuted`, successMessage, undefined, {
+            isPrivate: true,
+        });
         return ctx.rest.router.deleteChannelMessage(message.channelId, message.id);
     },
 };

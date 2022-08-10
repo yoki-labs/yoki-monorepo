@@ -34,7 +34,11 @@ const Mute: Command = {
     ],
     execute: async (message, args, ctx, commandCtx) => {
         if (!commandCtx.server.muteRoleId) return ctx.messageUtil.replyWithAlert(message, `No mute role set`, `There is no mute role configured for this server.`);
+
         const target = args.target as CachedMember;
+
+        if (target.user.type === "bot") return;
+
         const reason = args.reason as string | null;
         const duration = ms(args.duration as string);
         if (!duration || duration <= 894000) return ctx.messageUtil.replyWithAlert(message, `Duration must be longer`, `Your mute duration must be longer than 15 minutes.`);
@@ -54,16 +58,17 @@ const Mute: Command = {
             );
         }
 
-        // We don't need history for bots
-        if (target.user.type !== "bot") {
-            await ctx.dbUtil.addActionFromMessage(message, {
-                infractionPoints: 10,
-                reason,
-                targetId: target.user.id,
-                type: "MUTE",
-                expiresAt,
-            });
+        await ctx.dbUtil.addActionFromMessage(message, {
+            infractionPoints: 10,
+            reason,
+            targetId: target.user.id,
+            type: "MUTE",
+            expiresAt,
+        });
 
+        let successMessage = `<@${message.createdBy}>, you have successfully muted ${target.user.name} (${inlineCode(target.user.id)}).`;
+
+        try {
             await ctx.messageUtil.sendValueBlock(
                 message.channelId,
                 ":mute: You have been muted",
@@ -81,17 +86,14 @@ const Mute: Command = {
                     isPrivate: true,
                 }
             );
+        } catch (error) {
+            console.error(error);
+            successMessage = `<@${message.createdBy}> I was able to mute the user.\nI was unable to notify them.`;
         }
 
-        await ctx.messageUtil.sendSuccessBlock(
-            message.channelId,
-            `User muted`,
-            `<@${message.createdBy}>, you have successfully muted ${target.user.name} (${inlineCode(target.user.id)}).`,
-            undefined,
-            {
-                isPrivate: true,
-            }
-        );
+        await ctx.messageUtil.sendSuccessBlock(message.channelId, `User muted`, successMessage, undefined, {
+            isPrivate: true,
+        });
 
         return ctx.rest.router.deleteChannelMessage(message.channelId, message.id);
     },
