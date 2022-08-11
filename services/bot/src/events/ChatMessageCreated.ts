@@ -150,7 +150,7 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context, server:
                 fields: [
                     {
                         name: "Available sub-commands",
-                        value: `- ${command.subCommands.map((x) => inlineCode(x.name.split("-")[1])).join("\n- ")}`,
+                        value: command.subCommands.map((x) => `- ${inlineCode(x.subName!)}`).join("\n"),
                         inline: true,
                     },
                     {
@@ -172,7 +172,7 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context, server:
                 fields: [
                     {
                         name: "Available sub-commands",
-                        value: `- ${command.subCommands.map((x) => inlineCode(x.name.split("-")[1])).join("\n- ")}`,
+                        value: command.subCommands.map((x) => `- ${inlineCode(x.subName!)}`).join("\n"),
                         inline: true,
                     },
                     {
