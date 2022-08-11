@@ -19,7 +19,7 @@ services:
     ports:
       - "4433:4433"
   cache:
-    image: redislabs/redismod:latest
+    image: redis/redis-stack-server:latest
     container_name: YOKI_CACHE
     restart: unless-stopped
     networks:
