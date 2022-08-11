@@ -1,4 +1,4 @@
-import type { ChatMessagePayload } from "@guildedjs/guilded-api-typings";
+import type { ChatMessagePayload, ServerChannelPayload } from "@guildedjs/guilded-api-typings";
 import { stripIndents } from "common-tags";
 
 import type Client from "../../../Client";
@@ -20,19 +20,20 @@ const Set: Command = {
     subName: "set",
     requiredRole: RoleType.ADMIN,
     args: [
-        { name: "channelId", optional: false, type: "UUID" },
-        { name: "logTypes", optional: true, type: "enumList", values: LogChannelArgs }
+        { name: "channel", optional: false, type: "channel" },
+        { name: "logTypes", optional: true, type: "enumList", values: LogChannelArgs },
     ],
     execute: async (message, args, ctx) => {
-        const channelId = args.channelId as string;
-        let logTypes: LogChannelArgEnum[] = args.logTypes === null ? [] : args.logTypes as LogChannelArgEnum[];
+        const { id: channelId } = args.channel as ServerChannelPayload;
+        let logTypes: LogChannelArgEnum[] = args.logTypes === null ? [] : (args.logTypes as LogChannelArgEnum[]);
 
         const channel = await ctx.rest.router.getChannel(channelId).catch(() => null);
-        if (!channel) return ctx.messageUtil.replyWithAlert(
-            message,
-            "Sorry! That is not a valid channel!",
-            "Please ensure that the provided ID belongs to a channel that I can see! I also require `MANAGE CHANNEL` permissions to be able to grab that channel!"
-        );
+        if (!channel)
+            return ctx.messageUtil.replyWithAlert(
+                message,
+                "Sorry! That is not a valid channel!",
+                "Please ensure that the provided ID belongs to a channel that I can see! I also require `MANAGE CHANNEL` permissions to be able to grab that channel!"
+            );
 
         // If there are logTypes, uppercase them all, then filter out duplicates. No idea why this had to specifically be two different lines.
         if (logTypes && logTypes.length > 0) {
@@ -52,11 +53,12 @@ const Set: Command = {
             successfulTypes.length > 0 ? `Subscriptions added` : `No subscriptions added`,
             stripIndents`
                 ${successfulTypes.length > 0 ? `Successfully subscribed channel ${inlineCode(channelId)} to the following events: ${listInlineCode(successfulTypes)}` : ""}
-                ${failedTypes.length > 0
-                    ? `Failed to subscribe channel ${inlineCode(channelId)} to the following events: ${listInlineCode(
-                        failedTypes.map((x) => x[0])
-                    )} due to the following reason(s) ${listInlineCode(failedTypes.map((x) => x[1]))}`
-                    : ""
+                ${
+                    failedTypes.length > 0
+                        ? `Failed to subscribe channel ${inlineCode(channelId)} to the following events: ${listInlineCode(
+                              failedTypes.map((x) => x[0])
+                          )} due to the following reason(s) ${listInlineCode(failedTypes.map((x) => x[1]))}`
+                        : ""
                 }
             `
         );
@@ -69,7 +71,7 @@ async function subscribeToLogs(ctx: Client, message: ChatMessagePayload, channel
     const successfulTypes: string[] = [];
 
     for (const logType of logTypes) {
-        if (LogChannelType[logType] && !(await ctx.prisma.logChannel.findFirst({ where: { serverId: message.serverId!, type: LogChannelType[logType] }}))) {
+        if (LogChannelType[logType] && !(await ctx.prisma.logChannel.findFirst({ where: { serverId: message.serverId!, type: LogChannelType[logType] } }))) {
             try {
                 await ctx.prisma.logChannel.create({ data: { channelId, serverId: message.serverId!, type: LogChannelType[logType] } });
                 successfulTypes.push(logType);
