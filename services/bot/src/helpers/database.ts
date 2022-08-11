@@ -1,5 +1,5 @@
 import type { ChatMessagePayload } from "@guildedjs/guilded-api-typings";
-import type { FilterMatching, Prisma, Severity } from "@prisma/client";
+import type { FilterMatching, InviteFilter, Prisma, Severity, UrlFilter } from "@prisma/client";
 import { nanoid } from "nanoid";
 
 import { Action, ContentFilter, LogChannelType, Server } from "../typings";
@@ -12,6 +12,22 @@ export class DatabaseUtil extends Util {
 
     removeWordFromFilter(serverId: string, content: string, matching: FilterMatching) {
         return this.prisma.contentFilter.deleteMany({ where: { serverId, content, matching } });
+    }
+
+    addUrlToFilter(data: Omit<UrlFilter, "id" | "createdAt">) {
+        return this.prisma.urlFilter.create({ data });
+    }
+
+    removeUrlFromFilter(serverId: string, domain: string) {
+        return this.prisma.urlFilter.deleteMany({ where: { serverId, domain } });
+    }
+
+    addInviteToFilter(data: Omit<InviteFilter, "id" | "createdAt">) {
+        return this.prisma.inviteFilter.create({ data });
+    }
+
+    removeInviteFromFilter(serverId: string, targetServerId: string) {
+        return this.prisma.inviteFilter.deleteMany({ where: { serverId, targetServerId } });
     }
 
     getBannedWords(serverId: string) {

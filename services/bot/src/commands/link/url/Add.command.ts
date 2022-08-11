@@ -1,23 +1,22 @@
 import { Severity } from "@prisma/client";
 
-import { RoleType } from "../../typings";
-import { inlineCode } from "../../utils/formatters";
-import { getFilterFromSyntax } from "../../utils/util";
-import { Category } from "../Category";
-import type { Command } from "../Command";
+import { RoleType } from "../../../typings";
+import { inlineCode } from "../../../utils/formatters";
+import { Category } from "../../Category";
+import type { Command } from "../../Command";
 
 const Add: Command = {
-    name: "filter-add",
+    name: "link-url-add",
     subName: "add",
-    description: "Add a word or phrase to the automod filter",
-    usage: "<phrase> [severity=warn] [infraction_points=5]",
-    examples: ["test_word warn", "test_word_2 kick"],
+    description: "Add a domain to the __blacklist__",
+    usage: "<domain> [severity=warn] [infraction_points=5]",
+    examples: ["example.com warn", "discord.com ban"],
     subCommand: true,
     requiredRole: RoleType.ADMIN,
     category: Category.Moderation,
     args: [
         {
-            name: "phrase",
+            name: "domain",
             type: "string",
         },
         {
@@ -34,8 +33,8 @@ const Add: Command = {
     ],
     execute: async (message, args, ctx, { server }) => {
         if (!server.filterEnabled)
-            return ctx.messageUtil.replyWithAlert(message, `Enable filtering`, `Automod filter is disabled! Please enable using \`${server.getPrefix()}module enable automod\``);
-        const phrase = (args.phrase as string).toLowerCase();
+            return ctx.messageUtil.replyWithAlert(message, `Enable automod`, `Automod link filter is disabled! Please enable using \`${server.getPrefix()}module enable automod\``);
+        const domain = (args.domain as string).toLowerCase();
         const severity = (args.severity as Severity | null) ?? Severity.WARN;
         const infractionPoints = (args.infraction_points as number | null) ?? 5;
 
@@ -43,23 +42,20 @@ const Add: Command = {
         if (infractionPoints < 0 || infractionPoints > 100)
             return ctx.messageUtil.replyWithAlert(message, `Points over the limit`, `Sorry, but the infraction points must be between 0 and 100.`);
 
-        const [content, matching] = getFilterFromSyntax(phrase);
+        const doesExistAlready = await ctx.prisma.urlFilter.findFirst({ where: { serverId: message.serverId!, domain } });
+        if (doesExistAlready) return ctx.messageUtil.replyWithAlert(message, `Already added`, `This domain is already in your server's filter!`);
 
-        const doesExistAlready = await ctx.prisma.contentFilter.findFirst({ where: { serverId: message.serverId!, content, matching } });
-        if (doesExistAlready) return ctx.messageUtil.replyWithAlert(message, `Already added`, `This word is already in your server's filter!`);
-
-        await ctx.dbUtil.addWordToFilter({
-            content,
+        await ctx.dbUtil.addUrlToFilter({
+            domain,
             creatorId: message.createdBy,
             serverId: message.serverId!,
-            matching,
             severity,
             infractionPoints,
         });
         return ctx.messageUtil.replyWithSuccess(
             message,
-            `New phrase added`,
-            `Successfully added ${inlineCode(phrase)} with the severity ${inlineCode(severity)} to the automod list!`
+            `New link added`,
+            `Successfully added ${inlineCode(domain)} with the severity ${inlineCode(severity)} to the automod list!`
         );
     },
 };

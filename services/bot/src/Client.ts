@@ -24,6 +24,7 @@ import { MessageUtil } from "./helpers/message";
 import { ServerUtil } from "./helpers/server";
 import { MuteScheduler } from "./jobs/MuteScheduler";
 import { ContentFilterUtil } from "./modules/content-filter";
+import { LinkFilterUtil } from "./modules/link-filter";
 import { SpamFilterUtil } from "./modules/spam-filter";
 import type { Context, Server } from "./typings";
 
@@ -72,6 +73,8 @@ export default class Client {
     readonly contentFilterUtil = new ContentFilterUtil(this);
     // utility methods for preventing spam
     readonly spamFilterUtil = new SpamFilterUtil(this);
+    // utility methods for filtering invites and blacklisted domains
+    readonly linkFilterUtil = new LinkFilterUtil(this);
 
     // scheduler that will check for (impending) expired mutes and remove them
     readonly muteHandler = new MuteScheduler(this, 15 * 60);

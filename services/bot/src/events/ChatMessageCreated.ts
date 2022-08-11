@@ -104,6 +104,17 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context, server:
         // Spam prevention
         if (server.filterEnabled) await ctx.spamFilterUtil.checkForMessageSpam(server, message);
 
+        // Invites or bad URLs
+        if (server.filterEnabled || server.filterInvites)
+            await ctx.linkFilterUtil.checkLinks({
+                server,
+                userId: message.createdBy,
+                channelId: message.channelId,
+                content: message.content,
+                filteredContent: FilteredContent.Message,
+                resultingAction: () => ctx.rest.router.deleteChannelMessage(message.channelId, message.id),
+            });
+
         if (server.premium && server.scanNSFW)
             await ctx.contentFilterUtil.scanMessageMedia({ channelId: message.channelId, messageId: message.id, userId: message.createdBy, content: message.content });
         return;

@@ -32,6 +32,39 @@ export default abstract class BaseFilterUtil extends Util {
         [Severity.WARN]: this.onUserWarnBinded,
     };
 
+    async dealWithUser(userId: string, server: Server, channelId: string | null, filteredContent: FilteredContent, reason: string, triggerContent: string | null = null) {
+        // By now, we assume the member has spammed
+        // Get the member from cache or API
+        const member = await this.client.serverUtil.getMember(server.serverId, userId);
+
+        // Don't moderate bots
+        if (member.user.type === "bot") return;
+
+        // Get all the mod roles in this server
+        const modRoles = await this.prisma.role.findMany({ where: { serverId: server.serverId } });
+
+        // If the server doesn't have "filterOnMods" setting enabled and a mod spams, ignore
+        if (!server.filterOnMods && modRoles.some((modRole) => member.roleIds.includes(modRole.roleId))) return;
+
+        const memberExceeds = await this.getMemberExceedsThreshold(server, userId, server.spamInfractionPoints);
+
+        const actionType = memberExceeds || Severity.WARN;
+
+        await this.dbUtil.emitAction({
+            type: actionType,
+            reason: `[AUTOMOD] ${reason}.${memberExceeds ? `${actionType} threshold exceeded.` : ""}`,
+            serverId: server.serverId,
+            channelId,
+            targetId: userId,
+            executorId: this.client.userId!,
+            infractionPoints: server.spamInfractionPoints,
+            triggerContent,
+            expiresAt: actionType === Severity.MUTE ? new Date(Date.now() + 1000 * 60 * 60 * 12) : null,
+        });
+
+        return this.severityAction[actionType](userId, server, channelId, filteredContent);
+    }
+
     abstract onUserWarn(userId: string, server: Server, channelId: string | null, filteredContent: FilteredContent): Promise<unknown> | unknown;
     abstract onUserMute(userId: string, server: Server, channelId: string | null, filteredContent: FilteredContent): Promise<unknown> | unknown;
 

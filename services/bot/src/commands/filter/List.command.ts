@@ -6,7 +6,7 @@ import type { Command } from "../Command";
 
 const List: Command = {
     name: "filter-list",
-    description: "Add a word or phrase to the automod filter",
+    description: "Lists down every word or phrase that will be filtered",
     usage: "",
     subName: "list",
     subCommand: true,
@@ -17,10 +17,10 @@ const List: Command = {
 
         return bannedWords.length
             ? ctx.messageUtil.replyWithInfo(
-                message,
-                `Banned words`,
-                `These are the custom banned words for this server: ${bannedWords.map((word) => inlineCode(filterToString(word))).join(", ")}`
-            )
+                  message,
+                  `Banned words`,
+                  `These are the custom banned words for this server: ${bannedWords.map((word) => inlineCode(filterToString(word))).join(", ")}`
+              )
             : ctx.messageUtil.replyWithNullState(message, `No banned words`, `There are no custom banned words for this server.`);
     },
 };

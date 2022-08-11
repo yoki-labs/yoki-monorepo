@@ -15,6 +15,7 @@ model Server {
     locale                     String        @default("en-US")
     muteRoleId                 Int?
     filterEnabled              Boolean       @default(false)
+    filterInvites              Boolean       @default(false)
     blacklisted                Boolean       @default(false)
     antiRaidEnabled            Boolean       @default(false)
     antiRaidResponse           ResponseType?
@@ -64,6 +65,25 @@ model ContentFilter {
     creatorId        String         @db.VarChar(255)
     createdAt        DateTime       @default(now())
     infractionPoints Int
+}
+
+model UrlFilter {
+    id               Int      @id @default(autoincrement())
+    serverId         String   @db.VarChar(255)
+    // If we are going to use routes
+    domain           String   @db.VarChar(255)
+    severity         Severity
+    creatorId        String   @db.VarChar(255)
+    createdAt        DateTime @default(now())
+    infractionPoints Int
+}
+
+model InviteFilter {
+    id             Int      @id @default(autoincrement())
+    serverId       String   @db.VarChar(255)
+    targetServerId String   @db.VarChar(255)
+    creatorId      String   @db.VarChar(255)
+    createdAt      DateTime @default(now())
 }
 
 model Preset {

@@ -1,0 +1,30 @@
+import { RoleType } from "../../../typings";
+import { inlineCode } from "../../../utils/formatters";
+import { Category } from "../../Category";
+import type { Command } from "../../Command";
+
+const Remove: Command = {
+    name: "link-url-remove",
+    subName: "remove",
+    description: "Removes a domain from the __blacklist__",
+    usage: "<domain>",
+    subCommand: true,
+    category: Category.Moderation,
+    requiredRole: RoleType.ADMIN,
+    args: [
+        {
+            name: "domain",
+            type: "string",
+        },
+    ],
+    execute: async (message, args, ctx) => {
+        const domain = (args.domain as string).toLowerCase();
+
+        const existingEntry = await ctx.prisma.urlFilter.findFirst({ where: { serverId: message.serverId!, domain } });
+        if (!existingEntry) return ctx.messageUtil.replyWithAlert(message, `Link not found`, `This domain is not in your server's filter!`);
+        await ctx.dbUtil.removeUrlFromFilter(message.serverId!, domain);
+        return ctx.messageUtil.replyWithSuccess(message, `Link deleted`, `Successfully deleted ${inlineCode(domain)} from the automod list!`);
+    },
+};
+
+export default Remove;
