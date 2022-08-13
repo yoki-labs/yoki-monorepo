@@ -5,7 +5,7 @@ export const Button = styled.div`
     border-radius: 7px;
     min-width: 200px;
     border: 1px solid var(--guilded-yellow);
-    background-color: var(--grey);
+    background-color: var(--primary);
 
     text-align: center;
     color: white;
