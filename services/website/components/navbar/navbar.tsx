@@ -30,7 +30,7 @@ export default function Navbar() {
             <nav>
                 <div className={scrollY > 20 ? "wrapper scrolled" : "wrapper"}>
                     <Link href="/">
-                        <div className="flex select-none">
+                        <div className="cursor-pointer flex select-none">
                             <Image src="/face.png" className="rounded-full" width="50" height="50" alt="Yoki Face" />
                         </div>
                     </Link>

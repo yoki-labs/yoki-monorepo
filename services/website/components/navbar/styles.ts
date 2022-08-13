@@ -42,8 +42,8 @@ export const NavbarItemList = styled.div`
     transition: 0.3s ease;
 
     .link {
-        padding: 0px 10px;
-        margin: 0 5px;
+        padding: 2px 17px;
+        margin: 0 4px;
         border-radius: 5px;
         transition: 0.3s ease;
 
@@ -56,10 +56,11 @@ export const NavbarItemList = styled.div`
         }
 
         &.invite {
-            color: black;
+            color: var(--grey);
             background-color: var(--guilded-yellow);
             &:hover {
-                background-color: rgb(255, 230, 120);
+                color: white;
+                background-color: #b79200;
             }
         }
     }
