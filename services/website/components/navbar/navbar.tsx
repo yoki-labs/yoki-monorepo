@@ -45,7 +45,7 @@ export default function Navbar() {
                             <a className="link premium">Premium</a>
                         </Link>
                         <Link href="/invite">
-                            <a className="link invite">Invite</a>
+                            <a className="link invite">Get Yoki</a>
                         </Link>
                     </NavbarItemList>
                     <Hamburger onClick={() => toggleSidebar()}>
@@ -88,7 +88,7 @@ export default function Navbar() {
                     </SideNavbarItem>
                     <SideNavbarItem onClick={() => toggleSidebar()}>
                         <Link href="/invite">
-                            <a className="invite">Invite</a>
+                            <a className="invite">Get Yoki</a>
                         </Link>
                     </SideNavbarItem>
                 </SideNavbarBody>
