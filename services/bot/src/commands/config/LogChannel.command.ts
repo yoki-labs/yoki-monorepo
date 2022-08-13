@@ -17,6 +17,7 @@ const LogChannel: Command = {
     description: "Manage your log channel's.",
     aliases: ["logs"],
     parentCommand: true,
+    subCommand: true,
     requiredRole: RoleType.ADMIN,
     devOnly: true,
     subCommands,
