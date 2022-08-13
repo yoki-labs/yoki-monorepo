@@ -46,7 +46,7 @@ export const NavbarItemList = styled.div`
     transition: 0.3s ease;
 
     .link {
-        padding: 5px 10px;
+        padding: 0px 10px;
         margin: 0 5px;
         border-radius: 5px;
         transition: 0.3s ease;
