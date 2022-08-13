@@ -3,12 +3,14 @@
 @tailwind utilities;
 
 :root {
-  --grey: rgb(32 34 39);
+  --primary: #1f222b;
+  --grey: #15171d;
   --off-grey: rgb(39, 41, 52);
   --grey-bg: #191B1F;
   --light-grey: #dcdcdc;
   --grey-fade: #8080802a;
-  --guilded-yellow: rgb(249 216 73);
+  --guilded-yellow: rgb(255, 212, 21);
+  --earth: url("../public/earth-close-up.png");
 }
 
 html {
@@ -16,7 +18,7 @@ html {
 }
 
 body {
-	background-color: #191B1F;
+	background-color: var(--primary);
 }
 
 h1, h2, h3, p, a {

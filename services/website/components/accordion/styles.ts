@@ -9,7 +9,7 @@ export const AccordionWrapper = styled.div`
     margin: auto;
 
     border-radius: 5px;
-    background-color: rgb(32 34 39);
+    background-color: var(--grey);
 `;
 
 export const AccordionHeader = styled.div`
@@ -71,7 +71,7 @@ export const AccordionBody = styled.div`
 `;
 
 export const AccordionBodyContent = styled.div`
-    color: var(--light-grey);
+    color: white;
 
     .role {
         color: black;
