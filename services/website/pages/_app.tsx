@@ -34,6 +34,9 @@ function MyApp({ Component, pageProps }: AppProps) {
             </Head>
             <Navbar />
             <Component {...pageProps} />
+            <div className="bg-[#15171d] px-12 md:px-20">
+                <Footer />
+            </div>
         </>
     );
 }
