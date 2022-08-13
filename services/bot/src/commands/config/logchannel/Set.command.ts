@@ -45,6 +45,15 @@ const Set: Command = {
             logTypes = ["ALL"];
         }
 
+        try {
+            await ctx.messageUtil.send(channelId, "Checking for permission to send here...").then((x) => ctx.rest.router.deleteChannelMessage(channelId, x.id));
+        } catch (e) {
+            return ctx.messageUtil.replyWithError(
+                message,
+                "I don't have the permissions to send messages in that channel! Please make sure I can send and read messages in that channel."
+            );
+        }
+
         const [successfulTypes, failedTypes] = await subscribeToLogs(ctx, message, channelId, logTypes as LogChannelType[]);
 
         // Reply to the command, with the successful and failed types.
