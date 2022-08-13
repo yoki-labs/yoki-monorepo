@@ -10,14 +10,14 @@ module.exports = withMT({
             },
             borderColor: {
                 custom: {
-                    guilded: "#F9D849",
+                    guilded: "#F5C400",
                 },
             },
             colors: {
                 custom: {
                     "dark-gray": "#191B1F",
                     gray: "#202227",
-                    guilded: "#F9D849",
+                    guilded: "#F5C400",
                 },
             },
         },

@@ -21,7 +21,8 @@ export const Button = styled.div`
         color: var(--grey);
         background-color: var(--guilded-yellow);
         &:hover {
-            background-color: rgb(255, 230, 120);
+            color: white;
+            background-color: #b79200;
         }
     }
 `;

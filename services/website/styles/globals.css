@@ -9,7 +9,9 @@
   --grey-bg: #191B1F;
   --light-grey: #dcdcdc;
   --grey-fade: #8080802a;
-  --guilded-yellow: rgb(255, 212, 21);
+  --guilded-yellow: #F5C400;
+
+  --status-bg: url("../public/status-bg.png");
 }
 
 html {
