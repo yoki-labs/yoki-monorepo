@@ -11,6 +11,7 @@ const Url: Command = {
     description: "Manages domain blacklists",
     examples: ["add example.com warn", "add discord.com ban"],
     parentCommand: true,
+    subCommand: true,
     category: Category.Settings,
     subCommands: new Collection<string, Command>().set("add", Add).set("remove", Remove),
     execute: () => void 0,
