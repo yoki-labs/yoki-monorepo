@@ -177,16 +177,16 @@ model Captcha {
 }
 
 enum LogChannelType {
-    ALL
-    MOD_ACTION_LOG
-    MEMBER_ROLES_UPDATE
-    MEMBER_UPDATE
-    MEMBER_JOIN
-    MEMBER_LEAVE
-    CHAT_MESSAGE_UPDATE
-    CHAT_MESSAGE_DELETE
-    NOTIFICATION
-    MODMAIL_LOG
+    all
+    mod_actions
+    member_roles_updates
+    member_updates
+    member_joins
+    member_leaves
+    message_edits
+    message_deletions
+    notifications
+    modmail_logs
 }
 
 enum RoleType {

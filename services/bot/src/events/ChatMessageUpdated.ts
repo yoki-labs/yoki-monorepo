@@ -27,7 +27,7 @@ export default async (packet: WSChatMessageUpdatedPayload, ctx: Context, server:
         resultingAction: () => ctx.rest.router.deleteChannelMessage(message.channelId, message.id),
     });
     // get the log channel for message updates
-    const updatedMessageLogChannel = await ctx.dbUtil.getLogChannel(message.serverId!, LogChannelType.CHAT_MESSAGE_UPDATE);
+    const updatedMessageLogChannel = await ctx.dbUtil.getLogChannel(message.serverId!, LogChannelType.message_edits);
     // if there is no log channel for message updates, then ignore
     if (!updatedMessageLogChannel) return void 0;
     // get the old message from the database if we logged it before
