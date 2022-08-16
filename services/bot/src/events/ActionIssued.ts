@@ -7,7 +7,7 @@ import { inlineCode } from "../utils/formatters";
 import { FormatDate } from "../utils/util";
 
 export default async (data: Action & { reasonMetaData?: string }, client: Client) => {
-    const modLogChannel = await client.dbUtil.getLogChannel(data.serverId, LogChannelType.MOD_ACTION_LOG);
+    const modLogChannel = await client.dbUtil.getLogChannel(data.serverId, LogChannelType.mod_actions);
     if (!modLogChannel) return;
 
     const message = await client.messageUtil.send(

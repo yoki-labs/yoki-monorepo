@@ -41,8 +41,8 @@ const Set: Command = {
         }
 
         // If logTypes is empty or includes ALL, shorten it to only ALL to clean up the process.
-        if (logTypes?.length === 0 || logTypes?.includes("ALL")) {
-            logTypes = ["ALL"];
+        if (logTypes?.length === 0 || logTypes?.includes("all")) {
+            logTypes = ["all"];
         }
 
         try {

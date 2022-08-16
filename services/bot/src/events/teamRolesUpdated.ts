@@ -17,7 +17,7 @@ export default async (event: WSTeamRolesUpdatedPayload, ctx: Context): Promise<v
     for (const memberRoleId of memberRoleIds) memberCaches[memberRoleId.userId] = await ctx.serverUtil.getCachedMember(serverId, memberRoleId.userId);
 
     // check if there's a log channel channel for message deletions
-    const roleUpdateLogChannel = await ctx.dbUtil.getLogChannel(serverId!, LogChannelType.MEMBER_ROLES_UPDATE);
+    const roleUpdateLogChannel = await ctx.dbUtil.getLogChannel(serverId!, LogChannelType.member_roles_updates);
     if (roleUpdateLogChannel) {
         // Prevent showcasing too many
         const cappedRoleChanges = memberRoleIds.slice(0, 5);
