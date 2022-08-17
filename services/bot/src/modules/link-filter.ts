@@ -1,5 +1,6 @@
+import { Embed } from "@guildedjs/webhook-client";
 import type { InviteFilter } from "@prisma/client";
-import { captureException } from "@sentry/node";
+import { stripIndents } from "common-tags";
 import fetch from "node-fetch";
 
 import type { Server } from "../typings";
@@ -61,10 +62,13 @@ export class LinkFilterUtil extends BaseFilterUtil {
             // Bad URLs
             if (server.filterEnabled && blacklistedUrls!.some((x) => x.domain === domain)) {
                 try {
+                    console.log("Doing resulting action");
                     // Perform resulting action, for message filtering it's deleting the original message
                     await resultingAction();
-                } catch (e) {
-                    captureException(e);
+                    console.log("Results");
+                } catch (err: any) {
+                    if (err instanceof Error)
+                        await this.client.errorHandler.send("Error in link filtering callback", [new Embed().setDescription(stripIndents`${err.stack}`).setColor("RED")]);
                 }
 
                 return this.dealWithUser(userId, server, channelId, filteredContent, "URL filter tripped", domain);
@@ -144,8 +148,16 @@ export class LinkFilterUtil extends BaseFilterUtil {
     ) {
         // Detect non-whitelisted server IDs and non-this-server ID
         if (targetServerId && targetServerId !== server.serverId && !whitelisted.some((x) => x.targetServerId === targetServerId)) {
-            // Perform resulting action, for message filtering it's deleting the original message
-            await resultingAction();
+            try {
+                console.log("Doing resulting action");
+                // Perform resulting action, for message filtering it's deleting the original message
+                await resultingAction();
+                console.log("Results");
+            } catch (err: any) {
+                if (err instanceof Error)
+                    await this.client.errorHandler.send("Error in link filtering callback", [new Embed().setDescription(stripIndents`${err.stack}`).setColor("RED")]);
+            }
+
             return this.dealWithUser(userId, server, channelId, filteredContent, "Invite filter tripped", route);
         }
     }

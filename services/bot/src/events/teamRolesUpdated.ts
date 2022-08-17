@@ -1,6 +1,8 @@
 import type { WSTeamRolesUpdatedPayload } from "@guildedjs/guilded-api-typings";
+import { Embed as WebhookEmbed } from "@guildedjs/webhook-client";
 import { LogChannelType } from "@prisma/client";
 import { stripIndents } from "common-tags";
+import { nanoid } from "nanoid";
 
 import type { Context } from "../typings";
 import { Colors } from "../utils/color";
@@ -32,34 +34,56 @@ export default async (event: WSTeamRolesUpdatedPayload, ctx: Context): Promise<v
             return { addedRoles, removedRoles, roleIds, userId };
         });
 
-        // send the log channel message with the content/data of the deleted message
-        await ctx.messageUtil.sendLog(
-            roleUpdateLogChannel.channelId,
-            `Member's roles changed`,
-            stripIndents`
+        try {
+            // send the log channel message with the content/data of the deleted message
+            await ctx.messageUtil.sendLog(
+                roleUpdateLogChannel.channelId,
+                `Member's roles changed`,
+                stripIndents`
                     **Modified user count:** ${memberRoleIds.length}
                     **Modified users:** ${memberRoleIds
                         .slice(0, 20)
                         .map((x) => `<@${x.userId}>`)
                         .join(", ")}${memberRoleIds.length > 20 ? "..." : ""}
                 `,
-            Colors.blue,
-            new Date().toISOString(),
-            roleDifferences.map((obj) => {
-                const { userId, addedRoles, removedRoles, roleIds } = obj;
+                Colors.blue,
+                new Date().toISOString(),
+                roleDifferences.map((obj) => {
+                    const { userId, addedRoles, removedRoles, roleIds } = obj;
 
-                return {
-                    name: `<@${userId}> (${inlineCode(userId)})`,
-                    value:
-                        addedRoles || removedRoles
-                            ? stripIndents`
+                    return {
+                        name: `<@${userId}> (${inlineCode(userId)})`,
+                        value:
+                            addedRoles || removedRoles
+                                ? stripIndents`
                                     ${addedRoles?.length ? `**Added:** ${addedRoles.map((role) => `<@${role}>`).join(", ")}` : ""}
                                     ${removedRoles?.length ? `**Removed:** ${removedRoles.map((role) => `<@${role}>`).join(", ")}` : ""}
                                   `
-                            : `Unknown role difference. Current roles: ${roleIds.map((role) => `<@${role}>`).join(", ")}`,
-                };
-            })
-        );
+                                : `Unknown role difference. Current roles: ${roleIds.map((role) => `<@${role}>`).join(", ")}`,
+                    };
+                })
+            );
+        } catch (e) {
+            // generate ID for this error, not persisted in database
+            const referenceId = nanoid();
+            // send error to the error webhook
+            if (e instanceof Error) {
+                console.error(e);
+                void ctx.errorHandler.send("Error in logging member roles updated event!", [
+                    new WebhookEmbed()
+                        .setDescription(
+                            stripIndents`
+                            Reference ID: ${inlineCode(referenceId)}
+                            Server: ${inlineCode(serverId)}
+                            Error: \`\`\`
+                            ${e.stack ?? e.message}
+                            \`\`\`
+                        `
+                        )
+                        .setColor("RED"),
+                ]);
+            }
+        }
     }
 
     // go through all the updated members

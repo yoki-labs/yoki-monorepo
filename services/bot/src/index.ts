@@ -1,5 +1,3 @@
-import "./utils/sentry";
-
 import { config } from "dotenv";
 import { join } from "path";
 import recursive from "recursive-readdir";
@@ -39,7 +37,7 @@ client.emitter.on("ActionIssued", client.customEventHandler.ActionIssued);
 client.ws.emitter.on("ready", (data) => Welcome(data, client));
 
 // This handler is simply just to log errors to our Guilded channel.
-process.on("unhandledRejection", (err) => unhandledPromiseRejection(err as Error));
+process.on("unhandledRejection", (err) => unhandledPromiseRejection(err as Error, client.errorHandler));
 
 void (async (): Promise<void> => {
     // Load all filse & directories in the commands dir recursively
