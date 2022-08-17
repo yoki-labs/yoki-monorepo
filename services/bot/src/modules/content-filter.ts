@@ -1,6 +1,5 @@
-import { Embed } from "@guildedjs/webhook-client";
 import { ContentFilter, FilterMatching } from "@prisma/client";
-import { stripIndents } from "common-tags";
+import { captureException } from "@sentry/node";
 
 import { ContentFilterScan, Server, Severity } from "../typings";
 import { Colors } from "../utils/color";
@@ -139,8 +138,8 @@ export class ContentFilterUtil extends BaseFilterUtil {
         try {
             // Perform resulting action, for message filtering it's deleting the original message
             await resultingAction();
-        } catch (err: any) {
-            if (err instanceof Error) await this.client.errorHandler.send("Error in filtering callback", [new Embed().setDescription(stripIndents`${err.stack}`).setColor("RED")]);
+        } catch (e) {
+            captureException(e);
         }
 
         // Execute the punishing action. If this is a threshold exceeding, execute the punishment associated with the exceeded threshold
@@ -160,10 +159,10 @@ export class ContentFilterUtil extends BaseFilterUtil {
         return contentFilter.matching === FilterMatching.WORD
             ? phrase === contentFilter.content
             : contentFilter.matching === FilterMatching.INFIX
-                ? phrase.includes(contentFilter.content)
-                : contentFilter.matching === FilterMatching.POSTFIX
-                    ? phrase.endsWith(contentFilter.content)
-                    : phrase.startsWith(contentFilter.content);
+            ? phrase.includes(contentFilter.content)
+            : contentFilter.matching === FilterMatching.POSTFIX
+            ? phrase.endsWith(contentFilter.content)
+            : phrase.startsWith(contentFilter.content);
     }
 
     override onUserWarn(userId: string, _serv: Server, channelId: string | null, filteredContent: FilteredContent) {
