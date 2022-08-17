@@ -1,8 +1,6 @@
 import type { WSChatMessageUpdatedPayload } from "@guildedjs/guilded-api-typings";
-import { Embed as WebhookEmbed } from "@guildedjs/webhook-client";
 import { LogChannelType } from "@prisma/client";
 import { stripIndents } from "common-tags";
-import { nanoid } from "nanoid";
 
 import { FilteredContent } from "../modules/content-filter";
 import type { Context, Server } from "../typings";
@@ -35,74 +33,52 @@ export default async (packet: WSChatMessageUpdatedPayload, ctx: Context, server:
     // if we did log it in the past, update it with the new content (logMessage uses upsert)
     if (oldMessage) await ctx.dbUtil.storeMessage(message);
 
-    try {
-        let logContent = [
-            {
-                name: `Old Message`,
-                value: oldMessage
-                    ? oldMessage.content
-                        ? quoteMarkdown(oldMessage.content, 1012)
-                        : `This message does not contain text content.`
-                    : `Could not find old version of this message.`,
-            },
-            {
-                name: `New message`,
-                value: message.content ? quoteMarkdown(message.content, 1012) : `This message does not contain text content.`,
-            },
-        ];
-        if ((oldMessage?.content.length ?? 0) > 1000 || message.content.length > 1000) {
-            const uploadToBucket = await ctx.s3
-                .upload({
-                    Bucket: process.env.S3_BUCKET,
-                    Key: `logs/message-update-${message.serverId}-${message.id}.txt`,
-                    Body: Buffer.from(stripIndents`
+    let logContent = [
+        {
+            name: `Old Message`,
+            value: oldMessage
+                ? oldMessage.content
+                    ? quoteMarkdown(oldMessage.content, 1012)
+                    : `This message does not contain text content.`
+                : `Could not find old version of this message.`,
+        },
+        {
+            name: `New message`,
+            value: message.content ? quoteMarkdown(message.content, 1012) : `This message does not contain text content.`,
+        },
+    ];
+    if ((oldMessage?.content.length ?? 0) > 1000 || message.content.length > 1000) {
+        const uploadToBucket = await ctx.s3
+            .upload({
+                Bucket: process.env.S3_BUCKET,
+                Key: `logs/message-update-${message.serverId}-${message.id}.txt`,
+                Body: Buffer.from(stripIndents`
 						Old: ${oldMessage?.content ?? "None"}
 						------------------------------------
 						New: ${message.content}
 					`),
-                    ContentType: "text/plain",
-                    ACL: "public-read",
-                })
-                .promise();
-            logContent = [
-                {
-                    name: "Message Log",
-                    value: `This log is too big to display in Guilded. You can find the full log [here](${uploadToBucket.Location})`,
-                },
-            ];
-        }
-        // send embed in log channel
-        await ctx.messageUtil.sendLog(
-            updatedMessageLogChannel.channelId,
-            `Message edited`,
-            stripIndents`
+                ContentType: "text/plain",
+                ACL: "public-read",
+            })
+            .promise();
+        logContent = [
+            {
+                name: "Message Log",
+                value: `This log is too big to display in Guilded. You can find the full log [here](${uploadToBucket.Location})`,
+            },
+        ];
+    }
+    // send embed in log channel
+    await ctx.messageUtil.sendLog(
+        updatedMessageLogChannel.channelId,
+        `Message edited`,
+        stripIndents`
                 **ID:** ${inlineCode(message.id)}
                 **Author:** ${message.createdByWebhookId ? `Webhook` : `<@${message.createdBy}>`}
             `,
-            Colors.yellow,
-            message.updatedAt!,
-            logContent
-        );
-    } catch (e) {
-        const referenceId = nanoid();
-        if (e instanceof Error) {
-            console.error(e);
-            void ctx.errorHandler.send("Error in logging message update!", [
-                new WebhookEmbed()
-                    .setDescription(
-                        stripIndents`
-						Reference ID: ${inlineCode(referenceId)}
-						Server: ${inlineCode(message.serverId)}
-						Channel: ${inlineCode(message.channelId)}
-						User: ${inlineCode(message.createdBy)}
-						Error: \`\`\`
-						${e.stack ?? e.message}
-						\`\`\`
-					`
-                    )
-                    .setColor("RED"),
-            ]);
-        }
-    }
+        Colors.yellow,
+        message.updatedAt!,
+        logContent
+    );
     return void 0;
 };

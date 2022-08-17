@@ -1,8 +1,6 @@
 import type { WSChatMessageDeletedPayload } from "@guildedjs/guilded-api-typings";
-import { Embed as WebhookEmbed } from "@guildedjs/webhook-client";
 import { LogChannelType, Prisma } from "@prisma/client";
 import { stripIndents } from "common-tags";
-import { nanoid } from "nanoid";
 
 import type { Context } from "../typings";
 import { Colors } from "../utils/color";
@@ -24,68 +22,44 @@ export default async (packet: WSChatMessageDeletedPayload, ctx: Context) => {
     const oldMember = deletedMessage ? await ctx.serverUtil.getMember(deletedMessage.serverId!, deletedMessage.authorId).catch(() => null) : null;
     if (oldMember?.user.type === "bot") return;
 
-    try {
-        const logContent = [
-            {
-                name: "Content",
-                value: deletedMessage?.content
-                    ? codeBlock(deletedMessage.content.length > 1012 ? `${deletedMessage.content.slice(0, 1012)}...` : deletedMessage.content)
-                    : (deletedMessage?.embeds as Prisma.JsonArray)?.length
-                        ? `_This message contains embeds._`
-                        : `Could not find message content. This message may be older than 14 days.`,
-            },
-        ];
+    const logContent = [
+        {
+            name: "Content",
+            value: deletedMessage?.content
+                ? codeBlock(deletedMessage.content.length > 1012 ? `${deletedMessage.content.slice(0, 1012)}...` : deletedMessage.content)
+                : (deletedMessage?.embeds as Prisma.JsonArray)?.length
+                ? `_This message contains embeds._`
+                : `Could not find message content. This message may be older than 14 days.`,
+        },
+    ];
 
-        if (deletedMessage && (deletedMessage?.content.length ?? 0) > 1000) {
-            const uploadToBucket = await ctx.s3
-                .upload({
-                    Bucket: process.env.S3_BUCKET,
-                    Key: `logs/message-delete-${message.serverId}-${message.id}.txt`,
-                    Body: Buffer.from(stripIndents`
+    if (deletedMessage && (deletedMessage?.content.length ?? 0) > 1000) {
+        const uploadToBucket = await ctx.s3
+            .upload({
+                Bucket: process.env.S3_BUCKET,
+                Key: `logs/message-delete-${message.serverId}-${message.id}.txt`,
+                Body: Buffer.from(stripIndents`
 						Content: ${deletedMessage.content}
 						------------------------------------
 					`),
-                    ContentType: "text/plain",
-                    ACL: "public-read",
-                })
-                .promise();
-            logContent[0].value = `This log is too big to display in Guilded. You can find the full log [here](${uploadToBucket.Location})`;
-        }
-        // send the log channel message with the content/data of the deleted message
-        await ctx.messageUtil.sendLog(
-            deletedMessageLogChannel.channelId,
-            "Message Deleted",
-            stripIndents`
+                ContentType: "text/plain",
+                ACL: "public-read",
+            })
+            .promise();
+        logContent[0].value = `This log is too big to display in Guilded. You can find the full log [here](${uploadToBucket.Location})`;
+    }
+    // send the log channel message with the content/data of the deleted message
+    await ctx.messageUtil.sendLog(
+        deletedMessageLogChannel.channelId,
+        "Message Deleted",
+        stripIndents`
                 **ID:** ${inlineCode(message.id)}
 				**Channel:** ${inlineCode(message.channelId)}
                 ${deletedMessage ? `**Author:** ${oldMember ? `<@${oldMember.user.id}>` : "Unknown author"}` : ``}
             `,
-            Colors.red,
-            message.deletedAt,
-            logContent
-        );
-    } catch (e) {
-        // generate ID for this error, not persisted in database
-        const referenceId = nanoid();
-        // send error to the error webhook
-        if (e instanceof Error) {
-            console.error(e);
-            void ctx.errorHandler.send("Error in logging message deletion!", [
-                new WebhookEmbed()
-                    .setDescription(
-                        stripIndents`
-						Reference ID: ${inlineCode(referenceId)}
-						Server: ${inlineCode(deletedMessage?.serverId ?? "not cached")}
-						Channel: ${inlineCode(message.channelId)}
-						User: ${inlineCode(deletedMessage?.authorId ?? "not cached")}
-						Error: \`\`\`
-						${e.stack ?? e.message}
-						\`\`\`
-					`
-                    )
-                    .setColor("RED"),
-            ]);
-        }
-    }
+        Colors.red,
+        message.deletedAt,
+        logContent
+    );
     return void 0;
 };

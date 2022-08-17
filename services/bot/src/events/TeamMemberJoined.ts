@@ -1,6 +1,5 @@
 import { Embed } from "@guildedjs/embeds";
 import type { WSTeamMemberJoinedPayload } from "@guildedjs/guilded-api-typings";
-import { Embed as WebhookEmbed } from "@guildedjs/webhook-client";
 import Captcha from "@haileybot/captcha-generator";
 import { LogChannelType, Severity } from "@prisma/client";
 import { stripIndents } from "common-tags";
@@ -92,41 +91,18 @@ export default async (packet: WSTeamMemberJoinedPayload, ctx: Context, server: S
         }
     }
 
-    try {
-        // send the log channel message with the content/data of the deleted message
-        await ctx.messageUtil.sendLog(
-            memberJoinLogChannel.channelId,
-            "User Joined",
-            stripIndents`
+    // send the log channel message with the content/data of the deleted message
+    await ctx.messageUtil.sendLog(
+        memberJoinLogChannel.channelId,
+        "User Joined",
+        stripIndents`
                 **User:** <@${member.user.id}> (${inlineCode(member.user.id)})
                 **Type:** ${member.user.type ?? "user"}
 				**Account Created:** \`${FormatDate(creationDate)} ${suspicious ? "(recent)" : ""}\`
 				**Joined at:** \`${FormatDate(new Date(member.joinedAt))}\`
             `,
-            suspicious ? Colors.yellow : Colors.green,
-            member.joinedAt
-        );
-    } catch (e) {
-        // generate ID for this error, not persisted in database
-        const referenceId = nanoid();
-        // send error to the error webhook
-        if (e instanceof Error) {
-            console.error(e);
-            void ctx.errorHandler.send("Error in logging member join!", [
-                new WebhookEmbed()
-                    .setDescription(
-                        stripIndents`
-						Reference ID: ${inlineCode(referenceId)}
-						Server: ${inlineCode(packet.d.serverId)}
-						User: ${inlineCode(member.user.id)}
-						Error: \`\`\`
-						${e.stack ?? e.message}
-						\`\`\`
-					`
-                    )
-                    .setColor("RED"),
-            ]);
-        }
-    }
+        suspicious ? Colors.yellow : Colors.green,
+        member.joinedAt
+    );
     return void 0;
 };
