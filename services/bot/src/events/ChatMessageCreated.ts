@@ -1,6 +1,7 @@
 import type { WSChatMessageCreatedPayload } from "@guildedjs/guilded-api-typings";
-import { captureException } from "@sentry/node";
+import { Embed } from "@guildedjs/webhook-client";
 import { stripIndents } from "common-tags";
+import { nanoid } from "nanoid";
 
 import boolean from "../args/boolean";
 import channel from "../args/channel";
@@ -15,7 +16,7 @@ import type { CommandArgType, CommandArgument } from "../commands/Command";
 import { FilteredContent } from "../modules/content-filter";
 import type { Context, ResolvedArgs, Server, UsedMentions } from "../typings";
 import { Colors } from "../utils/color";
-import { inlineCode } from "../utils/formatters";
+import { codeBlock, inlineCode } from "../utils/formatters";
 import { roleValues } from "../utils/util";
 
 const argCast: Record<
@@ -238,11 +239,30 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context, server:
         // and the command context (raw packet, database server entry, member from API or cache)
         await command.execute(message, resolvedArgs, ctx, { packet, server, member });
     } catch (e) {
-        const eventId = captureException(e);
+        // ID for error, not persisted in database at all
+        const referenceId = nanoid();
+        if (e instanceof Error) {
+            console.error(e);
+            // send the error to the error channel
+            void ctx.errorHandler.send("Error in command usage!", [
+                new Embed()
+                    .setDescription(
+                        stripIndents`
+						Reference ID: ${inlineCode(referenceId)}
+						Server: ${inlineCode(message.serverId)}
+						Channel: ${inlineCode(message.channelId)}
+						User: ${inlineCode(message.createdBy)} (${inlineCode(member?.user.name)})
+						Error: \`\`\`${e.stack ?? e.message}\`\`\`
+					`
+                    )
+                    .addField(`Content`, codeBlock(message.content?.length > 1018 ? `${message.content.substring(0, 1018)}...` : message.content))
+                    .setColor("RED"),
+            ]);
+        }
         // notify the user that there was an error executing the command
         return ctx.messageUtil.replyWithError(
             message,
-            `This is potentially an issue on our end, please contact us and forward the following ID and error: ${inlineCode(eventId)} & ${inlineCode((e as any).message)}`
+            `This is potentially an issue on our end, please contact us and forward the following ID and error: ${inlineCode(referenceId)} & ${inlineCode((e as any).message)}`
         );
     }
 

@@ -1,5 +1,6 @@
 import Collection from "@discordjs/collection";
 import { RestManager } from "@guildedjs/rest";
+import { WebhookClient } from "@guildedjs/webhook-client";
 import { WebSocketManager } from "@guildedjs/ws";
 import { Action, PrismaClient } from "@prisma/client";
 import { S3 } from "aws-sdk";
@@ -58,6 +59,8 @@ export default class Client {
     readonly timeouts = new Collection<string, NodeJS.Timeout>();
     // global collection of all intervals within the bot so we can cancel them when the WS connection is severed
     readonly intervals = new Collection<string, NodeJS.Timer>();
+    // webhook that sends to a specific channel for errors
+    readonly errorHandler = new WebhookClient(process.env.ERROR_WEBHOOK);
     // global collection of all the bots commands (parent commands, sub commands, etc.)
     readonly commands = new Collection<string, Command>();
     // utility methods for database interactions
