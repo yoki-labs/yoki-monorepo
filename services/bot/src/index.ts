@@ -6,6 +6,7 @@ import Client from "./Client";
 import type { Command } from "./commands/Command";
 import unhandledPromiseRejection from "./events/unhandledPromiseRejection";
 import Welcome from "./events/Welcome";
+import amplitudeClient from "./utils/amplitude";
 
 // Load env variables
 config({ path: join(__dirname, "..", "..", "..", ".env") });
@@ -27,6 +28,7 @@ client.ws.emitter.on("gatewayEvent", async (event, data) => {
     const serverFromDb = await client.dbUtil.getServer(serverId);
     if (serverFromDb?.blacklisted) return void 0;
 
+    void amplitudeClient.logEvent({ event_type: event });
     return client.eventHandler[event]?.(data, client, serverFromDb);
 });
 

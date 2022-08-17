@@ -48,12 +48,11 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context, server:
     // if the message wasn't sent in a server, or the person was a bot then don't do anything
     if (message.createdByBotId || message.createdBy === ctx.userId || !message.serverId) return void 0;
 
-    void client.logEvent({ event_type: "MESSAGE_CREATED", event_properties: { serverId: message.serverId, authorId: message.createdBy } });
     const isModmailChannel = await ctx.prisma.modmailThread.findFirst({
         where: { serverId: message.serverId, userFacingChannelId: message.channelId, openerId: message.createdBy, closed: false },
     });
     if (isModmailChannel) {
-        void client.logEvent({ event_type: "MODMAIL_MESSAGE", event_properties: { serverId: message.serverId!, modmailId: isModmailChannel.id } });
+        void client.logEvent({ event_type: "MODMAIL_MESSAGE", user_id: message.createdBy, event_properties: { serverId: message.serverId!, modmailId: isModmailChannel.id } });
         void ctx.rest.router.deleteChannelMessage(message.channelId, message.id);
         const member = await ctx.serverUtil.getMember(message.serverId, message.createdBy, true, true);
         const newModmailMessage = await ctx.rest.router.createChannelMessage(isModmailChannel.modFacingChannelId, {
@@ -94,27 +93,32 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context, server:
 
         // store the message in the database
         await ctx.dbUtil.storeMessage(message).catch(console.log);
-        // scan the message for any harmful content (filter list, presets)
-        await ctx.contentFilterUtil.scanContent({
-            userId: message.createdByBotId || message.createdByWebhookId || message.createdBy,
-            text: message.content,
-            filteredContent: FilteredContent.Message,
-            channelId: message.channelId,
-            server,
-            // Filter
-            resultingAction: () => ctx.rest.router.deleteChannelMessage(message.channelId, message.id),
-        });
-        void client.logEvent({ event_type: "MESSAGE_TEXT_SCANNED", event_properties: { serverId: message.serverId, authorId: message.createdBy } });
 
+        // scan the message for any harmful content (filter list, presets)
+        void client.logEvent({ event_type: "MESSAGE_TEXT_SCAN", user_id: message.createdBy, event_properties: { serverId: message.serverId } });
+        if (server.filterEnabled)
+            await ctx.contentFilterUtil.scanContent({
+                userId: message.createdByBotId || message.createdByWebhookId || message.createdBy,
+                text: message.content,
+                filteredContent: FilteredContent.Message,
+                channelId: message.channelId,
+                server,
+                // Filter
+                resultingAction: () => ctx.rest.router.deleteChannelMessage(message.channelId, message.id),
+            });
         // Spam prevention
         if (server.filterEnabled) {
-            void client.logEvent({ event_type: "MESSAGE_SPAM_SCANNED", event_properties: { serverId: message.serverId, authorId: message.createdBy } });
+            void client.logEvent({ event_type: "MESSAGE_SPAM_SCAN", user_id: message.createdBy, event_properties: { serverId: message.serverId } });
             await ctx.spamFilterUtil.checkForMessageSpam(server, message);
         }
 
         // Invites or bad URLs
         if (server.filterEnabled || server.filterInvites) {
-            void client.logEvent({ event_type: "MESSAGE_LINKS_SCANNED", event_properties: { serverId: message.serverId, authorId: message.createdBy } });
+            void client.logEvent({
+                event_type: "MESSAGE_LINKS_SCAN",
+                user_id: message.createdBy,
+                event_properties: { serverId: message.serverId },
+            });
             await ctx.linkFilterUtil.checkLinks({
                 server,
                 userId: message.createdBy,
@@ -126,7 +130,11 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context, server:
         }
 
         if (server.premium && server.scanNSFW) {
-            void client.logEvent({ event_type: "MESSAGE_MEDIA_SCANNED", event_properties: { serverId: message.serverId, authorId: message.createdBy } });
+            void client.logEvent({
+                event_type: "MESSAGE_MEDIA_SCAN",
+                user_id: message.createdBy,
+                event_properties: { serverId: message.serverId },
+            });
             await ctx.contentFilterUtil.scanMessageMedia({ channelId: message.channelId, messageId: message.id, userId: message.createdBy, content: message.content });
         }
 
@@ -145,7 +153,7 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context, server:
     // if not a valid command, don't do anything
     if (!command) {
         const customCommand = await ctx.prisma.customTag.findFirst({ where: { serverId: message.serverId!, name: commandName } });
-        if (!customCommand) return client.logEvent({ event_type: "INVALID_COMMAND", event_properties: { serverId: message.serverId, authorId: message.createdBy } });
+        if (!customCommand) return client.logEvent({ event_type: "INVALID_COMMAND", user_id: message.createdBy, event_properties: { serverId: message.serverId } });
         return ctx.messageUtil.send(message.channelId, customCommand.content);
     }
 
@@ -158,7 +166,8 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context, server:
         if (!args[0]) {
             void client.logEvent({
                 event_type: "COMMAND_MISSING_SUBCOMMAND",
-                event_properties: { serverId: message.serverId, authorId: message.createdBy, command: command.name },
+                user_id: message.createdBy,
+                event_properties: { serverId: message.serverId, command: command.name },
             });
             const subCommandName = command.subCommands.firstKey();
             const subCommand = command.subCommands.get(subCommandName as string)!;
@@ -187,7 +196,8 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context, server:
         if (!subCommand) {
             void client.logEvent({
                 event_type: "COMMAND_INVALID_SUBCOMMAND",
-                event_properties: { serverId: message.serverId, authorId: message.createdBy, command: command.name },
+                user_id: message.createdBy,
+                event_properties: { serverId: message.serverId, command: command.name },
             });
             return ctx.messageUtil.replyWithAlert(message, `No such sub-command`, `The specified sub-command could not be found.`, {
                 fields: [
@@ -233,7 +243,8 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context, server:
             if (castArg === null || (commandArg.max && ((castArg as any).length ?? castArg) > commandArg.max)) {
                 void client.logEvent({
                     event_type: "COMMAND_BAD_ARGS",
-                    event_properties: { serverId: message.serverId, authorId: message.createdBy, command: command.name, trippedArg: commandArg },
+                    user_id: message.createdBy,
+                    event_properties: { serverId: message.serverId, command: command.name, trippedArg: commandArg },
                 });
                 return ctx.messageUtil.handleBadArg(message, prefix, commandArg, command, parentCommand);
             }
@@ -258,7 +269,8 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context, server:
             if (!userModRoles.some((role) => roleValues[role.type] >= requiredValue)) {
                 void client.logEvent({
                     event_type: "COMMAND_INVALID_USER_PERMISSIONS",
-                    event_properties: { serverId: message.serverId, authorId: message.createdBy, command: command.name },
+                    user_id: message.createdBy,
+                    event_properties: { serverId: message.serverId },
                 });
                 return ctx.messageUtil.replyWithUnpermitted(message, `Unfortunately, you are missing the ${command.requiredRole} role permission!`);
             }
@@ -267,7 +279,7 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context, server:
     }
 
     try {
-        void client.logEvent({ event_type: "COMMAND_RAN", event_properties: { serverId: message.serverId!, command: command.name } });
+        void client.logEvent({ event_type: "COMMAND_RAN", user_id: message.createdBy, event_properties: { serverId: message.serverId!, command: command.name } });
         // run the command with the message object, the casted arguments, the global context object (datbase, rest, ws),
         // and the command context (raw packet, database server entry, member from API or cache)
         await command.execute(message, resolvedArgs, ctx, { packet, server, member });

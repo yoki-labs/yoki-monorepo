@@ -5,11 +5,15 @@ import { stripIndents } from "common-tags";
 import { nanoid } from "nanoid";
 
 import type { Context } from "../typings";
+import client from "../utils/amplitude";
 import { Colors } from "../utils/color";
 import { inlineCode } from "../utils/formatters";
 
 export default async (packet: WSTeamMemberRemovedPayload, ctx: Context) => {
     const { userId, serverId, isBan, isKick } = packet.d;
+
+    if (isBan) void client.logEvent({ event_type: "MEMBER_BAN", user_id: userId });
+    else if (isBan) void client.logEvent({ event_type: "MEMBER_KICK", user_id: userId });
 
     // check if there's a log channel channel for member leaves
     const memberLeaveLogChannel = await ctx.dbUtil.getLogChannel(serverId!, LogChannelType.member_leaves);

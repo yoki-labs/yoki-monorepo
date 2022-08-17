@@ -13,7 +13,6 @@ export default async (event: WSTeamRolesUpdatedPayload, ctx: Context): Promise<v
 
     // Prevent repeation of `getCachedMember`
     const memberCaches = {};
-
     for (const memberRoleId of memberRoleIds) memberCaches[memberRoleId.userId] = await ctx.serverUtil.getCachedMember(serverId, memberRoleId.userId);
 
     // check if there's a log channel channel for message deletions
