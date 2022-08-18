@@ -18,7 +18,7 @@ const ModmailGroup: Command = {
         const newGroup = args.newGroup as string | null;
         if (!newGroup) return ctx.messageUtil.replyWithInfo(message, "This server's modmail group", commandCtx.server.modmailGroupId ?? "not set");
 
-        await ctx.prisma.server.update({ where: { id: commandCtx.server.id }, data: { modmailGroupId: newGroup } });
+        await ctx.prisma.server.update({ where: { id: commandCtx.server.id }, data: { modmailGroupId: newGroup === "null" ? null : newGroup } });
         return ctx.messageUtil.replyWithSuccess(message, `Modmail group set`, `Successfully set the modmail group to ${inlineCode(newGroup)}`);
     },
 };

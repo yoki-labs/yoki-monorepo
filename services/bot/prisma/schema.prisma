@@ -37,6 +37,7 @@ model Server {
     updatedAt                  DateTime?     @updatedAt
     modmailEnabled             Boolean       @default(false)
     modmailGroupId             String?       @db.VarChar(255)
+    modmailCategoryId          Int?
     scanNSFW                   Boolean       @default(false)
     spamFrequency              Int           @default(9)
 }
