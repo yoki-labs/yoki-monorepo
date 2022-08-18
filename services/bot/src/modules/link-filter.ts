@@ -51,7 +51,7 @@ export class LinkFilterUtil extends BaseFilterUtil {
         filteredContent: FilteredContent;
         resultingAction: () => unknown;
     }) {
-        const blacklistedUrls = server.filterEnabled ? await this.prisma.urlFilter.findMany({ where: { serverId: server.serverId } }) : null;
+        const greylistedUrls = server.filterEnabled ? await this.prisma.urlFilter.findMany({ where: { serverId: server.serverId } }) : null;
         const whitelistedInvites = server.filterInvites ? await this.prisma.inviteFilter.findMany({ where: { serverId: server.serverId } }) : null;
 
         const links = content.matchAll(this.urlRegex);
@@ -59,19 +59,34 @@ export class LinkFilterUtil extends BaseFilterUtil {
         for (const link of links) {
             const { subdomain, domain, route } = link.groups!;
 
-            // Bad URLs
-            if (server.filterEnabled && blacklistedUrls!.some((x) => x.domain === domain)) {
+            // Not .some, because severity and infraction points
+            const greylistedUrl = greylistedUrls?.find((x) => x.domain === domain);
+
+            // Bad URL
+            // && ...:
+            //   - exists(1) ^ whitelist(1) => 0
+            //   - doesn't exist(0) ^ whitelist(1) => 1
+            //   - exists(1) ^ blacklist(0) => 1
+            //   - doesn't exist(0) ^ blacklist(0) => 0
+            if (server.filterEnabled && Number(greylistedUrl !== undefined && greylistedUrl !== null) ^ Number(server.urlFilterIsWhitelist)) {
                 try {
-                    console.log("Doing resulting action");
                     // Perform resulting action, for message filtering it's deleting the original message
                     await resultingAction();
-                    console.log("Results");
                 } catch (err: any) {
                     if (err instanceof Error)
                         await this.client.errorHandler.send("Error in link filtering callback", [new Embed().setDescription(stripIndents`${err.stack}`).setColor("RED")]);
                 }
 
-                return this.dealWithUser(userId, server, channelId, filteredContent, "URL filter tripped", domain);
+                return this.dealWithUser(
+                    userId,
+                    server,
+                    channelId,
+                    filteredContent,
+                    "URL filter tripped",
+                    greylistedUrl?.infractionPoints ?? server.linkInfractionPoints,
+                    greylistedUrl?.severity ?? server.linkSeverity,
+                    domain
+                );
             }
             // No bad invites (filter invites enabled, it's guilded gg, route exists and it's none of Guilded's subdomains)
             else if (!(server.filterInvites && domain === "guilded.gg" && route && (subdomain === "www." || !subdomain))) return;
@@ -149,16 +164,14 @@ export class LinkFilterUtil extends BaseFilterUtil {
         // Detect non-whitelisted server IDs and non-this-server ID
         if (targetServerId && targetServerId !== server.serverId && !whitelisted.some((x) => x.targetServerId === targetServerId)) {
             try {
-                console.log("Doing resulting action");
                 // Perform resulting action, for message filtering it's deleting the original message
                 await resultingAction();
-                console.log("Results");
             } catch (err: any) {
                 if (err instanceof Error)
                     await this.client.errorHandler.send("Error in link filtering callback", [new Embed().setDescription(stripIndents`${err.stack}`).setColor("RED")]);
             }
 
-            return this.dealWithUser(userId, server, channelId, filteredContent, "Invite filter tripped", route);
+            return this.dealWithUser(userId, server, channelId, filteredContent, "Invite filter tripped", server.linkInfractionPoints, server.linkSeverity, route);
         }
     }
 
@@ -168,7 +181,7 @@ export class LinkFilterUtil extends BaseFilterUtil {
             return this.client.messageUtil.sendWarningBlock(
                 channelId!,
                 `Stop spamming`,
-                `**Alert:** <@${userId}>, you have posted a blacklisted domain or non-whitelisted invite to a server. This is a warning for you to not do it again, otherwise moderation actions may be taken against you.`,
+                `**Alert:** <@${userId}>, you have posted a blacklisted/non-whitelisted domain or invite in this server. This is a warning for you to not do it again, otherwise moderation actions may be taken against you.`,
                 undefined,
                 { isPrivate: true }
             );
@@ -182,7 +195,7 @@ export class LinkFilterUtil extends BaseFilterUtil {
             return this.client.messageUtil.sendValueBlock(
                 channelId!,
                 `:mute: You have been muted`,
-                `**Alert:** <@${userId}>, you have been muted for posting a blacklisted domain or non-whitelisted invite to a server.`,
+                `**Alert:** <@${userId}>, you have been muted for posting a blacklisted/non-whitelisted domain or invite in this server.`,
                 Colors.red,
                 undefined,
                 { isPrivate: true }

@@ -4,6 +4,8 @@ import { RoleType } from "../../typings";
 import { Category } from "../Category";
 import type { Command } from "../Command";
 import FilterOnMods from "./FilterOnMods.command";
+import LinkSeverity from "./LinkSeverity";
+import UrlWhitelist from "./UrlWhitelist.command";
 import LogChannel from "./LogChannel.command";
 import ModmailGroup from "./ModmailGroup.command";
 // import Infraction from "./Infraction.command";
@@ -24,7 +26,9 @@ const subCommands = new Collection<string, Command>()
     .set("modmailgroup", ModmailGroup)
     .set("threshold", Threshold)
     .set("spamfrequency", SpamFrequency)
-    .set("spaminfractions", SpamInfractions);
+    .set("spaminfractions", SpamInfractions)
+    .set("urlwhitelist", UrlWhitelist)
+    .set("linkseverity", LinkSeverity);
 
 const Config: Command = {
     name: "config",

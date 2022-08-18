@@ -1,6 +1,6 @@
 import type { ChatMessagePayload } from "@guildedjs/guilded-api-typings";
 
-import type { Server } from "../typings";
+import { Server, Severity } from "../typings";
 import { Colors } from "../utils/color";
 import BaseFilterUtil from "./base-filter";
 import { FilteredContent } from "./content-filter";
@@ -31,7 +31,7 @@ export class SpamFilterUtil extends BaseFilterUtil {
             this.messageCounter.delete(key);
 
             // Warn/mute/kick/ban
-            await this.dealWithUser(userId, server, channelId, FilteredContent.Message, `Spam filter tripped.`);
+            await this.dealWithUser(userId, server, channelId, FilteredContent.Message, `Spam filter tripped.`, server.spamInfractionPoints, Severity.WARN);
         }
     }
 

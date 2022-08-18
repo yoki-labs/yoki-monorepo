@@ -32,7 +32,16 @@ export default abstract class BaseFilterUtil extends Util {
         [Severity.WARN]: this.onUserWarnBinded,
     };
 
-    async dealWithUser(userId: string, server: Server, channelId: string | null, filteredContent: FilteredContent, reason: string, triggerContent: string | null = null) {
+    async dealWithUser(
+        userId: string,
+        server: Server,
+        channelId: string | null,
+        filteredContent: FilteredContent,
+        reason: string,
+        infractionPoints: number,
+        fallbackSeverity: Severity,
+        triggerContent: string | null = null
+    ) {
         // By now, we assume the member has spammed
         // Get the member from cache or API
         const member = await this.client.serverUtil.getMember(server.serverId, userId);
@@ -48,7 +57,7 @@ export default abstract class BaseFilterUtil extends Util {
 
         const memberExceeds = await this.getMemberExceedsThreshold(server, userId, server.spamInfractionPoints);
 
-        const actionType = memberExceeds || Severity.WARN;
+        const actionType = memberExceeds || fallbackSeverity;
 
         await this.dbUtil.emitAction({
             type: actionType,
@@ -57,7 +66,7 @@ export default abstract class BaseFilterUtil extends Util {
             channelId,
             targetId: userId,
             executorId: this.client.userId!,
-            infractionPoints: server.spamInfractionPoints,
+            infractionPoints,
             triggerContent,
             expiresAt: actionType === Severity.MUTE ? new Date(Date.now() + 1000 * 60 * 60 * 12) : null,
         });
