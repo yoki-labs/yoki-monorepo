@@ -6,7 +6,7 @@ import type { Command } from "../Command";
 
 const ModmailCategory: Command = {
     name: "config-modmailcategory",
-    description: "Add a mod role.",
+    description: "Set the category where new modmail channels are created.",
     subCommand: true,
     usage: "[newCategory]",
     examples: ["", "532372"],

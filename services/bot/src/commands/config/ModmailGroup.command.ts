@@ -6,7 +6,7 @@ import type { Command } from "../Command";
 
 const ModmailGroup: Command = {
     name: "config-modmailgroup",
-    description: "Add a mod role.",
+    description: "Set the modmail group where new channels are created.",
     subCommand: true,
     usage: "[newGroup]",
     examples: ["", "3GMgagKd"],
