@@ -6,7 +6,6 @@ import { nanoid } from "nanoid";
 
 import { FilteredContent } from "../modules/content-filter";
 import type { Context, Server } from "../typings";
-import client from "../utils/amplitude";
 import { Colors } from "../utils/color";
 import { inlineCode, quoteMarkdown } from "../utils/formatters";
 
@@ -15,10 +14,11 @@ export default async (packet: WSChatMessageUpdatedPayload, ctx: Context, server:
 
     // if this message isn't updated in a server, or if the author is a bot, ignore
     if (message.createdByBotId || message.createdBy === ctx.userId || !message.serverId) return void 0;
+    void ctx.amp.logEvent({ event_type: "MESSAGE_UPDATE", user_id: message.createdBy, event_properties: { serverId: message.serverId! } });
+
     const member = await ctx.serverUtil.getMember(packet.d.serverId, packet.d.message.createdBy).catch(() => null);
     if (member?.user.type === "bot") return;
 
-    void client.logEvent({ event_type: "MESSAGE_TEXT_SCAN", user_id: message.createdBy, event_properties: { serverId: message.serverId } });
     // scan the updated message content
     await ctx.contentFilterUtil.scanContent({
         userId: message.createdByBotId || message.createdByWebhookId || message.createdBy,
@@ -37,7 +37,7 @@ export default async (packet: WSChatMessageUpdatedPayload, ctx: Context, server:
     const oldMessage = await ctx.dbUtil.getMessage(message.channelId, message.id);
     // if we did log it in the past, update it with the new content (logMessage uses upsert)
     if (oldMessage) {
-        void client.logEvent({ event_type: "MESSAGE_UPDATE_DB", user_id: message.createdBy, event_properties: { serverId: message.serverId } });
+        void ctx.amp.logEvent({ event_type: "MESSAGE_UPDATE_DB", user_id: message.createdBy, event_properties: { serverId: message.serverId } });
         await ctx.dbUtil.storeMessage(message);
     }
 

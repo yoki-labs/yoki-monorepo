@@ -7,14 +7,14 @@ import { FilteredContent } from "./content-filter";
 
 export class SpamFilterUtil extends BaseFilterUtil {
     readonly spamPeriod = 5000;
-
-    messageCounter = new Map<string, { count: number; timeout: NodeJS.Timeout }>();
+    readonly messageCounter = new Map<string, { count: number; timeout: NodeJS.Timeout }>();
 
     checkForMessageSpam(server: Server, message: ChatMessagePayload) {
         return this.checkForSpam(server, message.createdBy, message.channelId);
     }
 
     async checkForSpam(server: Server, userId: string, channelId: string) {
+        void this.client.amp.logEvent({ event_type: "SPAM_SCAN", user_id: userId, event_properties: { serverId: server.serverId } });
         // Only do it for a specific server
         const key = `${server.serverId}:${userId}`;
 

@@ -2,7 +2,6 @@ import type { WSTeamMemberUpdatedPayload } from "@guildedjs/guilded-api-typings"
 
 import { FilteredContent } from "../modules/content-filter";
 import type { Context, Server } from "../typings";
-import client from "../utils/amplitude";
 
 export default async (event: WSTeamMemberUpdatedPayload, ctx: Context, server: Server) => {
     const {
@@ -17,7 +16,7 @@ export default async (event: WSTeamMemberUpdatedPayload, ctx: Context, server: S
     // if the member's nickname is updated, scan it for any harmful content
     if (nickname) {
         if (["!", "."].some((x) => nickname.trim().startsWith(x))) {
-            void client.logEvent({ event_type: "HOISTER_RENAMED_JOIN", user_id: userId, event_properties: { serverId } });
+            void ctx.amp.logEvent({ event_type: "HOISTER_RENAMED_JOIN", user_id: userId, event_properties: { serverId } });
             return ctx.rest.router.updateMemberNickname(event.d.serverId, event.d.userInfo.id, nickname.slice(1).trim() || "NON-HOISTING NAME");
         }
 

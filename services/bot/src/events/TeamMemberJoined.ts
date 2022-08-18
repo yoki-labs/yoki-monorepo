@@ -7,7 +7,6 @@ import { stripIndents } from "common-tags";
 import { nanoid } from "nanoid";
 
 import type { Context, Server } from "../typings";
-import client from "../utils/amplitude";
 import { Colors } from "../utils/color";
 import { inlineCode } from "../utils/formatters";
 import { FormatDate, suspicious as sus } from "../utils/util";
@@ -16,13 +15,13 @@ export default async (packet: WSTeamMemberJoinedPayload, ctx: Context, server: S
     const { member, serverId } = packet.d;
 
     if (["!", "."].some((x) => member.user.name.trim().startsWith(x))) {
-        void client.logEvent({ event_type: "HOISTER_RENAMED_JOIN", user_id: member.user.id, event_properties: { serverId: packet.d.serverId } });
+        void ctx.amp.logEvent({ event_type: "HOISTER_RENAMED_JOIN", user_id: member.user.id, event_properties: { serverId: packet.d.serverId } });
         await ctx.rest.router.updateMemberNickname(packet.d.serverId, packet.d.member.user.id, packet.d.member.user.name.slice(1).trim() || "NON-HOISTING NAME");
     }
 
     // Re-add mute
     if (server.muteRoleId && (await ctx.prisma.action.findFirst({ where: { serverId, targetId: member.user.id, type: Severity.MUTE, expired: false } }))) {
-        void client.logEvent({ event_type: "MEMBER_REMUTE_JOIN", user_id: member.user.id, event_properties: { serverId: packet.d.serverId } });
+        void ctx.amp.logEvent({ event_type: "MEMBER_REMUTE_JOIN", user_id: member.user.id, event_properties: { serverId: packet.d.serverId } });
         await ctx.rest.router.assignRoleToMember(serverId, member.user.id, server.muteRoleId);
     }
 
@@ -34,12 +33,12 @@ export default async (packet: WSTeamMemberJoinedPayload, ctx: Context, server: S
     const userId = packet.d.member.user.id;
 
     if (server.antiRaidEnabled && server.antiRaidAgeFilter && Date.now() - new Date(packet.d.member.user.createdAt).getTime() <= server.antiRaidAgeFilter) {
-        void client.logEvent({ event_type: "FRESH_ACCOUNT_JOIN", user_id: member.user.id, event_properties: { serverId: packet.d.serverId } });
+        void ctx.amp.logEvent({ event_type: "FRESH_ACCOUNT_JOIN", user_id: member.user.id, event_properties: { serverId: packet.d.serverId } });
         switch (server.antiRaidResponse ?? "KICK") {
             case "CAPTCHA": {
                 if (!server.antiRaidChallengeChannel) return;
                 let userCaptcha = await ctx.prisma.captcha.findFirst({ where: { serverId, triggeringUser: userId, solved: false } });
-                void client.logEvent({ event_type: "MEMBER_CAPTCHA_JOIN", user_id: member.user.id, event_properties: { serverId: packet.d.serverId } });
+                void ctx.amp.logEvent({ event_type: "MEMBER_CAPTCHA_JOIN", user_id: member.user.id, event_properties: { serverId: packet.d.serverId } });
                 if (!userCaptcha) {
                     const captcha = new Captcha();
                     const id = nanoid();
@@ -77,7 +76,7 @@ export default async (packet: WSTeamMemberJoinedPayload, ctx: Context, server: S
                 break;
             }
             case "KICK": {
-                void client.logEvent({ event_type: "MEMBER_KICKED_JOIN", user_id: member.user.id, event_properties: { serverId: packet.d.serverId } });
+                void ctx.amp.logEvent({ event_type: "MEMBER_KICKED_JOIN", user_id: member.user.id, event_properties: { serverId: packet.d.serverId } });
                 await ctx.rest.router.kickMember(packet.d.serverId, packet.d.member.user.id);
 
                 // Add this action to the database

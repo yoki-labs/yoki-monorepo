@@ -3,7 +3,6 @@ import { Action, LogChannelType } from "@prisma/client";
 import { stripIndents } from "common-tags";
 
 import type Client from "../Client";
-import amplitudeClient from "../utils/amplitude";
 import { inlineCode } from "../utils/formatters";
 import { FormatDate } from "../utils/util";
 
@@ -11,7 +10,7 @@ export default async (data: Action & { reasonMetaData?: string }, client: Client
     const modLogChannel = await client.dbUtil.getLogChannel(data.serverId, LogChannelType.mod_actions);
     if (!modLogChannel) return;
 
-    void amplitudeClient.logEvent({ event_type: "MEMBER_ACTION", user_id: data.executorId, event_properties: { serverId: data.serverId, targetId: data.targetId } });
+    void client.amp.logEvent({ event_type: "MEMBER_ACTION", user_id: data.executorId, event_properties: { serverId: data.serverId, targetId: data.targetId } });
     const message = await client.messageUtil.send(
         modLogChannel.channelId,
         new Embed()

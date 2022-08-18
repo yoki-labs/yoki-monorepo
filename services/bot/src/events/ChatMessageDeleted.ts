@@ -5,7 +5,6 @@ import { stripIndents } from "common-tags";
 import { nanoid } from "nanoid";
 
 import type { Context } from "../typings";
-import client from "../utils/amplitude";
 import { Colors } from "../utils/color";
 import { codeBlock, inlineCode } from "../utils/formatters";
 
@@ -21,7 +20,7 @@ export default async (packet: WSChatMessageDeletedPayload, ctx: Context) => {
 
     // mark this message as deleted if it's in the database, that way our runner can clear this message from the database after two weeks
     if (deletedMessage) {
-        void client.logEvent({ event_type: "MESSAGE_DELETE_DB", user_id: deletedMessage.authorId, event_properties: { serverId: message.serverId! } });
+        void ctx.amp.logEvent({ event_type: "MESSAGE_DELETE_DB", user_id: deletedMessage.authorId, event_properties: { serverId: message.serverId! } });
         await ctx.prisma.message.updateMany({ where: { messageId: deletedMessage.messageId }, data: { deletedAt: packet.d.message.deletedAt } });
     }
     // if there is a database entry for the message, get the member from the server so we can get their name and roles etc.

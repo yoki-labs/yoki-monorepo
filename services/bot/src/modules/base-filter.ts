@@ -5,8 +5,6 @@ import type { Server } from "../typings";
 import type { FilteredContent } from "./content-filter";
 
 export default abstract class BaseFilterUtil extends Util {
-    onUserWarnBinded = this.onUserWarn.bind(this);
-
     // An object mapping the Action type -> Action punishment
     // Easy way for us to organize punishments into reusable code
     readonly severityAction: Record<
@@ -29,7 +27,7 @@ export default abstract class BaseFilterUtil extends Util {
                 return this.onUserMute(userId, server, channelId, filteredContent);
             }
         },
-        [Severity.WARN]: this.onUserWarnBinded,
+        [Severity.WARN]: this.onUserWarn.bind(this),
     };
 
     async dealWithUser(userId: string, server: Server, channelId: string | null, filteredContent: FilteredContent, reason: string, triggerContent: string | null = null) {

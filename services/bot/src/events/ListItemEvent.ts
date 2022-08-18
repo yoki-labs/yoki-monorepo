@@ -2,7 +2,6 @@ import type { WSListItemCreated } from "@guildedjs/guilded-api-typings";
 
 import { FilteredContent } from "../modules/content-filter";
 import type { Context, Server } from "../typings";
-import client from "../utils/amplitude";
 
 export default async (event: WSListItemCreated, ctx: Context, server: Server) => {
     const {
@@ -10,7 +9,7 @@ export default async (event: WSListItemCreated, ctx: Context, server: Server) =>
     } = event.d;
 
     // If it's a thread
-    void client.logEvent({ event_type: "LIST_ITEM_SCAN", user_id: createdBy, event_properties: { serverId } });
+    void ctx.amp.logEvent({ event_type: "LIST_ITEM_SCAN", user_id: createdBy, event_properties: { serverId } });
     if (server.filterEnabled)
         return ctx.contentFilterUtil.scanContent({
             userId: createdBy,

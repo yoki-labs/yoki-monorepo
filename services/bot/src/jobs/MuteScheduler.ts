@@ -1,5 +1,4 @@
 import { Action, Severity } from "../typings";
-import client from "../utils/amplitude";
 import { Scheduler } from "./Scheduler";
 
 /** scheduler that clears expired cases */
@@ -55,7 +54,7 @@ export class MuteScheduler extends Scheduler<Action> {
         console.log(`Sweeping mutes, ${expiredCases.length} case(s) found expired. IDS: ${expiredCases.map((x) => x.id).join(", ")}`);
         // go through all expired cases
         for (const action of expiredCases) {
-            void client.logEvent({ event_type: "MUTE_EXPIRE", user_id: action.targetId, event_properties: { executorId: action.executorId } });
+            void this.client.amp.logEvent({ event_type: "MUTE_EXPIRE", user_id: action.targetId, event_properties: { executorId: action.executorId } });
             // how long until the case expires in ms
             const timeout = new Date(action.expiresAt!).getTime() - Date.now();
             this.client.timeouts.set(
