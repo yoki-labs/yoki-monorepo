@@ -1,3 +1,4 @@
+import type Collection from "@discordjs/collection";
 import { Embed } from "@guildedjs/embeds";
 import type { ChatMessagePayload, EmbedField, EmbedPayload, RESTPostChannelMessagesBody } from "@guildedjs/guilded-api-typings";
 import { stripIndents } from "common-tags";
@@ -9,6 +10,27 @@ import { BotImages, StateImages } from "../utils/images";
 import { Util } from "./util";
 
 export class MessageUtil extends Util {
+    createSubCommandFields(subCommands: Collection<string, Command>): EmbedField[] {
+        const allSubCommands = subCommands.map((x) => `${inlineCode(x.subName!)}\n${x.description}`);
+
+        const halfLength = Math.round(allSubCommands.length / 2);
+        const half = allSubCommands.slice(0, halfLength);
+        const otherHalf = allSubCommands.slice(halfLength, allSubCommands.length);
+
+        return [
+            {
+                name: "Sub-commands",
+                value: half.join("\n\n"),
+                inline: true,
+            },
+            {
+                name: "",
+                value: otherHalf.join("\n\n"),
+                inline: true,
+            },
+        ];
+    }
+
     // Send a message using either string, embed object, or raw object
     send(channelId: string, content: string | RESTPostChannelMessagesBody | Embed) {
         return this.rest.router
@@ -26,7 +48,8 @@ export class MessageUtil extends Util {
         return this.replyWithAlert(
             message,
             `Incorrect argument`,
-            `Sorry, but the usage of argument ${inlineCode(commandArg.name)} was not correct. Was expecting a ${commandArg.type}${commandArg.max ? ` with the limit of ${commandArg.max}` : ""
+            `Sorry, but the usage of argument ${inlineCode(commandArg.name)} was not correct. Was expecting a ${commandArg.type}${
+                commandArg.max ? ` with the limit of ${commandArg.max}` : ""
             }.`,
             {
                 fields: [

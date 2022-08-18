@@ -6,7 +6,7 @@ import type { Command } from "../Command";
 const LinkSeverity: Command = {
     name: "link-url-linkinfraction",
     subName: "linkinfraction",
-    description: "Sets what to do and how much infraction points to give when non-whitelisted URL or invite is posted",
+    description: "Sets severity and infraction points of non-whitelisted links.",
     usage: "<severity> <infraction points>",
     examples: ["warn 5"],
     subCommand: true,

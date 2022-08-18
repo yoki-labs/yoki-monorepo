@@ -7,7 +7,7 @@ import type { Command } from "../Command";
 
 const Threshold: Command = {
     name: "config-threshold",
-    description: "Sets how many infraction points are required for each moderation severity.",
+    description: "Sets severity's infraction point requirement.",
     usage: "<severity> <infraction points required>",
     examples: ["mute 20"],
     subCommand: true,
