@@ -6,7 +6,7 @@ import { Category } from "../Category";
 import type { Command } from "../Command";
 
 const Close: Command = {
-    name: "modmail-close",
+    name: "close",
     subName: "close",
     description: "Close a modmail thread",
     examples: [""],
@@ -32,12 +32,7 @@ const Close: Command = {
 						Created At: ${FormatDate(isCurrentChannelModmail.createdAt)}
 						-------------
 
-						${modmailMessages
-                            .map(
-                                (x) =>
-                                    `[${x.authorId}][${FormatDate(x.createdAt)}] ${x.content}`
-                            )
-                            .join("\n")}
+						${modmailMessages.map((x) => `[${x.authorId}][${FormatDate(x.createdAt)}] ${x.content}`).join("\n")}
 					`),
                     ContentType: "text/plain",
                     ACL: "public-read",
