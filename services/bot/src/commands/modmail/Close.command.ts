@@ -1,6 +1,7 @@
 import { stripIndents } from "common-tags";
 
 import { LogChannelType, RoleType } from "../../typings";
+import { Colors } from "../../utils/color";
 import { FormatDate } from "../../utils/util";
 import { Category } from "../Category";
 import type { Command } from "../Command";
@@ -45,6 +46,19 @@ const Close: Command = {
 				`
             );
         }
+
+        await ctx.rest.router.createChannelMessage(isCurrentChannelModmail.userFacingChannelId, {
+            embeds: [
+                {
+                    description: stripIndents`<@${isCurrentChannelModmail.openerId}>
+						This ticket has now been closed.
+					`,
+                    color: Colors.blue,
+                    timestamp: new Date().toISOString(),
+                },
+            ],
+            isPrivate: true,
+        });
         await ctx.prisma.modmailThread.update({ where: { id: isCurrentChannelModmail.id }, data: { closed: true } });
         return ctx.rest.router.deleteChannel(message.channelId);
     },
