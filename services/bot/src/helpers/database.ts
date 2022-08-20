@@ -1,5 +1,5 @@
 import type { ChatMessagePayload } from "@guildedjs/guilded-api-typings";
-import type { FilterMatching, InviteFilter, Prisma, Severity, UrlFilter } from "@prisma/client";
+import { FilterMatching, InviteFilter, PresetType, Prisma, Severity, UrlFilter } from "@prisma/client";
 import { nanoid } from "nanoid";
 
 import { Action, ContentFilter, LogChannelType, Server } from "../typings";
@@ -46,16 +46,44 @@ export class DatabaseUtil extends Util {
         return this.prisma.server.updateMany({ data: { filterEnabled: false }, where: { serverId } });
     }
 
-    getEnabledPresets(serverId: string) {
+    getEnabledPresets(serverId: string, type: PresetType) {
+        return this.prisma.preset.findMany({ where: { serverId, type } });
+    }
+
+    getAllEnabledPresets(serverId: string) {
         return this.prisma.preset.findMany({ where: { serverId } });
     }
 
-    enablePreset(serverId: string, preset: string, severity: Severity) {
-        return this.prisma.preset.create({ data: { serverId, preset, severity } });
+    enablePreset(serverId: string, preset: string, severity: Severity, type: PresetType) {
+        return this.prisma.preset.create({ data: { serverId, preset, severity, type } });
     }
 
-    disablePreset(serverId: string, preset: string) {
-        return this.prisma.preset.deleteMany({ where: { serverId, preset } });
+    disablePreset(serverId: string, preset: string, type: PresetType) {
+        return this.prisma.preset.deleteMany({ where: { serverId, preset, type } });
+    }
+
+    getEnabledWordPresets(serverId: string) {
+        return this.getEnabledPresets(serverId, PresetType.WORD);
+    }
+
+    enableWordPreset(serverId: string, preset: string, severity: Severity) {
+        return this.enablePreset(serverId, preset, severity, PresetType.WORD);
+    }
+
+    disableWordPreset(serverId: string, preset: string) {
+        return this.disablePreset(serverId, preset, PresetType.WORD);
+    }
+
+    getEnabledLinkPresets(serverId: string) {
+        return this.getEnabledPresets(serverId, PresetType.LINK);
+    }
+
+    enableLinkPreset(serverId: string, preset: string, severity: Severity) {
+        return this.enablePreset(serverId, preset, severity, PresetType.LINK);
+    }
+
+    disableLinkPreset(serverId: string, preset: string) {
+        return this.disablePreset(serverId, preset, PresetType.LINK);
     }
 
     getMessage(channelId: string, messageId: string) {

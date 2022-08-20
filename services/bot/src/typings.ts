@@ -38,3 +38,9 @@ export declare interface PresetPatternObject {
     _: PresetPattern[];
 }
 export type PresetPattern = string | string[] | PresetPatternObject;
+
+export declare interface PresetLink {
+    domain: string;
+    subdomain?: string;
+    route?: string[];
+}

@@ -1,10 +1,11 @@
 import { Embed } from "@guildedjs/webhook-client";
-import type { InviteFilter } from "@prisma/client";
+import type { InviteFilter, Preset } from "@prisma/client";
 import { stripIndents } from "common-tags";
 import fetch from "node-fetch";
 
-import type { Server } from "../typings";
+import type { PresetLink, Server } from "../typings";
 import { Colors } from "../utils/color";
+import { urlPresets } from "../utils/presets";
 import { isHashId } from "../utils/util";
 import BaseFilterUtil from "./base-filter";
 import { FilteredContent } from "./content-filter";
@@ -36,12 +37,15 @@ export class LinkFilterUtil extends BaseFilterUtil {
         "matchmaking",
     ];
 
+    readonly presets = urlPresets;
+
     async checkLinks({
         server,
         userId,
         channelId,
         content,
         filteredContent,
+        presets,
         resultingAction,
     }: {
         server: Server;
@@ -49,15 +53,19 @@ export class LinkFilterUtil extends BaseFilterUtil {
         channelId: string;
         content: string;
         filteredContent: FilteredContent;
+        presets?: Preset[];
         resultingAction: () => unknown;
     }) {
         const greylistedUrls = server.filterEnabled ? await this.prisma.urlFilter.findMany({ where: { serverId: server.serverId } }) : null;
+        const enabledPresets = presets ?? (await this.dbUtil.getEnabledLinkPresets(server.serverId));
         const whitelistedInvites = server.filterInvites ? await this.prisma.inviteFilter.findMany({ where: { serverId: server.serverId } }) : null;
 
+        const presetLinks = enabledPresets.map((x) => this.presets[x.preset]).flat();
         const links = content.matchAll(this.urlRegex);
 
         for (const link of links) {
-            const { subdomain, domain, route } = link.groups!;
+            const groups = link.groups! as { subdomain?: string; domain: string; route?: string };
+            const { domain, subdomain, route } = groups;
 
             // Not .some, because severity and infraction points
             const greylistedUrl = greylistedUrls?.find((x) => x.domain === domain);
@@ -68,7 +76,9 @@ export class LinkFilterUtil extends BaseFilterUtil {
             //   - doesn't exist(0) ^ whitelist(1) => 1
             //   - exists(1) ^ blacklist(0) => 1
             //   - doesn't exist(0) ^ blacklist(0) => 0
-            if (server.filterEnabled && Number(greylistedUrl !== undefined && greylistedUrl !== null) ^ Number(server.urlFilterIsWhitelist)) {
+            const badUrl = server.filterEnabled && Number(greylistedUrl !== undefined && greylistedUrl !== null) ^ Number(server.urlFilterIsWhitelist);
+
+            if (badUrl || presetLinks.some((x) => this.matchesPresetLink(x, groups))) {
                 try {
                     // Perform resulting action, for message filtering it's deleting the original message
                     await resultingAction();
@@ -149,6 +159,21 @@ export class LinkFilterUtil extends BaseFilterUtil {
                 await this.checkServerId(server, userId, channelId, filteredContent, targetServerId, whitelistedInvites!, route, resultingAction);
             }
         }
+    }
+
+    matchesPresetLink(presetLink: PresetLink, { subdomain, domain, route }: { subdomain?: string; domain: string; route?: string }) {
+        const matchesSubdomain = presetLink.subdomain === undefined || subdomain === presetLink.subdomain;
+        const matchesRoute = presetLink.route === undefined || (route !== undefined && this.matchesRoute(route, presetLink.route));
+        return domain === presetLink.domain && matchesSubdomain && matchesRoute;
+    }
+
+    matchesRoute(route: string, expectedRoute: string[]) {
+        return (
+            route
+                .split("/")
+                .slice(1, expectedRoute.length + 1)
+                .join("/") === expectedRoute.join("/")
+        );
     }
 
     async checkServerId(
