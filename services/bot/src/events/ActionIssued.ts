@@ -18,10 +18,8 @@ export default async (data: Action & { reasonMetaData?: string }, client: Client
 					**Target:** <@${data.targetId}>
 					**Type:** ${inlineCode(data.type)}
 					**Reason:** ${data.reason ? inlineCode(data.reason) : "No reason provided."}  ${data.reasonMetaData ?? ""}
-					${data.expiresAt
-                        ? `**Expiration:** ${inlineCode(FormatDate(data.expiresAt))}`
-                        : ""
-                    }
+					**Mod:** <@${data.executorId}>
+					${data.expiresAt ? `**Expiration:** ${inlineCode(FormatDate(data.expiresAt))}` : ""}
 				`
             )
             .setTimestamp()
