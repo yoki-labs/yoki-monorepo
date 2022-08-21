@@ -15,20 +15,17 @@ export default async (packet: WSTeamMemberRemovedPayload, ctx: Context) => {
     const memberLeaveLogChannel = await ctx.dbUtil.getLogChannel(serverId!, LogChannelType.member_leaves);
     if (!memberLeaveLogChannel) return void 0;
 
-    const action = isBan ? "Banned" : isKick ? "Kicked" : "Left";
+    const action = isBan ? "been banned from" : isKick ? "been kicked out from" : "left";
 
     try {
         // send the log channel message with the content/data of the deleted message
-        await ctx.messageUtil.sendLog(
-            memberLeaveLogChannel.channelId,
-            `User Left`,
-            stripIndents`
-                **User:** <@${userId}> (${inlineCode(userId)})
-                ${action ? `**Action Type:** ${action}` : ""}
-            `,
-            Colors.red,
-            new Date().toISOString()
-        );
+        await ctx.messageUtil.sendLog({
+            where: memberLeaveLogChannel.channelId,
+            title: `User Left`,
+            description: `<@${userId}> (${inlineCode(userId)}) has ${action} the server.`,
+            color: Colors.red,
+            occurred: new Date().toISOString(),
+        });
     } catch (e) {
         // generate ID for this error, not persisted in database
         const referenceId = nanoid();
@@ -51,5 +48,8 @@ export default async (packet: WSTeamMemberRemovedPayload, ctx: Context) => {
             ]);
         }
     }
+
+    console.log(`Clearing cache of the user ${userId} in server ${serverId}`);
+    await ctx.serverUtil.removeMemberCache(serverId, userId);
     return void 0;
 };

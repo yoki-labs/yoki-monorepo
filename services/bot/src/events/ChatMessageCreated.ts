@@ -169,8 +169,10 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context, server:
                     {
                         name: "Example",
                         value: stripIndents`
-                                        ${prefix}${commandName} ${command.subCommands.firstKey()}
-                                    `,
+                            \`\`\`md
+                            ${prefix}${commandName} ${command.subCommands.firstKey()}
+                            \`\`\`
+                        `,
                     },
                 ],
             });

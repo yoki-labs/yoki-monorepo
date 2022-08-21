@@ -39,7 +39,9 @@ const Eval: Command = {
     usage: "",
     devOnly: true,
     args: [{ type: "rest", name: "code" }],
-    execute: async (message, args, ctx, _commandCtx) => {
+    // @ts-ignore _ causes italics, which get turned to *
+    // eslint-disable-next-line unused-imports/no-unused-vars
+    execute: async (message, args, ctx, commandCtx) => {
         const code = args.code as string;
         console.log(code);
         if (!code) return ctx.messageUtil.replyWithAlert(message, `Code needed`, `Gotta give me something to eval there, chief.`);

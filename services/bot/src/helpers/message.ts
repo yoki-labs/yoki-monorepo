@@ -92,14 +92,30 @@ export class MessageUtil extends Util {
         return this.sendValueBlock(channelId, title, description, color, { thumbnail: thumbnail ? { url: thumbnail as string } : undefined, ...embedPartial }, messagePartial);
     }
 
-    sendLog(channelId: string, title: string, description: string, color: number, occurred: string, fields?: EmbedField[]) {
-        return this.send(channelId, {
+    sendLog({
+        where,
+        title,
+        description,
+        color,
+        occurred,
+        additionalInfo,
+        fields,
+    }: {
+        where: string;
+        title: string;
+        description: string;
+        color: number;
+        occurred: string;
+        additionalInfo?: string;
+        fields?: EmbedField[];
+    }) {
+        return this.send(where, {
             embeds: [
                 {
                     title,
                     description,
                     color,
-                    fields,
+                    fields: additionalInfo ? (fields ?? []).concat({ name: "Additional Info", value: additionalInfo }) : fields,
                     timestamp: occurred,
                 },
             ],

@@ -52,6 +52,10 @@ export class ServerUtil extends Util {
             { expire: 900 }
         );
     }
+
+    removeMemberCache(serverId: string, userId: string) {
+        return this.cache.del(buildMemberKey(serverId, userId));
+    }
 }
 
 export const buildMemberKey = (serverId: string, memberId: string) => `member-${serverId}-${memberId}`;

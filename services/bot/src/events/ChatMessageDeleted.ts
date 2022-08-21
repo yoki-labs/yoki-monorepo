@@ -31,8 +31,8 @@ export default async (packet: WSChatMessageDeletedPayload, ctx: Context) => {
                 value: deletedMessage?.content
                     ? codeBlock(deletedMessage.content.length > 1012 ? `${deletedMessage.content.slice(0, 1012)}...` : deletedMessage.content)
                     : (deletedMessage?.embeds as Prisma.JsonArray)?.length
-                        ? `_This message contains embeds._`
-                        : `Could not find message content. This message may be older than 14 days.`,
+                    ? `_This message contains embeds._`
+                    : `Could not find message content. This message may be older than 14 days.`,
             },
         ];
 
@@ -52,18 +52,16 @@ export default async (packet: WSChatMessageDeletedPayload, ctx: Context) => {
             logContent[0].value = `This log is too big to display in Guilded. You can find the full log [here](${uploadToBucket.Location})`;
         }
         // send the log channel message with the content/data of the deleted message
-        await ctx.messageUtil.sendLog(
-            deletedMessageLogChannel.channelId,
-            "Message Deleted",
-            stripIndents`
-                **ID:** ${inlineCode(message.id)}
-				**Channel:** ${inlineCode(message.channelId)}
-                ${deletedMessage ? `**Author:** ${oldMember ? `<@${oldMember.user.id}>` : "Unknown author"}` : ``}
-            `,
-            Colors.red,
-            message.deletedAt,
-            logContent
-        );
+        await ctx.messageUtil.sendLog({
+            where: deletedMessageLogChannel.channelId,
+            title: "Message Removed",
+            description: `${deletedMessage && oldMember ? `<@${oldMember.user.id}> (${inlineCode(oldMember.user.id)})` : "Unknown author"} deleted the message ${inlineCode(
+                message.id
+            )} in channel ${inlineCode(message.channelId)}`,
+            color: Colors.red,
+            occurred: message.deletedAt,
+            fields: logContent,
+        });
     } catch (e) {
         // generate ID for this error, not persisted in database
         const referenceId = nanoid();
