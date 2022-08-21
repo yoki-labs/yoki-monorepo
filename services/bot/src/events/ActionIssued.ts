@@ -15,11 +15,10 @@ export default async (data: Action & { reasonMetaData?: string }, client: Client
         new Embed()
             .setDescription(
                 stripIndents`
-					**Target:** <@${data.targetId}>
 					**Type:** ${inlineCode(data.type)}
-					**Reason:** ${data.reason ? inlineCode(data.reason) : "No reason provided."}  ${data.reasonMetaData ?? ""}
-					**Mod:** <@${data.executorId}>
-					${data.expiresAt ? `**Expiration:** ${inlineCode(FormatDate(data.expiresAt))}` : ""}
+					**Target:** <@${data.targetId}>
+					**Mod:** <@${data.executorId}>${data.expiresAt ? `\n**Expiration:** ${inlineCode(FormatDate(data.expiresAt))}` : ""}
+					**Reason:** ${data.reason ? inlineCode(data.reason) : "No reason provided."}  ${data.reasonMetaData ?? ""}	
 				`
             )
             .setTimestamp()
