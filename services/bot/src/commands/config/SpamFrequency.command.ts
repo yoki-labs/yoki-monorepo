@@ -5,7 +5,7 @@ import type { Command } from "../Command";
 
 const SpamFrequency: Command = {
     name: "config-spamfrequency",
-    description: "Sets required message count to activate spam filter.",
+    description: "Sets required message count to activate the spam filter.",
     usage: "[messages per 5 secs]",
     examples: ["9"],
     subCommand: true,

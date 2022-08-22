@@ -7,7 +7,7 @@ import type { Command } from "../Command";
 
 const Age: Command = {
     name: "antiraid-age",
-    description: "Set or view the minimum account age requirement for users to not be caught in the antiraid",
+    description: "Set or view the minimum account age requirement for users to be exempt from the antiraid.",
     usage: "[duration]",
     examples: ["2d"],
     category: Category.Moderation,

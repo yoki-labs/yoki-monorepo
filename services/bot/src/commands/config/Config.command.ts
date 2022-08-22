@@ -35,7 +35,7 @@ const subCommands = new Collection<string, Command>()
 const Config: Command = {
     name: "config",
     category: Category.Settings,
-    description: "Set server-wide settings",
+    description: "Set server-wide settings.",
     aliases: ["settings"],
     // examples: [...(Modlog.examples as string[]), ...(Modrole.examples as string[])],
     parentCommand: true,

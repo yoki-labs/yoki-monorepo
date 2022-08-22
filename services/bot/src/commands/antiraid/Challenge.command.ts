@@ -13,7 +13,7 @@ const responseTypesDescriptions = {
 
 const Challenge: Command = {
     name: "antiraid-challenge",
-    description: "Set or view the response the bot takes when a user fails the age filter",
+    description: "Set or view the response the bot takes when a user fails the age filter.",
     usage: "[captcha|kick|none]",
     examples: ["captcha"],
     category: Category.Moderation,
