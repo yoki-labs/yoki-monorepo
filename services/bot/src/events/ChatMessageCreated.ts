@@ -94,6 +94,8 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context, server:
         // store the message in the database
         await ctx.dbUtil.storeMessage(message).catch(console.log);
 
+        const enabledPresets = server.filterEnabled ? await ctx.dbUtil.getEnabledPresets(server.serverId) : undefined;
+
         if (server.filterEnabled) {
             // scan the message for any harmful content (filter list, presets)
             await ctx.contentFilterUtil.scanContent({
@@ -102,6 +104,7 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context, server:
                 filteredContent: FilteredContent.Message,
                 channelId: message.channelId,
                 server,
+                presets: enabledPresets,
                 // Filter
                 resultingAction: () => ctx.rest.router.deleteChannelMessage(message.channelId, message.id),
             });
@@ -118,6 +121,7 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context, server:
                 channelId: message.channelId,
                 content: message.content,
                 filteredContent: FilteredContent.Message,
+                presets: enabledPresets,
                 resultingAction: () => ctx.rest.router.deleteChannelMessage(message.channelId, message.id),
             });
 

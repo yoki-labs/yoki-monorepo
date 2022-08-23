@@ -1,13 +1,11 @@
-import { PresetType } from "@prisma/client";
-
-import { RoleType } from "../../../typings";
-import { inlineCode } from "../../../utils/formatters";
-import type { Command } from "../../Command";
+import { RoleType } from "../../typings";
+import { inlineCode } from "../../utils/formatters";
+import type { Command } from "../Command";
 
 const Enable: Command = {
     name: "preset-phrase-disable",
     subName: "disable",
-    description: "Disable a text preset.",
+    description: "Disable a filter preset.",
     usage: "<preset>",
     subCommand: true,
     requiredRole: RoleType.MOD,
@@ -19,7 +17,7 @@ const Enable: Command = {
     ],
     execute: async (message, args, ctx) => {
         const preset = args.preset as string;
-        const allPresets = await ctx.prisma.preset.findMany({ where: { serverId: message.serverId!, type: PresetType.WORD } });
+        const allPresets = await ctx.prisma.preset.findMany({ where: { serverId: message.serverId! } });
         if (!allPresets.map((x) => x.preset).includes(preset))
             return ctx.messageUtil.replyWithAlert(
                 message,
@@ -28,7 +26,7 @@ const Enable: Command = {
             );
 
         return ctx.dbUtil
-            .disableWordPreset(message.serverId!, preset)
+            .disablePreset(message.serverId!, preset)
             .then(() => ctx.messageUtil.replyWithSuccess(message, `Preset disabled`, `Successfully disabled the ${inlineCode(preset)} preset for this server.`))
             .catch((e: Error) =>
                 ctx.messageUtil.replyWithError(

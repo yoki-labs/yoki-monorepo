@@ -74,7 +74,7 @@ export class ContentFilterUtil extends BaseFilterUtil {
         // Get all the banned words in this server
         const bannedWordsList = await this.dbUtil.getBannedWords(serverId);
         // Get all the enabled presets in this server
-        const enabledPresets = presets ?? (await this.dbUtil.getEnabledWordPresets(serverId));
+        const enabledPresets = presets ?? (await this.dbUtil.getEnabledPresets(serverId));
 
         // Sanitize data into standard form
         const lowerCasedMessageContent = text.toLowerCase();

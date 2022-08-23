@@ -59,14 +59,22 @@ export class LinkFilterUtil extends BaseFilterUtil {
             user_id: userId,
             event_properties: { serverId: server.serverId },
         });
+
+        // Server settings
         const greylistedUrls = server.filterEnabled ? await this.prisma.urlFilter.findMany({ where: { serverId: server.serverId } }) : null;
-        const enabledPresets = presets ?? (await this.dbUtil.getEnabledLinkPresets(server.serverId));
         const whitelistedInvites = server.filterInvites ? await this.prisma.inviteFilter.findMany({ where: { serverId: server.serverId } }) : null;
 
-        const presetLinks = enabledPresets.map((x) => this.presets[x.preset]).flat();
-        const links = content.matchAll(this.urlRegex);
+        // To not re-fetch
+        const enabledPresets = presets ?? (await this.dbUtil.getEnabledPresets(server.serverId));
 
+        const presetLinks = enabledPresets
+            .filter((x) => x.preset in this.presets)
+            .map((x) => this.presets[x.preset])
+            .flat();
+
+        const links = content.matchAll(this.urlRegex);
         for (const link of links) {
+            // Matched link parts
             const groups = link.groups! as { subdomain?: string; domain: string; route?: string };
             const { domain, subdomain, route } = groups;
 
@@ -81,7 +89,8 @@ export class LinkFilterUtil extends BaseFilterUtil {
             //   - doesn't exist(0) ^ blacklist(0) => 0
             const badUrl = server.filterEnabled && Number(greylistedUrl !== undefined && greylistedUrl !== null) ^ Number(server.urlFilterIsWhitelist);
 
-            if ((domain !== "guilded.gg" && badUrl) || presetLinks.some((x) => this.matchesPresetLink(x, groups)))
+            // Not guilded.gg, thing above (OR) is one of the preset items
+            if (domain !== "guilded.gg" && (badUrl || presetLinks.some((x) => this.matchesPresetLink(x, groups))))
                 return this.dealWithUser(
                     userId,
                     server,
@@ -94,25 +103,29 @@ export class LinkFilterUtil extends BaseFilterUtil {
                     domain
                 );
             // No bad invites (filter invites enabled, it's guilded gg, route exists and it's none of Guilded's subdomains)
+            // E.g., we don't need to filter support.guilded.gg/hc/en-us -- support. is there, which we can match
             else if (!(server.filterInvites && domain === "guilded.gg" && route && (subdomain === "www." || !subdomain))) return;
 
             const breadCrumbs = route.split("/");
 
             // Specified by team ID
             if (route.startsWith("/teams/")) {
+                // It will be something like ["", "teams", "ID-HERE", "channels", ...]
+                // So we ignore those 2 and only up to 3rd one, yielding ["ID-HERE"]
                 const teamId = breadCrumbs.slice(2, 3)[0];
 
                 await this.checkServerId(server, userId, channelId, filteredContent, teamId, whitelistedInvites!, route, resultingAction);
             }
             // Invite
             else if (route.startsWith("/i/")) {
+                // Same as above condition
                 const invite = breadCrumbs.splice(2, 3)[0];
 
                 if (!isHashId(invite)) return;
 
                 const response = await fetch(`https://www.guilded.gg/api/content/route/metadata?route=/i/${invite}`);
 
-                // Don't care
+                // Don't filter if it's bad
                 if (!response.ok) return;
 
                 const json = await response.json();
@@ -131,7 +144,7 @@ export class LinkFilterUtil extends BaseFilterUtil {
 
                 const response = await fetch(`https://www.guilded.gg/api/content/route/metadata?route=/${vanity}`);
 
-                // Don't care
+                // Don't filter if it's bad
                 if (!response.ok) return;
 
                 const json = await response.json();
@@ -145,12 +158,21 @@ export class LinkFilterUtil extends BaseFilterUtil {
     }
 
     matchesPresetLink(presetLink: PresetLink, { subdomain, domain, route }: { subdomain?: string; domain: string; route?: string }) {
+        // If preset has no subdomain, match it by other parts.
+        // Otherwise, expect specific subdomain
         const matchesSubdomain = presetLink.subdomain === undefined || subdomain === presetLink.subdomain;
+        // Expect given route to start with preset route if it's not null
         const matchesRoute = presetLink.route === undefined || (route !== undefined && this.matchesRoute(route, presetLink.route));
+
         return domain === presetLink.domain && matchesSubdomain && matchesRoute;
     }
 
     matchesRoute(route: string, expectedRoute: string[]) {
+        // Let's say expected is ["a", "b"] and we get "/a/b/c/"
+        // We split it by "/" and get ["", "a", "b", "c", ""]
+        // We then ignore the first one (empty "") and get up to the amount of items in the expected route
+        // That results in given route being ["a", "b"]
+        // Both arrays are exactly the same, so we just need to compare them (which is done by joining here)
         return (
             route
                 .split("/")

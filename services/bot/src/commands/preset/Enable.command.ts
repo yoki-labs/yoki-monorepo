@@ -1,14 +1,12 @@
-import { PresetType } from "@prisma/client";
-
-import { transformSeverityStringToEnum } from "../../../modules/content-filter";
-import { RoleType } from "../../../typings";
-import { inlineCode } from "../../../utils/formatters";
-import type { Command } from "../../Command";
+import { transformSeverityStringToEnum } from "../../modules/content-filter";
+import { RoleType } from "../../typings";
+import { inlineCode } from "../../utils/formatters";
+import type { Command } from "../Command";
 
 const Enable: Command = {
     name: "preset-phrase-enable",
     subName: "enable",
-    description: "Enable a text preset.",
+    description: "Enable a filter preset.",
     usage: "<preset-to-enable> [severity]",
     subCommand: true,
     requiredRole: RoleType.MOD,
@@ -31,10 +29,10 @@ const Enable: Command = {
             return ctx.messageUtil.replyWithAlert(message, `No such preset`, `That is not a valid preset. Your options are: ${allPresets.map((x) => inlineCode(x)).join(", ")}`);
         if (!severity) return ctx.messageUtil.replyWithAlert(message, `No such severity level`, `Sorry, but that is not a valid severity level!`);
 
-        if ((await ctx.prisma.preset.findMany({ where: { serverId: message.serverId!, preset, type: PresetType.WORD } })).length)
+        if ((await ctx.prisma.preset.findMany({ where: { serverId: message.serverId!, preset } })).length)
             return ctx.messageUtil.replyWithAlert(message, "Preset already enabled!", `You have already enabled this preset with the severity of ${severity}.`);
         return ctx.dbUtil
-            .enableWordPreset(message.serverId!, preset, severity)
+            .enablePreset(message.serverId!, preset, severity)
             .then(() => ctx.messageUtil.replyWithSuccess(message, `Preset enabled`, `Successfully enabled the ${inlineCode(preset)} preset for this server.`))
             .catch((e: Error) =>
                 ctx.messageUtil.replyWithError(

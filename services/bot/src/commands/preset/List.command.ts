@@ -1,4 +1,4 @@
-import { Preset, PresetType } from "@prisma/client";
+import type { Preset } from "@prisma/client";
 import { stripIndents } from "common-tags";
 
 import { RoleType } from "../../typings";
@@ -13,16 +13,16 @@ const List: Command = {
     subCommand: true,
     requiredRole: RoleType.MOD,
     execute: async (message, _args, ctx) => {
-        const enabledPresets = await ctx.dbUtil.getAllEnabledPresets(message.serverId!);
+        const enabledPresets = await ctx.dbUtil.getEnabledPresets(message.serverId!);
 
-        const disabledWords = getDisabledPresets(ctx.contentFilterUtil.presets, enabledPresets, PresetType.WORD, "phrase");
-        const disabledLinks = getDisabledPresets(ctx.linkFilterUtil.presets, enabledPresets, PresetType.LINK, "URL");
+        const disabledWords = getDisabledPresets(ctx.contentFilterUtil.presets, enabledPresets);
+        const disabledLinks = getDisabledPresets(ctx.linkFilterUtil.presets, enabledPresets);
 
         return ctx.messageUtil.replyWithInfo(
             message,
             `Presets`,
             stripIndents`
-				**Enabled Presets:** ${enabledPresets.map((preset) => `${inlineCode(preset.preset)} (${preset.type === PresetType.WORD ? "phrase" : preset.type})`).join(", ") || "None"}
+				**Enabled Presets:** ${enabledPresets.map((preset) => inlineCode(preset.preset)).join(", ") || "None"}
 
 				**Disabled Presets:** ${disabledWords.concat(disabledLinks).join(", ") || "None"}
 			`
@@ -30,10 +30,10 @@ const List: Command = {
     },
 };
 
-function getDisabledPresets<T>(presets: Record<string, T>, anyEnabled: Preset[], type: PresetType, name: string) {
+function getDisabledPresets<T>(presets: Record<string, T>, anyEnabled: Preset[]) {
     const all = Object.keys(presets);
-    const enabled = anyEnabled.filter((x) => x.type === type).map((x) => x.preset);
-    return all.filter((x) => !enabled.includes(x)).map((x) => `${inlineCode(x)} (${name})`);
+    const enabled = anyEnabled.map((x) => x.preset);
+    return all.filter((x) => !enabled.includes(x)).map(inlineCode);
 }
 
 export default List;

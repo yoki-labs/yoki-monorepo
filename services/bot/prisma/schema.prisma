@@ -91,10 +91,9 @@ model InviteFilter {
 }
 
 model Preset {
-    id       Int        @id @default(autoincrement())
+    id       Int       @id @default(autoincrement())
     serverId String
-    preset   String     @db.VarChar(255)
-    type     PresetType @default(WORD)
+    preset   String    @db.VarChar(255)
     severity Severity?
 }
 
@@ -228,9 +227,4 @@ enum PremiumType {
 enum ResponseType {
     CAPTCHA
     KICK
-}
-
-enum PresetType {
-    WORD
-    LINK
 }
