@@ -22,6 +22,8 @@ const Enable: Command = {
         const module = args.module as string;
         if (!typeToDBPropKeys.includes(module))
             return ctx.messageUtil.replyWithError(message, `The module you wish to enable must be one of the following: ${typeToDBPropKeys.map((x) => `\`${x}\``).join(", ")}`);
+
+        void ctx.amp.logEvent({ event_type: "MODULE_ENABLE", user_id: message.createdBy, event_properties: { serverId: message.serverId, module: typeToDBPropMap[module] } });
         return ctx.prisma.server
             .update({
                 where: { id: commandCtx.server.id },

@@ -17,13 +17,21 @@ const Age: Command = {
     args: [{ name: "duration", type: "string", optional: true }],
     execute: async (message, args, ctx, commandCtx) => {
         if (!args.duration) {
-            return ctx.messageUtil.replyWithInfo(message, "Test", "placeholder")
+            return ctx.messageUtil.replyWithInfo(message, "Test", "placeholder");
         }
 
         const duration = ms(args.duration as string);
-        if (!duration || duration <= 600000 || duration >= 1209600000) return ctx.messageUtil.replyWithAlert(message, `Invalid Duration`, `Your duration must be between 10m and 2w.`);
-        await ctx.prisma.server.update({ where: { id: commandCtx.server.id }, data: { antiRaidAgeFilter: duration, antiRaidResponse: ResponseType.CAPTCHA } })
-        return ctx.messageUtil.replyWithSuccess(message, "Successfully set age filter", `Accounts younger than ${duration / 60 / 1000} minutes will be caught in the filter. By default, the bot will present them with a captcha to solve, but you can configure this using the \`antiraid response\` command.`)
+        if (!duration || duration <= 600000 || duration >= 1209600000)
+            return ctx.messageUtil.replyWithAlert(message, `Invalid Duration`, `Your duration must be between 10m and 2w.`);
+        void ctx.amp.logEvent({ event_type: "ANTIRAID_AGE_SET", user_id: message.createdBy, event_properties: { serverId: message.serverId, age: duration } });
+        await ctx.prisma.server.update({ where: { id: commandCtx.server.id }, data: { antiRaidAgeFilter: duration, antiRaidResponse: ResponseType.CAPTCHA } });
+        return ctx.messageUtil.replyWithSuccess(
+            message,
+            "Successfully set age filter",
+            `Accounts younger than ${
+                duration / 60 / 1000
+            } minutes will be caught in the filter. By default, the bot will present them with a captcha to solve, but you can configure this using the \`antiraid response\` command.`
+        );
     },
 };
 

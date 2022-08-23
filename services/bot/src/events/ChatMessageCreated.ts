@@ -143,6 +143,7 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context, server:
     if (!command) {
         const customCommand = await ctx.prisma.customTag.findFirst({ where: { serverId: message.serverId!, name: commandName } });
         if (!customCommand) return ctx.amp.logEvent({ event_type: "INVALID_COMMAND", user_id: message.createdBy, event_properties: { serverId: message.serverId } });
+        void ctx.amp.logEvent({ event_type: "TAG_RAN", user_id: message.createdBy, event_properties: { serverId: message.serverId } });
         return ctx.messageUtil.send(message.channelId, customCommand.content);
     }
 

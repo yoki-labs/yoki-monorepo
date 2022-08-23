@@ -39,6 +39,11 @@ const SendTrigger: Command = {
             targetChannel.id,
             new Embed().setTitle("React here for help!").setDescription(`React with the :${reaction}: emoji to this message to get in touch with server staff!`).setColor("GREEN")
         );
+        void ctx.amp.logEvent({
+            event_type: "MODMAIL_SEND_TRIGGER",
+            user_id: message.createdBy,
+            event_properties: { serverId: message.serverId },
+        });
         await ctx.rest.router.addReactionEmote(targetChannel.id, sentMessage.id, resolvedEmoji);
         await ctx.prisma.reactionAction.create({
             data: {

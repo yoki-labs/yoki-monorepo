@@ -33,11 +33,15 @@ const Warn: Command = {
     ],
     execute: async (message, args, ctx) => {
         const target = args.target as CachedMember;
-
         const [reason, infractionPoints] = getInfractionsFrom(args);
 
         if (target.user.type === "bot") return ctx.messageUtil.replyWithAlert(message, `Cannot warn bots`, `Bots cannot be warned.`);
 
+        void ctx.amp.logEvent({
+            event_type: "BOT_MEMBER_WARN",
+            user_id: message.createdBy,
+            event_properties: { serverId: message.serverId },
+        });
         try {
             await ctx.messageUtil.sendWarningBlock(
                 message.channelId,
