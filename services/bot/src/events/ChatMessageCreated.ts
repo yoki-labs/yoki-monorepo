@@ -94,34 +94,36 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context, server:
         // store the message in the database
         await ctx.dbUtil.storeMessage(message).catch(console.log);
 
-        // scan the message for any harmful content (filter list, presets)
+        const enabledPresets = server.filterEnabled ? await ctx.dbUtil.getEnabledPresets(server.serverId) : undefined;
+
         if (server.filterEnabled) {
+            // scan the message for any harmful content (filter list, presets)
             await ctx.contentFilterUtil.scanContent({
                 userId: message.createdByBotId || message.createdByWebhookId || message.createdBy,
                 text: message.content,
                 filteredContent: FilteredContent.Message,
                 channelId: message.channelId,
                 server,
+                presets: enabledPresets,
                 // Filter
                 resultingAction: () => ctx.rest.router.deleteChannelMessage(message.channelId, message.id),
             });
 
-            if (server.spamFrequency) {
-                await ctx.spamFilterUtil.checkForMessageSpam(server, message);
-            }
-
-            // Invites or bad URLs
-            if (server.filterInvites) {
-                await ctx.linkFilterUtil.checkLinks({
-                    server,
-                    userId: message.createdBy,
-                    channelId: message.channelId,
-                    content: message.content,
-                    filteredContent: FilteredContent.Message,
-                    resultingAction: () => ctx.rest.router.deleteChannelMessage(message.channelId, message.id),
-                });
-            }
+            // Spam prevention
+            await ctx.spamFilterUtil.checkForMessageSpam(server, message);
         }
+
+        if (server.filterInvites || server.filterEnabled)
+            // Invites or bad URLs
+            await ctx.linkFilterUtil.checkLinks({
+                server,
+                userId: message.createdBy,
+                channelId: message.channelId,
+                content: message.content,
+                filteredContent: FilteredContent.Message,
+                presets: enabledPresets,
+                resultingAction: () => ctx.rest.router.deleteChannelMessage(message.channelId, message.id),
+            });
 
         if (server.premium && server.scanNSFW) {
             await ctx.contentFilterUtil.scanMessageMedia(message);

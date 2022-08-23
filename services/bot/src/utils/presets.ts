@@ -1,25 +1,28 @@
 import { readdirSync } from "fs";
 import { join } from "path";
 
-import type { PresetPattern, PresetPatternObject } from "../typings";
+import type { PresetLink, PresetPattern, PresetPatternObject } from "../typings";
 
 const wordRest = ["", "[\\W]*"];
 
-export default (() => {
-    const dirPath = join(__dirname, "..", "presets");
+export const wordPresets = getPresets<PresetPattern[], RegExp>("content", (preset) => new RegExp(transformPreset(preset), "s"));
+
+export const urlPresets = getPresets<PresetLink[], PresetLink[]>("url", (p) => p);
+
+function getPresets<P, T>(directory: string, transform: (preset: P) => T): Record<string, T> {
+    const dirPath = join(__dirname, "..", "presets", directory);
     const files = readdirSync(dirPath, { withFileTypes: true });
-    // const loadedPresets: Record<string, Omit<ContentFilterScan, "severity">[]> = {};
-    const loadedPresets: Record<string, RegExp> = {};
+    const loadedPresets: Record<string, T> = {};
     for (const file of files.filter((x) => x.name.endsWith(".json"))) {
-        const preset = require(join(dirPath, file.name)) as PresetPattern[];
+        const preset = require(join(dirPath, file.name)) as P;
         const presetName = file.name.split(".")[0];
 
-        loadedPresets[presetName] = new RegExp(transformPreset(preset), "s");
+        loadedPresets[presetName] = transform(preset);
 
-        console.log(`Loaded preset ${file.name}`);
+        console.log(`Loaded ${directory} preset ${file.name}`);
     }
     return loadedPresets;
-})();
+}
 
 // ["abc", "def"] => "abc|def"
 function transformPreset(patterns: PresetPattern[]) {

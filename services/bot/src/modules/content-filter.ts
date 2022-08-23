@@ -1,11 +1,11 @@
 import type { ChatMessagePayload } from "@guildedjs/guilded-api-typings";
 import { Embed } from "@guildedjs/webhook-client";
-import { ContentFilter, FilterMatching } from "@prisma/client";
+import { ContentFilter, FilterMatching, Preset } from "@prisma/client";
 import { stripIndents } from "common-tags";
 
 import { ContentFilterScan, Server, Severity } from "../typings";
 import { Colors } from "../utils/color";
-import presets from "../utils/presets";
+import { wordPresets } from "../utils/presets";
 import { IMAGE_REGEX } from "../utils/util";
 import BaseFilterUtil from "./base-filter";
 import { ImageFilterUtil } from "./image-filter";
@@ -20,7 +20,7 @@ export enum FilteredContent {
 
 export class ContentFilterUtil extends BaseFilterUtil {
     readonly imageFilterUtil = new ImageFilterUtil(this.client);
-    readonly presets = presets;
+    readonly presets = wordPresets;
 
     async scanMessageMedia(message: ChatMessagePayload): Promise<void> {
         const { serverId, channelId, content, createdBy: userId, id: messageId } = message;
@@ -35,6 +35,12 @@ export class ContentFilterUtil extends BaseFilterUtil {
         for (const [_, url] of matches) {
             const result = await this.imageFilterUtil.scanImage(url).catch(() => void 0);
             if (result) {
+                void this.client.amp.logEvent({
+                    event_type: "MESSAGE_MEDIA_ACTION",
+                    user_id: userId,
+                    event_properties: { serverId },
+                });
+
                 this.client.rest.router.deleteChannelMessage(channelId, messageId).catch(() => null);
                 await this.client.messageUtil.sendWarningBlock(
                     channelId,
@@ -55,6 +61,7 @@ export class ContentFilterUtil extends BaseFilterUtil {
         filteredContent,
         channelId,
         server,
+        presets,
         resultingAction,
     }: {
         userId: string;
@@ -62,6 +69,7 @@ export class ContentFilterUtil extends BaseFilterUtil {
         filteredContent: FilteredContent;
         channelId: string | null;
         server: Server;
+        presets?: Preset[];
         resultingAction: () => unknown;
     }) {
         // If the bot is the one who did this action, ignore.
@@ -72,7 +80,7 @@ export class ContentFilterUtil extends BaseFilterUtil {
         // Get all the banned words in this server
         const bannedWordsList = await this.dbUtil.getBannedWords(serverId);
         // Get all the enabled presets in this server
-        const enabledPresets = await this.dbUtil.getEnabledPresets(serverId);
+        const enabledPresets = presets ?? (await this.dbUtil.getEnabledPresets(serverId));
 
         // Sanitize data into standard form
         const lowerCasedMessageContent = text.toLowerCase();
@@ -120,6 +128,11 @@ export class ContentFilterUtil extends BaseFilterUtil {
         // Check whether this member exceeds the infraction threshold for this server
         const exceededThreshold = await this.getMemberExceedsThreshold(server, userId, triggeredWord.infractionPoints);
 
+        void this.client.amp.logEvent({
+            event_type: "AUTOMOD_ACTION",
+            user_id: userId,
+            event_properties: { serverId, action: exceededThreshold ?? triggeredWord.severity, infractionPoints: triggeredWord.infractionPoints },
+        });
         // Add this action to the database
         const createdCase = await this.client.dbUtil.addAction({
             serverId,

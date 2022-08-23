@@ -23,7 +23,7 @@ const List: Command = {
                   `Banned links`,
                   stripIndents`
                     ${bannedUrls.length ? `**Blacklisted domains:** ${bannedUrls.map((url) => inlineCode(url.domain)).join(", ")}` : ""}
-                    ${bannedInvites.length ? `**Whitelisted servers:** ${bannedInvites.map((invite) => inlineCode(invite.serverId)).join(", ")}` : ""}
+                    ${bannedInvites.length ? `**Whitelisted servers:** ${bannedInvites.map((invite) => inlineCode(invite.targetServerId)).join(", ")}` : ""}
                   `
               )
             : ctx.messageUtil.replyWithNullState(message, `No banned links`, `There are no custom banned domains or invites for this server.`);

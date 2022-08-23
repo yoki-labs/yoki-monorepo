@@ -18,7 +18,7 @@ const Remove: Command = {
         },
     ],
     execute: async (message, args, ctx) => {
-        const targetServerId = (args.targetServerId as string).toLowerCase();
+        const targetServerId = args.targetServerId as string;
 
         const existingEntry = await ctx.prisma.inviteFilter.findFirst({ where: { serverId: message.serverId!, targetServerId } });
         if (!existingEntry) return ctx.messageUtil.replyWithAlert(message, `Link not found`, `This server is not in your server's invite whitelist!`);

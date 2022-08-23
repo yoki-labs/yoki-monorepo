@@ -1,4 +1,6 @@
+import { Embed } from "@guildedjs/webhook-client";
 import { Action, Severity } from "@prisma/client";
+import { stripIndents } from "common-tags";
 
 import { Util } from "../helpers/util";
 import type { Server } from "../typings";
@@ -35,23 +37,21 @@ export default abstract class BaseFilterUtil extends Util {
         server: Server,
         channelId: string | null,
         filteredContent: FilteredContent,
+        resultingAction: () => unknown,
         reason: string,
         infractionPoints: number,
         fallbackSeverity: Severity,
         triggerContent: string | null = null
     ) {
-        // By now, we assume the member has spammed
-        // Get the member from cache or API
-        const member = await this.client.serverUtil.getMember(server.serverId, userId);
+        if (!(await this.shouldFilterUser(server, userId))) return;
 
-        // Don't moderate bots
-        if (member.user.type === "bot") return;
-
-        // Get all the mod roles in this server
-        const modRoles = await this.prisma.role.findMany({ where: { serverId: server.serverId } });
-
-        // If the server doesn't have "filterOnMods" setting enabled and a mod spams, ignore
-        if (!server.filterOnMods && modRoles.some((modRole) => member.roleIds.includes(modRole.roleId))) return;
+        try {
+            // Perform resulting action, for message filtering it's deleting the original message
+            await resultingAction();
+        } catch (err: any) {
+            if (err instanceof Error)
+                await this.client.errorHandler.send("Error in base filter filtering callback", [new Embed().setDescription(stripIndents`${err.stack}`).setColor("RED")]);
+        }
 
         const memberExceeds = await this.getMemberExceedsThreshold(server, userId, server.spamInfractionPoints);
 
@@ -90,6 +90,23 @@ export default abstract class BaseFilterUtil extends Util {
                 ? Severity.MUTE
                 : null;
         return severity;
+    }
+
+    async shouldFilterUser(server: Server, userId: string) {
+        // By now, we assume the member has violated a filter or preset
+        // Get the member from cache or API
+        const member = await this.client.serverUtil.getMember(server.serverId, userId);
+
+        // Don't moderate bots
+        if (member.user.type === "bot") return false;
+
+        // Get all the mod roles in this server
+        const modRoles = await this.prisma.role.findMany({ where: { serverId: server.serverId } });
+
+        // If the server doesn't have "filterOnMods" setting enabled and a mod violates the filter/preset, ignore
+        if (!server.filterOnMods && modRoles.some((modRole) => member.roleIds.includes(modRole.roleId))) return false;
+
+        return true;
     }
 
     async getMemberExceedsThreshold(server: Server, userId: string, infractionPoints: number) {

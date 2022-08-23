@@ -1,10 +1,9 @@
-import { Embed } from "@guildedjs/webhook-client";
-import type { InviteFilter } from "@prisma/client";
-import { stripIndents } from "common-tags";
+import type { InviteFilter, Preset } from "@prisma/client";
 import fetch from "node-fetch";
 
-import type { Server } from "../typings";
+import type { PresetLink, Server } from "../typings";
 import { Colors } from "../utils/color";
+import { urlPresets } from "../utils/presets";
 import { isHashId } from "../utils/util";
 import BaseFilterUtil from "./base-filter";
 import { FilteredContent } from "./content-filter";
@@ -36,12 +35,15 @@ export class LinkFilterUtil extends BaseFilterUtil {
         "matchmaking",
     ];
 
+    readonly presets = urlPresets;
+
     async checkLinks({
         server,
         userId,
         channelId,
         content,
         filteredContent,
+        presets,
         resultingAction,
     }: {
         server: Server;
@@ -49,6 +51,7 @@ export class LinkFilterUtil extends BaseFilterUtil {
         channelId: string;
         content: string;
         filteredContent: FilteredContent;
+        presets?: Preset[];
         resultingAction: () => unknown;
     }) {
         void this.client.amp.logEvent({
@@ -56,13 +59,24 @@ export class LinkFilterUtil extends BaseFilterUtil {
             user_id: userId,
             event_properties: { serverId: server.serverId },
         });
+
+        // Server settings
         const greylistedUrls = server.filterEnabled ? await this.prisma.urlFilter.findMany({ where: { serverId: server.serverId } }) : null;
         const whitelistedInvites = server.filterInvites ? await this.prisma.inviteFilter.findMany({ where: { serverId: server.serverId } }) : null;
 
-        const links = content.matchAll(this.urlRegex);
+        // To not re-fetch
+        const enabledPresets = presets ?? (await this.dbUtil.getEnabledPresets(server.serverId));
 
+        const presetLinks = enabledPresets
+            .filter((x) => x.preset in this.presets)
+            .map((x) => this.presets[x.preset])
+            .flat();
+
+        const links = content.matchAll(this.urlRegex);
         for (const link of links) {
-            const { subdomain, domain, route } = link.groups!;
+            // Matched link parts
+            const groups = link.groups! as { subdomain?: string; domain: string; route?: string };
+            const { domain, subdomain, route } = groups;
 
             // Not .some, because severity and infraction points
             const greylistedUrl = greylistedUrls?.find((x) => x.domain === domain);
@@ -73,20 +87,17 @@ export class LinkFilterUtil extends BaseFilterUtil {
             //   - doesn't exist(0) ^ whitelist(1) => 1
             //   - exists(1) ^ blacklist(0) => 1
             //   - doesn't exist(0) ^ blacklist(0) => 0
-            if (server.filterEnabled && Number(greylistedUrl !== undefined && greylistedUrl !== null) ^ Number(server.urlFilterIsWhitelist)) {
-                try {
-                    // Perform resulting action, for message filtering it's deleting the original message
-                    await resultingAction();
-                } catch (err: any) {
-                    if (err instanceof Error)
-                        await this.client.errorHandler.send("Error in link filtering callback", [new Embed().setDescription(stripIndents`${err.stack}`).setColor("RED")]);
-                }
+            const badUrl = server.filterEnabled && Number(greylistedUrl !== undefined && greylistedUrl !== null) ^ Number(server.urlFilterIsWhitelist);
 
+            // Not guilded.gg, thing above (OR) is one of the preset items
+            if (domain !== "guilded.gg" && (badUrl || presetLinks.some((x) => this.matchesPresetLink(x, groups)))) {
+                void this.client.amp.logEvent({ event_type: "MESSAGE_LINK_ACTION", user_id: userId, event_properties: { serverId: server.serverId } });
                 return this.dealWithUser(
                     userId,
                     server,
                     channelId,
                     filteredContent,
+                    resultingAction,
                     "URL filter tripped",
                     greylistedUrl?.infractionPoints ?? server.linkInfractionPoints,
                     greylistedUrl?.severity ?? server.linkSeverity,
@@ -94,30 +105,29 @@ export class LinkFilterUtil extends BaseFilterUtil {
                 );
             }
             // No bad invites (filter invites enabled, it's guilded gg, route exists and it's none of Guilded's subdomains)
+            // E.g., we don't need to filter support.guilded.gg/hc/en-us -- support. is there, which we can match
             else if (!(server.filterInvites && domain === "guilded.gg" && route && (subdomain === "www." || !subdomain))) return;
 
             const breadCrumbs = route.split("/");
 
             // Specified by team ID
             if (route.startsWith("/teams/")) {
+                // It will be something like ["", "teams", "ID-HERE", "channels", ...]
+                // So we ignore those 2 and only up to 3rd one, yielding ["ID-HERE"]
                 const teamId = breadCrumbs.slice(2, 3)[0];
 
                 await this.checkServerId(server, userId, channelId, filteredContent, teamId, whitelistedInvites!, route, resultingAction);
             }
             // Invite
             else if (route.startsWith("/i/")) {
+                // Same as above condition
                 const invite = breadCrumbs.splice(2, 3)[0];
 
                 if (!isHashId(invite)) return;
 
-                const response = await fetch(`https://guilded.gg/api/content/route/metadata?route=%2Fi%2F${invite}`, {
-                    method: "GET",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                });
+                const response = await fetch(`https://www.guilded.gg/api/content/route/metadata?route=/i/${invite}`);
 
-                // Don't care
+                // Don't filter if it's bad
                 if (!response.ok) return;
 
                 const json = await response.json();
@@ -134,16 +144,9 @@ export class LinkFilterUtil extends BaseFilterUtil {
                 // (It's not a vanity)
                 if (!this.vanityRegex.test(vanity)) return;
 
-                const url = `https://guilded.gg/api/content/route/metadata?route=%2F${vanity}`;
+                const response = await fetch(`https://www.guilded.gg/api/content/route/metadata?route=/${vanity}`);
 
-                const response = await fetch(url, {
-                    method: "GET",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                });
-
-                // Don't care
+                // Don't filter if it's bad
                 if (!response.ok) return;
 
                 const json = await response.json();
@@ -154,6 +157,30 @@ export class LinkFilterUtil extends BaseFilterUtil {
                 await this.checkServerId(server, userId, channelId, filteredContent, targetServerId, whitelistedInvites!, route, resultingAction);
             }
         }
+    }
+
+    matchesPresetLink(presetLink: PresetLink, { subdomain, domain, route }: { subdomain?: string; domain: string; route?: string }) {
+        // If preset has no subdomain, match it by other parts.
+        // Otherwise, expect specific subdomain
+        const matchesSubdomain = presetLink.subdomain === undefined || subdomain === presetLink.subdomain;
+        // Expect given route to start with preset route if it's not null
+        const matchesRoute = presetLink.route === undefined || (route !== undefined && this.matchesRoute(route, presetLink.route));
+
+        return domain === presetLink.domain && matchesSubdomain && matchesRoute;
+    }
+
+    matchesRoute(route: string, expectedRoute: string[]) {
+        // Let's say expected is ["a", "b"] and we get "/a/b/c/"
+        // We split it by "/" and get ["", "a", "b", "c", ""]
+        // We then ignore the first one (empty "") and get up to the amount of items in the expected route
+        // That results in given route being ["a", "b"]
+        // Both arrays are exactly the same, so we just need to compare them (which is done by joining here)
+        return (
+            route
+                .split("/")
+                .slice(1, expectedRoute.length + 1)
+                .join("/") === expectedRoute.join("/")
+        );
     }
 
     async checkServerId(
@@ -168,15 +195,8 @@ export class LinkFilterUtil extends BaseFilterUtil {
     ) {
         // Detect non-whitelisted server IDs and non-this-server ID
         if (targetServerId && targetServerId !== server.serverId && !whitelisted.some((x) => x.targetServerId === targetServerId)) {
-            try {
-                // Perform resulting action, for message filtering it's deleting the original message
-                await resultingAction();
-            } catch (err: any) {
-                if (err instanceof Error)
-                    await this.client.errorHandler.send("Error in link filtering callback", [new Embed().setDescription(stripIndents`${err.stack}`).setColor("RED")]);
-            }
-
-            return this.dealWithUser(userId, server, channelId, filteredContent, "Invite filter tripped", server.linkInfractionPoints, server.linkSeverity, route);
+            void this.client.amp.logEvent({ event_type: "MESSAGE_LINK_INVITE_ACTION", user_id: userId, event_properties: { serverId: server.serverId, route } });
+            return this.dealWithUser(userId, server, channelId, filteredContent, resultingAction, "Invite filter tripped", server.linkInfractionPoints, server.linkSeverity, route);
         }
     }
 
