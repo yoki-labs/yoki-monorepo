@@ -21,7 +21,8 @@ export default async (packet: WSChannelMessageReactionCreatedPayload, ctx: Conte
             if (!server.modmailGroupId && !server.modmailCategoryId) return;
             const userAlreadyHasChannel = await ctx.prisma.modmailThread.findFirst({ where: { openerId: createdBy, serverId, closed: false } });
             if (userAlreadyHasChannel) return;
-
+          
+            void ctx.amp.logEvent({ event_type: "MODMAIL_THREAD_CREATE", user_id: createdBy, event_properties: { serverId } });
             const newChannel = await ctx.rest.router.createChannel({
                 serverId,
                 type: "chat",

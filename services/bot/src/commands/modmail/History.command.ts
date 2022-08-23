@@ -8,7 +8,7 @@ import type { Command } from "../Command";
 const History: Command = {
     name: "modmail-history",
     subName: "history",
-    description: "Get the modmail history for a user",
+    description: "View the modmail history for a user.",
     usage: "<userId>",
     examples: ["0mqNyllA"],
     subCommand: true,

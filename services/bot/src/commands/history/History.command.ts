@@ -8,7 +8,7 @@ import View from "./View.command";
 
 const History: Command = {
     name: "history",
-    description: "Manages user's history.",
+    description: "Manages a user's history.",
     examples: ["view R40Mp0Wd", "view R40Mp0Wd 2"],
     aliases: ["modactions", "actions", "hs"],
     parentCommand: true,

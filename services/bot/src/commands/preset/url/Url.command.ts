@@ -8,7 +8,7 @@ import Enable from "./Enable.command";
 const Url: Command = {
     name: "presets-url",
     subName: "url",
-    description: "Manages URL and domain presets",
+    description: "Manages URL and domain presets.",
     examples: ["enable slurs", "disable slurs"],
     aliases: ["link", "domain"],
     category: Category.Settings,

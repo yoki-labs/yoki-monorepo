@@ -9,7 +9,7 @@ import type { Command } from "../../Command";
 const Add: Command = {
     name: "link-url-add",
     subName: "add",
-    description: "Add a domain to the __blacklist__",
+    description: "Add a domain to the __blacklist__.",
     usage: "<domain> [severity=warn] [infraction_points=5]",
     examples: ["example.com warn", "discord.com ban"],
     subCommand: true,

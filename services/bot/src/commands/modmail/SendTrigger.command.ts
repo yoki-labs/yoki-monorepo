@@ -10,7 +10,7 @@ import type { Command } from "../Command";
 const SendTrigger: Command = {
     name: "modmail-sendtrigger",
     subName: "sendtrigger",
-    description: "Send a modmail thread trigger",
+    description: "Send a modmail thread trigger.",
     usage: "<channel-id> <emoji>",
     examples: ["17bce2fd-1a95-44b5-abc3-b2ff115c62fb :smile:"],
     subCommand: true,
@@ -39,6 +39,11 @@ const SendTrigger: Command = {
             targetChannel.id,
             new Embed().setTitle("React here for help!").setDescription(`React with the :${reaction}: emoji to this message to get in touch with server staff!`).setColor("GREEN")
         );
+        void ctx.amp.logEvent({
+            event_type: "MODMAIL_SEND_TRIGGER",
+            user_id: message.createdBy,
+            event_properties: { serverId: message.serverId },
+        });
         await ctx.rest.router.addReactionEmote(targetChannel.id, sentMessage.id, resolvedEmoji);
         await ctx.prisma.reactionAction.create({
             data: {

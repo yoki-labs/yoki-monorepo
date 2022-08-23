@@ -7,7 +7,7 @@ import type { Command } from "../Command";
 
 const Ban: Command = {
     name: "ban",
-    description: "Ban a user",
+    description: "Ban a user.",
     usage: "<targetId> [...reason]",
     examples: ["R40Mp0Wd", "R40Mp0Wd Talking too much about Town of Salem"],
     requiredRole: RoleType.MOD,
@@ -30,6 +30,11 @@ const Ban: Command = {
 
         if (target.user.type === "bot") return ctx.messageUtil.replyWithAlert(message, `Cannot ban bots`, `Bots cannot be banned from the server.`);
 
+        void ctx.amp.logEvent({
+            event_type: "BOT_MEMBER_BAN",
+            user_id: message.createdBy,
+            event_properties: { serverId: message.serverId },
+        });
         try {
             await ctx.rest.router.banMember(message.serverId!, target.user.id);
         } catch (e) {

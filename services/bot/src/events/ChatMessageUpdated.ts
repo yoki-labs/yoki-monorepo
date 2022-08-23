@@ -11,8 +11,11 @@ import { inlineCode, quoteMarkdown } from "../utils/formatters";
 
 export default async (packet: WSChatMessageUpdatedPayload, ctx: Context, server: Server) => {
     const { message } = packet.d;
+
     // if this message isn't updated in a server, or if the author is a bot, ignore
     if (message.createdByBotId || message.createdBy === ctx.userId || !message.serverId) return void 0;
+    void ctx.amp.logEvent({ event_type: "MESSAGE_UPDATE", user_id: message.createdBy, event_properties: { serverId: message.serverId! } });
+
     const member = await ctx.serverUtil.getMember(packet.d.serverId, packet.d.message.createdBy).catch(() => null);
     if (member?.user.type === "bot") return;
 
@@ -33,7 +36,10 @@ export default async (packet: WSChatMessageUpdatedPayload, ctx: Context, server:
     // get the old message from the database if we logged it before
     const oldMessage = await ctx.dbUtil.getMessage(message.channelId, message.id);
     // if we did log it in the past, update it with the new content (logMessage uses upsert)
-    if (oldMessage) await ctx.dbUtil.storeMessage(message);
+    if (oldMessage) {
+        void ctx.amp.logEvent({ event_type: "MESSAGE_UPDATE_DB", user_id: message.createdBy, event_properties: { serverId: message.serverId } });
+        await ctx.dbUtil.storeMessage(message);
+    }
 
     try {
         let logContent = [
@@ -71,18 +77,22 @@ export default async (packet: WSChatMessageUpdatedPayload, ctx: Context, server:
                 },
             ];
         }
+
+        const author = message.createdByWebhookId ? `Webhook (${inlineCode(message.createdByWebhookId)})` : `<@${message.createdBy}> (${inlineCode(message.createdBy)})`;
+
         // send embed in log channel
-        await ctx.messageUtil.sendLog(
-            updatedMessageLogChannel.channelId,
-            `Message edited`,
-            stripIndents`
-                **ID:** ${inlineCode(message.id)}
-                **Author:** ${message.createdByWebhookId ? `Webhook` : `<@${message.createdBy}>`}
+        await ctx.messageUtil.sendLog({
+            where: updatedMessageLogChannel.channelId,
+            title: `Message Edited`,
+            description: stripIndents`
+                ${author} has edited the message ${inlineCode(message.id)} in the channel ${inlineCode(message.channelId)}.
+
+                [Jump to the message](https://guilded.gg/teams/${message.serverId}/channels/${message.channelId}/chat?messageId=${message.id})
             `,
-            Colors.yellow,
-            message.updatedAt!,
-            logContent
-        );
+            color: Colors.yellow,
+            occurred: message.updatedAt!,
+            fields: logContent,
+        });
     } catch (e) {
         const referenceId = nanoid();
         if (e instanceof Error) {

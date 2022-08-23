@@ -48,9 +48,9 @@ export class MessageUtil extends Util {
         return this.replyWithAlert(
             message,
             `Incorrect argument`,
-            `Sorry, but the usage of argument ${inlineCode(commandArg.name)} was not correct. Was expecting a ${commandArg.type}${
-                commandArg.max ? ` with the limit of ${commandArg.max}` : ""
-            }.`,
+            `Sorry, but the usage of argument ${inlineCode(commandArg.name)} was not correct. Was expecting a ${
+                commandArg.type === "enum" ? Object.keys(commandArg.values).join(", ") : commandArg.type
+            }${commandArg.max ? ` with the limit of ${commandArg.max}` : ""}.`,
             {
                 fields: [
                     {
@@ -92,14 +92,30 @@ export class MessageUtil extends Util {
         return this.sendValueBlock(channelId, title, description, color, { thumbnail: thumbnail ? { url: thumbnail as string } : undefined, ...embedPartial }, messagePartial);
     }
 
-    sendLog(channelId: string, title: string, description: string, color: number, occurred: string, fields?: EmbedField[]) {
-        return this.send(channelId, {
+    sendLog({
+        where,
+        title,
+        description,
+        color,
+        occurred,
+        additionalInfo,
+        fields,
+    }: {
+        where: string;
+        title: string;
+        description: string;
+        color: number;
+        occurred: string;
+        additionalInfo?: string;
+        fields?: EmbedField[];
+    }) {
+        return this.send(where, {
             embeds: [
                 {
                     title,
                     description,
                     color,
-                    fields,
+                    fields: additionalInfo ? (fields ?? []).concat({ name: "Additional Info", value: additionalInfo }) : fields,
                     timestamp: occurred,
                 },
             ],

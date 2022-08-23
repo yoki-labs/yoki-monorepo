@@ -7,7 +7,7 @@ import type { Command } from "../Command";
 
 const List: Command = {
     name: "preset-list",
-    description: "Lists down every enabled and disabled preset in this server.",
+    description: "List the presets enabled for this server, along with the presets Yoki offers.",
     usage: "",
     subName: "list",
     subCommand: true,

@@ -7,7 +7,7 @@ import type { Command } from "../Command";
 
 const List: Command = {
     name: "link-list",
-    description: "Lists down every link domain that is blacklisted",
+    description: "Lists every link domain that is blacklisted.",
     usage: "",
     subName: "list",
     subCommand: true,

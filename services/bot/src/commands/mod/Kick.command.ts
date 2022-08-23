@@ -7,7 +7,7 @@ import type { Command } from "../Command";
 
 const Kick: Command = {
     name: "kick",
-    description: "Kick a user",
+    description: "Kick a user.",
     usage: "<targetId> [...reason]",
     examples: ["R40Mp0Wd", "R40Mp0Wd Talking too much about Town of Salem"],
     requiredRole: RoleType.MOD,
@@ -28,6 +28,11 @@ const Kick: Command = {
         const target = args.target as CachedMember;
         const reason = args.reason as string | null;
 
+        void ctx.amp.logEvent({
+            event_type: "BOT_MEMBER_KICK",
+            user_id: message.createdBy,
+            event_properties: { serverId: message.serverId },
+        });
         try {
             await ctx.rest.router.kickMember(message.serverId!, target.user.id);
         } catch (e) {

@@ -54,6 +54,11 @@ export class LinkFilterUtil extends BaseFilterUtil {
         presets?: Preset[];
         resultingAction: () => unknown;
     }) {
+        void this.client.amp.logEvent({
+            event_type: "MESSAGE_LINKS_SCAN",
+            user_id: userId,
+            event_properties: { serverId: server.serverId },
+        });
         const greylistedUrls = server.filterEnabled ? await this.prisma.urlFilter.findMany({ where: { serverId: server.serverId } }) : null;
         const enabledPresets = presets ?? (await this.dbUtil.getEnabledLinkPresets(server.serverId));
         const whitelistedInvites = server.filterInvites ? await this.prisma.inviteFilter.findMany({ where: { serverId: server.serverId } }) : null;

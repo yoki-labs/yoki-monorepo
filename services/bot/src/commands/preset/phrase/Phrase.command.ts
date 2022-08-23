@@ -8,7 +8,7 @@ import Enable from "./Enable.command";
 const Phrase: Command = {
     name: "presets-phrase",
     subName: "phrase",
-    description: "Manages phrase/word presets",
+    description: "Manages phrase/word presets.",
     examples: ["enable slurs", "disable slurs"],
     aliases: ["word", "content"],
     category: Category.Settings,

@@ -8,8 +8,8 @@ import Url from "./url/Url.command";
 
 const Preset: Command = {
     name: "preset",
-    description: "Parent command for preset related commands",
-    examples: ["phrase enable slurs", "phrase disable slurs"],
+    description: "Parent command for preset related commands.",
+    examples: ["enable slurs", "disable slurs"],
     aliases: ["presets"],
     category: Category.Settings,
     parentCommand: true,

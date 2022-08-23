@@ -9,7 +9,7 @@ import type { Command } from "../Command";
 const Close: Command = {
     name: "close",
     subName: "close",
-    description: "Close a modmail thread",
+    description: "Close a modmail thread.",
     examples: [""],
     subCommand: true,
     requiredRole: RoleType.MOD,
@@ -18,10 +18,11 @@ const Close: Command = {
         const isCurrentChannelModmail = await ctx.prisma.modmailThread.findFirst({ where: { serverId: message.serverId, modFacingChannelId: message.channelId, closed: false } });
         if (!isCurrentChannelModmail) return ctx.messageUtil.replyWithError(message, "This channel is not a modmail channel!");
         const modmailLogChannel = await ctx.dbUtil.getLogChannel(message.serverId!, LogChannelType.modmail_logs);
+        const modmailMessages = await ctx.prisma.modmailMessage.findMany({
+            where: { modmailThreadId: isCurrentChannelModmail.id },
+        });
+
         if (modmailLogChannel) {
-            const modmailMessages = await ctx.prisma.modmailMessage.findMany({
-                where: { modmailThreadId: isCurrentChannelModmail.id },
-            });
             const uploadedLog = await ctx.s3
                 .upload({
                     Bucket: process.env.S3_BUCKET,
@@ -47,6 +48,11 @@ const Close: Command = {
             );
         }
 
+        void ctx.amp.logEvent({
+            event_type: "MODMAIL_CLOSE",
+            user_id: message.createdBy,
+            event_properties: { serverId: message.serverId, threadAge: Date.now() - isCurrentChannelModmail.createdAt.getTime(), messageCount: modmailMessages.length },
+        });
         await ctx.rest.router.createChannelMessage(isCurrentChannelModmail.userFacingChannelId, {
             embeds: [
                 {

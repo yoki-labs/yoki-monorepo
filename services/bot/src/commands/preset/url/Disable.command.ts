@@ -7,7 +7,7 @@ import type { Command } from "../../Command";
 const Enable: Command = {
     name: "preset-phrase-disable",
     subName: "disable",
-    description: "Disable a preset",
+    description: "Disables a URL/domain preset.",
     usage: "<preset>",
     subCommand: true,
     requiredRole: RoleType.MOD,

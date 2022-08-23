@@ -3,7 +3,7 @@ import type { Command } from "./Command";
 
 const Ping: Command = {
     name: "ping",
-    description: "Send a ping message",
+    description: "Check Yoki's latency.",
     usage: "",
     aliases: ["p"],
     execute: (message, _args, ctx) => {

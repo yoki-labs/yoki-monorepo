@@ -14,7 +14,7 @@ const LogChannel: Command = {
     name: "config-logchannel",
     subName: "logchannel",
     category: Category.Settings,
-    description: "Manage your log channel's.",
+    description: "Manage your log channels.",
     aliases: ["logs"],
     parentCommand: true,
     subCommand: true,
