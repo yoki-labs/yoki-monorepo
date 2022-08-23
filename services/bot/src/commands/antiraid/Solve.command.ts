@@ -2,7 +2,7 @@ import type { Command } from "../Command";
 
 const Solve: Command = {
     name: "solve",
-    description: "Solve the current captcha",
+    description: "Solve the current captcha.",
     usage: "<code>",
     examples: ["djAshAJ"],
     hidden: true,

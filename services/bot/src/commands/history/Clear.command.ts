@@ -6,7 +6,7 @@ import type { Command } from "../Command";
 const Clear: Command = {
     name: "history-clear",
     subName: "clear",
-    description: "Get the history of a user.",
+    description: "Clear the history of a user.",
     usage: "<targetId>",
     examples: ["R40Mp0Wd"],
     subCommand: true,

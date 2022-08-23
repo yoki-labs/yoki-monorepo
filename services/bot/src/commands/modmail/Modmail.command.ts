@@ -11,7 +11,7 @@ import SendTrigger from "./SendTrigger.command";
 
 const Modmail: Command = {
     name: "modmail",
-    description: "Parent command for modmail related commands",
+    description: "Parent command for modmail related commands.",
     aliases: ["m"],
     examples: ["modmail reply Hi, what can I help you with?"],
     parentCommand: true,

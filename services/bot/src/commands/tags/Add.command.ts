@@ -6,7 +6,7 @@ import type { Command } from "../Command";
 const Add: Command = {
     name: "tag-add",
     subName: "add",
-    description: "Add a custom tag",
+    description: "Add a custom tag.",
     usage: "<tag-name> <...tag-content>",
     subCommand: true,
     requiredRole: RoleType.MOD,

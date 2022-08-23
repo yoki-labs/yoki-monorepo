@@ -9,7 +9,7 @@ import type { Command } from "../Command";
 
 const Warn: Command = {
     name: "warn",
-    description: "Warn a user",
+    description: "Warn a user.",
     usage: "<target's ID> [infraction points] [...reason]",
     requiredRole: RoleType.MOD,
     category: Category.Moderation,

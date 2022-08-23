@@ -8,7 +8,7 @@ const subCommands = new Collection<string, Command>().set("remove", Remove).set(
 
 const Beta: Command = {
     name: "beta",
-    description: "Set server-wide settings",
+    description: "Beta program parent command.",
     usage: `<${subCommands.map((_v, k) => k).join(" | ")}> <..args>`,
     parentCommand: true,
     hidden: true,

@@ -7,7 +7,7 @@ import type { Command } from "../Command";
 const Enable: Command = {
     name: "module-enable",
     subName: "enable",
-    description: "Enable a module for this server",
+    description: "Enable a module for this server.",
     usage: `<${typeToDBPropKeys.join("|")}>`,
     subCommand: true,
     category: Category.Moderation,

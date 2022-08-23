@@ -6,7 +6,7 @@ import type { Command } from "../Command";
 const Enable: Command = {
     name: "preset-enable",
     subName: "enable",
-    description: "Enable a preset",
+    description: "Enable a preset.",
     usage: "<preset-to-enable> [severity]",
     subCommand: true,
     requiredRole: RoleType.MOD,

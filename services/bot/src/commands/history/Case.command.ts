@@ -10,7 +10,7 @@ enum CaseAction {
 
 const Case: Command = {
     name: "case",
-    description: "Get the info for a case.",
+    description: "View info of a case.",
     usage: "<caseId> [remove]",
     examples: ["123456789-1234567", "123456789-1234567 remove"],
     aliases: ["modaction", "action", "c"],

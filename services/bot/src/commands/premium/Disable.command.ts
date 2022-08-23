@@ -3,7 +3,7 @@ import type { Command } from "../Command";
 const Enable: Command = {
     name: "premium-disable",
     subName: "disable",
-    description: "Disable a server's premium status",
+    description: "Disable premium on a server.",
     usage: "<serverId>",
     subCommand: true,
     devOnly: true,

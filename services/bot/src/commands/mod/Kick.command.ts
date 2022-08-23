@@ -7,7 +7,7 @@ import type { Command } from "../Command";
 
 const Kick: Command = {
     name: "kick",
-    description: "Kick a user",
+    description: "Kick a user.",
     usage: "<targetId> [...reason]",
     examples: ["R40Mp0Wd", "R40Mp0Wd Talking too much about Town of Salem"],
     requiredRole: RoleType.MOD,
