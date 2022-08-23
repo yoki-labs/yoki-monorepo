@@ -26,7 +26,6 @@ client.ws.emitter.on("gatewayEvent", async (event, data) => {
 
     const serverFromDb = await client.dbUtil.getServer(serverId);
     if (serverFromDb?.blacklisted) return void 0;
-
     return client.eventHandler[event]?.(data, client, serverFromDb);
 });
 

@@ -8,6 +8,7 @@ export default async (data: Action, client: Client) => {
     const modLogChannel = await client.dbUtil.getLogChannel(data.serverId, LogChannelType.mod_actions);
     if (!modLogChannel) return;
 
+    void client.amp.logEvent({ event_type: "MEMBER_ACTION", user_id: data.executorId, event_properties: { serverId: data.serverId, targetId: data.targetId, type: data.type } });
     const [title, description] = getActionInfo(client, data);
 
     const message = await client.messageUtil.sendLog({
@@ -19,6 +20,5 @@ export default async (data: Action, client: Client) => {
         fields: getActionFields(data),
         additionalInfo: getActionAdditionalInfo(data),
     });
-
     await client.dbUtil.populateActionMessage(data.id, message.channelId, message.id);
 };

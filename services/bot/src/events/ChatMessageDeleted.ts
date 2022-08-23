@@ -19,7 +19,10 @@ export default async (packet: WSChatMessageDeletedPayload, ctx: Context) => {
     const deletedMessage = await ctx.dbUtil.getMessage(message.channelId, message.id);
 
     // mark this message as deleted if it's in the database, that way our runner can clear this message from the database after two weeks
-    if (deletedMessage) await ctx.prisma.message.updateMany({ where: { messageId: deletedMessage.messageId }, data: { deletedAt: packet.d.message.deletedAt } });
+    if (deletedMessage) {
+        void ctx.amp.logEvent({ event_type: "MESSAGE_DELETE_DB", user_id: deletedMessage.authorId, event_properties: { serverId: message.serverId! } });
+        await ctx.prisma.message.updateMany({ where: { messageId: deletedMessage.messageId }, data: { deletedAt: packet.d.message.deletedAt } });
+    }
     // if there is a database entry for the message, get the member from the server so we can get their name and roles etc.
     const oldMember = deletedMessage ? await ctx.serverUtil.getMember(deletedMessage.serverId!, deletedMessage.authorId).catch(() => null) : null;
     if (oldMember?.user.type === "bot") return;

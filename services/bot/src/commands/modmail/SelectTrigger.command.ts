@@ -44,6 +44,11 @@ const SelectTrigger: Command = {
         if (!sentMessage) return ctx.messageUtil.replyWithError(message, "That is not a valid message!");
 
         const emoteId = args.emoteId as number;
+        void ctx.amp.logEvent({
+            event_type: "MODMAIL_SELECT_TRIGGER",
+            user_id: message.createdBy,
+            event_properties: { serverId: message.serverId },
+        });
         await ctx.prisma.reactionAction.create({
             data: {
                 actionType: ReactionActionType.MODMAIL,

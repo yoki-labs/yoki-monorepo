@@ -1,3 +1,4 @@
+import type { ChatMessagePayload } from "@guildedjs/guilded-api-typings";
 import { Embed } from "@guildedjs/webhook-client";
 import { ContentFilter, FilterMatching } from "@prisma/client";
 import { stripIndents } from "common-tags";
@@ -21,10 +22,16 @@ export class ContentFilterUtil extends BaseFilterUtil {
     readonly imageFilterUtil = new ImageFilterUtil(this.client);
     readonly presets = presets;
 
-    async scanMessageMedia({ channelId, messageId, userId, content }: { channelId: string; messageId: string; userId: string; content: string }): Promise<void> {
+    async scanMessageMedia(message: ChatMessagePayload): Promise<void> {
+        const { serverId, channelId, content, createdBy: userId, id: messageId } = message;
+        void this.client.amp.logEvent({
+            event_type: "MESSAGE_MEDIA_SCAN",
+            user_id: userId,
+            event_properties: { serverId },
+        });
+
         const matches = [...content.matchAll(IMAGE_REGEX)];
         if (!matches.length) return;
-        console.log(userId);
         for (const [_, url] of matches) {
             const result = await this.imageFilterUtil.scanImage(url).catch(() => void 0);
             if (result) {
@@ -41,7 +48,7 @@ export class ContentFilterUtil extends BaseFilterUtil {
         }
     }
 
-    // This will scan any conten tthat is piped into it for breaking the content filter or preset list and will apply the associated punishment in the final param as a callback
+    // This will scan any content that is piped into it for breaking the content filter or preset list and will apply the associated punishment in the final param as a callback
     async scanContent({
         userId,
         text,
@@ -59,6 +66,7 @@ export class ContentFilterUtil extends BaseFilterUtil {
     }) {
         // If the bot is the one who did this action, ignore.
         if (userId === this.client.userId) return void 0;
+        void this.client.amp.logEvent({ event_type: "MESSAGE_TEXT_SCAN", user_id: userId, event_properties: { serverId: server.serverId } });
         const { serverId } = server;
 
         // Get all the banned words in this server
