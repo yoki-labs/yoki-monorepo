@@ -1,6 +1,4 @@
-import { Embed } from "@guildedjs/webhook-client";
 import type { InviteFilter, Preset } from "@prisma/client";
-import { stripIndents } from "common-tags";
 import fetch from "node-fetch";
 
 import type { PresetLink, Server } from "../typings";
@@ -78,26 +76,18 @@ export class LinkFilterUtil extends BaseFilterUtil {
             //   - doesn't exist(0) ^ blacklist(0) => 0
             const badUrl = server.filterEnabled && Number(greylistedUrl !== undefined && greylistedUrl !== null) ^ Number(server.urlFilterIsWhitelist);
 
-            if (badUrl || presetLinks.some((x) => this.matchesPresetLink(x, groups))) {
-                try {
-                    // Perform resulting action, for message filtering it's deleting the original message
-                    await resultingAction();
-                } catch (err: any) {
-                    if (err instanceof Error)
-                        await this.client.errorHandler.send("Error in link filtering callback", [new Embed().setDescription(stripIndents`${err.stack}`).setColor("RED")]);
-                }
-
+            if ((domain !== "guilded.gg" && badUrl) || presetLinks.some((x) => this.matchesPresetLink(x, groups)))
                 return this.dealWithUser(
                     userId,
                     server,
                     channelId,
                     filteredContent,
+                    resultingAction,
                     "URL filter tripped",
                     greylistedUrl?.infractionPoints ?? server.linkInfractionPoints,
                     greylistedUrl?.severity ?? server.linkSeverity,
                     domain
                 );
-            }
             // No bad invites (filter invites enabled, it's guilded gg, route exists and it's none of Guilded's subdomains)
             else if (!(server.filterInvites && domain === "guilded.gg" && route && (subdomain === "www." || !subdomain))) return;
 
@@ -115,12 +105,7 @@ export class LinkFilterUtil extends BaseFilterUtil {
 
                 if (!isHashId(invite)) return;
 
-                const response = await fetch(`https://guilded.gg/api/content/route/metadata?route=%2Fi%2F${invite}`, {
-                    method: "GET",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                });
+                const response = await fetch(`https://www.guilded.gg/api/content/route/metadata?route=/i/${invite}`);
 
                 // Don't care
                 if (!response.ok) return;
@@ -139,14 +124,7 @@ export class LinkFilterUtil extends BaseFilterUtil {
                 // (It's not a vanity)
                 if (!this.vanityRegex.test(vanity)) return;
 
-                const url = `https://guilded.gg/api/content/route/metadata?route=%2F${vanity}`;
-
-                const response = await fetch(url, {
-                    method: "GET",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                });
+                const response = await fetch(`https://www.guilded.gg/api/content/route/metadata?route=/${vanity}`);
 
                 // Don't care
                 if (!response.ok) return;
@@ -187,17 +165,8 @@ export class LinkFilterUtil extends BaseFilterUtil {
         resultingAction: () => unknown
     ) {
         // Detect non-whitelisted server IDs and non-this-server ID
-        if (targetServerId && targetServerId !== server.serverId && !whitelisted.some((x) => x.targetServerId === targetServerId)) {
-            try {
-                // Perform resulting action, for message filtering it's deleting the original message
-                await resultingAction();
-            } catch (err: any) {
-                if (err instanceof Error)
-                    await this.client.errorHandler.send("Error in link filtering callback", [new Embed().setDescription(stripIndents`${err.stack}`).setColor("RED")]);
-            }
-
-            return this.dealWithUser(userId, server, channelId, filteredContent, "Invite filter tripped", server.linkInfractionPoints, server.linkSeverity, route);
-        }
+        if (targetServerId && targetServerId !== server.serverId && !whitelisted.some((x) => x.targetServerId === targetServerId))
+            return this.dealWithUser(userId, server, channelId, filteredContent, resultingAction, "Invite filter tripped", server.linkInfractionPoints, server.linkSeverity, route);
     }
 
     override onUserWarn(userId: string, _serv: Server, channelId: string | null, filteredContent: FilteredContent) {

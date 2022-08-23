@@ -11,10 +11,10 @@ export class SpamFilterUtil extends BaseFilterUtil {
     messageCounter = new Map<string, { count: number; timeout: NodeJS.Timeout }>();
 
     checkForMessageSpam(server: Server, message: ChatMessagePayload) {
-        return this.checkForSpam(server, message.createdBy, message.channelId);
+        return this.checkForSpam(server, message.createdBy, message.channelId, () => this.rest.router.deleteChannelMessage(message.channelId, message.id));
     }
 
-    async checkForSpam(server: Server, userId: string, channelId: string) {
+    async checkForSpam(server: Server, userId: string, channelId: string, resultingAction: () => unknown) {
         // Only do it for a specific server
         const key = `${server.serverId}:${userId}`;
 
@@ -31,7 +31,7 @@ export class SpamFilterUtil extends BaseFilterUtil {
             this.messageCounter.delete(key);
 
             // Warn/mute/kick/ban
-            await this.dealWithUser(userId, server, channelId, FilteredContent.Message, `Spam filter tripped.`, server.spamInfractionPoints, Severity.WARN);
+            await this.dealWithUser(userId, server, channelId, FilteredContent.Message, resultingAction, `Spam filter tripped.`, server.spamInfractionPoints, Severity.WARN);
         }
     }
 
