@@ -3,9 +3,9 @@ import { inlineCode } from "../../utils/formatters";
 import type { Command } from "../Command";
 
 const Enable: Command = {
-    name: "preset-phrase-disable",
+    name: "preset-disable",
     subName: "disable",
-    description: "Disable a filter preset.",
+    description: "Disables a filter preset.",
     usage: "<preset>",
     subCommand: true,
     requiredRole: RoleType.MOD,
