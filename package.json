@@ -55,7 +55,7 @@
         "tabWidth": 4
     },
     "lint-staged": {
-        "services/bot/**/*.{js,ts}": "npx eslint -c .eslintrc.json --fix",
-        "services/website/**/*.{ts,tsx}": "npx eslint -c .eslintrc.web.json --fix"
+        "services/bot/src/*.{js,ts}": "npx eslint -c .eslintrc.json --fix",
+        "services/website/src/*.{ts,tsx}": "npx eslint -c .eslintrc.web.json --fix"
     }
 }

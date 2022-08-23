@@ -35,6 +35,12 @@ export class ContentFilterUtil extends BaseFilterUtil {
         for (const [_, url] of matches) {
             const result = await this.imageFilterUtil.scanImage(url).catch(() => void 0);
             if (result) {
+                void this.client.amp.logEvent({
+                    event_type: "MESSAGE_MEDIA_ACTION",
+                    user_id: userId,
+                    event_properties: { serverId },
+                });
+
                 this.client.rest.router.deleteChannelMessage(channelId, messageId).catch(() => null);
                 await this.client.messageUtil.sendWarningBlock(
                     channelId,
@@ -122,6 +128,11 @@ export class ContentFilterUtil extends BaseFilterUtil {
         // Check whether this member exceeds the infraction threshold for this server
         const exceededThreshold = await this.getMemberExceedsThreshold(server, userId, triggeredWord.infractionPoints);
 
+        void this.client.amp.logEvent({
+            event_type: "AUTOMOD_ACTION",
+            user_id: userId,
+            event_properties: { serverId, action: exceededThreshold ?? triggeredWord.severity, infractionPoints: triggeredWord.infractionPoints },
+        });
         // Add this action to the database
         const createdCase = await this.client.dbUtil.addAction({
             serverId,

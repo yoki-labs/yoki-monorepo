@@ -90,7 +90,8 @@ export class LinkFilterUtil extends BaseFilterUtil {
             const badUrl = server.filterEnabled && Number(greylistedUrl !== undefined && greylistedUrl !== null) ^ Number(server.urlFilterIsWhitelist);
 
             // Not guilded.gg, thing above (OR) is one of the preset items
-            if (domain !== "guilded.gg" && (badUrl || presetLinks.some((x) => this.matchesPresetLink(x, groups))))
+            if (domain !== "guilded.gg" && (badUrl || presetLinks.some((x) => this.matchesPresetLink(x, groups)))) {
+                void this.client.amp.logEvent({ event_type: "MESSAGE_LINK_ACTION", user_id: userId, event_properties: { serverId: server.serverId } });
                 return this.dealWithUser(
                     userId,
                     server,
@@ -102,6 +103,7 @@ export class LinkFilterUtil extends BaseFilterUtil {
                     greylistedUrl?.severity ?? server.linkSeverity,
                     domain
                 );
+            }
             // No bad invites (filter invites enabled, it's guilded gg, route exists and it's none of Guilded's subdomains)
             // E.g., we don't need to filter support.guilded.gg/hc/en-us -- support. is there, which we can match
             else if (!(server.filterInvites && domain === "guilded.gg" && route && (subdomain === "www." || !subdomain))) return;
@@ -192,8 +194,10 @@ export class LinkFilterUtil extends BaseFilterUtil {
         resultingAction: () => unknown
     ) {
         // Detect non-whitelisted server IDs and non-this-server ID
-        if (targetServerId && targetServerId !== server.serverId && !whitelisted.some((x) => x.targetServerId === targetServerId))
+        if (targetServerId && targetServerId !== server.serverId && !whitelisted.some((x) => x.targetServerId === targetServerId)) {
+            void this.client.amp.logEvent({ event_type: "MESSAGE_LINK_INVITE_ACTION", user_id: userId, event_properties: { serverId: server.serverId, route } });
             return this.dealWithUser(userId, server, channelId, filteredContent, resultingAction, "Invite filter tripped", server.linkInfractionPoints, server.linkSeverity, route);
+        }
     }
 
     override onUserWarn(userId: string, _serv: Server, channelId: string | null, filteredContent: FilteredContent) {

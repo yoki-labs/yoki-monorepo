@@ -30,6 +30,11 @@ export class SpamFilterUtil extends BaseFilterUtil {
             clearTimeout(instance.timeout);
             this.messageCounter.delete(key);
 
+            void this.client.amp.logEvent({
+                event_type: "SPAM_ACTION",
+                user_id: userId,
+                event_properties: { serverId: server.serverId, counter: instance.count, threshold: server.spamFrequency },
+            });
             // Warn/mute/kick/ban
             await this.dealWithUser(userId, server, channelId, FilteredContent.Message, resultingAction, `Spam filter tripped.`, server.spamInfractionPoints, Severity.WARN);
         }
