@@ -1,4 +1,4 @@
-import Amplitude from "@amplitude/node";
+import { init } from "@amplitude/node";
 import Collection from "@discordjs/collection";
 import { RestManager } from "@guildedjs/rest";
 import { WebhookClient } from "@guildedjs/webhook-client";
@@ -57,7 +57,7 @@ export default class Client {
     });
 
     // analytics
-    readonly amp = Amplitude.init(process.env.AMPLITUDE_API_KEY!);
+    readonly amp = init(process.env.AMPLITUDE_API_KEY!);
 
     // global collection of all timeouts within the bot so we can cancel them when the WS connection is severed
     readonly timeouts = new Collection<string, NodeJS.Timeout>();
