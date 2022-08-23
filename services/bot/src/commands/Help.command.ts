@@ -8,7 +8,7 @@ const categories = Object.values(Category);
 
 const Help: Command = {
     name: "help",
-    description: "Send a list of all the bot's commands",
+    description: "View a list of Yoki's commands.",
     usage: "[commandName]",
     examples: ["", "ping"],
     aliases: ["commands", "command", "all", "h"],

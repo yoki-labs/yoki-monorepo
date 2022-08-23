@@ -7,7 +7,7 @@ import type { Command } from "../Command";
 const Disable: Command = {
     name: "module-disable",
     subName: "disable",
-    description: "Disable a module",
+    description: "Disable a module.",
     usage: `<${typeToDBPropKeys.join("|")}>`,
     subCommand: true,
     requiredRole: RoleType.ADMIN,

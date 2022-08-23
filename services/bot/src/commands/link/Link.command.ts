@@ -8,7 +8,7 @@ import Url from "./url/Url.command";
 
 const Link: Command = {
     name: "link",
-    description: "Manages domain blacklists and invite whitelists",
+    description: "Manages domain blacklists and invite whitelists.",
     examples: ["domain add example.com warn", "invite add 4R56dNkl"],
     parentCommand: true,
     category: Category.Settings,

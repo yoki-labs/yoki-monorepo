@@ -6,7 +6,7 @@ import type { Command } from "../../Command";
 const Add: Command = {
     name: "link-domain-add",
     subName: "add",
-    description: "Add a vanity url to the invite __whitelist__",
+    description: "Add a vanity url to the invite __whitelist__.",
     usage: "<server id>",
     examples: ["4R56dNkl"],
     subCommand: true,

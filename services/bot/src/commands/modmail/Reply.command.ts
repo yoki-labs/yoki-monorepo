@@ -8,7 +8,7 @@ import type { Command } from "../Command";
 const Reply: Command = {
     name: "reply",
     subName: "reply",
-    description: "Reply in a modmail thread",
+    description: "Reply in a modmail thread.",
     usage: "<...content>",
     examples: ["Hello! What can I help you with?"],
     subCommand: true,

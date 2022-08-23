@@ -9,7 +9,7 @@ import type { Command } from "../Command";
 const Close: Command = {
     name: "close",
     subName: "close",
-    description: "Close a modmail thread",
+    description: "Close a modmail thread.",
     examples: [""],
     subCommand: true,
     requiredRole: RoleType.MOD,

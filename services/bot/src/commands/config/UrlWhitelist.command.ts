@@ -5,7 +5,7 @@ import type { Command } from "../Command";
 const UrlWhitelist: Command = {
     name: "link-url-urlwhitelist",
     subName: "urlwhitelist",
-    description: "Sets whether URL filter is whitelist or blacklist.",
+    description: "Sets whether the URL filter is whitelisted or blacklisted.",
     usage: "<is whitelist>",
     examples: ["true", "false"],
     subCommand: true,

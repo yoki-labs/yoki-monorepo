@@ -10,7 +10,7 @@ const TierTypes = {
 const Enable: Command = {
     name: "premium-enable",
     subName: "enable",
-    description: "Enable premium on a server",
+    description: "Enable premium on a server.",
     usage: "<serverId> <tier>",
     subCommand: true,
     devOnly: true,

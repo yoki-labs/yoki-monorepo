@@ -6,7 +6,7 @@ import type { Command } from "../../Command";
 const Remove: Command = {
     name: "link-domain-remove",
     subName: "remove",
-    description: "Removes a server from the __whitelist__",
+    description: "Removes a server from the __whitelist__.",
     usage: "<server id>",
     subCommand: true,
     category: Category.Moderation,

@@ -6,7 +6,7 @@ import type { Command } from "../Command";
 
 const Note: Command = {
     name: "note",
-    description: "Adds an entry to someone's offence history without notifying them",
+    description: "Adds an entry to someone's offence history without notifying them.",
     usage: "<target's ID> [infraction points] [...reason]",
     requiredRole: RoleType.MOD,
     category: Category.Moderation,

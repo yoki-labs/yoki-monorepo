@@ -9,7 +9,7 @@ import type { Command } from "./Command";
 
 const UserInfo: Command = {
     name: "userinfo",
-    description: "Get information about a user or yourself",
+    description: "View information about a user or yourself.",
     usage: "[id-of-user]",
     examples: ["0mqNyllA"],
     aliases: ["user"],

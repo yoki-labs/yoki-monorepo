@@ -6,7 +6,7 @@ import type { Command } from "../Command";
 
 const List: Command = {
     name: "preset-list",
-    description: "See all the preset options this bot has and also which ones are enabled for this server",
+    description: "List the presets enabled for this server, along with the presets Yoki offers.",
     usage: "",
     subName: "list",
     subCommand: true,
