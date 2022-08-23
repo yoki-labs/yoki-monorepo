@@ -1,3 +1,4 @@
+import { init } from "@amplitude/node";
 import Collection from "@discordjs/collection";
 import { RestManager } from "@guildedjs/rest";
 import { WebhookClient } from "@guildedjs/webhook-client";
@@ -55,6 +56,9 @@ export default class Client {
         },
     });
 
+    // analytics
+    readonly amp = init(process.env.AMPLITUDE_API_KEY!);
+
     // global collection of all timeouts within the bot so we can cancel them when the WS connection is severed
     readonly timeouts = new Collection<string, NodeJS.Timeout>();
     // global collection of all intervals within the bot so we can cancel them when the WS connection is severed
@@ -80,7 +84,7 @@ export default class Client {
     readonly muteHandler = new MuteScheduler(this, 15 * 60);
 
     // events that this bot handles, directly from the ws manager
-    readonly eventHandler: { [x: string]: (packet: any, ctx: Context, server: Server) => void } = {
+    readonly eventHandler: { [x: string]: (packet: any, ctx: Context, server: Server) => Promise<any> } = {
         // handles messages sent
         ChatMessageCreated,
         // handles messages updated
