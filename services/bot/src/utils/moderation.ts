@@ -16,16 +16,15 @@ export function getInfractionsFrom(args: Record<string, any>): [string | null, n
     return [reason, infractionPoints];
 }
 
-export const describeAction = (data: Action): [string, string] =>
-    data.type === Severity.NOTE
-        ? ["Moderation Note Added", `had a moderation note placed on them`]
-        : data.type === Severity.WARN
-        ? ["User Warned", `has been warned`]
-        : data.type === Severity.MUTE
-        ? ["User Muted", `has been muted`]
-        : data.type === Severity.SOFTBAN
-        ? ["User Soft Banned", `has been kicked and their content has been cleared`]
-        : ["User Banned", `has been banned`];
+export const describeAction = (data: Action): string[] =>
+    ({
+        [Severity.NOTE]: ["Moderation Note Added", "had a moderation note placed on them"],
+        [Severity.WARN]: ["User Warned", "has been warned"],
+        [Severity.MUTE]: ["User Muted", "has been muted"],
+        [Severity.SOFTBAN]: ["User Softbanned", "has been softbanned and their content has been cleared"],
+        [Severity.BAN]: ["User Banned", "has been banned"],
+        [Severity.KICK]: ["User Kicked", "has been kicked"],
+    }[data.type]);
 
 export function getActionInfo(ctx: Context, data: Action & { isAutomod?: boolean }): [string, string] {
     const [title, description] = describeAction(data);
