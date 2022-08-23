@@ -164,11 +164,7 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context, server:
 
             return ctx.messageUtil.replyWithInfo(message, `${inlineCode(commandName)} command`, command.description, {
                 fields: [
-                    {
-                        name: "Available sub-commands",
-                        value: command.subCommands.map((x) => `- ${inlineCode(x.subName!)}`).join("\n"),
-                        inline: true,
-                    },
+                    ...ctx.messageUtil.createSubCommandFields(command.subCommands),
                     {
                         name: "Example",
                         value: stripIndents`
@@ -176,7 +172,6 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context, server:
                                 ${prefix}${commandName} ${subCommandName} ${subCommand.examples ? subCommand.examples[0] : ""}
                                 \`\`\`
                             `,
-                        inline: true,
                     },
                 ],
             });
@@ -191,17 +186,14 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context, server:
             });
             return ctx.messageUtil.replyWithAlert(message, `No such sub-command`, `The specified sub-command could not be found.`, {
                 fields: [
-                    {
-                        name: "Available sub-commands",
-                        value: command.subCommands.map((x) => `- ${inlineCode(x.subName!)}`).join("\n"),
-                        inline: true,
-                    },
+                    ...ctx.messageUtil.createSubCommandFields(command.subCommands),
                     {
                         name: "Example",
                         value: stripIndents`
-                                        ${prefix}${commandName} ${command.subCommands.firstKey()}
-                                    `,
-                        inline: true,
+                            \`\`\`md
+                            ${prefix}${commandName} ${command.subCommands.firstKey()}
+                            \`\`\`
+                        `,
                     },
                 ],
             });

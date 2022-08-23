@@ -118,17 +118,17 @@ export class ContentFilterUtil extends BaseFilterUtil {
         if (!server.filterOnMods && modRoles.some((modRole) => member.roleIds.includes(modRole.roleId))) return;
 
         // Check whether this member exceeds the infraction threshold for this server
-        const ifExceeds = await this.getMemberExceedsThreshold(server, userId, triggeredWord.infractionPoints);
+        const exceededThreshold = await this.getMemberExceedsThreshold(server, userId, triggeredWord.infractionPoints);
 
         // Add this action to the database
         const createdCase = await this.client.dbUtil.addAction({
             serverId,
             // Whether this action is a result of the threshold exceeding or a severity
-            type: ifExceeds ?? triggeredWord.severity,
+            type: exceededThreshold ?? triggeredWord.severity,
             // The bot ID
             executorId: this.client.userId!,
             // The reason for this action, whether it's the threshold exceeded or a filter was violated
-            reason: `${ifExceeds ? `[AUTOMOD] ${ifExceeds} threshold exceeded, used phrase:` : `[AUTOMOD] content filter tripped, used phrase:`}`,
+            reason: `[AUTOMOD] Content filter tripped.${exceededThreshold ? ` ${exceededThreshold} threshold exceeded.` : ""}`,
             // The offending content
             triggerContent: triggeredWord.content,
             // The place where unmute messages will happen
@@ -136,13 +136,13 @@ export class ContentFilterUtil extends BaseFilterUtil {
             // The offending user
             targetId: userId,
             // Whether this case will expire (mutes)
-            expiresAt: (ifExceeds ?? triggeredWord.severity) === Severity.MUTE ? new Date(Date.now() + 1000 * 60 * 60 * 12) : null,
+            expiresAt: (exceededThreshold ?? triggeredWord.severity) === Severity.MUTE ? new Date(Date.now() + 1000 * 60 * 60 * 12) : null,
             // The amount of infraction points this specific word gives
             infractionPoints: triggeredWord.infractionPoints,
         });
 
         // If a modlog channel is set
-        this.client.emitter.emit("ActionIssued", { ...createdCase, reasonMetaData: `||${triggeredWord.content}||` }, this.client);
+        this.client.emitter.emit("ActionIssued", createdCase, this.client);
 
         try {
             // Perform resulting action, for message filtering it's deleting the original message
@@ -153,8 +153,8 @@ export class ContentFilterUtil extends BaseFilterUtil {
 
         // Execute the punishing action. If this is a threshold exceeding, execute the punishment associated with the exceeded threshold
         // Otherwise, execute the action associated with this specific filter word or preset entry
-        return ifExceeds
-            ? this.severityAction[ifExceeds](member.user.id, server, channelId, filteredContent)
+        return exceededThreshold
+            ? this.severityAction[exceededThreshold](member.user.id, server, channelId, filteredContent)
             : this.severityAction[triggeredWord.severity]?.(member.user.id, server, channelId, filteredContent);
     }
 

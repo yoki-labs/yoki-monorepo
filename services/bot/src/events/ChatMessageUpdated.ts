@@ -77,18 +77,22 @@ export default async (packet: WSChatMessageUpdatedPayload, ctx: Context, server:
                 },
             ];
         }
+
+        const author = message.createdByWebhookId ? `Webhook (${inlineCode(message.createdByWebhookId)})` : `<@${message.createdBy}> (${inlineCode(message.createdBy)})`;
+
         // send embed in log channel
-        await ctx.messageUtil.sendLog(
-            updatedMessageLogChannel.channelId,
-            `Message edited`,
-            stripIndents`
-                **ID:** ${inlineCode(message.id)}
-                **Author:** ${message.createdByWebhookId ? `Webhook` : `<@${message.createdBy}>`}
+        await ctx.messageUtil.sendLog({
+            where: updatedMessageLogChannel.channelId,
+            title: `Message Edited`,
+            description: stripIndents`
+                ${author} has edited the message ${inlineCode(message.id)} in the channel ${inlineCode(message.channelId)}.
+
+                [Jump to the message](https://guilded.gg/teams/${message.serverId}/channels/${message.channelId}/chat?messageId=${message.id})
             `,
-            Colors.yellow,
-            message.updatedAt!,
-            logContent
-        );
+            color: Colors.yellow,
+            occurred: message.updatedAt!,
+            fields: logContent,
+        });
     } catch (e) {
         const referenceId = nanoid();
         if (e instanceof Error) {

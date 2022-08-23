@@ -16,6 +16,9 @@ model Server {
     muteRoleId                 Int?
     filterEnabled              Boolean       @default(false)
     filterInvites              Boolean       @default(false)
+    urlFilterIsWhitelist       Boolean       @default(false)
+    linkSeverity               Severity      @default(WARN)
+    linkInfractionPoints       Int           @default(5)
     blacklisted                Boolean       @default(false)
     antiRaidEnabled            Boolean       @default(false)
     antiRaidResponse           ResponseType?
@@ -34,6 +37,7 @@ model Server {
     updatedAt                  DateTime?     @updatedAt
     modmailEnabled             Boolean       @default(false)
     modmailGroupId             String?       @db.VarChar(255)
+    modmailCategoryId          Int?
     scanNSFW                   Boolean       @default(false)
     spamFrequency              Int           @default(9)
 }

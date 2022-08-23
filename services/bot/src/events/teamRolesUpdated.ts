@@ -19,7 +19,7 @@ export default async (event: WSTeamRolesUpdatedPayload, ctx: Context): Promise<v
     const roleUpdateLogChannel = await ctx.dbUtil.getLogChannel(serverId!, LogChannelType.member_roles_updates);
     if (roleUpdateLogChannel) {
         // Prevent showcasing too many
-        const cappedRoleChanges = memberRoleIds.slice(0, 5);
+        const cappedRoleChanges = memberRoleIds.slice(0, 4);
 
         const roleDifferences = cappedRoleChanges.map(({ userId, roleIds }) => {
             const previousState = memberCaches[userId];
@@ -33,21 +33,20 @@ export default async (event: WSTeamRolesUpdatedPayload, ctx: Context): Promise<v
             return { addedRoles, removedRoles, roleIds, userId };
         });
 
+        const modifiedUsers = memberRoleIds
+            .slice(0, 10)
+            .map((x) => `<@${x.userId}>`)
+            .join(", ");
+
         try {
             // send the log channel message with the content/data of the deleted message
-            await ctx.messageUtil.sendLog(
-                roleUpdateLogChannel.channelId,
-                `Member's roles changed`,
-                stripIndents`
-                    **Modified user count:** ${memberRoleIds.length}
-                    **Modified users:** ${memberRoleIds
-                        .slice(0, 20)
-                        .map((x) => `<@${x.userId}>`)
-                        .join(", ")}${memberRoleIds.length > 20 ? "..." : ""}
-                `,
-                Colors.blue,
-                new Date().toISOString(),
-                roleDifferences.map((obj) => {
+            await ctx.messageUtil.sendLog({
+                where: roleUpdateLogChannel.channelId,
+                title: `Member Roles Changed`,
+                description: `${modifiedUsers}${memberRoleIds.length > 10 ? ` and ${memberRoleIds.length - 10} more` : ""} had their roles changed.`,
+                color: Colors.blue,
+                occurred: new Date().toISOString(),
+                fields: roleDifferences.map((obj) => {
                     const { userId, addedRoles, removedRoles, roleIds } = obj;
 
                     return {
@@ -60,8 +59,8 @@ export default async (event: WSTeamRolesUpdatedPayload, ctx: Context): Promise<v
                                   `
                                 : `Unknown role difference. Current roles: ${roleIds.map((role) => `<@${role}>`).join(", ")}`,
                     };
-                })
-            );
+                }),
+            });
         } catch (e) {
             // generate ID for this error, not persisted in database
             const referenceId = nanoid();

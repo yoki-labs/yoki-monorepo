@@ -101,18 +101,17 @@ export default async (packet: WSTeamMemberJoinedPayload, ctx: Context, server: S
 
     try {
         // send the log channel message with the content/data of the deleted message
-        await ctx.messageUtil.sendLog(
-            memberJoinLogChannel.channelId,
-            "User Joined",
-            stripIndents`
-                **User:** <@${member.user.id}> (${inlineCode(member.user.id)})
-                **Type:** ${member.user.type ?? "user"}
-				**Account Created:** \`${FormatDate(creationDate)} ${suspicious ? "(recent)" : ""}\`
-				**Joined at:** \`${FormatDate(new Date(member.joinedAt))}\`
-            `,
-            suspicious ? Colors.yellow : Colors.green,
-            member.joinedAt
-        );
+        await ctx.messageUtil.sendLog({
+            where: memberJoinLogChannel.channelId,
+            title: `${member.user.type === "bot" ? "Bot Added" : "User Joined"}`,
+            description: `<@${member.user.id}> (${inlineCode(member.user.id)}) has joined the server.`,
+            color: suspicious ? Colors.yellow : Colors.green,
+            occurred: member.joinedAt,
+            additionalInfo: stripIndents`
+                                **Account Created:** ${FormatDate(creationDate)} ${suspicious ? "(:warning: recent)" : ""}
+                                **Joined at:** ${FormatDate(new Date(member.joinedAt))}
+                            `,
+        });
     } catch (e) {
         // generate ID for this error, not persisted in database
         const referenceId = nanoid();

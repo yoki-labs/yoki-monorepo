@@ -5,7 +5,7 @@ import type { Command } from "../Command";
 
 const SpamInfractions: Command = {
     name: "config-spaminfractions",
-    description: "Sets how many infraction points user will get if they spam.",
+    description: "Sets given infraction points to the spamming user.",
     usage: "[infraction points]",
     examples: ["5"],
     subCommand: true,

@@ -1,12 +1,13 @@
 import { stripIndents } from "common-tags";
 
 import { LogChannelType, RoleType } from "../../typings";
+import { Colors } from "../../utils/color";
 import { FormatDate } from "../../utils/util";
 import { Category } from "../Category";
 import type { Command } from "../Command";
 
 const Close: Command = {
-    name: "modmail-close",
+    name: "close",
     subName: "close",
     description: "Close a modmail thread",
     examples: [""],
@@ -51,6 +52,18 @@ const Close: Command = {
             event_type: "MODMAIL_CLOSE",
             user_id: message.createdBy,
             event_properties: { serverId: message.serverId, threadAge: Date.now() - isCurrentChannelModmail.createdAt.getTime(), messageCount: modmailMessages.length },
+        });
+        await ctx.rest.router.createChannelMessage(isCurrentChannelModmail.userFacingChannelId, {
+            embeds: [
+                {
+                    description: stripIndents`<@${isCurrentChannelModmail.openerId}>
+						This ticket has now been closed.
+					`,
+                    color: Colors.blue,
+                    timestamp: new Date().toISOString(),
+                },
+            ],
+            isPrivate: true,
         });
         await ctx.prisma.modmailThread.update({ where: { id: isCurrentChannelModmail.id }, data: { closed: true } });
         return ctx.rest.router.deleteChannel(message.channelId);
