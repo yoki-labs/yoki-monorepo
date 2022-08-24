@@ -21,7 +21,7 @@ export default async (packet: WSChannelMessageReactionCreatedPayload, ctx: Conte
             if (!server.modmailGroupId && !server.modmailCategoryId) return;
             const userAlreadyHasChannel = await ctx.prisma.modmailThread.findFirst({ where: { openerId: createdBy, serverId, closed: false } });
             if (userAlreadyHasChannel) return;
-          
+
             void ctx.amp.logEvent({ event_type: "MODMAIL_THREAD_CREATE", user_id: createdBy, event_properties: { serverId } });
             const newChannel = await ctx.rest.router.createChannel({
                 serverId,
@@ -32,7 +32,7 @@ export default async (packet: WSChannelMessageReactionCreatedPayload, ctx: Conte
                 categoryId: server.modmailCategoryId ?? undefined,
             });
 
-            await ctx.prisma.modmailThread.create({
+            const newModmailThread = await ctx.prisma.modmailThread.create({
                 data: {
                     id: nanoid(13),
                     modFacingChannelId: newChannel.channel.id,
@@ -55,6 +55,7 @@ export default async (packet: WSChannelMessageReactionCreatedPayload, ctx: Conte
 							**Joined:** ${FormatDate(new Date(member.joinedAt))} EST
 							**Roles:** ${member.roleIds.map((x) => `<@${x}>`).join(" ")}
 						`,
+                        footer: { text: newModmailThread.id },
                     },
                 ],
             });
