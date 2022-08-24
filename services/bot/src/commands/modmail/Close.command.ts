@@ -26,7 +26,7 @@ const Close: Command = {
             const uploadedLog = await ctx.s3
                 .upload({
                     Bucket: process.env.S3_BUCKET,
-                    Key: `logs/message-update-${message.serverId}-${message.id}.txt`,
+                    Key: `modmail/logs/${isCurrentChannelModmail.serverId}-${isCurrentChannelModmail.id}.txt`,
                     Body: Buffer.from(stripIndents`
 						-------------
 						Opener: ${isCurrentChannelModmail.openerId}
