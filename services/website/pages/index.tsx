@@ -25,7 +25,7 @@ const Home: NextPage = () => {
                         <div className="pt-10 md:pt-6 text-white text-center pl-6 md:pl-0">
                             <div className="inline-block space-y-2 text-left">
                                 <FeatureListItem text="Moderation + automod" />
-                                <FeatureListItem text="Content filtering + image scanning" />
+                                <FeatureListItem text="Text + link + image scanning" />
                                 <FeatureListItem text="Server + moderation logs" />
                                 <FeatureListItem text="Modmail + support" />
                             </div>
@@ -51,19 +51,19 @@ const Home: NextPage = () => {
                         {
                             header: "Moderation without the mods.",
                             description:
-                                "Our robust content filter comes with presets comprised of over a hundred popular slurs, swears, and other unfavorable words to blacklist from your server.",
+                                "Our robust content filter scans text, images, invites, and links to keep the content you want, and block the content you don't. Comes with numerous presets for popular slurs, nsfw links, profanity, and more.",
                             src: "/features/wordFilter.png",
                         },
                         {
                             header: "Bring your staff and members closer.",
-                            description:
-                                "Our modmail system provides your server a means for members to report issues directly to staff while providing transparency to the rest of your team.",
+                            description: "Our modmail system provides your server a means for members to report issues directly to your staff. Comes with full message logs.",
                             src: "/features/modmail.png",
                         },
                         {
-                            header: "Block inappropriate images before they get seen.",
-                            description: "Our NSFW image filters catch inappropriate content automatically and apply punishments right away.",
-                            src: "/features/nsfwFilter.png",
+                            header: "Stop raiders right in their tracks.",
+                            description:
+                                "Present new or suspicious accounts with captchas or kick them automatically. Choose from a variety of properties to mark an account as suspicious.",
+                            src: "/features/captcha.png",
                         },
                     ].map((x, i) => (
                         <FeaturePreview key={x.src} {...x} position={i % 2 === 0 ? "right" : "left"} />
