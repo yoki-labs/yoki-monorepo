@@ -24,14 +24,15 @@ export class ContentFilterUtil extends BaseFilterUtil {
 
     async scanMessageMedia(message: ChatMessagePayload): Promise<void> {
         const { serverId, channelId, content, createdBy: userId, id: messageId } = message;
+        const matches = [...content.matchAll(IMAGE_REGEX)];
+        if (!matches.length) return;
+
         void this.client.amp.logEvent({
             event_type: "MESSAGE_MEDIA_SCAN",
             user_id: userId,
             event_properties: { serverId },
         });
 
-        const matches = [...content.matchAll(IMAGE_REGEX)];
-        if (!matches.length) return;
         for (const [_, url] of matches) {
             const result = await this.imageFilterUtil.scanImage(url).catch(() => void 0);
             if (result) {
