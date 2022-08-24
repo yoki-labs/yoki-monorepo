@@ -26,12 +26,12 @@ export default function Navbar() {
     }, []);
 
     return (
-        <NavbarWrapper>
+        <NavbarWrapper className={scrollY > 20 ? "scrolled" : ""}>
             <nav>
-                <div className={scrollY > 20 ? "wrapper scrolled" : "wrapper"}>
+                <div className="wrapper">
                     <Link href="/">
                         <div className="cursor-pointer flex select-none">
-                            <Image src="/face.png" className="rounded-full" width="50" height="50" alt="Yoki Face" />
+                            <Image src="/face.png" className="rounded-full" width="60" height="60" alt="Yoki Face" />
                         </div>
                     </Link>
                     <NavbarItemList>
