@@ -5,7 +5,7 @@ import { Category } from "../../Category";
 import type { Command } from "../../Command";
 
 const Add: Command = {
-    name: "link-domain-add",
+    name: "link-invite-add",
     subName: "add",
     description: "Add a vanity url to the invite __whitelist__.",
     usage: "<server id>",

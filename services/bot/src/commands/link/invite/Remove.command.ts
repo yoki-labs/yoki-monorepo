@@ -5,7 +5,7 @@ import { Category } from "../../Category";
 import type { Command } from "../../Command";
 
 const Remove: Command = {
-    name: "link-domain-remove",
+    name: "link-invite-remove",
     subName: "remove",
     description: "Removes a server from the __whitelist__.",
     usage: "<server id>",
