@@ -1,5 +1,6 @@
 import { RoleType } from "../../../typings";
 import { inlineCode } from "../../../utils/formatters";
+import { isHashId } from "../../../utils/util";
 import { Category } from "../../Category";
 import type { Command } from "../../Command";
 
@@ -19,6 +20,8 @@ const Remove: Command = {
     ],
     execute: async (message, args, ctx) => {
         const targetServerId = args.targetServerId as string;
+
+        if (!isHashId(targetServerId)) return ctx.messageUtil.replyWithAlert(message, `Expected ID`, `Expected server ID, not its vanity URL.`);
 
         const existingEntry = await ctx.prisma.inviteFilter.findFirst({ where: { serverId: message.serverId!, targetServerId } });
         if (!existingEntry) return ctx.messageUtil.replyWithAlert(message, `Link not found`, `This server is not in your server's invite whitelist!`);
