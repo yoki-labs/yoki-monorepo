@@ -3,16 +3,10 @@ import "../styles/styles.css";
 
 import type { AppProps } from "next/app";
 import Head from "next/head";
-import stripIndent from "strip-indent";
 
 import Footer from "../components/footer/Footer";
 import Navbar from "../components/navbar/navbar";
-const ogDescription = stripIndent(`The first moderation bot on Guilded.
-🛑 Moderation + automod
-🙈 Content filtering + image scanning
-📇 Server + moderation logs
-📨 Modmail + support
-`);
+const ogDescription = "Meet Yoki, your moderation companion. Guilded's first moderation bot.";
 const ogUrl = "https://yoki.gg/";
 const ogFace = "https://yoki.gg/face.png";
 const ogTitle = "Yoki";
