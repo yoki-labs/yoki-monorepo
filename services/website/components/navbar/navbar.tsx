@@ -31,7 +31,7 @@ export default function Navbar() {
                 <div className="wrapper">
                     <Link href="/">
                         <div className="cursor-pointer flex select-none">
-                            <Image src="/face.png" className="rounded-full" width="60" height="60" alt="Yoki Face" />
+                            <Image src="/face.png" className="rounded-full" width="54" height="54" alt="Yoki Face" />
                         </div>
                     </Link>
                     <NavbarItemList>
