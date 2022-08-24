@@ -3,12 +3,20 @@ import styled from "styled-components";
 export const HomeWrapper = styled.div`
     max-width: 1200px;
     margin: auto;
+
+    @media (max-width: 1200px) {
+        padding: 0 2rem;
+    }
 `;
 
 export const HomePreview = styled.div`
     display: flex;
     justify-content: space-between;
     height: 90vh;
+
+    @media (max-width: 960px) {
+        justify-content: center;
+    }
 `;
 
 export const HomeTextBlurb = styled.div`
