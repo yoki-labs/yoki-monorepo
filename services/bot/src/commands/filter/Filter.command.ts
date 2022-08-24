@@ -8,7 +8,7 @@ import Remove from "./Remove.command";
 
 const Filter: Command = {
     name: "filter",
-    description: "Parent command for filter related commands",
+    description: "Parent command for filter related commands.",
     examples: ["add test-word warn", "add another-test-word ban"],
     parentCommand: true,
     category: Category.Settings,

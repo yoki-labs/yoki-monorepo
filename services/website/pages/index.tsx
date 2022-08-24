@@ -21,9 +21,9 @@ const Home: NextPage = () => {
             src: "/features/modmail.png",
         },
         {
-            header: "Block inappropriate images before they get seen.",
-            description: "Our NSFW image filters catch inappropriate content automatically and apply punishments right away.",
-            src: "/features/nsfwFilter.png",
+            header: "Stop raiders right in their tracks.",
+            description: "Present new or suspicious accounts with captchas or kick them automatically. Choose from a variety of properties to mark an account as suspicious.",
+            src: "/features/captcha.png",
         },
     ];
 
@@ -46,7 +46,7 @@ const Home: NextPage = () => {
                         <div className="py-2 md:py-2 text-white">
                             <div className="inline-block space-y-2 text-left">
                                 <FeatureListItem text="Moderation + automod" />
-                                <FeatureListItem text="Content filtering + image scanning" />
+                                <FeatureListItem text="Text + link + image scanning" />
                                 <FeatureListItem text="Server + moderation logs" />
                                 <FeatureListItem text="Modmail + support" />
                             </div>

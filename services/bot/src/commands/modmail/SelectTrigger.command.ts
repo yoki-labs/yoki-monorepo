@@ -7,7 +7,7 @@ import type { Command } from "../Command";
 const SelectTrigger: Command = {
     name: "modmail-selecttrigger",
     subName: "selecttrigger",
-    description: "Select a modmail thread trigger",
+    description: "Select a modmail thread trigger.",
     usage: "<channel-id> <message-id> <emote-id>",
     examples: ["17bce2fd-1a95-44b5-abc3-b2ff115c62fb 9fd03b10-c4a1-4c3a-814a-5f6a7b39c632 90002554"],
     subCommand: true,
@@ -44,6 +44,11 @@ const SelectTrigger: Command = {
         if (!sentMessage) return ctx.messageUtil.replyWithError(message, "That is not a valid message!");
 
         const emoteId = args.emoteId as number;
+        void ctx.amp.logEvent({
+            event_type: "MODMAIL_SELECT_TRIGGER",
+            user_id: message.createdBy,
+            event_properties: { serverId: message.serverId },
+        });
         await ctx.prisma.reactionAction.create({
             data: {
                 actionType: ReactionActionType.MODMAIL,

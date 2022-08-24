@@ -5,7 +5,7 @@ import type { Command } from "../Command";
 
 const Prefix: Command = {
     name: "prefix",
-    description: "Change/view the prefix of this server",
+    description: "Set or view the prefix of this server.",
     usage: "[new prefix]",
     examples: ["y?", ""],
     category: Category.Settings,

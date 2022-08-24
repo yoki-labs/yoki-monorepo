@@ -14,7 +14,7 @@ type LogChannelArgEnum = keyof typeof LogChannelArgs;
 
 const Remove: Command = {
     name: "logchannel-remove",
-    description: "List all possible Log Channel Types.",
+    description: "Unsubscribe a specified channel from a specified log type.",
     subCommand: true,
     category: Category.Settings,
     subName: "remove",
@@ -40,7 +40,7 @@ const Remove: Command = {
         }
 
         // If logTypes is empty or includes ALL, shorten it to only ALL to clean up the process.
-        if (logTypes?.length === 0 || logTypes?.includes("ALL")) {
+        if (logTypes?.length === 0 || logTypes?.includes("all")) {
             await ctx.prisma.logChannel.findMany({ where: { channelId, serverId: message.serverId } }).then(logChannels => logChannels.forEach((logChannel) => {
                 logTypes?.push(logChannel.type)
             }))

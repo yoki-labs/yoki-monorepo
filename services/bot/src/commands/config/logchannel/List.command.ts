@@ -11,7 +11,7 @@ import type { Command } from "../../Command";
 
 const List: Command = {
     name: "logchannel-list",
-    description: "List all possible Log Channel Types.",
+    description: "List all possible Log Channel types.",
     usage: "[channelId]",
     examples: ["channel_id", ""],
     subCommand: true,

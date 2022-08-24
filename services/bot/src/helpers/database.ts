@@ -76,7 +76,7 @@ export class DatabaseUtil extends Util {
 
     async getLogChannel(serverId: string, type: LogChannelType) {
         const logchannel = await this.prisma.logChannel.findFirst({ where: { serverId, type } });
-        return logchannel ?? this.prisma.logChannel.findFirst({ where: { serverId, type: LogChannelType.ALL } });
+        return logchannel ?? this.prisma.logChannel.findFirst({ where: { serverId, type: LogChannelType.all } });
     }
 
     getLogChannels(serverId: string) {

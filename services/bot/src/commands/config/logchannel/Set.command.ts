@@ -14,7 +14,7 @@ type LogChannelArgEnum = keyof typeof LogChannelArgs;
 
 const Set: Command = {
     name: "logchannel-set",
-    description: "List all possible Log Channel Types.",
+    description: "Subscribe a specified channel to a specified log type.",
     subCommand: true,
     category: Category.Settings,
     subName: "set",
@@ -41,8 +41,8 @@ const Set: Command = {
         }
 
         // If logTypes is empty or includes ALL, shorten it to only ALL to clean up the process.
-        if (logTypes?.length === 0 || logTypes?.includes("ALL")) {
-            logTypes = ["ALL"];
+        if (logTypes?.length === 0 || logTypes?.includes("all")) {
+            logTypes = ["all"];
         }
 
         try {

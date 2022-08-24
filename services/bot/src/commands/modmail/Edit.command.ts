@@ -8,7 +8,7 @@ import type { Command } from "../Command";
 const Edit: Command = {
     name: "modmail-edit",
     subName: "edit",
-    description: "Edit a message in a modmail thread",
+    description: "Edit a message in a modmail thread.",
     usage: "<messageId> <...content>",
     examples: ["e9a5987a-b1f7-4252-b032-cbd1a0ac4edb Fixing a typo!"],
     subCommand: true,

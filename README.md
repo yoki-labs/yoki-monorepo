@@ -35,6 +35,7 @@ ERROR_WEBHOOK="ERROR_WEBHOOK_URL"
 GUILDED_TOKEN="GET_GUILDED_TOKEN_FROM_SOMEWHERE"
 DATABASE_URL="PUT_IN_TEST_DB_URL" // if you are using the docker-compose setup, your url will be exactly this "postgresql://yoki_user:yoki_pass@localhost:5432/yoki?schema=public".
 DEFAULT_PREFIX="DEFAULT_PREFIX"
+NODE_ENV="development"
 ```
 
 ## Standards

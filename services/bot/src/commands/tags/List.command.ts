@@ -6,7 +6,7 @@ import type { Command } from "../Command";
 const List: Command = {
     name: "tag-list",
     subName: "list",
-    description: "Get all the custom tag",
+    description: "Get all the custom tags.",
     usage: "",
     subCommand: true,
     requiredRole: RoleType.MOD,

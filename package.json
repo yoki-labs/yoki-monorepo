@@ -16,9 +16,9 @@
         "dev:db": "cd docker/compose && docker-compose -f docker-compose.yml -f docker-compose.dev.yml up -d --build db",
         "dev:down": "cd docker/compose && docker-compose -f docker-compose.yml -f docker-compose.dev.yml down",
         "dev:logs": "cd docker/compose && docker-compose -f docker-compose.yml -f docker-compose.dev.yml logs -f bot nsfw",
-        "prod:start": "cd docker/compose && docker-compose up -d --build",
-        "prod:down": "cd docker/compose && docker-compose down",
-        "prod:logs": "cd docker/compose && docker-compose logs -f bot nsfw",
+        "prod:start": "cd docker/compose && docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build",
+        "prod:down": "cd docker/compose && docker-compose -f docker-compose.yml -f docker-compose.prod.yml down",
+        "prod:logs": "cd docker/compose && docker-compose -f docker-compose.yml -f docker-compose.prod.yml logs -f bot nsfw",
         "migrate:dev": "cd services/bot && yarn migrate:dev"
     },
     "devDependencies": {
@@ -55,7 +55,7 @@
         "tabWidth": 4
     },
     "lint-staged": {
-        "services/bot/**/*.{js,ts}": "npx eslint -c .eslintrc.json --fix",
-        "services/website/**/*.{ts,tsx}": "npx eslint -c .eslintrc.web.json --fix"
+        "services/bot/src/*.{js,ts}": "npx eslint -c .eslintrc.json --fix",
+        "services/website/src/*.{ts,tsx}": "npx eslint -c .eslintrc.web.json --fix"
     }
 }

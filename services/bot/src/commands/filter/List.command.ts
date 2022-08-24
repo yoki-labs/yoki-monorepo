@@ -6,7 +6,7 @@ import type { Command } from "../Command";
 
 const List: Command = {
     name: "filter-list",
-    description: "Lists down every word or phrase that will be filtered",
+    description: "Lists every word or phrase that will be filtered by automod.",
     usage: "",
     subName: "list",
     subCommand: true,

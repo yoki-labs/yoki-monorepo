@@ -5,7 +5,7 @@ import type { Command } from "../Command";
 const Enable: Command = {
     name: "preset-disable",
     subName: "disable",
-    description: "Disable a preset",
+    description: "Disables a filter preset.",
     usage: "<preset>",
     subCommand: true,
     requiredRole: RoleType.MOD,

@@ -6,7 +6,7 @@ import type { Command } from "../Command";
 const List: Command = {
     name: "module-list",
     subName: "list",
-    description: "List the modules enabled for this server",
+    description: "List the modules enabled for this server.",
     usage: "",
     subCommand: true,
     category: Category.Moderation,

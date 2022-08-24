@@ -8,7 +8,7 @@ const categories = Object.values(Category);
 
 const Help: Command = {
     name: "help",
-    description: "Send a list of all the bot's commands",
+    description: "View a list of Yoki's commands.",
     usage: "[commandName]",
     examples: ["", "ping"],
     aliases: ["commands", "command", "all", "h"],
@@ -28,6 +28,7 @@ const Help: Command = {
     execute: (message, args, ctx, commandCtx) => {
         const commandName = (args.commandName as string | null)?.toLowerCase();
         const subName = (args.subName as string | null)?.toLowerCase();
+
         if (commandName) {
             const parentCommand = ctx.commands.get(commandName) ?? ctx.commands.find((command) => command.aliases?.includes(commandName) ?? false);
             if (!parentCommand) return ctx.messageUtil.replyWithAlert(message, `No such command`, `Could not find that command!`);
@@ -41,6 +42,11 @@ const Help: Command = {
             }
 
             const commandUsageName = parentCommand.name === command.name ? command.name : `${parentCommand.name}${command.subName ? ` ${command.subName}` : ""}`;
+            void ctx.amp.logEvent({
+                event_type: "HELP_SINGLE_COMMAND",
+                user_id: message.createdBy,
+                event_properties: { serverId: message.serverId },
+            });
             return ctx.messageUtil.replyWithInfo(
                 message,
                 `${inlineCode(commandUsageName)} command`,
@@ -48,7 +54,8 @@ const Help: Command = {
                     command.description,
                     " ",
                     `**Usage:** ${inlineCode(
-                        `${commandCtx.server.getPrefix()}${commandUsageName} ${command.usage ?? `<${command.subCommands?.size ? command.subCommands!.map((x) => x.subName!).join(" | ") : ""}> <...args>`
+                        `${commandCtx.server.getPrefix()}${commandUsageName} ${
+                            command.usage ?? `<${command.subCommands?.size ? command.subCommands!.map((x) => x.subName!).join(" | ") : ""}> <...args>`
                         }`
                     )}`,
                     command.examples ? `**Examples:** ${listInlineCode(command.examples.map((x) => `${commandCtx.server.getPrefix()}${commandUsageName} ${x}`))}` : null,
@@ -68,6 +75,11 @@ const Help: Command = {
             commandCategoryMap.set(category ?? "uncategorized", commands);
         });
 
+        void ctx.amp.logEvent({
+            event_type: "HELP_ALL_COMMANDS",
+            user_id: message.createdBy,
+            event_properties: { serverId: message.serverId },
+        });
         return ctx.messageUtil.replyWithBotInfo(
             message,
             `Command List`,

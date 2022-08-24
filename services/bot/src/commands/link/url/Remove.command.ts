@@ -1,12 +1,13 @@
 import { RoleType } from "../../../typings";
 import { inlineCode } from "../../../utils/formatters";
+import { isDomain } from "../../../utils/util";
 import { Category } from "../../Category";
 import type { Command } from "../../Command";
 
 const Remove: Command = {
     name: "link-url-remove",
     subName: "remove",
-    description: "Removes a domain from the __blacklist__",
+    description: "Removes a domain from the __blacklist__.",
     usage: "<domain>",
     subCommand: true,
     category: Category.Moderation,
@@ -19,6 +20,8 @@ const Remove: Command = {
     ],
     execute: async (message, args, ctx) => {
         const domain = (args.domain as string).toLowerCase();
+
+        if (!isDomain(domain)) return ctx.messageUtil.replyWithAlert(message, `Only domains`, `Only domains are available to be whitelisted/blacklisted at this time.`);
 
         const existingEntry = await ctx.prisma.urlFilter.findFirst({ where: { serverId: message.serverId!, domain } });
         if (!existingEntry) return ctx.messageUtil.replyWithAlert(message, `Link not found`, `This domain is not in your server's filter!`);
