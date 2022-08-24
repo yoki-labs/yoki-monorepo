@@ -33,17 +33,17 @@ const Home: NextPage = () => {
         <HomeWrapper>
             <div className="pb-20">
                 <HomePreview>
-                    <div className="flex flex-col justify-center">
+                    <div className="flex flex-col justify-center meet-yoki">
                         <h1 className="flex flex-col text-6xl text-white font-bold">
                             <span>
                                 Meet <span className="text-custom-guilded">Yoki</span>
                             </span>
                             <span className="text-xl">Your moderation companion</span>
                         </h1>
-                        <div className="pt-2 md:py-4">
+                        <div className="py-6 md:pt-2 md:py-4">
                             <p className="text-md text-white text-slate-300">Yoki has a powerful set of tools to make your communities safer</p>
                         </div>
-                        <div className="py-2 md:py-2 text-white pl-6 md:pl-0">
+                        <div className="py-2 md:py-2 text-white">
                             <div className="inline-block space-y-2 text-left">
                                 <FeatureListItem text="Moderation + automod" />
                                 <FeatureListItem text="Text + link + image scanning" />
@@ -51,7 +51,7 @@ const Home: NextPage = () => {
                                 <FeatureListItem text="Modmail + support" />
                             </div>
                         </div>
-                        <div className="py-2 md:space-x-4 md:inline-flex">
+                        <div className="flex flex-col md:flex-row gap-2 py-2 md:space-x-4 md:inline-flex">
                             <Button className="filled">
                                 <a href="/invite">Invite Now</a>
                             </Button>
@@ -79,10 +79,10 @@ const Home: NextPage = () => {
             </div>
             <div className="w-full rounded-lg py-8 md:py-16 px-8 text-center bg-custom-guilded">
                 <div className="m-auto">
-                    <h1 className="text-black text-6xl font-bold">Get started now</h1>
+                    <h1 className="text-black text-4xl md:text-6xl font-bold">Get started now</h1>
                     <div className="py-6">
                         <Link href="/invite">
-                            <button className="px-4 py-1 rounded text-lg border-2 bg-custom-gray transition hover:scale-110">
+                            <button className="px-6 py-2 md:px-4 md:py-1 rounded text-2xl md:text-lg bg-custom-gray transition hover:scale-110">
                                 <p className="font-semibold text-white">Invite the bot</p>
                             </button>
                         </Link>

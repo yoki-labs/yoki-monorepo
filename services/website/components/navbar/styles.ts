@@ -15,10 +15,17 @@ export const NavbarWrapper = styled.div`
         font-size: clamp(18px, 2vw, 22px);
     }
 
+    &.scrolled {
+        background-color: var(--grey);
+    }
+
     .wrapper {
         display: flex;
-        padding: 20px 35px;
-        justify-content: center;
+        max-width: 1200px;
+        margin: auto;
+
+        padding: 30px 0;
+        justify-content: space-between;
         align-items: center;
         transition: all 0.3s;
 
@@ -27,10 +34,10 @@ export const NavbarWrapper = styled.div`
         }
     }
 
-    @media (max-width: 600px) {
+    @media (max-width: 1200px) {
         .wrapper {
             justify-content: space-between;
-            padding: 10px 25px;
+            padding: 20px 2rem;
         }
     }
 `;
