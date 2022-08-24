@@ -1,20 +1,20 @@
 import type { ChatMessagePayload } from "@guildedjs/guilded-api-typings";
 
-import type { Server } from "../typings";
+import { Server, Severity } from "../typings";
 import { Colors } from "../utils/color";
 import BaseFilterUtil from "./base-filter";
 import { FilteredContent } from "./content-filter";
 
 export class SpamFilterUtil extends BaseFilterUtil {
     readonly spamPeriod = 5000;
-
-    messageCounter = new Map<string, { count: number; timeout: NodeJS.Timeout }>();
+    readonly messageCounter = new Map<string, { count: number; timeout: NodeJS.Timeout }>();
 
     checkForMessageSpam(server: Server, message: ChatMessagePayload) {
-        return this.checkForSpam(server, message.createdBy, message.channelId);
+        return this.checkForSpam(server, message.createdBy, message.channelId, () => this.rest.router.deleteChannelMessage(message.channelId, message.id));
     }
 
-    async checkForSpam(server: Server, userId: string, channelId: string) {
+    async checkForSpam(server: Server, userId: string, channelId: string, resultingAction: () => unknown) {
+        void this.client.amp.logEvent({ event_type: "SPAM_SCAN", user_id: userId, event_properties: { serverId: server.serverId } });
         // Only do it for a specific server
         const key = `${server.serverId}:${userId}`;
 
@@ -30,8 +30,13 @@ export class SpamFilterUtil extends BaseFilterUtil {
             clearTimeout(instance.timeout);
             this.messageCounter.delete(key);
 
+            void this.client.amp.logEvent({
+                event_type: "SPAM_ACTION",
+                user_id: userId,
+                event_properties: { serverId: server.serverId, counter: instance.count, threshold: server.spamFrequency },
+            });
             // Warn/mute/kick/ban
-            await this.dealWithUser(userId, server, channelId, FilteredContent.Message, `Spam filter tripped.`);
+            await this.dealWithUser(userId, server, channelId, FilteredContent.Message, resultingAction, `Spam filter tripped.`, server.spamInfractionPoints, Severity.WARN);
         }
     }
 

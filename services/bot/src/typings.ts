@@ -1,4 +1,4 @@
-import type { ServerChannelPayload, WSChatMessageCreatedPayload } from "@guildedjs/guilded-api-typings";
+import type { ServerChannelPayload, TeamMemberPayload, WSChatMessageCreatedPayload } from "@guildedjs/guilded-api-typings";
 import type { ContentFilter, FilterMatching, Server as DBServer } from "@prisma/client";
 
 import type Client from "./Client";
@@ -13,12 +13,7 @@ export interface CommandContext {
 }
 
 // member cached in redis
-export interface CachedMember {
-    roleIds: number[];
-    user: { id: string; name: string; type?: "bot" | "user" };
-    isOwner?: boolean;
-    nickname?: string;
-}
+export type CachedMember = TeamMemberPayload;
 
 // re-exporting enums, types, etc. from prisma incase we switch ORMs so we can easily replace them
 export { Action, ContentFilter, LogChannel, LogChannelType, RoleType, Severity } from "@prisma/client";
@@ -38,3 +33,9 @@ export declare interface PresetPatternObject {
     _: PresetPattern[];
 }
 export type PresetPattern = string | string[] | PresetPatternObject;
+
+export declare interface PresetLink {
+    domain: string;
+    subdomain?: string;
+    route?: string[];
+}

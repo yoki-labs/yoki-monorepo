@@ -5,6 +5,11 @@ const Invite: Command = {
     description: "Get a link for inviting the bot.",
     usage: "",
     execute: (message, _args, ctx) => {
+        void ctx.amp.logEvent({
+            event_type: "BOT_INVITE",
+            user_id: message.createdBy,
+            event_properties: { serverId: message.serverId },
+        });
         return ctx.messageUtil.replyWithInfo(
             message,
             `Invite the bot`,

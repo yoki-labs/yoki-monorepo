@@ -10,7 +10,7 @@ import type { Command } from "../Command";
 
 const Mute: Command = {
     name: "mute",
-    description: "Mute a user for a specified amount of time (ex. 3h, 30m, 5d)",
+    description: "Mute a user for a specified amount of time (ex. 3h, 30m, 5d).",
     usage: "<targetId> <time> [...reason]",
     examples: ["R40Mp0Wd 25m", "R40Mp0Wd 1h Talking too much about Town of Salem"],
     requiredRole: RoleType.MOD,
@@ -36,7 +36,6 @@ const Mute: Command = {
         if (!commandCtx.server.muteRoleId) return ctx.messageUtil.replyWithAlert(message, `No mute role set`, `There is no mute role configured for this server.`);
 
         const target = args.target as CachedMember;
-
         if (target.user.type === "bot") return;
 
         const reason = args.reason as string | null;
@@ -44,6 +43,11 @@ const Mute: Command = {
         if (!duration || duration <= 894000) return ctx.messageUtil.replyWithAlert(message, `Duration must be longer`, `Your mute duration must be longer than 15 minutes.`);
         const expiresAt = new Date(Date.now() + duration);
 
+        void ctx.amp.logEvent({
+            event_type: "BOT_MEMBER_MUTE",
+            user_id: message.createdBy,
+            event_properties: { serverId: message.serverId },
+        });
         try {
             await ctx.rest.router.assignRoleToMember(message.serverId!, target.user.id, commandCtx.server.muteRoleId);
         } catch (e) {

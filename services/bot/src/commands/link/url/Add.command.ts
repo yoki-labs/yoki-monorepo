@@ -2,13 +2,14 @@ import { Severity } from "@prisma/client";
 
 import { RoleType } from "../../../typings";
 import { inlineCode } from "../../../utils/formatters";
+import { isDomain } from "../../../utils/util";
 import { Category } from "../../Category";
 import type { Command } from "../../Command";
 
 const Add: Command = {
     name: "link-url-add",
     subName: "add",
-    description: "Add a domain to the __blacklist__",
+    description: "Add a domain to the __blacklist__.",
     usage: "<domain> [severity=warn] [infraction_points=5]",
     examples: ["example.com warn", "discord.com ban"],
     subCommand: true,
@@ -37,6 +38,8 @@ const Add: Command = {
         const domain = (args.domain as string).toLowerCase();
         const severity = (args.severity as Severity | null) ?? Severity.WARN;
         const infractionPoints = (args.infraction_points as number | null) ?? 5;
+
+        if (!isDomain(domain)) return ctx.messageUtil.replyWithAlert(message, `Only domains`, `Only domains are available to be whitelisted/blacklisted at this time.`);
 
         if (!severity) return ctx.messageUtil.replyWithAlert(message, `No such severity level`, `Sorry, but that is not a valid severity level!`);
         if (infractionPoints < 0 || infractionPoints > 100)

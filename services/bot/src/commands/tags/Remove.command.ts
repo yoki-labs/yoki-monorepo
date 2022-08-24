@@ -6,7 +6,7 @@ import type { Command } from "../Command";
 const Remove: Command = {
     name: "tag-remove",
     subName: "remove",
-    description: "Remove a custom tag",
+    description: "Remove a custom tag.",
     usage: "<tag-name>",
     subCommand: true,
     requiredRole: RoleType.MOD,

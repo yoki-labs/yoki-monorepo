@@ -11,7 +11,7 @@ export default (_input: string, args: string[], index: number, _, __, arg: Comma
         restArgs
             .join(" ")
             .split(" | ")
-            .map((x) => arg.values[x.toUpperCase()]);
+            .map((x) => arg.values[x.toLowerCase()]);
 
     return values?.every((x) => typeof x != "undefined") ? values : null;
 };

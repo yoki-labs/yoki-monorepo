@@ -1,8 +1,6 @@
-import type { EmbedField } from "@guildedjs/guilded-api-typings";
-
 import { RoleType } from "../../typings";
 import { inlineCode } from "../../utils/formatters";
-import { FormatDate } from "../../utils/util";
+import { getActionAdditionalInfo, getActionFields, getActionInfo } from "../../utils/moderation";
 import { Category } from "../Category";
 import type { Command } from "../Command";
 
@@ -12,7 +10,7 @@ enum CaseAction {
 
 const Case: Command = {
     name: "case",
-    description: "Get the info for a case.",
+    description: "View info of a case.",
     usage: "<caseId> [remove]",
     examples: ["123456789-1234567", "123456789-1234567 remove"],
     aliases: ["modaction", "action", "c"],
@@ -53,22 +51,15 @@ const Case: Command = {
             return ctx.messageUtil.replyWithSuccess(message, `Case deleted`, `Case ${inlineCode(caseId)} has been successfully deleted.`);
         }
 
+        const [title, description] = getActionInfo(ctx, fetchedCase);
+
         // View
         return ctx.messageUtil.replyWithInfo(
             message,
-            `Case ${inlineCode(caseId)}`,
-            `<@${fetchedCase.targetId}> has received ${fetchedCase.type} by <@${fetchedCase.executorId}>`,
+            title,
+            description,
             {
-                fields: [
-                    fetchedCase.reason && {
-                        name: "Reason",
-                        value: (fetchedCase.reason as string).length > 1024 ? `${fetchedCase.reason.substr(0, 1021)}...` : fetchedCase.reason,
-                    },
-                    fetchedCase.expiresAt && {
-                        name: "Expiration",
-                        value: `${FormatDate(fetchedCase.expiresAt)} EST`,
-                    },
-                ].filter(Boolean) as EmbedField[],
+                fields: getActionFields(fetchedCase).concat({ name: "Additional Info", value: getActionAdditionalInfo(fetchedCase) }),
             },
             {
                 isSilent: true,

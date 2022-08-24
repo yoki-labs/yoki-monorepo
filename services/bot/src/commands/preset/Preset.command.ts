@@ -8,7 +8,7 @@ import List from "./List.command";
 
 const Preset: Command = {
     name: "preset",
-    description: "Parent command for preset related commands",
+    description: "Parent command for preset related commands.",
     examples: ["enable slurs", "disable slurs"],
     aliases: ["presets"],
     category: Category.Settings,
