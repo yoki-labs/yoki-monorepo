@@ -24,14 +24,15 @@ export class ContentFilterUtil extends BaseFilterUtil {
 
     async scanMessageMedia(message: ChatMessagePayload): Promise<void> {
         const { serverId, channelId, content, createdBy: userId, id: messageId } = message;
+        const matches = [...content.matchAll(IMAGE_REGEX)];
+        if (!matches.length) return;
+
         void this.client.amp.logEvent({
             event_type: "MESSAGE_MEDIA_SCAN",
             user_id: userId,
             event_properties: { serverId },
         });
 
-        const matches = [...content.matchAll(IMAGE_REGEX)];
-        if (!matches.length) return;
         for (const [_, url] of matches) {
             const result = await this.imageFilterUtil.scanImage(url).catch(() => void 0);
             if (result) {
@@ -74,13 +75,15 @@ export class ContentFilterUtil extends BaseFilterUtil {
     }) {
         // If the bot is the one who did this action, ignore.
         if (userId === this.client.userId) return void 0;
-        void this.client.amp.logEvent({ event_type: "MESSAGE_TEXT_SCAN", user_id: userId, event_properties: { serverId: server.serverId } });
         const { serverId } = server;
 
         // Get all the banned words in this server
         const bannedWordsList = await this.dbUtil.getBannedWords(serverId);
         // Get all the enabled presets in this server
         const enabledPresets = presets ?? (await this.dbUtil.getEnabledPresets(serverId));
+
+        if (!bannedWordsList.length && !enabledPresets.length) return;
+        void this.client.amp.logEvent({ event_type: "MESSAGE_TEXT_SCAN", user_id: userId, event_properties: { serverId: server.serverId } });
 
         // Sanitize data into standard form
         const lowerCasedMessageContent = text.toLowerCase();

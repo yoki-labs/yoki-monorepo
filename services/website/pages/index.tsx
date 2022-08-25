@@ -11,19 +11,28 @@ const Home: NextPage = () => {
     const features = [
         {
             header: "Moderation without the mods.",
+            shortHeader: "automod",
             description:
-                "Our robust content filter comes with presets comprised of over a hundred popular slurs, swears, and other unfavorable words to blacklist from your server.",
+                "Our robust content filter scans text, images, invites, and links to keep the content you want and block the content you don't. Comes with numerous presets for popular slurs, NSFW links, profanity, and more.",
             src: "/features/wordFilter.png",
         },
         {
-            header: "Bring your staff and members closer.",
-            description: "Our modmail system provides your server a means for members to report issues directly to staff while providing transparency to the rest of your team.",
+            header: "Bringing your staff and members closer.",
+            shortHeader: "modmail",
+            description: "Our modmail system provides your server a way for members to communicate directly with your staff. Comes with full chat logs.",
             src: "/features/modmail.png",
         },
         {
-            header: "Stop raiders right in their tracks.",
+            header: "Stopping raiders right in their tracks.",
+            shortHeader: "antiraid",
             description: "Present new or suspicious accounts with captchas or kick them automatically. Choose from a variety of properties to mark an account as suspicious.",
             src: "/features/captcha.png",
+        },
+        {
+            header: "Giving you a record of everything.",
+            shortHeader: "log channels",
+            description: "Track message edits/deletions, member joins/leaves, moderator actions, and much more with log channels.",
+            src: "/features/logchannels.png",
         },
     ];
 
@@ -72,7 +81,7 @@ const Home: NextPage = () => {
                 </HomePreview>
                 <HomeTextBlurb>
                     <h1>Why Yoki?</h1>
-                    <p>Yoki delivers a reliable service from automoderation to ...</p>
+                    <p>Yoki delivers a reliable service from moderation to ...</p>
                 </HomeTextBlurb>
                 <hr className="text-grey-600 opacity-50" />
                 <div>{previews}</div>

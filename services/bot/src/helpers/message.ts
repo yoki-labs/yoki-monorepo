@@ -48,8 +48,8 @@ export class MessageUtil extends Util {
         return this.replyWithAlert(
             message,
             `Incorrect argument`,
-            `Sorry, but the usage of argument ${inlineCode(commandArg.name)} was not correct. Was expecting a ${
-                commandArg.type === "enum" ? Object.keys(commandArg.values).join(", ") : commandArg.type
+            `Sorry, but the usage of argument ${inlineCode(commandArg.name.split("-").join(" "))} was not correct. Was expecting a ${
+                commandArg.type === "enum" || commandArg.type === "enumList" ? Object.keys(commandArg.values).join(", ") : commandArg.type
             }${commandArg.max ? ` with the limit of ${commandArg.max}` : ""}.`,
             {
                 fields: [
