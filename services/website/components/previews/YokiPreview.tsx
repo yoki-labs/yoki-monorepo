@@ -8,7 +8,7 @@ import StatusPreview from "./StatusPreview";
 
 export default function YokiPreview() {
     return (
-        <div className="bg-custom-gray px-8 pt-8 pb-4 text-white text-opacity-70 divide-y divide-gray-400/50 rounded-lg">
+        <div className="max-w-[450px] bg-[#15171d] px-8 pt-8 pb-4 text-white text-opacity-70 divide-y divide-gray-400/50 rounded-lg">
             <div className="pb-4">
                 <ProfilePreview avatarURL="/face.png" avatarSize="60" username="Yoki" description="Server Protector 4000" />
                 <p className="pt-4">A mod bot with a powerful set of tools to make your communities safer!</p>
@@ -18,7 +18,9 @@ export default function YokiPreview() {
                 </div>
             </div>
             <div className="py-4">
-                <Label text="Status" />
+                <div className="pb-2">
+                    <Label text="Status" />
+                </div>
                 <StatusPreview statusTitle="Keeping your communities safe" statusDescription="for always and forever" />
             </div>
             <div className="py-4">

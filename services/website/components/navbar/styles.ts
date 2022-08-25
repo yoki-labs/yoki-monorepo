@@ -1,12 +1,11 @@
 import styled from "styled-components";
 
 export const NavbarWrapper = styled.div`
-    z-index: 10;
-    margin: 0 auto;
-    width: 95vw;
+    z-index: 999;
+    width: 100%;
     height: 100%;
 
-    top: 1rem;
+    top: 0;
     position: sticky;
 
     transition: 0.2s ease;
@@ -16,38 +15,42 @@ export const NavbarWrapper = styled.div`
         font-size: clamp(18px, 2vw, 22px);
     }
 
+    &.scrolled {
+        background-color: var(--grey);
+    }
+
     .wrapper {
         display: flex;
-        padding: 20px 35px;
+        max-width: 1200px;
+        margin: auto;
+
+        padding: 20px 0;
         justify-content: space-between;
         align-items: center;
-        transition: 0.2s ease;
+        transition: all 0.3s;
 
         &.scrolled {
             background-color: var(--grey);
-            border-radius: 10px;
-            transition: 0.4s all;
-            margin: 15px;
-            box-shadow: 4px 4px 4px 4px rgba(0, 0, 0, 0.2);
         }
     }
 
-    @media (max-width: 600px) {
+    @media (max-width: 1200px) {
         .wrapper {
-            padding: 10px 25px;
+            justify-content: space-between;
+            padding: 15px 2rem;
         }
     }
 `;
 
 export const NavbarItemList = styled.div`
-    margin-left: auto;
+    margin-left: 10rem;
     display: flex;
 
     transition: 0.3s ease;
 
     .link {
-        padding: 5px 10px;
-        margin: 0 5px;
+        padding: 2px 17px;
+        margin: 0 4px;
         border-radius: 5px;
         transition: 0.3s ease;
 
@@ -60,11 +63,11 @@ export const NavbarItemList = styled.div`
         }
 
         &.invite {
-            color: black;
+            color: var(--grey);
             background-color: var(--guilded-yellow);
             &:hover {
-                color: var(--guilded-yellow);
-                background-color: var(--grey);
+                color: white;
+                background-color: #b79200;
             }
         }
     }
@@ -153,13 +156,13 @@ export const SideNavbar = styled.div`
     height: 100%;
 
     background-color: black;
-    background-color: var(--grey-bg);
+    background-color: var(--primary);
     border-radius: 5px;
     transition: 0.3s ease;
 
     &.opened {
         padding: 0 20px;
-        width: 250px;
+        width: 300px;
     }
 `;
 
@@ -210,8 +213,7 @@ export const SideNavbarItem = styled.div`
         color: black;
         background-color: var(--guilded-yellow);
         &:hover {
-            color: var(--guilded-yellow);
-            background-color: var(--grey);
+            background-color: rgb(255, 230, 120);
         }
     }
 

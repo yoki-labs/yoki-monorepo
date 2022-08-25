@@ -3,11 +3,15 @@
 @tailwind utilities;
 
 :root {
-  --grey: rgb(32 34 39);
+  --primary: #191B1F;
+  --grey: #202227;
+  --off-grey: rgb(39, 41, 52);
   --grey-bg: #191B1F;
   --light-grey: #dcdcdc;
   --grey-fade: #8080802a;
-  --guilded-yellow: rgb(249 216 73);
+  --guilded-yellow: #F5C400;
+
+  --status-bg: url("../public/status-bg.png");
 }
 
 html {
@@ -15,7 +19,7 @@ html {
 }
 
 body {
-	background-color: #191B1F;
+	background-color: var(--primary);
 }
 
 h1, h2, h3, p, a {

@@ -26,12 +26,12 @@ export default function Navbar() {
     }, []);
 
     return (
-        <NavbarWrapper>
+        <NavbarWrapper className={scrollY > 20 ? "scrolled" : ""}>
             <nav>
-                <div className={scrollY > 20 ? "wrapper scrolled" : "wrapper"}>
+                <div className="wrapper">
                     <Link href="/">
-                        <div className="flex select-none">
-                            <Image src="/face.png" className="rounded-full" width="50" height="50" alt="Yoki Face" />
+                        <div className="cursor-pointer flex select-none">
+                            <Image src="/face.png" className="rounded-full" width="54" height="54" alt="Yoki Face" />
                         </div>
                     </Link>
                     <NavbarItemList>
@@ -45,7 +45,7 @@ export default function Navbar() {
                             <a className="link premium">Premium</a>
                         </Link>
                         <Link href="/invite">
-                            <a className="link invite">Invite</a>
+                            <a className="link invite">Get Yoki</a>
                         </Link>
                     </NavbarItemList>
                     <Hamburger onClick={() => toggleSidebar()}>
@@ -88,7 +88,7 @@ export default function Navbar() {
                     </SideNavbarItem>
                     <SideNavbarItem onClick={() => toggleSidebar()}>
                         <Link href="/invite">
-                            <a className="invite">Invite</a>
+                            <a className="invite">Get Yoki</a>
                         </Link>
                     </SideNavbarItem>
                 </SideNavbarBody>
