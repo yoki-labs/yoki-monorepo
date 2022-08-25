@@ -17,13 +17,18 @@ const Home: NextPage = () => {
         },
         {
             header: "Bring your staff and members closer.",
-            description: "Our modmail system provides your server a means for members to communicate directly with your staff. Comes with full message logs.",
+            description: "Our modmail system provides your server a way for members to communicate directly with your staff. Comes with full chat logs.",
             src: "/features/modmail.png",
         },
         {
             header: "Stop raiders right in their tracks.",
             description: "Present new or suspicious accounts with captchas or kick them automatically. Choose from a variety of properties to mark an account as suspicious.",
             src: "/features/captcha.png",
+        },
+        {
+            header: "Have a record of everything.",
+            description: "Track message edits/deletions, member joins/leaves, moderator actions, and much more with log channels.",
+            src: "/features/logchannels.png",
         },
     ];
 
