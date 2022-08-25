@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 
 export default function Footer() {
     return (
@@ -14,14 +15,14 @@ export default function Footer() {
                         <h2 className="mb-6 text-sm font-semibold uppercase">Resources</h2>
                         <ul>
                             <li className="mb-4">
-                                <a href="/docs" className="hover:underline">
+                                <Link href="/docs" className="hover:underline">
                                     Docs
-                                </a>
+                                </Link>
                             </li>
                             <li>
-                                <a href="/feedback" className="hover:underline">
+                                <Link href="/feedback" className="hover:underline">
                                     Feedback
-                                </a>
+                                </Link>
                             </li>
                         </ul>
                     </div>
@@ -29,14 +30,14 @@ export default function Footer() {
                         <h2 className="mb-6 text-sm font-semibold uppercase">Follow us</h2>
                         <ul>
                             <li className="mb-4">
-                                <a href="https://github.com/yoki-labs" className="hover:underline">
+                                <Link href="https://github.com/yoki-labs" className="hover:underline">
                                     Github
-                                </a>
+                                </Link>
                             </li>
                             <li>
-                                <a href="https://twitter.com/yoki_labs" className="hover:underline">
+                                <Link href="https://twitter.com/yoki_labs" className="hover:underline">
                                     Twitter
-                                </a>
+                                </Link>
                             </li>
                         </ul>
                     </div>
@@ -44,14 +45,14 @@ export default function Footer() {
                         <h2 className="mb-6 text-sm font-semibold uppercase">Legal</h2>
                         <ul>
                             <li className="mb-4">
-                                <a href="/privacy" className="hover:underline">
+                                <Link href="/privacy" className="hover:underline">
                                     Privacy Policy
-                                </a>
+                                </Link>
                             </li>
                             <li>
-                                <a href="/tos" className="hover:underline">
+                                <Link href="/tos" className="hover:underline">
                                     Terms &amp; Conditions
-                                </a>
+                                </Link>
                             </li>
                         </ul>
                     </div>
@@ -61,9 +62,9 @@ export default function Footer() {
             <div className="sm:flex sm:items-center sm:justify-between">
                 <span className="text-sm sm:text-center">
                     © 2022{" "}
-                    <a href="/" className="hover:underline">
+                    <Link href="/" className="hover:underline">
                         Yoki Labs
-                    </a>
+                    </Link>
                     . All Rights Reserved.
                 </span>
             </div>
