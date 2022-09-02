@@ -13,7 +13,7 @@ export default function YokiPreview() {
                 <ProfilePreview avatarURL="/face.png" avatarSize="60" username="Yoki" description="Server Protector 4000" />
                 <p className="pt-4">A mod bot with a powerful set of tools to make your communities safer!</p>
                 <div className="flex space-x-4 pt-4">
-                    <StatisticPreview Icon={Activity} text="100+ Servers" />
+                    <StatisticPreview Icon={Activity} text="300+ Servers" />
                     <StatisticPreview Icon={Users} text="10,000+ Members" />
                 </div>
             </div>
