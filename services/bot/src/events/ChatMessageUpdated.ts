@@ -19,6 +19,14 @@ export default async (packet: WSChatMessageUpdatedPayload, ctx: Context, server:
     const member = await ctx.serverUtil.getMember(packet.d.serverId, packet.d.message.createdBy).catch(() => null);
     if (member?.user.type === "bot") return;
 
+    // get the old message from the database if we logged it before
+    const oldMessage = await ctx.dbUtil.getMessage(message.channelId, message.id);
+    // if we did log it in the past, update it with the new content (logMessage uses upsert)
+    if (oldMessage) {
+        void ctx.amp.logEvent({ event_type: "MESSAGE_UPDATE_DB", user_id: message.createdBy, event_properties: { serverId: message.serverId } });
+        await ctx.dbUtil.storeMessage(message);
+    }
+
     // scan the updated message content
     await ctx.contentFilterUtil.scanContent({
         userId: message.createdByBotId || message.createdByWebhookId || message.createdBy,
@@ -29,17 +37,11 @@ export default async (packet: WSChatMessageUpdatedPayload, ctx: Context, server:
         // Filter
         resultingAction: () => ctx.rest.router.deleteChannelMessage(message.channelId, message.id),
     });
+
     // get the log channel for message updates
     const updatedMessageLogChannel = await ctx.dbUtil.getLogChannel(message.serverId!, LogChannelType.message_edits);
     // if there is no log channel for message updates, then ignore
     if (!updatedMessageLogChannel) return void 0;
-    // get the old message from the database if we logged it before
-    const oldMessage = await ctx.dbUtil.getMessage(message.channelId, message.id);
-    // if we did log it in the past, update it with the new content (logMessage uses upsert)
-    if (oldMessage) {
-        void ctx.amp.logEvent({ event_type: "MESSAGE_UPDATE_DB", user_id: message.createdBy, event_properties: { serverId: message.serverId } });
-        await ctx.dbUtil.storeMessage(message);
-    }
 
     try {
         let logContent = [
