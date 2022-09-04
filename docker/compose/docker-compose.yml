@@ -6,6 +6,8 @@ services:
     restart: unless-stopped
     networks:
       - main-network
+    env_file:
+      - ../../stack.env
   nsfw:
     image: ghcr.io/yoki-labs/yoki/nsfw:latest
     container_name: YOKI_NSFW_DETECTION
@@ -14,6 +16,8 @@ services:
       - main-network
     ports:
       - "4433:4433"
+    env_file:
+      - ../../stack.env
   cache:
     image: redis/redis-stack-server:latest
     container_name: YOKI_CACHE
