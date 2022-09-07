@@ -6,7 +6,8 @@ on:
             - main
         paths:
             - "services/**"
-            - "!services/website/**"
+            - "!services/landing/**"
+            - "!services/dashboard/**"
             - "docker/**"
 jobs:
     docker:
