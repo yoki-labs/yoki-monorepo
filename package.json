@@ -6,8 +6,8 @@
     "author": "Zaid \"Nico\" <contact@nico.engineer>",
     "scripts": {
         "build": "yarn workspaces run build",
-        "lint": "eslint -c .eslintrc.json services/bot services/nsfw scripts/ && eslint -c .eslintrc.web.json services/website",
-        "lint:fix": "eslint -c .eslintrc.json services/bot services/nsfw scripts/ --fix && eslint -c .eslintrc.web.json services/website --fix",
+        "lint": "eslint -c .eslintrc.json services/bot services/nsfw scripts/ && eslint -c .eslintrc.web.json services/landing services/dashboard/src",
+        "lint:fix": "eslint -c .eslintrc.json services/bot services/nsfw scripts/ --fix && eslint -c .eslintrc.web.json services/landing services/dashboard --fix",
         "prepare": "husky install",
         "prettier": "prettier --write **/*.{ts,js,json,yml,yaml,md}",
         "generate": "cd services/bot && yarn generate",
@@ -46,7 +46,7 @@
     "workspaces": [
         "services/bot",
         "services/nsfw",
-        "services/website"
+        "services/landing"
     ],
     "prettier": {
         "endOfLine": "auto",
@@ -56,6 +56,7 @@
     },
     "lint-staged": {
         "services/bot/src/*.{js,ts}": "npx eslint -c .eslintrc.json --fix",
-        "services/website/src/*.{ts,tsx}": "npx eslint -c .eslintrc.web.json --fix"
+        "services/landing/src/*.{ts,tsx}": "npx eslint -c .eslintrc.web.json --fix",
+        "services/dashboard/src/*.{js,jsx}": "npx eslint -c .eslintrc.web.json --fix"
     }
 }
