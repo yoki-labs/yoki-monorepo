@@ -3,7 +3,7 @@
     "parser": "@typescript-eslint/parser",
     "parserOptions": {
         "ecmaVersion": 2021,
-        "project": "./tsconfig.eslint.json"
+        "project": "../../tsconfig.eslint.json"
     },
     "plugins": ["simple-import-sort", "unused-imports"],
     "root": true,

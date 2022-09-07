@@ -8,6 +8,8 @@
         "build": "npx tsc && npx tsc-alias",
         "start": "node dist/index.js",
         "dev": "npx nodemon",
+        "lint": "eslint src/",
+        "lint:fix": "yarn lint --fix",
         "migrate:dev": "npx dotenv -e ../../.env -- npx prisma migrate dev --name init",
         "migrate:prod": "npx dotenv -e ../../.env.prod -- npx prisma migrate deploy",
         "migrate:prod:ci": "prisma migrate deploy",

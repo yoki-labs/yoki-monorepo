@@ -6,9 +6,9 @@ export default function Footer() {
         <footer className="text-white p-4 mt-12 md:p-8 dark:bg-gray-900">
             <div className="md:flex md:justify-between">
                 <div className="mb-6 md:mb-0 ">
-                    <a href="/" className="flex items-center">
+                    <Link href="/" className="flex items-center hover:cursor-pointer">
                         <Image src="/yoki-labs-logo.png" className="mr-3 h-8" alt="FlowBite Logo" width="294" height="80" />
-                    </a>
+                    </Link>
                 </div>
                 <div className="grid grid-cols-2 gap-8 sm:gap-6 sm:grid-cols-3">
                     <div>

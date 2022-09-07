@@ -5,9 +5,11 @@
     "description": "Yoki NSFW detection service",
     "main": "./dist/index.js",
     "scripts": {
-        "build": "npx tsc && npx tsc-alias",
+        "lint": "eslint src/",
+        "lint:fix": "yarn lint --fix",
+        "build": "tsc && npx tsc-alias",
         "start": "node dist/index.js",
-        "dev": "npx nodemon"
+        "dev": "nodemon"
     },
     "devDependencies": {
         "@types/express": "^4.17.13",

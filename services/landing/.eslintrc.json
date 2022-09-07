@@ -6,7 +6,7 @@
         "ecmaFeatures": {
             "jsx": true
         },
-        "project": ["./tsconfig.json", "./tsconfig.eslint.json", "./services/landing/tsconfig.json", "./services/dashboard/tsconfig.json"]
+        "project": ["./tsconfig.json"]
     },
     "root": true
 }

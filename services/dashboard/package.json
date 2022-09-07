@@ -4,6 +4,8 @@
     "version": "0.1.0",
     "scripts": {
         "dev": "vite",
+        "lint": "eslint src/",
+        "lint:fix": "yarn lint --fix",
         "build": "vite build",
         "preview": "vite preview"
     },

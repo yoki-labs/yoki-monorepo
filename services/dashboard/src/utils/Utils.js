@@ -1,9 +1,9 @@
 import resolveConfig from 'tailwindcss/resolveConfig';
 
-export const tailwindConfig = () => {
+export const tailwindConfig = () => 
   // Tailwind config
-  return resolveConfig('./src/css/tailwind.config.js')
-}
+   resolveConfig('./src/css/tailwind.config.js')
+
 
 export const hexToRGB = (h) => {
   let r = 0;
