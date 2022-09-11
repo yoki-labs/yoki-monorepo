@@ -87,4 +87,4 @@ jobs:
 
             - name: Trigger deploy
               run: |
-                  curl -X POST https://portainer.yoki-labs.xyz/api/stacks/webhooks/f4af1245-da74-4764-a60c-feb451362b31
+                  curl -X POST ${{ secrets.PORTAINER_LINK }}

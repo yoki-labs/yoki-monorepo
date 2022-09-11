@@ -17,6 +17,7 @@
         "simple-import-sort/imports": "warn",
         "simple-import-sort/exports": "warn",
         "unused-imports/no-unused-imports": "error",
+		"@typescript-eslint/no-throw-literal": "off",
         "unused-imports/no-unused-vars": [
             "warn",
             {
