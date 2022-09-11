@@ -1,9 +1,11 @@
+import { generateCaptcha } from "../../utils/antiraid";
 import type { Command } from "../Command";
 
 const Solve: Command = {
     name: "solve",
     description: "Solve the current captcha.",
     usage: "<code>",
+    aliases: ["verify"],
     examples: ["djAshAJ"],
     hidden: true,
     subCommand: true,
@@ -19,10 +21,12 @@ const Solve: Command = {
             },
         });
 
-        if (!captcha) return ctx.messageUtil.reply(message, { content: "You do not have an activate captcha!" });
+        if (!captcha) return ctx.messageUtil.reply(message, { content: "You do not have an active captcha!" });
         if (code.toLowerCase() !== captcha.value) {
             void ctx.amp.logEvent({ event_type: "CAPTCHA_FAIL", user_id: message.createdBy, event_properties: { serverId: message.serverId } });
-            return ctx.messageUtil.reply(message, { content: "**INCORRECT!** Please try again." });
+            const { value, url } = await generateCaptcha(ctx.s3, captcha.id);
+            await ctx.prisma.captcha.update({ where: { id: captcha.id }, data: { value, url } });
+            return ctx.messageUtil.reply(message, { content: "**INCORRECT!** A new captcha has been generated for you.", embeds: [{ image: { url } }] });
         }
 
         await ctx.prisma.captcha.update({ where: { id: captcha.id }, data: { solved: true } });

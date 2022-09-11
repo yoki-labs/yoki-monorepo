@@ -1,12 +1,12 @@
 import { Embed } from "@guildedjs/embeds";
 import type { WSTeamMemberJoinedPayload } from "@guildedjs/guilded-api-typings";
 import { Embed as WebhookEmbed } from "@guildedjs/webhook-client";
-import Captcha from "@haileybot/captcha-generator";
 import { LogChannelType, Severity } from "@prisma/client";
 import { stripIndents } from "common-tags";
 import { nanoid } from "nanoid";
 
 import type { Context, Server } from "../typings";
+import { generateCaptcha } from "../utils/antiraid";
 import { Colors } from "../utils/color";
 import { inlineCode } from "../utils/formatters";
 import { FormatDate, suspicious as sus } from "../utils/util";
@@ -25,13 +25,7 @@ export default async (packet: WSTeamMemberJoinedPayload, ctx: Context, server: S
         await ctx.rest.router.assignRoleToMember(serverId, member.user.id, server.muteRoleId);
     }
 
-    // check if there's a log channel channel for member joins
-    const memberJoinLogChannel = await ctx.dbUtil.getLogChannel(serverId!, LogChannelType.member_joins);
-    if (!memberJoinLogChannel) return void 0;
-    const creationDate = new Date(member.user.createdAt);
-    const suspicious = sus(creationDate);
     const userId = packet.d.member.user.id;
-
     if (server.antiRaidEnabled && server.antiRaidAgeFilter && Date.now() - new Date(packet.d.member.user.createdAt).getTime() <= server.antiRaidAgeFilter) {
         void ctx.amp.logEvent({ event_type: "FRESH_ACCOUNT_JOIN", user_id: member.user.id, event_properties: { serverId: packet.d.serverId } });
         switch (server.antiRaidResponse ?? "KICK") {
@@ -39,23 +33,13 @@ export default async (packet: WSTeamMemberJoinedPayload, ctx: Context, server: S
                 if (!server.antiRaidChallengeChannel) return;
                 let userCaptcha = await ctx.prisma.captcha.findFirst({ where: { serverId, triggeringUser: userId, solved: false } });
                 void ctx.amp.logEvent({ event_type: "MEMBER_CAPTCHA_JOIN", user_id: member.user.id, event_properties: { serverId: packet.d.serverId } });
+
                 if (!userCaptcha) {
-                    const captcha = new Captcha();
-                    const id = nanoid();
-                    if (server.muteRoleId) await ctx.rest.router.assignRoleToMember(serverId, member.user.id, server.muteRoleId).catch(() => null);
-                    const uploadToBucket = await ctx.s3
-                        .upload({
-                            Bucket: process.env.S3_BUCKET,
-                            Key: `captcha/${id}`,
-                            Body: Buffer.from(captcha.dataURL.replace(/^data:image\/\w+;base64,/, ""), "base64"),
-                            ContentEncoding: "base64",
-                            ContentType: "image/jpeg",
-                            ACL: "public-read",
-                        })
-                        .promise();
+                    const { id, value, url } = await generateCaptcha(ctx.s3);
                     const createdCaptcha = await ctx.prisma.captcha.create({
-                        data: { id, serverId: packet.d.serverId, triggeringUser: packet.d.member.user.id, value: captcha.value.toLowerCase(), url: uploadToBucket.Location },
+                        data: { id, serverId: packet.d.serverId, triggeringUser: packet.d.member.user.id, value, url },
                     });
+                    if (server.muteRoleId) await ctx.rest.router.assignRoleToMember(serverId, member.user.id, server.muteRoleId).catch(() => null);
                     userCaptcha = createdCaptcha;
                 }
                 await ctx.messageUtil.send(server.antiRaidChallengeChannel, {
@@ -98,6 +82,12 @@ export default async (packet: WSTeamMemberJoinedPayload, ctx: Context, server: S
             }
         }
     }
+
+    // check if there's a log channel channel for member joins
+    const memberJoinLogChannel = await ctx.dbUtil.getLogChannel(serverId!, LogChannelType.member_joins);
+    if (!memberJoinLogChannel) return void 0;
+    const creationDate = new Date(member.user.createdAt);
+    const suspicious = sus(creationDate);
 
     try {
         // send the log channel message with the content/data of the deleted message
