@@ -52,6 +52,47 @@ export class ServerUtil extends Util {
     removeMemberCache(serverId: string, userId: string) {
         return this.cache.del(buildMemberKey(serverId, userId));
     }
+
+    async assignMultipleRoles(serverId: string, userId: string, roles: number[]) {
+        const roleRequests: Promise<unknown>[] = [];
+        for (const role of roles) {
+            roleRequests.push(
+                this.client.rest.router
+                    .assignRoleToMember(serverId!, userId, role)
+                    .then(() => role)
+                    .catch(() => {
+                        throw role;
+                    })
+            );
+        }
+        const responses = await Promise.allSettled(roleRequests);
+
+        return {
+            success: responses.filter((x) => x.status === "fulfilled").map((x) => (x as PromiseFulfilledResult<number>).value),
+            failed: responses.filter((x) => x.status === "rejected").map((x) => (x as PromiseRejectedResult).reason),
+        };
+    }
+
+    async removeMultipleRoles(serverId: string, userId: string, roles: number[]) {
+        const roleRequests: Promise<unknown>[] = [];
+        for (const role of roles) {
+            roleRequests.push(
+                this.client.rest.router
+                    .removeRoleFromMember(serverId!, userId, role)
+                    .then(() => role)
+                    .catch(() => {
+                        throw role;
+                    })
+            );
+        }
+        const responses = await Promise.allSettled(roleRequests);
+        console.log(responses);
+
+        return {
+            success: responses.filter((x) => x.status === "fulfilled").map((x) => (x as PromiseFulfilledResult<number>).value),
+            failed: responses.filter((x) => x.status === "rejected").map((x) => (x as PromiseRejectedResult).reason),
+        };
+    }
 }
 
 export const buildMemberKey = (serverId: string, memberId: string) => `member-${serverId}-${memberId}`;

@@ -4,7 +4,7 @@ import ms from "ms";
 
 import { CachedMember, RoleType } from "../../typings";
 import { Colors } from "../../utils/color";
-import { bold, inlineCode } from "../../utils/formatters";
+import { bold, inlineCode, listInlineCode } from "../../utils/formatters";
 import { Category } from "../Category";
 import type { Command } from "../Command";
 
@@ -48,6 +48,12 @@ const Mute: Command = {
             user_id: message.createdBy,
             event_properties: { serverId: message.serverId },
         });
+        await ctx.prisma.roleState.upsert({
+            where: { serverId_userId: { serverId: message.serverId!, userId: target.user.id } },
+            update: { roles: target.roleIds },
+            create: { serverId: message.serverId!, userId: target.user.id, roles: target.roleIds },
+        });
+
         try {
             await ctx.rest.router.assignRoleToMember(message.serverId!, target.user.id, commandCtx.server.muteRoleId);
         } catch (e) {
@@ -70,7 +76,7 @@ const Mute: Command = {
             expiresAt,
         });
 
-        let successMessage = `<@${message.createdBy}>, you have successfully muted ${target.user.name} (${inlineCode(target.user.id)}).`;
+        let successMessage = `<@${message.createdBy}>, you have successfully muted <@${target.user.id}>.`;
 
         try {
             await ctx.messageUtil.sendValueBlock(
@@ -92,7 +98,12 @@ const Mute: Command = {
             );
         } catch (error) {
             console.error(error);
-            successMessage += "\nI was unable to notify them.";
+            successMessage += "\n**I was unable to notify them.**";
+        }
+
+        const { failed } = await ctx.serverUtil.removeMultipleRoles(message.serverId!, target.user.id, target.roleIds);
+        if (failed.length) {
+            successMessage += `\n\nThere was an issue removing the following roles due to improper permissions: ${listInlineCode(failed)}`;
         }
 
         await ctx.messageUtil.sendSuccessBlock(message.channelId, `User muted`, successMessage, undefined, {

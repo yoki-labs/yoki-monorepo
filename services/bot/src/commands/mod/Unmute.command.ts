@@ -2,7 +2,7 @@ import type { EmbedField } from "@guildedjs/guilded-api-typings";
 import { stripIndents } from "common-tags";
 
 import { CachedMember, RoleType } from "../../typings";
-import { inlineCode } from "../../utils/formatters";
+import { inlineCode, listInlineCode } from "../../utils/formatters";
 import { Category } from "../Category";
 import type { Command } from "../Command";
 import { Severity } from ".prisma/client";
@@ -59,7 +59,7 @@ const Unmute: Command = {
             },
         });
 
-        let successMessage = `<@${message.createdBy}>, you have successfully unmuted ${target.user.name} (${inlineCode(target.user.id)}).`;
+        let successMessage = `<@${message.createdBy}>, you have successfully unmuted <@${target.user.id}>.`;
 
         try {
             await ctx.messageUtil.sendInfoBlock(
@@ -80,7 +80,15 @@ const Unmute: Command = {
             );
         } catch (error) {
             console.error(error);
-            successMessage += "\nI was unable to notify them.";
+            successMessage += "\n**I was unable to notify them.**";
+        }
+
+        const userRoles = await ctx.prisma.roleState.findFirst({ where: { serverId: message.serverId!, userId: target.user.id } });
+        if (userRoles) {
+            const { failed } = await ctx.serverUtil.assignMultipleRoles(message.serverId!, target.user.id, userRoles.roles);
+            if (failed.length) {
+                successMessage += `\n\nThere was an issue adding some roles back to this user due to improper permissions. The roles are: ${listInlineCode(failed)}`;
+            }
         }
 
         await ctx.messageUtil.sendSuccessBlock(message.channelId, `User unmuted`, successMessage, undefined, {
