@@ -420,13 +420,6 @@
     typed-emitter "2.1.0"
     ws "8.8.1"
 
-"@haileybot/captcha-generator@^1.7.0":
-  version "1.7.0"
-  resolved "https://registry.yarnpkg.com/@haileybot/captcha-generator/-/captcha-generator-1.7.0.tgz#23f30713fc49f2bac656004f8523389c7c7c8bd8"
-  integrity sha512-8mBIqQasUWhlg7D5XKvpfWmi7ZWIyCIMtDvzlRkGkvax+WAP5/TDUDLYkB/ae+89pTsbiL2CsXoaHR1XbBQSDA==
-  dependencies:
-    canvas "^2.6.1"
-
 "@humanwhocodes/config-array@^0.9.2":
   version "0.9.5"
   resolved "https://registry.yarnpkg.com/@humanwhocodes/config-array/-/config-array-0.9.5.tgz#2cbaf9a89460da24b5ca6531b8bbfc23e1df50c7"
@@ -1246,6 +1239,13 @@
   resolved "https://registry.yarnpkg.com/@webgpu/types/-/types-0.1.21.tgz#b181202daec30d66ccd67264de23814cfd176d3a"
   integrity sha512-pUrWq3V5PiSGFLeLxoGqReTZmiiXwY3jRkIG5sLLKjyqNxrwm/04b4nw7LSmGWJcKk59XOM/YRTUwOzo4MMlow==
 
+"@yokilabs/captcha-generator@1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@yokilabs/captcha-generator/-/captcha-generator-1.0.0.tgz#31b273db9f39a56bb9de6f5e873e2c4712a17b64"
+  integrity sha512-7mzoNPJ+15zpQ0j1fASa4Yub+htVgoZqAx6P2KtFxeEfm+JCKszx46THc339nqp4Dp55YyoXYQ6A23m4kGUtwA==
+  dependencies:
+    canvas "^2.8.0"
+
 abbrev@1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/abbrev/-/abbrev-1.1.1.tgz#f8f2c887ad10bf67f634f005b6987fed3179aac8"
@@ -1756,10 +1756,10 @@ caniuse-lite@^1.0.30001332, caniuse-lite@^1.0.30001370, caniuse-lite@^1.0.300013
   resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001390.tgz#158a43011e7068ef7fc73590e9fd91a7cece5e7f"
   integrity sha512-sS4CaUM+/+vqQUlCvCJ2WtDlV81aWtHhqeEVkLokVJJa3ViN4zDxAGfq9R8i1m90uGHxo99cy10Od+lvn3hf0g==
 
-canvas@^2.6.1:
-  version "2.9.3"
-  resolved "https://registry.yarnpkg.com/canvas/-/canvas-2.9.3.tgz#8723c4f970442d4cdcedba5221579f9660a58bdb"
-  integrity sha512-WOUM7ghii5TV2rbhaZkh1youv/vW1/Canev6Yx6BG2W+1S07w8jKZqKkPnbiPpQEDsnJdN8ouDd7OvQEGXDcUw==
+canvas@^2.8.0:
+  version "2.10.1"
+  resolved "https://registry.yarnpkg.com/canvas/-/canvas-2.10.1.tgz#fbfd4b1b3b106c3454481d79d363ebadf8811c08"
+  integrity sha512-29pIjn9uwTUsIgJUNd7GXxKk8sg4iyJwLm1wIilNIqX1mVzXSc2nUij9exW1LqNpis1d2ebMYfMqTWcokZ4pdA==
   dependencies:
     "@mapbox/node-pre-gyp" "^1.0.0"
     nan "^2.15.0"
