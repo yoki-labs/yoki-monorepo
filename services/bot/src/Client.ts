@@ -15,6 +15,7 @@ import ChannelMessageReactionCreated from "./events/ChannelMessageReactionCreate
 import ChatMessageCreated from "./events/ChatMessageCreated";
 import ChatMessageDeleted from "./events/ChatMessageDeleted";
 import ChatMessageUpdated from "./events/ChatMessageUpdated";
+import ForumTopicEvent from "./events/ForumTopicEvent";
 import ListItemEvent from "./events/ListItemEvent";
 import TeamMemberJoined from "./events/TeamMemberJoined";
 import TeamMemberRemoved from "./events/TeamMemberRemoved";
@@ -98,6 +99,9 @@ export default class Client {
         // List item name changes
         ListItemCreated: ListItemEvent,
         ListItemUpdated: ListItemEvent,
+        // Forum topic stuff
+        ForumTopicCreated: ForumTopicEvent,
+        ForumTopicUpdated: ForumTopicEvent,
         // handles members getting new roles
         teamRolesUpdated,
         // handles reactions
