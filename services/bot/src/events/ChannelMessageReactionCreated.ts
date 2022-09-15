@@ -49,7 +49,7 @@ export default async (packet: WSChannelMessageReactionCreatedPayload, ctx: Conte
             await ctx.messageUtil.sendInfoBlock(
                 newChannel.channel.id,
                 `New modmail thread opened!`,
-                `A new modmail thread has been opened by <@${member.user.id}> (${inlineCode(member.user.id)})`,
+                `A new modmail thread by ID ${inlineCode(newModmailThread.id)} has been opened by <@${member.user.id}> (${inlineCode(member.user.id)})`,
                 {
                     fields: [
                         {

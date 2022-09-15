@@ -1,3 +1,4 @@
+import type { EmbedPayload } from "@guildedjs/guilded-api-typings";
 import { stripIndents } from "common-tags";
 
 import { RoleType } from "../../typings";
@@ -21,13 +22,14 @@ const Reply: Command = {
         },
     ],
     execute: async (message, args, ctx, { member }) => {
-        const content = args.content as string;
+        const content = (args.content as string).slice(0, 2000);
         const isCurrentChannelModmail = await ctx.prisma.modmailThread.findFirst({ where: { serverId: message.serverId, modFacingChannelId: message.channelId, closed: false } });
         if (!isCurrentChannelModmail) return ctx.messageUtil.replyWithError(message, "This channel is not a modmail channel!");
 
-        const baseEmbedData = {
+        const baseEmbedData: EmbedPayload = {
             author: {
                 name: `${member.user.name} (${member.user.id})`,
+                icon_url: member.user.avatar,
             },
             color: Colors.green,
             timestamp: new Date().toISOString(),
