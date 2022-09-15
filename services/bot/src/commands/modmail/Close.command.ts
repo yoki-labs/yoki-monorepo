@@ -41,9 +41,10 @@ const Close: Command = {
                     ACL: "public-read",
                 })
                 .promise();
+
             await ctx.messageUtil.sendLog({
                 where: modmailLogChannel.channelId,
-                title: `Thread closed`,
+                title: `Thread Closed`,
                 description: `Thread \`#${isCurrentChannelModmail.id}\` created by <@${isCurrentChannelModmail.openerId}> has been closed.`,
                 color: Colors.blue,
                 occurred: new Date().toISOString(),

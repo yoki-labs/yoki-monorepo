@@ -7,6 +7,7 @@ import { nanoid } from "nanoid";
 import type { Context } from "../typings";
 import { Colors } from "../utils/color";
 import { inlineCode } from "../utils/formatters";
+import { summarizeItems } from "../utils/messages";
 
 export default async (event: WSTeamRolesUpdatedPayload, ctx: Context): Promise<void> => {
     const { serverId, memberRoleIds } = event.d;
@@ -33,17 +34,14 @@ export default async (event: WSTeamRolesUpdatedPayload, ctx: Context): Promise<v
             return { addedRoles, removedRoles, roleIds, userId };
         });
 
-        const modifiedUsers = memberRoleIds
-            .slice(0, 10)
-            .map((x) => `<@${x.userId}>`)
-            .join(", ");
+        const modifiedUsers = summarizeItems(memberRoleIds, (x) => `<@${x.userId}>`, 10);
 
         try {
             // send the log channel message with the content/data of the deleted message
             await ctx.messageUtil.sendLog({
                 where: roleUpdateLogChannel.channelId,
                 title: `Member Roles Changed`,
-                description: `${modifiedUsers}${memberRoleIds.length > 10 ? ` and ${memberRoleIds.length - 10} more` : ""} had their roles changed.`,
+                description: `${modifiedUsers} had their roles changed.`,
                 color: Colors.blue,
                 occurred: new Date().toISOString(),
                 fields: roleDifferences.map((obj) => {

@@ -102,8 +102,8 @@ export default async (packet: WSTeamMemberJoinedPayload, ctx: Context, server: S
             color: suspicious ? Colors.yellow : Colors.green,
             occurred: member.joinedAt,
             additionalInfo: stripIndents`
-                                **Account Created:** ${FormatDate(creationDate)} ${suspicious ? "(:warning: recent)" : ""}
-                                **Joined at:** ${FormatDate(new Date(member.joinedAt))}
+                                **Account Created:** ${FormatDate(creationDate)} EST ${suspicious ? "(:warning: recent)" : ""}
+                                **Joined at:** ${FormatDate(new Date(member.joinedAt))} EST
                             `,
         });
     } catch (e) {

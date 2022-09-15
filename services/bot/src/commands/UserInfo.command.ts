@@ -4,6 +4,7 @@ import { stripIndents } from "common-tags";
 
 import { Colors } from "../utils/color";
 import { inlineCode } from "../utils/formatters";
+import { summarizeRolesOrUsers } from "../utils/messages";
 import { FormatDate, suspicious as sus } from "../utils/util";
 import type { Command } from "./Command";
 
@@ -39,16 +40,13 @@ const UserInfo: Command = {
                     .addFields([
                         {
                             name: "Roles",
-                            value: `${target.roleIds
-                                .slice(0, 20)
-                                .map((x) => `<@${x}>`)
-                                .join(", ")}${target.roleIds.length > 20 ? ` and ${target.roleIds.length - 20} more` : ""}`,
+                            value: summarizeRolesOrUsers(target.roleIds),
                         },
                         {
                             name: "Additional Info",
                             value: stripIndents`
-                                ${target.isOwner ? `**Owns this server.**\n` : ``}**Account Created:** ${FormatDate(creationDate)} ${suspicious ? "(:warning: recent)" : ""}
-                                **Joined at:** ${FormatDate(new Date(target.joinedAt))}
+                                ${target.isOwner ? `**Owns this server.**\n` : ``}**Account Created:** ${FormatDate(creationDate)} EST ${suspicious ? "(:warning: recent)" : ""}
+                                **Joined at:** ${FormatDate(new Date(target.joinedAt))} EST
                             `,
                         },
                     ])

@@ -5,6 +5,8 @@ import { nanoid } from "nanoid";
 
 import type { Context } from "../typings";
 import { Colors } from "../utils/color";
+import { inlineCode } from "../utils/formatters";
+import { summarizeRolesOrUsers } from "../utils/messages";
 import { FormatDate } from "../utils/util";
 
 export default async (packet: WSChannelMessageReactionCreatedPayload, ctx: Context, server: Server) => {
@@ -44,21 +46,26 @@ export default async (packet: WSChannelMessageReactionCreatedPayload, ctx: Conte
             });
 
             const member = await ctx.serverUtil.getMember(serverId, createdBy, true, true);
-            await ctx.rest.router.createChannelMessage(newChannel.channel.id, {
-                content: "New modmail thread opened!",
-                embeds: [
-                    {
-                        description: stripIndents`
-							**User:** ${member.user.name}${member.nickname ? ` (${member.nickname})` : ""}
-							**ID:** ${member.user.id}
-							**Account Created:** ${FormatDate(new Date(member.user.createdAt))} EST
-							**Joined:** ${FormatDate(new Date(member.joinedAt))} EST
-							**Roles:** ${member.roleIds.map((x) => `<@${x}>`).join(" ")}
-						`,
-                        footer: { text: newModmailThread.id },
-                    },
-                ],
-            });
+            await ctx.messageUtil.sendInfoBlock(
+                newChannel.channel.id,
+                `New modmail thread opened!`,
+                `A new modmail thread has been opened by <@${member.user.id}> (${inlineCode(member.user.id)})`,
+                {
+                    fields: [
+                        {
+                            name: `Roles`,
+                            value: summarizeRolesOrUsers(member.roleIds),
+                        },
+                        {
+                            name: `Additional Info`,
+                            value: stripIndents`
+                                **Account Created:** ${FormatDate(new Date(member.user.createdAt))} EST
+                                **Joined at:** ${FormatDate(new Date(member.joinedAt))} EST
+                            `,
+                        },
+                    ],
+                }
+            );
 
             await ctx.rest.router.createChannelMessage(channelId, {
                 embeds: [
