@@ -32,9 +32,14 @@ const SendTrigger: Command = {
         const targetChannel = args.targetChannel as ServerChannelPayload;
         const reaction = (args.emoji as string).trim();
 
-        if (!reaction.startsWith(":") && reaction.endsWith(":")) return ctx.messageUtil.replyWithError(message, "Could not detect a valid emoji in your message.");
+        if (!reaction.startsWith(":") && reaction.endsWith(":")) return ctx.messageUtil.replyWithAlert(message, "Invalid emoji", "Could not detect a valid emoji in your message.");
         const resolvedEmoji = reactions[reaction.slice(1, reaction.length - 1)];
-        if (!resolvedEmoji) return ctx.messageUtil.reply(message, "Could not resolve that to a proper emoji. Please ensure that you are passing a unicode emoji.");
+        if (!resolvedEmoji)
+            return ctx.messageUtil.replyWithAlert(
+                message,
+                "Could not resolve emoji",
+                "Could not resolve that to a proper emoji. Please ensure that you are passing a unicode emoji."
+            );
         const sentMessage = await ctx.messageUtil.send(
             targetChannel.id,
             new Embed().setTitle("React here for help!").setDescription(`React with the :${reaction}: emoji to this message to get in touch with server staff!`).setColor("GREEN")

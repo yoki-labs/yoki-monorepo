@@ -23,6 +23,7 @@ const Close: Command = {
         });
 
         if (modmailLogChannel) {
+            const formattedMessages = modmailMessages.map((x) => `[${x.authorId}][${FormatDate(x.createdAt)}] ${x.content}`);
             const uploadedLog = await ctx.s3
                 .upload({
                     Bucket: process.env.S3_BUCKET,
@@ -34,18 +35,35 @@ const Close: Command = {
 						Created At: ${FormatDate(isCurrentChannelModmail.createdAt)}
 						-------------
 
-						${modmailMessages.map((x) => `[${x.authorId}][${FormatDate(x.createdAt)}] ${x.content}`).join("\n")}
+						${formattedMessages.join("\n")}
 					`),
                     ContentType: "text/plain",
                     ACL: "public-read",
                 })
                 .promise();
-            await ctx.messageUtil.send(
-                modmailLogChannel.channelId,
-                stripIndents`
-					Thread #${isCurrentChannelModmail.id} closed on ${FormatDate(new Date())} with chat log available [here](${uploadedLog.Location})
-				`
-            );
+            await ctx.messageUtil.sendLog({
+                where: modmailLogChannel.channelId,
+                title: `Thread closed`,
+                description: `Thread \`#${isCurrentChannelModmail.id}\` created by <@${isCurrentChannelModmail.openerId}> has been closed.`,
+                color: Colors.blue,
+                occurred: new Date().toISOString(),
+                fields: [
+                    {
+                        name: `Chat Logs`,
+                        value: stripIndents`
+                            \`\`\`md
+                            ${formattedMessages
+                                .slice(0, 2)
+                                .map((x) => x.slice(0, 400))
+                                .join("\n")}
+                            ${formattedMessages.length > 2 ? "..." : ""}
+                            \`\`\`
+
+                            [Click here to view more](${uploadedLog.Location})
+                        `,
+                    },
+                ],
+            });
         }
 
         void ctx.amp.logEvent({
