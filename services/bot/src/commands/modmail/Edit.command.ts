@@ -28,12 +28,12 @@ const Edit: Command = {
         const messageId = args.messageId as string;
         const content = args.content as string;
         const isCurrentChannelModmail = await ctx.prisma.modmailThread.findFirst({ where: { serverId: message.serverId, modFacingChannelId: message.channelId, closed: false } });
-        if (!isCurrentChannelModmail) return ctx.messageUtil.replyWithAlert(message, `Not a modmail channel`, `This channel is not a modmail channel!`);
+        if (!isCurrentChannelModmail) return ctx.messageUtil.replyWithError(message, `Not a modmail channel`, `This channel is not a modmail channel!`);
 
         const sentModmailMessage = await ctx.prisma.modmailMessage.findFirst({ where: { originalMessageId: messageId } });
-        if (!sentModmailMessage) return ctx.messageUtil.replyWithAlert(message, `Invalid message`, `That is not a valid sent modmail message!`);
+        if (!sentModmailMessage) return ctx.messageUtil.replyWithError(message, `Invalid message`, `That is not a valid sent modmail message!`);
         const fetchSentModmailMessage = await ctx.rest.router.getChannelMessage(isCurrentChannelModmail.userFacingChannelId, sentModmailMessage.sentMessageId);
-        if (!fetchSentModmailMessage) return ctx.messageUtil.replyWithAlert(message, `Message deleted`, `This message has been manually deleted.`);
+        if (!fetchSentModmailMessage) return ctx.messageUtil.replyWithError(message, `Message deleted`, `This message has been manually deleted.`);
 
         fetchSentModmailMessage.message.embeds![0].description = stripIndents`<@${isCurrentChannelModmail.openerId}>
 			${content}

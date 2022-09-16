@@ -45,7 +45,7 @@ const View: Command = {
         });
 
         // -1, -2, etc.
-        if (page < 0) return ctx.messageUtil.replyWithAlert(message, `Specify appropriate page`, `The page number must not be below \`1\`.`);
+        if (page < 0) return ctx.messageUtil.replyWithError(message, `Specify appropriate page`, `The page number must not be below \`1\`.`);
 
         if (!actions.length) return ctx.messageUtil.replyWithNullState(message, `Squeaky clean history!`, `This user does not have any moderation history associated with them.`);
         return ctx.messageUtil.replyWithPaginatedContent<Action>({

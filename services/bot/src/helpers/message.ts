@@ -45,7 +45,7 @@ export class MessageUtil extends Util {
     }
 
     handleBadArg(message: ChatMessagePayload, prefix: string, commandArg: CommandArgument, command: Command, parentCommand: Command) {
-        return this.replyWithAlert(
+        return this.replyWithError(
             message,
             `Incorrect argument`,
             `Sorry, but the usage of argument ${inlineCode(commandArg.name.split("-").join(" "))} was not correct. Was expecting a ${
@@ -147,11 +147,11 @@ export class MessageUtil extends Util {
     }
 
     // State blocks
-    replyWithAlert(message: ChatMessagePayload, title: string, description: string, embedPartial?: EmbedPayload, messagePartial?: Partial<RESTPostChannelMessagesBody>) {
+    replyWithError(message: ChatMessagePayload, title: string, description: string, embedPartial?: EmbedPayload, messagePartial?: Partial<RESTPostChannelMessagesBody>) {
         return this.replyWithStateBlock(message, title, description, Colors.orangeRed, StateImages.notFound, embedPartial, messagePartial);
     }
 
-    replyWithError(message: ChatMessagePayload, description: string, embedPartial?: EmbedPayload, messagePartial?: Partial<RESTPostChannelMessagesBody>) {
+    replyWithUnexpected(message: ChatMessagePayload, description: string, embedPartial?: EmbedPayload, messagePartial?: Partial<RESTPostChannelMessagesBody>) {
         return this.replyWithStateBlock(message, `Oh no, something went wrong!`, description, Colors.red, StateImages.error, embedPartial, messagePartial);
     }
 

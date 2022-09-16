@@ -36,7 +36,7 @@ const Kick: Command = {
         try {
             await ctx.rest.router.kickMember(message.serverId!, target.user.id);
         } catch (e) {
-            return ctx.messageUtil.replyWithError(
+            return ctx.messageUtil.replyWithUnexpected(
                 message,
                 stripIndents`
 					There was an issue kicking this user. This is most likely due to misconfigured permissions for your server.

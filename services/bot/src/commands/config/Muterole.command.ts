@@ -34,7 +34,7 @@ const Muterole: Command = {
         // This could be merged back with `if (!role)`, but I am too lazy to handle it well with
         // `REMOVE` + it is better to tell someone they are wrong than just make them confused
         if (Number.isNaN(roleId))
-            return ctx.messageUtil.replyWithAlert(message, `Provide role ID`, `Provide the ID of the role you want to set as a mute role or type \`remove\` to remove it.`);
+            return ctx.messageUtil.replyWithError(message, `Provide role ID`, `Provide the ID of the role you want to set as a mute role or type \`remove\` to remove it.`);
 
         await ctx.prisma.server.updateMany({ data: { muteRoleId: roleId }, where: { serverId: message.serverId! } });
         return ctx.messageUtil.replyWithSuccess(message, `Mute role set`, `Successfully set <@${roleId}> as the mute role`, undefined, { isSilent: true });

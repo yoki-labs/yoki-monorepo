@@ -33,14 +33,14 @@ const Mute: Command = {
         },
     ],
     execute: async (message, args, ctx, commandCtx) => {
-        if (!commandCtx.server.muteRoleId) return ctx.messageUtil.replyWithAlert(message, `No mute role set`, `There is no mute role configured for this server.`);
+        if (!commandCtx.server.muteRoleId) return ctx.messageUtil.replyWithError(message, `No mute role set`, `There is no mute role configured for this server.`);
 
         const target = args.target as CachedMember;
         if (target.user.type === "bot") return;
 
         const reason = args.reason as string | null;
         const duration = ms(args.duration as string);
-        if (!duration || duration <= 894000) return ctx.messageUtil.replyWithAlert(message, `Duration must be longer`, `Your mute duration must be longer than 15 minutes.`);
+        if (!duration || duration <= 894000) return ctx.messageUtil.replyWithError(message, `Duration must be longer`, `Your mute duration must be longer than 15 minutes.`);
         const expiresAt = new Date(Date.now() + duration);
 
         void ctx.amp.logEvent({
@@ -57,7 +57,7 @@ const Mute: Command = {
         try {
             await ctx.rest.router.assignRoleToMember(message.serverId!, target.user.id, commandCtx.server.muteRoleId);
         } catch (e) {
-            return ctx.messageUtil.replyWithError(
+            return ctx.messageUtil.replyWithUnexpected(
                 message,
                 stripIndents`
 					There was an issue muting this user. This is most likely due to misconfigured permissions for your server.

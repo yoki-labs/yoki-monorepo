@@ -28,16 +28,16 @@ const Unmute: Command = {
         },
     ],
     execute: async (message, args, ctx, commandCtx) => {
-        if (!commandCtx.server.muteRoleId) return ctx.messageUtil.replyWithAlert(message, `No mute role set`, `There is no mute role configured for this server.`);
+        if (!commandCtx.server.muteRoleId) return ctx.messageUtil.replyWithError(message, `No mute role set`, `There is no mute role configured for this server.`);
         const target = args.target as CachedMember;
         const reason = args.reason as string | null;
 
-        if (target.user.type === "bot") return ctx.messageUtil.replyWithAlert(message, `Cannot unmute bots`, `Bots cannot be unmuted.`);
+        if (target.user.type === "bot") return ctx.messageUtil.replyWithError(message, `Cannot unmute bots`, `Bots cannot be unmuted.`);
 
         try {
             await ctx.rest.router.removeRoleFromMember(message.serverId!, target.user.id, commandCtx.server.muteRoleId);
         } catch (e) {
-            return ctx.messageUtil.replyWithError(
+            return ctx.messageUtil.replyWithUnexpected(
                 message,
                 stripIndents`
 					There was an issue removing mute from this user. This is most likely due to misconfigured permissions for your server.

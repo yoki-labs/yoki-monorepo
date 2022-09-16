@@ -28,7 +28,7 @@ const Ban: Command = {
         const target = args.target as CachedMember;
         const reason = args.reason as string | null;
 
-        if (target.user.type === "bot") return ctx.messageUtil.replyWithAlert(message, `Cannot ban bots`, `Bots cannot be banned from the server.`);
+        if (target.user.type === "bot") return ctx.messageUtil.replyWithError(message, `Cannot ban bots`, `Bots cannot be banned from the server.`);
 
         void ctx.amp.logEvent({
             event_type: "BOT_MEMBER_BAN",
@@ -38,7 +38,7 @@ const Ban: Command = {
         try {
             await ctx.rest.router.banMember(message.serverId!, target.user.id);
         } catch (e) {
-            return ctx.messageUtil.replyWithError(
+            return ctx.messageUtil.replyWithUnexpected(
                 message,
                 stripIndents`
                 There was an issue banning this user. This is most likely due to misconfigured permissions for your server.

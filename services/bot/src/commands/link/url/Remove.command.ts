@@ -21,10 +21,10 @@ const Remove: Command = {
     execute: async (message, args, ctx) => {
         const domain = (args.domain as string).toLowerCase();
 
-        if (!isDomain(domain)) return ctx.messageUtil.replyWithAlert(message, `Only domains`, `Only domains are available to be whitelisted/blacklisted at this time.`);
+        if (!isDomain(domain)) return ctx.messageUtil.replyWithError(message, `Only domains`, `Only domains are available to be whitelisted/blacklisted at this time.`);
 
         const existingEntry = await ctx.prisma.urlFilter.findFirst({ where: { serverId: message.serverId!, domain } });
-        if (!existingEntry) return ctx.messageUtil.replyWithAlert(message, `Link not found`, `This domain is not in your server's filter!`);
+        if (!existingEntry) return ctx.messageUtil.replyWithError(message, `Link not found`, `This domain is not in your server's filter!`);
         await ctx.dbUtil.removeUrlFromFilter(message.serverId!, domain);
         return ctx.messageUtil.replyWithSuccess(message, `Link deleted`, `Successfully deleted ${inlineCode(domain)} from the automod list!`);
     },

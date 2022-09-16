@@ -19,7 +19,7 @@ const Remove: Command = {
     execute: async (message, args, ctx) => {
         const tagName = args.tagName as string;
         const doesAlreadyExist = await ctx.prisma.customTag.findFirst({ where: { serverId: message.serverId!, name: tagName } });
-        if (!doesAlreadyExist) return ctx.messageUtil.replyWithError(message, "A tag with that name does not exist.");
+        if (!doesAlreadyExist) return ctx.messageUtil.replyWithUnexpected(message, "A tag with that name does not exist.");
 
         await ctx.prisma.customTag.delete({ where: { id: doesAlreadyExist.id } });
         return ctx.messageUtil.replyWithSuccess(message, "Tag deleted!", `The tag ${inlineCode(tagName)} has been deleted.`);

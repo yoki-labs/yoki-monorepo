@@ -25,7 +25,7 @@ const Modrole: Command = {
 
         if (levelArg === "REMOVE") {
             if (!(await ctx.prisma.role.findFirst({ where: { serverId: message.serverId, roleId: modroleId } })))
-                return ctx.messageUtil.replyWithAlert(message, `Not a staff role`, `The given role is not a mod/admin role or does not exist.`);
+                return ctx.messageUtil.replyWithError(message, `Not a staff role`, `The given role is not a mod/admin role or does not exist.`);
 
             await ctx.prisma.role.deleteMany({ where: { roleId: modroleId, serverId: message.serverId } });
 
@@ -49,7 +49,7 @@ const Modrole: Command = {
         }
         const existing = await ctx.prisma.role.findMany({ where: { serverId: message.serverId, roleId: modroleId, type: staffLevel } });
         if (existing.find((x) => x.roleId === modroleId))
-            return ctx.messageUtil.replyWithAlert(message, `Already a staff role`, `This role has already been set as ${staffLevel}.`);
+            return ctx.messageUtil.replyWithError(message, `Already a staff role`, `This role has already been set as ${staffLevel}.`);
 
         const newModRole = await ctx.prisma.role.create({
             data: {

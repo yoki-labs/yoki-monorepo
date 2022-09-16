@@ -35,7 +35,7 @@ const Warn: Command = {
         const target = args.target as CachedMember;
         const [reason, infractionPoints] = getInfractionsFrom(args);
 
-        if (target.user.type === "bot") return ctx.messageUtil.replyWithAlert(message, `Cannot warn bots`, `Bots cannot be warned.`);
+        if (target.user.type === "bot") return ctx.messageUtil.replyWithError(message, `Cannot warn bots`, `Bots cannot be warned.`);
 
         void ctx.amp.logEvent({
             event_type: "BOT_MEMBER_WARN",
@@ -60,7 +60,7 @@ const Warn: Command = {
                 }
             );
         } catch (e) {
-            return ctx.messageUtil.replyWithError(
+            return ctx.messageUtil.replyWithUnexpected(
                 message,
                 stripIndents`
 					There was an issue warning this user.

@@ -39,7 +39,7 @@ const Case: Command = {
             },
         });
 
-        if (!fetchedCase) return ctx.messageUtil.replyWithAlert(message, `Unknown case`, `A case with that ID does not exist!`);
+        if (!fetchedCase) return ctx.messageUtil.replyWithError(message, `Unknown case`, `A case with that ID does not exist!`);
 
         // Delete
         if (action === CaseAction.REMOVE) {

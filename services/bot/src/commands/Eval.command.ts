@@ -44,7 +44,7 @@ const Eval: Command = {
     execute: async (message, args, ctx, commandCtx) => {
         const code = args.code as string;
         console.log(code);
-        if (!code) return ctx.messageUtil.replyWithAlert(message, `Code needed`, `Gotta give me something to eval there, chief.`);
+        if (!code) return ctx.messageUtil.replyWithError(message, `Code needed`, `Gotta give me something to eval there, chief.`);
         let evaled;
         try {
             evaled = await eval(`(async () => {${code}})()`); // eslint-disable-line no-eval

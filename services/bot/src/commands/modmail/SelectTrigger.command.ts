@@ -30,20 +30,20 @@ const SelectTrigger: Command = {
     ],
     execute: async (message, args, ctx, commandCtx) => {
         if (!commandCtx.server.modmailGroupId)
-            return ctx.messageUtil.replyWithAlert(
+            return ctx.messageUtil.replyWithError(
                 message,
                 `No modmail group`,
                 "This server does not have the `modmailgroup` setting set. You can set it using the config command."
             );
         const targetChannel = args.targetChannelId as ServerChannelPayload;
-        if (!targetChannel) return ctx.messageUtil.replyWithAlert(message, `Invalid ID`, `That is not a valid channel ID!`);
+        if (!targetChannel) return ctx.messageUtil.replyWithError(message, `Invalid ID`, `That is not a valid channel ID!`);
 
         const sentMessageId = args.sentMessageId as string;
         const sentMessage = await ctx.rest.router
             .getChannelMessage(targetChannel.id, sentMessageId)
             .then((x) => x.message)
             .catch(() => null);
-        if (!sentMessage) return ctx.messageUtil.replyWithAlert(message, `Invalid message`, `That is not a valid message!`);
+        if (!sentMessage) return ctx.messageUtil.replyWithError(message, `Invalid message`, `That is not a valid message!`);
 
         const emoteId = args.emoteId as number;
         void ctx.amp.logEvent({

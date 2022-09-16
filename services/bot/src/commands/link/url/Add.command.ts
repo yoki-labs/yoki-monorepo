@@ -34,19 +34,19 @@ const Add: Command = {
     ],
     execute: async (message, args, ctx, { server }) => {
         if (!server.filterEnabled)
-            return ctx.messageUtil.replyWithAlert(message, `Enable automod`, `Automod link filter is disabled! Please enable using \`${server.getPrefix()}module enable automod\``);
+            return ctx.messageUtil.replyWithError(message, `Enable automod`, `Automod link filter is disabled! Please enable using \`${server.getPrefix()}module enable automod\``);
         const domain = (args.domain as string).toLowerCase();
         const severity = (args.severity as Severity | null) ?? Severity.WARN;
         const infractionPoints = (args.infraction_points as number | null) ?? 5;
 
-        if (!isDomain(domain)) return ctx.messageUtil.replyWithAlert(message, `Only domains`, `Only domains are available to be whitelisted/blacklisted at this time.`);
+        if (!isDomain(domain)) return ctx.messageUtil.replyWithError(message, `Only domains`, `Only domains are available to be whitelisted/blacklisted at this time.`);
 
-        if (!severity) return ctx.messageUtil.replyWithAlert(message, `No such severity level`, `Sorry, but that is not a valid severity level!`);
+        if (!severity) return ctx.messageUtil.replyWithError(message, `No such severity level`, `Sorry, but that is not a valid severity level!`);
         if (infractionPoints < 0 || infractionPoints > 100)
-            return ctx.messageUtil.replyWithAlert(message, `Points over the limit`, `Sorry, but the infraction points must be between 0 and 100.`);
+            return ctx.messageUtil.replyWithError(message, `Points over the limit`, `Sorry, but the infraction points must be between 0 and 100.`);
 
         const doesExistAlready = await ctx.prisma.urlFilter.findFirst({ where: { serverId: message.serverId!, domain } });
-        if (doesExistAlready) return ctx.messageUtil.replyWithAlert(message, `Already added`, `This domain is already in your server's filter!`);
+        if (doesExistAlready) return ctx.messageUtil.replyWithError(message, `Already added`, `This domain is already in your server's filter!`);
 
         await ctx.dbUtil.addUrlToFilter({
             domain,

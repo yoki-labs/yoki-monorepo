@@ -19,7 +19,7 @@ const Enroll: Command = {
         const roleId = Math.floor(args.roleId as number);
         const server = await ctx.dbUtil.getServer(serverId);
 
-        if (server.flags.includes("EARLY_ACCESS")) return ctx.messageUtil.replyWithAlert(message, `Already in beta`, `That server is already in the early access!`);
+        if (server.flags.includes("EARLY_ACCESS")) return ctx.messageUtil.replyWithError(message, `Already in beta`, `That server is already in the early access!`);
         server.flags.push("EARLY_ACCESS");
 
         await ctx.prisma.server.updateMany({ where: { id: server.id }, data: { flags: server.flags } });

@@ -20,7 +20,7 @@ const SpamFrequency: Command = {
             return ctx.messageUtil.replyWithInfo(message, `Spam frequency`, `Spam frequency has been set to ${inlineCode(server.spamFrequency)} messages per 5 seconds.`);
         // Cannot make people auto-muted over 1 message
         else if (frequency < 2)
-            return ctx.messageUtil.replyWithAlert(
+            return ctx.messageUtil.replyWithError(
                 message,
                 `Spam frequency cannot be zero`,
                 `You cannot set spam frequency to \`0\` or \`1\`. If you want to disable spamming, please disable filtering.`

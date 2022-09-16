@@ -31,11 +31,11 @@ const Help: Command = {
 
         if (commandName) {
             const parentCommand = ctx.commands.get(commandName) ?? ctx.commands.find((command) => command.aliases?.includes(commandName) ?? false);
-            if (!parentCommand) return ctx.messageUtil.replyWithAlert(message, `No such command`, `Could not find that command!`);
+            if (!parentCommand) return ctx.messageUtil.replyWithError(message, `No such command`, `Could not find that command!`);
             let command: Command;
             if (subName) {
                 const subCommand = parentCommand.subCommands?.get(subName) ?? null;
-                if (!subCommand) return ctx.messageUtil.replyWithAlert(message, `No such sub-command`, `Could not find that sub command!`);
+                if (!subCommand) return ctx.messageUtil.replyWithError(message, `No such sub-command`, `Could not find that sub command!`);
                 command = subCommand;
             } else {
                 command = parentCommand;

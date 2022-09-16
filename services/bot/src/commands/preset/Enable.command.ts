@@ -26,16 +26,16 @@ const Enable: Command = {
         const allPresets = Object.keys(ctx.contentFilterUtil.presets);
 
         if (!allPresets.includes(preset))
-            return ctx.messageUtil.replyWithAlert(message, `No such preset`, `That is not a valid preset. Your options are: ${allPresets.map((x) => inlineCode(x)).join(", ")}`);
-        if (!severity) return ctx.messageUtil.replyWithAlert(message, `No such severity level`, `Sorry, but that is not a valid severity level!`);
+            return ctx.messageUtil.replyWithError(message, `No such preset`, `That is not a valid preset. Your options are: ${allPresets.map((x) => inlineCode(x)).join(", ")}`);
+        if (!severity) return ctx.messageUtil.replyWithError(message, `No such severity level`, `Sorry, but that is not a valid severity level!`);
 
         if ((await ctx.prisma.preset.findMany({ where: { serverId: message.serverId!, preset } })).length)
-            return ctx.messageUtil.replyWithAlert(message, "Preset already enabled!", `You have already enabled this preset with the severity of ${severity}.`);
+            return ctx.messageUtil.replyWithError(message, "Preset already enabled!", `You have already enabled this preset with the severity of ${severity}.`);
         return ctx.dbUtil
             .enablePreset(message.serverId!, preset, severity)
             .then(() => ctx.messageUtil.replyWithSuccess(message, `Preset enabled`, `Successfully enabled the ${inlineCode(preset)} preset for this server.`))
             .catch((e: Error) =>
-                ctx.messageUtil.replyWithError(
+                ctx.messageUtil.replyWithUnexpected(
                     message,
                     `There was an issue enabling the ${inlineCode(preset)} preset for your server. Please forward this error to bot staff: ${inlineCode(e.message)}`
                 )

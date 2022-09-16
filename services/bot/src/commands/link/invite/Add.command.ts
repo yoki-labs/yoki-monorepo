@@ -21,13 +21,13 @@ const Add: Command = {
     ],
     execute: async (message, args, ctx, { server }) => {
         if (!server.filterInvites)
-            return ctx.messageUtil.replyWithAlert(message, `Enable invite scan`, `Invite scan is disabled! Please enable using \`${server.getPrefix()}module enable invitescan\``);
+            return ctx.messageUtil.replyWithError(message, `Enable invite scan`, `Invite scan is disabled! Please enable using \`${server.getPrefix()}module enable invitescan\``);
         const targetServerId = args.targetServerId as string;
 
-        if (!isHashId(targetServerId)) return ctx.messageUtil.replyWithAlert(message, `Expected ID`, `Expected server ID, not its vanity URL.`);
+        if (!isHashId(targetServerId)) return ctx.messageUtil.replyWithError(message, `Expected ID`, `Expected server ID, not its vanity URL.`);
 
         const doesExistAlready = await ctx.prisma.inviteFilter.findFirst({ where: { serverId: message.serverId!, targetServerId } });
-        if (doesExistAlready) return ctx.messageUtil.replyWithAlert(message, `Already added`, `This server is already in your server's invite whitelist!`);
+        if (doesExistAlready) return ctx.messageUtil.replyWithError(message, `Already added`, `This server is already in your server's invite whitelist!`);
 
         await ctx.dbUtil.addInviteToFilter({
             targetServerId,

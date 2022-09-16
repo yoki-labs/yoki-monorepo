@@ -186,7 +186,7 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context, server:
                 user_id: message.createdBy,
                 event_properties: { serverId: message.serverId, command: command.name },
             });
-            return ctx.messageUtil.replyWithAlert(message, `No such sub-command`, `The specified sub-command could not be found.`, {
+            return ctx.messageUtil.replyWithError(message, `No such sub-command`, `The specified sub-command could not be found.`, {
                 fields: [
                     ...ctx.messageUtil.createSubCommandFields(command.subCommands),
                     {
@@ -289,7 +289,7 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context, server:
             ]);
         }
         // notify the user that there was an error executing the command
-        return ctx.messageUtil.replyWithError(
+        return ctx.messageUtil.replyWithUnexpected(
             message,
             `This is potentially an issue on our end, please contact us and forward the following ID and error: ${inlineCode(referenceId)} & ${inlineCode((e as any).message)}`
         );

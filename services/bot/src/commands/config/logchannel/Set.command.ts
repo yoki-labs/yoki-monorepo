@@ -29,7 +29,7 @@ const Set: Command = {
 
         const channel = await ctx.rest.router.getChannel(channelId).catch(() => null);
         if (!channel)
-            return ctx.messageUtil.replyWithAlert(
+            return ctx.messageUtil.replyWithError(
                 message,
                 "Sorry! That is not a valid channel!",
                 "Please ensure that the provided ID belongs to a channel that I can see! I also require `MANAGE CHANNEL` permissions to be able to grab that channel!"
@@ -48,7 +48,7 @@ const Set: Command = {
         try {
             await ctx.messageUtil.send(channelId, "Checking for permission to send here...").then((x) => ctx.rest.router.deleteChannelMessage(channelId, x.id));
         } catch (e) {
-            return ctx.messageUtil.replyWithAlert(
+            return ctx.messageUtil.replyWithError(
                 message,
                 `Yoki has no permissions`,
                 `I don't have the permissions to send messages in that channel! Please make sure I can send and read messages in that channel.`

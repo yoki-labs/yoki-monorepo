@@ -28,7 +28,7 @@ const SendTrigger: Command = {
     ],
     execute: async (message, args, ctx, commandCtx) => {
         if (!commandCtx.server.modmailGroupId)
-            return ctx.messageUtil.replyWithAlert(
+            return ctx.messageUtil.replyWithError(
                 message,
                 `No modmail group`,
                 "This server does not have the `modmailgroup` setting set. You can set it using the config command."
@@ -36,10 +36,10 @@ const SendTrigger: Command = {
         const targetChannel = args.targetChannel as ServerChannelPayload;
         const reaction = (args.emoji as string).trim();
 
-        if (!reaction.startsWith(":") && reaction.endsWith(":")) return ctx.messageUtil.replyWithAlert(message, "Invalid emoji", "Could not detect a valid emoji in your message.");
+        if (!reaction.startsWith(":") && reaction.endsWith(":")) return ctx.messageUtil.replyWithError(message, "Invalid emoji", "Could not detect a valid emoji in your message.");
         const resolvedEmoji = reactions[reaction.slice(1, reaction.length - 1)];
         if (!resolvedEmoji)
-            return ctx.messageUtil.replyWithAlert(
+            return ctx.messageUtil.replyWithError(
                 message,
                 "Could not resolve emoji",
                 "Could not resolve that to a proper emoji. Please ensure that you are passing a unicode emoji."

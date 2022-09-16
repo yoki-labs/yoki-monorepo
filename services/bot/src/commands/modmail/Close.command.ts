@@ -16,7 +16,7 @@ const Close: Command = {
     category: Category.Moderation,
     execute: async (message, _args, ctx) => {
         const isCurrentChannelModmail = await ctx.prisma.modmailThread.findFirst({ where: { serverId: message.serverId, modFacingChannelId: message.channelId, closed: false } });
-        if (!isCurrentChannelModmail) return ctx.messageUtil.replyWithAlert(message, `Not a modmail channel`, `This channel is not a modmail channel!`);
+        if (!isCurrentChannelModmail) return ctx.messageUtil.replyWithError(message, `Not a modmail channel`, `This channel is not a modmail channel!`);
         const modmailLogChannel = await ctx.dbUtil.getLogChannel(message.serverId!, LogChannelType.modmail_logs);
         const modmailMessages = await ctx.prisma.modmailMessage.findMany({
             where: { modmailThreadId: isCurrentChannelModmail.id },

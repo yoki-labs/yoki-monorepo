@@ -21,7 +21,7 @@ const Disable: Command = {
     execute: async (message, args, ctx, commandCtx) => {
         const module = args.module as string;
         if (!typeToDBPropKeys.includes(module))
-            return ctx.messageUtil.replyWithAlert(
+            return ctx.messageUtil.replyWithError(
                 message,
                 "Invalid module name",
                 `The module you wish to disable must be one of the following: ${DBPropToTypeKeys.map((x) => `\`${x}\``).join(", ")}`
@@ -35,7 +35,7 @@ const Disable: Command = {
             })
             .then(() => ctx.messageUtil.replyWithSuccess(message, `Module disabled`, `Successfully disabled the ${inlineCode(module)} module for this server.`))
             .catch((e: Error) =>
-                ctx.messageUtil.replyWithError(
+                ctx.messageUtil.replyWithUnexpected(
                     message,
                     `There was an issue disabling the ${module} module for your server. Please forward this error to bot staff: ${inlineCode(e.message)}`
                 )

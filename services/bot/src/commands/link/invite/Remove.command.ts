@@ -21,10 +21,10 @@ const Remove: Command = {
     execute: async (message, args, ctx) => {
         const targetServerId = args.targetServerId as string;
 
-        if (!isHashId(targetServerId)) return ctx.messageUtil.replyWithAlert(message, `Expected ID`, `Expected server ID, not its vanity URL.`);
+        if (!isHashId(targetServerId)) return ctx.messageUtil.replyWithError(message, `Expected ID`, `Expected server ID, not its vanity URL.`);
 
         const existingEntry = await ctx.prisma.inviteFilter.findFirst({ where: { serverId: message.serverId!, targetServerId } });
-        if (!existingEntry) return ctx.messageUtil.replyWithAlert(message, `Link not found`, `This server is not in your server's invite whitelist!`);
+        if (!existingEntry) return ctx.messageUtil.replyWithError(message, `Link not found`, `This server is not in your server's invite whitelist!`);
         await ctx.dbUtil.removeInviteFromFilter(message.serverId!, targetServerId);
         return ctx.messageUtil.replyWithSuccess(message, `Server removed`, `Successfully removed ${inlineCode(targetServerId)} from the invite whitelist!`);
     },

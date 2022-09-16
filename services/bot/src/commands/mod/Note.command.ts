@@ -31,7 +31,7 @@ const Note: Command = {
     execute: async (message, args, ctx) => {
         const target = args.target as CachedMember;
 
-        if (target.user.type === "bot") return ctx.messageUtil.replyWithAlert(message, `Cannot place a note on bots`, `Bots cannot have moderation notes on them.`);
+        if (target.user.type === "bot") return ctx.messageUtil.replyWithError(message, `Cannot place a note on bots`, `Bots cannot have moderation notes on them.`);
 
         const [reason, infractionPoints] = getInfractionsFrom(args);
 

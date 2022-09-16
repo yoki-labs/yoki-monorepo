@@ -22,7 +22,7 @@ const Threshold: Command = {
         const severity = args.severity as Severity;
         const infractions = args.infractions as number;
 
-        if (severity === Severity.WARN) return ctx.messageUtil.replyWithAlert(message, `Immutable warn threshold`, `You cannot change infraction points requirement for warnings.`);
+        if (severity === Severity.WARN) return ctx.messageUtil.replyWithError(message, `Immutable warn threshold`, `You cannot change infraction points requirement for warnings.`);
 
         const propName = `${severity.toLowerCase()}InfractionThreshold`;
 

@@ -37,7 +37,7 @@ const History: Command = {
         });
 
         // -1, -2, etc.
-        if (page < 0) return ctx.messageUtil.replyWithAlert(message, `Specify appropriate page`, `The page number must not be below \`1\`.`);
+        if (page < 0) return ctx.messageUtil.replyWithError(message, `Specify appropriate page`, `The page number must not be below \`1\`.`);
         if (!threads.length) return ctx.messageUtil.replyWithNullState(message, `No threads`, `This user does not have any modmail history associated with them.`);
         return ctx.messageUtil.replyWithPaginatedContent<ModmailThread>({
             replyTo: message,
