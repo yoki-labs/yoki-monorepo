@@ -4,7 +4,7 @@ import { inlineCode } from "../../utils/formatters";
 import { Category } from "../Category";
 import type { Command } from "../Command";
 
-const allowedTypes = ["MOD", "ADMIN"];
+const allowedTypes = ["MINIMOD", "MOD", "ADMIN"];
 
 const Modrole: Command = {
     name: "config-modrole",
