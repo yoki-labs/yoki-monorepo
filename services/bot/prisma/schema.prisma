@@ -204,6 +204,7 @@ enum LogChannelType {
 }
 
 enum RoleType {
+    MINIMOD
     MOD
     ADMIN
     REACT

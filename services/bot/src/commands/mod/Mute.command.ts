@@ -13,7 +13,7 @@ const Mute: Command = {
     description: "Mute a user for a specified amount of time (ex. 3h, 30m, 5d).",
     usage: "<targetId> <time> [...reason]",
     examples: ["R40Mp0Wd 25m", "R40Mp0Wd 1h Talking too much about Town of Salem"],
-    requiredRole: RoleType.MOD,
+    requiredRole: RoleType.MINIMOD,
     category: Category.Moderation,
     aliases: ["hush", "timeout", "m"],
     args: [

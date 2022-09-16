@@ -8,7 +8,7 @@ const Note: Command = {
     name: "note",
     description: "Adds an entry to someone's offence history without notifying them.",
     usage: "<target's ID> [infraction points] [...reason]",
-    requiredRole: RoleType.MOD,
+    requiredRole: RoleType.MINIMOD,
     category: Category.Moderation,
     aliases: ["n"],
     args: [

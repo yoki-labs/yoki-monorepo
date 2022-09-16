@@ -12,7 +12,7 @@ const Close: Command = {
     description: "Close a modmail thread.",
     examples: [""],
     subCommand: true,
-    requiredRole: RoleType.MOD,
+    requiredRole: RoleType.MINIMOD,
     category: Category.Moderation,
     execute: async (message, _args, ctx) => {
         const isCurrentChannelModmail = await ctx.prisma.modmailThread.findFirst({ where: { serverId: message.serverId, modFacingChannelId: message.channelId, closed: false } });
