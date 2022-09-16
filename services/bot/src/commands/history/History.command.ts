@@ -12,7 +12,7 @@ const History: Command = {
     examples: ["view R40Mp0Wd", "view R40Mp0Wd 2"],
     aliases: ["modactions", "actions", "hs"],
     parentCommand: true,
-    requiredRole: RoleType.MOD,
+    requiredRole: RoleType.MINIMOD,
     category: Category.Moderation,
     subCommands: new Collection<string, Command>().set("view", View).set("clear", Clear),
     execute: () => void 0,

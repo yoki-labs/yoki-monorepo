@@ -11,7 +11,7 @@ const Warn: Command = {
     name: "warn",
     description: "Warn a user.",
     usage: "<target's ID> [infraction points] [...reason]",
-    requiredRole: RoleType.MOD,
+    requiredRole: RoleType.MINIMOD,
     category: Category.Moderation,
     aliases: ["alert", "w"],
     args: [

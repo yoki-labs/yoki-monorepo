@@ -13,7 +13,7 @@ const Reply: Command = {
     usage: "<...content>",
     examples: ["Hello! What can I help you with?"],
     subCommand: true,
-    requiredRole: RoleType.MOD,
+    requiredRole: RoleType.MINIMOD,
     category: Category.Moderation,
     args: [
         {

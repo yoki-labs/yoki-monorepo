@@ -4,13 +4,13 @@ import { inlineCode } from "../../utils/formatters";
 import { Category } from "../Category";
 import type { Command } from "../Command";
 
-const allowedTypes = ["MOD", "ADMIN"];
+const allowedTypes = ["MINIMOD", "MOD", "ADMIN"];
 
 const Modrole: Command = {
     name: "config-modrole",
     description: "Add a mod role.",
     subCommand: true,
-    usage: "[role ID] [mod/admin/remove]",
+    usage: "[role ID] [minimod/mod/admin/remove]",
     examples: ["12345678", "12345678 admin", "12345678 remove"],
     subName: "modrole",
     category: Category.Settings,
@@ -37,14 +37,14 @@ const Modrole: Command = {
             const modRoles = await ctx.prisma.role.findMany({ where: { serverId: message.serverId } });
             return modRoles.length
                 ? ctx.messageUtil.replyWithInfo(
-                    message,
-                    `Staff roles`,
-                    `Here are the staff roles for this server:\n- ${modRoles.map((modRole) => `<@${modRole.roleId}> (${inlineCode(modRole.type)})`).join("\n- ")}`,
-                    undefined,
-                    {
-                        isSilent: true,
-                    }
-                )
+                      message,
+                      `Staff roles`,
+                      `Here are the staff roles for this server:\n- ${modRoles.map((modRole) => `<@${modRole.roleId}> (${inlineCode(modRole.type)})`).join("\n- ")}`,
+                      undefined,
+                      {
+                          isSilent: true,
+                      }
+                  )
                 : ctx.messageUtil.replyWithNullState(message, `No staff roles`, `There are no staff roles set for this server yet.`);
         }
         const existing = await ctx.prisma.role.findMany({ where: { serverId: message.serverId, roleId: modroleId, type: staffLevel } });

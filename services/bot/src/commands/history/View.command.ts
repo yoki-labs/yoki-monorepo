@@ -21,7 +21,7 @@ const View: Command = {
     examples: ["R40Mp0Wd", "R40Mp0Wd 2"],
     subCommand: true,
     aliases: ["see", "all", "v"],
-    requiredRole: RoleType.MOD,
+    requiredRole: RoleType.MINIMOD,
     category: Category.Moderation,
     args: [
         {
@@ -55,8 +55,9 @@ const View: Command = {
             itemMapping: (x) => {
                 const trimmedReason = x.reason && x.reason.length > maxReason ? `${x.reason.substring(0, maxReason)}...` : x.reason;
 
-                return `[${inlineCode(x.id)}] **${x.type}** for ${trimmedReason ?? "no provided reason"} ${(x.triggerContent && `||${x.triggerContent.length > maxFiltered ? `${x.triggerContent}...` : x.triggerContent}||`) ?? ""
-                    }`;
+                return `[${inlineCode(x.id)}] **${x.type}** for ${trimmedReason ?? "no provided reason"} ${
+                    (x.triggerContent && `||${x.triggerContent.length > maxFiltered ? `${x.triggerContent}...` : x.triggerContent}||`) ?? ""
+                }`;
             },
             itemsPerPage: maxCases,
             page,

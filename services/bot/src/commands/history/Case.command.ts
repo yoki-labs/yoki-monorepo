@@ -14,7 +14,7 @@ const Case: Command = {
     usage: "<caseId> [remove]",
     examples: ["123456789-1234567", "123456789-1234567 remove"],
     aliases: ["modaction", "action", "c"],
-    requiredRole: RoleType.MOD,
+    requiredRole: RoleType.MINIMOD,
     category: Category.Moderation,
     args: [
         {

@@ -6,8 +6,9 @@ export const isUUID = (str: string) => /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-
 export const isHashId = (str: string) => /^[0-9A-Za-z]{8,}$/.test(str);
 export const isDomain = (str: string) => /[^!@#$%^&*()?<>.,~`'":;\\\/|\s()\[\]]+\.[^!@#$%^&*()?<>.,~`'":;\\\/|\s()\[\]]+/.test(str);
 export const roleValues: { [staffRole in RoleType]: number } = {
-    [RoleType.ADMIN]: 2,
-    [RoleType.MOD]: 1,
+    [RoleType.ADMIN]: 3,
+    [RoleType.MOD]: 2,
+    [RoleType.MINIMOD]: 1,
     [RoleType.REACT]: 0,
 };
 
