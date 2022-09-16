@@ -233,11 +233,17 @@ export class MessageUtil extends Util {
         const startingIndex = itemsPerPage * page;
         const endingIndex = itemsPerPage * incrementedPage;
 
-        return this.replyWithInfo(message, title, items.slice(startingIndex, endingIndex).map(itemMapping).join("\n"), {
-            ...embedPartial,
-            footer: {
-                text: `Page ${incrementedPage}/${possiblePages} • ${items.length} total items`,
+        return this.replyWithInfo(
+            message,
+            title,
+            items.slice(startingIndex, endingIndex).map(itemMapping).join("\n"),
+            {
+                ...embedPartial,
+                footer: {
+                    text: `Page ${incrementedPage}/${possiblePages} • ${items.length} total items`,
+                },
             },
-        });
+            messagePartial
+        );
     }
 }
