@@ -1,5 +1,7 @@
+import { stripIndents } from "common-tags";
 import { RoleType } from "../../typings";
-import { typeToDBPropKeys, typeToDBPropMap } from "../../utils/util";
+import { inlineCode } from "../../utils/formatters";
+import { DBPropToTypeMap, DBPropToTypeKeys, typeToDBPropKeys } from "../../utils/util";
 import { Category } from "../Category";
 import type { Command } from "../Command";
 
@@ -12,11 +14,21 @@ const List: Command = {
     category: Category.Moderation,
     requiredRole: RoleType.ADMIN,
     execute: async (message, _args, ctx, commandCtx) => {
-        const serverDbProps = Object.keys(commandCtx.server).filter((x) => typeToDBPropKeys.includes(x));
+        const serverDbProps = Object.keys(commandCtx.server).filter((x) => DBPropToTypeKeys.includes(x) && commandCtx.server[x]);
+        const serverModules = serverDbProps.map((x) => DBPropToTypeMap[x]);
+
         return ctx.messageUtil.replyWithInfo(
             message,
-            "Enabled modules",
-            `${serverDbProps.length ? serverDbProps.join(", ") : "**None**"}\nAvailable Modules: ${Object.keys(typeToDBPropMap).join(", ")}`
+            "Modules",
+            stripIndents`
+                **Enabled Modules:** ${serverModules.length ? serverModules.map(inlineCode).join(", ") : "None"}
+
+                **Disabled Modules:** ${
+                    typeToDBPropKeys
+                        .filter((x) => !serverModules.includes(x))
+                        .map(inlineCode)
+                        .join(", ") || "None"
+                }`
         );
     },
 };

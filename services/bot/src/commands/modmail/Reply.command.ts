@@ -24,7 +24,7 @@ const Reply: Command = {
     execute: async (message, args, ctx, { member }) => {
         const content = (args.content as string).slice(0, 2000);
         const isCurrentChannelModmail = await ctx.prisma.modmailThread.findFirst({ where: { serverId: message.serverId, modFacingChannelId: message.channelId, closed: false } });
-        if (!isCurrentChannelModmail) return ctx.messageUtil.replyWithError(message, "This channel is not a modmail channel!");
+        if (!isCurrentChannelModmail) return ctx.messageUtil.replyWithAlert(message, `Not a modmail channel`, `This channel is not a modmail channel!`);
 
         const baseEmbedData: EmbedPayload = {
             author: {

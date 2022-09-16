@@ -23,13 +23,30 @@ const Challenge: Command = {
     args: [{ name: "challenge", type: "string", optional: true }],
     execute: async (message, args, ctx, commandCtx) => {
         const challenge = (args.challenge as string | null)?.toLowerCase();
-        if (!challenge) return ctx.messageUtil.replyWithInfo(message, "Current challenge", `The bot challenges new members who fail the age account filter check by ${commandCtx.server.antiRaidResponse ? responseTypes[commandCtx.server.antiRaidResponse] : "doing nothing."}`)
+        if (!challenge)
+            return ctx.messageUtil.replyWithInfo(
+                message,
+                "Current challenge",
+                `The bot challenges new members who fail the age account filter check by ${
+                    commandCtx.server.antiRaidResponse ? responseTypes[commandCtx.server.antiRaidResponse] : "doing nothing."
+                }`
+            );
         if (!responseTypes.includes(challenge))
-            return ctx.messageUtil.replyWithError(message, `Your response type must be one of the following: ${responseTypes.map((x) => `\`${x}\``).join(", ")}`);
+            return ctx.messageUtil.replyWithAlert(
+                message,
+                `Invalid response type`,
+                `Your response type must be one of the following: ${responseTypes.map((x) => `\`${x}\``).join(", ")}`
+            );
         const transformedChallenge = antiRaidResponseTransformer(challenge);
 
-        if (challenge === "captcha" && !commandCtx.server.muteRoleId) return ctx.messageUtil.replyWithError(message, "You need to set a mute role using `?config muterole`, otherwise unverified members would still have access to your community.")
-        if (commandCtx.server.antiRaidResponse === transformedChallenge) return ctx.messageUtil.replyWithError(message, "You already have the anti-raid response set to this.");
+        if (challenge === "captcha" && !commandCtx.server.muteRoleId)
+            return ctx.messageUtil.replyWithAlert(
+                message,
+                `No mute role`,
+                `You need to set a mute role using \`${commandCtx.server.getPrefix()}config muterole\`, otherwise unverified members would still have access to your community.`
+            );
+        if (commandCtx.server.antiRaidResponse === transformedChallenge)
+            return ctx.messageUtil.replyWithAlert(message, `Already set`, "You already have the anti-raid response set to this.");
         await ctx.prisma.server.update({ where: { id: commandCtx.server.id }, data: { antiRaidResponse: transformedChallenge } });
         return ctx.messageUtil.replyWithSuccess(
             message,

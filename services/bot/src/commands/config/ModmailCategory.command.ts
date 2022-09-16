@@ -21,7 +21,7 @@ const ModmailCategory: Command = {
         let endValue: number | null = null;
         if (newCategory !== "null") {
             endValue = Number(newCategory);
-            if (Number.isNaN(endValue)) return ctx.messageUtil.replyWithError(message, "Category ID must be a number! Ensure you did not copy the name.");
+            if (Number.isNaN(endValue)) return ctx.messageUtil.replyWithAlert(message, `Bad ID format`, `Category ID must be a number! Ensure you did not copy the name.`);
         }
 
         await ctx.prisma.server.update({ where: { id: commandCtx.server.id }, data: { modmailCategoryId: endValue } });

@@ -48,9 +48,10 @@ const Set: Command = {
         try {
             await ctx.messageUtil.send(channelId, "Checking for permission to send here...").then((x) => ctx.rest.router.deleteChannelMessage(channelId, x.id));
         } catch (e) {
-            return ctx.messageUtil.replyWithError(
+            return ctx.messageUtil.replyWithAlert(
                 message,
-                "I don't have the permissions to send messages in that channel! Please make sure I can send and read messages in that channel."
+                `Yoki has no permissions`,
+                `I don't have the permissions to send messages in that channel! Please make sure I can send and read messages in that channel.`
             );
         }
 

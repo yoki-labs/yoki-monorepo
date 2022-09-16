@@ -1,6 +1,6 @@
 import { RoleType } from "../../typings";
 import { inlineCode } from "../../utils/formatters";
-import { typeToDBPropKeys, typeToDBPropMap } from "../../utils/util";
+import { DBPropToTypeKeys, typeToDBPropKeys, typeToDBPropMap } from "../../utils/util";
 import { Category } from "../Category";
 import type { Command } from "../Command";
 
@@ -8,7 +8,7 @@ const Enable: Command = {
     name: "module-enable",
     subName: "enable",
     description: "Enable a module for this server.",
-    usage: `<${typeToDBPropKeys.join("|")}>`,
+    usage: `<${DBPropToTypeKeys.join("|")}>`,
     subCommand: true,
     category: Category.Moderation,
     requiredRole: RoleType.ADMIN,
@@ -21,7 +21,11 @@ const Enable: Command = {
     execute: async (message, args, ctx, commandCtx) => {
         const module = args.module as string;
         if (!typeToDBPropKeys.includes(module))
-            return ctx.messageUtil.replyWithError(message, `The module you wish to enable must be one of the following: ${typeToDBPropKeys.map((x) => `\`${x}\``).join(", ")}`);
+            return ctx.messageUtil.replyWithAlert(
+                message,
+                `Invalid module name`,
+                `The module you wish to enable must be one of the following: ${DBPropToTypeKeys.map((x) => `\`${x}\``).join(", ")}`
+            );
 
         void ctx.amp.logEvent({ event_type: "MODULE_ENABLE", user_id: message.createdBy, event_properties: { serverId: message.serverId, module: typeToDBPropMap[module] } });
         return ctx.prisma.server
@@ -29,7 +33,7 @@ const Enable: Command = {
                 where: { id: commandCtx.server.id },
                 data: { [typeToDBPropMap[module]]: true },
             })
-            .then(() => ctx.messageUtil.replyWithSuccess(message, `${module} enabled`, `Successfully enabled the ${module} module for this server.`))
+            .then(() => ctx.messageUtil.replyWithSuccess(message, `Module enabled`, `Successfully enabled the ${inlineCode(module)} module for this server.`))
             .catch((e: Error) =>
                 ctx.messageUtil.replyWithError(
                     message,

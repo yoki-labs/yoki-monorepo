@@ -28,7 +28,11 @@ const SendTrigger: Command = {
     ],
     execute: async (message, args, ctx, commandCtx) => {
         if (!commandCtx.server.modmailGroupId)
-            return ctx.messageUtil.replyWithError(message, "This server does not have the `modmailgroup` setting set. You can set it using the config command.");
+            return ctx.messageUtil.replyWithAlert(
+                message,
+                `No modmail group`,
+                "This server does not have the `modmailgroup` setting set. You can set it using the config command."
+            );
         const targetChannel = args.targetChannel as ServerChannelPayload;
         const reaction = (args.emoji as string).trim();
 
