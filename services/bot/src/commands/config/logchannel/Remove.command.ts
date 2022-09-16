@@ -21,18 +21,18 @@ const Remove: Command = {
     requiredRole: RoleType.ADMIN,
     args: [
         { name: "channelId", optional: false, type: "UUID" },
-        { name: "logTypes", optional: true, type: "enumList", values: LogChannelArgs }
+        { name: "logTypes", optional: true, type: "enumList", values: LogChannelArgs },
     ],
     execute: async (message, args, ctx) => {
         const channelId = args.channelId as string;
-        let logTypes: LogChannelArgEnum[] = args.logTypes === null ? [] : args.logTypes as LogChannelArgEnum[];
+        let logTypes: LogChannelArgEnum[] = args.logTypes === null ? [] : (args.logTypes as LogChannelArgEnum[]);
 
-        const channel = await ctx.rest.router.getChannel(channelId).catch(() => null);
-        if (!channel) return ctx.messageUtil.replyWithAlert(
-            message,
-            "Sorry! That is not a valid channel!",
-            "Please ensure that the provided ID belongs to a channel that I can see! I also require `MANAGE CHANNEL` permissions to be able to grab that channel!"
-        );
+        // const channel = await ctx.rest.router.getChannel(channelId).catch(() => null);
+        // if (!channel) return ctx.messageUtil.replyWithAlert(
+        //     message,
+        //     "Sorry! That is not a valid channel!",
+        //     "Please ensure that the provided ID belongs to a channel that I can see! I also require `MANAGE CHANNEL` permissions to be able to grab that channel!"
+        // );
 
         // If there are logTypes, uppercase them all, then filter out duplicates. No idea why this had to specifically be two different lines.
         if (logTypes && logTypes.length > 0) {
@@ -41,9 +41,11 @@ const Remove: Command = {
 
         // If logTypes is empty or includes ALL, shorten it to only ALL to clean up the process.
         if (logTypes?.length === 0 || logTypes?.includes("all")) {
-            await ctx.prisma.logChannel.findMany({ where: { channelId, serverId: message.serverId } }).then(logChannels => logChannels.forEach((logChannel) => {
-                logTypes?.push(logChannel.type)
-            }))
+            await ctx.prisma.logChannel.findMany({ where: { channelId, serverId: message.serverId } }).then((logChannels) =>
+                logChannels.forEach((logChannel) => {
+                    logTypes?.push(logChannel.type);
+                })
+            );
         }
 
         const [successfulTypes, failedTypes] = await unsubscribeToLogs(ctx, message, channelId, logTypes as LogChannelType[]);
@@ -54,11 +56,12 @@ const Remove: Command = {
             successfulTypes.length > 0 ? `Subscriptions removed` : `No subscriptions removed`,
             stripIndents`
                 ${successfulTypes.length > 0 ? `Successfully unsubscribed channel ${inlineCode(channelId)} from the following events: ${listInlineCode(successfulTypes)}` : ""}
-                ${failedTypes.length > 0
-                    ? `Failed to unsubscribe channel ${inlineCode(channelId)} from the following events: ${listInlineCode(
-                        failedTypes.map((x) => x[0])
-                    )} due to the following reason(s) ${listInlineCode(failedTypes.map((x) => x[1]))}`
-                    : ""
+                ${
+                    failedTypes.length > 0
+                        ? `Failed to unsubscribe channel ${inlineCode(channelId)} from the following events: ${listInlineCode(
+                              failedTypes.map((x) => x[0])
+                          )} due to the following reason(s) ${listInlineCode(failedTypes.map((x) => x[1]))}`
+                        : ""
                 }
             `
         );
@@ -84,7 +87,6 @@ async function unsubscribeToLogs(ctx: Client, message: ChatMessagePayload, chann
     }
 
     return [successfulTypes, failedTypes];
-
 }
 
 export default Remove;
