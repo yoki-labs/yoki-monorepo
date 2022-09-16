@@ -1,4 +1,3 @@
-import { Embed } from "@guildedjs/embeds";
 import type { WSTeamMemberJoinedPayload } from "@guildedjs/guilded-api-typings";
 import { Embed as WebhookEmbed } from "@guildedjs/webhook-client";
 import { LogChannelType, Severity } from "@prisma/client";
@@ -8,7 +7,7 @@ import { nanoid } from "nanoid";
 import type { Context, Server } from "../typings";
 import { generateCaptcha } from "../utils/antiraid";
 import { Colors } from "../utils/color";
-import { inlineCode } from "../utils/formatters";
+import { codeBlock, inlineCode } from "../utils/formatters";
 import { FormatDate, suspicious as sus } from "../utils/util";
 
 export default async (packet: WSTeamMemberJoinedPayload, ctx: Context, server: Server) => {
@@ -46,20 +45,28 @@ export default async (packet: WSTeamMemberJoinedPayload, ctx: Context, server: S
                     if (server.muteRoleId) await ctx.rest.router.assignRoleToMember(serverId, member.user.id, server.muteRoleId).catch(() => null);
                     userCaptcha = createdCaptcha;
                 }
-                await ctx.messageUtil.send(server.antiRaidChallengeChannel, {
-                    isPrivate: true,
-                    embeds: [
-                        new Embed()
-                            .setTitle("Halt! Please complete this captcha")
-                            .setDescription(
-                                `<@${
-                                    member.user.id
-                                }> Your account has tripped the anti-raid filter and requires further verification to ensure you are not a bot.\n\n Please run the following command with the code below: \`${server.getPrefix()}solve insert-code-here\`.\nExample: \`?solve ahS9fjW\``
-                            )
-                            .setImage(userCaptcha.url)
-                            .toJSON(),
-                    ],
-                });
+
+                // Have to complete captcha
+                await ctx.messageUtil.sendWarningBlock(
+                    server.antiRaidChallengeChannel,
+                    `Halt! Please complete this captcha`,
+                    stripIndents`
+                        <@${member.user.id}>, your account has tripped the anti-raid filter and requires further verification to ensure you are not a bot.
+
+                        Please run the following command with the code below: \`${server.getPrefix()}solve insert-code-here\`.
+                    `,
+                    {
+                        image: {
+                            url: userCaptcha.url,
+                        },
+                        fields: [
+                            {
+                                name: `Example`,
+                                value: codeBlock(`?solve ahS9fjW`, `md`),
+                            },
+                        ],
+                    }
+                );
 
                 break;
             }

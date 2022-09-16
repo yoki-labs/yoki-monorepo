@@ -26,7 +26,13 @@ const Solve: Command = {
             void ctx.amp.logEvent({ event_type: "CAPTCHA_FAIL", user_id: message.createdBy, event_properties: { serverId: message.serverId } });
             const { value, url } = await generateCaptcha(ctx.s3, captcha.id);
             await ctx.prisma.captcha.update({ where: { id: captcha.id }, data: { value, url } });
-            return ctx.messageUtil.reply(message, { content: "**INCORRECT!** A new captcha has been generated for you.", embeds: [{ image: { url } }] });
+            return ctx.messageUtil.replyWithError(
+                message,
+                `Incorrect code`,
+                `The code you sent is invalid. A new captcha has been generated for you:`,
+                { image: { url } },
+                { isPrivate: true }
+            );
         }
 
         await ctx.prisma.captcha.update({ where: { id: captcha.id }, data: { solved: true } });

@@ -159,10 +159,6 @@ export class MessageUtil extends Util {
         return this.replyWithStateBlock(message, `Can't do that!`, description, Colors.red, StateImages.stop, embedPartial, messagePartial);
     }
 
-    sendWarningBlock(channelId: string, title: string, description: string, embedPartial?: EmbedPayload, messagePartial?: Partial<RESTPostChannelMessagesBody>) {
-        return this.sendStateBlock(channelId, title, description, Colors.yellow, StateImages.stop, embedPartial, messagePartial);
-    }
-
     replyWithNullState(message: ChatMessagePayload, title: string, description: string, embedPartial?: EmbedPayload, messagePartial?: Partial<RESTPostChannelMessagesBody>) {
         return this.replyWithStateBlock(message, title, description, Colors.blockBackground, StateImages.nothingHere, embedPartial, messagePartial);
     }
@@ -187,6 +183,14 @@ export class MessageUtil extends Util {
             replyMessageIds: [message.id],
             ...messagePartial,
         });
+    }
+
+    sendWarningBlock(channelId: string, title: string, description: string, embedPartial?: EmbedPayload, messagePartial?: Partial<RESTPostChannelMessagesBody>) {
+        return this.sendStateBlock(channelId, title, description, Colors.yellow, StateImages.stop, embedPartial, messagePartial);
+    }
+
+    sendErrorBlock(channelId: string, title: string, description: string, embedPartial?: EmbedPayload, messagePartial?: Partial<RESTPostChannelMessagesBody>) {
+        return this.sendStateBlock(channelId, title, description, Colors.red, StateImages.notFound, embedPartial, messagePartial);
     }
 
     sendInfoBlock(channelId: string, title: string, description: string, embedPartial?: EmbedPayload, messagePartial?: Partial<RESTPostChannelMessagesBody>) {
