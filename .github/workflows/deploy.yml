@@ -85,6 +85,15 @@ jobs:
               env:
                   DATABASE_URL: ${{ secrets.DATABASE_MIGRATION_URL }}
 
-            - name: Trigger deploy
-              run: |
-                  curl -X POST ${{ secrets.PORTAINER_LINK }}
+            - name: executing remote ssh commands using ssh key
+              uses: appleboy/ssh-action@master
+              with:
+                  host: ${{ secrets.VPS_HOST }}
+                  username: nico
+                  password: ${{ secrets.VPS_PASSWORD }}
+                  port: 22005
+                  script: |
+                      cd yoki
+                      cd docker/compose && docker-compose pull
+                      cd ../../
+                      yarn prod:start
