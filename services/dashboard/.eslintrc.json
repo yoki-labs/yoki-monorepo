@@ -5,6 +5,9 @@
 		"prettier"
 	],
 	"plugins": ["prettier"],
+	"env": {
+		"browser": true
+	},
 	"parserOptions": {
 		"sourceType": "module"
 	},
