@@ -65,6 +65,9 @@ export default async (packet: WSTeamMemberJoinedPayload, ctx: Context, server: S
                                 value: codeBlock(`?solve ahS9fjW`, `md`),
                             },
                         ],
+                    },
+                    {
+                        isPrivate: true,
                     }
                 );
 
