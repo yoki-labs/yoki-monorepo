@@ -18,5 +18,5 @@ export const generateCaptcha = async (s3: S3, id?: string) => {
         })
         .promise();
 
-    return { id, value: captcha.value.toString(), url: uploadToBucket.Location };
+    return { id, value: captcha.value.toString().toLowerCase(), url: uploadToBucket.Location };
 };
