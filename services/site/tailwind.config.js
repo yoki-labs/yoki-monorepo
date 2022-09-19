@@ -3,7 +3,7 @@ const plugin = require("tailwindcss/plugin");
 
 /** @type {import('tailwindcss').Config} */
 module.exports = withMT({
-    content: ["./src/pages/**/*.{js,ts,jsx,tsx}", "./src/components/**/*.{js,ts,jsx,tsx}"],
+    content: ["./src/**/*.{js,ts,jsx,tsx}"],
     theme: {
         colors: {
             ...require("tailwindcss/colors")

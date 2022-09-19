@@ -12,10 +12,12 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }: { sidebarOpen: 
     const sidebar = useRef<HTMLDivElement>(null);
 
     const [storedSidebarExpanded, setStoredSidebarExpanded] = useState<string | null>(null);
-    const [sidebarExpanded, setSidebarExpanded] = useState<boolean>(storedSidebarExpanded === null ? false : storedSidebarExpanded === "true");
+    const [sidebarExpanded, setSidebarExpanded] = useState<boolean>(storedSidebarExpanded === null ? false : storedSidebarExpanded === 'true');
+    console.log(sidebarOpen)
 
     useEffect(() => {
         setStoredSidebarExpanded(localStorage.getItem("sidebar-expanded"));
+        console.log(localStorage.getItem("sidebar-expanded"))
     }, [])
 
     // close on click outside
