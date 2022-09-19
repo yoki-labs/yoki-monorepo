@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import Transition from '../utils/Transition';
+import Transition from '../../utils/Transition';
 
 import DropdownImage from '../images/user-avatar-32.png';
 import DropdownImage01 from '../images/channel-01.png';

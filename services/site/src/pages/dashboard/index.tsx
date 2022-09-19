@@ -1,11 +1,10 @@
 import React, { useState } from "react";
 
-import Sidebar from "../partials/Sidebar";
-import Header from "../partials/Header";
-import WelcomeBanner from "../partials/dashboard/WelcomeBanner";
-import DashboardAvatars from "../partials/dashboard/DashboardAvatars";
-import FilterButton from "../components/DropdownFilter";
-import Datepicker from "../components/Datepicker";
+import Sidebar from "../../partials/Sidebar";
+import Header from "../../partials/Header";
+import WelcomeBanner from "../../partials/dashboard/WelcomeBanner";
+import DashboardAvatars from "../../partials/dashboard/DashboardAvatars";
+import Datepicker from "../../components/dashboard/Datepicker";
 
 function Dashboard() {
     const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -32,8 +31,6 @@ function Dashboard() {
 
                             {/* Right: Actions */}
                             <div className="grid grid-flow-col sm:auto-cols-max justify-start sm:justify-end gap-2">
-                                {/* Filter button */}
-                                <FilterButton align="right" />
                                 {/* Datepicker built with flatpickr */}
                                 <Datepicker align="right" />
                                 {/* Add view button */}

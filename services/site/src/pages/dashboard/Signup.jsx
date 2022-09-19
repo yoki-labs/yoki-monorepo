@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import Link from "next/link";
 
 function Signup() {
     return (
@@ -12,7 +12,7 @@ function Signup() {
                         <div className="flex-1">
                             <div className="flex items-center justify-between h-16 px-4 sm:px-6 lg:px-8">
                                 {/* Logo */}
-                                <Link className="block" to="/">
+                                <Link className="block" href="/">
                                     <svg width="32" height="32" viewBox="0 0 32 32">
                                         <defs>
                                             <linearGradient x1="28.538%" y1="20.229%" x2="100%" y2="108.156%" id="logo-a">
@@ -74,7 +74,7 @@ function Signup() {
                                             <span className="text-sm ml-2">Email me about product news.</span>
                                         </label>
                                     </div>
-                                    <Link className="btn bg-indigo-500 hover:bg-indigo-600 text-white ml-3 whitespace-nowrap" to="/">
+                                    <Link className="btn bg-indigo-500 hover:bg-indigo-600 text-white ml-3 whitespace-nowrap" href="/">
                                         Sign Up
                                     </Link>
                                 </div>
@@ -83,7 +83,7 @@ function Signup() {
                             <div className="pt-5 mt-6 border-t border-slate-200">
                                 <div className="text-sm">
                                     Have an account?{" "}
-                                    <Link className="font-medium text-indigo-500 hover:text-indigo-600" to="/signin">
+                                    <Link className="font-medium text-indigo-500 hover:text-indigo-600" href="/signin">
                                         Sign In
                                     </Link>
                                 </div>

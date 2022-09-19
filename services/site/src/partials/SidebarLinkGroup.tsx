@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 function SidebarLinkGroup({
   children,
   activecondition,
-}) {
+}: { children: any, activecondition?: boolean }) {
 
   const [open, setOpen] = useState(activecondition);
 

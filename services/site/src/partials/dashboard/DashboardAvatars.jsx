@@ -1,11 +1,11 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import Link from "next/link";
 
 function DashboardAvatars() {
     return (
         <ul className="flex flex-wrap justify-center sm:justify-start mb-8 sm:mb-0 -space-x-3 -ml-px">
             <li>
-                <Link className="block" to="#0">
+                <Link className="block" href="#0">
                     <img
                         className="w-9 h-9 rounded-full"
                         src="https://image.shutterstock.com/image-photo/word-example-written-on-magnifying-260nw-1883859943.jpg"
@@ -16,7 +16,7 @@ function DashboardAvatars() {
                 </Link>
             </li>
             <li>
-                <Link className="block" to="#0">
+                <Link className="block" href="#0">
                     <img
                         className="w-9 h-9 rounded-full"
                         src="https://image.shutterstock.com/image-photo/word-example-written-on-magnifying-260nw-1883859943.jpg"
@@ -27,7 +27,7 @@ function DashboardAvatars() {
                 </Link>
             </li>
             <li>
-                <Link className="block" to="#0">
+                <Link className="block" href="#0">
                     <img
                         className="w-9 h-9 rounded-full"
                         src="https://image.shutterstock.com/image-photo/word-example-written-on-magnifying-260nw-1883859943.jpg"
@@ -38,7 +38,7 @@ function DashboardAvatars() {
                 </Link>
             </li>
             <li>
-                <Link className="block" to="#0">
+                <Link className="block" href="#0">
                     <img
                         className="w-9 h-9 rounded-full"
                         src="https://image.shutterstock.com/image-photo/word-example-written-on-magnifying-260nw-1883859943.jpg"

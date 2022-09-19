@@ -4,8 +4,6 @@ import "../styles/styles.css";
 import type { AppProps } from "next/app";
 import Head from "next/head";
 
-import Footer from "../components/landing/footer/Footer";
-import Navbar from "../components/landing/navbar/navbar";
 const ogDescription = "Meet Yoki, your moderation companion. Guilded's first moderation bot.";
 const ogUrl = "https://yoki.gg/";
 const ogFace = "https://yoki.gg/face.png";
@@ -33,11 +31,7 @@ function MyApp({ Component, pageProps }: AppProps) {
 
                 <link rel="icon" href="/favicon.ico" />
             </Head>
-            <Navbar />
             <Component {...pageProps} />
-            <div className="bg-[#15171d] px-12 md:px-20">
-                <Footer />
-            </div>
         </>
     );
 }

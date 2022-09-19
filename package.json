@@ -50,8 +50,7 @@
     "workspaces": [
         "services/bot",
         "services/nsfw",
-        "services/landing",
-        "services/dashboard"
+        "services/site"
     ],
     "prettier": {
         "endOfLine": "auto",

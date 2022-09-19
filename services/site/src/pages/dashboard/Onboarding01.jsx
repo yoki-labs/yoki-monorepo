@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import Link from "next/link";
 
 function Onboarding01() {
     return (
@@ -12,7 +12,7 @@ function Onboarding01() {
                             {/* Header */}
                             <div className="flex items-center justify-between h-16 px-4 sm:px-6 lg:px-8">
                                 {/* Logo */}
-                                <Link className="block" to="/">
+                                <Link className="block" href="/">
                                     <svg width="32" height="32" viewBox="0 0 32 32">
                                         <defs>
                                             <linearGradient x1="28.538%" y1="20.229%" x2="100%" y2="108.156%" id="logo-a">
@@ -32,7 +32,7 @@ function Onboarding01() {
                                 </Link>
                                 <div className="text-sm">
                                     Have an account?{" "}
-                                    <Link className="font-medium text-indigo-500 hover:text-indigo-600" to="/signin">
+                                    <Link className="font-medium text-indigo-500 hover:text-indigo-600" href="/signin">
                                         Sign In
                                     </Link>
                                 </div>
@@ -47,7 +47,7 @@ function Onboarding01() {
                                             <li>
                                                 <Link
                                                     className="flex items-center justify-center w-6 h-6 rounded-full text-xs font-semibold bg-indigo-500 text-white"
-                                                    to="/onboarding-01"
+                                                    href="/onboarding-01"
                                                 >
                                                     1
                                                 </Link>
@@ -55,7 +55,7 @@ function Onboarding01() {
                                             <li>
                                                 <Link
                                                     className="flex items-center justify-center w-6 h-6 rounded-full text-xs font-semibold bg-slate-100 text-slate-500"
-                                                    to="/onboarding-02"
+                                                    href="/onboarding-02"
                                                 >
                                                     2
                                                 </Link>
@@ -63,7 +63,7 @@ function Onboarding01() {
                                             <li>
                                                 <Link
                                                     className="flex items-center justify-center w-6 h-6 rounded-full text-xs font-semibold bg-slate-100 text-slate-500"
-                                                    to="/onboarding-03"
+                                                    href="/onboarding-03"
                                                 >
                                                     3
                                                 </Link>
@@ -71,7 +71,7 @@ function Onboarding01() {
                                             <li>
                                                 <Link
                                                     className="flex items-center justify-center w-6 h-6 rounded-full text-xs font-semibold bg-slate-100 text-slate-500"
-                                                    to="/onboarding-04"
+                                                    href="/onboarding-04"
                                                 >
                                                     4
                                                 </Link>
@@ -132,7 +132,7 @@ function Onboarding01() {
                                         </label>
                                     </div>
                                     <div className="flex items-center justify-between">
-                                        <Link className="btn bg-indigo-500 hover:bg-indigo-600 text-white ml-auto" to="/onboarding-02">
+                                        <Link className="btn bg-indigo-500 hover:bg-indigo-600 text-white ml-auto" href="/onboarding-02">
                                             Next Step -&gt;
                                         </Link>
                                     </div>

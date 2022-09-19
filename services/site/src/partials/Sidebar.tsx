@@ -1,21 +1,26 @@
 import React, { useState, useEffect, useRef } from "react";
-import { NavLink, useLocation } from "react-router-dom";
+import { NavLink } from "../components/dashboard/NavLink";
+import { useRouter } from "next/router";
 
 import SidebarLinkGroup from "./SidebarLinkGroup";
 
-function Sidebar({ sidebarOpen, setSidebarOpen }) {
-    const location = useLocation();
-    const { pathname } = location;
+export default function Sidebar({ sidebarOpen, setSidebarOpen }: { sidebarOpen: boolean, setSidebarOpen: (input: boolean) => void }) {
+    const router = useRouter();
+    const { pathname } = router;
 
-    const trigger = useRef(null);
-    const sidebar = useRef(null);
+    const trigger = useRef<HTMLButtonElement>(null);
+    const sidebar = useRef<HTMLDivElement>(null);
 
-    const storedSidebarExpanded = localStorage.getItem("sidebar-expanded");
-    const [sidebarExpanded, setSidebarExpanded] = useState(storedSidebarExpanded === null ? false : storedSidebarExpanded === "true");
+    const [storedSidebarExpanded, setStoredSidebarExpanded] = useState<string | null>(null);
+    const [sidebarExpanded, setSidebarExpanded] = useState<boolean>(storedSidebarExpanded === null ? false : storedSidebarExpanded === "true");
+
+    useEffect(() => {
+        setStoredSidebarExpanded(localStorage.getItem("sidebar-expanded"));
+    }, [])
 
     // close on click outside
     useEffect(() => {
-        const clickHandler = ({ target }) => {
+        const clickHandler = ({ target }: { target: any }) => {
             if (!sidebar.current || !trigger.current) return;
             if (!sidebarOpen || sidebar.current.contains(target) || trigger.current.contains(target)) return;
             setSidebarOpen(false);
@@ -26,7 +31,7 @@ function Sidebar({ sidebarOpen, setSidebarOpen }) {
 
     // close if the esc key is pressed
     useEffect(() => {
-        const keyHandler = ({ keyCode }) => {
+        const keyHandler = ({ keyCode }: { keyCode: number }) => {
             if (!sidebarOpen || keyCode !== 27) return;
             setSidebarOpen(false);
         };
@@ -35,11 +40,11 @@ function Sidebar({ sidebarOpen, setSidebarOpen }) {
     });
 
     useEffect(() => {
-        localStorage.setItem("sidebar-expanded", sidebarExpanded);
+        window.localStorage.setItem("sidebar-expanded", JSON.stringify(sidebarExpanded));
         if (sidebarExpanded) {
-            document.querySelector("body").classList.add("sidebar-expanded");
+            document.querySelector("body")?.classList.add("sidebar-expanded");
         } else {
-            document.querySelector("body").classList.remove("sidebar-expanded");
+            document.querySelector("body")?.classList.remove("sidebar-expanded");
         }
     }, [sidebarExpanded]);
 
@@ -47,9 +52,8 @@ function Sidebar({ sidebarOpen, setSidebarOpen }) {
         <div>
             {/* Sidebar backdrop (mobile only) */}
             <div
-                className={`fixed inset-0 bg-slate-900 bg-opacity-30 z-40 lg:hidden lg:z-auto transition-opacity duration-200 ${
-                    sidebarOpen ? "opacity-100" : "opacity-0 pointer-events-none"
-                }`}
+                className={`fixed inset-0 bg-slate-900 bg-opacity-30 z-40 lg:hidden lg:z-auto transition-opacity duration-200 ${sidebarOpen ? "opacity-100" : "opacity-0 pointer-events-none"
+                    }`}
                 aria-hidden="true"
             />
 
@@ -57,9 +61,8 @@ function Sidebar({ sidebarOpen, setSidebarOpen }) {
             <div
                 id="sidebar"
                 ref={sidebar}
-                className={`flex flex-col absolute z-40 left-0 top-0 lg:static lg:left-auto lg:top-auto lg:translate-x-0 h-screen overflow-y-scroll lg:overflow-y-auto no-scrollbar w-64 lg:w-20 lg:sidebar-expanded:!w-64 2xl:!w-64 shrink-0 bg-slate-800 p-4 transition-all duration-200 ease-in-out ${
-                    sidebarOpen ? "translate-x-0" : "-translate-x-64"
-                }`}
+                className={`flex flex-col absolute z-40 left-0 top-0 lg:static lg:left-auto lg:top-auto lg:translate-x-0 h-screen overflow-y-scroll lg:overflow-y-auto no-scrollbar w-64 lg:w-20 lg:sidebar-expanded:!w-64 2xl:!w-64 shrink-0 bg-slate-800 p-4 transition-all duration-200 ease-in-out ${sidebarOpen ? "translate-x-0" : "-translate-x-64"
+                    }`}
             >
                 {/* Sidebar header */}
                 <div className="flex justify-between mb-10 pr-3 sm:px-2">
@@ -110,13 +113,12 @@ function Sidebar({ sidebarOpen, setSidebarOpen }) {
                         <ul className="mt-3">
                             {/* Dashboard */}
                             <SidebarLinkGroup activecondition={pathname === "/" || pathname.includes("dashboard")}>
-                                {(handleClick, open) => (
+                                {(handleClick: () => void, open: boolean) => (
                                     <>
                                         <a
                                             href="#0"
-                                            className={`block text-slate-200 hover:text-white truncate transition duration-150 ${
-                                                (pathname === "/" || pathname.includes("dashboard")) && "hover:text-slate-200"
-                                            }`}
+                                            className={`block text-slate-200 hover:text-white truncate transition duration-150 ${(pathname === "/" || pathname.includes("dashboard")) && "hover:text-slate-200"
+                                                }`}
                                             onClick={(e) => {
                                                 e.preventDefault();
                                                 sidebarExpanded ? handleClick() : setSidebarExpanded(true);
@@ -156,9 +158,7 @@ function Sidebar({ sidebarOpen, setSidebarOpen }) {
                                                     <NavLink
                                                         end
                                                         to="/"
-                                                        className={({ isActive }) =>
-                                                            `block text-slate-400 hover:text-slate-200 transition duration-150 truncate ${isActive ? "!text-indigo-500" : ""}`
-                                                        }
+                                                        className="block text-slate-400 hover:text-slate-200 transition duration-150 truncate"
                                                     >
                                                         <span className="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Main</span>
                                                     </NavLink>
@@ -167,9 +167,7 @@ function Sidebar({ sidebarOpen, setSidebarOpen }) {
                                                     <NavLink
                                                         end
                                                         to="/dashboard/analytics"
-                                                        className={({ isActive }) =>
-                                                            `block text-slate-400 hover:text-slate-200 transition duration-150 truncate ${isActive ? "!text-indigo-500" : ""}`
-                                                        }
+                                                        className="block text-slate-400 hover:text-slate-200 transition duration-150 truncate"
                                                     >
                                                         <span className="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">
                                                             Analytics
@@ -180,9 +178,9 @@ function Sidebar({ sidebarOpen, setSidebarOpen }) {
                                                     <NavLink
                                                         end
                                                         to="/dashboard/fintech"
-                                                        className={({ isActive }) =>
-                                                            `block text-slate-400 hover:text-slate-200 transition duration-150 truncate ${isActive ? "!text-indigo-500" : ""}`
-                                                        }
+                                                        className=
+                                                        "block text-slate-400 hover:text-slate-200 transition duration-150 truncate"
+
                                                     >
                                                         <span className="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">
                                                             Fintech
@@ -196,13 +194,12 @@ function Sidebar({ sidebarOpen, setSidebarOpen }) {
                             </SidebarLinkGroup>
                             {/* Settings */}
                             <SidebarLinkGroup activecondition={pathname.includes("settings")}>
-                                {(handleClick, open) => (
+                                {(handleClick: () => void, open: boolean) => (
                                     <>
                                         <a
                                             href="#0"
-                                            className={`block text-slate-200 hover:text-white truncate transition duration-150 ${
-                                                pathname.includes("settings") && "hover:text-slate-200"
-                                            }`}
+                                            className={`block text-slate-200 hover:text-white truncate transition duration-150 ${pathname.includes("settings") && "hover:text-slate-200"
+                                                }`}
                                             onClick={(e) => {
                                                 e.preventDefault();
                                                 sidebarExpanded ? handleClick() : setSidebarExpanded(true);
@@ -246,9 +243,7 @@ function Sidebar({ sidebarOpen, setSidebarOpen }) {
                                                     <NavLink
                                                         end
                                                         to="/settings/account"
-                                                        className={({ isActive }) =>
-                                                            `block text-slate-400 hover:text-slate-200 transition duration-150 truncate ${isActive ? "!text-indigo-500" : ""}`
-                                                        }
+                                                        className="block text-slate-400 hover:text-slate-200 transition duration-150 truncate"
                                                     >
                                                         <span className="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">
                                                             My Account
@@ -259,9 +254,9 @@ function Sidebar({ sidebarOpen, setSidebarOpen }) {
                                                     <NavLink
                                                         end
                                                         to="/settings/notifications"
-                                                        className={({ isActive }) =>
-                                                            `block text-slate-400 hover:text-slate-200 transition duration-150 truncate ${isActive ? "!text-indigo-500" : ""}`
-                                                        }
+                                                        className=
+                                                        "block text-slate-400 hover:text-slate-200 transition duration-150 truncate"
+
                                                     >
                                                         <span className="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">
                                                             My Notifications
@@ -272,9 +267,8 @@ function Sidebar({ sidebarOpen, setSidebarOpen }) {
                                                     <NavLink
                                                         end
                                                         to="/settings/apps"
-                                                        className={({ isActive }) =>
-                                                            `block text-slate-400 hover:text-slate-200 transition duration-150 truncate ${isActive ? "!text-indigo-500" : ""}`
-                                                        }
+                                                        className="`block text-slate-400 hover:text-slate-200 transition duration-150 truncate"
+
                                                     >
                                                         <span className="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">
                                                             Connected Apps
@@ -285,9 +279,8 @@ function Sidebar({ sidebarOpen, setSidebarOpen }) {
                                                     <NavLink
                                                         end
                                                         to="/settings/plans"
-                                                        className={({ isActive }) =>
-                                                            `block text-slate-400 hover:text-slate-200 transition duration-150 truncate ${isActive ? "!text-indigo-500" : ""}`
-                                                        }
+                                                        className="block text-slate-400 hover:text-slate-200 transition duration-150 truncate"
+
                                                     >
                                                         <span className="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Plans</span>
                                                     </NavLink>
@@ -296,9 +289,8 @@ function Sidebar({ sidebarOpen, setSidebarOpen }) {
                                                     <NavLink
                                                         end
                                                         to="/settings/billing"
-                                                        className={({ isActive }) =>
-                                                            `block text-slate-400 hover:text-slate-200 transition duration-150 truncate ${isActive ? "!text-indigo-500" : ""}`
-                                                        }
+                                                        className="`block text-slate-400 hover:text-slate-200 transition duration-150 truncate"
+
                                                     >
                                                         <span className="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">
                                                             Billing & Invoices
@@ -309,9 +301,8 @@ function Sidebar({ sidebarOpen, setSidebarOpen }) {
                                                     <NavLink
                                                         end
                                                         to="/settings/feedback"
-                                                        className={({ isActive }) =>
-                                                            `block text-slate-400 hover:text-slate-200 transition duration-150 truncate ${isActive ? "!text-indigo-500" : ""}`
-                                                        }
+                                                        className="block text-slate-400 hover:text-slate-200 transition duration-150 truncate"
+
                                                     >
                                                         <span className="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">
                                                             Give Feedback
@@ -325,13 +316,12 @@ function Sidebar({ sidebarOpen, setSidebarOpen }) {
                             </SidebarLinkGroup>
                             {/* Utility */}
                             <SidebarLinkGroup activecondition={pathname.includes("utility")}>
-                                {(handleClick, open) => (
+                                {(handleClick: () => void, open: boolean) => (
                                     <>
                                         <a
                                             href="#0"
-                                            className={`block text-slate-200 hover:text-white truncate transition duration-150 ${
-                                                pathname.includes("utility") && "hover:text-slate-200"
-                                            }`}
+                                            className={`block text-slate-200 hover:text-white truncate transition duration-150 ${pathname.includes("utility") && "hover:text-slate-200"
+                                                }`}
                                             onClick={(e) => {
                                                 e.preventDefault();
                                                 sidebarExpanded ? handleClick() : setSidebarExpanded(true);
@@ -383,9 +373,8 @@ function Sidebar({ sidebarOpen, setSidebarOpen }) {
                                                     <NavLink
                                                         end
                                                         to="/utility/changelog"
-                                                        className={({ isActive }) =>
-                                                            `block text-slate-400 hover:text-slate-200 transition duration-150 truncate ${isActive ? "!text-indigo-500" : ""}`
-                                                        }
+                                                        className="block text-slate-400 hover:text-slate-200 transition duration-150 truncate"
+
                                                     >
                                                         <span className="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">
                                                             Changelog
@@ -396,9 +385,8 @@ function Sidebar({ sidebarOpen, setSidebarOpen }) {
                                                     <NavLink
                                                         end
                                                         to="/utility/roadmap"
-                                                        className={({ isActive }) =>
-                                                            `block text-slate-400 hover:text-slate-200 transition duration-150 truncate ${isActive ? "!text-indigo-500" : ""}`
-                                                        }
+                                                        className="block text-slate-400 hover:text-slate-200 transition duration-150 truncate"
+
                                                     >
                                                         <span className="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">
                                                             Roadmap
@@ -409,9 +397,7 @@ function Sidebar({ sidebarOpen, setSidebarOpen }) {
                                                     <NavLink
                                                         end
                                                         to="/utility/faqs"
-                                                        className={({ isActive }) =>
-                                                            `block text-slate-400 hover:text-slate-200 transition duration-150 truncate ${isActive ? "!text-indigo-500" : ""}`
-                                                        }
+                                                        className="block text-slate-400 hover:text-slate-200 transition duration-150 truncate"
                                                     >
                                                         <span className="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">FAQs</span>
                                                     </NavLink>
@@ -420,9 +406,7 @@ function Sidebar({ sidebarOpen, setSidebarOpen }) {
                                                     <NavLink
                                                         end
                                                         to="/utility/empty-state"
-                                                        className={({ isActive }) =>
-                                                            `block text-slate-400 hover:text-slate-200 transition duration-150 truncate ${isActive ? "!text-indigo-500" : ""}`
-                                                        }
+                                                        className="block text-slate-400 hover:text-slate-200 transition duration-150 truncate"
                                                     >
                                                         <span className="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">
                                                             Empty State
@@ -433,9 +417,8 @@ function Sidebar({ sidebarOpen, setSidebarOpen }) {
                                                     <NavLink
                                                         end
                                                         to="/utility/404"
-                                                        className={({ isActive }) =>
-                                                            `block text-slate-400 hover:text-slate-200 transition duration-150 truncate ${isActive ? "!text-indigo-500" : ""}`
-                                                        }
+                                                        className="block text-slate-400 hover:text-slate-200 transition duration-150 truncate"
+
                                                     >
                                                         <span className="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">404</span>
                                                     </NavLink>
@@ -444,9 +427,7 @@ function Sidebar({ sidebarOpen, setSidebarOpen }) {
                                                     <NavLink
                                                         end
                                                         to="/utility/knowledge-base"
-                                                        className={({ isActive }) =>
-                                                            `block text-slate-400 hover:text-slate-200 transition duration-150 truncate ${isActive ? "!text-indigo-500" : ""}`
-                                                        }
+                                                        className="block text-slate-400 hover:text-slate-200 transition duration-150 truncate"
                                                     >
                                                         <span className="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">
                                                             Knowledge Base
@@ -471,7 +452,7 @@ function Sidebar({ sidebarOpen, setSidebarOpen }) {
                         <ul className="mt-3">
                             {/* Authentication */}
                             <SidebarLinkGroup>
-                                {(handleClick, open) => (
+                                {(handleClick: () => void, open: boolean) => (
                                     <>
                                         <a
                                             href="#0"
@@ -529,7 +510,7 @@ function Sidebar({ sidebarOpen, setSidebarOpen }) {
                             </SidebarLinkGroup>
                             {/* Onboarding */}
                             <SidebarLinkGroup>
-                                {(handleClick, open) => (
+                                {(handleClick: () => void, open: boolean) => (
                                     <>
                                         <a
                                             href="#0"
@@ -616,4 +597,4 @@ function Sidebar({ sidebarOpen, setSidebarOpen }) {
     );
 }
 
-export default Sidebar;
+
