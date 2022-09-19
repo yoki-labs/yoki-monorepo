@@ -26,7 +26,7 @@ export default function Navbar() {
     }, []);
 
     return (
-        <NavbarWrapper className={scrollY > 20 ? "scrolled" : ""}>
+        <NavbarWrapper className={`${scrollY > 20 ? "scrolled" : ""} bg-custom-gray`}>
             <nav>
                 <div className="wrapper">
                     <Link href="/">

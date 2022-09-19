@@ -4,9 +4,11 @@ import Navbar from "./navbar/navbar"
 export const LandingPage = ({ children }: { children: any }) => {
     return <>
         <Navbar />
-        {children}
+        <div className="bg-custom-gray py-8">
+            {children}
+        </div>
         <div className="bg-[#15171d] px-12 md:px-20">
             <Footer />
-        </div></>
-
+        </div>
+    </>
 }
