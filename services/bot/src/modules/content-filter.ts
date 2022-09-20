@@ -103,7 +103,12 @@ export class ContentFilterUtil extends BaseFilterUtil {
 
                 if (foundPresetWord !== null) {
                     // if the content does violate a preset, hoist the triggering word
-                    ifTriggersPreset = { content: foundPresetWord[0], matching: FilterMatching.WORD, infractionPoints: 5, severity: enabledPreset.severity ?? Severity.WARN };
+                    ifTriggersPreset = {
+                        content: foundPresetWord[0],
+                        matching: FilterMatching.WORD,
+                        infractionPoints: enabledPreset.infractionPoints ?? 5,
+                        severity: enabledPreset.severity ?? Severity.WARN,
+                    };
                     break;
                 }
             }

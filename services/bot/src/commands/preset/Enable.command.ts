@@ -7,7 +7,7 @@ const Enable: Command = {
     name: "preset-enable",
     subName: "enable",
     description: "Enables a filter preset.",
-    usage: "<preset-to-enable> [severity]",
+    usage: "<preset-to-enable> <severity> [infraction points=5]",
     subCommand: true,
     requiredRole: RoleType.MOD,
     args: [
@@ -19,10 +19,15 @@ const Enable: Command = {
             name: "severity",
             type: "string",
         },
+        {
+            name: "infractionPoints",
+            type: "number",
+        },
     ],
     execute: async (message, args, ctx) => {
         const preset = args.preset as string;
         const severity = transformSeverityStringToEnum((args.severity as string | null) ?? "warn");
+        const infractionPoints = (args.infractionPoints as number | null) ?? 5;
         const allPresets = Object.keys(ctx.contentFilterUtil.presets);
 
         if (!allPresets.includes(preset))
@@ -32,7 +37,7 @@ const Enable: Command = {
         if ((await ctx.prisma.preset.findMany({ where: { serverId: message.serverId!, preset } })).length)
             return ctx.messageUtil.replyWithError(message, "Preset already enabled!", `You have already enabled this preset with the severity of ${severity}.`);
         return ctx.dbUtil
-            .enablePreset(message.serverId!, preset, severity)
+            .enablePreset(message.serverId!, preset, severity, infractionPoints)
             .then(() => ctx.messageUtil.replyWithSuccess(message, `Preset enabled`, `Successfully enabled the ${inlineCode(preset)} preset for this server.`))
             .catch((e: Error) =>
                 ctx.messageUtil.replyWithUnexpected(

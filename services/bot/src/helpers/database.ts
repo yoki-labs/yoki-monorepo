@@ -50,8 +50,8 @@ export class DatabaseUtil extends Util {
         return this.prisma.preset.findMany({ where: { serverId } });
     }
 
-    enablePreset(serverId: string, preset: string, severity: Severity) {
-        return this.prisma.preset.create({ data: { serverId, preset, severity } });
+    enablePreset(serverId: string, preset: string, severity: Severity, infractionPoints: number) {
+        return this.prisma.preset.create({ data: { serverId, preset, severity, infractionPoints } });
     }
 
     disablePreset(serverId: string, preset: string) {

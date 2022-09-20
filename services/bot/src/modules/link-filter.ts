@@ -59,7 +59,7 @@ export class LinkFilterUtil extends BaseFilterUtil {
         const whitelistedInvites = server.filterInvites ? await this.prisma.inviteFilter.findMany({ where: { serverId: server.serverId } }) : null;
 
         // To not re-fetch
-        const enabledPresets = presets ?? (await this.dbUtil.getEnabledPresets(server.serverId));
+        const enabledPresets = (presets ?? (await this.dbUtil.getEnabledPresets(server.serverId))).filter((x) => x.preset in this.presets);
 
         if (!greylistedUrls?.length && !whitelistedInvites?.length && !enabledPresets.length) return;
 
@@ -69,11 +69,6 @@ export class LinkFilterUtil extends BaseFilterUtil {
             event_properties: { serverId: server.serverId },
         });
 
-        const presetLinks = enabledPresets
-            .filter((x) => x.preset in this.presets)
-            .map((x) => this.presets[x.preset])
-            .flat();
-
         const links = content.matchAll(this.urlRegex);
         for (const link of links) {
             // Matched link parts
@@ -82,6 +77,7 @@ export class LinkFilterUtil extends BaseFilterUtil {
 
             // Not .some, because severity and infraction points
             const greylistedUrl = greylistedUrls?.find((x) => x.domain === domain);
+            const inPreset = enabledPresets.find((x) => this.presets[x.preset].some((y) => this.matchesPresetLink(y, groups)));
 
             // Bad URL
             // && ...:
@@ -92,7 +88,7 @@ export class LinkFilterUtil extends BaseFilterUtil {
             const badUrl = server.filterEnabled && Number(greylistedUrl !== undefined && greylistedUrl !== null) ^ Number(server.urlFilterIsWhitelist);
 
             // Not guilded.gg, thing above (OR) is one of the preset items
-            if (domain !== "guilded.gg" && (badUrl || presetLinks.some((x) => this.matchesPresetLink(x, groups)))) {
+            if (domain !== "guilded.gg" && (badUrl || inPreset)) {
                 void this.client.amp.logEvent({ event_type: "MESSAGE_LINK_ACTION", user_id: userId, event_properties: { serverId: server.serverId } });
                 return this.dealWithUser(
                     userId,
@@ -101,8 +97,8 @@ export class LinkFilterUtil extends BaseFilterUtil {
                     filteredContent,
                     resultingAction,
                     "URL filter tripped",
-                    greylistedUrl?.infractionPoints ?? server.linkInfractionPoints,
-                    greylistedUrl?.severity ?? server.linkSeverity,
+                    greylistedUrl?.infractionPoints ?? inPreset?.infractionPoints ?? server.linkInfractionPoints,
+                    greylistedUrl?.severity ?? inPreset?.severity ?? server.linkSeverity,
                     domain
                 );
             }

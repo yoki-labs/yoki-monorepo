@@ -91,10 +91,11 @@ model InviteFilter {
 }
 
 model Preset {
-    id       Int       @id @default(autoincrement())
-    serverId String
-    preset   String    @db.VarChar(255)
-    severity Severity?
+    id               Int       @id @default(autoincrement())
+    serverId         String
+    preset           String    @db.VarChar(255)
+    severity         Severity?
+    infractionPoints Int?
 }
 
 model CustomTag {

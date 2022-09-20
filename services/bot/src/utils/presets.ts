@@ -7,9 +7,9 @@ const wordRest = ["", "[\\W]*"];
 
 export const wordPresets = getPresets<PresetPattern[], RegExp>("content", (preset) => new RegExp(transformPreset(preset), "s"));
 
-export const urlPresets = getPresets<PresetLink[], PresetLink[]>("url", (p) => p);
+export const urlPresets = getPresets<PresetLink[], PresetLink[]>("url", (preset) => preset);
 
-function getPresets<P, T>(directory: string, transform: (preset: P) => T): Record<string, T> {
+function getPresets<P, T>(directory: string, transform: (preset: P, name: string) => T): Record<string, T> {
     const dirPath = join(__dirname, "..", "presets", directory);
     const files = readdirSync(dirPath, { withFileTypes: true });
     const loadedPresets: Record<string, T> = {};
@@ -17,7 +17,7 @@ function getPresets<P, T>(directory: string, transform: (preset: P) => T): Recor
         const preset = require(join(dirPath, file.name)) as P;
         const presetName = file.name.split(".")[0];
 
-        loadedPresets[presetName] = transform(preset);
+        loadedPresets[presetName] = transform(preset, presetName);
 
         console.log(`Loaded ${directory} preset ${file.name}`);
     }
