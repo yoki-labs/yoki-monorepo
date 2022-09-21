@@ -58,7 +58,7 @@ const Set: Command = {
         const [successfulTypes, failedTypes] = await subscribeToLogs(ctx, message, channelId, logTypes as LogChannelType[]);
 
         // Reply to the command, with the successful and failed types.
-        return ctx.messageUtil[successfulTypes.length > 0 ? "replyWithSuccess" : "replyWithAlert"](
+        return ctx.messageUtil[successfulTypes.length > 0 ? "replyWithSuccess" : "replyWithError"](
             message,
             successfulTypes.length > 0 ? `Subscriptions added` : `No subscriptions added`,
             stripIndents`
