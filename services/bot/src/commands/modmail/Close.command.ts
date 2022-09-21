@@ -83,7 +83,7 @@ const Close: Command = {
                 },
             ],
             isPrivate: true,
-        });
+        }).catch(() => void 0);
         await ctx.prisma.modmailThread.update({ where: { id: isCurrentChannelModmail.id }, data: { closed: true } });
         return ctx.rest.router.deleteChannel(message.channelId);
     },
