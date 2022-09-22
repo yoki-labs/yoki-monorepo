@@ -12,6 +12,9 @@ import { FormatDate, suspicious as sus } from "../utils/util";
 
 export default async (packet: WSTeamMemberJoinedPayload, ctx: Context, server: Server) => {
     const { member, serverId } = packet.d;
+    if (member.user.id === ctx.userId) {
+        void ctx.amp.logEvent({ event_type: "YOKI_SERVER_JOIN", user_id: packet.d.serverId });
+    }
 
     if (["!", "."].some((x) => member.user.name.trim().startsWith(x))) {
         void ctx.amp.logEvent({ event_type: "HOISTER_RENAMED_JOIN", user_id: member.user.id, event_properties: { serverId: packet.d.serverId } });
