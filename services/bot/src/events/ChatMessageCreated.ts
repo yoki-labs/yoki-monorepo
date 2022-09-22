@@ -256,7 +256,7 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context, server:
                     user_id: message.createdBy,
                     event_properties: { serverId: message.serverId },
                 });
-                return ctx.messageUtil.replyWithUnpermitted(message, `Unfortunately, you are missing the ${command.requiredRole} role permission!`);
+                return ctx.messageUtil.replyWithUnpermitted(message, `Unfortunately, you are missing the ${command.requiredRole} role!`);
             }
             // if this command is operator only, then silently ignore because of privacy reasons
         } else if (command.devOnly) return void 0;
