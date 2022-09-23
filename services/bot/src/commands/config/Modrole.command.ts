@@ -51,7 +51,7 @@ const Modrole: Command = {
         if (existing.find((x) => x.roleId === modroleId))
             return ctx.messageUtil.replyWithError(message, `Already a staff role`, `This role has already been set as ${staffLevel}.`);
 
-        const newModRole = await ctx.prisma.role.create({
+        await ctx.prisma.role.create({
             data: {
                 roleId: modroleId,
                 type: staffLevel,
