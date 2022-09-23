@@ -59,7 +59,7 @@ const Modrole: Command = {
             },
         });
 
-        return ctx.messageUtil.replyWithSuccess(message, `Staff role added`, `Successfully set the ${staffLevel} role to ${inlineCode(newModRole.roleId)}`);
+        return ctx.messageUtil.replyWithSuccess(message, `Staff role added`, `Successfully added <@${modroleId}> as a {staffLevel} role`);
     },
 };
 
