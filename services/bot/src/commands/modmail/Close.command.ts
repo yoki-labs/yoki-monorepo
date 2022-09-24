@@ -1,4 +1,6 @@
+import type { ModmailThread } from "@prisma/client";
 import { stripIndents } from "common-tags";
+import type Client from "../../Client";
 
 import { LogChannelType, RoleType } from "../../typings";
 import { Colors } from "../../utils/color";
@@ -17,41 +19,49 @@ const Close: Command = {
     execute: async (message, _args, ctx) => {
         const isCurrentChannelModmail = await ctx.prisma.modmailThread.findFirst({ where: { serverId: message.serverId, modFacingChannelId: message.channelId, closed: false } });
         if (!isCurrentChannelModmail) return ctx.messageUtil.replyWithError(message, `Not a modmail channel`, `This channel is not a modmail channel!`);
-        const modmailLogChannel = await ctx.dbUtil.getLogChannel(message.serverId!, LogChannelType.modmail_logs);
-        const modmailMessages = await ctx.prisma.modmailMessage.findMany({
-            where: { modmailThreadId: isCurrentChannelModmail.id },
-        });
 
-        if (modmailLogChannel) {
-            const formattedMessages = modmailMessages.map((x) => `[${x.authorId}][${FormatDate(x.createdAt)}] ${x.content}`);
-            const uploadedLog = await ctx.s3
-                .upload({
-                    Bucket: process.env.S3_BUCKET,
-                    Key: `modmail/logs/${isCurrentChannelModmail.serverId}-${isCurrentChannelModmail.id}.txt`,
-                    Body: Buffer.from(stripIndents`
+        return closeModmailThread(message.serverId!, message.createdBy, ctx, isCurrentChannelModmail!, "closed by a staff member");
+    },
+};
+
+// To be able to use it anywhere
+export async function closeModmailThread(serverId: string, closedBy: string, ctx: Client, modmailThread: ModmailThread, closedState: string) {
+    const modmailLogChannel = await ctx.dbUtil.getLogChannel(serverId, LogChannelType.modmail_logs);
+    const modmailMessages = await ctx.prisma.modmailMessage.findMany({
+        where: { modmailThreadId: modmailThread.id },
+    });
+
+    if (modmailLogChannel) {
+        const formattedMessages = modmailMessages.map((x) => `[${x.authorId}][${FormatDate(x.createdAt)}] ${x.content}`);
+        const uploadedLog = await ctx.s3
+            .upload({
+                Bucket: process.env.S3_BUCKET,
+                Key: `modmail/logs/${modmailThread.serverId}-${modmailThread.id}.txt`,
+                Body: Buffer.from(stripIndents`
 						-------------
-						Opener: ${isCurrentChannelModmail.openerId}
-						Server: ${isCurrentChannelModmail.serverId}
-						Created At: ${FormatDate(isCurrentChannelModmail.createdAt)}
+						Opener: ${modmailThread.openerId}
+						Server: ${modmailThread.serverId}
+						Created At: ${FormatDate(modmailThread.createdAt)}
 						-------------
 
 						${formattedMessages.join("\n")}
 					`),
-                    ContentType: "text/plain",
-                    ACL: "public-read",
-                })
-                .promise();
+                ContentType: "text/plain",
+                ACL: "public-read",
+            })
+            .promise()
+            .catch((e) => (console.error("Error while uploading log:\n", e), { Location: "https://guilded.gg/" }));
 
-            await ctx.messageUtil.sendLog({
-                where: modmailLogChannel.channelId,
-                title: `Thread Closed`,
-                description: `Thread \`#${isCurrentChannelModmail.id}\` created by <@${isCurrentChannelModmail.openerId}> has been closed.`,
-                color: Colors.blue,
-                occurred: new Date().toISOString(),
-                fields: [
-                    {
-                        name: `Chat Logs`,
-                        value: stripIndents`
+        await ctx.messageUtil.sendLog({
+            where: modmailLogChannel.channelId,
+            title: `Thread Closed`,
+            description: `Thread \`#${modmailThread.id}\` created by <@${modmailThread.openerId}> has been ${closedState}.`,
+            color: Colors.blue,
+            occurred: new Date().toISOString(),
+            fields: [
+                {
+                    name: `Chat Logs`,
+                    value: stripIndents`
                             \`\`\`md
                             ${formattedMessages
                                 .slice(0, 2)
@@ -62,20 +72,16 @@ const Close: Command = {
 
                             [Click here to view more](${uploadedLog.Location})
                         `,
-                    },
-                ],
-            });
-        }
-
-        void ctx.amp.logEvent({
-            event_type: "MODMAIL_CLOSE",
-            user_id: message.createdBy,
-            event_properties: { serverId: message.serverId, threadAge: Date.now() - isCurrentChannelModmail.createdAt.getTime(), messageCount: modmailMessages.length },
+                },
+            ],
         });
-        await ctx.rest.router.createChannelMessage(isCurrentChannelModmail.userFacingChannelId, {
+    }
+
+    await ctx.rest.router
+        .createChannelMessage(modmailThread.userFacingChannelId, {
             embeds: [
                 {
-                    description: stripIndents`<@${isCurrentChannelModmail.openerId}>
+                    description: stripIndents`<@${modmailThread.openerId}>
 						This ticket has now been closed.
 					`,
                     color: Colors.blue,
@@ -83,10 +89,16 @@ const Close: Command = {
                 },
             ],
             isPrivate: true,
-        }).catch(() => void 0);
-        await ctx.prisma.modmailThread.update({ where: { id: isCurrentChannelModmail.id }, data: { closed: true } });
-        return ctx.rest.router.deleteChannel(message.channelId);
-    },
-};
+        })
+        .catch(() => void 0);
+    void ctx.amp.logEvent({
+        event_type: "MODMAIL_CLOSE",
+        user_id: closedBy,
+        event_properties: { serverId: serverId, threadAge: Date.now() - modmailThread.createdAt.getTime(), messageCount: modmailMessages.length },
+    });
+
+    await ctx.prisma.modmailThread.update({ where: { id: modmailThread.id }, data: { closed: true } });
+    return ctx.rest.router.deleteChannel(modmailThread.modFacingChannelId);
+}
 
 export default Close;
