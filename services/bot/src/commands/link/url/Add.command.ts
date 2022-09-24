@@ -1,7 +1,7 @@
 import { Severity } from "@prisma/client";
 
 import { RoleType } from "../../../typings";
-import { inlineCode } from "../../../utils/formatters";
+import { inlineCode, inlineQuote } from "../../../utils/formatters";
 import { isDomain } from "../../../utils/util";
 import { Category } from "../../Category";
 import type { Command } from "../../Command";
@@ -43,7 +43,7 @@ const Add: Command = {
 
         if (!severity) return ctx.messageUtil.replyWithError(message, `No such severity level`, `Sorry, but that is not a valid severity level!`);
         if (infractionPoints < 0 || infractionPoints > 100)
-            return ctx.messageUtil.replyWithError(message, `Points over the limit`, `Sorry, but the infraction points must be between 0 and 100.`);
+            return ctx.messageUtil.replyWithError(message, `Points over the limit`, `Sorry, but the infraction points must be between \`0\` and \`100\`.`);
 
         const doesExistAlready = await ctx.prisma.urlFilter.findFirst({ where: { serverId: message.serverId!, domain } });
         if (doesExistAlready) return ctx.messageUtil.replyWithError(message, `Already added`, `This domain is already in your server's filter!`);
@@ -58,7 +58,7 @@ const Add: Command = {
         return ctx.messageUtil.replyWithSuccess(
             message,
             `New link added`,
-            `Successfully added ${inlineCode(domain)} with the severity ${inlineCode(severity)} to the automod list!`
+            `Successfully added ${inlineQuote(domain)} with the severity ${inlineCode(severity)} to the automod list!`
         );
     },
 };

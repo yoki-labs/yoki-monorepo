@@ -1,7 +1,7 @@
 import { Severity } from "@prisma/client";
 
 import { RoleType } from "../../typings";
-import { inlineCode } from "../../utils/formatters";
+import { inlineCode, inlineQuote } from "../../utils/formatters";
 import { getFilterFromSyntax } from "../../utils/util";
 import { Category } from "../Category";
 import type { Command } from "../Command";
@@ -41,7 +41,7 @@ const Add: Command = {
 
         if (!severity) return ctx.messageUtil.replyWithError(message, `No such severity level`, `Sorry, but that is not a valid severity level!`);
         if (infractionPoints < 0 || infractionPoints > 100)
-            return ctx.messageUtil.replyWithError(message, `Points over the limit`, `Sorry, but the infraction points must be between 0 and 100.`);
+            return ctx.messageUtil.replyWithError(message, `Points over the limit`, `Sorry, but the infraction points must be between \`0\` and \`100\`.`);
 
         const [content, matching] = getFilterFromSyntax(phrase);
 
@@ -59,7 +59,7 @@ const Add: Command = {
         return ctx.messageUtil.replyWithSuccess(
             message,
             `New phrase added`,
-            `Successfully added ${inlineCode(phrase)} with the severity ${inlineCode(severity)} to the automod list!`
+            `Successfully added ${inlineQuote(phrase)} with the severity ${inlineCode(severity)} to the automod list!`
         );
     },
 };

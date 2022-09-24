@@ -42,10 +42,11 @@ const History: Command = {
         return ctx.messageUtil.replyWithPaginatedContent<ModmailThread>({
             replyTo: message,
             items: threads,
-            title: `${userId}'s History`,
+            title: `<@${userId}>'s History`,
             itemMapping: (x) => inlineCode(x.id),
             itemsPerPage: 10,
             page,
+            message: { isSilent: true },
         });
     },
 };

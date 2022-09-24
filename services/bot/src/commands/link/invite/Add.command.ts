@@ -1,5 +1,5 @@
 import { RoleType } from "../../../typings";
-import { inlineCode } from "../../../utils/formatters";
+import { inlineQuote } from "../../../utils/formatters";
 import { isHashId } from "../../../utils/util";
 import { Category } from "../../Category";
 import type { Command } from "../../Command";
@@ -34,7 +34,7 @@ const Add: Command = {
             creatorId: message.createdBy,
             serverId: message.serverId!,
         });
-        return ctx.messageUtil.replyWithSuccess(message, `New server added`, `Successfully added ${inlineCode(targetServerId)} to the invite whitelist!`);
+        return ctx.messageUtil.replyWithSuccess(message, `New server added`, `Successfully added ${inlineQuote(targetServerId)} to the invite whitelist!`);
     },
 };
 

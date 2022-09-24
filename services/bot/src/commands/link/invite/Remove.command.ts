@@ -1,5 +1,5 @@
 import { RoleType } from "../../../typings";
-import { inlineCode } from "../../../utils/formatters";
+import { inlineQuote } from "../../../utils/formatters";
 import { isHashId } from "../../../utils/util";
 import { Category } from "../../Category";
 import type { Command } from "../../Command";
@@ -26,7 +26,7 @@ const Remove: Command = {
         const existingEntry = await ctx.prisma.inviteFilter.findFirst({ where: { serverId: message.serverId!, targetServerId } });
         if (!existingEntry) return ctx.messageUtil.replyWithError(message, `Link not found`, `This server is not in your server's invite whitelist!`);
         await ctx.dbUtil.removeInviteFromFilter(message.serverId!, targetServerId);
-        return ctx.messageUtil.replyWithSuccess(message, `Server removed`, `Successfully removed ${inlineCode(targetServerId)} from the invite whitelist!`);
+        return ctx.messageUtil.replyWithSuccess(message, `Server removed`, `Successfully removed ${inlineQuote(targetServerId)} from the invite whitelist!`);
     },
 };
 
