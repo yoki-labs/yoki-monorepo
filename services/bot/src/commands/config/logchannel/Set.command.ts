@@ -19,6 +19,7 @@ const Set: Command = {
     category: Category.Settings,
     subName: "set",
     requiredRole: RoleType.ADMIN,
+    usage: "<channel ID> [log types]",
     args: [
         { name: "channel", optional: false, type: "channel" },
         { name: "logTypes", optional: true, type: "enumList", values: LogChannelArgs },

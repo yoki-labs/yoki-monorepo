@@ -16,7 +16,7 @@ const FilterOnMods: Command = {
         const newSetting = args.newSetting as boolean | null;
 
         if (newSetting === null) {
-            const verb = commandCtx.server.filterOnMods ? `will` : `won't`;
+            const verb = commandCtx.server.filterOnMods ? `__will__` : `__won't__`;
 
             return ctx.messageUtil.replyWithInfo(message, `Mods ${verb} be filtered`, `Messages and content posted by staff members ${verb} be filtered.`);
         }
@@ -24,8 +24,8 @@ const FilterOnMods: Command = {
         await ctx.prisma.server.updateMany({ data: { filterOnMods: newSetting }, where: { serverId: message.serverId! } });
         return ctx.messageUtil.replyWithSuccess(
             message,
-            `Filter settings modified`,
-            newSetting ? `Messages sent by mods from now on will be filtered.` : `Messages sent by mods will no longer be filtered.`
+            `Filter settings changed`,
+            newSetting ? `Messages sent by mods from now on __will be__ filtered.` : `Messages sent by mods __will no longer__ be filtered.`
         );
     },
 };

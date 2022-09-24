@@ -5,6 +5,8 @@ import { inlineCode } from "../../utils/formatters";
 import { Category } from "../Category";
 import type { Command } from "../Command";
 
+const immutable: Severity[] = [Severity.WARN, Severity.NOTE];
+
 const Threshold: Command = {
     name: "config-threshold",
     description: "Sets how many infraction points are required for each level of moderation severity.",
@@ -22,7 +24,12 @@ const Threshold: Command = {
         const severity = args.severity as Severity;
         const infractions = args.infractions as number;
 
-        if (severity === Severity.WARN) return ctx.messageUtil.replyWithError(message, `Immutable warn threshold`, `You cannot change infraction points requirement for warnings.`);
+        if (immutable.includes(severity))
+            return ctx.messageUtil.replyWithError(
+                message,
+                `Immutable ${inlineCode(severity)} threshold`,
+                `You cannot change infraction points requirement for ${inlineCode(severity)}.`
+            );
 
         const propName = `${severity.toLowerCase()}InfractionThreshold`;
 

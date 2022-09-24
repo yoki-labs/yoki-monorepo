@@ -23,6 +23,7 @@ const Modrole: Command = {
         const modroleId = (args.role as number) ?? null;
         const levelArg = (args.staffLevel as string)?.toUpperCase();
 
+        // Remove the staff role if it's not a level passed
         if (levelArg === "REMOVE") {
             if (!(await ctx.prisma.role.findFirst({ where: { serverId: message.serverId, roleId: modroleId } })))
                 return ctx.messageUtil.replyWithError(message, `Not a staff role`, `The given role is not a mod/admin role or does not exist.`);
@@ -31,6 +32,7 @@ const Modrole: Command = {
 
             return ctx.messageUtil.replyWithSuccess(message, `Removed staff role`, `<@${modroleId}> is no longer a staff role.`, undefined, { isSilent: true });
         }
+
         const staffLevel = RoleType[allowedTypes.includes(levelArg) ? levelArg : "MOD"] ?? RoleType.MOD;
 
         if (!modroleId) {

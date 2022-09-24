@@ -15,8 +15,8 @@ const Muterole: Command = {
     execute: async (message, args, ctx, commandCtx) => {
         const role = args.role as string | undefined;
 
+        // Just display if it's unspecified
         if (!role) {
-            // Just display if it's unspecified
             const muteRole = commandCtx.server.muteRoleId;
 
             return muteRole

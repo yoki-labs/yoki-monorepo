@@ -79,12 +79,12 @@ const Mute: Command = {
         let successMessage = `<@${message.createdBy}>, you have successfully muted <@${target.user.id}>.`;
 
         try {
-            await ctx.messageUtil.sendValueBlock(
+            await ctx.messageUtil.sendEmbed(
                 message.channelId,
-                ":mute: You have been muted",
-                `<@${target.user.id}>, you have been muted for ${bold(duration / 60000)} minutes.`,
-                Colors.red,
                 {
+                    title: ":mute: You have been muted",
+                    description: `<@${target.user.id}>, you have been muted for ${bold(duration / 60000)} minutes.`,
+                    color: Colors.red,
                     fields: [
                         reason && {
                             name: "Reason",

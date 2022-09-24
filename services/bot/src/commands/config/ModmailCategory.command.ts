@@ -16,7 +16,17 @@ const ModmailCategory: Command = {
     args: [{ name: "newCategory", type: "string", optional: true }],
     execute: async (message, args, ctx, commandCtx) => {
         const newCategory = args.newCategory as string | null;
-        if (!newCategory) return ctx.messageUtil.replyWithInfo(message, "This server's modmail category", commandCtx.server.modmailCategoryId?.toString() ?? "not set");
+
+        // No argument passed? Give info instead
+        if (!newCategory) {
+            return commandCtx.server.modmailCategoryId
+                ? ctx.messageUtil.replyWithInfo(
+                      message,
+                      "Modmail category",
+                      `This server's modmail category has been set as category by the ID ${inlineCode(commandCtx.server.modmailCategoryId)}.`
+                  )
+                : ctx.messageUtil.replyWithNullState(message, "No modmail category", "This server does not have modmail category set.");
+        }
 
         let endValue: number | null = null;
         if (newCategory !== "null") {

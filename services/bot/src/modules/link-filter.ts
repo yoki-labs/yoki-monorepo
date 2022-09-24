@@ -215,12 +215,13 @@ export class LinkFilterUtil extends BaseFilterUtil {
     override onUserMute(userId: string, _serv: Server, channelId: string | null, filteredContent: FilteredContent) {
         // When channels and messages get filtered
         if (filteredContent < FilteredContent.ChannelContent)
-            return this.client.messageUtil.sendValueBlock(
+            return this.client.messageUtil.sendEmbed(
                 channelId!,
-                `:mute: You have been muted`,
-                `**Alert:** <@${userId}>, you have been muted for posting a blacklisted/non-whitelisted domain or invite in this server.`,
-                Colors.red,
-                undefined,
+                {
+                    title: `:mute: You have been muted`,
+                    description: `**Alert:** <@${userId}>, you have been muted for posting a blacklisted/non-whitelisted domain or invite in this server.`,
+                    color: Colors.red,
+                },
                 { isPrivate: true }
             );
         // TODO: DM user

@@ -66,30 +66,11 @@ export class MessageUtil extends Util {
         );
     }
 
-    sendValueBlock(channelId: string, title: string, description: string, color: number, embedPartial?: EmbedPayload, messagePartial?: Partial<RESTPostChannelMessagesBody>) {
+    sendEmbed(channelId: string, embed: EmbedPayload, messagePartial?: Partial<RESTPostChannelMessagesBody>) {
         return this.send(channelId, {
             ...messagePartial,
-            embeds: [
-                {
-                    title,
-                    description,
-                    color,
-                    ...embedPartial,
-                },
-            ],
+            embeds: [embed],
         });
-    }
-
-    sendStateBlock(
-        channelId: string,
-        title: string,
-        description: string,
-        color: number,
-        thumbnail: string | undefined,
-        embedPartial?: EmbedPayload,
-        messagePartial?: Partial<RESTPostChannelMessagesBody>
-    ) {
-        return this.sendValueBlock(channelId, title, description, color, { thumbnail: thumbnail ? { url: thumbnail as string } : undefined, ...embedPartial }, messagePartial);
     }
 
     sendLog({
@@ -123,48 +104,78 @@ export class MessageUtil extends Util {
         });
     }
 
-    replyWithValueBlock(
-        message: ChatMessagePayload,
-        title: string,
-        description: string,
-        color: number,
-        embedPartial?: EmbedPayload,
-        messagePartial?: Partial<RESTPostChannelMessagesBody>
-    ) {
-        return this.sendValueBlock(message.channelId, title, description, color, embedPartial, { replyMessageIds: [message.id], ...messagePartial });
-    }
-
-    replyWithStateBlock(
-        message: ChatMessagePayload,
-        title: string,
-        description: string,
-        color: number,
-        thumbnail: string | undefined,
-        embedPartial?: EmbedPayload,
-        messagePartial?: Partial<RESTPostChannelMessagesBody>
-    ) {
-        return this.sendStateBlock(message.channelId, title, description, color, thumbnail, embedPartial, { replyMessageIds: [message.id], ...messagePartial });
+    replyWithEmbed(message: ChatMessagePayload, embed: EmbedPayload, messagePartial?: Partial<RESTPostChannelMessagesBody>) {
+        return this.sendEmbed(message.channelId, embed, { replyMessageIds: [message.id], ...messagePartial });
     }
 
     // State blocks
     replyWithError(message: ChatMessagePayload, title: string, description: string, embedPartial?: EmbedPayload, messagePartial?: Partial<RESTPostChannelMessagesBody>) {
-        return this.replyWithStateBlock(message, title, description, Colors.orangeRed, StateImages.notFound, embedPartial, messagePartial);
+        return this.replyWithEmbed(
+            message,
+            {
+                author: { name: title, icon_url: BotImages.crossmark },
+                description,
+                color: Colors.red,
+                thumbnail: { url: StateImages.notFound },
+                ...embedPartial,
+            },
+            messagePartial
+        );
     }
 
     replyWithUnexpected(message: ChatMessagePayload, description: string, embedPartial?: EmbedPayload, messagePartial?: Partial<RESTPostChannelMessagesBody>) {
-        return this.replyWithStateBlock(message, `Oh no, something went wrong!`, description, Colors.red, StateImages.error, embedPartial, messagePartial);
+        return this.replyWithEmbed(
+            message,
+            {
+                author: { name: `Oh no, something went wrong!`, icon_url: BotImages.crossmark },
+                description,
+                color: Colors.red,
+                thumbnail: { url: StateImages.error },
+                ...embedPartial,
+            },
+            messagePartial
+        );
     }
 
     replyWithUnpermitted(message: ChatMessagePayload, description: string, embedPartial?: EmbedPayload, messagePartial?: Partial<RESTPostChannelMessagesBody>) {
-        return this.replyWithStateBlock(message, `Can't do that!`, description, Colors.red, StateImages.stop, embedPartial, messagePartial);
+        return this.replyWithEmbed(
+            message,
+            {
+                author: { name: `Can't do that!`, icon_url: BotImages.crossmark },
+                description,
+                color: Colors.red,
+                thumbnail: { url: StateImages.stop },
+                ...embedPartial,
+            },
+            messagePartial
+        );
     }
 
     replyWithNullState(message: ChatMessagePayload, title: string, description: string, embedPartial?: EmbedPayload, messagePartial?: Partial<RESTPostChannelMessagesBody>) {
-        return this.replyWithStateBlock(message, title, description, Colors.blockBackground, StateImages.nothingHere, embedPartial, messagePartial);
+        return this.replyWithEmbed(
+            message,
+            {
+                title: `:grey_question: ${title}`,
+                description,
+                color: Colors.blockBackground,
+                thumbnail: { url: StateImages.nothingHere },
+                ...embedPartial,
+            },
+            messagePartial
+        );
     }
 
     replyWithInfo(message: ChatMessagePayload, title: string, description: string, embedPartial?: EmbedPayload, messagePartial?: Partial<RESTPostChannelMessagesBody>) {
-        return this.replyWithStateBlock(message, title, description, Colors.blockBackground, undefined, embedPartial, messagePartial);
+        return this.replyWithEmbed(
+            message,
+            {
+                title,
+                description,
+                color: Colors.blockBackground,
+                ...embedPartial,
+            },
+            messagePartial
+        );
     }
 
     replyWithBotInfo(message: ChatMessagePayload, title: string, description: string, embedPartial?: EmbedPayload, messagePartial?: Partial<RESTPostChannelMessagesBody>) {
@@ -186,24 +197,71 @@ export class MessageUtil extends Util {
     }
 
     sendWarningBlock(channelId: string, title: string, description: string, embedPartial?: EmbedPayload, messagePartial?: Partial<RESTPostChannelMessagesBody>) {
-        return this.sendStateBlock(channelId, title, description, Colors.yellow, StateImages.stop, embedPartial, messagePartial);
+        return this.sendEmbed(
+            channelId,
+            {
+                title,
+                description,
+                color: Colors.yellow,
+                thumbnail: { url: StateImages.stop },
+                ...embedPartial,
+            },
+            messagePartial
+        );
     }
 
     sendErrorBlock(channelId: string, title: string, description: string, embedPartial?: EmbedPayload, messagePartial?: Partial<RESTPostChannelMessagesBody>) {
-        return this.sendStateBlock(channelId, title, description, Colors.red, StateImages.notFound, embedPartial, messagePartial);
+        return this.sendEmbed(
+            channelId,
+            {
+                author: { name: title, icon_url: BotImages.crossmark },
+                description,
+                color: Colors.red,
+                thumbnail: { url: StateImages.notFound },
+                ...embedPartial,
+            },
+            messagePartial
+        );
     }
 
     sendInfoBlock(channelId: string, title: string, description: string, embedPartial?: EmbedPayload, messagePartial?: Partial<RESTPostChannelMessagesBody>) {
-        return this.sendStateBlock(channelId, title, description, Colors.blockBackground, undefined, embedPartial, messagePartial);
+        return this.sendEmbed(
+            channelId,
+            {
+                title,
+                description,
+                color: Colors.blockBackground,
+                ...embedPartial,
+            },
+            messagePartial
+        );
     }
 
     // Value blocks
     sendSuccessBlock(channelId: string, title: string, description: string, embedPartial?: EmbedPayload, messagePartial?: Partial<RESTPostChannelMessagesBody>) {
-        return this.sendStateBlock(channelId, `:white_check_mark: ${title}`, description, Colors.green, undefined, embedPartial, messagePartial);
+        return this.sendEmbed(
+            channelId,
+            {
+                author: { name: title, icon_url: BotImages.checkmark },
+                description,
+                color: Colors.green,
+                ...embedPartial,
+            },
+            messagePartial
+        );
     }
 
     replyWithSuccess(message: ChatMessagePayload, title: string, description: string, embedPartial?: EmbedPayload, messagePartial?: Partial<RESTPostChannelMessagesBody>) {
-        return this.replyWithValueBlock(message, `:white_check_mark: ${title}`, description, Colors.green, embedPartial, messagePartial);
+        return this.replyWithEmbed(
+            message,
+            {
+                author: { name: title, icon_url: BotImages.checkmark },
+                description,
+                color: Colors.green,
+                ...embedPartial,
+            },
+            messagePartial
+        );
     }
 
     // Special blocks

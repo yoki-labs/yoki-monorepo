@@ -54,14 +54,6 @@ const All: Command = {
             },
             itemsPerPage: maxCases,
             page,
-            embed: {
-                fields: [
-                    {
-                        name: "Total Case Count",
-                        value: `${inlineCode(actions.length)} cases`,
-                    },
-                ],
-            },
             message: {
                 isSilent: true,
             },

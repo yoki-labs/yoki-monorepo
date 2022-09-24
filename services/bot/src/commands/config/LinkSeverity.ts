@@ -32,7 +32,7 @@ const LinkSeverity: Command = {
         if (severity === null)
             return ctx.messageUtil.replyWithInfo(
                 message,
-                `Link Infraction`,
+                `Link infraction info`,
                 `Non-whitelisted URLs or invites will result in ${inlineCode(server.linkInfractionPoints)} infraction points and a ${inlineCode(server.linkSeverity)}.`
             );
 
@@ -43,7 +43,7 @@ const LinkSeverity: Command = {
 
         return ctx.messageUtil.replyWithSuccess(
             message,
-            `Link Infraction Changed`,
+            `Link infraction changed`,
             `Non-whitelisted URLs or invites will now give ${inlineCode(server.linkInfractionPoints)} infraction points and a ${inlineCode(server.linkSeverity)}.`
         );
     },
