@@ -94,7 +94,7 @@ export async function closeModmailThread(serverId: string, closedBy: string, ctx
     void ctx.amp.logEvent({
         event_type: "MODMAIL_CLOSE",
         user_id: closedBy,
-        event_properties: { serverId: serverId, threadAge: Date.now() - modmailThread.createdAt.getTime(), messageCount: modmailMessages.length },
+        event_properties: { serverId, threadAge: Date.now() - modmailThread.createdAt.getTime(), messageCount: modmailMessages.length },
     });
 
     await ctx.prisma.modmailThread.update({ where: { id: modmailThread.id }, data: { closed: true } });
