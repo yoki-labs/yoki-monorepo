@@ -21,6 +21,7 @@ import TeamMemberJoined from "./events/TeamMemberJoined";
 import TeamMemberRemoved from "./events/TeamMemberRemoved";
 import TeamMemberUpdated from "./events/TeamMemberUpdated";
 import teamRolesUpdated from "./events/teamRolesUpdated";
+import { ChannelUtil } from "./helpers/channel";
 import { DatabaseUtil } from "./helpers/database";
 import { MessageUtil } from "./helpers/message";
 import { ServerUtil } from "./helpers/server";
@@ -72,6 +73,8 @@ export default class Client {
     readonly dbUtil = new DatabaseUtil(this);
     // utility methods for message interactions
     readonly messageUtil = new MessageUtil(this);
+    // utility methods for channel interactions
+    readonly channelUtil = new ChannelUtil(this);
     // utility methods for server interactions
     readonly serverUtil = new ServerUtil(this);
     // utility methods for content filtering

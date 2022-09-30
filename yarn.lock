@@ -1239,10 +1239,10 @@
   resolved "https://registry.yarnpkg.com/@webgpu/types/-/types-0.1.21.tgz#b181202daec30d66ccd67264de23814cfd176d3a"
   integrity sha512-pUrWq3V5PiSGFLeLxoGqReTZmiiXwY3jRkIG5sLLKjyqNxrwm/04b4nw7LSmGWJcKk59XOM/YRTUwOzo4MMlow==
 
-"@yokilabs/captcha-generator@1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@yokilabs/captcha-generator/-/captcha-generator-1.0.0.tgz#31b273db9f39a56bb9de6f5e873e2c4712a17b64"
-  integrity sha512-7mzoNPJ+15zpQ0j1fASa4Yub+htVgoZqAx6P2KtFxeEfm+JCKszx46THc339nqp4Dp55YyoXYQ6A23m4kGUtwA==
+"@yokilabs/captcha-generator@1.1.1":
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/@yokilabs/captcha-generator/-/captcha-generator-1.1.1.tgz#81f503ea5f24aff1bf96e2844ad167abe891eabc"
+  integrity sha512-5hFZEmrXuk/i9P4fHZJ3l08Y5qYkOdR4C+Ocl6MjJ9yA97QyOkHQtPYA7PkQZ31pmo5wKMgX5iHgH73ukOnG5A==
   dependencies:
     canvas "^2.8.0"
 

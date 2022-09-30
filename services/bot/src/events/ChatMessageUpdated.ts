@@ -46,7 +46,7 @@ export default async (packet: WSChatMessageUpdatedPayload, ctx: Context, server:
     try {
         let logContent = [
             {
-                name: `Old Message`,
+                name: `Old Content:`,
                 value: oldMessage
                     ? oldMessage.content
                         ? quoteMarkdown(oldMessage.content, 1012)
@@ -54,7 +54,7 @@ export default async (packet: WSChatMessageUpdatedPayload, ctx: Context, server:
                     : `Could not find old version of this message.`,
             },
             {
-                name: `New message`,
+                name: `New Content:`,
                 value: message.content ? quoteMarkdown(message.content, 1012) : `This message does not contain text content.`,
             },
         ];
@@ -81,15 +81,20 @@ export default async (packet: WSChatMessageUpdatedPayload, ctx: Context, server:
         }
 
         const author = message.createdByWebhookId ? `Webhook (${inlineCode(message.createdByWebhookId)})` : `<@${message.createdBy}> (${inlineCode(message.createdBy)})`;
+        const channel = await ctx.channelUtil.getChannel(message.channelId);
 
+        const channelURL = `https://guilded.gg/teams/${message.serverId}/channels/${message.channelId}/chat`;
         // send embed in log channel
         await ctx.messageUtil.sendLog({
             where: updatedMessageLogChannel.channelId,
             title: `Message Edited`,
             description: stripIndents`
-                ${author} has edited the message ${inlineCode(message.id)} in the channel ${inlineCode(message.channelId)}.
+                ${author} has edited a message in the channel [#${channel.name}](${channelURL}).
 
-                [Jump to the message](https://guilded.gg/teams/${message.serverId}/channels/${message.channelId}/chat?messageId=${message.id})
+				Message ID: ${inlineCode(message.id)}
+				Channel ID: ${inlineCode(message.channelId)}
+
+                [Jump to the message](${channelURL}?messageId=${message.id})
             `,
             color: Colors.yellow,
             occurred: message.updatedAt!,

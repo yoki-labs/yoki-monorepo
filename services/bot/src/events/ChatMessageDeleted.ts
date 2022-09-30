@@ -26,6 +26,7 @@ export default async (packet: WSChatMessageDeletedPayload, ctx: Context) => {
     // if there is a database entry for the message, get the member from the server so we can get their name and roles etc.
     const oldMember = deletedMessage ? await ctx.serverUtil.getMember(deletedMessage.serverId!, deletedMessage.authorId).catch(() => null) : null;
     if (oldMember?.user.type === "bot") return;
+    const channel = await ctx.channelUtil.getChannel(message.channelId).catch();
 
     try {
         const logContent = [
@@ -54,13 +55,18 @@ export default async (packet: WSChatMessageDeletedPayload, ctx: Context) => {
                 .promise();
             logContent[0].value = `This log is too big to display in Guilded. You can find the full log [here](${uploadToBucket.Location})`;
         }
+
+        const author = deletedMessage && oldMember ? `<@${oldMember.user.id}> (${inlineCode(oldMember.user.id)})` : "Unknown author";
+        const channelURL = `https://guilded.gg/teams/${message.serverId}/channels/${message.channelId}/chat`;
         // send the log channel message with the content/data of the deleted message
         await ctx.messageUtil.sendLog({
             where: deletedMessageLogChannel.channelId,
             title: "Message Removed",
-            description: `${deletedMessage && oldMember ? `<@${oldMember.user.id}> (${inlineCode(oldMember.user.id)})` : "Unknown author"} deleted the message ${inlineCode(
-                message.id
-            )} in channel ${inlineCode(message.channelId)}`,
+            description: `A message from ${author} was deleted in [#${channel.name}](${channelURL})
+			
+			Message ID: ${inlineCode(message.id)}
+			Channel ID: ${inlineCode(message.channelId)}
+			`,
             color: Colors.red,
             occurred: message.deletedAt,
             fields: logContent,

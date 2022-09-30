@@ -15,6 +15,9 @@ export interface CommandContext {
 // member cached in redis
 export type CachedMember = TeamMemberPayload;
 
+// channel cached in redis
+export type CachedChannel = Pick<ServerChannelPayload, "id" | "type" | "name" | "createdAt" | "serverId" | "parentId" | "categoryId" | "groupId">;
+
 // re-exporting enums, types, etc. from prisma incase we switch ORMs so we can easily replace them
 export { Action, ContentFilter, LogChannel, LogChannelType, RoleType, Severity } from "@prisma/client";
 
