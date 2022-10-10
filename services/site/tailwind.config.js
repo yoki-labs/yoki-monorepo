@@ -1,12 +1,19 @@
 const withMT = require("@material-tailwind/react/utils/withMT");
 const plugin = require("tailwindcss/plugin");
 
+const colors = require("tailwindcss/colors");
+delete colors["lightBlue"];
+delete colors["warmGray"];
+delete colors["trueGray"];
+delete colors["coolGray"];
+delete colors["blueGray"];
+
 /** @type {import('tailwindcss').Config} */
 module.exports = withMT({
     content: ["./src/**/*.{js,ts,jsx,tsx}"],
     theme: {
         colors: {
-            ...require("tailwindcss/colors")
+            ...colors,
         },
         extend: {
             boxShadow: {
@@ -32,7 +39,7 @@ module.exports = withMT({
             colors: {
                 custom: {
                     "dark-gray": "#191B1F",
-                    gray: "#202227",
+                    gray: "#191B1F",
                     guilded: "#F5C400",
                 },
             },

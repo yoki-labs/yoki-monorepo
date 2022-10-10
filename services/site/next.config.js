@@ -1,6 +1,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     reactStrictMode: true,
+    images: {
+        domains: ["s3-us-west-2.amazonaws.com"],
+    },
     redirects: async () => [
         {
             source: "/invite",
@@ -30,8 +33,8 @@ const nextConfig = {
         {
             source: "/invite/starboard",
             destination: "https://www.guilded.gg/b/e1ddaa4f-bdb3-45e4-b98d-ae49d6ed75b8",
-            permanent: true
-        }
+            permanent: true,
+        },
     ],
     eslint: {
         // Warning: This allows production builds to successfully complete even if
@@ -40,7 +43,7 @@ const nextConfig = {
     },
     compiler: {
         styledComponents: true,
-    }
+    },
 };
 
 module.exports = nextConfig;

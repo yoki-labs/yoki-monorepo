@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 
 import SidebarLinkGroup from "./SidebarLinkGroup";
 
-export default function Sidebar({ sidebarOpen, setSidebarOpen }: { sidebarOpen: boolean, setSidebarOpen: (input: boolean) => void }) {
+export default function Sidebar({ sidebarOpen, setSidebarOpen }: { sidebarOpen: boolean; setSidebarOpen: (input: boolean) => void }) {
     const router = useRouter();
     const { pathname } = router;
 
@@ -12,13 +12,11 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }: { sidebarOpen: 
     const sidebar = useRef<HTMLDivElement>(null);
 
     const [storedSidebarExpanded, setStoredSidebarExpanded] = useState<string | null>(null);
-    const [sidebarExpanded, setSidebarExpanded] = useState<boolean>(storedSidebarExpanded === null ? false : storedSidebarExpanded === 'true');
-    console.log(sidebarOpen)
+    const [sidebarExpanded, setSidebarExpanded] = useState<boolean>(storedSidebarExpanded === null ? false : storedSidebarExpanded === "true");
 
     useEffect(() => {
         setStoredSidebarExpanded(localStorage.getItem("sidebar-expanded"));
-        console.log(localStorage.getItem("sidebar-expanded"))
-    }, [])
+    }, []);
 
     // close on click outside
     useEffect(() => {
@@ -54,8 +52,9 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }: { sidebarOpen: 
         <div>
             {/* Sidebar backdrop (mobile only) */}
             <div
-                className={`fixed inset-0 bg-slate-900 bg-opacity-30 z-40 lg:hidden lg:z-auto transition-opacity duration-200 ${sidebarOpen ? "opacity-100" : "opacity-0 pointer-events-none"
-                    }`}
+                className={`fixed inset-0 bg-slate-900 bg-opacity-30 z-40 lg:hidden lg:z-auto transition-opacity duration-200 ${
+                    sidebarOpen ? "opacity-100" : "opacity-0 pointer-events-none"
+                }`}
                 aria-hidden="true"
             />
 
@@ -63,8 +62,9 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }: { sidebarOpen: 
             <div
                 id="sidebar"
                 ref={sidebar}
-                className={`flex flex-col absolute z-40 left-0 top-0 lg:static lg:left-auto lg:top-auto lg:translate-x-0 h-screen overflow-y-scroll lg:overflow-y-auto no-scrollbar w-64 lg:w-20 lg:sidebar-expanded:!w-64 2xl:!w-64 shrink-0 bg-slate-800 p-4 transition-all duration-200 ease-in-out ${sidebarOpen ? "translate-x-0" : "-translate-x-64"
-                    }`}
+                className={`flex flex-col absolute z-40 left-0 top-0 lg:static lg:left-auto lg:top-auto lg:translate-x-0 h-screen overflow-y-scroll lg:overflow-y-auto no-scrollbar w-64 lg:w-20 lg:sidebar-expanded:!w-64 2xl:!w-64 shrink-0 bg-slate-800 p-4 transition-all duration-200 ease-in-out ${
+                    sidebarOpen ? "translate-x-0" : "-translate-x-64"
+                }`}
             >
                 {/* Sidebar header */}
                 <div className="flex justify-between mb-10 pr-3 sm:px-2">
@@ -119,8 +119,9 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }: { sidebarOpen: 
                                     <>
                                         <a
                                             href="#0"
-                                            className={`block text-slate-200 hover:text-white truncate transition duration-150 ${(pathname === "/" || pathname.includes("dashboard")) && "hover:text-slate-200"
-                                                }`}
+                                            className={`block text-slate-200 hover:text-white truncate transition duration-150 ${
+                                                (pathname === "/" || pathname.includes("dashboard")) && "hover:text-slate-200"
+                                            }`}
                                             onClick={(e) => {
                                                 e.preventDefault();
                                                 sidebarExpanded ? handleClick() : setSidebarExpanded(true);
@@ -157,33 +158,19 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }: { sidebarOpen: 
                                         <div className="lg:hidden lg:sidebar-expanded:block 2xl:block">
                                             <ul className={`pl-9 mt-1 ${!open && "hidden"}`}>
                                                 <li className="mb-1 last:mb-0">
-                                                    <NavLink
-                                                        end
-                                                        to="/"
-                                                        className="block text-slate-400 hover:text-slate-200 transition duration-150 truncate"
-                                                    >
+                                                    <NavLink end to="/" className="block text-slate-400 hover:text-slate-200 transition duration-150 truncate">
                                                         <span className="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Main</span>
                                                     </NavLink>
                                                 </li>
                                                 <li className="mb-1 last:mb-0">
-                                                    <NavLink
-                                                        end
-                                                        to="/dashboard/analytics"
-                                                        className="block text-slate-400 hover:text-slate-200 transition duration-150 truncate"
-                                                    >
+                                                    <NavLink end to="/dashboard/analytics" className="block text-slate-400 hover:text-slate-200 transition duration-150 truncate">
                                                         <span className="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">
                                                             Analytics
                                                         </span>
                                                     </NavLink>
                                                 </li>
                                                 <li className="mb-1 last:mb-0">
-                                                    <NavLink
-                                                        end
-                                                        to="/dashboard/fintech"
-                                                        className=
-                                                        "block text-slate-400 hover:text-slate-200 transition duration-150 truncate"
-
-                                                    >
+                                                    <NavLink end to="/dashboard/fintech" className="block text-slate-400 hover:text-slate-200 transition duration-150 truncate">
                                                         <span className="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">
                                                             Fintech
                                                         </span>
@@ -200,8 +187,9 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }: { sidebarOpen: 
                                     <>
                                         <a
                                             href="#0"
-                                            className={`block text-slate-200 hover:text-white truncate transition duration-150 ${pathname.includes("settings") && "hover:text-slate-200"
-                                                }`}
+                                            className={`block text-slate-200 hover:text-white truncate transition duration-150 ${
+                                                pathname.includes("settings") && "hover:text-slate-200"
+                                            }`}
                                             onClick={(e) => {
                                                 e.preventDefault();
                                                 sidebarExpanded ? handleClick() : setSidebarExpanded(true);
@@ -242,11 +230,7 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }: { sidebarOpen: 
                                         <div className="lg:hidden lg:sidebar-expanded:block 2xl:block">
                                             <ul className={`pl-9 mt-1 ${!open && "hidden"}`}>
                                                 <li className="mb-1 last:mb-0">
-                                                    <NavLink
-                                                        end
-                                                        to="/settings/account"
-                                                        className="block text-slate-400 hover:text-slate-200 transition duration-150 truncate"
-                                                    >
+                                                    <NavLink end to="/settings/account" className="block text-slate-400 hover:text-slate-200 transition duration-150 truncate">
                                                         <span className="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">
                                                             My Account
                                                         </span>
@@ -256,9 +240,7 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }: { sidebarOpen: 
                                                     <NavLink
                                                         end
                                                         to="/settings/notifications"
-                                                        className=
-                                                        "block text-slate-400 hover:text-slate-200 transition duration-150 truncate"
-
+                                                        className="block text-slate-400 hover:text-slate-200 transition duration-150 truncate"
                                                     >
                                                         <span className="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">
                                                             My Notifications
@@ -266,46 +248,26 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }: { sidebarOpen: 
                                                     </NavLink>
                                                 </li>
                                                 <li className="mb-1 last:mb-0">
-                                                    <NavLink
-                                                        end
-                                                        to="/settings/apps"
-                                                        className="`block text-slate-400 hover:text-slate-200 transition duration-150 truncate"
-
-                                                    >
+                                                    <NavLink end to="/settings/apps" className="`block text-slate-400 hover:text-slate-200 transition duration-150 truncate">
                                                         <span className="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">
                                                             Connected Apps
                                                         </span>
                                                     </NavLink>
                                                 </li>
                                                 <li className="mb-1 last:mb-0">
-                                                    <NavLink
-                                                        end
-                                                        to="/settings/plans"
-                                                        className="block text-slate-400 hover:text-slate-200 transition duration-150 truncate"
-
-                                                    >
+                                                    <NavLink end to="/settings/plans" className="block text-slate-400 hover:text-slate-200 transition duration-150 truncate">
                                                         <span className="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">Plans</span>
                                                     </NavLink>
                                                 </li>
                                                 <li className="mb-1 last:mb-0">
-                                                    <NavLink
-                                                        end
-                                                        to="/settings/billing"
-                                                        className="`block text-slate-400 hover:text-slate-200 transition duration-150 truncate"
-
-                                                    >
+                                                    <NavLink end to="/settings/billing" className="`block text-slate-400 hover:text-slate-200 transition duration-150 truncate">
                                                         <span className="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">
                                                             Billing & Invoices
                                                         </span>
                                                     </NavLink>
                                                 </li>
                                                 <li className="mb-1 last:mb-0">
-                                                    <NavLink
-                                                        end
-                                                        to="/settings/feedback"
-                                                        className="block text-slate-400 hover:text-slate-200 transition duration-150 truncate"
-
-                                                    >
+                                                    <NavLink end to="/settings/feedback" className="block text-slate-400 hover:text-slate-200 transition duration-150 truncate">
                                                         <span className="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">
                                                             Give Feedback
                                                         </span>
@@ -322,8 +284,9 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }: { sidebarOpen: 
                                     <>
                                         <a
                                             href="#0"
-                                            className={`block text-slate-200 hover:text-white truncate transition duration-150 ${pathname.includes("utility") && "hover:text-slate-200"
-                                                }`}
+                                            className={`block text-slate-200 hover:text-white truncate transition duration-150 ${
+                                                pathname.includes("utility") && "hover:text-slate-200"
+                                            }`}
                                             onClick={(e) => {
                                                 e.preventDefault();
                                                 sidebarExpanded ? handleClick() : setSidebarExpanded(true);
@@ -372,56 +335,33 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }: { sidebarOpen: 
                                         <div className="lg:hidden lg:sidebar-expanded:block 2xl:block">
                                             <ul className={`pl-9 mt-1 ${!open && "hidden"}`}>
                                                 <li className="mb-1 last:mb-0">
-                                                    <NavLink
-                                                        end
-                                                        to="/utility/changelog"
-                                                        className="block text-slate-400 hover:text-slate-200 transition duration-150 truncate"
-
-                                                    >
+                                                    <NavLink end to="/utility/changelog" className="block text-slate-400 hover:text-slate-200 transition duration-150 truncate">
                                                         <span className="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">
                                                             Changelog
                                                         </span>
                                                     </NavLink>
                                                 </li>
                                                 <li className="mb-1 last:mb-0">
-                                                    <NavLink
-                                                        end
-                                                        to="/utility/roadmap"
-                                                        className="block text-slate-400 hover:text-slate-200 transition duration-150 truncate"
-
-                                                    >
+                                                    <NavLink end to="/utility/roadmap" className="block text-slate-400 hover:text-slate-200 transition duration-150 truncate">
                                                         <span className="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">
                                                             Roadmap
                                                         </span>
                                                     </NavLink>
                                                 </li>
                                                 <li className="mb-1 last:mb-0">
-                                                    <NavLink
-                                                        end
-                                                        to="/utility/faqs"
-                                                        className="block text-slate-400 hover:text-slate-200 transition duration-150 truncate"
-                                                    >
+                                                    <NavLink end to="/utility/faqs" className="block text-slate-400 hover:text-slate-200 transition duration-150 truncate">
                                                         <span className="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">FAQs</span>
                                                     </NavLink>
                                                 </li>
                                                 <li className="mb-1 last:mb-0">
-                                                    <NavLink
-                                                        end
-                                                        to="/utility/empty-state"
-                                                        className="block text-slate-400 hover:text-slate-200 transition duration-150 truncate"
-                                                    >
+                                                    <NavLink end to="/utility/empty-state" className="block text-slate-400 hover:text-slate-200 transition duration-150 truncate">
                                                         <span className="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">
                                                             Empty State
                                                         </span>
                                                     </NavLink>
                                                 </li>
                                                 <li className="mb-1 last:mb-0">
-                                                    <NavLink
-                                                        end
-                                                        to="/utility/404"
-                                                        className="block text-slate-400 hover:text-slate-200 transition duration-150 truncate"
-
-                                                    >
+                                                    <NavLink end to="/utility/404" className="block text-slate-400 hover:text-slate-200 transition duration-150 truncate">
                                                         <span className="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">404</span>
                                                     </NavLink>
                                                 </li>
@@ -598,5 +538,3 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }: { sidebarOpen: 
         </div>
     );
 }
-
-

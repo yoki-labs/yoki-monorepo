@@ -3,13 +3,14 @@ import "../styles/styles.css";
 
 import type { AppProps } from "next/app";
 import Head from "next/head";
+import { SessionProvider } from "next-auth/react";
 
 const ogDescription = "Meet Yoki, your moderation companion. Guilded's first moderation bot.";
 const ogUrl = "https://yoki.gg/";
 const ogFace = "https://yoki.gg/face.png";
 const ogTitle = "Yoki";
 
-function MyApp({ Component, pageProps }: AppProps) {
+function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
     return (
         <>
             <Head>
@@ -31,7 +32,9 @@ function MyApp({ Component, pageProps }: AppProps) {
 
                 <link rel="icon" href="/favicon.ico" />
             </Head>
-            <Component {...pageProps} />
+            <SessionProvider session={session}>
+                <Component {...pageProps} />
+            </SessionProvider>
         </>
     );
 }

@@ -1,52 +1,60 @@
-import React, { useState } from "react";
+import { GetServerSideProps, NextPage } from "next";
+import { unstable_getServerSession } from "next-auth";
+import Image from "next/image";
+import React, { useEffect, useState } from "react";
+import { GuildedServer } from "../../lib/@types/guilded/Server";
+import { methods } from "../../lib/Fetcher";
 
-import Sidebar from "../../partials/Sidebar";
-import Header from "../../partials/Header";
+// import Sidebar from "../../partials/Sidebar";
+// import Header from "../../partials/Header";
 import WelcomeBanner from "../../partials/dashboard/WelcomeBanner";
-import DashboardAvatars from "../../partials/dashboard/DashboardAvatars";
-import Datepicker from "../../components/dashboard/Datepicker";
+import { authOptions } from "../api/auth/[...nextauth]";
 
-function Dashboard() {
-    const [sidebarOpen, setSidebarOpen] = useState(false);
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+    const session = await unstable_getServerSession(ctx.req, ctx.res, authOptions);
+    if (!session?.user.access_token) return { props: {} };
+
+    const servers = await methods(session.user.access_token).get("https://authlink.guildedapi.com/api/v1/users/@me/servers");
+    return { props: { servers } };
+};
+
+const Dashboard: NextPage<{ servers: GuildedServer[] }> = ({ servers }) => {
+    // const [sidebarOpen, setSidebarOpen] = useState(false);
 
     return (
         <div className="flex h-screen overflow-hidden">
             {/* Sidebar */}
-            <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
+            {/* <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} /> */}
 
             {/* Content area */}
-            <div className="relative flex flex-col flex-1 overflow-y-auto overflow-x-hidden">
+            <div className="relative flex flex-col flex-1 overflow-y-auto overflow-x-hidden bg-custom-gray">
                 {/*  Site header */}
-                <Header sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
+                {/* <Header sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} /> */}
 
                 <main>
-                    <div className="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
+                    <div className="px-4 sm:px-6 lg:px-8 py-12 w-full max-w-9xl mx-auto">
                         {/* Welcome banner */}
                         <WelcomeBanner />
 
                         {/* Dashboard actions */}
-                        <div className="sm:flex sm:justify-between sm:items-center mb-8">
-                            {/* Left: Avatars */}
-                            <DashboardAvatars />
-
-                            {/* Right: Actions */}
-                            <div className="grid grid-flow-col sm:auto-cols-max justify-start sm:justify-end gap-2">
-                                {/* Datepicker built with flatpickr */}
-                                <Datepicker align="right" />
-                                {/* Add view button */}
-                                <button className="btn bg-indigo-500 hover:bg-indigo-600 text-white">
-                                    <svg className="w-4 h-4 fill-current opacity-50 shrink-0" viewBox="0 0 16 16">
-                                        <path d="M15 7H9V1c0-.6-.4-1-1-1S7 .4 7 1v6H1c-.6 0-1 .4-1 1s.4 1 1 1h6v6c0 .6.4 1 1 1s1-.4 1-1V9h6c.6 0 1-.4 1-1s-.4-1-1-1z" />
-                                    </svg>
-                                    <span className="hidden xs:block ml-2">Add View</span>
-                                </button>
-                            </div>
+                        <div className="mx-auto w-full md:max-w-[100rem] py-5 px-8 md:px-16 grid gap-4 md:grid-cols-2 lg:grid-cols-3 md:auto-cols-min auto-rows-min ">
+                            {servers.map((server) => (
+                                <div key={server.id}>
+                                    <h3 className="text-white text-2xl">{server.name.length > 10 ? server.name.slice(0, 10) + "..." : server.name}</h3>
+                                    <Image
+                                        className="rounded-full"
+                                        src={server.profilePicture ?? `https://img.guildedcdn.com/asset/TeamPage/Avatars/Small/default-team-avatar-${server.name.at(0)}@2x.png`}
+                                        width={75}
+                                        height={75}
+                                        alt={server.name}
+                                    />
+                                </div>
+                            ))}
                         </div>
                     </div>
                 </main>
             </div>
         </div>
     );
-}
-
+};
 export default Dashboard;
