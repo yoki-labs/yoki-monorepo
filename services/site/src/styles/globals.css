@@ -1,0 +1,55 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Additional styles */
+@import 'additional-styles/utility-patterns.css';
+@import 'additional-styles/range-slider.css';
+@import 'additional-styles/toggle-switch.css';
+@import 'additional-styles/flatpickr.css';
+@import 'additional-styles/theme.css';
+
+:root {
+  --primary: #191B1F;
+  --grey: #202227;
+  --off-grey: rgb(39, 41, 52);
+  --grey-bg: #191B1F;
+  --light-grey: #dcdcdc;
+  --grey-fade: #8080802a;
+  --guilded-yellow: #F5C400;
+
+  --status-bg: url("../../public/status-bg.png");
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+h1,
+h2,
+h3,
+p,
+a {
+  font-family: "Inter";
+}
+
+
+/* For Firefox Browser */
+.scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #000 #fff;
+}
+
+
+/* For Chrome, EDGE, Opera, Others */
+.scrollbar::-webkit-scrollbar {
+  width: 20px;
+}
+
+.scrollbar::-webkit-scrollbar-track {
+  background: #fff;
+}
+
+.scrollbar::-webkit-scrollbar-thumb {
+  background: #000;
+}
