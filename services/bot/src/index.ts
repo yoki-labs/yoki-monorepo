@@ -29,6 +29,8 @@ client.ws.emitter.on("gatewayEvent", async (event, data) => {
     return client.eventHandler[event]?.(data, client, serverFromDb);
 });
 
+client.ws.emitter.on("error", console.log);
+
 // This is for any custom events that we emit
 client.emitter.on("ActionIssued", client.customEventHandler.ActionIssued);
 
