@@ -1,3 +1,4 @@
+import { Embed } from "@guildedjs/webhook-client";
 import { config } from "dotenv";
 import { join } from "path";
 import recursive from "recursive-readdir";
@@ -6,6 +7,7 @@ import Client from "./Client";
 import type { Command } from "./commands/Command";
 import unhandledPromiseRejection from "./events/unhandledPromiseRejection";
 import Welcome from "./events/Welcome";
+import { codeBlock } from "./utils/formatters";
 
 // Load env variables
 config({ path: join(__dirname, "..", "..", "..", ".env") });
@@ -29,7 +31,10 @@ client.ws.emitter.on("gatewayEvent", async (event, data) => {
     return client.eventHandler[event]?.(data, client, serverFromDb);
 });
 
-client.ws.emitter.on("error", console.log);
+client.ws.emitter.on("error", (err) => {
+    console.log(`[WS ERR]: ${err}`);
+    void client.errorHandler.send("Error in command usage!", [new Embed().setDescription("[WS ERR]:").addField(`Err`, codeBlock(err)).setColor("RED")]);
+});
 
 // This is for any custom events that we emit
 client.emitter.on("ActionIssued", client.customEventHandler.ActionIssued);
