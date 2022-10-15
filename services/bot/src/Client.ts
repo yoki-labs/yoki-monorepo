@@ -15,7 +15,8 @@ import ChannelMessageReactionCreated from "./events/ChannelMessageReactionCreate
 import ChatMessageCreated from "./events/ChatMessageCreated";
 import ChatMessageDeleted from "./events/ChatMessageDeleted";
 import ChatMessageUpdated from "./events/ChatMessageUpdated";
-import ForumTopicEvent from "./events/ForumTopicEvent";
+import ForumTopicDeleted from "./events/ForumTopicDeleted";
+import ForumTopicCreated from "./events/ForumTopicCreated";
 import ListItemEvent from "./events/ListItemEvent";
 import TeamMemberJoined from "./events/TeamMemberJoined";
 import TeamMemberRemoved from "./events/TeamMemberRemoved";
@@ -30,6 +31,9 @@ import { ContentFilterUtil } from "./modules/content-filter";
 import { LinkFilterUtil } from "./modules/link-filter";
 import { SpamFilterUtil } from "./modules/spam-filter";
 import type { Context, Server } from "./typings";
+import ForumTopicUpdated from "./events/ForumTopicUpdated";
+import ForumTopicLockedEvent from "./events/ForumTopicLockedEvent";
+import { Colors } from "./utils/color";
 
 /**
  * Main class that stores utils, connections to various providers, and ws
@@ -103,8 +107,11 @@ export default class Client {
         ListItemCreated: ListItemEvent,
         ListItemUpdated: ListItemEvent,
         // Forum topic stuff
-        ForumTopicCreated: ForumTopicEvent,
-        ForumTopicUpdated: ForumTopicEvent,
+        ForumTopicCreated,
+        ForumTopicUpdated,
+        ForumTopicDeleted,
+        ForumTopicLocked: (packet, ctx) => ForumTopicLockedEvent(packet, ctx, "Locked", Colors.red),
+        ForumTopicUnlocked: (packet, ctx) => ForumTopicLockedEvent(packet, ctx, "Unlocked", Colors.green),
         // handles members getting new roles
         teamRolesUpdated,
         // handles reactions

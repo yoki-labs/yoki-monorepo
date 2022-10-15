@@ -46,7 +46,7 @@ export default async (packet: WSChatMessageUpdatedPayload, ctx: Context, server:
     try {
         let logContent = [
             {
-                name: `Old Content:`,
+                name: `Old Content`,
                 value: oldMessage
                     ? oldMessage.content
                         ? quoteMarkdown(oldMessage.content, 1012)
@@ -54,7 +54,7 @@ export default async (packet: WSChatMessageUpdatedPayload, ctx: Context, server:
                     : `Could not find old version of this message.`,
             },
             {
-                name: `New Content:`,
+                name: `New Content`,
                 value: message.content ? quoteMarkdown(message.content, 1012) : `This message does not contain text content.`,
             },
         ];

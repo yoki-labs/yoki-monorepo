@@ -1,0 +1,94 @@
+import type { EmbedField, ForumTopicPayload } from "@guildedjs/guilded-api-typings";
+import { FilteredContent } from "../modules/content-filter";
+
+import { Context, Server, LogChannelType } from "../typings";
+import { Colors } from "../utils/color";
+import { inlineCode, inlineQuote } from "../utils/formatters";
+import { quoteChangedContent } from "../utils/messages";
+
+export default async (packet: { d: { serverId: string; forumTopic: ForumTopicPayload } }, ctx: Context, server: Server) => {
+    const { forumTopic, serverId } = packet.d;
+
+    // get the old message from the database if we logged it before
+    const oldContent = await ctx.dbUtil.getForumTopic(forumTopic.channelId, forumTopic.id);
+    // if we did log it in the past, update it with the new content (logMessage uses upsert)
+    if (oldContent) {
+        void ctx.amp.logEvent({ event_type: "FORUM_TOPIC_UPDATE_DB", user_id: forumTopic.createdBy, event_properties: { serverId } });
+        await ctx.dbUtil.storeForumTopic(forumTopic);
+    }
+
+    // Scanning
+    const deletion = () => ctx.rest.delete(`/channels/${forumTopic.channelId}/topics/${forumTopic.id}`);
+
+    const enabledPresets = server.filterEnabled ? await ctx.dbUtil.getEnabledPresets(server.serverId) : undefined;
+
+    if (server.filterEnabled) {
+        // Scan the forum topic for any harmful content (filter list, presets)
+        await ctx.contentFilterUtil.scanContent({
+            userId: forumTopic.createdByWebhookId || forumTopic.createdBy,
+            text: forumTopic.content!,
+            filteredContent: FilteredContent.ChannelContent,
+            channelId: forumTopic.channelId,
+            server,
+            presets: enabledPresets,
+            // Filter
+            resultingAction: deletion,
+        });
+
+        // Spam prevention
+        await ctx.spamFilterUtil.checkForSpam(server, forumTopic.createdBy, forumTopic.channelId, deletion);
+    }
+
+    if (server.filterInvites || server.filterEnabled)
+        // Invites or bad URLs
+        await ctx.linkFilterUtil.checkLinks({
+            server,
+            userId: forumTopic.createdBy,
+            channelId: forumTopic.channelId,
+            content: forumTopic.content!,
+            filteredContent: FilteredContent.ChannelContent,
+            presets: enabledPresets,
+            resultingAction: deletion,
+        });
+
+    // check if there's a log channel channel for message deletions
+    const editedTopicLogChannel = await ctx.dbUtil.getLogChannel(serverId, LogChannelType.topic_edits);
+    if (!editedTopicLogChannel) return void 0;
+
+    const channel = await ctx.channelUtil.getChannel(forumTopic.channelId).catch();
+
+    const channelURL = `https://guilded.gg/teams/${serverId}/channels/${forumTopic.channelId}/forums`;
+
+    const contentChanged = oldContent?.content != forumTopic.content;
+
+    // send the log channel message with the content/data of the deleted message
+    await ctx.messageUtil.sendLog({
+        where: editedTopicLogChannel.channelId,
+        title: "Forum Topic Edited",
+        description: `A topic ${inlineQuote(forumTopic.title)} from <@${forumTopic.createdBy}> (${inlineCode(forumTopic.createdBy)}) has been edited in [#${
+            channel.name
+        }](${channelURL})
+
+			Topic ID: ${inlineCode(forumTopic.id)}
+			Channel ID: ${inlineCode(forumTopic.channelId)}
+		`,
+        color: Colors.yellow,
+        occurred: new Date().toISOString(),
+        fields: [
+            oldContent?.title != forumTopic.title && {
+                name: "Title Changes",
+                value: `${oldContent?.title ? inlineQuote(oldContent?.title) : "Unknown title"} -> ${inlineQuote(forumTopic.title)}`,
+            },
+            contentChanged && {
+                name: "Old Content",
+                value: await quoteChangedContent(ctx, serverId, forumTopic.id, "forums", forumTopic.content),
+            },
+            contentChanged && {
+                name: "New Content",
+                value: await quoteChangedContent(ctx, serverId, forumTopic.id, "forums", oldContent?.content),
+            },
+        ].filter(Boolean) as EmbedField[],
+    });
+
+    return void 0;
+};

@@ -138,6 +138,20 @@ model Message {
     deletedAt DateTime?
 }
 
+model ForumTopic {
+    forumTopicId Int       @id
+    serverId     String    @db.VarChar(255)
+    channelId    String    @db.VarChar(255)
+    authorId     String    @db.VarChar(255)
+    title        String    @db.Text
+    content      String    @db.Text
+    embeds       Json?     @db.JsonB
+    isBot        Boolean
+    createdAt    DateTime
+    updatedAt    DateTime? @updatedAt
+    deletedAt    DateTime?
+}
+
 model ReactionAction {
     id         Int                @id @default(autoincrement())
     channelId  String             @db.VarChar(255)
@@ -200,6 +214,9 @@ enum LogChannelType {
     member_leaves
     message_edits
     message_deletions
+    topic_locks
+    topic_edits
+    topic_deletions
     notifications
     modmail_logs
 }

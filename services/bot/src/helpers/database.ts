@@ -1,4 +1,4 @@
-import type { ChatMessagePayload } from "@guildedjs/guilded-api-typings";
+import type { ChatMessagePayload, ForumTopicPayload } from "@guildedjs/guilded-api-typings";
 import type { FilterMatching, InviteFilter, Prisma, Severity, UrlFilter } from "@prisma/client";
 import { nanoid } from "nanoid";
 
@@ -62,6 +62,10 @@ export class DatabaseUtil extends Util {
         return this.prisma.message.findFirst({ where: { messageId, channelId } });
     }
 
+    getForumTopic(channelId: string, forumTopicId: number) {
+        return this.prisma.forumTopic.findFirst({ where: { forumTopicId, channelId } });
+    }
+
     getServer(serverId: string, createIfNotExists?: true): Promise<Server>;
     getServer(serverId: string, createIfNotExists: false): Promise<Server | null>;
     getServer(serverId: string, createIfNotExists = true) {
@@ -75,8 +79,8 @@ export class DatabaseUtil extends Util {
     }
 
     async getLogChannel(serverId: string, type: LogChannelType) {
-        const logchannel = await this.prisma.logChannel.findFirst({ where: { serverId, type } });
-        return logchannel ?? this.prisma.logChannel.findFirst({ where: { serverId, type: LogChannelType.all } });
+        const logChannels = await this.prisma.logChannel.findMany({ where: { serverId, type: { in: [type, LogChannelType.all] } } });
+        return logChannels.find((x) => x.type == type) ?? logChannels[0] ?? null;
     }
 
     getLogChannels(serverId: string) {
@@ -127,6 +131,31 @@ export class DatabaseUtil extends Util {
                 content: message.content,
                 updatedAt: message.updatedAt,
                 embeds: JSON.stringify(message.embeds),
+            },
+        });
+    }
+
+    storeForumTopic(topic: ForumTopicPayload) {
+        return this.prisma.forumTopic.upsert({
+            where: { forumTopicId: topic.id },
+            create: {
+                forumTopicId: topic.id,
+                authorId: topic.createdBy,
+                channelId: topic.channelId,
+                title: topic.title!,
+                content: topic.content!,
+                createdAt: topic.createdAt,
+                embeds: undefined,
+                serverId: topic.serverId!,
+                updatedAt: undefined,
+                isBot: Boolean(topic.createdByWebhookId),
+                deletedAt: null,
+            },
+            update: {
+                title: topic.title,
+                content: topic.content,
+                updatedAt: undefined,
+                embeds: undefined,
             },
         });
     }
