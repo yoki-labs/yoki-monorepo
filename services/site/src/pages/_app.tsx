@@ -4,14 +4,26 @@ import "../styles/styles.css";
 import type { AppProps } from "next/app";
 import Head from "next/head";
 import { SessionProvider } from "next-auth/react";
+import { ReactElement, ReactNode } from "react";
+import { NextPage } from "next/types";
 
 const ogDescription = "Meet Yoki, your moderation companion. Guilded's first moderation bot.";
 const ogUrl = "https://yoki.gg/";
 const ogFace = "https://yoki.gg/face.png";
 const ogTitle = "Yoki";
 
-function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
-    return (
+export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
+    getLayout?: (page: ReactElement) => ReactNode
+}
+
+type AppPropsWithLayout = AppProps & {
+    Component: NextPageWithLayout
+}
+
+function MyApp({ Component, pageProps: { session, ...pageProps } }: AppPropsWithLayout) {
+    const layout = Component.getLayout ?? ((page) => page);
+
+    return layout(
         <>
             <Head>
                 <title>{ogTitle}</title>

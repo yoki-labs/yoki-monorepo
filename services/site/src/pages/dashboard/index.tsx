@@ -1,6 +1,7 @@
-import { GetServerSideProps, NextPage } from "next";
+import { GetServerSideProps, GetServerSidePropsResult, NextPage } from "next";
 import { unstable_getServerSession } from "next-auth";
 import Image from "next/image";
+import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { GuildedServer } from "../../lib/@types/guilded/Server";
 import { methods } from "../../lib/Fetcher";
@@ -10,11 +11,12 @@ import { methods } from "../../lib/Fetcher";
 import WelcomeBanner from "../../partials/dashboard/WelcomeBanner";
 import { authOptions } from "../api/auth/[...nextauth]";
 
-export const getServerSideProps: GetServerSideProps = async (ctx) => {
+export const getServerSideProps: GetServerSideProps = async (ctx): Promise<GetServerSidePropsResult<{ servers: GuildedServer[] }>> => {
     const session = await unstable_getServerSession(ctx.req, ctx.res, authOptions);
-    if (!session?.user.access_token) return { props: {} };
+    if (!session?.user.access_token) return { redirect: { "destination": "/auth/signin", permanent: false } };
 
     const servers = await methods(session.user.access_token).get("https://authlink.guildedapi.com/api/v1/users/@me/servers");
+    if (servers.status === 403) return { redirect: { "destination": "/auth/signin", permanent: false } };
     return { props: { servers } };
 };
 
@@ -37,18 +39,20 @@ const Dashboard: NextPage<{ servers: GuildedServer[] }> = ({ servers }) => {
                         <WelcomeBanner />
 
                         {/* Dashboard actions */}
-                        <div className="mx-auto w-full md:max-w-[100rem] py-5 px-8 md:px-16 grid gap-4 md:grid-cols-2 lg:grid-cols-3 md:auto-cols-min auto-rows-min ">
+                        <div className="mx-auto w-full md:max-w-[100rem] py-5 px-8 md:px-16 grid gap-4 grid-cols-3 lg:grid-cols-8 md:auto-cols-min auto-rows-min ">
                             {servers.map((server) => (
-                                <div key={server.id}>
-                                    <h3 className="text-white text-2xl">{server.name.length > 10 ? server.name.slice(0, 10) + "..." : server.name}</h3>
-                                    <Image
-                                        className="rounded-full"
-                                        src={server.profilePicture ?? `https://img.guildedcdn.com/asset/TeamPage/Avatars/Small/default-team-avatar-${server.name.at(0)}@2x.png`}
-                                        width={75}
-                                        height={75}
-                                        alt={server.name}
-                                    />
-                                </div>
+                                <Link href={`/dashboard/servers/${server.id}`} key={server.id}>
+                                    <div className="max-w-[8rem] p-4 hover:bg-black grid place-items-center rounded hover:scale-125 hover:cursor-pointer transition">
+                                        <Image
+                                            className="rounded-full pb-4"
+                                            src={server.profilePicture ?? `https://img.guildedcdn.com/asset/TeamPage/Avatars/Small/default-team-avatar-${server.name.at(0)}@2x.png`}
+                                            width={75}
+                                            height={75}
+                                            alt={server.name}
+                                        />
+                                        <h3 className={`text-white align-middle max-w-[7rem] break-words text-lg`}>{server.name.length > 17 ? server.name.slice(0, 17) + "..." : server.name}</h3>
+                                    </div>
+                                </Link>
                             ))}
                         </div>
                     </div>
