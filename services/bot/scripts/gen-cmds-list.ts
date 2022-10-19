@@ -11,7 +11,7 @@ void (async () => {
         .map((x) => require(x).default as Command)
         .filter((x) => !x.hidden && !x.subCommand);
     writeFileSync(
-        join(__dirname, "..", "..", "website", "commands.json"),
+        join(__dirname, "..", "..", "site", "commands.json"),
         JSON.stringify(
             commands.map((command) => {
                 return {
