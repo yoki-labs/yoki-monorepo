@@ -18,27 +18,53 @@ const Enable: Command = {
         {
             name: "severity",
             type: "string",
+            optional: true,
         },
         {
             name: "infractionPoints",
             type: "number",
+            optional: true,
         },
     ],
     execute: async (message, args, ctx) => {
         const preset = args.preset as string;
         const severity = transformSeverityStringToEnum((args.severity as string | null) ?? "warn");
-        const infractionPoints = (args.infractionPoints as number | null) ?? 5;
+        const infractionPoints = args.infractionPoints as number | null;
         const allPresets = Object.keys(ctx.contentFilterUtil.presets);
 
         if (!allPresets.includes(preset))
             return ctx.messageUtil.replyWithError(message, `No such preset`, `That is not a valid preset. Your options are: ${allPresets.map((x) => inlineCode(x)).join(", ")}`);
         if (!severity) return ctx.messageUtil.replyWithError(message, `No such severity level`, `Sorry, but that is not a valid severity level!`);
 
-        if ((await ctx.prisma.preset.findMany({ where: { serverId: message.serverId!, preset } })).length)
-            return ctx.messageUtil.replyWithError(message, "Preset already enabled!", `You have already enabled this preset with the severity of ${severity}.`);
-        return ctx.dbUtil
-            .enablePreset(message.serverId!, preset, severity, infractionPoints)
-            .then(() => ctx.messageUtil.replyWithSuccess(message, `Preset enabled`, `Successfully enabled the ${inlineCode(preset)} preset for this server.`))
+        const existingPreset = await ctx.prisma.preset.findFirst({ where: { serverId: message.serverId!, preset } });
+        if ((existingPreset?.severity === severity && !infractionPoints) || existingPreset?.infractionPoints === infractionPoints)
+            return ctx.messageUtil.replyWithError(
+                message,
+                "Preset already enabled!",
+                `You have already enabled this preset with the severity of ${severity} and this same level of infraction points.`
+            );
+
+        const action = `${existingPreset ? "updated" : "enabled"}`;
+
+        return (
+            existingPreset
+                ? ctx.prisma.preset.update({
+                      where: { id: existingPreset.id },
+                      data: { severity, infractionPoints },
+                  })
+                : ctx.prisma.preset.create({
+                      data: { serverId: message.serverId!, preset, severity, infractionPoints },
+                  })
+        )
+            .then(() =>
+                ctx.messageUtil.replyWithSuccess(
+                    message,
+                    `Preset ${action}`,
+                    `Successfully ${action} the ${inlineCode(
+                        preset
+                    )} preset for this server. You can modify the severity or infraction points applied by running this command again with new values.`
+                )
+            )
             .catch((e: Error) =>
                 ctx.messageUtil.replyWithUnexpected(
                     message,
