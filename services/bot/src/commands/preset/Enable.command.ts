@@ -37,7 +37,7 @@ const Enable: Command = {
         if (!severity) return ctx.messageUtil.replyWithError(message, `No such severity level`, `Sorry, but that is not a valid severity level!`);
 
         const existingPreset = await ctx.prisma.preset.findFirst({ where: { serverId: message.serverId!, preset } });
-        if ((existingPreset?.severity === severity && !infractionPoints) || existingPreset?.infractionPoints === infractionPoints)
+        if (existingPreset?.severity === severity && (!infractionPoints || existingPreset?.infractionPoints === infractionPoints))
             return ctx.messageUtil.replyWithError(
                 message,
                 "Preset already enabled!",
