@@ -5,7 +5,7 @@ import { stripIndents } from "common-tags";
 
 import type { Command, CommandArgument } from "../commands/Command";
 import { Colors } from "../utils/color";
-import { inlineCode } from "../utils/formatters";
+import { inlineCode, listInlineCode } from "../utils/formatters";
 import { BotImages, StateImages } from "../utils/images";
 import { Util } from "./util";
 
@@ -49,7 +49,7 @@ export class MessageUtil extends Util {
             message,
             `Incorrect argument`,
             `Sorry, but the usage of argument ${inlineCode(commandArg.name.split("-").join(" "))} was not correct. Was expecting a ${
-                commandArg.type === "enum" || commandArg.type === "enumList" ? Object.keys(commandArg.values).join(", ") : commandArg.type
+                commandArg.type === "enum" || commandArg.type === "enumList" ? listInlineCode(Object.keys(commandArg.values).map((x) => x.toLowerCase())) : commandArg.type
             }${commandArg.max ? ` with the limit of ${commandArg.max}` : ""}.`,
             {
                 fields: [

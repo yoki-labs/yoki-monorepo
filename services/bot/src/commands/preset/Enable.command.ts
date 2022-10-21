@@ -41,7 +41,7 @@ const Enable: Command = {
             return ctx.messageUtil.replyWithError(
                 message,
                 "Preset already enabled!",
-                `You have already enabled this preset with the severity of ${severity} and this same level of infraction points.`
+                `You have already enabled this preset with the severity of ${inlineCode(severity.toLowerCase())} and this same level of infraction points.`
             );
 
         const action = `${existingPreset ? "updated" : "enabled"}`;

@@ -1,17 +1,17 @@
-import { Severity } from "@prisma/client";
+import type { Severity } from "@prisma/client";
 
 import { RoleType } from "../../typings";
 import { inlineCode } from "../../utils/formatters";
 import { Category } from "../Category";
 import type { Command } from "../Command";
 
-const immutable: string[] = [Severity.WARN, Severity.NOTE];
-const mutable = {
-    MUTE: "MUTE",
-    KICK: "KICK",
-    SOFTBAN: "SOFTBAN",
-    BAN: "BAN",
-};
+enum MutableSeverities {
+    MUTE = "MUTE",
+    KICK = "KICK",
+    SOFTBAN = "SOFTBAN",
+    BAN = "BAN",
+}
+
 const Threshold: Command = {
     name: "config-threshold",
     description: "Sets how many infraction points are required for each level of moderation severity.",
@@ -22,24 +22,17 @@ const Threshold: Command = {
     subName: "threshold",
     requiredRole: RoleType.ADMIN,
     args: [
-        { name: "severity", type: "enum", values: mutable },
+        { name: "severity", type: "enum", values: MutableSeverities },
         { name: "infractions", type: "number" },
     ],
     execute: async (message, args, ctx) => {
         const severity = (args.severity as Severity)?.toLowerCase();
         const infractions = args.infractions as number;
 
-        if (immutable.includes(severity))
-            return ctx.messageUtil.replyWithError(
-                message,
-                `Immutable ${inlineCode(severity)} threshold`,
-                `You cannot change infraction points requirement for ${inlineCode(severity)}.`
-            );
-
         const propName = `${severity.toLowerCase()}InfractionThreshold`;
 
         await ctx.prisma.server.updateMany({ data: { [propName]: infractions }, where: { serverId: message.serverId! } });
-        return ctx.messageUtil.replyWithSuccess(message, `Infraction points changed`, `${severity} will now require ${inlineCode(infractions)} infraction points.`);
+        return ctx.messageUtil.replyWithSuccess(message, `Infraction points changed`, `${severity.toLowerCase()} will now require ${inlineCode(infractions)} infraction points.`);
     },
 };
 

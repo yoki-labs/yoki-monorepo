@@ -58,7 +58,7 @@ const Add: Command = {
         return ctx.messageUtil.replyWithSuccess(
             message,
             `New link added`,
-            `Successfully added ${inlineQuote(domain)} with the severity ${inlineCode(severity)} to the automod list!`
+            `Successfully added ${inlineQuote(domain)} with the severity ${inlineCode(severity.toLowerCase())} to the automod list!`
         );
     },
 };
