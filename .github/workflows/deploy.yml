@@ -52,6 +52,8 @@ jobs:
                   push: true
                   tags: ghcr.io/${{ github.repository }}/${{ matrix.service-name }}:latest
                   file: docker/${{ matrix.service-name }}/Dockerfile
+                  cache-from: type=gha
+                  cache-to: type=gha,mode=max
     deploy:
         name: Deploy to Production
         needs: [docker]
