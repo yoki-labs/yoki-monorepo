@@ -5,6 +5,7 @@ import { stripIndents } from "common-tags";
 
 import type Client from "../Client";
 import type { CommandContext } from "../typings";
+import { Colors } from "../utils/color";
 import { inlineCode, inlineQuote, listInlineCode } from "../utils/formatters";
 import { Category } from "./Category";
 import type { Command } from "./Command";
@@ -40,6 +41,7 @@ const Help: Command = {
 
         const embed = new Embed()
             .setTitle("Command List")
+            .setColor(Colors.blockBackground)
             .setDescription(":link: [Join server](https://yoki.gg/support) • [Invite bot](https://yoki.gg/invite)")
             .setFooter(`For additional info on a command, type ${inlineCode(`${commandCtx.server.getPrefix()}help [command]`)}`);
 
