@@ -1,6 +1,5 @@
 import Collection from "@discordjs/collection";
 import type { ChatMessagePayload, EmbedField } from "@guildedjs/guilded-api-typings";
-import { stripIndents } from "common-tags";
 import type Client from "../Client";
 import type { CommandContext } from "../typings";
 import { Embed } from "@guildedjs/embeds";
@@ -8,6 +7,7 @@ import { Embed } from "@guildedjs/embeds";
 import { inlineCode, inlineQuote, listInlineCode } from "../utils/formatters";
 import { Category } from "./Category";
 import type { Command } from "./Command";
+import { stripIndents } from "common-tags";
 const categories = Object.values(Category);
 
 const Help: Command = {
@@ -90,7 +90,13 @@ function replyWithSingleCommand(ctx: Client, commandCtx: CommandContext, message
                     : [
                         {
                             name: "Commands",
-                            value: getAllCommands(ctx),
+                            value: getAllCommands(ctx.commands).map(
+                                (commands, category) => stripIndents`
+                                        **${category}:**
+                                        ${listInlineCode(commands.map((x) => x.name))}
+                                    `
+                            )
+                                .join("\n\n"),
                         },
                     ],
             });
