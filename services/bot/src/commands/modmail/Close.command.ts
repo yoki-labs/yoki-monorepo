@@ -11,16 +11,31 @@ import type { Command } from "../Command";
 const Close: Command = {
     name: "close",
     subName: "close",
-    description: "Close a modmail thread.",
+    description:
+        "Close a modmail thread. If ran in a modmail channel, it will close the thread associated with that channel. If a user is mentioned, it will force close the open thread for that user.",
     examples: [""],
     subCommand: true,
     requiredRole: RoleType.MINIMOD,
     category: Category.Moderation,
-    execute: async (message, _args, ctx) => {
-        const isCurrentChannelModmail = await ctx.prisma.modmailThread.findFirst({ where: { serverId: message.serverId, modFacingChannelId: message.channelId, closed: false } });
-        if (!isCurrentChannelModmail) return ctx.messageUtil.replyWithError(message, `Not a modmail channel`, `This channel is not a modmail channel!`);
+    args: [
+        {
+            name: "userId",
+            type: "string",
+            optional: true,
+        },
+    ],
+    execute: async (message, args, ctx) => {
+        const userId = args.userId as string | null;
 
-        return closeModmailThread(message.serverId!, message.createdBy, ctx, isCurrentChannelModmail!, "closed by a staff member");
+        const modmailChannel = userId
+            ? await ctx.prisma.modmailThread.findFirst({ where: { serverId: message.serverId!, openerId: userId, closed: false } })
+            : await ctx.prisma.modmailThread.findFirst({ where: { serverId: message.serverId, modFacingChannelId: message.channelId, closed: false } });
+        if (!modmailChannel)
+            return userId
+                ? ctx.messageUtil.replyWithError(message, "No open modmail ticket for user", "User does not have an open modmail ticket")
+                : ctx.messageUtil.replyWithError(message, `Not a modmail channel`, `This channel is not a modmail channel!`);
+
+        return closeModmailThread(message.serverId!, message.createdBy, ctx, modmailChannel!, "closed by a staff member");
     },
 };
 
