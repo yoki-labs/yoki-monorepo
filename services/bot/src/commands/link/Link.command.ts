@@ -4,6 +4,7 @@ import { Category } from "../Category";
 import type { Command } from "../Command";
 import Invite from "./invite/Invite.command";
 import List from "./List.command";
+import Severity from "./Severity.command";
 import Url from "./url/Url.command";
 
 const Link: Command = {
@@ -12,7 +13,7 @@ const Link: Command = {
     examples: ["domain add example.com warn", "invite add 4R56dNkl"],
     parentCommand: true,
     category: Category.Filter,
-    subCommands: new Collection<string, Command>().set("url", Url).set("invite", Invite).set("list", List),
+    subCommands: new Collection<string, Command>().set("url", Url).set("invite", Invite).set("list", List).set("severity", Severity),
     execute: () => void 0,
 };
 

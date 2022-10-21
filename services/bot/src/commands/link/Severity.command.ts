@@ -4,8 +4,8 @@ import { Category } from "../Category";
 import type { Command } from "../Command";
 
 const LinkSeverity: Command = {
-    name: "link-url-linkseverity",
-    subName: "linkseverity",
+    name: "link-severity",
+    subName: "severity",
     description: "Sets severity and infraction points of non-whitelisted links.",
     usage: "<severity> <infraction points>",
     examples: ["warn 5"],

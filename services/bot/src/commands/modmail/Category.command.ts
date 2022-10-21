@@ -5,12 +5,12 @@ import { Category } from "../Category";
 import type { Command } from "../Command";
 
 const ModmailCategory: Command = {
-    name: "config-modmailcategory",
+    name: "modmail-category",
     description: "Set the category where new modmail channels are created.",
     subCommand: true,
-    usage: "[newCategory]",
+    usage: "[ID of the new category]",
     examples: ["", "532372"],
-    subName: "modmailcategory",
+    subName: "category",
     category: Category.Settings,
     requiredRole: RoleType.ADMIN,
     args: [{ name: "newCategory", type: "string", optional: true }],
@@ -21,10 +21,10 @@ const ModmailCategory: Command = {
         if (!newCategory) {
             return commandCtx.server.modmailCategoryId
                 ? ctx.messageUtil.replyWithInfo(
-                    message,
-                    "Modmail category",
-                    `This server's modmail category has been set as category by the ID ${inlineCode(commandCtx.server.modmailCategoryId)}.`
-                )
+                      message,
+                      "Modmail category",
+                      `This server's modmail category has been set as category by the ID ${inlineCode(commandCtx.server.modmailCategoryId)}.`
+                  )
                 : ctx.messageUtil.replyWithNullState(message, "No modmail category", "This server does not have modmail category set.");
         }
 

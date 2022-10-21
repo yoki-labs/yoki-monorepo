@@ -1,9 +1,9 @@
 export enum Category {
-    Settings = "settings",
-    Moderation = "moderation",
-    Modmail = "modmail",
-    Tags = "tags",
-    Filter = "filter",
-    Logs = "logging",
-    Antiraid = "antiraid"
+    Settings = "Settings",
+    Moderation = "Moderation",
+    Modmail = "Modmail",
+    Tags = "Tags",
+    Filter = "Filter",
+    Logs = "Logging",
+    Antiraid = "Antiraid",
 }

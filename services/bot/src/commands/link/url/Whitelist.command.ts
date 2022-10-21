@@ -1,10 +1,10 @@
-import { RoleType } from "../../typings";
-import { Category } from "../Category";
-import type { Command } from "../Command";
+import { RoleType } from "../../../typings";
+import { Category } from "../../Category";
+import type { Command } from "../../Command";
 
 const UrlWhitelist: Command = {
-    name: "link-url-urlwhitelist",
-    subName: "urlwhitelist",
+    name: "link-url-whitelist",
+    subName: "whitelist",
     description: "Sets whether the URL filter is whitelisted or blacklisted.",
     usage: "<is whitelist>",
     examples: ["true", "false"],

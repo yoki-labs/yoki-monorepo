@@ -2,8 +2,10 @@ import Collection from "@discordjs/collection";
 
 import { Category } from "../Category";
 import type { Command } from "../Command";
+import CategoryCommand from "./Category.command";
 import Close from "./Close.command";
 import Edit from "./Edit.command";
+import Group from "./Group.command";
 import History from "./History.command";
 import Reply from "./Reply.command";
 import SelectTrigger from "./SelectTrigger.command";
@@ -22,7 +24,9 @@ const Modmail: Command = {
         .set("edit", Edit)
         .set("history", History)
         .set("selecttrigger", SelectTrigger)
-        .set("sendtrigger", SendTrigger),
+        .set("sendtrigger", SendTrigger)
+        .set("category", CategoryCommand)
+        .set("group", Group),
     execute: () => void 0,
 };
 

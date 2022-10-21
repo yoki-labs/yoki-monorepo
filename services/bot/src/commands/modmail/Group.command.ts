@@ -5,12 +5,12 @@ import { Category } from "../Category";
 import type { Command } from "../Command";
 
 const ModmailGroup: Command = {
-    name: "config-modmailgroup",
+    name: "modmail-group",
     description: "Set the modmail group where new channels are created.",
     subCommand: true,
-    usage: "[newGroup]",
+    usage: "[ID of the new group]",
     examples: ["", "3GMgagKd"],
-    subName: "modmailgroup",
+    subName: "group",
     category: Category.Settings,
     requiredRole: RoleType.ADMIN,
     args: [{ name: "newGroup", type: "string", optional: true }],
@@ -21,10 +21,10 @@ const ModmailGroup: Command = {
         if (!newGroup) {
             return commandCtx.server.modmailCategoryId
                 ? ctx.messageUtil.replyWithInfo(
-                    message,
-                    "Modmail group",
-                    `This server's modmail group has been set as category by the ID ${inlineCode(commandCtx.server.modmailGroupId)}.`
-                )
+                      message,
+                      "Modmail group",
+                      `This server's modmail group has been set as category by the ID ${inlineCode(commandCtx.server.modmailGroupId)}.`
+                  )
                 : ctx.messageUtil.replyWithNullState(message, "No modmail group", "This server does not have modmail group set.");
         }
 
