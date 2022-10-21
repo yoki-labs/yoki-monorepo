@@ -3,7 +3,17 @@ export const escapeInlineCodeText = (code: any) => code.toString().replaceAll("\
 
 export const inlineCode = (code: any) => `\`${code}\``;
 export const bold = (text: any) => `**${text}**`;
-export const inlineQuote = (text: any) => `"\`${escapeInlineCodeText(text)}\`"`;
+
+export function inlineQuote(text: any, maxLength?: number) {
+    // Might be number, might be undefined
+    const rawStr: string = text?.toString() || " ";
+
+    // Trim the number, undefined, whatever
+    const trimmed = maxLength && rawStr.length > maxLength ? `${rawStr.substring(0, maxLength - 3)}...` : rawStr;
+
+    return `"\`${escapeInlineCodeText(trimmed)}\`"`;
+}
+
 export const highlight = (text: any) => `**__${text}__**`;
 export const listInlineCode = (str: string[] | number[] | undefined) => (typeof str === "undefined" ? null : str.map(inlineCode).join(", "));
 export const listInlineQuote = (str: string[] | undefined) => (typeof str === "undefined" ? null : str.map(inlineQuote).join(", "));

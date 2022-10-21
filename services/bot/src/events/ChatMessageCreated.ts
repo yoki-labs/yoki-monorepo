@@ -16,7 +16,7 @@ import type { CommandArgType, CommandArgument } from "../commands/Command";
 import { FilteredContent } from "../modules/content-filter";
 import type { Context, ResolvedArgs, Server, UsedMentions } from "../typings";
 import { Colors } from "../utils/color";
-import { codeBlock, inlineCode } from "../utils/formatters";
+import { codeBlock, inlineCode, inlineQuote } from "../utils/formatters";
 import { roleValues } from "../utils/util";
 
 const argCast: Record<
@@ -149,11 +149,7 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context, server:
         return ctx.messageUtil.send(message.channelId, customCommand.content);
     }
 
-    // for sub commands
-    let parentCommand = command;
-
     while (command.parentCommand && command.subCommands?.size) {
-        parentCommand = command;
         // if no sub command, list all the available sub commands
         if (!args[0]) {
             void ctx.amp.logEvent({
@@ -164,18 +160,8 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context, server:
             const subCommandName = command.subCommands.firstKey();
             const subCommand = command.subCommands.get(subCommandName as string)!;
 
-            return ctx.messageUtil.replyWithInfo(message, `${inlineCode(commandName)} command`, command.description, {
-                fields: [
-                    ...ctx.messageUtil.createSubCommandFields(command.subCommands),
-                    {
-                        name: "Example",
-                        value: stripIndents`
-                                \`\`\`md
-                                ${prefix}${commandName} ${subCommandName} ${subCommand.examples ? subCommand.examples[0] : ""}
-                                \`\`\`
-                            `,
-                    },
-                ],
+            return ctx.messageUtil.replyWithInfo(message, `${inlineCode(command.name.split("-").join(" "))} command`, command.description, {
+                fields: [...ctx.messageUtil.createSubCommandFields(command.subCommands), ctx.messageUtil.createExampleField(subCommand, prefix)],
             });
         }
         const subCommand = command.subCommands.get(args[0]);
@@ -186,18 +172,8 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context, server:
                 user_id: message.createdBy,
                 event_properties: { serverId: message.serverId, command: command.name },
             });
-            return ctx.messageUtil.replyWithError(message, `No such sub-command`, `The specified sub-command could not be found.`, {
-                fields: [
-                    ...ctx.messageUtil.createSubCommandFields(command.subCommands),
-                    {
-                        name: "Example",
-                        value: stripIndents`
-                            \`\`\`md
-                            ${prefix}${commandName} ${command.subCommands.firstKey()}
-                            \`\`\`
-                        `,
-                    },
-                ],
+            return ctx.messageUtil.replyWithError(message, `No such sub-command`, `The specified sub-command ${inlineQuote(args[0], 100)} could not be found.`, {
+                fields: [...ctx.messageUtil.createSubCommandFields(command.subCommands), ctx.messageUtil.createExampleField(command, prefix)],
             });
         }
         command = subCommand;
@@ -230,7 +206,7 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context, server:
                     user_id: message.createdBy,
                     event_properties: { serverId: message.serverId, command: command.name, trippedArg: commandArg },
                 });
-                return ctx.messageUtil.handleBadArg(message, prefix, commandArg, command, parentCommand);
+                return ctx.messageUtil.handleBadArg(message, prefix, commandArg, command);
             }
 
             // if the arg is valid, add it to the resolved args obj

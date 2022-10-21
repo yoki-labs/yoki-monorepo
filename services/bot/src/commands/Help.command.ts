@@ -1,7 +1,10 @@
 import Collection from "@discordjs/collection";
+import type { ChatMessagePayload, EmbedField } from "@guildedjs/guilded-api-typings";
 import { stripIndents } from "common-tags";
+import type Client from "../Client";
+import type { CommandContext } from "../typings";
 
-import { inlineCode, listInlineCode } from "../utils/formatters";
+import { inlineCode, inlineQuote, listInlineCode } from "../utils/formatters";
 import { Category } from "./Category";
 import type { Command } from "./Command";
 const categories = Object.values(Category);
@@ -9,71 +12,22 @@ const categories = Object.values(Category);
 const Help: Command = {
     name: "help",
     description: "View a list of Yoki's commands.",
-    usage: "[commandName]",
+    usage: "[command path]",
     examples: ["", "ping"],
     aliases: ["commands", "command", "all", "h"],
     hidden: true,
     args: [
         {
-            name: "commandName",
-            type: "string",
-            optional: true,
-        },
-        {
-            name: "subName",
-            type: "string",
+            name: "commandPath",
+            type: "rest",
             optional: true,
         },
     ],
     execute: (message, args, ctx, commandCtx) => {
-        const commandName = (args.commandName as string | null)?.toLowerCase();
-        const subName = (args.subName as string | null)?.toLowerCase();
+        const commandPath = (args.commandPath as string | null)?.toLowerCase();
 
-        if (commandName) {
-            const parentCommand = ctx.commands.get(commandName) ?? ctx.commands.find((command) => command.aliases?.includes(commandName) ?? false);
-            if (!parentCommand) return ctx.messageUtil.replyWithError(message, `No such command`, `Could not find that command!`);
-            let command: Command;
-            if (subName) {
-                const subCommand = parentCommand.subCommands?.get(subName) ?? null;
-                if (!subCommand) return ctx.messageUtil.replyWithError(message, `No such sub-command`, `Could not find that sub command!`);
-                command = subCommand;
-            } else {
-                command = parentCommand;
-            }
-
-            const commandUsageName = parentCommand.name === command.name ? command.name : `${parentCommand.name}${command.subName ? ` ${command.subName}` : ""}`;
-            void ctx.amp.logEvent({
-                event_type: "HELP_SINGLE_COMMAND",
-                user_id: message.createdBy,
-                event_properties: { serverId: message.serverId },
-            });
-            return ctx.messageUtil.replyWithInfo(
-                message,
-                `${inlineCode(commandUsageName)} command`,
-                [
-                    command.description,
-                    " ",
-                    `**Usage:** ${inlineCode(
-                        `${commandCtx.server.getPrefix()}${commandUsageName} ${
-                            command.usage ?? `<${command.subCommands?.size ? command.subCommands!.map((x) => x.subName!).join(" | ") : ""}> <...args>`
-                        }`
-                    )}`,
-                    command.examples ? `**Examples:** ${listInlineCode(command.examples.map((x) => `${commandCtx.server.getPrefix()}${commandUsageName} ${x}`))}` : null,
-                    command.aliases ? `**Aliases:** ${listInlineCode(command.aliases)}` : null,
-                    command.subCommands?.size ? `**Subcommands:** ${listInlineCode(command.subCommands!.map((x) => x.subName!))}` : null,
-                    command.clientPermissions ? `**Required Bot Permissions:** ${listInlineCode(command.clientPermissions)}` : null,
-                    command.requiredRole ? `**Required Role:** ${inlineCode(command.requiredRole)}` : null,
-                ]
-                    .filter(Boolean)
-                    .join("\n")
-            );
-        }
-
-        const commandCategoryMap: Collection<string, Command[]> = new Collection();
-        [...categories, undefined].forEach((category) => {
-            const commands = Array.from(ctx.commands.filter((x) => x.category === category && !x.subCommand && !x.hidden).values());
-            commandCategoryMap.set(category ?? "uncategorized", commands);
-        });
+        // For ?help link url add
+        if (commandPath) return replyWithSingleCommand(ctx, commandCtx, message, commandPath.toLowerCase());
 
         void ctx.amp.logEvent({
             event_type: "HELP_ALL_COMMANDS",
@@ -83,14 +37,7 @@ const Help: Command = {
         return ctx.messageUtil.replyWithBotInfo(
             message,
             `Command List`,
-            stripIndents`${commandCategoryMap
-                .map(
-                    (commands, category) => stripIndents`
-                            **${category}:**
-                            ${listInlineCode(commands.map((x) => x.name))}
-                        `
-                )
-                .join("\n\n")}
+            stripIndents`${getAllCommands(ctx)}
 
 			:link: [Join server](https://yoki.gg/support) • [Invite bot](https://yoki.gg/invite)
 			`,
@@ -102,5 +49,121 @@ const Help: Command = {
         );
     },
 };
+
+function getAllCommands(ctx: Client) {
+    const commandCategoryMap: Collection<string, Command[]> = new Collection();
+    [...categories, undefined].forEach((category) => {
+        const commands = Array.from(ctx.commands.filter((x) => x.category === category && !x.subCommand && !x.hidden).values());
+        commandCategoryMap.set(category ?? "Uncategorized", commands);
+    });
+
+    return commandCategoryMap
+        .map(
+            (commands, category) => stripIndents`
+                    **${category}:**
+                    ${listInlineCode(commands.map((x) => x.name))}
+                `
+        )
+        .join("\n\n");
+}
+
+function replyWithSingleCommand(ctx: Client, commandCtx: CommandContext, message: ChatMessagePayload, commandPath: string) {
+    // We got 'abc xyz' from the rest arg, so we need ['abc', 'xyz']
+    const commandPathSegments = commandPath.split(" ");
+
+    // This will change in the loop as we go through the command path. Starting point is the whole command set
+    let subCommandList: Collection<string, Command> | undefined = ctx.commands;
+    let command: Command | undefined;
+
+    for (const s in commandPathSegments) {
+        // Since big-brain JS gives "1", "2", "3" instead of 1, 2, 3
+        const i = Number(s);
+        const commandSegment = commandPathSegments[i];
+
+        // No sub-commands; should never occur from ctx.commands, though
+        if (!subCommandList)
+            return ctx.messageUtil.replyWithError(message, `No sub-commands`, `Command ${inlineCode(commandPathSegments.slice(0, i).join(" "))} has no sub-commands.`);
+
+        command = subCommandList?.get(commandSegment);
+
+        // No sub-command by the specified `commandSegment`
+        if (!command) {
+            const commandType = i ? "sub-command" : "command";
+
+            return ctx.messageUtil.replyWithError(message, `No such ${commandType}`, `The specified ${commandType} ${inlineQuote(commandSegment, 100)} could not be found.`, {
+                fields: i
+                    ? ctx.messageUtil.createSubCommandFields(subCommandList)
+                    : [
+                          {
+                              name: "Commands",
+                              value: getAllCommands(ctx),
+                          },
+                      ],
+            });
+        }
+
+        subCommandList = command.subCommands;
+    }
+
+    // Peak JS; don't want command! spam
+    command = command!;
+
+    const realCommandPath = command.name.split("-").join(" ");
+
+    void ctx.amp.logEvent({
+        event_type: "HELP_SINGLE_COMMAND",
+        user_id: message.createdBy,
+        event_properties: { serverId: message.serverId },
+    });
+
+    const fields: (EmbedField | undefined | "")[] = command.subCommands ? ctx.messageUtil.createSubCommandFields(command.subCommands) : [];
+    const prefix = commandCtx.server.getPrefix();
+
+    // To not have fields for each one of them
+    const additionalInfo = [
+        command.aliases && `**Alias names:** ${listInlineCode(command.aliases)}`,
+        command.requiredRole && `**Required role:** ${inlineCode(command.requiredRole.toLowerCase())}`,
+        command.clientPermissions && `**Required Bot Permissions:** ${listInlineCode(command.clientPermissions)}`,
+    ]
+        .filter(Boolean)
+        .join("\n");
+
+    return ctx.messageUtil.replyWithInfo(
+        message,
+        `${inlineCode(realCommandPath)} command`,
+        command.description,
+        {
+            fields: fields
+                .concat([
+                    // Usage
+                    command.usage && ctx.messageUtil.createUsageField(command, prefix),
+                    // Examples
+                    command.examples && ctx.messageUtil.createExampleField(command, prefix),
+                    // Additional info
+                    additionalInfo && {
+                        name: "Additional Info",
+                        value: additionalInfo,
+                    },
+                ])
+                .filter(Boolean) as EmbedField[],
+        }
+        // [
+        //     command.description,
+        //     " ",
+        //     `**Usage:** ${inlineCode(
+        //         `${commandCtx.server.getPrefix()}${realCommandPath} ${
+        //             command.usage ?? `<${command.subCommands?.size ? command.subCommands!.map((x) => x.subName!).join(" | ") : ""}> <...args>`
+        //         }`
+        //     )}`,
+        //     command.examples ? `**Examples:** ${listInlineCode(command.examples.map((x) => `${commandCtx.server.getPrefix()}${realCommandPath} ${x}`))}` : null,
+        //     command.aliases ? `**Aliases:** ${listInlineCode(command.aliases)}` : null,
+        //     command.subCommands?.size ? `**Subcommands:** ${listInlineCode(command.subCommands!.map((x) => x.subName!))}` : null,
+        //     command.clientPermissions ? `**Required Bot Permissions:** ${listInlineCode(command.clientPermissions)}` : null,
+        //     command.requiredRole ? `**Required Role:** ${inlineCode(command.requiredRole)}` : null,
+        // ]
+        //     .filter(Boolean)
+        //     .join("\n")
+    );
+}
 
 export default Help;

@@ -31,6 +31,28 @@ export class MessageUtil extends Util {
         ];
     }
 
+    createUsageField(command: Command, prefix: string, commandPath?: string): EmbedField {
+        return {
+            name: "Usage",
+            value: stripIndents`
+                        \`\`\`clojure
+                        ${prefix}${commandPath ?? command.name.split("-").join(" ")} ${command.usage}
+                        \`\`\`
+                    `,
+        };
+    }
+
+    createExampleField(command: Command, prefix: string, commandPath?: string): EmbedField {
+        return {
+            name: "Example",
+            value: stripIndents`
+                        \`\`\`md
+                        ${prefix}${commandPath ?? command.name.split("-").join(" ")} ${command.examples ? command.examples[0] : ""}
+                        \`\`\`
+                    `,
+        };
+    }
+
     // Send a message using either string, embed object, or raw object
     send(channelId: string, content: string | RESTPostChannelMessagesBody | Embed) {
         return this.rest.router
@@ -44,7 +66,7 @@ export class MessageUtil extends Util {
         return this.rest.router.createChannelMessage(message.channelId, opts);
     }
 
-    handleBadArg(message: ChatMessagePayload, prefix: string, commandArg: CommandArgument, command: Command, parentCommand: Command) {
+    handleBadArg(message: ChatMessagePayload, prefix: string, commandArg: CommandArgument, command: Command) {
         return this.replyWithError(
             message,
             `Incorrect argument`,
@@ -52,16 +74,7 @@ export class MessageUtil extends Util {
                 commandArg.type === "enum" || commandArg.type === "enumList" ? listInlineCode(Object.keys(commandArg.values).map((x) => x.toLowerCase())) : commandArg.type
             }${commandArg.max ? ` with the limit of ${commandArg.max}` : ""}.`,
             {
-                fields: [
-                    {
-                        name: "Usage",
-                        value: stripIndents`
-                                \`\`\`clojure
-                                ${prefix}${parentCommand.name}${command.name === parentCommand.name ? "" : ` ${command.subName ?? command.name}`} ${command.usage}
-                                \`\`\`
-                            `,
-                    },
-                ],
+                fields: [this.createUsageField(command, prefix)],
             }
         );
     }
