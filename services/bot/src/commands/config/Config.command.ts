@@ -5,11 +5,14 @@ import { Category } from "../Category";
 import type { Command } from "../Command";
 import FilterOnMods from "./FilterOnMods.command";
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 import LinkSeverity from "./LinkSeverity";
 import ModmailCategory from "./ModmailCategory.command";
 import ModmailGroup from "./ModmailGroup.command";
 >>>>>>> 34529d3 (fix: move `logchannel` outside `config` command)
+=======
+>>>>>>> 19ea2f1 (fix: move modmail and link settings out of `config`)
 // import Infraction from "./Infraction.command";
 // import Modlog from "./ModLog.command";
 import Modrole from "./Modrole.command";
