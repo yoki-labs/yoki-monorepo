@@ -15,7 +15,7 @@ const List: Command = {
     usage: "[channelId]",
     examples: ["channel_id", ""],
     subCommand: true,
-    category: Category.Settings,
+    category: Category.Logs,
     subName: "list",
     requiredRole: RoleType.ADMIN,
     args: [
@@ -38,24 +38,24 @@ const List: Command = {
 
         if (channelId === null) {
             return replyWithChannelList(logChannels, message, ctx);
-        } 
-            const sameChannels = logChannels.filter((channel) => channel.channelId === channelId);
+        }
+        const sameChannels = logChannels.filter((channel) => channel.channelId === channelId);
 
-            if (sameChannels.length <= 0) {
-                return ctx.messageUtil.replyWithNullState(
-                    message,
-                    `No log types`,
-                    stripIndents`
+        if (sameChannels.length <= 0) {
+            return ctx.messageUtil.replyWithNullState(
+                message,
+                `No log types`,
+                stripIndents`
                 There are no log types set for the channel ${channelId}.
                 You can set the following types: ${listInlineCode(Object.values(LogChannelType))}
             `
-                );
-            }
+            );
+        }
 
-            const combinedChannel: Collection<string, LogChannelType[]> = await cleanupChannels(sameChannels);
+        const combinedChannel: Collection<string, LogChannelType[]> = await cleanupChannels(sameChannels);
 
-            return replyWithChannel(channelId, combinedChannel.first(), message, ctx);
-        
+        return replyWithChannel(channelId, combinedChannel.first(), message, ctx);
+
     }
 };
 

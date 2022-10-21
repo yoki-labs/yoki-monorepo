@@ -11,7 +11,7 @@ const ModmailGroup: Command = {
     usage: "[newGroup]",
     examples: ["", "3GMgagKd"],
     subName: "modmailgroup",
-    category: Category.Moderation,
+    category: Category.Settings,
     requiredRole: RoleType.ADMIN,
     args: [{ name: "newGroup", type: "string", optional: true }],
     execute: async (message, args, ctx, commandCtx) => {
@@ -21,10 +21,10 @@ const ModmailGroup: Command = {
         if (!newGroup) {
             return commandCtx.server.modmailCategoryId
                 ? ctx.messageUtil.replyWithInfo(
-                      message,
-                      "Modmail group",
-                      `This server's modmail group has been set as category by the ID ${inlineCode(commandCtx.server.modmailGroupId)}.`
-                  )
+                    message,
+                    "Modmail group",
+                    `This server's modmail group has been set as category by the ID ${inlineCode(commandCtx.server.modmailGroupId)}.`
+                )
                 : ctx.messageUtil.replyWithNullState(message, "No modmail group", "This server does not have modmail group set.");
         }
 

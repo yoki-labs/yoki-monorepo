@@ -15,7 +15,7 @@ const Modmail: Command = {
     aliases: ["m"],
     examples: ["modmail reply Hi, what can I help you with?"],
     parentCommand: true,
-    category: Category.Moderation,
+    category: Category.Modmail,
     subCommands: new Collection<string, Command>()
         .set("reply", Reply)
         .set("close", Close)

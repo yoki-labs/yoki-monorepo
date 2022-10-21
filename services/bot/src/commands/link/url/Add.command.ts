@@ -14,7 +14,7 @@ const Add: Command = {
     examples: ["example.com warn", "discord.com ban"],
     subCommand: true,
     requiredRole: RoleType.ADMIN,
-    category: Category.Moderation,
+    category: Category.Filter,
     args: [
         {
             name: "domain",

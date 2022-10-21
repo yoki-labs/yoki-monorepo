@@ -31,7 +31,7 @@ const Commands: NextPage<{ commandByCategory: GroupedCommands }> = ({ commandByC
 
     return (
         <LandingPage>
-            <div className="flex flex-col lg:flex-row justify-center mt-2 md:px-20 mx-auto scroll-smooth">
+            <div className="flex flex-col lg:flex-row justify-center md:px-20 mx-auto scroll-smooth">
                 <div className="mt-8 px-6 md:mt-0 md:mx-0">
                     <CommandNavigation className="pt-4">
                         <h1 className="text-3xl pb-4">Categories</h1>

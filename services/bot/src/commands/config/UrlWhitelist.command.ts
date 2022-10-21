@@ -10,7 +10,7 @@ const UrlWhitelist: Command = {
     examples: ["true", "false"],
     subCommand: true,
     requiredRole: RoleType.ADMIN,
-    category: Category.Moderation,
+    category: Category.Settings,
     args: [
         {
             name: "isWhitelist",

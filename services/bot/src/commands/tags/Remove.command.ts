@@ -1,6 +1,7 @@
 import { RoleType } from "@prisma/client";
 
 import { inlineCode } from "../../utils/formatters";
+import { Category } from "../Category";
 import type { Command } from "../Command";
 
 const Remove: Command = {
@@ -9,6 +10,7 @@ const Remove: Command = {
     description: "Remove a custom tag.",
     usage: "<tag-name>",
     subCommand: true,
+    category: Category.Tags,
     requiredRole: RoleType.MOD,
     args: [
         {

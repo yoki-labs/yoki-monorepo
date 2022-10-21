@@ -11,7 +11,7 @@ const ModmailCategory: Command = {
     usage: "[newCategory]",
     examples: ["", "532372"],
     subName: "modmailcategory",
-    category: Category.Moderation,
+    category: Category.Settings,
     requiredRole: RoleType.ADMIN,
     args: [{ name: "newCategory", type: "string", optional: true }],
     execute: async (message, args, ctx, commandCtx) => {
@@ -21,10 +21,10 @@ const ModmailCategory: Command = {
         if (!newCategory) {
             return commandCtx.server.modmailCategoryId
                 ? ctx.messageUtil.replyWithInfo(
-                      message,
-                      "Modmail category",
-                      `This server's modmail category has been set as category by the ID ${inlineCode(commandCtx.server.modmailCategoryId)}.`
-                  )
+                    message,
+                    "Modmail category",
+                    `This server's modmail category has been set as category by the ID ${inlineCode(commandCtx.server.modmailCategoryId)}.`
+                )
                 : ctx.messageUtil.replyWithNullState(message, "No modmail category", "This server does not have modmail category set.");
         }
 

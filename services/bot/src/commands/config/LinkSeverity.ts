@@ -11,7 +11,7 @@ const LinkSeverity: Command = {
     examples: ["warn 5"],
     subCommand: true,
     requiredRole: RoleType.ADMIN,
-    category: Category.Moderation,
+    category: Category.Settings,
     args: [
         {
             name: "severity",

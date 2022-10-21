@@ -16,7 +16,7 @@ const Challenge: Command = {
     description: "Set or view the response the bot takes when a user fails the age filter.",
     usage: "[captcha|kick|none]",
     examples: ["captcha"],
-    category: Category.Moderation,
+    category: Category.Antiraid,
     subCommand: true,
     subName: "challenge",
     requiredRole: RoleType.ADMIN,
@@ -27,8 +27,7 @@ const Challenge: Command = {
             return ctx.messageUtil.replyWithInfo(
                 message,
                 "Current challenge",
-                `The bot challenges new members who fail the age account filter check by ${
-                    commandCtx.server.antiRaidResponse ? responseTypes[commandCtx.server.antiRaidResponse] : "doing nothing."
+                `The bot challenges new members who fail the age account filter check by ${commandCtx.server.antiRaidResponse ? responseTypes[commandCtx.server.antiRaidResponse] : "doing nothing."
                 }`
             );
         if (!responseTypes.includes(challenge))

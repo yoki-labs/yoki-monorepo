@@ -17,7 +17,7 @@ const Remove: Command = {
     description: "Unsubscribe a specified channel from a specified log type.",
     usage: "<channel ID> [log types to remove]",
     subCommand: true,
-    category: Category.Settings,
+    category: Category.Logs,
     subName: "remove",
     requiredRole: RoleType.ADMIN,
     args: [
@@ -57,12 +57,11 @@ const Remove: Command = {
             successfulTypes.length > 0 ? `Subscriptions removed` : `No subscriptions removed`,
             stripIndents`
                 ${successfulTypes.length > 0 ? `Successfully unsubscribed channel ${inlineCode(channelId)} from the following events: ${listInlineCode(successfulTypes)}` : ""}
-                ${
-                    failedTypes.length > 0
-                        ? `Failed to unsubscribe channel ${inlineCode(channelId)} from the following events: ${listInlineCode(
-                              failedTypes.map((x) => x[0])
-                          )} due to the following reason(s) ${listInlineCode(failedTypes.map((x) => x[1]))}`
-                        : ""
+                ${failedTypes.length > 0
+                    ? `Failed to unsubscribe channel ${inlineCode(channelId)} from the following events: ${listInlineCode(
+                        failedTypes.map((x) => x[0])
+                    )} due to the following reason(s) ${listInlineCode(failedTypes.map((x) => x[1]))}`
+                    : ""
                 }
             `
         );

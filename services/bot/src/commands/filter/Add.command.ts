@@ -14,7 +14,7 @@ const Add: Command = {
     examples: ["test_word warn", "test_word_2 kick"],
     subCommand: true,
     requiredRole: RoleType.ADMIN,
-    category: Category.Moderation,
+    category: Category.Filter,
     args: [
         {
             name: "phrase",

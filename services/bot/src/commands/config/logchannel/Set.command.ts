@@ -16,7 +16,7 @@ const Set: Command = {
     name: "logchannel-set",
     description: "Subscribe a specified channel to a specified log type.",
     subCommand: true,
-    category: Category.Settings,
+    category: Category.Logs,
     subName: "set",
     requiredRole: RoleType.ADMIN,
     usage: "<channel ID> [log types]",
@@ -64,12 +64,11 @@ const Set: Command = {
             successfulTypes.length > 0 ? `Subscriptions added` : `No subscriptions added`,
             stripIndents`
                 ${successfulTypes.length > 0 ? `Successfully subscribed channel ${inlineCode(channelId)} to the following events: ${listInlineCode(successfulTypes)}` : ""}
-                ${
-                    failedTypes.length > 0
-                        ? `Failed to subscribe channel ${inlineCode(channelId)} to the following events: ${listInlineCode(
-                              failedTypes.map((x) => x[0])
-                          )} due to the following reason(s) ${listInlineCode(failedTypes.map((x) => x[1]))}`
-                        : ""
+                ${failedTypes.length > 0
+                    ? `Failed to subscribe channel ${inlineCode(channelId)} to the following events: ${listInlineCode(
+                        failedTypes.map((x) => x[0])
+                    )} due to the following reason(s) ${listInlineCode(failedTypes.map((x) => x[1]))}`
+                    : ""
                 }
             `
         );

@@ -12,7 +12,7 @@ const Add: Command = {
     examples: ["4R56dNkl"],
     subCommand: true,
     requiredRole: RoleType.ADMIN,
-    category: Category.Moderation,
+    category: Category.Filter,
     args: [
         {
             name: "targetServerId",

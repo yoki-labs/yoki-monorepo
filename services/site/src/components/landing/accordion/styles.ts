@@ -17,7 +17,10 @@ export const AccordionHeader = styled.div`
     align-items: center;
     width: 100%;
     transition: all 0.2s ease;
-    padding: 10px;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 5px;
+    padding-bottom: 5px;
     border-radius: 5px;
 
     &:hover {
@@ -46,7 +49,7 @@ export const AccordionHeaderText = styled.span`
     color: var(--guilded-yellow);
     color: white;
     user-select: none;
-    font-size: 2rem;
+    font-size: 1.5rem;
 `;
 
 export const AccordionBody = styled.div`

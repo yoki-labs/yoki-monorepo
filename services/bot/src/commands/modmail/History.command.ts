@@ -13,7 +13,7 @@ const History: Command = {
     examples: ["0mqNyllA"],
     subCommand: true,
     requiredRole: RoleType.MINIMOD,
-    category: Category.Moderation,
+    category: Category.Modmail,
     args: [
         {
             name: "userId",

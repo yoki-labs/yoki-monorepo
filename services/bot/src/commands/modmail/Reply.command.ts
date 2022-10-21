@@ -14,7 +14,7 @@ const Reply: Command = {
     examples: ["Hello! What can I help you with?"],
     subCommand: true,
     requiredRole: RoleType.MINIMOD,
-    category: Category.Moderation,
+    category: Category.Modmail,
     args: [
         {
             name: "content",

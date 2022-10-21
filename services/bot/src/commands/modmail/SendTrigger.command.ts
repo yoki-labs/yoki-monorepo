@@ -15,7 +15,7 @@ const SendTrigger: Command = {
     examples: ["17bce2fd-1a95-44b5-abc3-b2ff115c62fb :smile:"],
     subCommand: true,
     requiredRole: RoleType.MOD,
-    category: Category.Moderation,
+    category: Category.Modmail,
     args: [
         {
             name: "targetChannel",

@@ -12,7 +12,7 @@ const Invite: Command = {
     examples: ["add api-official"],
     parentCommand: true,
     subCommand: true,
-    category: Category.Settings,
+    category: Category.Filter,
     subCommands: new Collection<string, Command>().set("add", Add).set("remove", Remove),
     execute: () => void 0,
 };

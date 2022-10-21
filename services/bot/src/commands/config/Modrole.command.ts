@@ -39,14 +39,14 @@ const Modrole: Command = {
             const modRoles = await ctx.prisma.role.findMany({ where: { serverId: message.serverId } });
             return modRoles.length
                 ? ctx.messageUtil.replyWithInfo(
-                      message,
-                      `Staff roles`,
-                      `Here are the staff roles for this server:\n- ${modRoles.map((modRole) => `<@${modRole.roleId}> (${inlineCode(modRole.type)})`).join("\n- ")}`,
-                      undefined,
-                      {
-                          isSilent: true,
-                      }
-                  )
+                    message,
+                    `Staff roles`,
+                    `Here are the staff roles for this server:\n- ${modRoles.map((modRole) => `<@${modRole.roleId}> (${inlineCode(modRole.type)})`).join("\n- ")}`,
+                    undefined,
+                    {
+                        isSilent: true,
+                    }
+                )
                 : ctx.messageUtil.replyWithNullState(message, `No staff roles`, `There are no staff roles set for this server yet.`);
         }
         const existing = await ctx.prisma.role.findMany({ where: { serverId: message.serverId, roleId: modroleId, type: staffLevel } });

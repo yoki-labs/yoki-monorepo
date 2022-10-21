@@ -16,7 +16,7 @@ const All: Command = {
     name: "history-all",
     subName: "all",
     description: "Gets the list of all moderation cases in this server.",
-    usage: "[page number]",
+    usage: "[page]",
     examples: ["", "2"],
     subCommand: true,
     aliases: ["see", "all", "v"],
@@ -48,9 +48,8 @@ const All: Command = {
             itemMapping: (x) => {
                 const trimmedReason = x.reason && x.reason.length > maxReason ? `${x.reason.substring(0, maxReason)}...` : x.reason;
 
-                return `[${inlineCode(x.id)}] <@${x.targetId}> got **${x.type}** for ${trimmedReason ?? "no provided reason"} ${
-                    (x.triggerContent && `||${x.triggerContent.length > maxFiltered ? `${x.triggerContent}...` : x.triggerContent}||`) ?? ""
-                }`;
+                return `[${inlineCode(x.id)}] <@${x.targetId}> got **${x.type}** for ${trimmedReason ?? "no provided reason"} ${(x.triggerContent && `||${x.triggerContent.length > maxFiltered ? `${x.triggerContent}...` : x.triggerContent}||`) ?? ""
+                    }`;
             },
             itemsPerPage: maxCases,
             page,

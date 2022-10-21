@@ -1,6 +1,7 @@
 import { RoleType } from "@prisma/client";
 
 import { inlineCode } from "../../utils/formatters";
+import { Category } from "../Category";
 import type { Command } from "../Command";
 
 const Add: Command = {
@@ -9,6 +10,7 @@ const Add: Command = {
     description: "Add a custom tag.",
     usage: "<tag-name> <...tag-content>",
     subCommand: true,
+    category: Category.Tags,
     requiredRole: RoleType.MOD,
     args: [
         {

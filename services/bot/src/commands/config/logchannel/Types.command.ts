@@ -7,7 +7,7 @@ const Types: Command = {
     description: "List all possible Log Channel types.",
     usage: "",
     subCommand: true,
-    category: Category.Settings,
+    category: Category.Logs,
     subName: "types",
     requiredRole: RoleType.ADMIN,
     execute: async (message, _args, ctx) => {

@@ -12,7 +12,7 @@ const Url: Command = {
     examples: ["add example.com warn", "add discord.com ban"],
     parentCommand: true,
     subCommand: true,
-    category: Category.Settings,
+    category: Category.Filter,
     subCommands: new Collection<string, Command>().set("add", Add).set("remove", Remove),
     execute: () => void 0,
 };

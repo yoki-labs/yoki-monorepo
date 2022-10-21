@@ -16,7 +16,7 @@ const Close: Command = {
     examples: [""],
     subCommand: true,
     requiredRole: RoleType.MINIMOD,
-    category: Category.Moderation,
+    category: Category.Modmail,
     args: [
         {
             name: "userId",
@@ -79,9 +79,9 @@ export async function closeModmailThread(serverId: string, closedBy: string, ctx
                     value: stripIndents`
                             \`\`\`md
                             ${formattedMessages
-                                .slice(0, 2)
-                                .map((x) => x.slice(0, 400))
-                                .join("\n")}
+                            .slice(0, 2)
+                            .map((x) => x.slice(0, 400))
+                            .join("\n")}
                             ${formattedMessages.length > 2 ? "..." : ""}
                             \`\`\`
 

@@ -13,7 +13,7 @@ const Edit: Command = {
     examples: ["e9a5987a-b1f7-4252-b032-cbd1a0ac4edb Fixing a typo!"],
     subCommand: true,
     requiredRole: RoleType.MINIMOD,
-    category: Category.Moderation,
+    category: Category.Modmail,
     args: [
         {
             name: "messageId",

@@ -10,7 +10,7 @@ const Remove: Command = {
     description: "Removes a server from the __whitelist__.",
     usage: "<server id>",
     subCommand: true,
-    category: Category.Moderation,
+    category: Category.Filter,
     requiredRole: RoleType.ADMIN,
     args: [
         {

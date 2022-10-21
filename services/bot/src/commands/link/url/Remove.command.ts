@@ -10,7 +10,7 @@ const Remove: Command = {
     description: "Removes a domain from the __blacklist__.",
     usage: "<domain>",
     subCommand: true,
-    category: Category.Moderation,
+    category: Category.Filter,
     requiredRole: RoleType.ADMIN,
     args: [
         {

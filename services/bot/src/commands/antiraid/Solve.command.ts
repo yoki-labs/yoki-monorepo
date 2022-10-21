@@ -1,4 +1,5 @@
 import { generateCaptcha } from "../../utils/antiraid";
+import { Category } from "../Category";
 import type { Command } from "../Command";
 
 const Solve: Command = {
@@ -7,6 +8,7 @@ const Solve: Command = {
     usage: "<code>",
     aliases: ["verify"],
     examples: ["djAshAJ"],
+    category: Category.Antiraid,
     hidden: true,
     subCommand: true,
     subName: "solve",

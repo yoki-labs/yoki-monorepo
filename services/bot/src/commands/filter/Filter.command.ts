@@ -11,7 +11,7 @@ const Filter: Command = {
     description: "Configures content filtering.",
     examples: ["add test-word warn", "add another-test-word ban"],
     parentCommand: true,
-    category: Category.Settings,
+    category: Category.Filter,
     subCommands: new Collection<string, Command>().set("add", Add).set("remove", Remove).set("list", List),
     execute: () => void 0,
 };

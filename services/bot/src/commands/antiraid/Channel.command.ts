@@ -9,7 +9,7 @@ const Channel: Command = {
     description: "Set or view the channel where users are presented with challenges if they fail the age filter.",
     usage: "[channel-id]",
     examples: ["c8a6286c-557d-4909-9ae1-a2bb64e3d72f"],
-    category: Category.Moderation,
+    category: Category.Antiraid,
     subCommand: true,
     subName: "channel",
     requiredRole: RoleType.ADMIN,

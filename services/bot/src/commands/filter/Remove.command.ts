@@ -10,7 +10,7 @@ const Delete: Command = {
     description: "Remove a word or phrase from the automod filter.",
     usage: "<phrase>",
     subCommand: true,
-    category: Category.Moderation,
+    category: Category.Filter,
     requiredRole: RoleType.ADMIN,
     args: [
         {
