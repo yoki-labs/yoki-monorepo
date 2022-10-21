@@ -1,5 +1,6 @@
 import { LogChannelType } from "@prisma/client";
 import { stripIndents } from "common-tags";
+
 import { Colors } from "../utils/color";
 import { inlineCode } from "../utils/formatters";
 import { Category } from "./Category";
@@ -26,10 +27,10 @@ const Privacy: Command = {
 
         const color =
             // No unprivate logs
-            localNoIssue.length == nonPrivateLogs.length
+            localNoIssue.length === nonPrivateLogs.length
                 ? Colors.green
                 : // Has all of the unprivate logs
-                localPrivacyIssue.length == nonPrivateLogs.length
+                localPrivacyIssue.length === nonPrivateLogs.length
                 ? Colors.red
                 : // Half or more of the unprivate logs are missing
                 localNoIssue.length > nonPrivateLogs.length / 2

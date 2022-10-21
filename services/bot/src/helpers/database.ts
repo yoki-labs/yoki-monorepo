@@ -80,7 +80,7 @@ export class DatabaseUtil extends Util {
     }
 
     async getMultipleLogChannels(serverId: string, types: LogChannelType[]): Promise<LogChannel[]> {
-        return await this.prisma.logChannel.findMany({ where: { serverId, type: { in: types } } });
+        return this.prisma.logChannel.findMany({ where: { serverId, type: { in: types } } });
     }
 
     getLogChannels(serverId: string) {

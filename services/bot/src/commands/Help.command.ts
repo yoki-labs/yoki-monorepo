@@ -1,13 +1,13 @@
 import Collection from "@discordjs/collection";
+import { Embed } from "@guildedjs/embeds";
 import type { ChatMessagePayload, EmbedField } from "@guildedjs/guilded-api-typings";
+import { stripIndents } from "common-tags";
+
 import type Client from "../Client";
 import type { CommandContext } from "../typings";
-import { Embed } from "@guildedjs/embeds";
-
 import { inlineCode, inlineQuote, listInlineCode } from "../utils/formatters";
 import { Category } from "./Category";
 import type { Command } from "./Command";
-import { stripIndents } from "common-tags";
 const categories = Object.values(Category);
 
 const Help: Command = {
@@ -41,13 +41,13 @@ const Help: Command = {
         const embed = new Embed()
             .setTitle("Command List")
             .setDescription(":link: [Join server](https://yoki.gg/support) • [Invite bot](https://yoki.gg/invite)")
-            .setFooter(`For additional info on a command, type ${inlineCode(`${commandCtx.server.getPrefix()}help [command]`)}`)
+            .setFooter(`For additional info on a command, type ${inlineCode(`${commandCtx.server.getPrefix()}help [command]`)}`);
 
         commandCategoryMap.forEach((value, key) => {
-            embed.addField(key, listInlineCode(value.map(x => x.name))!, value.length < 4)
-        })
+            embed.addField(key, listInlineCode(value.map((x) => x.name))!, value.length < 4);
+        });
 
-        return ctx.messageUtil.reply(message, { "embeds": [embed.toJSON()] })
+        return ctx.messageUtil.reply(message, { embeds: [embed.toJSON()] });
     },
 };
 
@@ -69,9 +69,8 @@ function replyWithSingleCommand(ctx: Client, commandCtx: CommandContext, message
     let subCommandList: Collection<string, Command> | undefined = ctx.commands;
     let command: Command | undefined;
 
-    for (const s in commandPathSegments) {
+    for (let i = 0; i < commandPathSegments.length; i++) {
         // Since big-brain JS gives "1", "2", "3" instead of 1, 2, 3
-        const i = Number(s);
         const commandSegment = commandPathSegments[i];
 
         // No sub-commands; should never occur from ctx.commands, though
@@ -88,17 +87,18 @@ function replyWithSingleCommand(ctx: Client, commandCtx: CommandContext, message
                 fields: i
                     ? ctx.messageUtil.createSubCommandFields(subCommandList)
                     : [
-                        {
-                            name: "Commands",
-                            value: getAllCommands(ctx.commands).map(
-                                (commands, category) => stripIndents`
+                          {
+                              name: "Commands",
+                              value: getAllCommands(ctx.commands)
+                                  .map(
+                                      (commands, category) => stripIndents`
                                         **${category}:**
                                         ${listInlineCode(commands.map((x) => x.name))}
                                     `
-                            )
-                                .join("\n\n"),
-                        },
-                    ],
+                                  )
+                                  .join("\n\n"),
+                          },
+                      ],
             });
         }
 
