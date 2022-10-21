@@ -3,6 +3,7 @@ import type { ChatMessagePayload, EmbedField } from "@guildedjs/guilded-api-typi
 import { stripIndents } from "common-tags";
 import type Client from "../Client";
 import type { CommandContext } from "../typings";
+import { Embed } from "@guildedjs/embeds";
 
 import { inlineCode, inlineQuote, listInlineCode } from "../utils/formatters";
 import { Category } from "./Category";
@@ -34,37 +35,30 @@ const Help: Command = {
             user_id: message.createdBy,
             event_properties: { serverId: message.serverId },
         });
-        return ctx.messageUtil.replyWithBotInfo(
-            message,
-            `Command List`,
-            stripIndents`${getAllCommands(ctx)}
 
-			:link: [Join server](https://yoki.gg/support) • [Invite bot](https://yoki.gg/invite)
-			`,
-            {
-                footer: {
-                    text: `For additional info on a command, type ${inlineCode(`${commandCtx.server.getPrefix()}help [command]`)}`,
-                },
-            }
-        );
+        const commandCategoryMap = getAllCommands(ctx.commands);
+
+        const embed = new Embed()
+            .setTitle("Command List")
+            .setDescription(":link: [Join server](https://yoki.gg/support) • [Invite bot](https://yoki.gg/invite)")
+            .setFooter(`For additional info on a command, type ${inlineCode(`${commandCtx.server.getPrefix()}help [command]`)}`)
+
+        commandCategoryMap.forEach((value, key) => {
+            embed.addField(key, listInlineCode(value.map(x => x.name))!, value.length < 4)
+        })
+
+        return ctx.messageUtil.reply(message, { "embeds": [embed.toJSON()] })
     },
 };
 
-function getAllCommands(ctx: Client) {
+function getAllCommands(cmds: Client["commands"]) {
     const commandCategoryMap: Collection<string, Command[]> = new Collection();
     [...categories, undefined].forEach((category) => {
-        const commands = Array.from(ctx.commands.filter((x) => x.category === category && !x.subCommand && !x.hidden).values());
+        const commands = Array.from(cmds.filter((x) => x.category === category && !x.subCommand && !x.hidden).values());
         commandCategoryMap.set(category ?? "Uncategorized", commands);
     });
 
-    return commandCategoryMap
-        .map(
-            (commands, category) => stripIndents`
-                    **${category}:**
-                    ${listInlineCode(commands.map((x) => x.name))}
-                `
-        )
-        .join("\n\n");
+    return commandCategoryMap;
 }
 
 function replyWithSingleCommand(ctx: Client, commandCtx: CommandContext, message: ChatMessagePayload, commandPath: string) {
@@ -94,11 +88,11 @@ function replyWithSingleCommand(ctx: Client, commandCtx: CommandContext, message
                 fields: i
                     ? ctx.messageUtil.createSubCommandFields(subCommandList)
                     : [
-                          {
-                              name: "Commands",
-                              value: getAllCommands(ctx),
-                          },
-                      ],
+                        {
+                            name: "Commands",
+                            value: getAllCommands(ctx),
+                        },
+                    ],
             });
         }
 
