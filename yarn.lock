@@ -262,10 +262,10 @@
   resolved "https://registry.yarnpkg.com/@guildedjs/guilded-api-typings/-/guilded-api-typings-2.8.2.tgz#dd03a989a9b2925b0c2d8144914d929cfd87e29a"
   integrity sha512-CxY1OuQknhwDo3UQ/1JO3TQG0xQ0aN+a4T6Z+mNPhhh6McS+4a1HyczjHwqjp9Z+XhqIdK1Ur1fA2jpQ6uprDA==
 
-"@guildedjs/guilded-api-typings@2.8.3":
-  version "2.8.3"
-  resolved "https://registry.yarnpkg.com/@guildedjs/guilded-api-typings/-/guilded-api-typings-2.8.3.tgz#5fc7cb22f704682842f999f74d3f9a393084c115"
-  integrity sha512-DRUrWMcrnaWLq72YdHlacR+YbyiGqO6H9MsRkh0f1sHmjWx/Sx6ztF71SB9UM7xHUdLxqZCblheCJDJJiMorgA==
+"@guildedjs/guilded-api-typings@2.8.7":
+  version "2.8.7"
+  resolved "https://registry.yarnpkg.com/@guildedjs/guilded-api-typings/-/guilded-api-typings-2.8.7.tgz#a2f1de947781b39dd73f6cbaf9bc4657fcf37a46"
+  integrity sha512-1PIyNyscMoSryJm+kntPLIQzCT+iB3t6NPl2Kme3xzP572uOxuCDbXoKhEEKvNgZIM/Bj9PDnv1OIho5RJUBrg==
 
 "@guildedjs/rest@2.8.2":
   version "2.8.2"
@@ -282,15 +282,15 @@
   dependencies:
     "@guildedjs/rest" "2.8.2"
 
-"@guildedjs/ws@1.4.7":
-  version "1.4.7"
-  resolved "https://registry.yarnpkg.com/@guildedjs/ws/-/ws-1.4.7.tgz#65e4b001857572aee8f73b8c31f015e2c8240165"
-  integrity sha512-npi63U/0agBTQsxXMb4iSsszRcECi4LWLdd2QdwWQAa5W9nbR3b05lBRQDzW+Ug8aUsY/nEomtUIOGExiYfXfQ==
+"@guildedjs/ws@1.4.11":
+  version "1.4.11"
+  resolved "https://registry.yarnpkg.com/@guildedjs/ws/-/ws-1.4.11.tgz#b47d8e152913d283a9f8a0fccedfd671d7cff76e"
+  integrity sha512-F1N5EnPPuHOjIbbZwtJBuYDd9d9ZfDiC7NQOWFaQEZiH5gd8sbYHsotv9iPvszqWqhXinD3EWHPynnJQMr2VBw==
   dependencies:
-    "@guildedjs/guilded-api-typings" "2.8.3"
+    "@guildedjs/guilded-api-typings" "2.8.7"
     "@types/ws" "8.5.3"
     typed-emitter "2.1.0"
-    ws "8.8.1"
+    ws "8.9.0"
 
 "@humanwhocodes/config-array@^0.9.2":
   version "0.9.5"
@@ -6138,10 +6138,10 @@ write-file-atomic@^3.0.0:
     signal-exit "^3.0.2"
     typedarray-to-buffer "^3.1.5"
 
-ws@8.8.1:
-  version "8.8.1"
-  resolved "https://registry.yarnpkg.com/ws/-/ws-8.8.1.tgz#5dbad0feb7ade8ecc99b830c1d77c913d4955ff0"
-  integrity sha512-bGy2JzvzkPowEJV++hF07hAD6niYSr0JzBNo/J29WsB57A2r7Wlc1UFcTR9IzrPvuNVO4B8LGqF8qcpsVOhJCA==
+ws@8.9.0:
+  version "8.9.0"
+  resolved "https://registry.yarnpkg.com/ws/-/ws-8.9.0.tgz#2a994bb67144be1b53fe2d23c53c028adeb7f45e"
+  integrity sha512-Ja7nszREasGaYUYCI2k4lCKIRTt+y7XuqVoHR44YpI49TtryyqbqvDMn5eqfW7e6HzTukDRIsXqzVHScqRcafg==
 
 xdg-basedir@^4.0.0:
   version "4.0.0"

@@ -5,8 +5,13 @@ import { inlineCode } from "../../utils/formatters";
 import { Category } from "../Category";
 import type { Command } from "../Command";
 
-const immutable: Severity[] = [Severity.WARN, Severity.NOTE];
-
+const immutable: string[] = [Severity.WARN, Severity.NOTE];
+const mutable = {
+    MUTE: "MUTE",
+    KICK: "KICK",
+    SOFTBAN: "SOFTBAN",
+    BAN: "BAN",
+};
 const Threshold: Command = {
     name: "config-threshold",
     description: "Sets how many infraction points are required for each level of moderation severity.",
@@ -17,11 +22,11 @@ const Threshold: Command = {
     subName: "threshold",
     requiredRole: RoleType.ADMIN,
     args: [
-        { name: "severity", type: "enum", values: Severity },
+        { name: "severity", type: "enum", values: mutable },
         { name: "infractions", type: "number" },
     ],
     execute: async (message, args, ctx) => {
-        const severity = args.severity as Severity;
+        const severity = (args.severity as Severity)?.toLowerCase();
         const infractions = args.infractions as number;
 
         if (immutable.includes(severity))
