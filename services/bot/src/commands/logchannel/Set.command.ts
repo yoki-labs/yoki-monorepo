@@ -1,11 +1,11 @@
 import type { ChatMessagePayload, ServerChannelPayload } from "@guildedjs/guilded-api-typings";
 import { stripIndents } from "common-tags";
 
-import type Client from "../../../Client";
-import { LogChannelType, RoleType } from "../../../typings";
-import { inlineCode, listInlineCode } from "../../../utils/formatters";
-import { Category } from "../../Category";
-import type { Command } from "../../Command";
+import type Client from "../../Client";
+import { LogChannelType, RoleType } from "../../typings";
+import { inlineCode, listInlineCode } from "../../utils/formatters";
+import { Category } from "../Category";
+import type { Command } from "../Command";
 
 // With the ability to remove it
 const LogChannelArgs = Object.assign({}, LogChannelType);

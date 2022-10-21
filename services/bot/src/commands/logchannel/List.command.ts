@@ -3,11 +3,11 @@ import type { ChatMessagePayload } from "@guildedjs/guilded-api-typings";
 import { LogChannelType } from "@prisma/client";
 import { stripIndents } from "common-tags";
 
-import type Client from "../../../Client";
-import { LogChannel as LogChannelPrisma, RoleType } from "../../../typings";
-import { listInlineCode } from "../../../utils/formatters";
-import { Category } from "../../Category";
-import type { Command } from "../../Command";
+import type Client from "../../Client";
+import { LogChannel as LogChannelPrisma, RoleType } from "../../typings";
+import { listInlineCode } from "../../utils/formatters";
+import { Category } from "../Category";
+import type { Command } from "../Command";
 
 const List: Command = {
     name: "logchannel-list",
@@ -18,9 +18,7 @@ const List: Command = {
     category: Category.Logs,
     subName: "list",
     requiredRole: RoleType.ADMIN,
-    args: [
-        { name: "channelId", type: "UUID", optional: true }
-    ],
+    args: [{ name: "channelId", type: "UUID", optional: true }],
     execute: async (message, args, ctx) => {
         const channelId = args.channelId as string;
 
@@ -34,7 +32,6 @@ const List: Command = {
                 You can set the following types: ${listInlineCode(Object.values(LogChannelType))}
             `
             );
-
 
         if (channelId === null) {
             return replyWithChannelList(logChannels, message, ctx);
@@ -55,8 +52,7 @@ const List: Command = {
         const combinedChannel: Collection<string, LogChannelType[]> = await cleanupChannels(sameChannels);
 
         return replyWithChannel(channelId, combinedChannel.first(), message, ctx);
-
-    }
+    },
 };
 
 function cleanupChannels(logChannels: LogChannelPrisma[]) {

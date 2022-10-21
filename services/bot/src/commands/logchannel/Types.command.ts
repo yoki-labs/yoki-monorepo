@@ -1,6 +1,6 @@
-import { LogChannelType, RoleType } from "../../../typings";
-import { Category } from "../../Category";
-import type { Command } from "../../Command";
+import { LogChannelType, RoleType } from "../../typings";
+import { Category } from "../Category";
+import type { Command } from "../Command";
 
 const Types: Command = {
     name: "logchannel-types",

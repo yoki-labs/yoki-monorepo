@@ -5,7 +5,6 @@ import { Category } from "../Category";
 import type { Command } from "../Command";
 import FilterOnMods from "./FilterOnMods.command";
 import LinkSeverity from "./LinkSeverity";
-import LogChannel from "./LogChannel.command";
 import ModmailCategory from "./ModmailCategory.command";
 import ModmailGroup from "./ModmailGroup.command";
 // import Infraction from "./Infraction.command";
@@ -23,7 +22,6 @@ const subCommands = new Collection<string, Command>()
     .set("modrole", Modrole)
     .set("muterole", Muterole)
     .set("filteronmods", FilterOnMods)
-    .set("logchannel", LogChannel)
     .set("modmailgroup", ModmailGroup)
     .set("modmailcategory", ModmailCategory)
     .set("threshold", Threshold)
