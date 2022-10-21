@@ -7,6 +7,7 @@ export interface Command {
     name: string;
     subName?: string;
     hidden?: boolean;
+    forceShow?: boolean;
     description: string;
     usage?: string;
     category?: string;

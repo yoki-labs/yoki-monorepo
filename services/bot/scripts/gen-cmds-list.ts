@@ -9,7 +9,7 @@ void (async () => {
     const commands = commandFiles
         .filter((x) => x.endsWith(".command.js"))
         .map((x) => require(x).default as Command)
-        .filter((x) => !x.hidden && !x.subCommand);
+        .filter((x) => (!x.hidden && !x.subCommand) || x.forceShow);
     writeFileSync(
         join(__dirname, "..", "..", "site", "commands.json"),
         JSON.stringify(

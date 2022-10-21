@@ -9,7 +9,9 @@ import type { Command } from "../Command";
 
 const SendTrigger: Command = {
     name: "modmail-sendtrigger",
+    aliases: ["sendtrigger"],
     subName: "sendtrigger",
+    forceShow: true,
     description: "Send a modmail thread trigger.",
     usage: "<channel-id> <emoji>",
     examples: ["17bce2fd-1a95-44b5-abc3-b2ff115c62fb :smile:"],

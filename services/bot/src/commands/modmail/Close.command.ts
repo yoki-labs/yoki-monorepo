@@ -15,6 +15,7 @@ const Close: Command = {
         "Close a modmail thread. If ran in a modmail channel, it will close the thread associated with that channel. If a user is mentioned, it will force close the open thread for that user.",
     examples: [""],
     subCommand: true,
+    forceShow: true,
     requiredRole: RoleType.MINIMOD,
     category: Category.Modmail,
     args: [

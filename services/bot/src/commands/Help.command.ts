@@ -54,7 +54,7 @@ const Help: Command = {
 function getAllCommands(cmds: Client["commands"]) {
     const commandCategoryMap: Collection<string, Command[]> = new Collection();
     [...categories, undefined].forEach((category) => {
-        const commands = Array.from(cmds.filter((x) => x.category === category && !x.subCommand && !x.hidden).values());
+        const commands = Array.from(cmds.filter((x) => x.category === category && ((!x.subCommand && !x.hidden) || (x.forceShow ?? false))).values());
         commandCategoryMap.set(category ?? "Uncategorized", commands);
     });
 
