@@ -1,7 +1,8 @@
 import { stripIndents } from "common-tags";
+
 import { RoleType } from "../../typings";
 import { inlineCode } from "../../utils/formatters";
-import { DBPropToTypeMap, DBPropToTypeKeys, typeToDBPropKeys } from "../../utils/util";
+import { DBPropToTypeKeys, DBPropToTypeMap, typeToDBPropKeys } from "../../utils/util";
 import { Category } from "../Category";
 import type { Command } from "../Command";
 

@@ -3,8 +3,8 @@ import { Embed as WebhookEmbed } from "@guildedjs/webhook-client";
 import { LogChannelType } from "@prisma/client";
 import { stripIndents } from "common-tags";
 import { nanoid } from "nanoid";
-import { closeModmailThread } from "../commands/modmail/Close.command";
 
+import { closeModmailThread } from "../commands/modmail/Close.command";
 import type { Context } from "../typings";
 import { Colors } from "../utils/color";
 import { inlineCode } from "../utils/formatters";

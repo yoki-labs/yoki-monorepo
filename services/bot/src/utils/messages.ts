@@ -1,5 +1,6 @@
 import type { ChannelType } from "@guildedjs/guilded-api-typings";
 import { stripIndents } from "common-tags";
+
 import type Client from "../Client";
 import { codeBlock } from "./formatters";
 

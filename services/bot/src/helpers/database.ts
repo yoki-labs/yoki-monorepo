@@ -80,7 +80,7 @@ export class DatabaseUtil extends Util {
 
     async getLogChannel(serverId: string, type: LogChannelType) {
         const logChannels = await this.prisma.logChannel.findMany({ where: { serverId, type: { in: [type, LogChannelType.all] } } });
-        return logChannels.find((x) => x.type == type) ?? logChannels[0] ?? null;
+        return logChannels.find((x) => x.type === type) ?? logChannels[0] ?? null;
     }
 
     getLogChannels(serverId: string) {

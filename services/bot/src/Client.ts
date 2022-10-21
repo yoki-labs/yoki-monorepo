@@ -15,8 +15,10 @@ import ChannelMessageReactionCreated from "./events/ChannelMessageReactionCreate
 import ChatMessageCreated from "./events/ChatMessageCreated";
 import ChatMessageDeleted from "./events/ChatMessageDeleted";
 import ChatMessageUpdated from "./events/ChatMessageUpdated";
-import ForumTopicDeleted from "./events/ForumTopicDeleted";
 import ForumTopicCreated from "./events/ForumTopicCreated";
+import ForumTopicDeleted from "./events/ForumTopicDeleted";
+import ForumTopicLockedEvent from "./events/ForumTopicLockedEvent";
+import ForumTopicUpdated from "./events/ForumTopicUpdated";
 import ListItemEvent from "./events/ListItemEvent";
 import TeamMemberJoined from "./events/TeamMemberJoined";
 import TeamMemberRemoved from "./events/TeamMemberRemoved";
@@ -31,8 +33,6 @@ import { ContentFilterUtil } from "./modules/content-filter";
 import { LinkFilterUtil } from "./modules/link-filter";
 import { SpamFilterUtil } from "./modules/spam-filter";
 import type { Context, Server } from "./typings";
-import ForumTopicUpdated from "./events/ForumTopicUpdated";
-import ForumTopicLockedEvent from "./events/ForumTopicLockedEvent";
 import { Colors } from "./utils/color";
 
 /**

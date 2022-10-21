@@ -1,7 +1,7 @@
 import type { EmbedField, ForumTopicPayload } from "@guildedjs/guilded-api-typings";
-import { FilteredContent } from "../modules/content-filter";
 
-import { Context, Server, LogChannelType } from "../typings";
+import { FilteredContent } from "../modules/content-filter";
+import { Context, LogChannelType, Server } from "../typings";
 import { Colors } from "../utils/color";
 import { inlineCode, inlineQuote } from "../utils/formatters";
 import { quoteChangedContent } from "../utils/messages";
@@ -59,7 +59,7 @@ export default async (packet: { d: { serverId: string; forumTopic: ForumTopicPay
 
     const channelURL = `https://guilded.gg/teams/${serverId}/channels/${forumTopic.channelId}/forums`;
 
-    const contentChanged = oldContent?.content != forumTopic.content;
+    const contentChanged = oldContent?.content !== forumTopic.content;
 
     // send the log channel message with the content/data of the deleted message
     await ctx.messageUtil.sendLog({
@@ -75,7 +75,7 @@ export default async (packet: { d: { serverId: string; forumTopic: ForumTopicPay
         color: Colors.yellow,
         occurred: new Date().toISOString(),
         fields: [
-            oldContent?.title != forumTopic.title && {
+            oldContent?.title !== forumTopic.title && {
                 name: "Title Changes",
                 value: `${oldContent?.title ? inlineQuote(oldContent?.title) : "Unknown title"} -> ${inlineQuote(forumTopic.title)}`,
             },

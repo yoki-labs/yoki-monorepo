@@ -1,7 +1,7 @@
 import type { ModmailThread } from "@prisma/client";
 import { stripIndents } from "common-tags";
-import type Client from "../../Client";
 
+import type Client from "../../Client";
 import { LogChannelType, RoleType } from "../../typings";
 import { Colors } from "../../utils/color";
 import { FormatDate } from "../../utils/util";

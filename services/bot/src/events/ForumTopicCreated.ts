@@ -1,7 +1,7 @@
 import type { ForumTopicPayload } from "@guildedjs/guilded-api-typings";
 
 import { FilteredContent } from "../modules/content-filter";
-import { Context, Server, LogChannelType } from "../typings";
+import { Context, LogChannelType,Server } from "../typings";
 
 export default async (packet: { d: { serverId: string; forumTopic: ForumTopicPayload } }, ctx: Context, server: Server) => {
     const { forumTopic, serverId } = packet.d;
