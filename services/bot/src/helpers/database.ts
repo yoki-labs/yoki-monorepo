@@ -1,5 +1,5 @@
 import type { ChatMessagePayload, ForumTopicPayload } from "@guildedjs/guilded-api-typings";
-import type { FilterMatching, InviteFilter, Prisma, UrlFilter } from "@prisma/client";
+import type { FilterMatching, InviteFilter, LogChannel, Prisma, UrlFilter } from "@prisma/client";
 import { nanoid } from "nanoid";
 
 import { Action, ContentFilter, LogChannelType, Server } from "../typings";
@@ -77,6 +77,10 @@ export class DatabaseUtil extends Util {
     async getLogChannel(serverId: string, type: LogChannelType) {
         const logChannels = await this.prisma.logChannel.findMany({ where: { serverId, type: { in: [type, LogChannelType.all] } } });
         return logChannels.find((x) => x.type === type) ?? logChannels[0] ?? null;
+    }
+
+    async getMultipleLogChannels(serverId: string, types: LogChannelType[]): Promise<LogChannel[]> {
+        return await this.prisma.logChannel.findMany({ where: { serverId, type: { in: types } } });
     }
 
     getLogChannels(serverId: string) {
