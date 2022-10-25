@@ -1,6 +1,6 @@
 import { RoleType } from "../../typings";
 import { inlineCode } from "../../utils/formatters";
-import { DBPropToTypeKeys, typeToDBPropKeys, typeToDBPropMap } from "../../utils/util";
+import { typeToDBPropKeys, typeToDBPropMap } from "../../utils/util";
 import { Category } from "../Category";
 import type { Command } from "../Command";
 

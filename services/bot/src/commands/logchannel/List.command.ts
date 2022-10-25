@@ -11,7 +11,7 @@ import type { Command } from "../Command";
 
 const List: Command = {
     name: "logchannel-list",
-    description: "List all possible Log Channel types.",
+    description: "See all the enabled logchannels in this server.",
     usage: "[channelId]",
     examples: ["channel_id", ""],
     subCommand: true,
@@ -79,7 +79,7 @@ async function replyWithChannelList(logChannels: LogChannelPrisma[], message: Ch
         `Log channels`,
         stripIndents`
             This server has the following log channels:
-            ${formattedChannels.map((v, k) => `***${k}:*** ${listInlineCode(v)}`).join("\n")}
+            ${formattedChannels.map((v, k) => `<#${k}>: ${listInlineCode(v)}`).join("\n")}
         `
     );
 }
