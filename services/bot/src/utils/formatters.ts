@@ -26,7 +26,7 @@ export const errorEmbed = (err: Error, additional_details?: Record<string, strin
     new Embed()
         .setDescription(
             stripIndents`
-				${additional_details && Object.keys(additional_details as object).map((key) => `${key}: \`${additional_details[key]}\``)}
+				${additional_details && Object.keys(additional_details as object).map((key) => `${key}: \`${additional_details[key]}\``).join("\n")}
 				${err.stack ?? err.message}
 			`
         )
