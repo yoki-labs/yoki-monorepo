@@ -1,4 +1,4 @@
-import type { ChatMessagePayload } from "@guildedjs/guilded-api-typings";
+import type { ChatMessagePayload, ServerChannelPayload } from "@guildedjs/guilded-api-typings";
 import { stripIndents } from "common-tags";
 
 import type Client from "../../Client";
@@ -21,11 +21,11 @@ const Remove: Command = {
     subName: "remove",
     requiredRole: RoleType.ADMIN,
     args: [
-        { name: "channelId", optional: false, type: "UUID" },
+        { name: "channel", optional: false, type: "channel" },
         { name: "logTypes", optional: true, type: "enumList", values: LogChannelArgs },
     ],
     execute: async (message, args, ctx) => {
-        const channelId = args.channelId as string;
+        const { id: channelId } = args.channel as ServerChannelPayload;
         let logTypes: LogChannelArgEnum[] = args.logTypes === null ? [] : (args.logTypes as LogChannelArgEnum[]);
 
         // const channel = await ctx.rest.router.getChannel(channelId).catch(() => null);
@@ -57,11 +57,12 @@ const Remove: Command = {
             successfulTypes.length > 0 ? `Subscriptions removed` : `No subscriptions removed`,
             stripIndents`
                 ${successfulTypes.length > 0 ? `Successfully unsubscribed channel ${inlineCode(channelId)} from the following events: ${listInlineCode(successfulTypes)}` : ""}
-                ${failedTypes.length > 0
-                    ? `Failed to unsubscribe channel ${inlineCode(channelId)} from the following events: ${listInlineCode(
-                        failedTypes.map((x) => x[0])
-                    )} due to the following reason(s) ${listInlineCode(failedTypes.map((x) => x[1]))}`
-                    : ""
+                ${
+                    failedTypes.length > 0
+                        ? `Failed to unsubscribe channel ${inlineCode(channelId)} from the following events: ${listInlineCode(
+                              failedTypes.map((x) => x[0])
+                          )} due to the following reason(s) ${listInlineCode(failedTypes.map((x) => x[1]))}`
+                        : ""
                 }
             `
         );

@@ -1,5 +1,5 @@
 import Collection from "@discordjs/collection";
-import type { ChatMessagePayload } from "@guildedjs/guilded-api-typings";
+import type { ChatMessagePayload, ServerChannelPayload } from "@guildedjs/guilded-api-typings";
 import { LogChannelType } from "@prisma/client";
 import { stripIndents } from "common-tags";
 
@@ -18,9 +18,9 @@ const List: Command = {
     category: Category.Logs,
     subName: "list",
     requiredRole: RoleType.ADMIN,
-    args: [{ name: "channelId", type: "UUID", optional: true }],
+    args: [{ name: "channelId", type: "channel", optional: true }],
     execute: async (message, args, ctx) => {
-        const channelId = args.channelId as string;
+        const channel = args.channelId as ServerChannelPayload;
 
         const logChannels = await ctx.dbUtil.getLogChannels(message.serverId!);
         if (logChannels.length <= 0)
@@ -33,17 +33,17 @@ const List: Command = {
             `
             );
 
-        if (channelId === null) {
+        if (channel === null) {
             return replyWithChannelList(logChannels, message, ctx);
         }
-        const sameChannels = logChannels.filter((channel) => channel.channelId === channelId);
+        const sameChannels = logChannels.filter((c) => c.channelId === channel.id);
 
         if (sameChannels.length <= 0) {
             return ctx.messageUtil.replyWithNullState(
                 message,
                 `No log types`,
                 stripIndents`
-                There are no log types set for the channel ${channelId}.
+                There are no log types set for that.
                 You can set the following types: ${listInlineCode(Object.values(LogChannelType))}
             `
             );
@@ -51,11 +51,11 @@ const List: Command = {
 
         const combinedChannel: Collection<string, LogChannelType[]> = await cleanupChannels(sameChannels);
 
-        return replyWithChannel(channelId, combinedChannel.first(), message, ctx);
+        return replyWithChannel(channel, combinedChannel.first(), message, ctx);
     },
 };
 
-function cleanupChannels(logChannels: LogChannelPrisma[]) {
+function cleanupChannels(logChannels: LogChannelPrisma[]): Collection<string, LogChannelType[]> {
     const channels = new Collection<string, LogChannelType[]>();
 
     logChannels.forEach((channel) => {
@@ -72,25 +72,26 @@ function cleanupChannels(logChannels: LogChannelPrisma[]) {
 
 // Gives channel list or nothing
 async function replyWithChannelList(logChannels: LogChannelPrisma[], message: ChatMessagePayload, ctx: Client) {
-    const formattedChannels: Collection<string, LogChannelType[]> = await cleanupChannels(logChannels);
+    const formattedChannels = cleanupChannels(logChannels);
+    const channelNames = (await Promise.all(formattedChannels.map((_, k) => ctx.channelUtil.getChannel(k).catch(() => k)))).map((x) =>
+        typeof x === "string" ? `Unknown Channel - ${x}` : `[#${x.name}](https://www.guilded.gg/${x.serverId}/channels/${x.id}/chat)`
+    );
 
     return ctx.messageUtil.replyWithInfo(
         message,
-        `Log channels`,
+        `Current log channels`,
         stripIndents`
-            This server has the following log channels:
-            ${formattedChannels.map((v, k) => `<#${k}>: ${listInlineCode(v)}`).join("\n")}
+            ${channelNames.map((channel, index) => `${channel}: ${listInlineCode(formattedChannels.at(index))}`)}
         `
     );
 }
 
-async function replyWithChannel(channelId: string, logTypes: LogChannelType[] | undefined, message: ChatMessagePayload, ctx: Client) {
+async function replyWithChannel(channel: ServerChannelPayload, logTypes: LogChannelType[] | undefined, message: ChatMessagePayload, ctx: Client) {
     return ctx.messageUtil.replyWithInfo(
         message,
-        `Channel Log Types`,
+        `Log channel subscriptions`,
         stripIndents`
-            Channel \`${channelId}\`'s Log Types:
-            ${listInlineCode(logTypes)}
+            [#${channel.name}](https://www.guilded.gg/${channel.serverId}/channels/${channel.id}/chat): ${listInlineCode(logTypes)}
         `
     );
 }
