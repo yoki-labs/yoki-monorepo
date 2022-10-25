@@ -81,7 +81,7 @@ async function replyWithChannelList(logChannels: LogChannelPrisma[], message: Ch
         message,
         `Current log channels`,
         stripIndents`
-            ${channelNames.map((channel, index) => `${channel}: ${listInlineCode(formattedChannels.at(index))}`)}
+            ${channelNames.map((channel, index) => `${channel}: ${listInlineCode(formattedChannels.at(index))}`).join("\n")}
         `
     );
 }
