@@ -24,7 +24,7 @@ const Enable: Command = {
             return ctx.messageUtil.replyWithError(
                 message,
                 `Invalid module name`,
-                `The module you wish to enable must be one of the following: ${DBPropToTypeKeys.map((x) => `\`${x}\``).join(", ")}`
+                `The module you wish to enable must be one of the following: ${typeToDBPropKeys.map((x) => `\`${x}\``).join(", ")}`
             );
 
         void ctx.amp.logEvent({ event_type: "MODULE_ENABLE", user_id: message.createdBy, event_properties: { serverId: message.serverId, module: typeToDBPropMap[module] } });
