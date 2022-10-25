@@ -8,7 +8,7 @@ const Enable: Command = {
     name: "module-enable",
     subName: "enable",
     description: "Enable a module for this server.",
-    usage: `<${DBPropToTypeKeys.join("|")}>`,
+    usage: `<${typeToDBPropKeys.join("|")}>`,
     subCommand: true,
     category: Category.Moderation,
     requiredRole: RoleType.ADMIN,
