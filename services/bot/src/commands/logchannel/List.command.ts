@@ -5,7 +5,7 @@ import { stripIndents } from "common-tags";
 
 import type Client from "../../Client";
 import { LogChannel as LogChannelPrisma, RoleType } from "../../typings";
-import { listInlineCode } from "../../utils/formatters";
+import { channelName, listInlineCode } from "../../utils/formatters";
 import { Category } from "../Category";
 import type { Command } from "../Command";
 
@@ -74,7 +74,7 @@ function cleanupChannels(logChannels: LogChannelPrisma[]): Collection<string, Lo
 async function replyWithChannelList(logChannels: LogChannelPrisma[], message: ChatMessagePayload, ctx: Client) {
     const formattedChannels = cleanupChannels(logChannels);
     const channelNames = (await Promise.all(formattedChannels.map((_, k) => ctx.channelUtil.getChannel(k).catch(() => k)))).map((x) =>
-        typeof x === "string" ? `Unknown Channel - ${x}` : `[#${x.name}](https://www.guilded.gg/${x.serverId}/channels/${x.id}/chat)`
+        typeof x === "string" ? `Unknown Channel - ${x}` : channelName(x.name, x.serverId, x.groupId, x.id)
     );
 
     return ctx.messageUtil.replyWithInfo(
@@ -91,7 +91,7 @@ async function replyWithChannel(channel: ServerChannelPayload, logTypes: LogChan
         message,
         `Log channel subscriptions`,
         stripIndents`
-            [#${channel.name}](https://www.guilded.gg/${channel.serverId}/channels/${channel.id}/chat): ${listInlineCode(logTypes)}
+            ${channelName(channel.name, channel.serverId, channel.groupId, channel.id)}: ${listInlineCode(logTypes)}
         `
     );
 }

@@ -31,3 +31,5 @@ export const errorEmbed = (err: Error, additional_details?: Record<string, strin
 			`
         )
         .setColor("RED");
+export const channelName = (name: string, serverId: string, groupId: string, channelId: string, type?: string) =>
+    `[#${name}](https://guilded.gg/teams/${serverId}/groups/${groupId}/channels/${channelId}/${type ?? "chat"})`;
