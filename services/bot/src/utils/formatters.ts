@@ -1,3 +1,6 @@
+import { Embed } from "@guildedjs/webhook-client";
+import { stripIndents } from "common-tags";
+
 // Remove any inline code escapes
 export const escapeInlineCodeText = (code: any) => code.toString().replaceAll("\\", "\\\\").replaceAll("`", "'");
 
@@ -19,3 +22,12 @@ export const listInlineCode = (str: string[] | number[] | undefined) => (typeof 
 export const listInlineQuote = (str: string[] | undefined) => (typeof str === "undefined" ? null : str.map(inlineQuote).join(", "));
 export const codeBlock = (code: any, language = "") => `\`\`\`${language}\n${code}\`\`\``;
 export const quoteMarkdown = (code: string, limit: number) => `\`\`\`md\n${code.length > limit ? `${code.substring(0, limit)}...` : code}\n\`\`\``;
+export const errorEmbed = (err: Error, additional_details?: Record<string, string | number | null>) =>
+    new Embed()
+        .setDescription(
+            stripIndents`
+				${additional_details && Object.keys(additional_details as object).map((key) => `${key}: \`${additional_details[key]}\``)}
+				${err.stack ?? err.message}
+			`
+        )
+        .setColor("RED");

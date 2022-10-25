@@ -5,7 +5,7 @@ import { nanoid } from "nanoid";
 
 import type { Context } from "../typings";
 import { Colors } from "../utils/color";
-import { inlineCode } from "../utils/formatters";
+import { errorEmbed, inlineCode } from "../utils/formatters";
 import { summarizeRolesOrUsers } from "../utils/messages";
 import { FormatDate } from "../utils/util";
 
@@ -25,14 +25,23 @@ export default async (packet: WSChannelMessageReactionCreatedPayload, ctx: Conte
             if (userAlreadyHasChannel) return;
 
             void ctx.amp.logEvent({ event_type: "MODMAIL_THREAD_CREATE", user_id: createdBy, event_properties: { serverId } });
-            const newChannel = await ctx.rest.router.createChannel({
-                serverId,
-                type: "chat",
-                name: createdBy,
-                topic: `Modmail thread for ${createdBy}`,
-                groupId: server.modmailGroupId ?? undefined,
-                categoryId: server.modmailCategoryId ?? undefined,
-            });
+            const newChannel = await ctx.rest.router
+                .createChannel({
+                    serverId,
+                    type: "chat",
+                    name: createdBy,
+                    topic: `Modmail thread for ${createdBy}`,
+                    groupId: server.modmailGroupId ?? undefined,
+                    categoryId: server.modmailCategoryId ?? undefined,
+                })
+                .catch((err) => {
+                    ctx.errorHandler.send("Modmail thread creation error", [
+                        errorEmbed(err, { groupId: server.modmailGroupId, categoryId: server.modmailCategoryId, serverId: server.serverId }),
+                    ]);
+                    return null;
+                });
+
+            if (!newChannel) return;
 
             const newModmailThread = await ctx.prisma.modmailThread.create({
                 data: {

@@ -1,5 +1,5 @@
-import { Embed, WebhookClient } from "@guildedjs/webhook-client";
-import { stripIndents } from "common-tags";
+import type { WebhookClient } from "@guildedjs/webhook-client";
+import { errorEmbed } from "../utils/formatters";
 
 let errorCounter = 0;
 let resetCounter: NodeJS.Timer | null = null;
@@ -16,6 +16,5 @@ export default (err: Error, errorHandler: WebhookClient) => {
         }, 600000);
 
     // send error to guilded channel
-    if (errorCounter <= 15)
-        void errorHandler.send(`Unhandled error! Current burst ${errorCounter}/${15}`, [new Embed().setDescription(stripIndents`\n${err.stack ?? err.message}`).setColor("RED")]);
+    if (errorCounter <= 15) void errorHandler.send(`Unhandled error! Current burst ${errorCounter}/${15}`, [errorEmbed(err)]);
 };
