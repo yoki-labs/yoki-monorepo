@@ -35,7 +35,7 @@ export default async (packet: WSChannelMessageReactionCreatedPayload, ctx: Conte
                     categoryId: server.modmailCategoryId ?? undefined,
                 })
                 .catch((err) => {
-                    ctx.errorHandler.send("Modmail thread creation error", [
+                    void ctx.errorHandler.send("Modmail thread creation error", [
                         errorEmbed(err, { groupId: server.modmailGroupId, categoryId: server.modmailCategoryId, serverId: server.serverId }),
                     ]);
                     return null;
