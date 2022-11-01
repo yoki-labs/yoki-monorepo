@@ -4,7 +4,7 @@ import { Category } from "../Category";
 import type { Command } from "../Command";
 
 const SpamFrequency: Command = {
-    name: "config-spamfrequency",
+    name: "antiraid-spamfrequency",
     description: "Sets required message count to activate the spam filter.",
     usage: "[messages per 5 secs]",
     examples: ["9"],

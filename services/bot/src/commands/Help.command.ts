@@ -46,9 +46,8 @@ const Help: Command = {
             .setFooter(`For additional info on a command, type ${inlineCode(`${commandCtx.server.getPrefix()}help [command]`)}`);
 
         commandCategoryMap.forEach((value, key) => {
-            embed.addField(key in Category ? Category[key] : key, listInlineCode(value.map(x => x.name))!, value.length < 4)
-        })
-
+            embed.addField(key in Category ? Category[key] : key, listInlineCode(value.map((x) => x.name))!, value.length < 4);
+        });
 
         return ctx.messageUtil.reply(message, { embeds: [embed.toJSON()] });
     },
@@ -56,12 +55,13 @@ const Help: Command = {
 
 function getAllCommands(cmds: Client["commands"]) {
     const commandCategoryMap: Collection<string, Command[]> = new Collection();
-    [...categories, undefined].forEach((category) => {
+
+    for (const category of [...categories, undefined]) {
         const commands = Array.from(cmds.filter((x) => x.category === category && ((!x.subCommand && !x.hidden) || (x.forceShow ?? false))).values());
         commandCategoryMap.set(category ?? "Uncategorized", commands);
-    });
+    }
 
-    return commandCategoryMap;
+    return commandCategoryMap.filter((x) => Boolean(x.length));
 }
 
 function replyWithSingleCommand(ctx: Client, commandCtx: CommandContext, message: ChatMessagePayload, commandPath: string) {
@@ -90,18 +90,18 @@ function replyWithSingleCommand(ctx: Client, commandCtx: CommandContext, message
                 fields: i
                     ? ctx.messageUtil.createSubCommandFields(subCommandList)
                     : [
-                        {
-                            name: "Commands",
-                            value: getAllCommands(ctx.commands)
-                                .map(
-                                    (commands, category) => stripIndents`
+                          {
+                              name: "Commands",
+                              value: getAllCommands(ctx.commands)
+                                  .map(
+                                      (commands, category) => stripIndents`
                                         **${category}:**
                                         ${listInlineCode(commands.map((x) => x.name))}
                                     `
-                                )
-                                .join("\n\n"),
-                        },
-                    ],
+                                  )
+                                  .join("\n\n"),
+                          },
+                      ],
             });
         }
 

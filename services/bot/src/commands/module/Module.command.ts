@@ -9,10 +9,10 @@ import List from "./List.command";
 
 const subCommands = new Collection<string, Command>().set("enable", Enable).set("disable", Disable).set("list", List);
 
-const Modules: Command = {
-    name: "modules",
+const Module: Command = {
+    name: "module",
     category: Category.Settings,
-    aliases: ["module"],
+    aliases: ["modules"],
     description: "Enable or disable a module for this server.",
     // examples: [...(Modlog.examples as string[]), ...(Modrole.examples as string[])],
     parentCommand: true,
@@ -21,4 +21,4 @@ const Modules: Command = {
     execute: () => void 0,
 };
 
-export default Modules;
+export default Module;

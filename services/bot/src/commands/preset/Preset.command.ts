@@ -11,7 +11,7 @@ const Preset: Command = {
     description: "Parent command for preset related commands.",
     examples: ["enable slurs", "disable slurs"],
     aliases: ["presets"],
-    category: Category.Settings,
+    category: Category.Filter,
     parentCommand: true,
     subCommands: new Collection<string, Command>().set("enable", Enable).set("disable", Disable).set("list", List),
     execute: () => void 0,

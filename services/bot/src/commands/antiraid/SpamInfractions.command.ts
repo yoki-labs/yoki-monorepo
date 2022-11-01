@@ -4,7 +4,7 @@ import { Category } from "../Category";
 import type { Command } from "../Command";
 
 const SpamInfractions: Command = {
-    name: "config-spaminfractions",
+    name: "antiraid-spaminfractions",
     description: "Set how many infraction points a user will get if they spam.",
     usage: "[infraction points]",
     examples: ["5"],

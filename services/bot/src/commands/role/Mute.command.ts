@@ -2,14 +2,14 @@ import { RoleType } from "../../typings";
 import { Category } from "../Category";
 import type { Command } from "../Command";
 
-const Muterole: Command = {
-    name: "config-muterole",
+const Mute: Command = {
+    name: "role-mute",
     description: "Set or view the mute role for this server.",
     usage: "[role ID/remove]",
     examples: ["12345678", ""],
     category: Category.Settings,
     subCommand: true,
-    subName: "muterole",
+    subName: "mute",
     requiredRole: RoleType.ADMIN,
     args: [{ name: "role", optional: true, type: "string" }],
     execute: async (message, args, ctx, commandCtx) => {
@@ -41,4 +41,4 @@ const Muterole: Command = {
     },
 };
 
-export default Muterole;
+export default Mute;
