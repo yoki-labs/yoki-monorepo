@@ -7,15 +7,14 @@ import type { Command, CommandArgument } from "../commands/Command";
 import { Colors } from "../utils/color";
 import { inlineCode, listInlineCode } from "../utils/formatters";
 import { BotImages, StateImages } from "../utils/images";
+import { cutArray } from "../utils/util";
 import { Util } from "./util";
 
 export class MessageUtil extends Util {
     createSubCommandFields(subCommands: Collection<string, Command>): EmbedField[] {
         const allSubCommands = subCommands.map((x) => `${inlineCode(x.subName!)}\n${x.description}`);
 
-        const halfLength = Math.round(allSubCommands.length / 2);
-        const half = allSubCommands.slice(0, halfLength);
-        const otherHalf = allSubCommands.slice(halfLength, allSubCommands.length);
+        const [half, otherHalf] = cutArray(allSubCommands);
 
         return [
             {
@@ -316,5 +315,31 @@ export class MessageUtil extends Util {
             },
             messagePartial
         );
+    }
+
+    replyWithEnableStateList(message: ChatMessagePayload, title: string, enabledItems: string[], allItems: string[], descriptions: Record<string, string>) {
+        const itemDisplays = allItems.map((item) => {
+            const formattedItem = `\`${item}\``;
+            const itemWithState = enabledItems.includes(item) ? `:white_check_mark: **${formattedItem}**` : formattedItem;
+            return `${itemWithState}\n${descriptions[item]}`;
+        });
+
+        const [half, otherHalf] = cutArray(itemDisplays);
+
+        return this.replyWithEmbed(message, {
+            color: Colors.blockBackground,
+            fields: [
+                {
+                    name: title,
+                    value: half.join("\n\n"),
+                    inline: true,
+                },
+                {
+                    name: "",
+                    value: otherHalf.join("\n\n"),
+                    inline: true,
+                },
+            ],
+        });
     }
 }
