@@ -10,7 +10,7 @@
         "lint:fix": "yarn lint --fix",
         "prepare": "husky install",
         "prettier": "prettier --write **/*.{ts,js,json,yml,yaml,md}",
-        "generate": "cd services/bot && yarn generate",
+        "generate": "cd yoki/bot && yarn generate",
         "refresh": "ts-node scripts/refresh.ts",
         "dev:start": "cd docker/compose && docker-compose -f docker-compose.yml -f docker-compose.dev.yml up -d --build && docker-compose -f docker-compose.yml -f docker-compose.dev.yml logs --follow bot nsfw ",
         "dev:db": "cd docker/compose && docker-compose -f docker-compose.yml -f docker-compose.dev.yml up -d --build db",
@@ -19,7 +19,7 @@
         "prod:start": "cd docker/compose && docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build",
         "prod:down": "cd docker/compose && docker-compose -f docker-compose.yml -f docker-compose.prod.yml down",
         "prod:logs": "cd docker/compose && docker-compose -f docker-compose.yml -f docker-compose.prod.yml logs -f bot nsfw",
-        "migrate:dev": "cd services/bot && yarn migrate:dev"
+        "migrate:dev": "cd yoki/bot && yarn migrate:dev"
     },
     "devDependencies": {
         "@sapphire/eslint-config": "^4.3.2",
@@ -48,9 +48,9 @@
         "typescript": "^4.0.5"
     },
     "workspaces": [
-        "services/bot",
-        "services/nsfw",
-        "services/site"
+        "yoki/bot",
+        "yoki/nsfw",
+        "yoki/site"
     ],
     "prettier": {
         "endOfLine": "auto",
@@ -59,9 +59,9 @@
         "tabWidth": 4
     },
     "lint-staged": {
-        "services/bot/src/*.{js,ts}": "npx eslint -c ./services/bot/.eslintrc.json --fix",
-        "services/nsfw/src/*.{js,ts}": "npx eslint -c ./services/nsfw/.eslintrc.json --fix",
-        "services/landing/src/*.{ts,tsx}": "npx eslint -c ./services/landing/.eslintrc.json --fix",
-        "services/dashboard/src/*.{js,jsx}": "npx eslint -c ./services/dashboard/.eslintrc.json --fix"
+        "yoki/bot/src/*.{js,ts}": "npx eslint -c ./yoki/bot/.eslintrc.json --fix",
+        "yoki/nsfw/src/*.{js,ts}": "npx eslint -c ./yoki/nsfw/.eslintrc.json --fix",
+        "yoki/landing/src/*.{ts,tsx}": "npx eslint -c ./yoki/landing/.eslintrc.json --fix",
+        "yoki/dashboard/src/*.{js,jsx}": "npx eslint -c ./yoki/dashboard/.eslintrc.json --fix"
     }
 }
