@@ -1,7 +1,7 @@
 version: "3.7"
 services:
     bot:
-        image: ghcr.io/yoki-labs/yoki/bot:latest
+        image: ghcr.io/yoki-labs/tuxedo/bot:latest
         container_name: TUXEDO_BOT
         restart: unless-stopped
         networks:
