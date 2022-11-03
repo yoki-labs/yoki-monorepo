@@ -1,8 +1,0 @@
-{
-    "name": "@yoki-labs/tuxedo_bot",
-    "version": "1.0.0",
-    "description": "Tuxedo bot Docker service",
-    "main": "./dist/index.js",
-    "author": "Yoki-Labs",
-    "license": "PROPRIETARY"
-}
