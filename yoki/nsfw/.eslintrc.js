@@ -1,9 +1,9 @@
-{
+module.exports = {
     "extends": "@sapphire",
     "parser": "@typescript-eslint/parser",
     "parserOptions": {
         "ecmaVersion": 2021,
-        "project": "../../tsconfig.eslint.json"
+        "project": "./tsconfig.json"
     },
     "plugins": ["simple-import-sort", "unused-imports"],
     "root": true,
@@ -17,7 +17,6 @@
         "simple-import-sort/imports": "warn",
         "simple-import-sort/exports": "warn",
         "unused-imports/no-unused-imports": "error",
-		"@typescript-eslint/no-throw-literal": "off",
         "unused-imports/no-unused-vars": [
             "warn",
             {

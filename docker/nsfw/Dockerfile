@@ -11,13 +11,13 @@ RUN apt-get update && \
 	jq
 
 COPY tsconfig.json ./
-WORKDIR /opt/build/services/nsfw
+WORKDIR /opt/build/yoki/nsfw
 
-COPY ./services/nsfw/package.json ./
+COPY ./yoki/nsfw/package.json ./
 RUN yarn install
 
-COPY ./services/nsfw/tsconfig.json ./services/nsfw/nodemon.json ./
-COPY ./services/nsfw/src/. ./src/
+COPY ./yoki/nsfw/tsconfig.json ./yoki/nsfw/nodemon.json ./
+COPY ./yoki/nsfw/src/. ./src/
 RUN yarn build
 
 RUN if [[ "$BUILD_ENV" = "development" ]] ; then yarn remove $(cat package.json | jq -r '.devDependencies | keys | join(" ")') ; fi
@@ -30,7 +30,7 @@ RUN apt-get update && \
 	libc6-dev 
 
 COPY --from=0 ./opt/build/tsconfig.json .
-COPY --from=0 ./opt/build/services/nsfw/ services/nsfw/
+COPY --from=0 ./opt/build/yoki/nsfw/ yoki/nsfw/
 
-WORKDIR /usr/app/services/nsfw
+WORKDIR /usr/app/yoki/nsfw
 CMD ["yarn", "run", "start"]

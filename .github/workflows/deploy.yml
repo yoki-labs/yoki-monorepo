@@ -5,9 +5,9 @@ on:
         branches:
             - main
         paths:
-            - "services/**"
-            - "!services/landing/**"
-            - "!services/dashboard/**"
+            - "yoki/**"
+            - "!yoki/landing/**"
+            - "!yoki/dashboard/**"
             - "docker/**"
 jobs:
     docker:
@@ -25,7 +25,7 @@ jobs:
               with:
                   filters: |
                       service:
-                        - 'services/${{ matrix.service-name }}/src/**'
+                        - 'yoki/${{ matrix.service-name }}/src/**'
                         - 'docker/${{ matrix.service-name }}/**'
 
             - name: Set up QEMU
@@ -68,8 +68,8 @@ jobs:
               with:
                   filters: |
                       db:
-                        - 'services/bot/prisma/migrations/**'
-                        - 'services/bot/prisma/schema.prisma'
+                        - 'yoki/bot/prisma/migrations/**'
+                        - 'yoki/bot/prisma/schema.prisma'
 
             - name: Install Node v14
               if: steps.verify-changed-files.outputs.db == 'true'
@@ -82,7 +82,7 @@ jobs:
               if: steps.verify-changed-files.outputs.db == 'true'
               run: |
                   yarn global add prisma
-                  cd services/bot
+                  cd yoki/bot
                   yarn migrate:prod:ci
               env:
                   DATABASE_URL: ${{ secrets.DATABASE_MIGRATION_URL }}

@@ -33,7 +33,7 @@ const UserInfo: Command = {
                     .setTitle(`${target.isOwner ? ":crown: " : ""}<@${target.user.id}> (${inlineCode(target.user.id)})`)
                     .setColor(Colors.blockBackground)
                     .setDescription(
-                        `The information about the user by the name of ${inlineCode(target.user.name)}. ${
+                        `Info about user ${inlineCode(target.user.name)}. ${
                             target.nickname ? `Their nickname is ${inlineCode(target.nickname)}.` : `They do not have a nickname.`
                         }`
                     )

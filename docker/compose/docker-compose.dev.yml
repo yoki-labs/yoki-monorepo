@@ -24,7 +24,7 @@ services:
             - db
             - cache
         volumes:
-            - "../../services/bot/src:/usr/app/services/bot/src"
+            - "../../yoki/bot/src:/usr/app/yoki/bot/src"
         restart: "unless-stopped"
         environment:
             DATABASE_URL: "postgresql://yoki_user:yoki_pass@db:5432/yoki?schema=public"
@@ -37,7 +37,7 @@ services:
         platform: linux/x86_64
         command: "yarn run dev"
         volumes:
-            - "../../services/nsfw/src:/usr/app/services/nsfw/src"
+            - "../../yoki/nsfw/src:/usr/app/yoki/nsfw/src"
         restart: "no"
         environment:
             TOKEN_SECRET: "TESTTOKENSECRET"
