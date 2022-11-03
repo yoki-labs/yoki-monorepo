@@ -59,9 +59,8 @@
         "tabWidth": 4
     },
     "lint-staged": {
-        "yoki/bot/src/*.{js,ts}": "npx eslint -c ./yoki/bot/.eslintrc.json --fix",
-        "yoki/nsfw/src/*.{js,ts}": "npx eslint -c ./yoki/nsfw/.eslintrc.json --fix",
-        "yoki/landing/src/*.{ts,tsx}": "npx eslint -c ./yoki/landing/.eslintrc.json --fix",
-        "yoki/dashboard/src/*.{js,jsx}": "npx eslint -c ./yoki/dashboard/.eslintrc.json --fix"
+        "yoki/bot/src/*.{js,ts}": "npx eslint -c ./yoki/bot/.eslintrc.js --fix",
+        "yoki/nsfw/src/*.{js,ts}": "npx eslint -c ./yoki/nsfw/.eslintrc.js --fix",
+        "yoki/site/src/*.{ts,tsx}": "npx eslint -c ./yoki/site/.eslintrc.js --fix"
     }
 }
