@@ -7,7 +7,7 @@ import Client from "./Client";
 import type { Command } from "./commands/Command";
 import unhandledPromiseRejection from "./events/unhandledPromiseRejection";
 import Welcome from "./events/Welcome";
-import { codeBlock } from "./utils/formatters";
+import { codeBlock, errorEmbed } from "./utils/formatters";
 
 // Load env variables
 config({ path: join(__dirname, "..", "..", "..", ".env") });
@@ -28,7 +28,9 @@ client.ws.emitter.on("gatewayEvent", async (event, data) => {
 
     const serverFromDb = await client.dbUtil.getServer(serverId);
     if (serverFromDb?.blacklisted) return void 0;
-    return client.eventHandler[event]?.(data, client, serverFromDb);
+    return client.eventHandler[event]?.(data, client, serverFromDb).catch((err) => 
+        client.errorHandler.send("Uncaught event error", [errorEmbed(err, { server: serverId, event })])
+    );
 });
 
 client.ws.emitter.on("error", (err) => {
