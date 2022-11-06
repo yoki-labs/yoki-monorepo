@@ -1,6 +1,7 @@
 import { RoleType } from "@prisma/client";
 
 import { inlineCode } from "../../utils/formatters";
+import { isInputRemoveSetting } from "../../utils/util";
 import { Category } from "../Category";
 import type { Command } from "../Command";
 
@@ -28,7 +29,16 @@ const ModmailGroup: Command = {
                 : ctx.messageUtil.replyWithNullState(message, "No modmail group", "This server does not have modmail group set.");
         }
 
-        await ctx.prisma.server.update({ where: { id: commandCtx.server.id }, data: { modmailGroupId: newGroup === "remove" ? null : newGroup } });
+		const endValue: string | null = isInputRemoveSetting(newGroup) ? null : newGroup;
+		if(endValue) {
+			try {
+				const createdChannel = await ctx.rest.router.createChannel({ "name": "PLACEHOLDER-MODMAIL-CHANNEL", type: "chat", serverId: message.serverId!, categoryId: commandCtx.server.modmailCategoryId ?? undefined, groupId: newGroup})
+				await ctx.rest.router.deleteChannel(createdChannel.channel.id);
+			} catch(e) {
+				return ctx.messageUtil.replyWithError(message, "Error setting group!", `This group either doesn't exist or the bot does not the permissions to create/delete channels in it.`)
+			}
+		}
+        await ctx.prisma.server.update({ where: { id: commandCtx.server.id }, data: { modmailGroupId: endValue } });
         return ctx.messageUtil.replyWithSuccess(message, `Modmail group set`, `Successfully set the modmail group to ${inlineCode(newGroup)}`);
     },
 };
