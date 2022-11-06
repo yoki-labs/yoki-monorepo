@@ -1,6 +1,7 @@
 import { RoleType } from "@prisma/client";
 
 import { inlineCode } from "../../utils/formatters";
+import { isInputRemoveSetting } from "../../utils/util";
 import { Category } from "../Category";
 import type { Command } from "../Command";
 
@@ -28,12 +29,17 @@ const ModmailCategory: Command = {
                 : ctx.messageUtil.replyWithNullState(message, "No modmail category", "This server does not have modmail category set.");
         }
 
-        let endValue: number | null = null;
-        if (newCategory !== "null") {
-            endValue = Number(newCategory);
-            if (Number.isNaN(endValue)) return ctx.messageUtil.replyWithError(message, `Bad ID format`, `Category ID must be a number! Ensure you did not copy the name.`);
-        }
+		const endValue: number | null = isInputRemoveSetting(newCategory) ? null : Number(newCategory);
+		if(Number.isNaN(endValue)) return ctx.messageUtil.replyWithError(message, "Invalid category ID", "Category ID must be a valid number.")
 
+		if(endValue) {
+			try {
+				const createdChannel = await ctx.rest.router.createChannel({ "name": "PLACEHOLDER-MODMAIL-CHANNEL", type: "chat", serverId: message.serverId!, categoryId: endValue, groupId: commandCtx.server.modmailGroupId ?? undefined})
+				await ctx.rest.router.deleteChannel(createdChannel.channel.id);
+			} catch(e) {
+				return ctx.messageUtil.replyWithError(message, "Error setting category!", `This category either doesn't exist in ${commandCtx.server.modmailGroupId ? "the previously set group" : "this group"} or the bot does not the permissions to create/delete channels in it.`)
+			}
+		}
         await ctx.prisma.server.update({ where: { id: commandCtx.server.id }, data: { modmailCategoryId: endValue } });
         return ctx.messageUtil.replyWithSuccess(message, `Modmail category set`, `Successfully set the modmail category to ${inlineCode(newCategory)}`);
     },
