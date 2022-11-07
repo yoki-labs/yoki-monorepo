@@ -35,7 +35,7 @@ const ModmailGroup: Command = {
 				const createdChannel = await ctx.rest.router.createChannel({ "name": "PLACEHOLDER-MODMAIL-CHANNEL", type: "chat", serverId: message.serverId!, categoryId: commandCtx.server.modmailCategoryId ?? undefined, groupId: newGroup})
 				await ctx.rest.router.deleteChannel(createdChannel.channel.id);
 			} catch(e) {
-				return ctx.messageUtil.replyWithError(message, "Error setting group!", `This group either doesn't exist or the bot does not the permissions to create/delete channels in it.`)
+				return ctx.messageUtil.replyWithError(message, "Error setting group!", `This group either doesn't exist, ${commandCtx.server.modmailCategoryId ? "the modmail category you have already set doesn't exist in this group, " : ""}or the bot does not the permissions to create/delete channels in it.`)
 			}
 		}
         await ctx.prisma.server.update({ where: { id: commandCtx.server.id }, data: { modmailGroupId: endValue } });
