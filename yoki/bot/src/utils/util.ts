@@ -71,3 +71,6 @@ export function cutArray<T>(array: T[]): [T[], T[]] {
 
 export const removeSettingKeys = ["remove", "null"];
 export const isInputRemoveSetting = (str: string) => removeSettingKeys.some(x => str === x)
+
+export const removeGroupMessage = (prefix: string) => `*You can unset the modmail group by doing:* \`${prefix}modmail group remove\``
+export const removeCategoryMessage = (prefix: string) => `*You can unset the modmail category by doing:* \`${prefix}modmail category remove\``
