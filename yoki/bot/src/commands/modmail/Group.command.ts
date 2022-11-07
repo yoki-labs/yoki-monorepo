@@ -1,7 +1,8 @@
 import { RoleType } from "@prisma/client";
+import { stripIndents } from "common-tags";
 
 import { inlineCode } from "../../utils/formatters";
-import { isInputRemoveSetting } from "../../utils/util";
+import { isInputRemoveSetting, removeCategoryMessage, removeGroupMessage } from "../../utils/util";
 import { Category } from "../Category";
 import type { Command } from "../Command";
 
@@ -17,6 +18,7 @@ const ModmailGroup: Command = {
     args: [{ name: "newGroup", type: "string", optional: true }],
     execute: async (message, args, ctx, commandCtx) => {
         const newGroup = args.newGroup as string | null;
+		const unsetGroupMessage = removeGroupMessage(commandCtx.server.getPrefix()); 
 
         // No argument? Give info instead
         if (!newGroup) {
@@ -24,7 +26,11 @@ const ModmailGroup: Command = {
                 ? ctx.messageUtil.replyWithInfo(
                       message,
                       "Modmail group",
-                      `This server's modmail group has been set as category by the ID ${inlineCode(commandCtx.server.modmailGroupId)}.`
+                      stripIndents`
+					  This server's modmail group has been set as the ID ${inlineCode(commandCtx.server.modmailGroupId)}.
+					  
+					  ${unsetGroupMessage}
+					  `
                   )
                 : ctx.messageUtil.replyWithNullState(message, "No modmail group", "This server does not have modmail group set.");
         }
@@ -35,11 +41,20 @@ const ModmailGroup: Command = {
 				const createdChannel = await ctx.rest.router.createChannel({ "name": "PLACEHOLDER-MODMAIL-CHANNEL", type: "chat", serverId: message.serverId!, categoryId: commandCtx.server.modmailCategoryId ?? undefined, groupId: newGroup})
 				await ctx.rest.router.deleteChannel(createdChannel.channel.id);
 			} catch(e) {
-				return ctx.messageUtil.replyWithError(message, "Error setting group!", `This group either doesn't exist, ${commandCtx.server.modmailCategoryId ? "the modmail category you have already set doesn't exist in this group, " : ""}or the bot does not the permissions to create/delete channels in it.`)
+				return ctx.messageUtil.replyWithError(message, "Error setting group!", 
+				stripIndents`
+					This group either doesn't exist, ${commandCtx.server.modmailCategoryId ? "the modmail category you have already set doesn't exist in this group, " : ""}or the bot does not the permissions to create/delete channels in it.
+				
+					${removeCategoryMessage(commandCtx.server.getPrefix())}
+				`)
 			}
 		}
         await ctx.prisma.server.update({ where: { id: commandCtx.server.id }, data: { modmailGroupId: endValue } });
-        return ctx.messageUtil.replyWithSuccess(message, `Modmail group set`, `Successfully set the modmail group to ${inlineCode(newGroup)}`);
+        return ctx.messageUtil.replyWithSuccess(message, `Modmail group set`, stripIndents`
+			Successfully set the modmail group to ${inlineCode(newGroup)}
+
+			${unsetGroupMessage}
+		`);
     },
 };
 
