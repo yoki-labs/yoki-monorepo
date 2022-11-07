@@ -22,7 +22,7 @@ const ModmailGroup: Command = {
 
         // No argument? Give info instead
         if (!newGroup) {
-            return commandCtx.server.modmailCategoryId
+            return commandCtx.server.modmailGroupId
                 ? ctx.messageUtil.replyWithInfo(
                       message,
                       "Modmail group",
