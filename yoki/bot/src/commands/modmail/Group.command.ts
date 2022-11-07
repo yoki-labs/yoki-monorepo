@@ -51,9 +51,7 @@ const ModmailGroup: Command = {
 		}
         await ctx.prisma.server.update({ where: { id: commandCtx.server.id }, data: { modmailGroupId: endValue } });
         return ctx.messageUtil.replyWithSuccess(message, `Modmail group set`, stripIndents`
-			Successfully set the modmail group to ${inlineCode(newGroup)}
-
-			${unsetGroupMessage}
+			Successfully ${endValue ? `set the modmail group to ${inlineCode(newGroup)}` : "cleared the modmail group"}.${endValue ? `\n\n${unsetGroupMessage}` : ""}
 		`);
     },
 };

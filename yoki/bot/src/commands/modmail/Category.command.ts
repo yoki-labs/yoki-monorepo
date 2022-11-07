@@ -53,9 +53,7 @@ const ModmailCategory: Command = {
         await ctx.prisma.server.update({ where: { id: commandCtx.server.id }, data: { modmailCategoryId: endValue } });
         return ctx.messageUtil.replyWithSuccess(message, `Modmail category set`, 
 			stripIndents`
-				Successfully set the modmail category to ${inlineCode(newCategory)}
-
-				${unsetCategoryMessage}
+				Successfully ${endValue ? `set the modmail category to ${inlineCode(newCategory)}` : "cleared the modmail category"}.${endValue ? `\n\n${unsetCategoryMessage}` : ""}
 		`);
     },
 };
