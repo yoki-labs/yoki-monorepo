@@ -7,7 +7,6 @@ import { Colors } from "../utils/color";
 export default async (packet: WSBotTeamMembershipCreated, ctx: Context) => {
   const { server, createdBy } = packet.d;
   void ctx.amp.logEvent({ event_type: "YOKI_SERVER_JOIN", user_id: server.id });
-  console.log(server, createdBy);
 
   if (!server.defaultChannelId) return;
   return ctx.messageUtil.sendEmbed(server.defaultChannelId, new Embed().setTitle("Welcome to Yoki!").setColor(Colors.green).setDescription(stripIndents`
