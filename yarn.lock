@@ -263,15 +263,10 @@
   resolved "https://registry.npmjs.org/@guildedjs/embeds/-/embeds-0.2.0.tgz"
   integrity sha512-UxLbUfdodcOKT06qXDlEBfgkUKt3JDbr0DsTqpQMdJ8LiUaKYM8euy1h4BUiuyewzYA7ryE1yUsBf4BlCCby9g==
 
-"@guildedjs/guilded-api-typings@2.8.2":
-  version "2.8.2"
-  resolved "https://registry.yarnpkg.com/@guildedjs/guilded-api-typings/-/guilded-api-typings-2.8.2.tgz#dd03a989a9b2925b0c2d8144914d929cfd87e29a"
-  integrity sha512-CxY1OuQknhwDo3UQ/1JO3TQG0xQ0aN+a4T6Z+mNPhhh6McS+4a1HyczjHwqjp9Z+XhqIdK1Ur1fA2jpQ6uprDA==
-
-"@guildedjs/guilded-api-typings@2.8.7":
-  version "2.8.7"
-  resolved "https://registry.yarnpkg.com/@guildedjs/guilded-api-typings/-/guilded-api-typings-2.8.7.tgz#a2f1de947781b39dd73f6cbaf9bc4657fcf37a46"
-  integrity sha512-1PIyNyscMoSryJm+kntPLIQzCT+iB3t6NPl2Kme3xzP572uOxuCDbXoKhEEKvNgZIM/Bj9PDnv1OIho5RJUBrg==
+"@guildedjs/guilded-api-typings@2.8.8":
+  version "2.8.8"
+  resolved "https://registry.yarnpkg.com/@guildedjs/guilded-api-typings/-/guilded-api-typings-2.8.8.tgz#37deec2f470c9fbb6c75fd8916dbc4e7612cc3f1"
+  integrity sha512-ixrujZE7NqCEbLgC6QDFTLQ9I0mYkq6BBWG9+Zv74nTrp8C2zgHzTRi093i8dX2yQeq+SYncDHuoUWbpC+375w==
 
 "@guildedjs/guilded-api-typings@3.0.0":
   version "3.0.0"
@@ -307,21 +302,12 @@
   dependencies:
     "@guildedjs/rest" "2.8.2"
 
-"@guildedjs/webhook-client@^0.4.2":
-  version "0.4.4"
-  resolved "https://registry.yarnpkg.com/@guildedjs/webhook-client/-/webhook-client-0.4.4.tgz#2d35350275be70d6e4e1381959ad588e415038a2"
-  integrity sha512-7+7/s9Pm7x2IYe3h5iYVikf/tgK8f+1V98G/hLqkDxkDwPt5RF3wptlnCoUguY1OvPxXyX5+iIM5qy3VsqzHJA==
+"@guildedjs/ws@1.4.12":
+  version "1.4.12"
+  resolved "https://registry.yarnpkg.com/@guildedjs/ws/-/ws-1.4.12.tgz#6107a47a873da01627bffbc27ff876bfb33e2de3"
+  integrity sha512-+2l4wuP2mAgtaDZN/bwj39ST/x9Wze8jLYwSq7R1wSoiHBULFnQWTSKD40bWVnxx2IHg5nvWqIYt9RlYCjJKnA==
   dependencies:
-    "@guildedjs/guilded-api-typings" "3.0.0"
-    "@guildedjs/rest" "2.10.0"
-    form-data "^4.0.0"
-
-"@guildedjs/ws@1.4.11":
-  version "1.4.11"
-  resolved "https://registry.yarnpkg.com/@guildedjs/ws/-/ws-1.4.11.tgz#b47d8e152913d283a9f8a0fccedfd671d7cff76e"
-  integrity sha512-F1N5EnPPuHOjIbbZwtJBuYDd9d9ZfDiC7NQOWFaQEZiH5gd8sbYHsotv9iPvszqWqhXinD3EWHPynnJQMr2VBw==
-  dependencies:
-    "@guildedjs/guilded-api-typings" "2.8.7"
+    "@guildedjs/guilded-api-typings" "2.8.8"
     "@types/ws" "8.5.3"
     typed-emitter "2.1.0"
     ws "8.9.0"

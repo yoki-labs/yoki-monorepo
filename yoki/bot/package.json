@@ -26,7 +26,7 @@
         "#functions/*": "./dist/functions/*.js"
     },
     "devDependencies": {
-        "@guildedjs/guilded-api-typings": "2.8.2",
+        "@guildedjs/guilded-api-typings": "2.8.8",
         "@types/common-tags": "^1.8.1",
         "@types/ms": "^0.7.31",
         "@types/node": "^16.11.6",
@@ -59,7 +59,7 @@
         "@guildedjs/embeds": "^0.2.0",
         "@guildedjs/rest": "2.8.2",
         "@guildedjs/webhook-client": "0.3.7",
-        "@guildedjs/ws": "1.4.11",
+        "@guildedjs/ws": "1.4.12",
         "@node-redis/json": "^1.0.2",
         "@prisma/client": "^4.2.1",
         "@yokilabs/bot": "^1.0.0",

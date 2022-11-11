@@ -14,4 +14,6 @@ export default (data: WSWelcomePayload["d"]["user"], client: Client) => {
 
     // add owner of bot to operators list
     client.operators.push(client.ownerId);
+
+    console.log(`Logged in as ${data.name}`)
 };
