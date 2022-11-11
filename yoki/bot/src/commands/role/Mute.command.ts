@@ -1,4 +1,6 @@
+import { stripIndents } from "common-tags";
 import { RoleType } from "../../typings";
+import { addOrRemoveMuteRoleMessage } from "../../utils/util";
 import { Category } from "../Category";
 import type { Command } from "../Command";
 
@@ -20,7 +22,11 @@ const Mute: Command = {
             const muteRole = commandCtx.server.muteRoleId;
 
             return muteRole
-                ? ctx.messageUtil.replyWithInfo(message, `Mute role`, `The mute role is set to role <@${muteRole}>.`, undefined, { isSilent: true })
+                ? ctx.messageUtil.replyWithInfo(message, `Mute role`, stripIndents`
+                    The mute role is set to role <@${muteRole}>.
+
+                    ${addOrRemoveMuteRoleMessage(commandCtx.server.getPrefix())}
+                `, undefined, { isSilent: true })
                 : ctx.messageUtil.replyWithNullState(message, `No mute role`, `There is no mute role set.`);
         } else if (role.toUpperCase() === "REMOVE") {
             // The ability to delete mute roles

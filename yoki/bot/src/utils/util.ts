@@ -74,3 +74,5 @@ export const isInputRemoveSetting = (str: string) => removeSettingKeys.some(x =>
 
 export const removeGroupMessage = (prefix: string) => `*You can unset the modmail group by doing:* \`${prefix}modmail group remove\``
 export const removeCategoryMessage = (prefix: string) => `*You can unset the modmail category by doing:* \`${prefix}modmail category remove\``
+export const addOrRemoveStaffRoleMessage = (prefix: string) => `*Add mod role:* \`${prefix}role staff <role-id> <mod/admin/remove>\``
+export const addOrRemoveMuteRoleMessage = (prefix: string) => `*Add mute role:* \`${prefix}role mute <role-id>\`. Remove by putting "remove" instead of role-id`
