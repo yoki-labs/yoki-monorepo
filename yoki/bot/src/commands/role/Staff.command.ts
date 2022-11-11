@@ -1,25 +1,27 @@
 import { RoleType } from "@prisma/client";
+import { stripIndents } from "common-tags";
 
 import { inlineCode } from "../../utils/formatters";
+import { addOrRemoveStaffRoleMessage } from "../../utils/util";
 import { Category } from "../Category";
 import type { Command } from "../Command";
 
 const allowedTypes = ["MINIMOD", "MOD", "ADMIN"];
 
-const Mod: Command = {
-    name: "role-mod",
+const Staff: Command = {
+    name: "role-staff",
     description: "Adds moderator/staff roles.",
     subCommand: true,
     usage: "[role ID] [minimod/mod/admin/remove]",
     examples: ["12345678", "12345678 admin", "12345678 remove"],
-    subName: "mod",
+    subName: "staff",
     category: Category.Settings,
     requiredRole: RoleType.ADMIN,
     args: [
         { name: "role", type: "number", optional: true },
         { name: "staffLevel", type: "string", optional: true },
     ],
-    execute: async (message, args, ctx) => {
+    execute: async (message, args, ctx, commandCtx) => {
         const modroleId = (args.role as number) ?? null;
         const levelArg = (args.staffLevel as string)?.toUpperCase();
 
@@ -39,14 +41,18 @@ const Mod: Command = {
             const modRoles = await ctx.prisma.role.findMany({ where: { serverId: message.serverId } });
             return modRoles.length
                 ? ctx.messageUtil.replyWithInfo(
-                      message,
-                      `Staff roles`,
-                      `Here are the staff roles for this server:\n- ${modRoles.map((modRole) => `<@${modRole.roleId}> (${inlineCode(modRole.type)})`).join("\n- ")}`,
-                      undefined,
-                      {
-                          isSilent: true,
-                      }
-                  )
+                    message,
+                    `Staff roles`,
+                    stripIndents`
+                        Here are the staff roles for this server:\n- ${modRoles.map((modRole) => `<@${modRole.roleId}> (${inlineCode(modRole.type)})`).join("\n- ")}
+
+                        ${addOrRemoveStaffRoleMessage(commandCtx.server.getPrefix())}
+                    `,
+                    undefined,
+                    {
+                        isSilent: true,
+                    }
+                )
                 : ctx.messageUtil.replyWithNullState(message, `No staff roles`, `There are no staff roles set for this server yet.`);
         }
         const existing = await ctx.prisma.role.findMany({ where: { serverId: message.serverId, roleId: modroleId, type: staffLevel } });
@@ -65,4 +71,4 @@ const Mod: Command = {
     },
 };
 
-export default Mod;
+export default Staff;

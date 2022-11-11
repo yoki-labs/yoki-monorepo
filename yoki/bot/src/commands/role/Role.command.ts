@@ -2,7 +2,7 @@ import Collection from "@discordjs/collection";
 
 import { Category } from "../Category";
 import type { Command } from "../Command";
-import Mod from "./Mod.command";
+import Staff from "./Staff.command";
 import Mute from "./Mute.command";
 
 const Role: Command = {
@@ -13,7 +13,7 @@ const Role: Command = {
     aliases: ["levels", "level", "modaction", "sv"],
     category: Category.Settings,
     parentCommand: true,
-    subCommands: new Collection<string, Command>().set("mod", Mod).set("mute", Mute),
+    subCommands: new Collection<string, Command>().set("staff", Staff).set("mute", Mute),
     execute: () => void 0,
 };
 

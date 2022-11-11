@@ -35,17 +35,17 @@ export function getFilterFromSyntax(word: string): [string, FilterMatching] {
     return isPrefixed && isSuffixed
         ? [word.substring(1, word.length - 1), FilterMatching.INFIX]
         : isPrefixed
-        ? [word.substring(0, word.length - 1), FilterMatching.PREFIX]
-        : isSuffixed
-        ? [word.substring(1), FilterMatching.POSTFIX]
-        : [word, FilterMatching.WORD];
+            ? [word.substring(0, word.length - 1), FilterMatching.PREFIX]
+            : isSuffixed
+                ? [word.substring(1), FilterMatching.POSTFIX]
+                : [word, FilterMatching.WORD];
 }
 
 export function filterToString(filter: ContentFilter) {
     return filter.matching === FilterMatching.INFIX
         ? `*${filter.content}*`
         : // *word, word* or word
-          `${filter.matching === FilterMatching.POSTFIX ? "*" : ""}${filter.content}${filter.matching === FilterMatching.PREFIX ? "*" : ""}`;
+        `${filter.matching === FilterMatching.POSTFIX ? "*" : ""}${filter.content}${filter.matching === FilterMatching.PREFIX ? "*" : ""}`;
 }
 
 export const antiRaidResponseMap = {
@@ -76,3 +76,5 @@ export const isInputRemoveSetting = (str: string) => removeSettingKeys.some(x =>
 
 export const removeGroupMessage = (prefix: string) => `*You can unset the modmail group by doing:* \`${prefix}modmail group remove\``
 export const removeCategoryMessage = (prefix: string) => `*You can unset the modmail category by doing:* \`${prefix}modmail category remove\``
+export const addOrRemoveStaffRoleMessage = (prefix: string) => `*Add mod role:* \`${prefix}role staff <role-id> <mod/admin/remove>\``
+export const addOrRemoveMuteRoleMessage = (prefix: string) => `*Add mute role:* \`${prefix}role mute <role-id>\`. Remove by putting "remove" instead of role-id`
