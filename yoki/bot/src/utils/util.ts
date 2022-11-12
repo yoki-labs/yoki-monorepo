@@ -1,5 +1,6 @@
 import { ContentFilter, FilterMatching, ResponseType, RoleType } from "@prisma/client";
 
+export const isDomain = (str: string) => /[^!@#$%^&*()?<>.,~`'":;\\\/|\s()\[\]]+\.[^!@#$%^&*()?<>.,~`'":;\\\/|\s()\[\]]+/.test(str);
 export const roleValues: { [staffRole in RoleType]: number } = {
     [RoleType.ADMIN]: 3,
     [RoleType.MOD]: 2,
