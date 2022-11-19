@@ -66,7 +66,7 @@ export class DatabaseUtil extends Util {
     getServer(serverId: string, createIfNotExists: false): Promise<Server | null>;
     getServer(serverId: string, createIfNotExists = true) {
         return this.prisma.server
-            .findUnique({ where: { serverId } })
+            .findFirst({ where: { serverId } })
             .then((server) => {
                 if (!server && createIfNotExists) return this.createFreshServerInDatabase(serverId);
                 return server ?? null;

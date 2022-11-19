@@ -50,6 +50,8 @@ model LogChannel {
     type         LogChannelType
     webhookId    String?        @db.VarChar(255)
     webhookToken String?        @db.VarChar(255)
+
+    @@unique([serverId, channelId, type])
 }
 
 model Role {
@@ -58,6 +60,8 @@ model Role {
     roleId    Int      @db.Integer
     createdAt DateTime @default(now())
     type      RoleType
+
+    @@unique([serverId, roleId, type])
 }
 
 model ContentFilter {
@@ -69,6 +73,8 @@ model ContentFilter {
     creatorId        String         @db.VarChar(255)
     createdAt        DateTime       @default(now())
     infractionPoints Int
+
+    @@unique([serverId, content, matching])
 }
 
 model UrlFilter {
@@ -80,6 +86,8 @@ model UrlFilter {
     creatorId        String   @db.VarChar(255)
     createdAt        DateTime @default(now())
     infractionPoints Int
+
+    @@unique([serverId, domain])
 }
 
 model InviteFilter {
@@ -88,6 +96,8 @@ model InviteFilter {
     targetServerId String   @db.VarChar(255)
     creatorId      String   @db.VarChar(255)
     createdAt      DateTime @default(now())
+
+    @@unique([serverId, targetServerId])
 }
 
 model Preset {
@@ -96,6 +106,8 @@ model Preset {
     preset           String    @db.VarChar(255)
     severity         Severity?
     infractionPoints Int?
+
+    @@unique([serverId, preset])
 }
 
 model CustomTag {
@@ -105,6 +117,8 @@ model CustomTag {
     name      String    @db.VarChar(255)
     createdAt DateTime  @default(now())
     updatedAt DateTime? @updatedAt
+
+    @@unique([serverId, name, content])
 }
 
 model Action {
@@ -126,7 +140,7 @@ model Action {
 }
 
 model Message {
-    messageId String    @id @db.VarChar(255)
+    messageId String    @id @unique @db.VarChar(255)
     serverId  String    @db.VarChar(255)
     channelId String    @db.VarChar(255)
     authorId  String    @db.VarChar(255)
@@ -150,6 +164,8 @@ model ForumTopic {
     createdAt    DateTime
     updatedAt    DateTime? @updatedAt
     deletedAt    DateTime?
+
+    @@unique([serverId, forumTopicId])
 }
 
 model ReactionAction {
@@ -159,6 +175,8 @@ model ReactionAction {
     messageId  String             @db.VarChar(255)
     emoteId    Int                @db.Integer
     actionType ReactionActionType
+
+    @@unique([serverId, channelId, messageId, emoteId, actionType])
 }
 
 model ModmailThread {
