@@ -67,7 +67,7 @@ export default abstract class BaseFilterUtil extends Util {
             infractionPoints,
             triggerContent,
             expiresAt: actionType === Severity.MUTE ? new Date(Date.now() + 1000 * 60 * 60 * 12) : null,
-        });
+        }, server);
 
         return this.severityAction[actionType](userId, server, channelId, filteredContent);
     }

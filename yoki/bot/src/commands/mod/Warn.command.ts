@@ -31,7 +31,7 @@ const Warn: Command = {
             max: 500,
         },
     ],
-    execute: async (message, args, ctx) => {
+    execute: async (message, args, ctx, commandCtx) => {
         const target = args.target as CachedMember;
         const [reason, infractionPoints] = getInfractionsFrom(args);
 
@@ -77,7 +77,7 @@ const Warn: Command = {
             targetId: target.user.id,
             type: "WARN",
             expiresAt: null,
-        });
+        }, commandCtx.server);
 
         await ctx.messageUtil.sendSuccessBlock(
             message.channelId,

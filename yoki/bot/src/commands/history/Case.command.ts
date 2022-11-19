@@ -28,7 +28,7 @@ const Case: Command = {
             optional: true,
         },
     ],
-    execute: async (message, args, ctx) => {
+    execute: async (message, args, ctx, commandCtx) => {
         const caseId = args.caseId as string;
         const action = args.action as CaseAction | null;
 
@@ -59,7 +59,7 @@ const Case: Command = {
             title,
             description,
             {
-                fields: getActionFields(fetchedCase).concat({ name: "Additional Info", value: getActionAdditionalInfo(fetchedCase) }),
+                fields: getActionFields(fetchedCase).concat({ name: "Additional Info", value: getActionAdditionalInfo(fetchedCase, commandCtx.server.getTimezone()) }),
             },
             {
                 isSilent: true,

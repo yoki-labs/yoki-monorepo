@@ -8,7 +8,7 @@ import type { Context, Server } from "../typings";
 import { generateCaptcha } from "../utils/antiraid";
 import { Colors } from "../utils/color";
 import { codeBlock, inlineCode } from "../utils/formatters";
-import { FormatDate, suspicious as sus } from "../utils/util";
+import { suspicious as sus } from "../utils/util";
 
 export default async (packet: WSTeamMemberJoinedPayload, ctx: Context, server: Server) => {
     const { member, serverId } = packet.d;
@@ -91,7 +91,7 @@ export default async (packet: WSTeamMemberJoinedPayload, ctx: Context, server: S
                 });
 
                 // If a modlog channel is set
-                ctx.emitter.emit("ActionIssued", { ...createdCase }, ctx);
+                ctx.emitter.emit("ActionIssued", { ...createdCase }, server, ctx);
                 return;
             }
         }
@@ -112,8 +112,8 @@ export default async (packet: WSTeamMemberJoinedPayload, ctx: Context, server: S
             color: suspicious ? Colors.yellow : Colors.green,
             occurred: member.joinedAt,
             additionalInfo: stripIndents`
-                                **Account Created:** ${FormatDate(creationDate)} EST ${suspicious ? "(:warning: recent)" : ""}
-                                **Joined at:** ${FormatDate(new Date(member.joinedAt))} EST
+                                **Account Created:** ${server.formatTimezone(creationDate)} EST ${suspicious ? "(:warning: recent)" : ""}
+                                **Joined at:** ${server.formatTimezone(new Date(member.joinedAt))} EST
                             `,
         });
     } catch (e) {

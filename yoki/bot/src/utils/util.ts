@@ -18,8 +18,8 @@ const DateOptions = {
     minute: "2-digit",
 } as const;
 
-export function FormatDate(date: Date) {
-    return date.toLocaleDateString("en-US", DateOptions);
+export function FormatDate(date: Date, timeZone: string) {
+    return date.toLocaleDateString("en-US", {...DateOptions, timeZone });
 }
 
 export function suspicious(date: Date) {

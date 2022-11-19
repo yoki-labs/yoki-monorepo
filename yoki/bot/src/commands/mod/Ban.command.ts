@@ -24,7 +24,7 @@ const Ban: Command = {
             max: 500,
         },
     ],
-    execute: async (message, args, ctx) => {
+    execute: async (message, args, ctx, commandCtx) => {
         const target = args.target as CachedMember;
         const reason = args.reason as string | null;
 
@@ -55,7 +55,7 @@ const Ban: Command = {
             targetId: target.user.id,
             type: "BAN",
             expiresAt: null,
-        });
+        }, commandCtx.server);
 
         await ctx.messageUtil.sendSuccessBlock(
             message.channelId,

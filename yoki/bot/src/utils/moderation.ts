@@ -49,9 +49,9 @@ export const getActionFields = (data: Action): EmbedField[] =>
         },
     ].filter(Boolean) as EmbedField[];
 
-export const getActionAdditionalInfo = (data: Action): string =>
+export const getActionAdditionalInfo = (data: Action, timezone: string): string =>
     stripIndents`
         **Infraction points:** ${inlineCode(data.infractionPoints)}
         **Case ID:** ${inlineCode(data.id)}
-        ${data.expiresAt ? `**Expiration:** ${FormatDate(data.expiresAt)} EST` : ""}
+        ${data.expiresAt ? `**Expiration:** ${FormatDate(data.expiresAt, timezone)} EST` : ""}
     `;

@@ -5,11 +5,11 @@ import { stripIndents } from "common-tags";
 import { nanoid } from "nanoid";
 
 import { closeModmailThread } from "../commands/modmail/Close.command";
-import type { Context } from "../typings";
+import type { Context, Server } from "../typings";
 import { Colors } from "../utils/color";
 import { inlineCode } from "../utils/formatters";
 
-export default async (packet: WSTeamMemberRemovedPayload, ctx: Context) => {
+export default async (packet: WSTeamMemberRemovedPayload, ctx: Context, server: Server) => {
     const { userId, serverId, isBan, isKick } = packet.d;
 
     if (isBan) void ctx.amp.logEvent({ event_type: "MEMBER_BAN", user_id: userId, event_properties: { serverId } });
@@ -56,7 +56,7 @@ export default async (packet: WSTeamMemberRemovedPayload, ctx: Context) => {
     // Close and clear everything
     const modmailThreads = await ctx.prisma.modmailThread.findMany({ where: { serverId, openerId: userId, closed: false } });
 
-    await Promise.all(modmailThreads.map((x) => closeModmailThread(serverId, ctx.userId || "Ann6LewA", ctx, x, "automatically closed, because member has left the server"))).catch(
+    await Promise.all(modmailThreads.map((x) => closeModmailThread(server, ctx.userId || "Ann6LewA", ctx, x, "automatically closed, because member has left the server"))).catch(
         (x) => console.error("Error while automatically closing modmail threads:\n", x)
     );
 
