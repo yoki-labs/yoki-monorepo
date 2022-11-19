@@ -262,6 +262,11 @@
   resolved "https://registry.yarnpkg.com/@guildedjs/guilded-api-typings/-/guilded-api-typings-2.8.8.tgz#37deec2f470c9fbb6c75fd8916dbc4e7612cc3f1"
   integrity sha512-ixrujZE7NqCEbLgC6QDFTLQ9I0mYkq6BBWG9+Zv74nTrp8C2zgHzTRi093i8dX2yQeq+SYncDHuoUWbpC+375w==
 
+"@guildedjs/guilded-api-typings@2.8.9":
+  version "2.8.9"
+  resolved "https://registry.yarnpkg.com/@guildedjs/guilded-api-typings/-/guilded-api-typings-2.8.9.tgz#2fac87e44e895d5de608e94db943540dc3b273af"
+  integrity sha512-4hl73wevp++vtg1WrC+Nom+/YDyHpbF8fyH1/6ONcvNTeMOvJ19PBTaAyMpI5sW3x7HzkeGwK4/JM1NxHkPuYw==
+
 "@guildedjs/rest@2.8.2":
   version "2.8.2"
   resolved "https://registry.yarnpkg.com/@guildedjs/rest/-/rest-2.8.2.tgz#c7611ee0bff79dbb87fdd9a5cfe17f795b85c50a"
