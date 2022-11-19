@@ -20,7 +20,7 @@ export function inlineQuote(text: any, maxLength?: number) {
 export const highlight = (text: any) => `**__${text}__**`;
 export const listInlineCode = (str: string[] | number[] | undefined) => (typeof str === "undefined" ? null : str.map(inlineCode).join(", "));
 export const listInlineQuote = (str: string[] | undefined) => (typeof str === "undefined" ? null : str.map(inlineQuote).join(", "));
-export const codeBlock = (code: any, language = "") => `\`\`\`${language}\n${code}\`\`\``;
+export const codeBlock = (code: any, language?: string) => `\`\`\`${language ? `${language}\n` : ""}${code}\`\`\``;
 export const quoteMarkdown = (code: string, limit: number) => `\`\`\`md\n${code.length > limit ? `${code.substring(0, limit)}...` : code}\n\`\`\``;
 export const errorEmbed = (err: Error | any, additional_details?: Record<string, string | number | null>) =>
     new Embed()
