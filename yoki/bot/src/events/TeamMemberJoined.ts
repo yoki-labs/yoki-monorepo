@@ -31,7 +31,7 @@ export default async (packet: WSTeamMemberJoinedPayload, ctx: Context, server: S
         (Date.now() - new Date(packet.d.member.user.createdAt).getTime() <= server.antiRaidAgeFilter || !member.user.avatar)
     ) {
         void ctx.amp.logEvent({ event_type: "FRESH_ACCOUNT_JOIN", user_id: member.user.id, event_properties: { serverId: packet.d.serverId } });
-        switch (server.antiRaidResponse ?? "KICK") {
+        switch (server.antiRaidResponse) {
             case "CAPTCHA": {
                 if (!server.antiRaidChallengeChannel) return;
                 let userCaptcha = await ctx.prisma.captcha.findFirst({ where: { serverId, triggeringUser: userId, solved: false } });
@@ -69,7 +69,7 @@ export default async (packet: WSTeamMemberJoinedPayload, ctx: Context, server: S
                     {
                         isPrivate: true,
                     }
-                );
+                ).catch((err) => console.log(`Error notifying user of captcha for server ${serverId} because of ${err}`));
 
                 break;
             }
@@ -94,6 +94,7 @@ export default async (packet: WSTeamMemberJoinedPayload, ctx: Context, server: S
                 ctx.emitter.emit("ActionIssued", { ...createdCase }, server, ctx);
                 return;
             }
+			default: {}
         }
     }
 
