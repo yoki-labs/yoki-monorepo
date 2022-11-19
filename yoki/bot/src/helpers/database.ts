@@ -71,7 +71,7 @@ export class DatabaseUtil extends Util {
                 if (!server && createIfNotExists) return this.createFreshServerInDatabase(serverId);
                 return server ?? null;
             })
-            .then((data) => (data ? { ...data, getPrefix: () => data.prefix ?? process.env.DEFAULT_PREFIX } : null));
+            .then((data) => (data ? { ...data, getPrefix: () => data.prefix ?? process.env.DEFAULT_PREFIX, getTimezone: () => data.timezone ?? "America/New_York" } : null));
     }
 
     async getLogChannel(serverId: string, type: LogChannelType) {

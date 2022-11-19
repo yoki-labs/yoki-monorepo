@@ -30,6 +30,7 @@ model Server {
     banInfractionThreshold     Int?          @default(45)
     softbanInfractionThreshold Int?          @default(25)
     spamInfractionPoints       Int           @default(5)
+    timezone                   String?
     filterOnMods               Boolean       @default(false)
     antiHoistEnabled           Boolean       @default(false)
     prefix                     String?
