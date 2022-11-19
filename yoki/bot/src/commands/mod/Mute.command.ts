@@ -74,7 +74,7 @@ const Mute: Command = {
             targetId: target.user.id,
             type: "MUTE",
             expiresAt,
-        });
+        }, commandCtx.server);
 
         let successMessage = `<@${message.createdBy}>, you have successfully muted <@${target.user.id}>.`;
 

@@ -28,7 +28,7 @@ const Note: Command = {
             max: 500,
         },
     ],
-    execute: async (message, args, ctx) => {
+    execute: async (message, args, ctx, commandCtx) => {
         const target = args.target as CachedMember;
 
         if (target.user.type === "bot") return ctx.messageUtil.replyWithError(message, `Cannot place a note on bots`, `Bots cannot have moderation notes on them.`);
@@ -41,7 +41,7 @@ const Note: Command = {
             targetId: target.user.id,
             type: "NOTE",
             expiresAt: null,
-        });
+        }, commandCtx.server);
 
         await ctx.messageUtil.sendSuccessBlock(
             message.channelId,

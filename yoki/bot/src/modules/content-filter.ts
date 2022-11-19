@@ -163,7 +163,7 @@ export class ContentFilterUtil extends BaseFilterUtil {
         });
 
         // If a modlog channel is set
-        this.client.emitter.emit("ActionIssued", createdCase, this.client);
+        this.client.emitter.emit("ActionIssued", createdCase, server, this.client);
 
         try {
             // Perform resulting action, for message filtering it's deleting the original message

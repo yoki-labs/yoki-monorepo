@@ -3,6 +3,7 @@ import type { FilterMatching, InviteFilter, LogChannel, Prisma, UrlFilter } from
 import { nanoid } from "nanoid";
 
 import { Action, ContentFilter, LogChannelType, Server } from "../typings";
+import { FormatDate } from "../utils/util";
 import { Util } from "./util";
 // test
 export class DatabaseUtil extends Util {
@@ -71,7 +72,7 @@ export class DatabaseUtil extends Util {
                 if (!server && createIfNotExists) return this.createFreshServerInDatabase(serverId);
                 return server ?? null;
             })
-            .then((data) => (data ? { ...data, getPrefix: () => data.prefix ?? process.env.DEFAULT_PREFIX, getTimezone: () => data.timezone ?? "America/New_York" } : null));
+            .then((data) => (data ? { ...data, getPrefix: () => data.prefix ?? process.env.DEFAULT_PREFIX, getTimezone: () => data.timezone ?? "America/New_York", formatTimezone: (date: Date) => FormatDate(date, data.timezone ?? "America/New_York") } : null));
     }
 
     async getLogChannel(serverId: string, type: LogChannelType) {
@@ -172,22 +173,20 @@ export class DatabaseUtil extends Util {
         });
     }
 
-    async emitAction(data: Omit<Action, "id" | "referenceId" | "createdAt" | "updatedAt" | "expired" | "logChannelId" | "logChannelMessage">) {
+    async emitAction(data: Omit<Action, "id" | "referenceId" | "createdAt" | "updatedAt" | "expired" | "logChannelId" | "logChannelMessage">, server: Server) {
         const action = await this.addAction(data);
-
-        this.client.emitter.emit("ActionIssued", action, this.client);
-
+        this.client.emitter.emit("ActionIssued", action, server, this.client);
         return action;
     }
 
-    addActionFromMessage(message: ChatMessagePayload, data: Pick<Action, "type" | "reason" | "targetId" | "infractionPoints" | "expiresAt">) {
+    addActionFromMessage(message: ChatMessagePayload, data: Pick<Action, "type" | "reason" | "targetId" | "infractionPoints" | "expiresAt">, server: Server) {
         return this.emitAction({
             serverId: message.serverId!,
             executorId: message.createdBy,
             channelId: null,
             triggerContent: null,
             ...data,
-        });
+        }, server);
     }
 
     populateActionMessage(id: string, channelId: string, messageId: string) {

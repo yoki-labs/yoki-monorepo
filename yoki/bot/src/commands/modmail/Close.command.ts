@@ -2,9 +2,8 @@ import type { ModmailThread } from "@prisma/client";
 import { stripIndents } from "common-tags";
 
 import type Client from "../../Client";
-import { LogChannelType, RoleType } from "../../typings";
+import { LogChannelType, RoleType, Server } from "../../typings";
 import { Colors } from "../../utils/color";
-import { FormatDate } from "../../utils/util";
 import { Category } from "../Category";
 import type { Command } from "../Command";
 
@@ -25,7 +24,7 @@ const Close: Command = {
             optional: true,
         },
     ],
-    execute: async (message, args, ctx) => {
+    execute: async (message, args, ctx, commandCtx) => {
         const userId = args.userId as string | null;
 
         const modmailChannel = userId
@@ -36,19 +35,19 @@ const Close: Command = {
                 ? ctx.messageUtil.replyWithError(message, "No open modmail ticket for user", "User does not have an open modmail ticket")
                 : ctx.messageUtil.replyWithError(message, `Not a modmail channel`, `This channel is not a modmail channel!`);
 
-        return closeModmailThread(message.serverId!, message.createdBy, ctx, modmailChannel!, "closed by a staff member");
+        return closeModmailThread(commandCtx.server, message.createdBy, ctx, modmailChannel!, "closed by a staff member");
     },
 };
 
 // To be able to use it anywhere
-export async function closeModmailThread(serverId: string, closedBy: string, ctx: Client, modmailThread: ModmailThread, closedState: string) {
-    const modmailLogChannel = await ctx.dbUtil.getLogChannel(serverId, LogChannelType.modmail_logs);
+export async function closeModmailThread(server: Server, closedBy: string, ctx: Client, modmailThread: ModmailThread, closedState: string) {
+    const modmailLogChannel = await ctx.dbUtil.getLogChannel(server.serverId, LogChannelType.modmail_logs);
     const modmailMessages = await ctx.prisma.modmailMessage.findMany({
         where: { modmailThreadId: modmailThread.id },
     });
 
     if (modmailLogChannel) {
-        const formattedMessages = modmailMessages.map((x) => `[${x.authorId}][${FormatDate(x.createdAt)}] ${x.content}`);
+        const formattedMessages = modmailMessages.map((x) => `[${x.authorId}][${server.formatTimezone(x.createdAt)}] ${x.content}`);
         const uploadedLog = await ctx.s3
             .upload({
                 Bucket: process.env.S3_BUCKET,
@@ -57,7 +56,7 @@ export async function closeModmailThread(serverId: string, closedBy: string, ctx
 						-------------
 						Opener: ${modmailThread.openerId}
 						Server: ${modmailThread.serverId}
-						Created At: ${FormatDate(modmailThread.createdAt)}
+						Created At: ${server.formatTimezone(modmailThread.createdAt)}
 						-------------
 
 						${formattedMessages.join("\n")}
@@ -110,7 +109,7 @@ export async function closeModmailThread(serverId: string, closedBy: string, ctx
     void ctx.amp.logEvent({
         event_type: "MODMAIL_CLOSE",
         user_id: closedBy,
-        event_properties: { serverId, threadAge: Date.now() - modmailThread.createdAt.getTime(), messageCount: modmailMessages.length },
+        event_properties: { server: server.serverId, threadAge: Date.now() - modmailThread.createdAt.getTime(), messageCount: modmailMessages.length },
     });
 
     await ctx.prisma.modmailThread.update({ where: { id: modmailThread.id }, data: { closed: true } });

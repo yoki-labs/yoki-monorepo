@@ -1,13 +1,12 @@
 import type { WSChannelMessageReactionCreatedPayload } from "@guildedjs/guilded-api-typings";
-import { ReactionActionType, Server } from "@prisma/client";
+import { ReactionActionType } from "@prisma/client";
 import { stripIndents } from "common-tags";
 import { nanoid } from "nanoid";
 
-import type { Context } from "../typings";
+import type { Context, Server } from "../typings";
 import { Colors } from "../utils/color";
 import { errorEmbed, inlineCode } from "../utils/formatters";
 import { summarizeRolesOrUsers } from "../utils/messages";
-import { FormatDate } from "../utils/util";
 
 export default async (packet: WSChannelMessageReactionCreatedPayload, ctx: Context, server: Server) => {
     const { reaction, serverId } = packet.d;
@@ -68,8 +67,8 @@ export default async (packet: WSChannelMessageReactionCreatedPayload, ctx: Conte
                         {
                             name: `Additional Info`,
                             value: stripIndents`
-                                **Account Created:** ${FormatDate(new Date(member.user.createdAt))} EST
-                                **Joined at:** ${FormatDate(new Date(member.joinedAt))} EST
+                                **Account Created:** ${server.formatTimezone(new Date(member.user.createdAt))} EST
+                                **Joined at:** ${server.formatTimezone(new Date(member.joinedAt))} EST
                             `,
                         },
                     ],

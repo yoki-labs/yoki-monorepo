@@ -5,7 +5,7 @@ import { stripIndents } from "common-tags";
 import { Colors } from "../utils/color";
 import { inlineCode } from "../utils/formatters";
 import { summarizeRolesOrUsers } from "../utils/messages";
-import { FormatDate, suspicious as sus } from "../utils/util";
+import { suspicious as sus } from "../utils/util";
 import type { Command } from "./Command";
 
 const UserInfo: Command = {
@@ -21,7 +21,7 @@ const UserInfo: Command = {
             optional: true,
         },
     ],
-    execute: async (message, args, ctx) => {
+    execute: async (message, args, ctx, commandCtx) => {
         const target = (args.target as TeamMemberPayload) ?? (await ctx.rest.router.getMember(message.serverId!, message.createdBy)).member;
 
         const creationDate = new Date(target.user.createdAt);
@@ -45,8 +45,8 @@ const UserInfo: Command = {
                         {
                             name: "Additional Info",
                             value: stripIndents`
-                                ${target.isOwner ? `**Owns this server.**\n` : ``}**Account Created:** ${FormatDate(creationDate)} EST ${suspicious ? "(:warning: recent)" : ""}
-                                **Joined at:** ${FormatDate(new Date(target.joinedAt))} EST
+                                ${target.isOwner ? `**Owns this server.**\n` : ``}**Account Created:** ${commandCtx.server.formatTimezone(creationDate)} EST ${suspicious ? "(:warning: recent)" : ""}
+                                **Joined at:** ${commandCtx.server.formatTimezone(new Date(target.joinedAt))} EST
                             `,
                         },
                     ])

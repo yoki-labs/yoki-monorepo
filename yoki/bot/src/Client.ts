@@ -136,5 +136,5 @@ export default class Client {
 
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 type ClientCustomEvents = {
-    ActionIssued: (data: Action, client: Client) => unknown;
+    ActionIssued: (data: Action, server: Server, client: Client) => unknown;
 };
