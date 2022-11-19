@@ -30,7 +30,6 @@ client.ws.emitter.on("gatewayEvent", async (event, data) => {
 		void client.errorHandler.send("Error creating/fetching server for gateway event.", [errorEmbed(err, { server: serverId, event })])
 	);
     if (!serverFromDb || serverFromDb?.blacklisted) return void 0;
-
     return client.eventHandler[event]?.(data, client, serverFromDb).catch((err) => 
         client.errorHandler.send("Uncaught event error", [errorEmbed(err, { server: serverId, event })])
     );
