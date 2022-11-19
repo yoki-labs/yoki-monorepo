@@ -23,7 +23,7 @@ export { Action, ContentFilter, LogChannel, LogChannelType, RoleType, Severity }
 
 // presets object
 export type ContentFilterScan = Pick<ContentFilter, "content" | "matching" | "infractionPoints" | "severity">;
-export type Server = DBServer & { getPrefix: () => string };
+export type Server = DBServer & { getPrefix: () => string; getTimezone: () => string };
 export type ResolvedArgs = string | string[] | number | boolean | CachedMember | ServerChannelPayload | null;
 export interface UsedMentions {
     user: number;

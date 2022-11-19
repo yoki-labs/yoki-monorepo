@@ -86,7 +86,6 @@ export class ServerUtil extends Util {
             );
         }
         const responses = await Promise.allSettled(roleRequests);
-        console.log(responses);
 
         return {
             success: responses.filter((x) => x.status === "fulfilled").map((x) => (x as PromiseFulfilledResult<number>).value),
