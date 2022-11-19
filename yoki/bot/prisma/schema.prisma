@@ -107,8 +107,6 @@ model Preset {
     preset           String    @db.VarChar(255)
     severity         Severity?
     infractionPoints Int?
-
-    @@unique([serverId, preset])
 }
 
 model CustomTag {
