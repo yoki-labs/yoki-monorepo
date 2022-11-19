@@ -11,6 +11,7 @@ import type TypedEmitter from "typed-emitter";
 
 import type { Command } from "./commands/Command";
 import ActionIssued from "./events/ActionIssued";
+import BotServerMembershipCreated from "./events/BotServerMembershipCreated";
 import ChannelMessageReactionCreated from "./events/ChannelMessageReactionCreated";
 import ChatMessageCreated from "./events/ChatMessageCreated";
 import ChatMessageDeleted from "./events/ChatMessageDeleted";
@@ -99,6 +100,7 @@ export default class Client {
         ChatMessageUpdated,
         // handles messages deleted
         ChatMessageDeleted,
+		BotServerMembershipCreated,
         // handles nickname updates and other member data
         TeamMemberJoined,
         TeamMemberRemoved,
