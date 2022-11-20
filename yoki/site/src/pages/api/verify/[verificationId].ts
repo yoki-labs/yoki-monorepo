@@ -7,7 +7,7 @@ import errorHandler, { errorEmbed } from "../../../lib/ErrorHandler";
 
 const PostVerifyRoute = async (req: NextApiRequest, res: NextApiResponse) => {
 	if (req.method !== "POST") return res.status(405).send("");
-	const id = req.query.id as string;
+	const id = req.query.verificationId as string;
 	const token = req.body.token as string | null;
 	const forwarded = req.headers['x-forwarded-for'];
 	const ip = typeof forwarded === 'string' ? forwarded.split(/, /)[0] : req.socket.remoteAddress;
