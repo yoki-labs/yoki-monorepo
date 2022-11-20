@@ -43,15 +43,17 @@ const Challenge: Command = {
             );
         const transformedChallenge = antiRaidResponseTransformer(challenge);
 
-        if (challenge === "captcha" && !commandCtx.server.muteRoleId)
+        if (["captcha", "site"].some(x => x === transformedChallenge) && !commandCtx.server.muteRoleId)
             return ctx.messageUtil.replyWithError(
                 message,
                 `No mute role`,
                 `You need to set a mute role using \`${commandCtx.server.getPrefix()}config muterole\`, otherwise unverified members would still have access to your community.`
             );
+			
         if (commandCtx.server.antiRaidResponse === transformedChallenge)
             return ctx.messageUtil.replyWithError(message, `Already set`, "You already have the anti-raid response set to this.");
-        await ctx.prisma.server.update({ where: { id: commandCtx.server.id }, data: { antiRaidResponse: transformedChallenge } });
+        
+		await ctx.prisma.server.update({ where: { id: commandCtx.server.id }, data: { antiRaidResponse: transformedChallenge } });
         return ctx.messageUtil.replyWithSuccess(
             message,
             "Successfully set anti-raid response",
