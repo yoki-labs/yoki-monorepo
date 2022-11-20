@@ -11,7 +11,7 @@ const subCommands = new Collection<string, Command>().set("challenge", Challenge
 
 const Antiraid: Command = {
     name: "antiraid",
-    category: Category.Settings,
+    category: Category.Antiraid,
     description: "Configure the anti-raid module for this server.",
     // examples: [...(Modlog.examples as string[]), ...(Modrole.examples as string[])],
     parentCommand: true,

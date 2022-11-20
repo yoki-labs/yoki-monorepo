@@ -5,17 +5,19 @@ import { antiRaidResponseTransformer } from "../../utils/util";
 import { Category } from "../Category";
 import type { Command } from "../Command";
 
-const responseTypes = ["captcha", "kick"];
+const responseTypes = ["captcha", "site", "kick"];
 const responseTypesDescriptions = {
-    [ResponseType.CAPTCHA]: "presenting them with a captcha to solve which will kick them if they fail 3 times in a row.",
+    [ResponseType.TEXT_CAPTCHA]: "presenting them with a captcha to solve which will kick them if they fail 3 times in a row.",
     [ResponseType.KICK]: "automatically kicking the user.",
+	[ResponseType.SITE_CAPTCHA]: "verifying them with a link."
 };
+const mappedResponseTypes = `${responseTypes.map((x) => `\`${x}\``).join(", ")}`;
 
 const Challenge: Command = {
     name: "antiraid-challenge",
     description: "Set or view the response the bot takes when a user fails the age filter.",
-    usage: "[captcha|kick|none]",
-    examples: ["captcha"],
+    usage: "[site|captcha|kick|none]",
+    examples: ["captcha", "site"],
     category: Category.Antiraid,
     subCommand: true,
     subName: "challenge",
@@ -27,14 +29,17 @@ const Challenge: Command = {
             return ctx.messageUtil.replyWithInfo(
                 message,
                 "Current challenge",
-                `The bot challenges new members who fail the age account filter check by ${commandCtx.server.antiRaidResponse ? responseTypes[commandCtx.server.antiRaidResponse] : "doing nothing."
-                }`
+                `The bot challenges new members who fail the age account filter check by **${commandCtx.server.antiRaidResponse ? responseTypesDescriptions[commandCtx.server.antiRaidResponse] : "doing nothing."
+                }**
+				
+				You can set this by running the command again with one of the following options: ${mappedResponseTypes}
+				`
             );
         if (!responseTypes.includes(challenge))
             return ctx.messageUtil.replyWithError(
                 message,
                 `Invalid response type`,
-                `Your response type must be one of the following: ${responseTypes.map((x) => `\`${x}\``).join(", ")}`
+                `Your response type must be one of the following: ${mappedResponseTypes}`
             );
         const transformedChallenge = antiRaidResponseTransformer(challenge);
 
