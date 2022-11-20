@@ -33,44 +33,44 @@ export default async (packet: WSTeamMemberJoinedPayload, ctx: Context, server: S
 		void ctx.amp.logEvent({ event_type: "FRESH_ACCOUNT_JOIN", user_id: member.user.id, event_properties: { serverId: packet.d.serverId } });
 		switch (server.antiRaidResponse) {
 			case "TEXT_CAPTCHA": {
-				if (!server.antiRaidChallengeChannel) return;
-				let userCaptcha = await ctx.prisma.captcha.findFirst({ where: { serverId, triggeringUser: userId, solved: false } });
-				void ctx.amp.logEvent({ event_type: "MEMBER_CAPTCHA_JOIN", user_id: member.user.id, event_properties: { serverId: packet.d.serverId } });
+				if (server.antiRaidChallengeChannel) {
+					let userCaptcha = await ctx.prisma.captcha.findFirst({ where: { serverId, triggeringUser: userId, solved: false } });
+					void ctx.amp.logEvent({ event_type: "MEMBER_CAPTCHA_JOIN", user_id: member.user.id, event_properties: { serverId: packet.d.serverId } });
 
-				if (!userCaptcha) {
-					const { id, value, url } = await generateCaptcha(ctx.s3);
-					const createdCaptcha = await ctx.prisma.captcha.create({
-						data: { id, serverId: packet.d.serverId, triggeringUser: packet.d.member.user.id, value, url },
-					});
-					userCaptcha = createdCaptcha;
-				}
+					if (!userCaptcha) {
+						const { id, value, url } = await generateCaptcha(ctx.s3);
+						const createdCaptcha = await ctx.prisma.captcha.create({
+							data: { id, serverId: packet.d.serverId, triggeringUser: packet.d.member.user.id, value, url },
+						});
+						userCaptcha = createdCaptcha;
+					}
 
-				if (server.muteRoleId) await ctx.rest.router.assignRoleToMember(serverId, member.user.id, server.muteRoleId).catch(() => null);
-				// Have to complete captcha
-				await ctx.messageUtil.sendWarningBlock(
-					server.antiRaidChallengeChannel,
-					`Halt! Please complete this captcha`,
-					stripIndents`
+					if (server.muteRoleId) await ctx.rest.router.assignRoleToMember(serverId, member.user.id, server.muteRoleId).catch(() => null);
+					// Have to complete captcha
+					await ctx.messageUtil.sendWarningBlock(
+						server.antiRaidChallengeChannel,
+						`Halt! Please complete this captcha`,
+						stripIndents`
                         <@${member.user.id}>, your account has tripped the anti-raid filter and requires further verification to ensure you are not a bot.
 
                         Please run the following command with the code below: \`${server.getPrefix()}solve insert-code-here\`.
                     `,
-					{
-						image: {
-							url: userCaptcha.url!,
-						},
-						fields: [
-							{
-								name: `Example`,
-								value: codeBlock(`?solve ahS9fjW`, `md`),
+						{
+							image: {
+								url: userCaptcha.url!,
 							},
-						],
-					},
-					{
-						isPrivate: true,
-					}
-				).catch((err) => console.log(`Error notifying user of captcha for server ${serverId} because of ${err}`));
-
+							fields: [
+								{
+									name: `Example`,
+									value: codeBlock(`?solve ahS9fjW`, `md`),
+								},
+							],
+						},
+						{
+							isPrivate: true,
+						}
+					).catch((err) => console.log(`Error notifying user of captcha for server ${serverId} because of ${err}`));
+				}
 				break;
 			}
 			case "KICK": {
@@ -95,33 +95,33 @@ export default async (packet: WSTeamMemberJoinedPayload, ctx: Context, server: S
 				return;
 			}
 			case "SITE_CAPTCHA": {
-				if (!server.antiRaidChallengeChannel) return;
-				let userCaptcha = await ctx.prisma.captcha.findFirst({ where: { serverId, triggeringUser: userId, solved: false } });
-				void ctx.amp.logEvent({ event_type: "MEMBER_SITE_CAPTCHA_JOIN", user_id: member.user.id, event_properties: { serverId: packet.d.serverId } });
+				if (server.antiRaidChallengeChannel) {
+					let userCaptcha = await ctx.prisma.captcha.findFirst({ where: { serverId, triggeringUser: userId, solved: false } });
+					void ctx.amp.logEvent({ event_type: "MEMBER_SITE_CAPTCHA_JOIN", user_id: member.user.id, event_properties: { serverId: packet.d.serverId } });
 
-				if (!userCaptcha) {
-					const id = nanoid();
-					const createdCaptcha = await ctx.prisma.captcha.create({
-						data: { id, serverId: packet.d.serverId, triggeringUser: packet.d.member.user.id },
-					});
-					console.log(server.muteRoleId)
-					userCaptcha = createdCaptcha;
-				}
+					if (!userCaptcha) {
+						const id = nanoid();
+						const createdCaptcha = await ctx.prisma.captcha.create({
+							data: { id, serverId: packet.d.serverId, triggeringUser: packet.d.member.user.id },
+						});
+						console.log(server.muteRoleId)
+						userCaptcha = createdCaptcha;
+					}
 
-				if (server.muteRoleId) await ctx.rest.router.assignRoleToMember(serverId, member.user.id, server.muteRoleId).catch(() => null);
-				// Have to complete captcha
-				await ctx.messageUtil.sendWarningBlock(
-					server.antiRaidChallengeChannel,
-					`Halt! Please complete this captcha`,
-					stripIndents`
+					if (server.muteRoleId) await ctx.rest.router.assignRoleToMember(serverId, member.user.id, server.muteRoleId).catch(() => null);
+					// Have to complete captcha
+					await ctx.messageUtil.sendWarningBlock(
+						server.antiRaidChallengeChannel,
+						`Halt! Please complete this captcha`,
+						stripIndents`
                         <@${member.user.id}>, your account has tripped the anti-raid filter and requires further verification to ensure you are not a bot.
                         
 						Please visit [this link](${process.env.NODE_ENV === "development" ? (process.env.NEXTAUTH_URL ?? "http://localhost:3000") : "https://yoki.gg"}/verify/${userCaptcha.id}) which will use a frameless captcha to verify you are not a bot.
                     `,
-					undefined,
-					server.muteRoleId ? { isPrivate: true } : undefined
-				).catch((err) => console.log(`Error notifying user of captcha for server ${serverId} because of ${err}`));
-
+						undefined,
+						server.muteRoleId ? { isPrivate: true } : undefined
+					).catch((err) => console.log(`Error notifying user of captcha for server ${serverId} because of ${err}`));
+				}
 				break;
 			}
 			default: { }
