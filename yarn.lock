@@ -277,6 +277,14 @@
     node-fetch "2.6.7"
     qs "^6.10.5"
 
+"@guildedjs/rest@2.8.7":
+  version "2.8.7"
+  resolved "https://registry.yarnpkg.com/@guildedjs/rest/-/rest-2.8.7.tgz#993aa520c53bec05e2131a7aa6de8b73de07d35b"
+  integrity sha512-mUsQingDz+4pOAh2pbIlsNoz7okTjHPXfxhSfQgtNzwRVTcSkZpuLA0WutWlmLREp37tZIzIeLT57zr7IZLJlA==
+  dependencies:
+    node-fetch "2.6.7"
+    qs "^6.10.5"
+
 "@guildedjs/rest@^2.9.1":
   version "2.9.1"
   resolved "https://registry.yarnpkg.com/@guildedjs/rest/-/rest-2.9.1.tgz#664cec4c2f5ec721fd36d3d84d26d58644442da2"
@@ -292,6 +300,13 @@
   integrity sha512-Ndye6VN4qGRKz8kKVguoJe6KLh0FOYwaufHyGzDF95Dwc09UGy78zKDwPyOTpMI+g5qTgmhh1YfqCUisGAguZA==
   dependencies:
     "@guildedjs/rest" "2.8.2"
+
+"@guildedjs/webhook-client@^0.3.7":
+  version "0.3.13"
+  resolved "https://registry.yarnpkg.com/@guildedjs/webhook-client/-/webhook-client-0.3.13.tgz#0747b36303702efeb7f5ca6bf10a517d746d3d41"
+  integrity sha512-Ajy/enriTWyBw5S3Ppcj7H2lazSrz01lNdBAw+U2R4Sjt+orpqnRddTpTp4E81HouyRmyWCMPyeQ5XP6ayb2ew==
+  dependencies:
+    "@guildedjs/rest" "2.8.7"
 
 "@guildedjs/ws@1.4.12":
   version "1.4.12"
