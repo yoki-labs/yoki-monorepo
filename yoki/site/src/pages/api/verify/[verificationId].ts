@@ -3,6 +3,7 @@ import prisma from "../../../lib/Prisma";
 import FormData from "form-data"
 import rest from "../../../lib/Guilded";
 import { createHmac } from "crypto";
+import errorHandler, { errorEmbed } from "../../../lib/ErrorHandler";
 
 const PostVerifyRoute = async (req: NextApiRequest, res: NextApiResponse) => {
 	if (req.method !== "POST") return res.status(405).send("");
@@ -47,7 +48,8 @@ const PostVerifyRoute = async (req: NextApiRequest, res: NextApiResponse) => {
 		}
 		return res.status(200).json({ error: true, message: "There was an issue validating your captcha request." });
 	} catch (e) {
-		console.error(e);
+		errorHandler.send("Issue with site captcha verify", [errorEmbed(e)])
+		console.error(e)
 		return res.status(500).json({ error: true, message: "Internal Error." })
 	}
 
