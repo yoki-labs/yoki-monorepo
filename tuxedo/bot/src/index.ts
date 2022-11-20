@@ -17,5 +17,21 @@ const client = new Client();
 void (async (): Promise<void> => {
     await setClientCommands(client, join(__dirname, "commands"));
 
-    // TODO: Server stuff
+    try {
+        // check if the main server exists and is in the database, this check is mostly to make sure our prisma migrations are applied
+        const existingMainServer = await client.prisma.server.findMany({ where: { serverId: process.env.MAIN_SERVER } });
+        if (!existingMainServer.length) await client.dbUtil.createFreshServerInDatabase(process.env.MAIN_SERVER!);
+    } catch (e) {
+        console.log(e);
+        console.log("ERROR!: You have not applied the migrations. You must run 'yarn migrate:dev'. Exiting...");
+        return process.exit(1);
+    }
+
+    try {
+        // connect redis & ws connection
+        await client.init();
+    } catch (e) {
+        console.error(e);
+        return process.exit(1);
+    }
 })();

@@ -1,4 +1,5 @@
 import type { TeamMemberPayload, WSChatMessageCreatedPayload } from "@guildedjs/guilded-api-typings";
+
 import { isHashId } from "../../util";
 import type AbstractClient from "../Client";
 import type { UsedMentions } from "../commands/arguments";

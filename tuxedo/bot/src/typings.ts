@@ -9,5 +9,3 @@ export type Command = BaseCommand<Command, Client, RoleType, any>;
 export type RoleType = "MOD";
 
 export type Context = Client;
-
-export type Server = any;

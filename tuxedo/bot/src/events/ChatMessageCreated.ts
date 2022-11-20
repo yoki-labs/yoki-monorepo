@@ -1,6 +1,8 @@
+import type { Server } from "@prisma/client";
+
 import { createCommandHandlers } from "../../../../yoki-labs/bot/commands/commands";
 import type Client from "../Client";
-import type { Command, RoleType, Server } from "../typings";
+import type { Command, RoleType } from "../typings";
 
 const { fetchPrefix, parseCommand, fetchCommandInfo, checkUserPermissions, tryExecuteCommand } = createCommandHandlers<Client, Server, Command, RoleType>({ MOD: 0 });
 const ChatMessageCreated = fetchPrefix.bind(

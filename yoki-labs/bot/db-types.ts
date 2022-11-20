@@ -1,5 +1,5 @@
 export interface IServer {
-    prefix?: string;
+    prefix: string | null;
 }
 export interface IRole<T extends string> {
     serverId: string;

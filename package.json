@@ -19,6 +19,7 @@
         "tuxo:db": "cd docker/compose && docker-compose -f docker-compose.tuxedo.yml -f docker-compose.tuxedo.dev.yml up -d --build db",
         "tuxo:start": "cd docker/compose && docker-compose -f docker-compose.tuxedo.yml -f docker-compose.tuxedo.dev.yml up -d --build && docker-compose -f docker-compose.tuxedo.yml -f docker-compose.tuxedo.dev.yml logs --follow bot",
         "tuxo:down": "cd docker/compose && docker-compose -f docker-compose.tuxedo.yml -f docker-compose.tuxedo.dev.yml down",
+        "tuxo:migrate": "cd tuxedo/bot && yarn migrate:dev",
         "prod:start": "cd docker/compose && docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build",
         "prod:down": "cd docker/compose && docker-compose -f docker-compose.yml -f docker-compose.prod.yml down",
         "prod:logs": "cd docker/compose && docker-compose -f docker-compose.yml -f docker-compose.prod.yml logs -f bot nsfw",
