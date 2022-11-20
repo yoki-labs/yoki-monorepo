@@ -7,10 +7,14 @@
         "lint:fix": "yarn lint --fix",
         "dev": "next dev",
         "build": "next build",
-        "start": "next start"
+        "start": "next start",
+        "generate": "npx prisma generate --schema=../bot/prisma/schema.prisma"
     },
     "dependencies": {
+        "@guildedjs/rest": "^2.9.1",
         "@tailwindcss/forms": "^0.5.2",
+        "@prisma/client": "^4.2.1",
+        "form-data": "^4.0.0",
         "moment": "^2.29.4",
         "next": "12.2.0",
         "next-auth": "^4.12.2",
@@ -20,6 +24,7 @@
         "react-flatpickr": "^3.10.13",
         "react-router-dom": "^6.4.0",
         "react-transition-group": "^4.4.2",
+        "react-turnstile": "^1.0.5",
         "strip-indent": "^4.0.0",
         "styled-components": "^5.3.5",
         "tailwindcss-animate": "^1.0.5"

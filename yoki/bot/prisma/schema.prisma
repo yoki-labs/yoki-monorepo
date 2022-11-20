@@ -204,11 +204,12 @@ model ModmailMessage {
 
 model Captcha {
     id             String   @id @db.VarChar(255)
-    value          String   @db.VarChar(255)
+    value          String?  @db.VarChar(255)
     serverId       String   @db.VarChar(255)
     triggeringUser String   @db.VarChar(255)
-    url            String   @db.Text
+    url            String?  @db.Text
     solved         Boolean  @default(false)
+    hashedIp       String?  @db.VarChar(255)
     createdAt      DateTime @default(now())
 }
 
@@ -271,6 +272,7 @@ enum PremiumType {
 }
 
 enum ResponseType {
-    CAPTCHA
+    TEXT_CAPTCHA
+    SITE_CAPTCHA
     KICK
 }

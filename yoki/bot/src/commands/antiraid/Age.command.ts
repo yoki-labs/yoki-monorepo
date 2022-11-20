@@ -2,6 +2,7 @@ import { ResponseType } from "@prisma/client";
 import ms from "ms";
 
 import { RoleType } from "../../typings";
+import { inlineCode } from "../../utils/formatters";
 import { Category } from "../Category";
 import type { Command } from "../Command";
 
@@ -17,7 +18,7 @@ const Age: Command = {
     args: [{ name: "duration", type: "string", optional: true }],
     execute: async (message, args, ctx, commandCtx) => {
         if (!args.duration) {
-            return ctx.messageUtil.replyWithInfo(message, "Invalid duration!", "You must provide a duration for minimum account age for the filter to scan for");
+            return ctx.messageUtil.replyWithInfo(message, "Current Antiraid Age", `The current minimum account age for the antiraid filter is ${commandCtx.server.antiRaidAgeFilter ? `${inlineCode(commandCtx.server.antiRaidAgeFilter / 60 / 1000)} minutes` : "not set"}.`);
         }
 
         const duration = ms(args.duration as string);
@@ -25,7 +26,7 @@ const Age: Command = {
             return ctx.messageUtil.replyWithError(message, `Invalid Duration`, `Your duration must be between 10m and 2w.`);
 
         void ctx.amp.logEvent({ event_type: "ANTIRAID_AGE_SET", user_id: message.createdBy, event_properties: { serverId: message.serverId, age: duration } });
-        await ctx.prisma.server.update({ where: { id: commandCtx.server.id }, data: { antiRaidAgeFilter: duration, antiRaidResponse: ResponseType.CAPTCHA } });
+        await ctx.prisma.server.update({ where: { id: commandCtx.server.id }, data: { antiRaidAgeFilter: duration, antiRaidResponse: ResponseType.TEXT_CAPTCHA } });
         return ctx.messageUtil.replyWithSuccess(
             message,
             "Successfully set age filter",

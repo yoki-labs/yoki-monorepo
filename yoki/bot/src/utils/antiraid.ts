@@ -6,7 +6,6 @@ export const generateCaptcha = async (s3: S3, id?: string) => {
     const captcha = new Captcha(undefined, undefined, { lines: 3, circleRadius: 3, foregroundNoise: 2500 });
     if (!id) id = nanoid();
 
-    console.log(captcha.value);
     const uploadToBucket = await s3
         .upload({
             Bucket: process.env.S3_BUCKET,

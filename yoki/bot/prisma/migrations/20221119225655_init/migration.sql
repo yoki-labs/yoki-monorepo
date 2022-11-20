@@ -1,0 +1,2 @@
+-- AlterEnum
+ALTER TYPE "ResponseType" RENAME VALUE 'CAPTCHA' TO 'TEXT_CAPTCHA';

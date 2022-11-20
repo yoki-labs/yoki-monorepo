@@ -277,6 +277,15 @@
     node-fetch "2.6.7"
     qs "^6.10.5"
 
+"@guildedjs/rest@^2.9.1":
+  version "2.9.1"
+  resolved "https://registry.yarnpkg.com/@guildedjs/rest/-/rest-2.9.1.tgz#664cec4c2f5ec721fd36d3d84d26d58644442da2"
+  integrity sha512-s8tGI7lcstGQbhWhBHXHGWRw3nRNkxkXTUM3W7tpNy3izAVeut4ua2wFsL07JRqxLYcuJEpDkKeqgrufdab8YQ==
+  dependencies:
+    form-data "^4.0.0"
+    node-fetch "2.6.7"
+    qs "^6.10.5"
+
 "@guildedjs/webhook-client@0.3.7":
   version "0.3.7"
   resolved "https://registry.npmjs.org/@guildedjs/webhook-client/-/webhook-client-0.3.7.tgz"
@@ -2829,7 +2838,7 @@ form-data@^3.0.0:
 
 form-data@^4.0.0:
   version "4.0.0"
-  resolved "https://registry.npmjs.org/form-data/-/form-data-4.0.0.tgz"
+  resolved "https://registry.yarnpkg.com/form-data/-/form-data-4.0.0.tgz#93919daeaf361ee529584b9b31664dc12c9fa452"
   integrity sha512-ETEklSGi5t0QMZuiXoA/Q6vcnxcLQP5vdugSpuAyi6SVGi2clPPp+xgEhuMaHC+zGgn31Kd235W35f7Hykkaww==
   dependencies:
     asynckit "^0.4.0"
@@ -4851,7 +4860,12 @@ react-transition-group@^4.4.2:
     loose-envify "^1.4.0"
     prop-types "^15.6.2"
 
-react@18.2.0, react@^18.2.0:
+react-turnstile@^1.0.5:
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/react-turnstile/-/react-turnstile-1.0.5.tgz#1f57e96efe75faa3f56a09854df7bdca9c224a18"
+  integrity sha512-fLwFMXerdgAUERozg4PlcjB05l4uRb9miLAYNsSAOtU9jpv97Q19bkuY+XoLV9edec5ctW0JX1iUHQju5bvWTQ==
+
+react@18.2.0:
   version "18.2.0"
   resolved "https://registry.npmjs.org/react/-/react-18.2.0.tgz"
   integrity sha512-/3IjMdb2L9QbBdWiW5e3P2/npwMBaU9mHCSCUzNln0ZCYbcfTsGbTJrU/kGemdH2IWmB2ioZ+zkxtmq6g09fGQ==
