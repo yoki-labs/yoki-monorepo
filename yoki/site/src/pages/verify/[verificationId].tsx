@@ -44,7 +44,7 @@ const VerificationPage: NextPage<Props> = ({ id }) => {
 			break;
 		}
 		default: {
-			response = <h1 className="text-red-600">Error!</h1>;
+			response = <h1 className="text-red-600">There was an error verifying you. Please reach out to server staff for manual verification.</h1>;
 		}
 	}
 
