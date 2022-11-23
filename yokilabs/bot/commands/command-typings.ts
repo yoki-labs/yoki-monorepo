@@ -1,4 +1,4 @@
-import type Collection from "@discordjs/collection";
+import type { Collection } from "@discordjs/collection";
 import type { ChatMessagePayload } from "@guildedjs/guilded-api-typings";
 
 import type AbstractClient from "../Client";

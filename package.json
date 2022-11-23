@@ -54,7 +54,10 @@
     "workspaces": [
         "yoki/bot",
         "yoki/nsfw",
-        "yoki/site"
+        "yoki/site",
+        "yokilabs/bot",
+        "yokilabs/util",
+        "tuxedo/bot"
     ],
     "prettier": {
         "endOfLine": "auto",
@@ -63,6 +66,8 @@
         "tabWidth": 4
     },
     "lint-staged": {
+        "yoki-labs/bot/src/*.{js,ts}": "npx eslint -c ./yoki-labs/bot/.eslintrc.js --fix",
+        "yoki-labs/util/src/*.{js,ts}": "npx eslint -c ./yoki-labs/util/.eslintrc.js --fix",
         "yoki/bot/src/*.{js,ts}": "npx eslint -c ./yoki/bot/.eslintrc.js --fix",
         "yoki/nsfw/src/*.{js,ts}": "npx eslint -c ./yoki/nsfw/.eslintrc.js --fix",
         "yoki/site/src/*.{ts,tsx}": "npx eslint -c ./yoki/site/.eslintrc.js --fix"

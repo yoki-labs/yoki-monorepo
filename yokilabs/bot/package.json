@@ -1,13 +1,15 @@
 {
-    "name": "@yoki-labs/util",
+    "name": "@yokilabs/bot",
     "version": "1.0.0",
-    "description": "Common utilities code",
+    "description": "Common client code",
     "author": "Yoki-Labs",
     "license": "PROPRIETARY",
     "imports": {
         "#functions/*": "./dist/functions/*.js"
     },
     "dependencies": {
+        "@amplitude/node": "^1.10.2",
+        "@discordjs/collection": "^1.2.0",
         "@guildedjs/embeds": "^0.2.0",
         "@guildedjs/rest": "^2.9.1",
         "@guildedjs/webhook-client": "^0.4.2",
@@ -19,6 +21,7 @@
         "nanoid": "^4.0.0",
         "node-fetch": "^3.2.10",
         "nodemon": "^2.0.20",
+        "recursive-readdir": "^2.2.3",
         "redis-json": "^6.0.3",
         "tslib": "^2.4.1"
     },

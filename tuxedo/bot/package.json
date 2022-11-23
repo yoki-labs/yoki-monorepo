@@ -1,5 +1,6 @@
 {
-    "name": "@yoki-labs/tuxedo-bot",
+    "name": "@tuxedo/bot",
+    "private": true,
     "version": "1.0.0",
     "description": "Tuxedo bot Docker service",
     "main": "./dist/index.js",
@@ -20,7 +21,13 @@
     "imports": {
         "#functions/*": "./dist/functions/*.js"
     },
+    "workspaces": [
+        "yokilabs/bot",
+        "yokilabs/util"
+    ],
     "dependencies": {
+        "@amplitude/node": "^1.10.2",
+        "@discordjs/collection": "^1.2.0",
         "@guildedjs/embeds": "^0.2.0",
         "@guildedjs/rest": "^2.9.1",
         "@guildedjs/webhook-client": "^0.4.2",
@@ -32,8 +39,11 @@
         "nanoid": "^4.0.0",
         "node-fetch": "^3.2.10",
         "nodemon": "^2.0.20",
+        "recursive-readdir": "^2.2.3",
         "redis-json": "^6.0.3",
-        "tslib": "^2.4.1"
+        "tslib": "^2.4.1",
+        "@yokilabs/bot": "1.0.0",
+        "@yokilabs/util": "1.0.0"
     },
     "devDependencies": {
         "@guildedjs/guilded-api-typings": "^2.8.7",

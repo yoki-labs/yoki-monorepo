@@ -1,12 +1,12 @@
 import type { Server } from "@prisma/client";
+import { Util } from "@yokilabs/bot";
 
-import { Util } from "../../../../yoki-labs/bot/helpers/util";
 import type Client from "../Client";
 
 export class DatabaseUtil extends Util<Client> {
     getServer(serverId: string, createIfNotExists?: true): Promise<Server>;
     getServer(serverId: string, createIfNotExists: false): Promise<Server | null>;
-    getServer(serverId: string, createIfNotExists = true) {
+    getServer(serverId: string, createIfNotExists = true): Promise<Server | null> {
         return this.client.prisma.server
             .findUnique({ where: { serverId } })
             .then((server) => {

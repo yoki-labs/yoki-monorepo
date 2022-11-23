@@ -1,6 +1,6 @@
 import type { Server } from "@prisma/client";
+import type { BaseCommand } from "@yokilabs/bot";
 
-import type { BaseCommand } from "../../../../yoki-labs/bot/commands/command-typings";
 import type Client from "../Client";
 import type { RoleType } from "../typings";
 

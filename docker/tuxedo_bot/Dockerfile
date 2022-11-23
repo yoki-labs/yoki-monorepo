@@ -10,16 +10,19 @@ RUN apk update \
 	&& curl -L https://yarnpkg.com/install.sh | bash
 
 COPY tsconfig.json ./
-WORKDIR /opt/build/services/tuxedo
+WORKDIR /opt/build/tuxedo/bot
 
-COPY ./services/tuxedo/package.json ./
+COPY ./tuxedo/bot/package.json ./
+
+# for workspaces
+COPY ./yokilabs ./yokilabs
 RUN yarn install
 
-COPY ./services/tuxedo/prisma/. ./prisma/
+COPY ./tuxedo/bot/prisma/. ./prisma/
 RUN yarn generate
 
-COPY ./services/tuxedo/tsconfig.json ./services/tuxedo/nodemon.json ./
-COPY ./services/tuxedo/src/. ./src/
+COPY ./tuxedo/bot/tsconfig.json ./tuxedo/bot/nodemon.json ./
+COPY ./tuxedo/bot/src/. ./src/
 RUN yarn build
 
 RUN if [[ "$BUILD_ENV" = "development" ]]; then yarn remove $(cat package.json | jq -r '.devDependencies | keys | join(" ")'); fi
@@ -30,7 +33,7 @@ RUN apk update \
 	&& apk add cairo-dev
 
 COPY --from=0 ./opt/build/tsconfig.json .
-COPY --from=0 ./opt/build/services/tuxedo/ services/tuxedo/
+COPY --from=0 ./opt/build/tuxedo/bot/ tuxedo/bot/
 
-WORKDIR /usr/app/services/tuxedo
+WORKDIR /usr/app/tuxedo/bot
 CMD ["yarn", "run", "start"]

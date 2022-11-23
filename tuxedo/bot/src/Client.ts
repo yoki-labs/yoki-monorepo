@@ -1,8 +1,7 @@
 import { PrismaClient, Server } from "@prisma/client";
+import { MessageUtil, ServerUtil } from "@yokilabs/bot";
+import AbstractClient from "@yokilabs/bot/Client";
 
-import AbstractClient from "../../../yoki-labs/bot/Client";
-import { MessageUtil } from "../../../yoki-labs/bot/helpers/message";
-import { ServerUtil } from "../../../yoki-labs/bot/helpers/server";
 import ChatMessageCreated from "./events/ChatMessageCreated";
 import { DatabaseUtil } from "./helpers/database";
 import type { Command, Context } from "./typings";

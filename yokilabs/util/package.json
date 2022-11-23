@@ -1,7 +1,7 @@
 {
-    "name": "@yoki-labs/bot-lib",
+    "name": "@yokilabs/util",
     "version": "1.0.0",
-    "description": "Common client code",
+    "description": "Common utilities code",
     "author": "Yoki-Labs",
     "license": "PROPRIETARY",
     "imports": {

@@ -2,8 +2,6 @@ import type { ServerChannelPayload, TeamMemberPayload, WSChatMessageCreatedPaylo
 
 import type { IServer } from "./db-types";
 
-export type AbstractContext<T> = T;
-
 // context available in every execution of a command
 export interface CommandContext<T extends IServer> {
     packet: WSChatMessageCreatedPayload;
