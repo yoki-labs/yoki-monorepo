@@ -43,7 +43,7 @@ import type { BaseCommand, CommandArgument } from "./command-typings";
 
 type MessagePayload = WSChatMessageCreatedPayload;
 
-export function createCommandHandlers<
+export default function createCommandHandler<
     TClient extends AbstractClient<TClient, TServer, TCommand>,
     TServer extends IServer,
     TCommand extends BaseCommand<TCommand, TClient, TRoleType, TServer>,
@@ -62,7 +62,7 @@ export function createCommandHandlers<
 
             if (message.createdByBotId || message.createdBy === ctx.userId || !message.serverId) return void 0;
 
-            const prefix = server.prefix ?? process.env.DEFAULT_PREFIX;
+            const prefix = server.prefix ?? process.env.DEFAULT_PREFIX!;
 
             return onNext(packet, ctx, server, prefix);
         },

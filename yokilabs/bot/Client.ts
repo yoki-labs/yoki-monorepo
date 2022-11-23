@@ -1,5 +1,5 @@
 import { init } from "@amplitude/node";
-import Collection from "@discordjs/collection";
+import { Collection } from "@discordjs/collection";
 import { RestManager } from "@guildedjs/rest";
 import { WebhookClient } from "@guildedjs/webhook-client";
 import { WebSocketManager } from "@guildedjs/ws";
@@ -7,8 +7,8 @@ import RedisClient from "ioredis";
 
 import type { BaseCommand } from "./commands/command-typings";
 import type { IServer } from "./db-types";
-import type { MessageUtil } from "./helpers/message";
-import type { ServerUtil } from "./helpers/server";
+import type MessageUtil from "./helpers/message";
+import type ServerUtil from "./helpers/server";
 
 /**
  * Main class that stores utils, connections to various providers, and ws
@@ -26,9 +26,9 @@ export default abstract class AbstractClient<
     operators: string[] = [];
 
     // ws manager
-    readonly ws = new WebSocketManager({ token: process.env.GUILDED_TOKEN });
+    readonly ws = new WebSocketManager({ token: process.env.GUILDED_TOKEN! });
     // rest manager
-    readonly rest = new RestManager({ token: process.env.GUILDED_TOKEN });
+    readonly rest = new RestManager({ token: process.env.GUILDED_TOKEN! });
     // // database connection
     // readonly prisma = new PrismaClient();
     // cache connection

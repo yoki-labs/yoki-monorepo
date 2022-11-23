@@ -43,7 +43,6 @@ RUN yarn generate
 
 COPY ./tuxedo/bot/tsconfig.json ./tuxedo/bot/nodemon.json ./
 COPY ./tuxedo/bot/src/. ./src/
-
 RUN yarn build
 
 RUN if [[ "$BUILD_ENV" = "development" ]]; then yarn remove $(cat package.json | jq -r '.devDependencies | keys | join(" ")'); fi

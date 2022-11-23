@@ -2,9 +2,9 @@ import type { TeamMemberPayload } from "@guildedjs/guilded-api-typings";
 import JSONCache from "redis-json";
 
 import type AbstractClient from "../Client";
-import { Util } from "./util";
+import Util from "./util";
 
-export class ServerUtil<T extends AbstractClient<any, any, any>> extends Util<T> {
+export default class ServerUtil<T extends AbstractClient<any, any, any>> extends Util<T> {
     readonly cache = new JSONCache<TeamMemberPayload>(this.client.redis);
 
     // Get webhook information from either the database, or create one in the server

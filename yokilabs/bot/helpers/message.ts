@@ -1,4 +1,4 @@
-import type Collection from "@discordjs/collection";
+import type { Collection } from "@discordjs/collection";
 import { Embed } from "@guildedjs/embeds";
 import type { ChatMessagePayload, EmbedField, EmbedPayload, RESTPostChannelMessagesBody } from "@guildedjs/guilded-api-typings";
 import { stripIndents } from "common-tags";
@@ -9,9 +9,9 @@ import { cutArray } from "../../util/value";
 import type AbstractClient from "../Client";
 import type { BaseCommand, CommandArgument } from "../commands/command-typings";
 import type { IServer } from "../db-types";
-import { Util } from "./util";
+import Util from "./util";
 
-export class MessageUtil<
+export default class MessageUtil<
     TClient extends AbstractClient<TClient, TServer, TCommand>,
     TServer extends IServer,
     TCommand extends BaseCommand<TCommand, TClient, string, TServer>
