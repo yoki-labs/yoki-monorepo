@@ -8,8 +8,12 @@
         "noImplicitAny": false,
         "skipLibCheck": true,
 		"declaration": false,
-		"declarationMap": false
+		"declarationMap": false,
+        "paths": {
+            "@yokilabs/util": ["../../yokilabs/util/src"],
+            "@yokilabs/bot": ["../../yokilabs/bot/src"],
+        }
     },
-    "include": ["./src/**/*.ts", "./src/**/*.json"],
+    "include": ["./src/**/*.ts", "./src/**/*.json", "../../yokilabs/**/*.ts"],
     "exclude": ["*.test.ts"]
 }

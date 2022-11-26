@@ -1,6 +1,6 @@
 import type { WSChatMessageCreatedPayload } from "@guildedjs/guilded-api-typings";
 
-import { isUUID } from "../../util";
+import { isUUID } from "@yokilabs/util";
 import type AbstractClient from "../Client";
 import type { UsedMentions } from "../commands/arguments";
 

@@ -1,9 +1,14 @@
 {
     "name": "@yokilabs/util",
     "version": "1.0.0",
+    "private": true,
     "description": "Common utilities code",
+    "main": "./dist/index.js",
     "author": "Yoki-Labs",
     "license": "PROPRIETARY",
+    "scripts": {
+        "build": "npx tsc && npx tsc-alias"
+    },
     "imports": {
         "#functions/*": "./dist/functions/*.js"
     },

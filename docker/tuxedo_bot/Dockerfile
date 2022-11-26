@@ -10,12 +10,28 @@ RUN apk update \
 	&& curl -L https://yarnpkg.com/install.sh | bash
 
 COPY tsconfig.json ./
+COPY .eslintrc.json ./
+COPY package.json ./
+
+# ./yokilabs in /opt/build/yokilabs
+COPY ./yokilabs ./yokilabs
+
+# Doesn't fix
+# WORKDIR /opt/build/yokilabs/util
+
+# RUN yarn
+# RUN yarn build
+
+# WORKDIR /opt/build/yokilabs/bot
+
+# RUN yarn
+# RUN yarn build
+
+# Tuxedo stuff
 WORKDIR /opt/build/tuxedo/bot
 
 COPY ./tuxedo/bot/package.json ./
 
-# for workspaces
-COPY ./yokilabs ./yokilabs
 RUN yarn install
 
 COPY ./tuxedo/bot/prisma/. ./prisma/

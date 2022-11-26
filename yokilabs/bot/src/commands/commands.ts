@@ -1,9 +1,9 @@
 import type { TeamMemberPayload, WSChatMessageCreatedPayload } from "@guildedjs/guilded-api-typings";
 import { Embed } from "@guildedjs/webhook-client";
+import { codeBlock, inlineCode, inlineQuote } from "@yokilabs/util";
 import { stripIndents } from "common-tags";
 import { nanoid } from "nanoid";
 
-import { codeBlock, inlineCode, inlineQuote } from "../../util";
 import booleanArg from "../args/boolean";
 import channel from "../args/channel";
 import enumArg from "../args/enum";
