@@ -4,24 +4,27 @@ import rest from "../../../lib/Guilded";
 import errorHandler, { errorEmbed } from "../../../lib/ErrorHandler";
 import { Embed } from "@guildedjs/webhook-client";
 import { stripIndents } from "common-tags";
+import { unstable_getServerSession } from "next-auth";
+import { authOptions } from "../auth/[...nextauth]";
 
 const PostAppealRoute = async (req: NextApiRequest, res: NextApiResponse) => {
 	if (req.method !== "POST") return res.status(405).send("");
+	const session = await unstable_getServerSession(req, res, authOptions);
 	const serverId = req.query.serverId as string;
-	const appealerId = req.body.appealerId as string;
 	const appealContent = req.body.appealContent as string;
 
-	if (!appealerId) return res.status(400).json({ error: true, message: "Must provide an user id for appeal." });
+	if (!session?.user.id) return res.status(400).json({ error: true, message: "Must be logged in to send appeal." });
 	if (!appealContent) return res.status(400).json({ error: true, message: "Must provide appeal content." });
 
 	const server = await prisma.server.findFirst({ where: { serverId } });
 	if (!server) return res.status(404).json({ error: true, message: "Invalid server ID." });
-	if (!server.appealChannel) return res.status(404).json({ error: true, message: "Server does not have appeals enabled." });
+	if (!server.appealChannel) return res.status(404).json({ error: true, code: "NOT_ENABLED", message: "Server does not have appeals enabled." });
 
-	const existingBan = await rest.router.getMemberBan(server.serverId, appealerId).then(x => x.serverMemberBan).catch(() => null);
-	if (!existingBan) return res.status(404).json({ error: true, message: "User is not banned." });
+	const existingBan = await rest.router.getMemberBan(server.serverId, session.user.id).then(x => x.serverMemberBan).catch(() => null);
+	if (!existingBan) return res.status(404).json({ error: true, code: "NOT_BANNED", message: "User is not banned." });
 
 	try {
+		await prisma.appeal.create({ "data": { "content": appealContent, serverId: server.serverId, creatorId: session.user.id } });
 		await rest.router.createChannelMessage(server.appealChannel, {
 			"embeds": [
 				new Embed()
@@ -30,12 +33,12 @@ const PostAppealRoute = async (req: NextApiRequest, res: NextApiResponse) => {
 					.setColor("GREEN")
 					.addFields([
 						{
-							"name": "User ID",
-							"value": `\`${appealerId}\``
+							"name": "User",
+							"value": `**${session.user.name}** (\`${session.user.id}\`)`
 						},
 						{
 							"name": "Content",
-							"value": `\`\`\`${appealContent}\`\`\``
+							"value": `\`\`\`${stripIndents(appealContent)}\`\`\``
 						}
 					])
 					.toJSON()

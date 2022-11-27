@@ -3,29 +3,43 @@ import { LandingPage } from "../../components/landing/LandingPage";
 import prisma from "../../lib/Prisma";
 import Button from "../../components/appeals/Button";
 import { useState } from "react";
+import { useSession } from "next-auth/react";
+import { TeamMemberBanPayload } from "@guildedjs/guilded-api-typings";
+import rest from "../../lib/Guilded";
+import { unstable_getServerSession } from "next-auth";
+import { authOptions } from "../api/auth/[...nextauth]";
 
-export type Props = { id: string | null; enabled: boolean };
+export type Props = { id: string | null; enabled: boolean, banInfo: TeamMemberBanPayload | null, tooRecent: boolean };
 export const getServerSideProps: GetServerSideProps<Props> = async (ctx) => {
 	const { serverId } = ctx.params as { serverId: string };
 	const server = await prisma.server.findFirst({ "where": { serverId } });
+	const session = await unstable_getServerSession(ctx.req, ctx.res, authOptions);
 
-	if (!server?.appealChannel) return { props: { id: null, enabled: false } }
-	return { props: { id: server.serverId, enabled: true } }
+	if (!server) return { props: { id: null, enabled: false, banInfo: null, tooRecent: false } }
+	if (!server.appealsEnabled || !server.appealChannel) return { props: { id: server.serverId, enabled: false, banInfo: null, tooRecent: false } }
+	if (!session?.user.id) return { redirect: { "destination": "/auth/signin", permanent: false } };
+	const ban = await rest.router.getMemberBan(serverId, session.user.id).then(x => x.serverMemberBan).catch(() => null);
+
+	const fiveDaysAgo = new Date();
+	fiveDaysAgo.setDate(fiveDaysAgo.getDate() - 5);
+
+	const recentAppeal = await prisma.appeal.findMany({ "where": { "createdAt": { "gte": fiveDaysAgo } } });
+	return { props: { id: server.serverId, enabled: true, banInfo: ban ?? null, tooRecent: recentAppeal.length > 0 } }
 }
 
-const AppealPage: NextPage<Props> = ({ id, enabled }) => {
+const HalfScreenWidth = ({ children }: any) => <div style={{ height: "50vh" }} className="flex place-items-center text-center">{children}</div>
+const AppealPage: NextPage<Props> = ({ id, enabled, banInfo, tooRecent }) => {
 	const [status, setStatus] = useState<"LOADING" | "SUCCESS" | "FAILED" | "PENDING">("PENDING");
 	const [appealContent, setAppealContent] = useState("");
-	const [appealerId, setAppealId] = useState("");
+	const { data: session } = useSession();
 
 	const appealReq = async (event: any) => {
-		console.log("hi")
 		event.preventDefault();
-		if (!appealerId) return alert("You must provide your user ID for the appeal.")
-		if (!appealContent) return alert("You must provide content for your appeal");
+		if (!session) return alert("Must be logged in to make this request.")
+		if (!appealContent) return alert("You must provide a reason for your appeal");
 
 		setStatus("LOADING")
-		const req = await fetch(`/api/appeals/${id}`, { "method": "POST", "body": JSON.stringify({ appealContent, appealerId }), "headers": { "content-type": "application/json" } });
+		const req = await fetch(`/api/appeals/${id}`, { "method": "POST", "body": JSON.stringify({ appealContent, appealerId: session.user.id }), "headers": { "content-type": "application/json" } });
 		if (!req.ok) setStatus("FAILED")
 		else setStatus("SUCCESS");
 	}
@@ -33,15 +47,15 @@ const AppealPage: NextPage<Props> = ({ id, enabled }) => {
 	let response;
 	switch (status) {
 		case "SUCCESS": {
-			response = <h1 className="text-green-600">Success! Your appeal was sent in.</h1>;
+			response = <HalfScreenWidth><h1 className="text-green-600">Success! Your appeal was sent in.</h1></HalfScreenWidth>;
 			break;
 		}
 		case "FAILED": {
-			response = <h1 className="text-red-600 text-center">There was an error sending in your appeal.<br />Please reach out to server staff for manual appeal.</h1>;
+			response = <HalfScreenWidth><h1 className="text-red-600 text-center">There was an error sending in your appeal.<br />Please reach out to server staff for manual appeal.</h1></HalfScreenWidth>;
 			break;
 		}
 		case "LOADING": {
-			response = <h1 className="text-yellow-600">Sending...</h1>
+			response = <HalfScreenWidth><h1 className="text-yellow-600">Sending...</h1></HalfScreenWidth>;
 			break;
 		}
 		default:
@@ -49,7 +63,6 @@ const AppealPage: NextPage<Props> = ({ id, enabled }) => {
 			response = <form onSubmit={appealReq} className="text-white w-1/2">
 				<h1 className="text-3xl pb-4">Appeal Here</h1>
 				<div className="flex flex-wrap space-y-4">
-					<input id="appealerId" onChange={(data) => setAppealId(data.target.value)} placeholder="What is your Guilded ID?" className="w-1/2 px-3 py-1 rounded-lg border-custom-black bg-custom-black resize-none font-normal text-lg"></input>
 					<textarea
 						id="appealContent"
 						placeholder="Why should you be unbanned?"
@@ -71,15 +84,18 @@ const AppealPage: NextPage<Props> = ({ id, enabled }) => {
 			</form>
 	}
 
+	let base = response;
+	if (!id) base = <HalfScreenWidth><h1 className="text-red-600">That is not a valid server.</h1></HalfScreenWidth>;
+	else if (!enabled) base = <HalfScreenWidth><h1 className="text-red-600">This server does not accept appeals through Yoki.</h1></HalfScreenWidth>;
+	else if (!banInfo) base = <HalfScreenWidth><h1 className="text-yellow-600">You are not banned from this server.</h1></HalfScreenWidth>;
+	else if (tooRecent) base = <HalfScreenWidth><h1 className="text-yellow-600">You have already sent in an appeal recently. <br /> If your appeal goes unanswered, please come back in a week to resend.</h1></HalfScreenWidth>
+
 	return (
 		<>
 			<LandingPage>
-				<div style={{ "height": "100vh" }} className="flex justify-center text-3xl font-bold py-8">
-					{
-						!enabled ? <h1 className="text-red-600">This server does not accept appeals through Yoki.</h1> :
-							id ?
-								response
-								: <h1 className="text-red-600">That is not a valid server.</h1>}</div>
+				<div className="flex justify-center text-3xl font-bold py-8">
+					{base}
+				</div>
 			</LandingPage>
 		</>
 	);
