@@ -6,5 +6,6 @@ export enum Category {
 	Filter = "Filter",
 	Logs = "Logging",
 	Antiraid = "Antiraid",
-	Appeal = "Appeals"
+	Appeal = "Appeals",
+	Scan = "Scanning"
 }
