@@ -13,42 +13,42 @@ const ogFace = "https://yoki.gg/face.png";
 const ogTitle = "Yoki";
 
 export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
-    getLayout?: (page: ReactElement) => ReactNode
+	getLayout?: (page: ReactElement) => ReactNode
 }
 
 type AppPropsWithLayout = AppProps & {
-    Component: NextPageWithLayout
+	Component: NextPageWithLayout
 }
 
 function MyApp({ Component, pageProps: { session, ...pageProps } }: AppPropsWithLayout) {
-    const layout = Component.getLayout ?? ((page) => page);
+	const layout = Component.getLayout ?? ((page) => page);
 
-    return layout(
-        <>
-            <Head>
-                <title>{ogTitle}</title>
-                <meta name="description" content={ogDescription} />
+	return layout(
+		<>
+			<Head>
+				<title>{ogTitle}</title>
+				<meta name="description" content={ogDescription} />
 
-                <meta property="og:url" content={ogUrl} />
-                <meta property="og:type" content="website" />
-                <meta property="og:title" content={ogTitle} />
-                <meta property="og:description" content={ogDescription} />
-                <meta property="og:image" content={ogFace} />
+				<meta property="og:url" content={ogUrl} />
+				<meta property="og:type" content="website" />
+				<meta property="og:title" content={ogTitle} />
+				<meta property="og:description" content={ogDescription} />
+				<meta property="og:image" content={ogFace} />
 
-                <meta name="twitter:card" content="summary_large_image" />
-                <meta property="twitter:domain" content="yoki.gg" />
-                <meta property="twitter:url" content={ogUrl} />
-                <meta name="twitter:title" content={ogTitle} />
-                <meta name="twitter:description" content={ogDescription} />
-                <meta name="twitter:image" content={ogFace} />
+				<meta name="twitter:card" content="summary_large_image" />
+				<meta property="twitter:domain" content="yoki.gg" />
+				<meta property="twitter:url" content={ogUrl} />
+				<meta name="twitter:title" content={ogTitle} />
+				<meta name="twitter:description" content={ogDescription} />
+				<meta name="twitter:image" content={ogFace} />
 
-                <link rel="icon" href="/favicon.ico" />
-            </Head>
-            <SessionProvider session={session}>
-                <Component {...pageProps} />
-            </SessionProvider>
-        </>
-    );
+				<link rel="icon" href="/favicon.ico" />
+			</Head>
+			<SessionProvider session={session}>
+				<Component {...pageProps} />
+			</SessionProvider>
+		</>
+	);
 }
 
 export default MyApp;

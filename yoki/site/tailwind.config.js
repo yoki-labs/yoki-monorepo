@@ -41,6 +41,10 @@ module.exports = withMT({
                     "dark-gray": "#191B1F",
                     gray: "#191B1F",
                     guilded: "#F5C400",
+                    black: "#111820",
+                    gilded: "#F5C400",
+                    slate: "#292B32",
+                    white: "#ececee"
                 },
             },
         },

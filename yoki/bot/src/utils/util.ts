@@ -61,6 +61,7 @@ export const typeToDBPropMap = {
 	antihoist: "antiHoistEnabled",
 	nsfwscan: "scanNSFW",
 	invitescan: "filterInvites",
+	appeals: "appealsEnabled"
 };
 
 export const DBPropToTypeMap = Object.assign({}, ...Object.keys(typeToDBPropMap).map((x) => ({ [typeToDBPropMap[x]]: x })));
