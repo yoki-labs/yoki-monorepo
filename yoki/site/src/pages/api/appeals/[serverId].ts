@@ -34,7 +34,7 @@ const PostAppealRoute = async (req: NextApiRequest, res: NextApiResponse) => {
 					.addFields([
 						{
 							"name": "User",
-							"value": `**${session.user.name}** (\`${session.user.id}\`)`
+							"value": `${session.user.name} (\`${session.user.id}\`)`
 						},
 						{
 							"name": "Content",

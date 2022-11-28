@@ -23,7 +23,7 @@ const Channel: Command = {
 		}
 
 		await ctx.prisma.server.update({ where: { id: commandCtx.server.id }, data: { appealChannel: channel.id } });
-		return ctx.messageUtil.replyWithSuccess(message, "Appeal channel successfully set", `You have now set the appeal channel to \`${channel.name}\``);
+		return ctx.messageUtil.replyWithSuccess(message, "Appeal channel successfully set", `You have now set the appeal channel to \`${channel.name}\`. Users will be able to appeal bans to your server through [this](https://yoki.gg/appeals/${message.serverId!}) url.`);
 	},
 };
 
