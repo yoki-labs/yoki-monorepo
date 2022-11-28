@@ -7,7 +7,7 @@ module.exports = {
     },
     "plugins": ["simple-import-sort", "unused-imports"],
     "rules": {
-		"prettier/prettier": "off",
+        "prettier/prettier": "off",
         "@typescript-eslint/no-var-requires": "off",
         "@typescript-eslint/unbound-method": "off",
         "@typescript-eslint/explicit-member-accessibility": "off",
@@ -16,7 +16,8 @@ module.exports = {
         "simple-import-sort/imports": "warn",
         "simple-import-sort/exports": "warn",
         "unused-imports/no-unused-imports": "error",
-		"@typescript-eslint/no-throw-literal": "off",
+        "@typescript-eslint/no-throw-literal": "off",
+        "quote-props": ["error", "consistent-as-needed"],
         "unused-imports/no-unused-vars": [
             "warn",
             {

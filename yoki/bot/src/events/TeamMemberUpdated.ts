@@ -5,7 +5,7 @@ import type { Context, Server } from "../typings";
 
 export default async (event: WSTeamMemberUpdatedPayload, ctx: Context, server: Server) => {
     const {
-        userInfo: { id: userId, nickname },
+        "userInfo": { "id": userId, nickname },
         serverId,
     } = event.d;
 

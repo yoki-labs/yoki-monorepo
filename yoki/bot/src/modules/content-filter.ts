@@ -23,7 +23,7 @@ export class ContentFilterUtil extends BaseFilterUtil {
     readonly presets = wordPresets;
 
     async scanMessageMedia(message: ChatMessagePayload): Promise<void> {
-        const { serverId, channelId, content, createdBy: userId, id: messageId } = message;
+        const { serverId, channelId, content, "createdBy": userId, "id": messageId } = message;
         const matches = [...content.matchAll(IMAGE_REGEX)];
         if (!matches.length) return;
 

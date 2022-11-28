@@ -25,7 +25,7 @@ const Set: Command = {
         { name: "logTypes", optional: true, type: "enumList", values: LogChannelArgs },
     ],
     execute: async (message, args, ctx) => {
-        const { id: channelId } = args.channel as ServerChannelPayload;
+        const { "id": channelId } = args.channel as ServerChannelPayload;
         let logTypes: LogChannelArgEnum[] = args.logTypes === null ? [] : (args.logTypes as LogChannelArgEnum[]);
 
         const channel = await ctx.rest.router.getChannel(channelId).catch(() => null);
