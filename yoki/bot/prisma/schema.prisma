@@ -234,6 +234,21 @@ model Appeal {
     creatorId String   @db.VarChar(255)
 }
 
+model ChannelIgnore {
+    id        Int               @id @default(autoincrement())
+    channelId String            @db.VarChar(255)
+    serverId  String            @db.VarChar(255)
+    type      ChannelIgnoreType
+    createdAt DateTime          @default(now())
+    updatedAt DateTime?         @updatedAt
+
+    @@unique([channelId, serverId, type])
+}
+
+enum ChannelIgnoreType {
+    AUTOMOD
+}
+
 enum LogChannelType {
     all
     mod_actions

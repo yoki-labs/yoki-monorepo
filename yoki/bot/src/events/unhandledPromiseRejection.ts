@@ -1,4 +1,5 @@
 import type { WebhookClient } from "@guildedjs/webhook-client";
+
 import { errorEmbed } from "../utils/formatters";
 
 let errorCounter = 0;

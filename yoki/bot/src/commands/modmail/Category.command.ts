@@ -40,7 +40,7 @@ const ModmailCategory: Command = {
 
 		if(endValue) {
 			try {
-				const createdChannel = await ctx.rest.router.createChannel({ "name": "PLACEHOLDER-MODMAIL-CHANNEL", type: "chat", serverId: message.serverId!, categoryId: endValue, groupId: commandCtx.server.modmailGroupId ?? undefined})
+				const createdChannel = await ctx.rest.router.createChannel({ name: "PLACEHOLDER-MODMAIL-CHANNEL", type: "chat", serverId: message.serverId!, categoryId: endValue, groupId: commandCtx.server.modmailGroupId ?? undefined})
 				await ctx.rest.router.deleteChannel(createdChannel.channel.id);
 			} catch(e) {
 				return ctx.messageUtil.replyWithError(message, "Error setting category!", stripIndents`

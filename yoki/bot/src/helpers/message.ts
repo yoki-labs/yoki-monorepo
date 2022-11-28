@@ -287,7 +287,7 @@ export class MessageUtil extends Util {
         embed?: EmbedPayload;
         message?: Partial<RESTPostChannelMessagesBody>;
     }) {
-        const { replyTo: message, title, items, itemsPerPage, itemMapping, page: pageOrNull, embed: embedPartial, message: messagePartial } = info;
+        const { "replyTo": message, title, items, itemsPerPage, itemMapping, "page": pageOrNull, "embed": embedPartial, "message": messagePartial } = info;
 
         const page = pageOrNull ?? 0;
 

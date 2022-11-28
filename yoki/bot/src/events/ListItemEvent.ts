@@ -5,7 +5,7 @@ import type { Context, Server } from "../typings";
 
 export default async (event: WSListItemCreated, ctx: Context, server: Server) => {
     const {
-        listItem: { id, channelId, createdBy, message, note, serverId },
+        "listItem": { id, channelId, createdBy, message, note, serverId },
     } = event.d;
 
     // If it's a thread

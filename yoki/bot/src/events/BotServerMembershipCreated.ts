@@ -1,6 +1,7 @@
 import { Embed } from "@guildedjs/embeds";
 import type { WSBotTeamMembershipCreated } from "@guildedjs/guilded-api-typings";
 import { stripIndents } from "common-tags";
+
 import type { Context } from "../typings";
 import { Colors } from "../utils/color";
 
@@ -23,5 +24,5 @@ export default async (packet: WSBotTeamMembershipCreated, ctx: Context) => {
   Want to explore more commands? Run the \`?help\` command!
   🔗[Support Server](https://yoki.gg/support) • 🖥️ [Website](https://yoki.gg)"
 
-  `).toJSON(), { "isPrivate": true })
+  `).toJSON(), { isPrivate: true })
 }
