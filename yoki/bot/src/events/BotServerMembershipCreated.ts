@@ -17,8 +17,9 @@ export default async (packet: WSBotTeamMembershipCreated, ctx: Context) => {
   - [Configure mod roles & automod](https://www.guilded.gg/Yoki/groups/2dXLMBPd/channels/0a2069b9-2e7d-45da-9121-ab3b463f9af2/docs/318919) 🤖
   - [Set up modmail](https://www.guilded.gg/Yoki/groups/2dXLMBPd/channels/0a2069b9-2e7d-45da-9121-ab3b463f9af2/docs/324894) 📧
   - [Enable antiraid & captchas](https://www.guilded.gg/Yoki/groups/2dXLMBPd/channels/0a2069b9-2e7d-45da-9121-ab3b463f9af2/docs/343700) 🛑
+  - [Filter invites & links](https://www.guilded.gg/Yoki/groups/2dXLMBPd/channels/0a2069b9-2e7d-45da-9121-ab3b463f9af2/docs/347910) 🔗
 
-  Want to explore more commands? Run the \`? help\` command!
+  Want to explore more commands? Run the \`?help\` command!
   🔗[Support Server](https://yoki.gg/support) • 🖥️ [Website](https://yoki.gg)"
 
   `).toJSON(), { "isPrivate": true })
