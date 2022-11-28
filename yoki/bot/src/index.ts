@@ -1,3 +1,4 @@
+import type { WSBotTeamMembershipCreated } from "@guildedjs/guilded-api-typings";
 import { Embed } from "@guildedjs/webhook-client";
 import { config } from "dotenv";
 import { join } from "path";
@@ -5,6 +6,7 @@ import recursive from "recursive-readdir";
 
 import Client from "./Client";
 import type { Command } from "./commands/Command";
+import BotServerMembershipCreated from "./events/BotServerMembershipCreated";
 import unhandledPromiseRejection from "./events/unhandledPromiseRejection";
 import Welcome from "./events/Welcome";
 import { codeBlock, errorEmbed } from "./utils/formatters";
@@ -23,14 +25,15 @@ const client = new Client();
 // This makes it simple to add new events to our bot by just creating a file and adding it to that object.
 // And any unhandled objects are simply ignored thanks to optional chaining
 client.ws.emitter.on("gatewayEvent", async (event, data) => {
+    if (event === "BotTeamMembershipCreated") return BotServerMembershipCreated(data as WSBotTeamMembershipCreated, client);
     const { serverId } = data.d as { serverId?: string | null };
     if (!serverId) return;
 
-    const serverFromDb = await client.dbUtil.getServer(serverId).catch((err) => 
-		void client.errorHandler.send("Error creating/fetching server for gateway event.", [errorEmbed(err, { server: serverId, event })])
-	);
+    const serverFromDb = await client.dbUtil.getServer(serverId).catch((err) =>
+        void client.errorHandler.send("Error creating/fetching server for gateway event.", [errorEmbed(err, { server: serverId, event })])
+    );
     if (!serverFromDb || serverFromDb?.blacklisted) return void 0;
-    return client.eventHandler[event]?.(data, client, serverFromDb).catch((err) => 
+    return client.eventHandler[event]?.(data, client, serverFromDb).catch((err) =>
         client.errorHandler.send("Uncaught event error", [errorEmbed(err, { server: serverId, event })])
     );
 });
