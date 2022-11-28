@@ -44,6 +44,7 @@ const PostVerifyRoute = async (req: NextApiRequest, res: NextApiResponse) => {
 		if (json.success) {
 			await prisma.captcha.update({ where: { id: captcha.id }, "data": { "solved": true, hashedIp } });
 			if (server.muteRoleId) await rest.router.removeRoleFromMember(captcha.serverId, captcha.triggeringUser, server.muteRoleId);
+			if (server.memberRoleId) await rest.router.assignRoleToMember(captcha.serverId, captcha.triggeringUser, server.memberRoleId);
 			return res.status(200).json({ error: false });
 		}
 		return res.status(200).json({ error: true, message: "There was an issue validating your captcha request." });
