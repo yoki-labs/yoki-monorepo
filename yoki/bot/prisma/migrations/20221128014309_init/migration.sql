@@ -1,0 +1,1 @@
+ALTER TABLE "Server" RENAME COLUMN "appealChannel" TO "appealChannelId";

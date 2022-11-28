@@ -18,14 +18,14 @@ const PostAppealRoute = async (req: NextApiRequest, res: NextApiResponse) => {
 
 	const server = await prisma.server.findFirst({ where: { serverId } });
 	if (!server) return res.status(404).json({ error: true, message: "Invalid server ID." });
-	if (!server.appealChannel) return res.status(404).json({ error: true, code: "NOT_ENABLED", message: "Server does not have appeals enabled." });
+	if (!server.appealChannelId) return res.status(404).json({ error: true, code: "NOT_ENABLED", message: "Server does not have appeals enabled." });
 
 	const existingBan = await rest.router.getMemberBan(server.serverId, session.user.id).then(x => x.serverMemberBan).catch(() => null);
 	if (!existingBan) return res.status(404).json({ error: true, code: "NOT_BANNED", message: "User is not banned." });
 
 	try {
 		await prisma.appeal.create({ "data": { "content": appealContent, serverId: server.serverId, creatorId: session.user.id } });
-		await rest.router.createChannelMessage(server.appealChannel, {
+		await rest.router.createChannelMessage(server.appealChannelId, {
 			"embeds": [
 				new Embed()
 					.setTitle("New Appeal")

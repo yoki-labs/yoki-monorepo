@@ -16,7 +16,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async (ctx) => {
 	const session = await unstable_getServerSession(ctx.req, ctx.res, authOptions);
 
 	if (!server) return { props: { id: null, enabled: false, banInfo: null, tooRecent: false } }
-	if (!server.appealsEnabled || !server.appealChannel) return { props: { id: server.serverId, enabled: false, banInfo: null, tooRecent: false } }
+	if (!server.appealsEnabled || !server.appealChannelId) return { props: { id: server.serverId, enabled: false, banInfo: null, tooRecent: false } }
 	if (!session?.user.id) return { redirect: { "destination": "/auth/signin", permanent: false } };
 	const ban = await rest.router.getMemberBan(serverId, session.user.id).then(x => x.serverMemberBan).catch(() => null);
 
