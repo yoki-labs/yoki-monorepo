@@ -125,7 +125,7 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context, server:
                 resultingAction: () => ctx.rest.router.deleteChannelMessage(message.channelId, message.id),
             });
 
-        if (server.premium && server.scanNSFW) {
+        if (server.scanNSFW) {
             await ctx.contentFilterUtil.scanMessageMedia(message);
         }
 
