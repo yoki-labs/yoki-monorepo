@@ -94,7 +94,7 @@ model UrlFilter {
 }
 
 model InviteFilter {
-    id             Int      @default(autoincrement())
+    id             Int      @id @default(autoincrement())
     serverId       String   @db.VarChar(255)
     targetServerId String   @db.VarChar(255)
     creatorId      String   @db.VarChar(255)

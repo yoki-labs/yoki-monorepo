@@ -1,12 +1,3 @@
-/*
-  Warnings:
-
-  - The primary key for the `InviteFilter` table will be changed. If it partially fails, the table could be left without primary key constraint.
-
-*/
--- AlterTable
-ALTER TABLE "InviteFilter" DROP CONSTRAINT "InviteFilter_pkey";
-
 -- CreateTable
 CREATE TABLE "Appeal" (
     "id" SERIAL NOT NULL,
