@@ -24,7 +24,7 @@ model Server {
     antiRaidResponse           ResponseType?
     antiRaidAgeFilter          Int?
     antiRaidChallengeChannel   String?       @db.VarChar(255)
-    memberRoleId               String?       @db.VarChar(255)
+    memberRoleId               Int?          @db.Integer
     appealChannelId            String?       @db.VarChar(255)
     appealsEnabled             Boolean       @default(false)
     flags                      String[]
