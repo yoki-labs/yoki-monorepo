@@ -21,10 +21,10 @@ import ForumTopicDeleted from "./events/ForumTopicDeleted";
 import ForumTopicLockedEvent from "./events/ForumTopicLockedEvent";
 import ForumTopicUpdated from "./events/ForumTopicUpdated";
 import ListItemEvent from "./events/ListItemEvent";
-import TeamMemberJoined from "./events/TeamMemberJoined";
-import TeamMemberRemoved from "./events/TeamMemberRemoved";
-import TeamMemberUpdated from "./events/TeamMemberUpdated";
-import teamRolesUpdated from "./events/teamRolesUpdated";
+import ServerMemberJoined from "./events/ServerMemberJoined";
+import ServerMemberRemoved from "./events/ServerMemberRemoved";
+import ServerMemberUpdated from "./events/ServerMemberUpdated";
+import ServerRolesUpdated from "./events/ServerRolesUpdated";
 import { ChannelUtil } from "./helpers/channel";
 import { DatabaseUtil } from "./helpers/database";
 import { MessageUtil } from "./helpers/message";
@@ -100,11 +100,11 @@ export default class Client {
         ChatMessageUpdated,
         // handles messages deleted
         ChatMessageDeleted,
-		BotServerMembershipCreated,
+        BotServerMembershipCreated,
         // handles nickname updates and other member data
-        TeamMemberJoined,
-        TeamMemberRemoved,
-        TeamMemberUpdated,
+        ServerMemberJoined,
+        ServerMemberRemoved,
+        ServerMemberUpdated,
         // List item name changes
         ListItemCreated: ListItemEvent,
         ListItemUpdated: ListItemEvent,
@@ -115,7 +115,7 @@ export default class Client {
         ForumTopicLocked: (packet, ctx) => ForumTopicLockedEvent(packet, ctx, "Locked", Colors.red),
         ForumTopicUnlocked: (packet, ctx) => ForumTopicLockedEvent(packet, ctx, "Unlocked", Colors.green),
         // handles members getting new roles
-        teamRolesUpdated,
+        ServerRolesUpdated,
         // handles reactions
         ChannelMessageReactionCreated,
     };
