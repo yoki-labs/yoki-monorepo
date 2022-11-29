@@ -25,11 +25,14 @@ export default async (packet: WSTeamMemberJoinedPayload, ctx: Context, server: S
 	}
 
 	const userId = packet.d.member.user.id;
+	console.log(`${userId} joined ${server.serverId}, with account age of ${Date.now() - new Date(packet.d.member.user.createdAt).getTime()}`);
+
 	if (
 		server.antiRaidEnabled &&
 		server.antiRaidAgeFilter &&
 		(Date.now() - new Date(packet.d.member.user.createdAt).getTime() <= server.antiRaidAgeFilter || !member.user.avatar)
 	) {
+		console.log(`User ${userId} tripped antiraid in server ${server.serverId}, response ${server.antiRaidResponse}`)
 		void ctx.amp.logEvent({ event_type: "FRESH_ACCOUNT_JOIN", user_id: member.user.id, event_properties: { serverId: packet.d.serverId } });
 		switch (server.antiRaidResponse) {
 			case "TEXT_CAPTCHA": {
@@ -108,6 +111,7 @@ export default async (packet: WSTeamMemberJoinedPayload, ctx: Context, server: S
 						userCaptcha = createdCaptcha;
 					}
 
+					console.log(`Muting user ${userId} in ${server.serverId} for site captcha`)
 					if (server.muteRoleId) await ctx.rest.router.assignRoleToMember(serverId, member.user.id, server.muteRoleId).catch(() => null);
 					// Have to complete captcha
 					await ctx.messageUtil.sendWarningBlock(
