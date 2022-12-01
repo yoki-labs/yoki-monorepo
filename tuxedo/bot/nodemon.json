@@ -1,6 +1,6 @@
 {
-    "watch": ["src"],
+    "watch": ["src", "../../yokilabs"],
     "ext": "ts,json",
-    "exec": "npx tsc && node --enable-source-maps dist/index.js",
+    "exec": "npx tsc -p ../../yokilabs/util && npx tsc -p ../../yokilabs/bot && npx tsc && node --enable-source-maps dist/index.js",
     "legacyWatch": true
 }
