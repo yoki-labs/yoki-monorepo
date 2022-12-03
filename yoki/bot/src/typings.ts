@@ -7,15 +7,15 @@ export type Context = Client;
 
 // context available in every execution of a command
 export interface CommandContext {
-    packet: WSChatMessageCreatedPayload;
-    server: Server;
-    member: CachedMember;
+	packet: WSChatMessageCreatedPayload;
+	server: Server;
+	member: CachedMember;
 }
 
-// member cached in redis
+// member cached in mem
 export type CachedMember = TeamMemberPayload;
 
-// channel cached in redis
+// channel cached in mem
 export type CachedChannel = Pick<ServerChannelPayload, "id" | "type" | "name" | "createdAt" | "serverId" | "parentId" | "categoryId" | "groupId">;
 
 // re-exporting enums, types, etc. from prisma incase we switch ORMs so we can easily replace them
@@ -26,19 +26,19 @@ export type ContentFilterScan = Pick<ContentFilter, "content" | "matching" | "in
 export type Server = DBServer & { getPrefix: () => string; getTimezone: () => string; formatTimezone: (date: Date) => string };
 export type ResolvedArgs = string | string[] | number | boolean | CachedMember | ServerChannelPayload | null;
 export interface UsedMentions {
-    user: number;
-    role: number;
-    channel: number;
+	user: number;
+	role: number;
+	channel: number;
 }
 
 export declare interface PresetPatternObject {
-    type: FilterMatching;
-    _: PresetPattern[];
+	type: FilterMatching;
+	_: PresetPattern[];
 }
 export type PresetPattern = string | string[] | PresetPatternObject;
 
 export declare interface PresetLink {
-    domain: string;
-    subdomain?: string;
-    route?: string[];
+	domain: string;
+	subdomain?: string;
+	route?: string[];
 }
