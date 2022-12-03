@@ -14,14 +14,6 @@ services:
       - main-network
     ports:
       - "4433:4433"
-  cache:
-    image: redis/redis-stack-server:latest
-    container_name: YOKI_CACHE
-    restart: unless-stopped
-    networks:
-      - main-network
-    ports:
-      - "6379:6379"
 
 networks:
   main-network:
