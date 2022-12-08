@@ -269,7 +269,7 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context, server:
 		// notify the user that there was an error executing the command
 		return ctx.messageUtil.replyWithUnexpected(
 			message,
-			`This is potentially an issue on our end, please contact us and forward the following ID and error: ${inlineCode(referenceId)} & ${inlineCode((e as any).message)}`
+			`This is potentially an issue on our end, please join [our server](https://www.guilded.gg/Yoki) and forward the following ID and error: ${inlineCode(referenceId)} & ${inlineCode((e as any).message)}`
 		);
 	}
 	return void 0;
