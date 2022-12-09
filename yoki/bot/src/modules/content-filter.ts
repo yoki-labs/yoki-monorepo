@@ -5,8 +5,8 @@ import { stripIndents } from "common-tags";
 
 import { ContentFilterScan, Server, Severity } from "../typings";
 import { Colors } from "../utils/color";
+import { IMAGE_REGEX } from "../utils/matching";
 import { wordPresets } from "../utils/presets";
-import { IMAGE_REGEX } from "../utils/util";
 import BaseFilterUtil from "./base-filter";
 import { ImageFilterUtil } from "./image-filter";
 
@@ -23,7 +23,7 @@ export class ContentFilterUtil extends BaseFilterUtil {
     readonly presets = wordPresets;
 
     async scanMessageMedia(message: ChatMessagePayload): Promise<void> {
-        const { serverId, channelId, content, "createdBy": userId, "id": messageId } = message;
+        const { serverId, channelId, content, createdBy: userId, id: messageId } = message;
         const matches = [...content.matchAll(IMAGE_REGEX)];
         if (!matches.length) return;
 

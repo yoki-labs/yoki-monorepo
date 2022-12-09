@@ -1,7 +1,7 @@
 import type { WSChatMessageCreatedPayload } from "@guildedjs/guilded-api-typings";
 
 import type { CachedMember, Context, UsedMentions } from "../typings";
-import { isHashId } from "../utils/util";
+import { isHashId } from "../utils/matching";
 
 export default async (
     input: string,

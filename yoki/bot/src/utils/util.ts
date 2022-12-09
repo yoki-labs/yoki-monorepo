@@ -1,6 +1,5 @@
 import { ContentFilter, FilterMatching, ResponseType, RoleType } from "@prisma/client";
 
-export const isDomain = (str: string) => /[^!@#$%^&*()?<>.,~`'":;\\\/|\s()\[\]]+\.[^!@#$%^&*()?<>.,~`'":;\\\/|\s()\[\]]+/.test(str);
 export const roleValues: { [staffRole in RoleType]: number } = {
     [RoleType.ADMIN]: 3,
     [RoleType.MOD]: 2,
@@ -24,8 +23,6 @@ export function suspicious(date: Date) {
     return date.getTime() > new Date().getTime() - 8.64e7;
 }
 
-export const IMAGE_REGEX = /!\[[^\]]*\]\((?<filename>.*?)(?=\"|\))(?<optionalpart>\".*\")?\)/g;
-
 export function getFilterFromSyntax(word: string): [string, FilterMatching] {
     const isPrefixed = word.endsWith("*");
     const isSuffixed = word.startsWith("*");
@@ -33,17 +30,17 @@ export function getFilterFromSyntax(word: string): [string, FilterMatching] {
     return isPrefixed && isSuffixed
         ? [word.substring(1, word.length - 1), FilterMatching.INFIX]
         : isPrefixed
-        ? [word.substring(0, word.length - 1), FilterMatching.PREFIX]
-        : isSuffixed
-        ? [word.substring(1), FilterMatching.POSTFIX]
-        : [word, FilterMatching.WORD];
+            ? [word.substring(0, word.length - 1), FilterMatching.PREFIX]
+            : isSuffixed
+                ? [word.substring(1), FilterMatching.POSTFIX]
+                : [word, FilterMatching.WORD];
 }
 
 export function filterToString(filter: ContentFilter) {
     return filter.matching === FilterMatching.INFIX
         ? `*${filter.content}*`
         : // *word, word* or word
-          `${filter.matching === FilterMatching.POSTFIX ? "*" : ""}${filter.content}${filter.matching === FilterMatching.PREFIX ? "*" : ""}`;
+        `${filter.matching === FilterMatching.POSTFIX ? "*" : ""}${filter.content}${filter.matching === FilterMatching.PREFIX ? "*" : ""}`;
 }
 
 export const antiRaidResponseMap = {

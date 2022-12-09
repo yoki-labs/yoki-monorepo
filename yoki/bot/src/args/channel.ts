@@ -1,7 +1,7 @@
 import type { WSChatMessageCreatedPayload } from "@guildedjs/guilded-api-typings";
 
 import type { Context, UsedMentions } from "../typings";
-import { isUUID } from "../utils/util";
+import { isUUID } from "../utils/matching";
 
 export default async (input: string, args: string[], index: number, ctx: Context, packet: WSChatMessageCreatedPayload, __, usedMentions: UsedMentions) => {
     if (input.startsWith("#")) {

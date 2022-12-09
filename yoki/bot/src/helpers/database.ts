@@ -19,8 +19,8 @@ export class DatabaseUtil extends Util {
         return this.prisma.urlFilter.create({ data });
     }
 
-    removeUrlFromFilter(serverId: string, domain: string) {
-        return this.prisma.urlFilter.deleteMany({ where: { serverId, domain } });
+    removeUrlFromFilter(serverId: string, domain: string, subdomain?: string, route?: string) {
+        return this.prisma.urlFilter.deleteMany({ where: { serverId, domain, subdomain, route } });
     }
 
     addInviteToFilter(data: Omit<InviteFilter, "id" | "createdAt">) {
@@ -72,7 +72,16 @@ export class DatabaseUtil extends Util {
                 if (!server && createIfNotExists) return this.createFreshServerInDatabase(serverId);
                 return server ?? null;
             })
-            .then((data) => (data ? { ...data, getPrefix: () => data.prefix ?? process.env.DEFAULT_PREFIX, getTimezone: () => data.timezone ?? "America/New_York", formatTimezone: (date: Date) => FormatDate(date, data.timezone ?? "America/New_York") } : null));
+            .then((data) =>
+                data
+                    ? {
+                          ...data,
+                          getPrefix: () => data.prefix ?? process.env.DEFAULT_PREFIX,
+                          getTimezone: () => data.timezone ?? "America/New_York",
+                          formatTimezone: (date: Date) => FormatDate(date, data.timezone ?? "America/New_York"),
+                      }
+                    : null
+            );
     }
 
     async getLogChannel(serverId: string, type: LogChannelType) {
@@ -180,13 +189,16 @@ export class DatabaseUtil extends Util {
     }
 
     addActionFromMessage(message: ChatMessagePayload, data: Pick<Action, "type" | "reason" | "targetId" | "infractionPoints" | "expiresAt">, server: Server) {
-        return this.emitAction({
-            serverId: message.serverId!,
-            executorId: message.createdBy,
-            channelId: null,
-            triggerContent: null,
-            ...data,
-        }, server);
+        return this.emitAction(
+            {
+                serverId: message.serverId!,
+                executorId: message.createdBy,
+                channelId: null,
+                triggerContent: null,
+                ...data,
+            },
+            server
+        );
     }
 
     populateActionMessage(id: string, channelId: string, messageId: string) {
