@@ -3,15 +3,12 @@ import fetch from "node-fetch";
 
 import type { PresetLink, Server } from "../typings";
 import { Colors } from "../utils/color";
+import { isHashId, URL_REGEX } from "../utils/matching";
 import { urlPresets } from "../utils/presets";
-import { isHashId } from "../utils/util";
 import BaseFilterUtil from "./base-filter";
 import { FilteredContent } from "./content-filter";
 
 export class LinkFilterUtil extends BaseFilterUtil {
-    readonly urlRegex =
-        /(?:(?:[A-Za-z]+)?:\/{2,3})?(?<subdomain>(?:[^!@#$%^&*()?<>.,~`'":;\\\/|\s()\[\]]+[.])+)?(?<domain>[^!@#$%^&*()?<>.,~`'":;\\\/|\s()\[\]]+\.[^!@#$%^&*()?<>.,~`'":;\\\/|\s()\[\]]+)(?<route>(?:[/][^\s?#&\/()\[\]]+)+)?[/]?/g;
-
     readonly vanityRegex = /^[A-Za-z0-9\-]+$/;
 
     readonly nonServerRoutes = [
@@ -69,14 +66,14 @@ export class LinkFilterUtil extends BaseFilterUtil {
             event_properties: { serverId: server.serverId },
         });
 
-        const links = content.matchAll(this.urlRegex);
+        const links = content.matchAll(URL_REGEX);
         for (const link of links) {
             // Matched link parts
             const groups = link.groups! as { subdomain?: string; domain: string; route?: string };
             const { domain, subdomain, route } = groups;
 
             // Not .some, because severity and infraction points
-            const greylistedUrl = greylistedUrls?.find((x) => x.domain === domain);
+            const greylistedUrl = greylistedUrls?.find((x) => x.domain === domain && (!x.subdomain || x.subdomain === subdomain) && (!x.route || x.route === route));
             const inPreset = enabledPresets.find((x) => this.presets[x.preset].some((y) => this.matchesPresetLink(y, groups)));
 
             // Bad URL

@@ -1,6 +1,6 @@
 import { RoleType } from "../../../typings";
 import { inlineQuote } from "../../../utils/formatters";
-import { isHashId } from "../../../utils/util";
+import { isHashId } from "../../../utils/matching";
 import { Category } from "../../Category";
 import type { Command } from "../../Command";
 

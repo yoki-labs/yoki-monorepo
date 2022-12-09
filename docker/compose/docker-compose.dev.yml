@@ -22,7 +22,6 @@ services:
         command: "yarn run dev"
         depends_on:
             - db
-            - cache
         volumes:
             - "../../yoki/bot/src:/usr/app/yoki/bot/src"
         restart: "unless-stopped"

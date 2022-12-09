@@ -86,12 +86,14 @@ model UrlFilter {
     serverId         String   @db.VarChar(255)
     // If we are going to use routes
     domain           String   @db.VarChar(255)
+    subdomain        String?  @db.VarChar(100)
+    route            String?  @db.VarChar(200)
     severity         Severity
     creatorId        String   @db.VarChar(255)
     createdAt        DateTime @default(now())
     infractionPoints Int
 
-    @@unique([serverId, domain])
+    @@unique([serverId, domain, subdomain, route])
 }
 
 model InviteFilter {
