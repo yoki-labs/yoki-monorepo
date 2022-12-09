@@ -6,12 +6,12 @@ import { Util } from "../helpers/util";
 import type { Server } from "../typings";
 import type { FilteredContent } from "./content-filter";
 
-export default abstract class BaseFilterUtil extends Util {
+export default abstract class BaseFilterUtil<TFilterType = null> extends Util {
     // An object mapping the Action type -> Action punishment
     // Easy way for us to organize punishments into reusable code
     readonly severityAction: Record<
         Exclude<Severity, "NOTE">,
-        (userId: string, server: Server, channelId: string | null, filteredContent: FilteredContent) => unknown | undefined
+        (userId: string, server: Server, channelId: string | null, filteredContent: FilteredContent, filterType: TFilterType | null) => unknown | undefined
     > = {
         [Severity.BAN]: (userId, server) => {
             return this.rest.router.banMember(server.serverId, userId);
@@ -23,10 +23,10 @@ export default abstract class BaseFilterUtil extends Util {
             await this.rest.router.banMember(server.serverId, userId);
             return this.rest.router.unbanMember(server.serverId, userId);
         },
-        [Severity.MUTE]: async (userId, server, channelId, filteredContent) => {
+        [Severity.MUTE]: async (userId, server, channelId, filteredContent, filterType) => {
             if (server.muteRoleId) {
                 await this.rest.router.assignRoleToMember(server.serverId, userId, server.muteRoleId);
-                return this.onUserMute(userId, server, channelId, filteredContent);
+                return this.onUserMute(userId, server, channelId, filteredContent, filterType);
             }
         },
         [Severity.WARN]: this.onUserWarn.bind(this),
@@ -41,7 +41,8 @@ export default abstract class BaseFilterUtil extends Util {
         reason: string,
         infractionPoints: number,
         fallbackSeverity: Severity,
-        triggerContent: string | null = null
+        triggerContent: string | null = null,
+        filterType: TFilterType | null = null
     ) {
         if (!(await this.shouldFilterUser(server, userId))) return;
 
@@ -57,23 +58,26 @@ export default abstract class BaseFilterUtil extends Util {
 
         const actionType = memberExceeds || fallbackSeverity;
 
-        await this.dbUtil.emitAction({
-            type: actionType,
-            reason: `[AUTOMOD] ${reason}.${memberExceeds ? ` ${memberExceeds} threshold exceeded.` : ""}`,
-            serverId: server.serverId,
-            channelId,
-            targetId: userId,
-            executorId: this.client.userId!,
-            infractionPoints,
-            triggerContent,
-            expiresAt: actionType === Severity.MUTE ? new Date(Date.now() + 1000 * 60 * 60 * 12) : null,
-        }, server);
+        await this.dbUtil.emitAction(
+            {
+                type: actionType,
+                reason: `[AUTOMOD] ${reason}.${memberExceeds ? ` ${memberExceeds} threshold exceeded.` : ""}`,
+                serverId: server.serverId,
+                channelId,
+                targetId: userId,
+                executorId: this.client.userId!,
+                infractionPoints,
+                triggerContent,
+                expiresAt: actionType === Severity.MUTE ? new Date(Date.now() + 1000 * 60 * 60 * 12) : null,
+            },
+            server
+        );
 
-        return this.severityAction[actionType](userId, server, channelId, filteredContent);
+        return this.severityAction[actionType](userId, server, channelId, filteredContent, filterType);
     }
 
-    abstract onUserWarn(userId: string, server: Server, channelId: string | null, filteredContent: FilteredContent): Promise<unknown> | unknown;
-    abstract onUserMute(userId: string, server: Server, channelId: string | null, filteredContent: FilteredContent): Promise<unknown> | unknown;
+    abstract onUserWarn(userId: string, server: Server, channelId: string | null, filteredContent: FilteredContent, filterType: TFilterType | null): Promise<unknown> | unknown;
+    abstract onUserMute(userId: string, server: Server, channelId: string | null, filteredContent: FilteredContent, filterType: TFilterType | null): Promise<unknown> | unknown;
 
     // check if the amount of points incurred by this user is higher than the allowed threshold for this server
     ifExceedsInfractionThreshold(total: number, server: Server) {

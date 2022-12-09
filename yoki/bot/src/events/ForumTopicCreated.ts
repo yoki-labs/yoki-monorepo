@@ -1,7 +1,7 @@
 import type { ForumTopicPayload } from "@guildedjs/guilded-api-typings";
 
 import { FilteredContent } from "../modules/content-filter";
-import { Context, LogChannelType,Server } from "../typings";
+import { Context, LogChannelType, Server } from "../typings";
 
 export default async (packet: { d: { serverId: string; forumTopic: ForumTopicPayload } }, ctx: Context, server: Server) => {
     const { forumTopic, serverId } = packet.d;
@@ -43,7 +43,7 @@ export default async (packet: { d: { serverId: string; forumTopic: ForumTopicPay
         });
 
         // Spam prevention
-        await ctx.spamFilterUtil.checkForSpam(server, forumTopic.createdBy, forumTopic.channelId, deletion);
+        await ctx.spamFilterUtil.checkForSpam(server, forumTopic.createdBy, forumTopic.channelId, forumTopic.mentions, deletion);
     }
 
     if (server.filterInvites || server.filterEnabled)
