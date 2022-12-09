@@ -175,8 +175,8 @@ export class ContentFilterUtil extends BaseFilterUtil {
         // Execute the punishing action. If this is a threshold exceeding, execute the punishment associated with the exceeded threshold
         // Otherwise, execute the action associated with this specific filter word or preset entry
         return exceededThreshold
-            ? this.severityAction[exceededThreshold](member.user.id, server, channelId, filteredContent)
-            : this.severityAction[triggeredWord.severity]?.(member.user.id, server, channelId, filteredContent);
+            ? this.severityAction[exceededThreshold](member.user.id, server, channelId, filteredContent, null)
+            : this.severityAction[triggeredWord.severity]?.(member.user.id, server, channelId, filteredContent, null);
     }
 
     tripsFilter(contentFilter: ContentFilter | Omit<ContentFilterScan, "severity">, words: string[]) {

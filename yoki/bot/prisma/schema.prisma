@@ -8,42 +8,60 @@ datasource db {
 }
 
 model Server {
-    id                         Int           @id @default(autoincrement())
-    serverId                   String        @unique @db.VarChar(255)
-    botJoinedAt                DateTime?     @default(now())
-    premium                    PremiumType?
-    locale                     String        @default("en-US")
-    muteRoleId                 Int?
-    filterEnabled              Boolean       @default(false)
-    filterInvites              Boolean       @default(false)
-    urlFilterIsWhitelist       Boolean       @default(false)
-    linkSeverity               Severity      @default(WARN)
-    linkInfractionPoints       Int           @default(5)
-    blacklisted                Boolean       @default(false)
-    antiRaidEnabled            Boolean       @default(false)
-    antiRaidResponse           ResponseType?
-    antiRaidAgeFilter          Int?
-    antiRaidChallengeChannel   String?       @db.VarChar(255)
-    memberRoleId               Int?          @db.Integer
-    appealChannelId            String?       @db.VarChar(255)
-    appealsEnabled             Boolean       @default(false)
-    flags                      String[]
-    muteInfractionThreshold    Int?          @default(10)
-    kickInfractionThreshold    Int?          @default(15)
-    banInfractionThreshold     Int?          @default(45)
-    softbanInfractionThreshold Int?          @default(25)
-    spamInfractionPoints       Int           @default(5)
-    timezone                   String?
-    filterOnMods               Boolean       @default(false)
-    antiHoistEnabled           Boolean       @default(false)
-    prefix                     String?
-    createdAt                  DateTime      @default(now())
-    updatedAt                  DateTime?     @updatedAt
-    modmailEnabled             Boolean       @default(false)
-    modmailGroupId             String?       @db.VarChar(255)
-    modmailCategoryId          Int?
-    scanNSFW                   Boolean       @default(false)
-    spamFrequency              Int           @default(9)
+    id       Int    @id @default(autoincrement())
+    serverId String @unique @db.VarChar(255)
+
+    // --- Specified by the bot
+    premium     PremiumType?
+    blacklisted Boolean      @default(false)
+    flags       String[]
+
+    // --- Server preferences
+    prefix   String?
+    locale   String  @default("en-US")
+    timezone String?
+
+    // --- Logged dates
+    botJoinedAt DateTime? @default(now())
+    createdAt   DateTime  @default(now())
+    updatedAt   DateTime? @updatedAt
+
+    // --- Infractions
+    muteRoleId           Int?
+    linkSeverity         Severity @default(WARN)
+    linkInfractionPoints Int      @default(5)
+    spamInfractionPoints Int      @default(5)
+
+    muteInfractionThreshold    Int? @default(10)
+    kickInfractionThreshold    Int? @default(15)
+    banInfractionThreshold     Int? @default(45)
+    softbanInfractionThreshold Int? @default(25)
+
+    // --- Anti-raid and captcha
+    antiRaidEnabled          Boolean       @default(false)
+    antiRaidResponse         ResponseType?
+    antiRaidAgeFilter        Int?
+    antiRaidChallengeChannel String?       @db.VarChar(255)
+    memberRoleId             Int?          @db.Integer
+
+    // -- Appeals
+    appealChannelId String? @db.VarChar(255)
+    appealsEnabled  Boolean @default(false)
+
+    modmailEnabled    Boolean @default(false)
+    modmailGroupId    String? @db.VarChar(255)
+    modmailCategoryId Int?
+
+    // --- Spam and filter
+    filterEnabled        Boolean @default(false)
+    filterOnMods         Boolean @default(false)
+    filterInvites        Boolean @default(false)
+    antiHoistEnabled     Boolean @default(false)
+    urlFilterIsWhitelist Boolean @default(false)
+    scanNSFW             Boolean @default(false)
+    // Per 5s
+    spamFrequency        Int     @default(9)
+    spamMentionFrequency Int     @default(5)
 }
 
 model LogChannel {
