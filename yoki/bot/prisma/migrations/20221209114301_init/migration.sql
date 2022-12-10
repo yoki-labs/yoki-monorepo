@@ -1,3 +1,0 @@
--- AlterTable
-ALTER TABLE "UrlFilter" ALTER COLUMN "route" DROP NOT NULL,
-ALTER COLUMN "subdomain" DROP NOT NULL;
