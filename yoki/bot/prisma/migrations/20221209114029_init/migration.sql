@@ -10,8 +10,8 @@
 DROP INDEX "UrlFilter_serverId_domain_key";
 
 -- AlterTable
-ALTER TABLE "UrlFilter" ADD COLUMN     "route" VARCHAR(200) NOT NULL,
-ADD COLUMN     "subdomain" VARCHAR(100) NOT NULL;
+ALTER TABLE "UrlFilter" ADD COLUMN     "route" VARCHAR(200),
+ADD COLUMN     "subdomain" VARCHAR(100);
 
 -- CreateIndex
 CREATE UNIQUE INDEX "UrlFilter_serverId_domain_subdomain_route_key" ON "UrlFilter"("serverId", "domain", "subdomain", "route");
