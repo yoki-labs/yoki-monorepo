@@ -30,7 +30,7 @@ const Enable: Command = {
         const preset = args.preset as string;
         const severity = transformSeverityStringToEnum((args.severity as string | null) ?? "warn");
         const infractionPoints = args.infractionPoints as number | null;
-        const allPresets = Object.keys(ctx.contentFilterUtil.presets);
+        const allPresets = Object.keys(ctx.contentFilterUtil.presets).concat(Object.keys(ctx.linkFilterUtil.presets));
 
         if (!allPresets.includes(preset))
             return ctx.messageUtil.replyWithError(message, `No such preset`, `That is not a valid preset. Your options are: ${allPresets.map((x) => inlineCode(x)).join(", ")}`);
@@ -49,12 +49,12 @@ const Enable: Command = {
         return (
             existingPreset
                 ? ctx.prisma.preset.update({
-                      where: { id: existingPreset.id },
-                      data: { severity, infractionPoints },
-                  })
+                    where: { id: existingPreset.id },
+                    data: { severity, infractionPoints },
+                })
                 : ctx.prisma.preset.create({
-                      data: { serverId: message.serverId!, preset, severity, infractionPoints },
-                  })
+                    data: { serverId: message.serverId!, preset, severity, infractionPoints },
+                })
         )
             .then(() =>
                 ctx.messageUtil.replyWithSuccess(
