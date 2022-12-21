@@ -5,6 +5,7 @@ import { Context, LogChannelType, Server } from "../typings";
 import { Colors } from "../utils/color";
 import { inlineCode, inlineQuote } from "../utils/formatters";
 import { quoteChangedContent } from "../utils/messages";
+import { moderateContent } from "../utils/moderation";
 
 export default async (packet: { d: { serverId: string; forumTopic: ForumTopicPayload } }, ctx: Context, server: Server) => {
     const { forumTopic, serverId } = packet.d;
@@ -20,36 +21,17 @@ export default async (packet: { d: { serverId: string; forumTopic: ForumTopicPay
     // Scanning
     const deletion = () => ctx.rest.delete(`/channels/${forumTopic.channelId}/topics/${forumTopic.id}`);
 
-    const enabledPresets = server.filterEnabled ? await ctx.dbUtil.getEnabledPresets(server.serverId) : undefined;
-
-    if (server.filterEnabled) {
-        // Scan the forum topic for any harmful content (filter list, presets)
-        await ctx.contentFilterUtil.scanContent({
-            userId: forumTopic.createdByWebhookId || forumTopic.createdBy,
-            text: forumTopic.content!,
-            filteredContent: FilteredContent.ChannelContent,
-            channelId: forumTopic.channelId,
-            server,
-            presets: enabledPresets,
-            // Filter
-            resultingAction: deletion,
-        });
-
-        // Spam prevention
-        await ctx.spamFilterUtil.checkForSpam(server, forumTopic.createdBy, forumTopic.channelId, forumTopic.mentions, deletion);
-    }
-
-    if (server.filterInvites || server.filterEnabled)
-        // Invites or bad URLs
-        await ctx.linkFilterUtil.checkLinks({
-            server,
-            userId: forumTopic.createdBy,
-            channelId: forumTopic.channelId,
-            content: forumTopic.content!,
-            filteredContent: FilteredContent.ChannelContent,
-            presets: enabledPresets,
-            resultingAction: deletion,
-        });
+    await moderateContent(
+        ctx,
+        server,
+        forumTopic.channelId,
+        "FORUM_TOPIC",
+        FilteredContent.ChannelContent,
+        forumTopic.createdBy,
+        forumTopic.content,
+        forumTopic.mentions,
+        deletion
+    );
 
     // check if there's a log channel channel for message deletions
     const editedTopicLogChannel = await ctx.dbUtil.getLogChannel(serverId, LogChannelType.topic_edits);

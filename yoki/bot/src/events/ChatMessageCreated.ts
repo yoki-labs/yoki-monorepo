@@ -1,6 +1,5 @@
 import type { WSChatMessageCreatedPayload } from "@guildedjs/guilded-api-typings";
 import { Embed } from "@guildedjs/webhook-client";
-import { ChannelIgnoreType } from "@prisma/client";
 import { stripIndents } from "common-tags";
 import { nanoid } from "nanoid";
 
@@ -18,259 +17,266 @@ import { FilteredContent } from "../modules/content-filter";
 import type { Context, ResolvedArgs, Server, UsedMentions } from "../typings";
 import { Colors } from "../utils/color";
 import { codeBlock, inlineCode, inlineQuote } from "../utils/formatters";
+import { moderateContent } from "../utils/moderation";
 import { roleValues } from "../utils/util";
 
 const argCast: Record<
-	CommandArgType,
-	(
-		input: string,
-		rawArgs: string[],
-		index: number,
-		ctx: Context,
-		packet: WSChatMessageCreatedPayload,
-		argument: CommandArgument,
-		usedMentions: UsedMentions
-	) => ResolvedArgs | Promise<ResolvedArgs>
+    CommandArgType,
+    (
+        input: string,
+        rawArgs: string[],
+        index: number,
+        ctx: Context,
+        packet: WSChatMessageCreatedPayload,
+        argument: CommandArgument,
+        usedMentions: UsedMentions
+    ) => ResolvedArgs | Promise<ResolvedArgs>
 > = {
-	string,
-	number,
-	boolean,
-	enum: enumArg,
-	enumList,
-	rest,
-	UUID,
-	member,
-	channel,
+    string,
+    number,
+    boolean,
+    enum: enumArg,
+    enumList,
+    rest,
+    UUID,
+    member,
+    channel,
 };
 
 export default async (packet: WSChatMessageCreatedPayload, ctx: Context, server: Server) => {
-	const { message } = packet.d;
-	// if the message wasn't sent in a server, or the person was a bot then don't do anything
-	if (message.createdByBotId || message.createdBy === ctx.userId || !message.serverId) return void 0;
-	void ctx.amp.logEvent({ event_type: "MESSAGE_CREATE", user_id: message.createdBy, event_properties: { serverId: message.serverId! } });
+    const { message } = packet.d;
+    // if the message wasn't sent in a server, or the person was a bot then don't do anything
+    if (message.createdByBotId || message.createdBy === ctx.userId || !message.serverId) return void 0;
+    void ctx.amp.logEvent({ event_type: "MESSAGE_CREATE", user_id: message.createdBy, event_properties: { serverId: message.serverId! } });
 
-	const isModmailChannel = await ctx.prisma.modmailThread.findFirst({
-		where: { serverId: message.serverId, userFacingChannelId: message.channelId, openerId: message.createdBy, closed: false },
-	});
-	if (isModmailChannel) {
-		void ctx.amp.logEvent({ event_type: "MODMAIL_MESSAGE", user_id: message.createdBy, event_properties: { serverId: message.serverId!, modmailId: isModmailChannel.id } });
-		void ctx.rest.router.deleteChannelMessage(message.channelId, message.id);
-		const member = await ctx.serverUtil.getMember(message.serverId, message.createdBy, true, true);
-		const newModmailMessage = await ctx.rest.router.createChannelMessage(isModmailChannel.modFacingChannelId, {
-			embeds: [
-				{
-					description: message.content,
-					author: {
-						icon_url: member.user.avatar,
-						name: `${member.user.name} (${member.user.id})`,
-					},
-					color: Colors.yellow,
-					footer: {
-						text: message.id,
-					},
-					timestamp: new Date().toISOString(),
-				},
-			],
-		});
-		return ctx.prisma.modmailMessage.create({
-			data: {
-				authorId: message.createdBy,
-				channelId: message.channelId,
-				content: message.content,
-				originalMessageId: message.id,
-				sentMessageId: newModmailMessage.message.id,
-				modmailThreadId: isModmailChannel.id,
-			},
-		});
-	}
+    const isModmailChannel = await ctx.prisma.modmailThread.findFirst({
+        where: { serverId: message.serverId, userFacingChannelId: message.channelId, openerId: message.createdBy, closed: false },
+    });
+    if (isModmailChannel) {
+        void ctx.amp.logEvent({ event_type: "MODMAIL_MESSAGE", user_id: message.createdBy, event_properties: { serverId: message.serverId!, modmailId: isModmailChannel.id } });
+        void ctx.rest.router.deleteChannelMessage(message.channelId, message.id);
+        const member = await ctx.serverUtil.getMember(message.serverId, message.createdBy, true, true);
+        const newModmailMessage = await ctx.rest.router.createChannelMessage(isModmailChannel.modFacingChannelId, {
+            embeds: [
+                {
+                    description: message.content,
+                    author: {
+                        icon_url: member.user.avatar,
+                        name: `${member.user.name} (${member.user.id})`,
+                    },
+                    color: Colors.yellow,
+                    footer: {
+                        text: message.id,
+                    },
+                    timestamp: new Date().toISOString(),
+                },
+            ],
+        });
+        return ctx.prisma.modmailMessage.create({
+            data: {
+                authorId: message.createdBy,
+                channelId: message.channelId,
+                content: message.content,
+                originalMessageId: message.id,
+                sentMessageId: newModmailMessage.message.id,
+                modmailThreadId: isModmailChannel.id,
+            },
+        });
+    }
 
-	// the prefix of this server, otherwise the fallback default prefix
-	const prefix = server.getPrefix();
+    // the prefix of this server, otherwise the fallback default prefix
+    const prefix = server.getPrefix();
 
-	// if the message does not start with the prefix
-	if (!message.content.startsWith(prefix)) {
-		const member = await ctx.serverUtil.getMember(message.serverId, message.createdBy).catch(() => null);
-		if (member?.user.type === "bot") return;
+    // if the message does not start with the prefix
+    if (!message.content.startsWith(prefix)) {
+        const member = await ctx.serverUtil.getMember(message.serverId, message.createdBy).catch(() => null);
+        if (member?.user.type === "bot") return;
 
-		// store the message in the database
-		await ctx.dbUtil.storeMessage(message).catch(console.log);
+        // store the message in the database
+        await ctx.dbUtil.storeMessage(message).catch(console.log);
 
-		const channelIgnored = await ctx.prisma.channelIgnore.findFirst({ where: { channelId: message.channelId, serverId: message.serverId, type: ChannelIgnoreType.AUTOMOD } });
-		if (!channelIgnored) {
-			const enabledPresets = server.filterEnabled ? await ctx.dbUtil.getEnabledPresets(server.serverId) : undefined;
-			if (server.filterEnabled) {
-				// scan the message for any harmful content (filter list, presets)
-				await ctx.contentFilterUtil.scanContent({
-					userId: message.createdByBotId || message.createdByWebhookId || message.createdBy,
-					text: message.content,
-					filteredContent: FilteredContent.Message,
-					channelId: message.channelId,
-					server,
-					presets: enabledPresets,
-					// Filter
-					resultingAction: () => ctx.rest.router.deleteChannelMessage(message.channelId, message.id),
-				});
+        await moderateContent(ctx, server, message.channelId, "MESSAGE", FilteredContent.Message, message.createdBy, message.content, message.mentions, () =>
+            ctx.rest.router.deleteChannelMessage(message.channelId, message.id)
+        );
 
-				// Spam prevention
-				await ctx.spamFilterUtil.checkForMessageSpam(server, message);
-			}
+        // const channelIgnores = await ctx.dbUtil.getChannelIgnore(message.serverId, message.channelId, "MESSAGE"); // await ctx.prisma.channelIgnore.findFirst({ where: { channelId: message.channelId, serverId: message.serverId, type: ChannelIgnoreType.AUTOMOD } });
 
-			if (server.filterInvites || server.filterEnabled)
-				// Invites or bad URLs
-				await ctx.linkFilterUtil.checkLinks({
-					server,
-					userId: message.createdBy,
-					channelId: message.channelId,
-					content: message.content,
-					filteredContent: FilteredContent.Message,
-					presets: enabledPresets,
-					resultingAction: () => ctx.rest.router.deleteChannelMessage(message.channelId, message.id),
-				});
+        // const enabledPresets = server.filterEnabled ? await ctx.dbUtil.getEnabledPresets(server.serverId) : undefined;
+        // if (server.filterEnabled && !channelIgnores.find((x) => x.type === "AUTOMOD")) {
+        //     // scan the message for any harmful content (filter list, presets)
+        //     await ctx.contentFilterUtil.scanContent({
+        //         userId: message.createdByBotId || message.createdByWebhookId || message.createdBy,
+        //         text: message.content,
+        //         filteredContent: FilteredContent.Message,
+        //         channelId: message.channelId,
+        //         server,
+        //         presets: enabledPresets,
+        //         // Filter
+        //         resultingAction: () => ctx.rest.router.deleteChannelMessage(message.channelId, message.id),
+        //     });
 
-			if (server.scanNSFW) {
-				await ctx.contentFilterUtil.scanMessageMedia(message);
-			}
-		}
-		return;
-	}
+        //     // Spam prevention
+        //     await ctx.spamFilterUtil.checkForMessageSpam(server, message);
+        // }
 
-	// parse the message into the command name and args ("?test arg1 arg2 arg3" = [ "test", "arg1", "arg2", "arg3" ])
-	let [commandName, ...args] = message.content.slice(prefix.length).trim().split(/ +/g);
-	// if no command name, don't do anything
-	if (!commandName) return void 0;
-	// lowercase the command name
-	commandName = commandName.toLowerCase();
+        // if ((server.filterInvites && !channelIgnores.find((x) => x.type === "INVITE")) || (server.filterEnabled && !channelIgnores.find((x) => x.type === "URL")))
+        //     // Invites or bad URLs
+        //     await ctx.linkFilterUtil.checkLinks({
+        //         server,
+        //         userId: message.createdBy,
+        //         channelId: message.channelId,
+        //         content: message.content,
+        //         filteredContent: FilteredContent.Message,
+        //         contentType: "MESSAGE",
+        //         presets: enabledPresets,
+        //         resultingAction: () => ctx.rest.router.deleteChannelMessage(message.channelId, message.id),
+        //     });
 
-	// get the command by the name or if it's an alias of a command
-	let command = ctx.commands.get(commandName) ?? ctx.commands.find((command) => command.aliases?.includes(commandName) ?? false);
-	// if not a valid command, don't do anything
-	if (!command) {
-		const customCommand = await ctx.prisma.customTag.findFirst({ where: { serverId: message.serverId!, name: commandName } });
-		if (!customCommand) return ctx.amp.logEvent({ event_type: "INVALID_COMMAND", user_id: message.createdBy, event_properties: { serverId: message.serverId } });
-		void ctx.amp.logEvent({ event_type: "TAG_RAN", user_id: message.createdBy, event_properties: { serverId: message.serverId } });
-		return ctx.messageUtil.send(message.channelId, customCommand.content);
-	}
+        if (server.scanNSFW) {
+            await ctx.contentFilterUtil.scanMessageMedia(message);
+        }
+        return;
+    }
 
-	while (command.parentCommand && command.subCommands?.size) {
-		// if no sub command, list all the available sub commands
-		if (!args[0]) {
-			void ctx.amp.logEvent({
-				event_type: "COMMAND_MISSING_SUBCOMMAND",
-				user_id: message.createdBy,
-				event_properties: { serverId: message.serverId, command: command.name },
-			});
-			const subCommandName = command.subCommands.firstKey();
-			const subCommand = command.subCommands.get(subCommandName as string)!;
+    // parse the message into the command name and args ("?test arg1 arg2 arg3" = [ "test", "arg1", "arg2", "arg3" ])
+    let [commandName, ...args] = message.content.slice(prefix.length).trim().split(/ +/g);
+    // if no command name, don't do anything
+    if (!commandName) return void 0;
+    // lowercase the command name
+    commandName = commandName.toLowerCase();
 
-			return ctx.messageUtil.replyWithInfo(message, `${inlineCode(command.name.split("-").join(" "))} command`, command.description, {
-				fields: [...ctx.messageUtil.createSubCommandFields(command.subCommands), ctx.messageUtil.createExampleField(subCommand, prefix)],
-			});
-		}
-		const subCommand = command.subCommands.get(args[0]);
-		// if not a valid sub command, list all the proper ones
-		if (!subCommand) {
-			void ctx.amp.logEvent({
-				event_type: "COMMAND_INVALID_SUBCOMMAND",
-				user_id: message.createdBy,
-				event_properties: { serverId: message.serverId, command: command.name },
-			});
-			return ctx.messageUtil.replyWithError(message, `No such sub-command`, `The specified sub-command ${inlineQuote(args[0], 100)} could not be found.`, {
-				fields: [...ctx.messageUtil.createSubCommandFields(command.subCommands), ctx.messageUtil.createExampleField(command, prefix)],
-			});
-		}
-		command = subCommand;
-		// remove the sub command from the list of args, as that's the command name
-		args = args.slice(1);
-	}
+    // get the command by the name or if it's an alias of a command
+    let command = ctx.commands.get(commandName) ?? ctx.commands.find((command) => command.aliases?.includes(commandName) ?? false);
+    // if not a valid command, don't do anything
+    if (!command) {
+        const customCommand = await ctx.prisma.customTag.findFirst({ where: { serverId: message.serverId!, name: commandName } });
+        if (!customCommand) return ctx.amp.logEvent({ event_type: "INVALID_COMMAND", user_id: message.createdBy, event_properties: { serverId: message.serverId } });
+        void ctx.amp.logEvent({ event_type: "TAG_RAN", user_id: message.createdBy, event_properties: { serverId: message.serverId } });
+        return ctx.messageUtil.send(message.channelId, customCommand.content);
+    }
 
-	// the object of casted args casted to their proper types
-	const resolvedArgs: Record<string, ResolvedArgs> = {};
-	const usedMentions: UsedMentions = { user: 0, role: 0, channel: 0 };
-	// if this command has accepts args
-	if (command.args?.length) {
-		// go through all the specified arguments in the command
-		for (let i = 0; i < command.args.length; i++) {
-			const commandArg = command.args[i];
+    while (command.parentCommand && command.subCommands?.size) {
+        // if no sub command, list all the available sub commands
+        if (!args[0]) {
+            void ctx.amp.logEvent({
+                event_type: "COMMAND_MISSING_SUBCOMMAND",
+                user_id: message.createdBy,
+                event_properties: { serverId: message.serverId, command: command.name },
+            });
+            const subCommandName = command.subCommands.firstKey();
+            const subCommand = command.subCommands.get(subCommandName as string)!;
 
-			// if the argument is not a rest type, is optional, and the actual argument is undefined, continue next in the args
-			if (commandArg.optional && args.length <= i) {
-				resolvedArgs[commandArg.name] = null;
-				continue;
-			}
+            return ctx.messageUtil.replyWithInfo(message, `${inlineCode(command.name.split("-").join(" "))} command`, command.description, {
+                fields: [...ctx.messageUtil.createSubCommandFields(command.subCommands), ctx.messageUtil.createExampleField(subCommand, prefix)],
+            });
+        }
+        const subCommand = command.subCommands.get(args[0]);
+        // if not a valid sub command, list all the proper ones
+        if (!subCommand) {
+            void ctx.amp.logEvent({
+                event_type: "COMMAND_INVALID_SUBCOMMAND",
+                user_id: message.createdBy,
+                event_properties: { serverId: message.serverId, command: command.name },
+            });
+            return ctx.messageUtil.replyWithError(message, `No such sub-command`, `The specified sub-command ${inlineQuote(args[0], 100)} could not be found.`, {
+                fields: [...ctx.messageUtil.createSubCommandFields(command.subCommands), ctx.messageUtil.createExampleField(command, prefix)],
+            });
+        }
+        command = subCommand;
+        // remove the sub command from the list of args, as that's the command name
+        args = args.slice(1);
+    }
 
-			// run the caster and see if the arg is valid
-			const castArg = args[i] ? await argCast[commandArg.type](args[i], args, i, ctx, packet, commandArg, usedMentions) : null;
+    // the object of casted args casted to their proper types
+    const resolvedArgs: Record<string, ResolvedArgs> = {};
+    const usedMentions: UsedMentions = { user: 0, role: 0, channel: 0 };
+    // if this command has accepts args
+    if (command.args?.length) {
+        // go through all the specified arguments in the command
+        for (let i = 0; i < command.args.length; i++) {
+            const commandArg = command.args[i];
 
-			// if the arg is not valid, inform the user
-			if (castArg === null || (commandArg.max && ((castArg as any).length ?? castArg) > commandArg.max)) {
-				void ctx.amp.logEvent({
-					event_type: "COMMAND_BAD_ARGS",
-					user_id: message.createdBy,
-					event_properties: { serverId: message.serverId, command: command.name, trippedArg: commandArg },
-				});
-				return ctx.messageUtil.handleBadArg(message, prefix, commandArg, command);
-			}
+            // if the argument is not a rest type, is optional, and the actual argument is undefined, continue next in the args
+            if (commandArg.optional && args.length <= i) {
+                resolvedArgs[commandArg.name] = null;
+                continue;
+            }
 
-			// if the arg is valid, add it to the resolved args obj
-			resolvedArgs[commandArg.name] = castArg;
-		}
-	}
+            // run the caster and see if the arg is valid
+            const castArg = args[i] ? await argCast[commandArg.type](args[i], args, i, ctx, packet, commandArg, usedMentions) : null;
 
-	// fetch the member from either the server or the mem cache
-	const member = await ctx.serverUtil.getMember(message.serverId, message.createdBy);
+            // if the arg is not valid, inform the user
+            if (castArg === null || (commandArg.max && ((castArg as any).length ?? castArg) > commandArg.max)) {
+                void ctx.amp.logEvent({
+                    event_type: "COMMAND_BAD_ARGS",
+                    user_id: message.createdBy,
+                    event_properties: { serverId: message.serverId, command: command.name, trippedArg: commandArg },
+                });
+                return ctx.messageUtil.handleBadArg(message, prefix, commandArg, command);
+            }
 
-	// check if this user is not an operator
-	if (!ctx.operators.includes(message.createdBy)) {
-		// if this command requires a user to have a specific role, then check if they have it
-		if (command.requiredRole && !member.isOwner) {
-			// get all the roles of the required type for this command
-			const modRoles = await ctx.prisma.role.findMany({ where: { serverId: message.serverId } });
-			const userModRoles = modRoles.filter((modRole) => member.roleIds.includes(modRole.roleId));
-			const requiredValue = roleValues[command.requiredRole];
-			// check if the user has any of the roles of this required type
-			if (!userModRoles.some((role) => roleValues[role.type] >= requiredValue)) {
-				void ctx.amp.logEvent({
-					event_type: "COMMAND_INVALID_USER_PERMISSIONS",
-					user_id: message.createdBy,
-					event_properties: { serverId: message.serverId },
-				});
-				return ctx.messageUtil.replyWithUnpermitted(message, `Unfortunately, you are missing the ${inlineCode(command.requiredRole)} role!`);
-			}
-			// if this command is operator only, then silently ignore because of privacy reasons
-		} else if (command.devOnly) return void 0;
-	}
+            // if the arg is valid, add it to the resolved args obj
+            resolvedArgs[commandArg.name] = castArg;
+        }
+    }
 
-	try {
-		void ctx.amp.logEvent({ event_type: "COMMAND_RAN", user_id: message.createdBy, event_properties: { serverId: message.serverId!, command: command.name } });
-		// run the command with the message object, the casted arguments, the global context object (datbase, rest, ws),
-		// and the command context (raw packet, database server entry, member from API or cache)
-		await command.execute(message, resolvedArgs, ctx, { packet, server, member });
-	} catch (e) {
-		// ID for error, not persisted in database at all
-		const referenceId = nanoid();
-		if (e instanceof Error) {
-			console.error(e);
-			// send the error to the error channel
-			void ctx.errorHandler.send("Error in command usage!", [
-				new Embed()
-					.setDescription(
-						stripIndents`
+    // fetch the member from either the server or the mem cache
+    const member = await ctx.serverUtil.getMember(message.serverId, message.createdBy);
+
+    // check if this user is not an operator
+    if (!ctx.operators.includes(message.createdBy)) {
+        // if this command requires a user to have a specific role, then check if they have it
+        if (command.requiredRole && !member.isOwner) {
+            // get all the roles of the required type for this command
+            const modRoles = await ctx.prisma.role.findMany({ where: { serverId: message.serverId } });
+            const userModRoles = modRoles.filter((modRole) => member.roleIds.includes(modRole.roleId));
+            const requiredValue = roleValues[command.requiredRole];
+            // check if the user has any of the roles of this required type
+            if (!userModRoles.some((role) => roleValues[role.type] >= requiredValue)) {
+                void ctx.amp.logEvent({
+                    event_type: "COMMAND_INVALID_USER_PERMISSIONS",
+                    user_id: message.createdBy,
+                    event_properties: { serverId: message.serverId },
+                });
+                return ctx.messageUtil.replyWithUnpermitted(message, `Unfortunately, you are missing the ${inlineCode(command.requiredRole)} role!`);
+            }
+            // if this command is operator only, then silently ignore because of privacy reasons
+        } else if (command.devOnly) return void 0;
+    }
+
+    try {
+        void ctx.amp.logEvent({ event_type: "COMMAND_RAN", user_id: message.createdBy, event_properties: { serverId: message.serverId!, command: command.name } });
+        // run the command with the message object, the casted arguments, the global context object (datbase, rest, ws),
+        // and the command context (raw packet, database server entry, member from API or cache)
+        await command.execute(message, resolvedArgs, ctx, { packet, server, member });
+    } catch (e) {
+        // ID for error, not persisted in database at all
+        const referenceId = nanoid();
+        if (e instanceof Error) {
+            console.error(e);
+            // send the error to the error channel
+            void ctx.errorHandler.send("Error in command usage!", [
+                new Embed()
+                    .setDescription(
+                        stripIndents`
 						Reference ID: ${inlineCode(referenceId)}
 						Server: ${inlineCode(message.serverId)}
 						Channel: ${inlineCode(message.channelId)}
 						User: ${inlineCode(message.createdBy)} (${inlineCode(member?.user.name)})
 						Error: \`\`\`${e.stack ?? e.message}\`\`\`
 					`
-					)
-					.addField(`Content`, codeBlock(message.content?.length > 1018 ? `${message.content.substring(0, 1018)}...` : message.content))
-					.setColor("RED"),
-			]);
-		}
-		// notify the user that there was an error executing the command
-		return ctx.messageUtil.replyWithUnexpected(
-			message,
-			`This is potentially an issue on our end, please join [our server](https://www.guilded.gg/Yoki) and forward the following ID and error: ${inlineCode(referenceId)} & ${inlineCode((e as any).message)}`
-		);
-	}
-	return void 0;
+                    )
+                    .addField(`Content`, codeBlock(message.content?.length > 1018 ? `${message.content.substring(0, 1018)}...` : message.content))
+                    .setColor("RED"),
+            ]);
+        }
+        // notify the user that there was an error executing the command
+        return ctx.messageUtil.replyWithUnexpected(
+            message,
+            `This is potentially an issue on our end, please join [our server](https://www.guilded.gg/Yoki) and forward the following ID and error: ${inlineCode(
+                referenceId
+            )} & ${inlineCode((e as any).message)}`
+        );
+    }
+    return void 0;
 };

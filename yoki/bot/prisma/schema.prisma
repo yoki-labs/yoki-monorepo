@@ -255,18 +255,28 @@ model Appeal {
 }
 
 model ChannelIgnore {
-    id        Int               @id @default(autoincrement())
-    channelId String            @db.VarChar(255)
-    serverId  String            @db.VarChar(255)
-    type      ChannelIgnoreType
-    createdAt DateTime          @default(now())
-    updatedAt DateTime?         @updatedAt
+    id          Int                @id @default(autoincrement())
+    serverId    String             @db.VarChar(255)
+    channelId   String?            @db.VarChar(255)
+    contentType ContentIgnoreType?
+    type        ChannelIgnoreType
+    createdAt   DateTime           @default(now())
+    updatedAt   DateTime?          @updatedAt
 
-    @@unique([channelId, serverId, type])
+    @@unique([channelId, contentType, serverId, type])
 }
 
 enum ChannelIgnoreType {
     AUTOMOD
+    URL
+    INVITE
+}
+
+enum ContentIgnoreType {
+    MESSAGE
+    FORUM_TOPIC
+    FORUM_REPLY
+    LIST_ITEM
 }
 
 enum LogChannelType {
