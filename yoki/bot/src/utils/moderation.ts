@@ -72,7 +72,14 @@ export async function moderateContent(
     const channelIgnores = await ctx.dbUtil.getChannelIgnore(serverId, channelId, contentType);
 
     const enabledPresets = server.filterEnabled ? await ctx.dbUtil.getEnabledPresets(serverId) : undefined;
+    console.log(
+        "Filter enabled",
+        server.filterEnabled,
+        "Ignores",
+        channelIgnores.find((x) => x.type === "AUTOMOD")
+    );
     if (server.filterEnabled && !channelIgnores.find((x) => x.type === "AUTOMOD")) {
+        console.log("Automod is being activated");
         // scan the message for any harmful content (filter list, presets)
         await ctx.contentFilterUtil.scanContent({
             userId: createdBy,

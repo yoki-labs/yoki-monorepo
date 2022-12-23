@@ -10,6 +10,6 @@
 		"declaration": false,
 		"declarationMap": false
     },
-    "include": ["./src/**/*.ts", "./src/**/*.json"],
+    "include": ["./src/**/*.ts", "./src/**/*.json", "src/commands/ignore/.command.ts"],
     "exclude": ["*.test.ts"]
 }
