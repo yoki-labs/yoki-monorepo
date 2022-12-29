@@ -28,7 +28,7 @@ export default async (packet: { d: { serverId: string; forumTopic: ForumTopicPay
         "FORUM_TOPIC",
         FilteredContent.ChannelContent,
         forumTopic.createdBy,
-        forumTopic.content,
+        `${forumTopic.content}\n${forumTopic.content ?? ""}`,
         forumTopic.mentions,
         deletion
     );
