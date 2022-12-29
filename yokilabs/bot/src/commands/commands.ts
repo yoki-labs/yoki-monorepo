@@ -2,8 +2,8 @@ import type { TeamMemberPayload, WSChatMessageCreatedPayload } from "@guildedjs/
 import { Embed } from "@guildedjs/webhook-client";
 import { codeBlock, inlineCode, inlineQuote } from "@yokilabs/util";
 import { stripIndents } from "common-tags";
-import { nanoid } from "nanoid";
 
+// import { nanoid } from "nanoid";
 import booleanArg from "../args/boolean";
 import channel from "../args/channel";
 import enumArg from "../args/enum";
@@ -211,7 +211,7 @@ export default function createCommandHandler<
                 await command.execute(message, args, ctx, { packet, server, member });
             } catch (e) {
                 // ID for error, not persisted in database at all
-                const referenceId = nanoid();
+                const referenceId = 10; // nanoid();
                 if (e instanceof Error) {
                     console.error(e);
                     // send the error to the error channel

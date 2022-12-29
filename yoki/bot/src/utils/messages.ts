@@ -4,7 +4,7 @@ import { stripIndents } from "common-tags";
 import type Client from "../Client";
 import { codeBlock } from "./formatters";
 
-export { summarizeItems, summarizeRolesOrUsers } from "../../../../yoki-labs/util/content";
+export { summarizeItems, summarizeRolesOrUsers } from "@yokilabs/util";
 
 export const quoteChangedContent = (ctx: Client, serverId: string, contentId: string | number, contentType: ChannelType, content?: string): string | Promise<string> =>
     content

@@ -54,6 +54,7 @@ RUN apk update \
 	&& apk add cairo-dev
 
 COPY --from=0 ./opt/build/tsconfig.json .
+COPY --from=0 ./opt/build/node_modules node_modules
 # COPY --from=0 ./opt/build/package.json .
 COPY --from=0 ./opt/build/tuxedo/bot/ tuxedo/bot/
 COPY --from=0 ./opt/build/yokilabs/ yokilabs/

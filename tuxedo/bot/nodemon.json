@@ -1,6 +1,7 @@
 {
-    "watch": ["src", "../../yokilabs"],
+    "watch": ["src/**/*.ts", "../../yokilabs/**/*.ts"],
     "ext": "ts,json",
-    "exec": "npx tsc -p ../../yokilabs/util && npx tsc -p ../../yokilabs/bot && npx tsc && node --enable-source-maps dist/index.js",
-    "legacyWatch": true
+    "ignore": ["src/**/*.d.ts", "../../yokilabs/**/*.d.ts"],
+    "exec": "ls ./dist && npx tsc -p ../../yokilabs/util && npx tsc -p ../../yokilabs/bot && npx tsc && node --enable-source-maps dist/tuxedo/bot/src/index.js",
+    "legacyWatch": false
 }

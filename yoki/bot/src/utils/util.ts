@@ -64,4 +64,4 @@ export const DBPropToTypeMap = Object.assign({}, ...Object.keys(typeToDBPropMap)
 export const typeToDBPropKeys = Object.keys(typeToDBPropMap);
 export const DBPropToTypeKeys = Object.values(typeToDBPropMap);
 
-export { cutArray, isHashId, isUUID } from "../../../../yoki-labs/util/value";
+export { cutArray, isHashId, isUUID } from "@yokilabs/util";
