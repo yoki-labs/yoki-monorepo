@@ -80,7 +80,7 @@ export class ContentFilterUtil extends BaseFilterUtil {
         // Get all the banned words in this server
         const bannedWordsList = await this.dbUtil.getBannedWords(serverId);
         // Get all the enabled presets in this server
-        const enabledPresets = presets ?? (await this.dbUtil.getEnabledPresets(serverId));
+        const enabledPresets = (presets ?? (await this.dbUtil.getEnabledPresets(serverId))).filter((x) => x.preset in this.presets);
 
         if (!bannedWordsList.length && !enabledPresets.length) return;
         void this.client.amp.logEvent({ event_type: "MESSAGE_TEXT_SCAN", user_id: userId, event_properties: { serverId: server.serverId } });

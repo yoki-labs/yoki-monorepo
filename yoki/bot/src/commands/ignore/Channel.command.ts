@@ -28,18 +28,10 @@ const IgnoreChannel: Command = {
 
         const existingAlready = Boolean(await ctx.prisma.channelIgnore.findFirst({ where: { serverId: message.serverId!, channelId: channel.id, type: ignoreType } }));
 
-        // When JavaScript is convenient, TypeScript gets in the way
-        // When JavaScript is inconvenient, TypeScript ignores it
-        // Though, I guess it makes sense why.
-        // exists already ^ is remove == 0
-        // doesnt exist ^ is not remove == 0
-        // exists already ^ isnt remove == 1
-        // doesnt exist ^ is remove == 1
-        // The 1 is not right
-        if ((existingAlready as unknown as number) ^ ((action === "REMOVE") as unknown as number))
-            return existingAlready
-                ? ctx.messageUtil.replyWithError(message, "Already exists", "That filtering ignore has already been added!")
-                : ctx.messageUtil.replyWithError(message, "Doesn't exist", "That filtering ignore does not exist and cannot be removed!");
+        // existingAlready ^ (action === "REMOVE")
+        if (existingAlready && action !== "REMOVE") return ctx.messageUtil.replyWithError(message, "Already exists", "That filtering ignore has already been added!");
+        else if (!existingAlready && action === "REMOVE")
+            return ctx.messageUtil.replyWithError(message, "Doesn't exist", "That filtering ignore does not exist and cannot be removed!");
 
         const what = ignoreType === "AUTOMOD" ? "phrases" : ignoreType === "INVITE" ? "invites" : "URLs";
 
