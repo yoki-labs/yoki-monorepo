@@ -3,7 +3,6 @@ import Collection from "@discordjs/collection";
 import { Category } from "../Category";
 import type { Command } from "../Command";
 import Add from "./Add.command";
-import Ignore from "./Ignore.command";
 import List from "./List.command";
 import MentionSpamFrequency from "./MentionFrequency.command";
 import FilterOnMods from "./Mods.command";
@@ -24,8 +23,7 @@ const Filter: Command = {
         .set("spaminfractions", SpamInfractions)
         .set("add", Add)
         .set("remove", Remove)
-        .set("list", List)
-        .set("ignore", Ignore),
+        .set("list", List),
     execute: () => void 0,
 };
 

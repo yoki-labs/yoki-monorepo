@@ -8,6 +8,7 @@ import { FilteredContent } from "../modules/content-filter";
 import type { Context, Server } from "../typings";
 import { Colors } from "../utils/color";
 import { inlineCode, quoteMarkdown } from "../utils/formatters";
+import { moderateContent } from "../utils/moderation";
 
 export default async (packet: WSChatMessageUpdatedPayload, ctx: Context, server: Server) => {
     const { message } = packet.d;
@@ -28,15 +29,9 @@ export default async (packet: WSChatMessageUpdatedPayload, ctx: Context, server:
     }
 
     // scan the updated message content
-    await ctx.contentFilterUtil.scanContent({
-        userId: message.createdByBotId || message.createdByWebhookId || message.createdBy,
-        text: message.content,
-        filteredContent: FilteredContent.Message,
-        channelId: message.channelId,
-        server,
-        // Filter
-        resultingAction: () => ctx.rest.router.deleteChannelMessage(message.channelId, message.id),
-    });
+    await moderateContent(ctx, server, message.channelId, "MESSAGE", FilteredContent.Message, message.createdBy, message.content, message.mentions, () =>
+        ctx.rest.router.deleteChannelMessage(message.channelId, message.id)
+    );
 
     // get the log channel for message updates
     const updatedMessageLogChannel = await ctx.dbUtil.getLogChannel(message.serverId!, LogChannelType.message_edits);
