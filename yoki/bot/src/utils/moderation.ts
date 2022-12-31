@@ -1,8 +1,9 @@
-import type { EmbedField } from "@guildedjs/guilded-api-typings";
-import { Action, Severity } from "@prisma/client";
+import type { EmbedField, MentionsPayload } from "@guildedjs/guilded-api-typings";
+import { Action, ContentIgnoreType, Severity } from "@prisma/client";
 import { stripIndents } from "common-tags";
 
-import type { Context } from "../typings";
+import type { FilteredContent } from "../modules/content-filter";
+import type { Context, Server } from "../typings";
 import { codeBlock, inlineCode } from "./formatters";
 import { FormatDate } from "./util";
 
@@ -55,3 +56,50 @@ export const getActionAdditionalInfo = (data: Action, timezone: string): string 
         **Case ID:** ${inlineCode(data.id)}
         ${data.expiresAt ? `**Expiration:** ${FormatDate(data.expiresAt, timezone)} EST` : ""}
     `;
+
+export async function moderateContent(
+    ctx: Context,
+    server: Server,
+    channelId: string,
+    contentType: ContentIgnoreType,
+    filteredContent: FilteredContent,
+    createdBy: string,
+    content: string,
+    mentions: MentionsPayload | undefined,
+    resultingAction: () => Promise<unknown>
+) {
+    const { serverId } = server;
+    const channelIgnores = await ctx.dbUtil.getChannelIgnore(serverId, channelId, contentType);
+
+    const enabledPresets = server.filterEnabled ? await ctx.dbUtil.getEnabledPresets(serverId) : undefined;
+
+    if (server.filterEnabled && !channelIgnores.find((x) => x.type === "AUTOMOD")) {
+        // scan the message for any harmful content (filter list, presets)
+        await ctx.contentFilterUtil.scanContent({
+            userId: createdBy,
+            text: content,
+            filteredContent,
+            channelId,
+            server,
+            presets: enabledPresets,
+            // Filter
+            resultingAction,
+        });
+
+        // Spam prevention
+        await ctx.spamFilterUtil.checkForSpam(server, createdBy, channelId, mentions, resultingAction);
+    }
+
+    if ((server.filterInvites && !channelIgnores.find((x) => x.type === "INVITE")) || (server.filterEnabled && !channelIgnores.find((x) => x.type === "URL")))
+        // Invites or bad URLs
+        await ctx.linkFilterUtil.checkLinks({
+            server,
+            userId: createdBy,
+            channelId,
+            content,
+            filteredContent,
+            contentType,
+            presets: enabledPresets,
+            resultingAction,
+        });
+}

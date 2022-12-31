@@ -1,5 +1,5 @@
 import type { ChatMessagePayload, ForumTopicPayload } from "@guildedjs/guilded-api-typings";
-import type { FilterMatching, InviteFilter, LogChannel, Prisma, UrlFilter } from "@prisma/client";
+import type { ContentIgnoreType, FilterMatching, InviteFilter, LogChannel, Prisma, UrlFilter } from "@prisma/client";
 import { nanoid } from "nanoid";
 
 import { Action, ContentFilter, LogChannelType, Server } from "../typings";
@@ -203,5 +203,21 @@ export class DatabaseUtil extends Util {
 
     populateActionMessage(id: string, channelId: string, messageId: string) {
         return this.prisma.action.update({ where: { id }, data: { logChannelId: channelId, logChannelMessage: messageId } });
+    }
+
+    async getChannelIgnore(serverId: string, channelId: string, contentType: ContentIgnoreType) {
+        return this.prisma.channelIgnore.findMany({
+            where: {
+                serverId,
+                OR: [
+                    {
+                        contentType,
+                    },
+                    {
+                        channelId,
+                    },
+                ],
+            },
+        });
     }
 }

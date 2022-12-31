@@ -1,4 +1,4 @@
-import type { InviteFilter, Preset } from "@prisma/client";
+import { ChannelIgnoreType, ContentIgnoreType, InviteFilter, Preset } from "@prisma/client";
 import fetch from "node-fetch";
 
 import type { PresetLink, Server } from "../typings";
@@ -40,6 +40,7 @@ export class LinkFilterUtil extends BaseFilterUtil {
         channelId,
         content,
         filteredContent,
+        contentType,
         presets,
         resultingAction,
     }: {
@@ -47,18 +48,41 @@ export class LinkFilterUtil extends BaseFilterUtil {
         userId: string;
         channelId: string;
         content: string;
+        // The same, might be able to merge
         filteredContent: FilteredContent;
+        contentType: ContentIgnoreType;
         presets?: Preset[];
         resultingAction: () => unknown;
     }) {
+        // Too many DB stuff to fetch to be honest
+        const ignored = await this.prisma.channelIgnore.findMany({
+            where: {
+                serverId: server.serverId,
+                OR: [
+                    {
+                        contentType,
+                    },
+                    {
+                        channelId,
+                    },
+                ],
+            },
+        });
+
+        const dontFilterUrls = !server.filterEnabled || ignored.find((x) => x.type === ChannelIgnoreType.URL);
+        const dontFilterInvites = !server.filterInvites || ignored.find((x) => x.type === ChannelIgnoreType.INVITE);
+
+        // ! ( (server.filterEnabled && !ignoredUrls) || (server.filterInvites && !ignoredInvites) )
+        if (dontFilterUrls && dontFilterInvites) return;
+
         // Server settings
-        const greylistedUrls = server.filterEnabled ? await this.prisma.urlFilter.findMany({ where: { serverId: server.serverId } }) : null;
-        const whitelistedInvites = server.filterInvites ? await this.prisma.inviteFilter.findMany({ where: { serverId: server.serverId } }) : null;
+        const greylistedUrls = dontFilterUrls ? null : await this.prisma.urlFilter.findMany({ where: { serverId: server.serverId } });
+        const whitelistedInvites = dontFilterInvites ? null : await this.prisma.inviteFilter.findMany({ where: { serverId: server.serverId } });
 
         // To not re-fetch
         const enabledPresets = (presets ?? (await this.dbUtil.getEnabledPresets(server.serverId))).filter((x) => x.preset in this.presets);
 
-        if (!greylistedUrls?.length && !whitelistedInvites?.length && !enabledPresets.length) return;
+        if (!(greylistedUrls?.length || server.urlFilterIsWhitelist) && !whitelistedInvites?.length && !enabledPresets.length) return;
 
         void this.client.amp.logEvent({
             event_type: "MESSAGE_LINKS_SCAN",
@@ -85,7 +109,7 @@ export class LinkFilterUtil extends BaseFilterUtil {
             const badUrl = server.filterEnabled && Number(greylistedUrl !== undefined && greylistedUrl !== null) ^ Number(server.urlFilterIsWhitelist);
 
             // Not guilded.gg, thing above (OR) is one of the preset items
-            if (domain !== "guilded.gg" && (badUrl || inPreset)) {
+            if (!dontFilterUrls && domain !== "guilded.gg" && (badUrl || inPreset)) {
                 void this.client.amp.logEvent({ event_type: "MESSAGE_LINK_ACTION", user_id: userId, event_properties: { serverId: server.serverId } });
                 return this.dealWithUser(
                     userId,
@@ -101,7 +125,7 @@ export class LinkFilterUtil extends BaseFilterUtil {
             }
             // No bad invites (filter invites enabled, it's guilded gg, route exists and it's none of Guilded's subdomains)
             // E.g., we don't need to filter support.guilded.gg/hc/en-us -- support. is there, which we can match
-            else if (!(server.filterInvites && domain === "guilded.gg" && route && (subdomain === "www." || !subdomain))) return;
+            else if (dontFilterInvites || !(domain === "guilded.gg" && route && (subdomain === "www." || !subdomain))) return;
 
             const breadCrumbs = route.split("/");
 
