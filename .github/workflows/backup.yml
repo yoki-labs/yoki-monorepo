@@ -34,8 +34,8 @@ jobs:
           destination_dir: 'backups'
 
       - name: Guilded notification
+        uses: guildedjs/guilded-webhook-action@main
         env:
-          DISCORD_WEBHOOK: ${{ secrets.GUILDED_WEBHOOK }}
-        uses: Ilshidur/action-discord@08d9328877d6954120eef2b07abbc79249bb6210
+          GUILDED_WEBHOOK: ${{ secrets.GUILDED_WEBHOOK }}
         with:
-          args: 'Database backup ${{steps.S3.outputs.object_key}} to S3'
+          content: 'Howdy there partner'
