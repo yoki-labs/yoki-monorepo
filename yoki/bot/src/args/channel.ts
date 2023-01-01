@@ -31,8 +31,9 @@ export default [async (input: string, args: string[], index: number, ctx: Contex
 
 	return null;
 }, (_arg) => `
-	I was expecting either a mention or ID of a channel.
+	I was expecting either a mention or ID of a channel. I received either an incorrect input, or I cannot find the specified channel.
 
-	**The bot must have read/send/manage permission on the channel**.
-	Ensure that **none** of the roles the bot has denies it any of these permissions, otherwise it will not be able to see the channel.
+	**The bot must have read, send, & manage permission on the channel**
+	
+	Ensure **none** of the bot's roles deny these permissions.
 `]satisfies CommandArgValidator;

@@ -10,4 +10,4 @@ export default [(_input: string, args: string[], index: number, _, __, arg: Comm
 	const values: string[] | undefined = arg.values && restArgs.map((x) => arg.values[x.toLowerCase()]);
 
 	return values?.every((x) => typeof x != "undefined") ? values : null;
-}, (arg) => `I was expecting one or more phrases from the following options: ${listInlineCode(arg.values)}.`]satisfies CommandArgValidator;
+}, (arg) => `I was expecting one or more phrases from the following options: ${listInlineCode(Object.keys(arg.values))}.`]satisfies CommandArgValidator;

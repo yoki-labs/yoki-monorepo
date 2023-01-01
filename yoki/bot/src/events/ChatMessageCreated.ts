@@ -162,8 +162,9 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context, server:
 			}
 
 			const [argValidator, invalidStringGenerator] = argCast[commandArg.type];
+
 			// run the caster and see if the arg is valid
-			const castArg = args[i] ? await argValidator[commandArg.type](args[i], args, i, ctx, packet, commandArg, usedMentions) : null;
+			const castArg = args[i] ? await argValidator(args[i], args, i, ctx, packet, commandArg, usedMentions) : null;
 
 			// if the arg is not valid, inform the user
 			if (castArg === null || (commandArg.max && ((castArg as any).length ?? castArg) > commandArg.max)) {
@@ -172,9 +173,8 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context, server:
 					user_id: message.createdBy,
 					event_properties: { serverId: message.serverId, command: command.name, trippedArg: commandArg },
 				});
-				return ctx.messageUtil.replyWithError(message, "Invalid Usage", stripIndents`
-					Sorry, your usage of the command was incorrect!
-					For the argument ${commandArg.name}, ${stripIndents(invalidStringGenerator(commandArg))}
+				return ctx.messageUtil.replyWithError(message, "Incorrect Command Usage", stripIndents`
+					For the argument \`${commandArg.name}\`, ${stripIndents(invalidStringGenerator(commandArg, castArg?.toString()))}
 				
 					_Need more help? [Join our support server](https://guilded.gg/Yoki)_
 				`, {
@@ -182,9 +182,7 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context, server:
 						{
 							name: "Usage",
 							value: stripIndents`
-								\`\`\`clojure
-								${prefix}${command.name.split("-").join(" ")} ${command.usage}
-								\`\`\`
+								\`\`\`${prefix}${command.name.split("-").join(" ")} ${command.usage}\`\`\`
 							`,
 						}
 					]

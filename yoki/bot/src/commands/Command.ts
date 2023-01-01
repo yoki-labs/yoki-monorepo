@@ -45,5 +45,5 @@ export type CommandArgValidator = [
 		argument: CommandArgument,
 		usedMentions: UsedMentions
 	) => ResolvedArgs | Promise<ResolvedArgs>,
-	(arg: CommandArgument) => string
+	(arg: CommandArgument, received?: string) => string
 ];
