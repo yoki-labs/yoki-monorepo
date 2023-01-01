@@ -13,7 +13,8 @@
         "migrate:dev": "npx dotenv -e ../../.env -- npx prisma migrate dev --name init",
         "migrate:prod": "npx dotenv -e ../../.env.prod -- npx prisma migrate deploy",
         "migrate:prod:ci": "prisma migrate deploy",
-		"prisma:env": "npx dotenv -e ../../.env --",
+		"prisma:env:prod": "npx dotenv -e ../../.env.prod --",
+		"prisma:env:dev": "npx dotenv -e ../../.env --",
         "generate": "npx dotenv -e ../../.env -- npx prisma generate",
         "commands": "ts-node scripts/gen-cmds-list.ts"
     },
