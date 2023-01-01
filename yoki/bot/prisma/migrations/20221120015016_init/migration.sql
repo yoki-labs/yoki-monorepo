@@ -1,7 +1,0 @@
--- AlterEnum
-ALTER TYPE "ResponseType" ADD VALUE 'SITE_CAPTCHA';
-
--- AlterTable
-ALTER TABLE "Captcha" ADD COLUMN     "hashedIp" VARCHAR(255),
-ALTER COLUMN "value" DROP NOT NULL,
-ALTER COLUMN "url" DROP NOT NULL;
