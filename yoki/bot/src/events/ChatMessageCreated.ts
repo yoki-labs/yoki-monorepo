@@ -228,6 +228,13 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context, server:
 		const referenceId = nanoid();
 		if (e instanceof Error) {
 			console.error(e);
+
+			if (e.message.includes("You do not have the correct permissions to perform this request")) return ctx.messageUtil.replyWithError(message, "The bot does not proper permissions!", stripIndents`
+				Please ensure the bot has the proper permissions granted to it related to your command, and that **none** of the roles it has denies it.
+
+				If the command you are running is related to channels, make sure that the bot has **read, send, & manage channel** permissions so that it can detect the channel.
+			`)
+
 			// send the error to the error channel
 			void ctx.errorHandler.send("Error in command usage!", [
 				new Embed()
@@ -243,7 +250,10 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context, server:
 					.addField(`Content`, codeBlock(message.content?.length > 1018 ? `${message.content.substring(0, 1018)}...` : message.content))
 					.setColor("RED"),
 			]);
+
 		}
+
+
 		// notify the user that there was an error executing the command
 		return ctx.messageUtil.replyWithUnexpected(
 			message,
