@@ -13,13 +13,13 @@ const LogChannelArgs = Object.assign({}, LogChannelType);
 type LogChannelArgEnum = keyof typeof LogChannelArgs;
 
 const Set: Command = {
-	name: "logchannel-set",
+	name: "logs-set",
 	description: "Subscribe a specified channel to a specified log type.",
 	subCommand: true,
 	category: Category.Logs,
 	subName: "set",
 	requiredRole: RoleType.ADMIN,
-	usage: "<channel ID> [log types]",
+	usage: "<channel> [logTypes]",
 	args: [
 		{ name: "channel", optional: false, type: "channel" },
 		{ name: "logTypes", optional: true, type: "enumList", values: LogChannelArgs },

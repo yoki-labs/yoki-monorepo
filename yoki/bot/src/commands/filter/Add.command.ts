@@ -1,67 +1,67 @@
 import { Severity } from "@prisma/client";
 
-import { RoleType } from "../../typings";
+import { ResolvedEnum, RoleType } from "../../typings";
 import { inlineCode, inlineQuote } from "../../utils/formatters";
 import { getFilterFromSyntax } from "../../utils/util";
 import { Category } from "../Category";
 import type { Command } from "../Command";
 
 const Add: Command = {
-    name: "filter-add",
-    subName: "add",
-    description: "Add a word or phrase to the automod filter.",
-    usage: "<phrase> [severity=warn] [infraction_points=5]",
-    examples: ["test_word warn", "test_word_2 kick"],
-    subCommand: true,
-    requiredRole: RoleType.ADMIN,
-    category: Category.Filter,
-    args: [
-        {
-            name: "phrase",
-            type: "string",
-        },
-        {
-            name: "severity",
-            type: "enum",
-            optional: true,
-            values: Severity,
-        },
-        {
-            name: "infraction_points",
-            type: "number",
-            optional: true,
-        },
-    ],
-    execute: async (message, args, ctx, { server }) => {
-        if (!server.filterEnabled)
-            return ctx.messageUtil.replyWithError(message, `Enable filtering`, `Automod filter is disabled! Please enable using \`${server.getPrefix()}module enable automod\``);
-        const phrase = (args.phrase as string).toLowerCase();
-        const severity = (args.severity as Severity | null) ?? Severity.WARN;
-        const infractionPoints = (args.infraction_points as number | null) ?? 5;
+	name: "filter-add",
+	subName: "add",
+	description: "Add a word or phrase to the automod filter.",
+	usage: "<phrase> [severity=warn] [infraction_points=5]",
+	examples: ["test_word warn", "test_word_2 kick"],
+	subCommand: true,
+	requiredRole: RoleType.ADMIN,
+	category: Category.Filter,
+	args: [
+		{
+			name: "phrase",
+			type: "string",
+		},
+		{
+			name: "severity",
+			type: "enum",
+			optional: true,
+			values: Severity,
+		},
+		{
+			name: "infraction_points",
+			type: "number",
+			optional: true,
+		},
+	],
+	execute: async (message, args, ctx, { server }) => {
+		if (!server.filterEnabled)
+			return ctx.messageUtil.replyWithError(message, `Enable filtering`, `Automod filter is disabled! Please enable using \`${server.getPrefix()}module enable automod\``);
+		const phrase = (args.phrase as string).toLowerCase();
+		const severity = ((args.severity as ResolvedEnum)?.resolved ?? Severity.WARN) as Severity;
+		const infractionPoints = (args.infraction_points as number | null) ?? 5;
 
-        if (!severity) return ctx.messageUtil.replyWithError(message, `No such severity level`, `Sorry, but that is not a valid severity level!`);
-        if (infractionPoints < 0 || infractionPoints > 100)
-            return ctx.messageUtil.replyWithError(message, `Points over the limit`, `Sorry, but the infraction points must be between \`0\` and \`100\`.`);
+		if (!severity) return ctx.messageUtil.replyWithError(message, `No such severity level`, `Sorry, but that is not a valid severity level!`);
+		if (infractionPoints < 0 || infractionPoints > 100)
+			return ctx.messageUtil.replyWithError(message, `Points over the limit`, `Sorry, but the infraction points must be between \`0\` and \`100\`.`);
 
-        const [content, matching] = getFilterFromSyntax(phrase);
+		const [content, matching] = getFilterFromSyntax(phrase);
 
-        const doesExistAlready = await ctx.prisma.contentFilter.findFirst({ where: { serverId: message.serverId!, content, matching } });
-        if (doesExistAlready) return ctx.messageUtil.replyWithError(message, `Already added`, `This word is already in your server's filter!`);
+		const doesExistAlready = await ctx.prisma.contentFilter.findFirst({ where: { serverId: message.serverId!, content, matching } });
+		if (doesExistAlready) return ctx.messageUtil.replyWithError(message, `Already added`, `This word is already in your server's filter!`);
 
-        await ctx.dbUtil.addWordToFilter({
-            content,
-            creatorId: message.createdBy,
-            serverId: message.serverId!,
-            matching,
-            severity,
-            infractionPoints,
-        });
-        return ctx.messageUtil.replyWithSuccess(
-            message,
-            `New phrase added`,
-            `Successfully added ${inlineQuote(phrase)} with the severity ${inlineCode(severity.toLowerCase())} to the automod list!`
-        );
-    },
+		await ctx.dbUtil.addWordToFilter({
+			content,
+			creatorId: message.createdBy,
+			serverId: message.serverId!,
+			matching,
+			severity,
+			infractionPoints,
+		});
+		return ctx.messageUtil.replyWithSuccess(
+			message,
+			`New phrase added`,
+			`Successfully added ${inlineQuote(phrase)} with the severity ${inlineCode(severity.toLowerCase())} to the automod list!`
+		);
+	},
 };
 
 export default Add;

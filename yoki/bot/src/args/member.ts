@@ -35,4 +35,8 @@ export default [async (
 	}
 
 	return null;
-}, (_arg) => "I was expecting a mention or ID of a user. This user **must** currently be in the server."]satisfies CommandArgValidator;
+}, (_arg) => `
+		I was expecting a mention or ID of a user. 
+		
+		This user **must** currently be in the server.
+	`]satisfies CommandArgValidator;

@@ -24,7 +24,8 @@ export { Action, ContentFilter, LogChannel, LogChannelType, RoleType, Severity }
 // presets object
 export type ContentFilterScan = Pick<ContentFilter, "content" | "matching" | "infractionPoints" | "severity">;
 export type Server = DBServer & { getPrefix: () => string; getTimezone: () => string; formatTimezone: (date: Date) => string };
-export type ResolvedArgs = string | string[] | number | boolean | CachedMember | ServerChannelPayload | null;
+export interface ResolvedEnum { original: string, resolved: string }
+export type ResolvedArgs = string | string[] | number | boolean | ResolvedEnum | CachedMember | ServerChannelPayload | null;
 export interface UsedMentions {
 	user: number;
 	role: number;
