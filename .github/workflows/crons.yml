@@ -3,7 +3,7 @@ name: Crons
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 * * * 6'
+    - cron: '0 * * * 5'
 
 jobs:
   messages:
@@ -26,3 +26,11 @@ jobs:
         run: npx ts-node yoki/bot/scripts/delete-old-messages.ts
         env:
           DATABASE_URL: ${{ secrets.DATABASE_MIGRATION_URL }}
+
+      - name: Guilded notification
+        uses: guildedjs/guilded-webhook-action@v1
+        env:
+          WEBHOOK_URL: ${{ secrets.GUILDED_WEBHOOK }}
+        with:
+          title: 'Old Messages Cleared'
+          description: '${{ steps.t.outputs.year }}/${{ steps.t.outputs.month }}/${{ steps.t.outputs.day }}'
