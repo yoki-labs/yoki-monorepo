@@ -34,8 +34,9 @@ jobs:
           destination_dir: 'backups'
 
       - name: Guilded notification
-        uses: guildedjs/guilded-webhook-action@main
+        uses: guildedjs/guilded-webhook-action@v1
         env:
-          GUILDED_WEBHOOK: ${{ secrets.GUILDED_WEBHOOK }}
+          WEBHOOK_URL: ${{ secrets.GUILDED_WEBHOOK }}
         with:
-          content: 'Howdy there partner'
+          title: 'New Database Backup'
+          description: 'Located in s3 bucket, backups/${{ steps.t.outputs.year }}-${{ steps.t.outputs.month }}-${{ steps.t.outputs.day }}-${{ steps.t.outputs.hour }}-${{ steps.t.outputs.minute }}-${{ steps.t.outputs.second }}.tar'
