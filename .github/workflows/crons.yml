@@ -1,0 +1,28 @@
+name: Crons
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 * * * 6'
+
+jobs:
+  messages:
+    name: Clear old messages
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clone repo
+        uses: actions/checkout@v3
+
+      - name: Set up Node v16
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+          cache: 'yarn'
+
+      - name: Install dependencies
+        run: yarn install
+
+      - name: Run Message Clearer
+        run: npx ts-node yoki/bot/scripts/delete-old-messages.ts
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_MIGRATION_URL }}
