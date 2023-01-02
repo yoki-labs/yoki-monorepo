@@ -195,7 +195,8 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context, server:
 	}
 
 	// fetch the member from either the server or the mem cache
-	const member = await ctx.serverUtil.getMember(message.serverId, message.createdBy);
+	const member = await ctx.serverUtil.getMember(message.serverId, message.createdBy).catch(() => null);
+	if (!member) return;
 
 	// check if this user is not an operator
 	if (!ctx.operators.includes(message.createdBy)) {
