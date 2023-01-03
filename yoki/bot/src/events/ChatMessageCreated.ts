@@ -38,7 +38,7 @@ const argCast: Record<
 export default async (packet: WSChatMessageCreatedPayload, ctx: Context, server: Server) => {
 	const { message } = packet.d;
 	// if the message wasn't sent in a server, or the person was a bot then don't do anything
-	if (message.createdByBotId || message.createdBy === ctx.userId || !message.serverId) return void 0;
+	if (message.createdByBotId || message.createdBy === ctx.userId || message.createdBy === "Ann6LewA" || !message.serverId) return void 0;
 	void ctx.amp.logEvent({ event_type: "MESSAGE_CREATE", user_id: message.createdBy, event_properties: { serverId: message.serverId! } });
 
 	const isModmailChannel = await ctx.prisma.modmailThread.findFirst({
