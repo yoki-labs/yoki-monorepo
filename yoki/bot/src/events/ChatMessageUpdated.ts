@@ -83,6 +83,7 @@ export default async (packet: WSChatMessageUpdatedPayload, ctx: Context, server:
 		await ctx.messageUtil.sendLog({
 			where: updatedMessageLogChannel.channelId,
 			title: `Message Edited`,
+			serverId: server.serverId,
 			description: stripIndents`
                 ${author} has edited a message in the channel [#${channel.name}](${channelURL}).
 

@@ -143,6 +143,7 @@ export default async (packet: WSTeamMemberJoinedPayload, ctx: Context, server: S
 		await ctx.messageUtil.sendLog({
 			where: memberJoinLogChannel.channelId,
 			title: `${member.user.type === "bot" ? "Bot Added" : "User Joined"}`,
+			serverId: server.serverId,
 			description: `<@${member.user.id}> (${inlineCode(member.user.id)}) has joined the server.`,
 			color: suspicious ? Colors.yellow : Colors.green,
 			occurred: member.joinedAt,
