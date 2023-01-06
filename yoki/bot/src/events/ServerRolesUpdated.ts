@@ -41,6 +41,7 @@ export default async (event: WSTeamRolesUpdatedPayload, ctx: Context): Promise<v
 			await ctx.messageUtil.sendLog({
 				where: roleUpdateLogChannel.channelId,
 				title: `Member Roles Changed`,
+				serverId,
 				description: `${modifiedUsers} had their roles changed.`,
 				color: Colors.blue,
 				occurred: new Date().toISOString(),
