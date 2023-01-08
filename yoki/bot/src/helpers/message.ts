@@ -118,7 +118,6 @@ export class MessageUtil extends Util {
 			isSilent: true,
 		}).catch(async (e) => {
 			const existing = (this.logchannelErrCounter[where] ?? 0) + 1;
-			this.logchannelErrCounter[where] += existing;
 
 			if (existing > 3) {
 				const server = await this.client.rest.router.getServer(serverId).catch(() => null);
@@ -148,6 +147,7 @@ export class MessageUtil extends Util {
 					Channel: \`${where}\`
 					Count: \`${existing}\`
 				`)
+				this.logchannelErrCounter[where] = existing;
 			}
 		});
 	}
