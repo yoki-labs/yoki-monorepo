@@ -9,7 +9,6 @@
         "skipLibCheck": true,
 		"declaration": false,
 		"declarationMap": false,
-        "baseUrl": "./src",
         "paths": {
             "@yokilabs/util": ["../../yokilabs/util/src"],
             "@yokilabs/bot": ["../../yokilabs/bot/src"],

@@ -22,10 +22,6 @@
     "imports": {
         "#functions/*": "./dist/functions/*.js"
     },
-    "workspaces": [
-        "../../yokilabs/bot",
-        "../../yokilabs/util"
-    ],
     "dependencies": {
         "@amplitude/node": "^1.10.2",
         "@discordjs/collection": "^1.2.0",
