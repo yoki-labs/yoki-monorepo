@@ -1,9 +1,13 @@
 {
     "name": "@yokilabs/util",
+    "packageManager": "yarn@1.22.19",
     "version": "1.0.0",
     "private": true,
     "description": "Common utilities code",
-    "main": "./dist/index.js",
+    "main": "./dist/src/index.js",
+    "files": [
+        "dist"
+    ],
     "author": "Yoki-Labs",
     "license": "PROPRIETARY",
     "scripts": {

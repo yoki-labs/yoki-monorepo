@@ -1,5 +1,6 @@
 {
     "name": "@tuxedo/bot",
+    "packageManager": "yarn@1.22.19",
     "private": true,
     "version": "1.0.0",
     "description": "Tuxedo bot Docker service",
@@ -21,10 +22,6 @@
     "imports": {
         "#functions/*": "./dist/functions/*.js"
     },
-    "workspaces": [
-        "../../yokilabs/bot",
-        "../../yokilabs/util"
-    ],
     "dependencies": {
         "@amplitude/node": "^1.10.2",
         "@discordjs/collection": "^1.2.0",
@@ -42,8 +39,8 @@
         "recursive-readdir": "^2.2.3",
         "redis-json": "^6.0.3",
         "tslib": "^2.4.1",
-        "@yokilabs/bot": "*",
-        "@yokilabs/util": "*"
+        "@yokilabs/bot": "^1.0.0",
+        "@yokilabs/util": "^1.0.0"
     },
     "devDependencies": {
         "@guildedjs/guilded-api-typings": "^2.8.7",

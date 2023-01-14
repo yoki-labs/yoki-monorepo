@@ -6,7 +6,9 @@
         "noImplicitAny": false,
         "skipLibCheck": true,
 		"declaration": true,
-		"declarationMap": true
+		"declarationMap": true,
+        "incremental": true,
+        "composite": true
     },
     "include": ["./src/**/*.ts"],
     "exclude": ["*.test.ts"]

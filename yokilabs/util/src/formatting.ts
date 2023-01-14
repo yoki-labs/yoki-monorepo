@@ -1,8 +1,25 @@
 // import { Embed } from "@guildedjs/webhook-client";
 // import { stripIndents } from "common-tags";
 
+import { Embed } from "@guildedjs/webhook-client";
+import { stripIndents } from "common-tags";
+
 // Remove any inline code escapes
 export const escapeInlineCodeText = (code: any) => code.toString().replaceAll("\\", "\\\\").replaceAll("`", "'");
+export const errorEmbed = (err: Error | any, additional_details?: Record<string, string | number | null>) =>
+    new Embed()
+        .setDescription(
+            stripIndents`
+				${
+                    additional_details &&
+                    Object.keys(additional_details as object)
+                        .map((key) => `${key}: \`${additional_details[key]}\``)
+                        .join("\n")
+                }
+				${err.stack ?? err.message ?? JSON.stringify(err).slice(0, 1350)}
+			`
+        )
+        .setColor("RED");
 
 export const inlineCode = (code: any) => `\`${code}\``;
 export const bold = (text: any) => `**${text}**`;

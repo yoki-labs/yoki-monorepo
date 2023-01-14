@@ -1,4 +1,6 @@
+import { Embed } from "@guildedjs/webhook-client";
 import { setClientCommands } from "@yokilabs/bot";
+import { codeBlock } from "@yokilabs/util";
 import { config } from "dotenv";
 import { join } from "path";
 
@@ -13,6 +15,25 @@ config({ path: join(__dirname, "..", ".env") });
 });
 
 const client = new Client();
+
+client.ws.emitter.on("gatewayEvent", async (event, data) => {
+    const { serverId } = data.d as { serverId?: string | null };
+    if (!serverId) return;
+
+    const serverFromDb = await client.dbUtil.getServer(serverId);
+
+    if (serverFromDb?.blacklisted) return void 0;
+
+    return client.eventHandler[event]?.(data, client, serverFromDb).catch(
+        (err) => client.errorHandler.send("Uncaught event error", [new Embed({ description: err?.toString() })])
+        // client.errorHandler.send("Uncaught event error", [errorEmbed(err, { server: serverId, event })])
+    );
+});
+
+client.ws.emitter.on("error", (err) => {
+    console.log(`[WS ERR]: ${err}`);
+    void client.errorHandler.send("Error in command usage!", [new Embed().setDescription("[WS ERR]:").addField(`Err`, codeBlock(err)).setColor("RED")]);
+});
 
 void (async (): Promise<void> => {
     await setClientCommands(client, join(__dirname, "commands"));

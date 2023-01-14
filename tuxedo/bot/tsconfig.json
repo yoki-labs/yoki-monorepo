@@ -9,12 +9,19 @@
         "skipLibCheck": true,
 		"declaration": false,
 		"declarationMap": false,
-        "baseUrl": "./src",
         "paths": {
             "@yokilabs/util": ["../../yokilabs/util/src"],
             "@yokilabs/bot": ["../../yokilabs/bot/src"],
         }
     },
-    "include": ["./src/**/*.ts", "./src/**/*.json", "../../yokilabs/**/*.ts"],
-    "exclude": ["*.test.ts"]
+    "include": ["./src/**/*.ts", "./src/**/*.json"],
+    "exclude": ["*.test.ts", "../../yokilabs/**/dist/**"],
+    "references": [
+        {
+            "path": "../../yokilabs/bot"
+        },
+        {
+            "path": "../../yokilabs/util"
+        }
+    ]
 }

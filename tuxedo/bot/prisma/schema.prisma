@@ -14,6 +14,7 @@ model Server {
     premium     PremiumType?
     locale      String       @default("en-US")
     prefix      String?
+    blacklisted Boolean      @default(false)
 }
 
 enum PremiumType {

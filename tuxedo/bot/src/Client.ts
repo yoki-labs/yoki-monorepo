@@ -36,7 +36,7 @@ export default class Client extends AbstractClient<Context, Server, Command> {
     readonly dbUtil: DatabaseUtil = new DatabaseUtil(this);
 
     // events that this bot handles, directly from the ws manager
-    readonly eventHandler: { [x: string]: (packet: any, ctx: Client, server: any) => Promise<unknown> | undefined } = {
+    readonly eventHandler: { [x: string]: (packet: any, ctx: Client, server: any) => Promise<unknown> } = {
         // handles messages sent
         ChatMessageCreated,
     };

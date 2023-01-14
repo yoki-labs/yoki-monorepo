@@ -57,17 +57,26 @@ export default function createCommandHandler<
 
     // Lambda incase JS detects there is no context in lambdas from the object and garbage collects the object
     return {
-        fetchPrefix: (onNext: (packet: MessagePayload, ctx: TClient, server: TServer, prefix: string) => AsyncUnit, packet: MessagePayload, ctx: TClient, server: TServer) => {
+        fetchPrefix: async (
+            onNext: (packet: MessagePayload, ctx: TClient, server: TServer, prefix: string) => Promise<unknown> | undefined,
+            packet: MessagePayload,
+            ctx: TClient,
+            server: TServer
+        ) => {
+            console.log("Fetch prefix");
+            console.log("packet", packet);
             const { message } = packet.d;
+            console.log("message", message);
 
             if (message.createdByBotId || message.createdBy === ctx.userId || !message.serverId) return void 0;
 
             const prefix = server.prefix ?? process.env.DEFAULT_PREFIX!;
+            console.log("Prefix", prefix);
 
             return onNext(packet, ctx, server, prefix);
         },
-        parseCommand: (
-            executeCommand: (packet: MessagePayload, ctx: TClient, server: TServer, prefix: string, command: TCommand | undefined, args: string[]) => AsyncUnit,
+        parseCommand: async (
+            executeCommand: (packet: MessagePayload, ctx: TClient, server: TServer, prefix: string, command: TCommand | undefined, args: string[]) => Promise<unknown> | undefined,
             packet: MessagePayload,
             ctx: TClient,
             server: TServer,
@@ -75,6 +84,7 @@ export default function createCommandHandler<
         ) => {
             // Parse the message into the command name and args ("?test arg1 arg2 arg3" = [ "test", "arg1", "arg2", "arg3" ])
             let [commandName, ...args] = packet.d.message.content.slice(prefix.length).trim().split(/ +/g);
+            console.log("Raw command", [commandName, args]);
 
             if (!commandName) return void 0;
 
@@ -82,6 +92,8 @@ export default function createCommandHandler<
 
             // Get the command by the name or if it's an alias of a command
             const command = ctx.commands.get(commandName) ?? ctx.commands.find((command) => command.aliases?.includes(commandName) ?? false);
+
+            console.log("Command", command);
 
             return executeCommand(packet, ctx, server, prefix, command, args);
         },
