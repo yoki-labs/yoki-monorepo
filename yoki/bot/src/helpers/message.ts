@@ -117,41 +117,43 @@ export class MessageUtil extends Util {
 				},
 			],
 			isSilent: true,
-		}).catch(async (e) => {
-			const existing = this.logchannelErrCounter[where] ?? 0;
-			console.log(`EXISTING: ${existing}`);
+		})
+			.then(x => x.message).catch(async (e) => {
+				const existing = this.logchannelErrCounter[where] ?? 0;
+				console.log(`EXISTING: ${existing}`);
 
-			if (existing > 3) {
-				const server = await this.client.rest.router.getServer(serverId).catch(() => null);
-				if (!server) return;
+				if (existing > 3) {
+					const server = await this.client.rest.router.getServer(serverId).catch(() => null);
+					if (!server) return;
 
-				const { defaultChannelId } = server.server;
-				if (defaultChannelId) await this.client.messageUtil.send(defaultChannelId, {
-					embeds: [{
-						color: Colors.red, description: stripIndents`
+					const { defaultChannelId } = server.server;
+					if (defaultChannelId) await this.client.messageUtil.send(defaultChannelId, {
+						embeds: [{
+							color: Colors.red, description: stripIndents`
 						<@${server.server.ownerId}>, the log channel with the ID \`${where}\` has blocked the bot from sending a log message three consistent times. 
 						As such, we've gone ahead and deleted it from your settings. 
 						Please readjust the channel permissions and add the channel back once done.
 						
 						[Need help? Join our support server](https://guilded.gg/Yoki)`
-					}]
-				});
-				await this.prisma.logChannel.deleteMany({ where: { channelId: where, serverId } });
-				await this.client.errorHandler.send(stripIndents`
+						}]
+					});
+					await this.prisma.logChannel.deleteMany({ where: { channelId: where, serverId } });
+					await this.client.errorHandler.send(stripIndents`
 					Deleted log channel for count
 					Channel: \`${where}\`
 					Count: \`${existing}\`
 				`)
-				delete this.logchannelErrCounter[where];
-			} else {
-				await this.client.errorHandler.send(stripIndents`
+					delete this.logchannelErrCounter[where];
+				} else {
+					await this.client.errorHandler.send(stripIndents`
 					Log channel err. ${e.message}
 					Channel: \`${where}\`
 					Count: \`${existing}\`
 				`)
-				this.logchannelErrCounter[where] = existing ?? 1;
-			}
-		});
+					this.logchannelErrCounter[where] = existing ?? 1;
+				}
+				return null;
+			});
 	}
 
 	replyWithEmbed(message: ChatMessagePayload, embed: EmbedPayload, messagePartial?: Partial<RESTPostChannelMessagesBody>) {
