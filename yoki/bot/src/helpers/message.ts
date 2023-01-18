@@ -105,7 +105,8 @@ export class MessageUtil extends Util {
 		additionalInfo?: string;
 		fields?: EmbedField[];
 	}) {
-		return this.send(where, {
+		console.log("Log sending");
+		return this.client.rest.router.createChannelMessage(where, {
 			embeds: [
 				{
 					title,
