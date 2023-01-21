@@ -7,6 +7,7 @@ import Close from "./Close.command";
 import Edit from "./Edit.command";
 import Group from "./Group.command";
 import History from "./History.command";
+import PingRole from "./PingRole.command";
 import Reply from "./Reply.command";
 import SelectTrigger from "./SelectTrigger.command";
 import SendTrigger from "./SendTrigger.command";
@@ -26,7 +27,8 @@ const Modmail: Command = {
         .set("selecttrigger", SelectTrigger)
         .set("sendtrigger", SendTrigger)
         .set("category", CategoryCommand)
-        .set("group", Group),
+        .set("group", Group)
+        .set("pingrole", PingRole),
     execute: () => void 0,
 };
 

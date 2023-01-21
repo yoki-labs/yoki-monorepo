@@ -52,8 +52,12 @@ export default async (packet: WSChannelMessageReactionCreatedPayload, ctx: Conte
                     openerId: createdBy,
                 },
             });
-
+            
+            const modmailPingRole = server.modmailPingRoleId ? `<@${server.modmailPingRoleId}>` : "";
             const member = await ctx.serverUtil.getMember(serverId, createdBy, true, true);
+            await ctx.rest.router.createChannelMessage(newChannel.channel.id, {
+                content: `${modmailPingRole} A new modmail thread has been opened!`,
+            });
             await ctx.messageUtil.sendInfoBlock(
                 newChannel.channel.id,
                 `New modmail thread opened!`,
