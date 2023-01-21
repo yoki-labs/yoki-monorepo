@@ -150,7 +150,7 @@ export class MessageUtil extends Util {
 					Channel: \`${where}\`
 					Count: \`${existing}\`
 				`)
-					this.logchannelErrCounter[where] = existing ?? 1;
+					this.logchannelErrCounter[where] = existing + 1;
 				}
 				return null;
 			});
