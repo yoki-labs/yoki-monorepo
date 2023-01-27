@@ -36,9 +36,11 @@
         "@guildedjs/rest": "2.8.2",
         "@guildedjs/webhook-client": "0.3.7",
         "@guildedjs/ws": "1.4.11",
-        "@yokilabs/captcha-generator": "1.1.1",
         "@node-redis/json": "^1.0.2",
         "@prisma/client": "^4.2.1",
+        "@yokilabs/bot": "^1.0.0",
+        "@yokilabs/captcha-generator": "1.1.1",
+        "@yokilabs/util": "^1.0.0",
         "aws-sdk": "^2.1168.0",
         "common-tags": "^1.8.2",
         "dotenv": "^8.2.0",
@@ -49,9 +51,7 @@
         "nodemon": "^2.0.14",
         "recursive-readdir": "^2.2.2",
         "redis-json": "^6.0.3",
-        "tslib": "^2.0.3",
-        "@yokilabs/util": "^1.0.0",
-        "@yokilabs/bot": "^1.0.0"
+        "tslib": "^2.0.3"
     },
     "imports": {
         "#functions/*": "./dist/functions/*.js"

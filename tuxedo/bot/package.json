@@ -30,6 +30,8 @@
         "@guildedjs/webhook-client": "^0.4.2",
         "@guildedjs/ws": "^1.4.11",
         "@node-redis/json": "^1.0.2",
+        "@yokilabs/bot": "^1.0.0",
+        "@yokilabs/util": "^1.0.0",
         "common-tags": "^1.8.2",
         "dotenv": "^16.0.3",
         "ioredis": "^5.2.4",
@@ -38,9 +40,7 @@
         "nodemon": "^2.0.20",
         "recursive-readdir": "^2.2.3",
         "redis-json": "^6.0.3",
-        "tslib": "^2.4.1",
-        "@yokilabs/bot": "^1.0.0",
-        "@yokilabs/util": "^1.0.0"
+        "tslib": "^2.4.1"
     },
     "devDependencies": {
         "@guildedjs/guilded-api-typings": "^2.8.7",

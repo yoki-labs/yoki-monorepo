@@ -63,15 +63,11 @@ export default function createCommandHandler<
             ctx: TClient,
             server: TServer
         ) => {
-            console.log("Fetch prefix");
-            console.log("packet", packet);
             const { message } = packet.d;
-            console.log("message", message);
 
             if (message.createdByBotId || message.createdBy === ctx.userId || !message.serverId) return void 0;
 
             const prefix = server.prefix ?? process.env.DEFAULT_PREFIX!;
-            console.log("Prefix", prefix);
 
             return onNext(packet, ctx, server, prefix);
         },
@@ -84,7 +80,6 @@ export default function createCommandHandler<
         ) => {
             // Parse the message into the command name and args ("?test arg1 arg2 arg3" = [ "test", "arg1", "arg2", "arg3" ])
             let [commandName, ...args] = packet.d.message.content.slice(prefix.length).trim().split(/ +/g);
-            console.log("Raw command", [commandName, args]);
 
             if (!commandName) return void 0;
 
@@ -92,8 +87,6 @@ export default function createCommandHandler<
 
             // Get the command by the name or if it's an alias of a command
             const command = ctx.commands.get(commandName) ?? ctx.commands.find((command) => command.aliases?.includes(commandName) ?? false);
-
-            console.log("Command", command);
 
             return executeCommand(packet, ctx, server, prefix, command, args);
         },
@@ -143,6 +136,7 @@ export default function createCommandHandler<
             // The object of casted args casted to their proper types
             const resolvedArgs: Record<string, any> = {};
             const usedMentions: UsedMentions = { user: 0, role: 0, channel: 0 };
+
             // If this command has accepts args
             if (command.args?.length) {
                 // Go through all the specified arguments in the command
@@ -171,9 +165,9 @@ export default function createCommandHandler<
                     // Resolve correctly converted argument
                     resolvedArgs[commandArg.name] = castArg;
                 }
-
-                return onNext(packet, ctx, server, command, resolvedArgs);
             }
+
+            return onNext(packet, ctx, server, command, resolvedArgs);
         },
         checkUserPermissions: async (
             executeCommand: (packet: MessagePayload, ctx: TClient, server: TServer, member: TeamMemberPayload, command: TCommand, args: Record<string, any>) => AsyncUnit,
@@ -198,6 +192,7 @@ export default function createCommandHandler<
                     const modRoles = await getRoles(ctx, serverId);
                     const userModRoles = modRoles.filter((modRole) => member.roleIds.includes(modRole.roleId));
                     const requiredValue = roleValues[command.requiredRole];
+
                     // check if the user has any of the roles of this required type
                     if (!userModRoles.some((role) => roleValues[role.type] >= requiredValue)) {
                         void ctx.amp.logEvent({
@@ -205,6 +200,7 @@ export default function createCommandHandler<
                             user_id: message.createdBy,
                             event_properties: { serverId: message.serverId },
                         });
+
                         return ctx.messageUtil.replyWithUnpermitted(message, `Unfortunately, you are missing the ${inlineCode(command.requiredRole)} role!`);
                     }
                     // if this command is operator only, then silently ignore because of privacy reasons
@@ -218,6 +214,7 @@ export default function createCommandHandler<
 
             try {
                 void ctx.amp.logEvent({ event_type: "COMMAND_RAN", user_id: message.createdBy, event_properties: { serverId: message.serverId!, command: command.name } });
+
                 // run the command with the message object, the casted arguments, the global context object (datbase, rest, ws),
                 // and the command context (raw packet, database server entry, member from API or cache)
                 await command.execute(message, args, ctx, { packet, server, member });
