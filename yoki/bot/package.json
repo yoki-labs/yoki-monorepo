@@ -62,6 +62,7 @@
         "@guildedjs/rest": "2.8.2",
         "@guildedjs/webhook-client": "0.3.7",
         "@guildedjs/ws": "1.4.12",
+        "@node-redis/json": "^1.0.2",
         "@prisma/client": "^4.2.1",
         "@yokilabs/bot": "^1.0.0",
         "@yokilabs/captcha-generator": "1.1.1",
@@ -75,9 +76,7 @@
         "nodemon": "^2.0.14",
         "recursive-readdir": "^2.2.2",
         "redis-json": "^6.0.3",
-        "tslib": "^2.0.3",
-        "@yokilabs/util": "^1.0.0",
-        "@yokilabs/bot": "^1.0.0"
+        "tslib": "^2.0.3"
     },
     "author": "Nico",
     "license": "UNLICENSED"
