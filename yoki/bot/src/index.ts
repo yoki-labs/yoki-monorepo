@@ -27,7 +27,7 @@ const client = new Client();
 client.ws.emitter.on("gatewayEvent", async (event, data) => {
 	if (event === "BotTeamMembershipCreated") return BotServerMembershipCreated(data as WSBotTeamMembershipCreated, client);
 	const { serverId } = data.d as { serverId?: string | null };
-	if (!serverId) return;
+	if (!serverId || serverId === "XjBWymwR") return;
 
 	const serverFromDb = await client.dbUtil.getServer(serverId).catch((err) =>
 		void client.errorHandler.send("Error creating/fetching server for gateway event.", [errorEmbed(err, { server: serverId, event })])
