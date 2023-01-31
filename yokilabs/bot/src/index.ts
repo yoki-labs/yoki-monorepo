@@ -10,3 +10,4 @@ export { ResolvedArgs, UsedMentions } from "./commands/arguments";
 export { IRole, IServer } from "./db-types";
 export { setClientCommands } from "./run";
 export { CachedChannel, CommandContext } from "./typings";
+export { getAllCommands, replyWithSingleCommand } from "./commands/help-util";

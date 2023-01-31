@@ -1,14 +1,14 @@
-import { PrismaClient, Server } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
 import { AbstractClient, MessageUtil, ServerUtil } from "@yokilabs/bot";
 
 import ChatMessageCreated from "./events/ChatMessageCreated";
 import { DatabaseUtil } from "./helpers/database";
-import type { Command, Context } from "./typings";
+import type { Command, Server } from "./typings";
 
 /**
  * Main class that stores utils, connections to various providers, and ws
  */
-export default class Client extends AbstractClient<Context, Server, Command> {
+export default class Client extends AbstractClient<Client, Server, Command> {
     // // ws manager
     // readonly ws = new WebSocketManager({ token: process.env.GUILDED_TOKEN });
     // // rest manager
@@ -36,7 +36,7 @@ export default class Client extends AbstractClient<Context, Server, Command> {
     readonly dbUtil: DatabaseUtil = new DatabaseUtil(this);
 
     // events that this bot handles, directly from the ws manager
-    readonly eventHandler: { [x: string]: (packet: any, ctx: Client, server: any) => Promise<unknown> } = {
+    readonly eventHandler: { [x: string]: (packet: any, ctx: Client, server: Server) => Promise<unknown> } = {
         // handles messages sent
         ChatMessageCreated,
     };

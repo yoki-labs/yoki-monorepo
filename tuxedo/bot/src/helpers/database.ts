@@ -1,7 +1,7 @@
-import type { Server } from "@prisma/client";
 import { Util } from "@yokilabs/bot";
 
 import type Client from "../Client";
+import type { Server } from "../typings";
 
 export class DatabaseUtil extends Util<Client> {
     getServer(serverId: string, createIfNotExists?: true): Promise<Server>;
@@ -13,7 +13,7 @@ export class DatabaseUtil extends Util<Client> {
                 if (!server && createIfNotExists) return this.createFreshServerInDatabase(serverId);
                 return server ?? null;
             })
-            .then((data) => (data ? { ...data, getPrefix: () => data.prefix ?? process.env.DEFAULT_PREFIX } : null));
+            .then((data) => (data ? { ...data, getPrefix: () => data.prefix ?? this.client.prefix } : null));
     }
 
     createFreshServerInDatabase(serverId: string, data?: Record<string, any>) {

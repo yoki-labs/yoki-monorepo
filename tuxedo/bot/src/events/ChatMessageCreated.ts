@@ -1,8 +1,7 @@
-import type { Server } from "@prisma/client";
 import { createCommandHandler } from "@yokilabs/bot";
-
 import type Client from "../Client";
-import type { Command, RoleType } from "../typings";
+
+import type { Command, RoleType, Server } from "../typings";
 
 const { fetchPrefix, parseCommand, fetchCommandInfo, checkUserPermissions, tryExecuteCommand } = createCommandHandler<Client, Server, Command, RoleType>({ MOD: 0 });
 

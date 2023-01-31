@@ -7,6 +7,7 @@ import RedisClient from "ioredis";
 
 import type { BaseCommand } from "./commands/command-typings";
 import type { IServer } from "./db-types";
+import Welcome from "./events/Welcome";
 import type MessageUtil from "./helpers/message";
 import type ServerUtil from "./helpers/server";
 
@@ -24,6 +25,8 @@ export default abstract class AbstractClient<
     ownerId: string | null = null;
     // List of operators who have elevated permissions with the bot
     operators: string[] = [];
+
+    prefix: string;
 
     // ws manager
     readonly ws = new WebSocketManager({ token: process.env.GUILDED_TOKEN! });
@@ -51,7 +54,14 @@ export default abstract class AbstractClient<
     abstract messageUtil: MessageUtil<TClient, TServer, TCommand>;
 
     // events that this bot handles, directly from the ws manager
-    abstract eventHandler: { [x: string]: (packet: any, ctx: TClient, server: TServer) => Promise<any> | undefined };
+    abstract eventHandler: { [x: string]: (packet: any, ctx: TClient, server: TServer) => Promise<unknown> | undefined };
+
+    constructor(prefix: string) {
+        // On welcome message
+        this.ws.emitter.on("ready", (data) => Welcome(data, this));
+
+        this.prefix = prefix;
+    }
 
     /** Start the bot connection */
     init() {
