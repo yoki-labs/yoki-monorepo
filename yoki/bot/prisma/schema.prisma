@@ -159,6 +159,7 @@ model Action {
     updatedAt         DateTime? @updatedAt
     expiresAt         DateTime?
     expired           Boolean   @default(false)
+    pardoned          Boolean   @default(false)
 }
 
 model Message {
