@@ -32,10 +32,12 @@ model Server {
     linkInfractionPoints Int      @default(5)
     spamInfractionPoints Int      @default(5)
 
-    muteInfractionThreshold    Int? @default(10)
-    kickInfractionThreshold    Int? @default(15)
-    banInfractionThreshold     Int? @default(45)
-    softbanInfractionThreshold Int? @default(25)
+    muteInfractionThreshold Int? @default(15)
+    muteInfractionDuration  Int? @default(720)
+
+    kickInfractionThreshold    Int? @default(30)
+    banInfractionThreshold     Int? @default(65)
+    softbanInfractionThreshold Int? @default(45)
 
     // --- Anti-raid and captcha
     antiRaidEnabled          Boolean       @default(false)

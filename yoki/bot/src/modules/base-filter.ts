@@ -55,8 +55,7 @@ export default abstract class BaseFilterUtil<TFilterType = null> extends Util {
 		}
 
 		const memberExceeds = await this.getMemberExceedsThreshold(server, userId, server.spamInfractionPoints);
-
-		const actionType = memberExceeds || fallbackSeverity;
+		const actionType = memberExceeds ?? fallbackSeverity;
 
 		await this.dbUtil.emitAction(
 			{
@@ -69,7 +68,7 @@ export default abstract class BaseFilterUtil<TFilterType = null> extends Util {
 				infractionPoints,
 				triggerContent,
 				pardoned: false,
-				expiresAt: actionType === Severity.MUTE ? new Date(Date.now() + 1000 * 60 * 60 * 12) : null,
+				expiresAt: actionType === Severity.MUTE ? new Date(server.muteInfractionDuration ? Date.now() + server.muteInfractionDuration : Date.now() + 1000 * 60 * 60 * 12) : null,
 			},
 			server
 		);
