@@ -34,6 +34,7 @@ RUN yarn
 WORKDIR /opt/build/tuxedo/bot
 
 # for workspaces
+# RUN yarn
 RUN yarn install
 
 # root /yokilabs/bot and /yokilabs/util
