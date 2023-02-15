@@ -9,5 +9,5 @@
         "../../yokilabs/**/*.d.ts"
     ],
     "exec": "npx tsc && node --enable-source-maps dist/index.js",
-    "legacyWatch": true
+    "legacyWatch": false
 }
