@@ -4,7 +4,10 @@ import { stripIndents } from "common-tags";
 import type Client from "../Client";
 import { codeBlock } from "./formatters";
 
-export { summarizeItems, summarizeRolesOrUsers } from "@yokilabs/util";
+export const summarizeItems = <T>(items: T[], mapper: (item: T) => string, maxLength = 20) =>
+    `${items.slice(0, maxLength).map(mapper).join(", ")}${items.length > maxLength ? ` and ${items.length - maxLength} more` : ""}`;
+
+export const summarizeRolesOrUsers = (ids: Array<string | number>, maxLength = 20) => summarizeItems(ids, (id) => `<@${id}>`, maxLength);
 
 export const quoteChangedContent = (ctx: Client, serverId: string, contentId: string | number, contentType: ChannelType, content?: string): string | Promise<string> =>
     content

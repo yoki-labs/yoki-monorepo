@@ -30,17 +30,17 @@ export function getFilterFromSyntax(word: string): [string, FilterMatching] {
     return isPrefixed && isSuffixed
         ? [word.substring(1, word.length - 1), FilterMatching.INFIX]
         : isPrefixed
-            ? [word.substring(0, word.length - 1), FilterMatching.PREFIX]
-            : isSuffixed
-                ? [word.substring(1), FilterMatching.POSTFIX]
-                : [word, FilterMatching.WORD];
+        ? [word.substring(0, word.length - 1), FilterMatching.PREFIX]
+        : isSuffixed
+        ? [word.substring(1), FilterMatching.POSTFIX]
+        : [word, FilterMatching.WORD];
 }
 
 export function filterToString(filter: ContentFilter) {
     return filter.matching === FilterMatching.INFIX
         ? `*${filter.content}*`
         : // *word, word* or word
-        `${filter.matching === FilterMatching.POSTFIX ? "*" : ""}${filter.content}${filter.matching === FilterMatching.PREFIX ? "*" : ""}`;
+          `${filter.matching === FilterMatching.POSTFIX ? "*" : ""}${filter.content}${filter.matching === FilterMatching.PREFIX ? "*" : ""}`;
 }
 
 export const antiRaidResponseMap = {
