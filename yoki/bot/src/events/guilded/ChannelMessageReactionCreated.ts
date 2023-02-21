@@ -3,10 +3,10 @@ import { ReactionActionType } from "@prisma/client";
 import { stripIndents } from "common-tags";
 import { nanoid } from "nanoid";
 
-import type { Context, Server } from "../typings";
-import { Colors } from "../utils/color";
-import { errorEmbed, inlineCode } from "../utils/formatters";
-import { summarizeRolesOrUsers } from "../utils/messages";
+import type { Context, Server } from "../../typings";
+import { Colors } from "../../utils/color";
+import { errorEmbed, inlineCode } from "../../utils/formatters";
+import { summarizeRolesOrUsers } from "../../utils/messages";
 
 export default async (packet: WSChannelMessageReactionCreatedPayload, ctx: Context, server: Server) => {
     const { reaction, serverId } = packet.d;

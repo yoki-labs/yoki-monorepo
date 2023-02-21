@@ -1,11 +1,11 @@
-import { Embed } from "@guildedjs/embeds";
 import type { WSBotTeamMembershipCreated } from "@guildedjs/guilded-api-typings";
 import { stripIndents } from "common-tags";
+import { Embed } from "guilded.js";
 
-import type { Context } from "../typings";
-import { Colors } from "../utils/color";
+import type { Context } from "../../typings";
+import { Colors } from "../../utils/color";
 
-export default async (packet: WSBotTeamMembershipCreated, ctx: Context) => {
+export default (packet: WSBotTeamMembershipCreated, ctx: Context) => {
   const { server, createdBy } = packet.d;
   void ctx.amp.logEvent({ event_type: "YOKI_SERVER_JOIN", user_id: server.id });
 

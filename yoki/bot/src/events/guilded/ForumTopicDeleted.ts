@@ -1,9 +1,9 @@
 import type { WSForumTopicDeleted } from "@guildedjs/guilded-api-typings";
 
-import { Context, LogChannelType } from "../typings";
-import { Colors } from "../utils/color";
-import { inlineCode, inlineQuote } from "../utils/formatters";
-import { quoteChangedContent } from "../utils/messages";
+import { Context, LogChannelType } from "../../typings";
+import { Colors } from "../../utils/color";
+import { inlineCode, inlineQuote } from "../../utils/formatters";
+import { quoteChangedContent } from "../../utils/messages";
 
 export default async (packet: WSForumTopicDeleted, ctx: Context) => {
 	const { forumTopic, serverId } = packet.d;

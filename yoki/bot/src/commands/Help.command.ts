@@ -1,7 +1,7 @@
 import Collection from "@discordjs/collection";
-import { Embed } from "@guildedjs/embeds";
 import type { ChatMessagePayload, EmbedField } from "@guildedjs/guilded-api-typings";
 import { stripIndents } from "common-tags";
+import { Embed } from "guilded.js";
 
 import type Client from "../Client";
 import type { CommandContext } from "../typings";

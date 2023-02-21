@@ -1,6 +1,6 @@
-import { Embed } from "@guildedjs/embeds";
 import type { TeamMemberPayload } from "@guildedjs/guilded-api-typings";
 import { stripIndents } from "common-tags";
+import { Embed } from "guilded.js";
 
 import { Colors } from "../utils/color";
 import { inlineCode } from "../utils/formatters";

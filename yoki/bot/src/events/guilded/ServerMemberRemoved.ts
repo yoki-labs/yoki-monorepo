@@ -4,10 +4,10 @@ import { LogChannelType } from "@prisma/client";
 import { stripIndents } from "common-tags";
 import { nanoid } from "nanoid";
 
-import { closeModmailThread } from "../commands/modmail/Close.command";
-import type { Context, Server } from "../typings";
-import { Colors } from "../utils/color";
-import { inlineCode } from "../utils/formatters";
+import { closeModmailThread } from "../../commands/modmail/Close.command";
+import type { Context, Server } from "../../typings";
+import { Colors } from "../../utils/color";
+import { inlineCode } from "../../utils/formatters";
 
 export default async (packet: WSTeamMemberRemovedPayload, ctx: Context, server: Server) => {
 	const { userId, serverId, isBan, isKick } = packet.d;

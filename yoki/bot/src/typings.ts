@@ -1,9 +1,10 @@
 import type { ServerChannelPayload, TeamMemberPayload, WSChatMessageCreatedPayload } from "@guildedjs/guilded-api-typings";
 import type { ContentFilter, FilterMatching, Server as DBServer } from "@prisma/client";
+import type { ClientEvents } from "guilded.js";
 
-import type Client from "./Client";
+import type YokiClient from "./Client";
 
-export type Context = Client;
+export type Context = YokiClient;
 
 // context available in every execution of a command
 export interface CommandContext {
@@ -42,4 +43,9 @@ export declare interface PresetLink {
 	domain: string;
 	subdomain?: string;
 	route?: string[];
+}
+
+export interface GEvent {
+	execute: (...args: unknown[]) => unknown;
+	name: keyof ClientEvents;
 }

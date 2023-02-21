@@ -4,11 +4,11 @@ import { LogChannelType, Severity } from "@prisma/client";
 import { stripIndents } from "common-tags";
 import { nanoid } from "nanoid";
 
-import type { Context, Server } from "../typings";
-import { generateCaptcha } from "../utils/antiraid";
-import { Colors } from "../utils/color";
-import { codeBlock, inlineCode } from "../utils/formatters";
-import { suspicious as sus } from "../utils/util";
+import type { Context, Server } from "../../typings";
+import { generateCaptcha } from "../../utils/antiraid";
+import { Colors } from "../../utils/color";
+import { codeBlock, inlineCode } from "../../utils/formatters";
+import { suspicious as sus } from "../../utils/util";
 
 export default async (packet: WSTeamMemberJoinedPayload, ctx: Context, server: Server) => {
 	const { member, serverId } = packet.d;

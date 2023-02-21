@@ -1,11 +1,10 @@
-import type { WebhookClient } from "@guildedjs/webhook-client";
-
-import { errorEmbed } from "../utils/formatters";
+import type YokiClient from "../../Client";
+import { errorEmbed } from "../../utils/formatters";
 
 let errorCounter = 0;
 let resetCounter: NodeJS.Timer | null = null;
 
-export default (err: Error, errorHandler: WebhookClient) => {
+export default (err: Error, client: YokiClient) => {
     console.error(err);
 
     // This will prevent us from spamming webhook requests on repeat failures in order to respect Guilded API
@@ -17,5 +16,5 @@ export default (err: Error, errorHandler: WebhookClient) => {
         }, 600000);
 
     // send error to guilded channel
-    if (errorCounter <= 15) void errorHandler.send(`Unhandled error! Current burst ${errorCounter}/${15}`, [errorEmbed(err)]);
+    if (errorCounter <= 15) void client.errorHandler.send(`Unhandled error! Current burst ${errorCounter}/${15}`, [errorEmbed(err)]);
 };

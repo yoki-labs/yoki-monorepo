@@ -1,31 +1,13 @@
 import { init } from "@amplitude/node";
 import Collection from "@discordjs/collection";
-import { RestManager } from "@guildedjs/rest";
-import { WebhookClient } from "@guildedjs/webhook-client";
-import { WebSocketManager } from "@guildedjs/ws";
 import { Action, PrismaClient } from "@prisma/client";
 import { S3 } from "aws-sdk";
+import { Client,WebhookClient } from "guilded.js";
 import EventEmitter from "node:events";
 import type TypedEmitter from "typed-emitter";
 
 import type { Command } from "./commands/Command";
-import ActionIssued from "./events/ActionIssued";
-import BotServerMembershipCreated from "./events/BotServerMembershipCreated";
-import ChannelMessageReactionCreated from "./events/ChannelMessageReactionCreated";
-import ChatMessageCreated from "./events/ChatMessageCreated";
-import ChatMessageDeleted from "./events/ChatMessageDeleted";
-import ChatMessageUpdated from "./events/ChatMessageUpdated";
-import ForumTopicCreated from "./events/ForumTopicCreated";
-import ForumTopicDeleted from "./events/ForumTopicDeleted";
-import ForumTopicLockedEvent from "./events/ForumTopicLockedEvent";
-import ForumTopicUpdated from "./events/ForumTopicUpdated";
-import ListItemEvent from "./events/ListItemEvent";
-import ServerMemberJoined from "./events/ServerMemberJoined";
-import ServerMemberRemoved from "./events/ServerMemberRemoved";
-import ServerMemberUpdated from "./events/ServerMemberUpdated";
-import ServerMemberBanned from "./events/ServerMemberBanned";
-import ServerMemberUnbanned from "./events/ServerMemberUnbanned";
-import ServerRolesUpdated from "./events/ServerRolesUpdated";
+import ActionIssued from "./events/other/ActionIssued";
 import { ChannelUtil } from "./helpers/channel";
 import { DatabaseUtil } from "./helpers/database";
 import { MessageUtil } from "./helpers/message";
@@ -34,19 +16,12 @@ import { MuteScheduler } from "./jobs/MuteScheduler";
 import { ContentFilterUtil } from "./modules/content-filter";
 import { LinkFilterUtil } from "./modules/link-filter";
 import { SpamFilterUtil } from "./modules/spam-filter";
-import type { Context, Server } from "./typings";
-import { Colors } from "./utils/color";
-import ForumTopicCommentEvent from "./events/ForumTopicCommentEvent";
-import ForumTopicCommentDeleted from "./events/ForumTopicCommentDeleted";
-import CalendarEventCommentEvent from "./events/CalendarEventCommentEvent";
-import CalendarEventCommentDeleted from "./events/CalendarEventCommentDeleted";
-import DocCommentEvent from "./events/DocCommentEvent";
-import DocCommentDeleted from "./events/DocCommentDeleted";
+import type { Server } from "./typings";
 
 /**
  * Main class that stores utils, connections to various providers, and ws
  */
-export default class Client {
+export default class YokiClient extends Client {
 	// user ID of the bot
 	userId: string | null = null;
 	// ID of the person who created the bot
@@ -54,10 +29,6 @@ export default class Client {
 	// List of operators who have elevated permissions with the bot
 	operators: string[] = [];
 
-	// ws manager
-	readonly ws = new WebSocketManager({ token: process.env.GUILDED_TOKEN });
-	// rest manager
-	readonly rest = new RestManager({ token: process.env.GUILDED_TOKEN });
 	// database connection
 	readonly prisma = new PrismaClient();
 	// s3 bucket
@@ -97,47 +68,6 @@ export default class Client {
 	// scheduler that will check for (impending) expired mutes and remove them
 	readonly muteHandler = new MuteScheduler(this, 15 * 60);
 
-	// events that this bot handles, directly from the ws manager
-	readonly eventHandler: { [x: string]: (packet: any, ctx: Context, server: Server) => Promise<any> } = {
-		// handles messages sent
-		ChatMessageCreated,
-		// handles messages updated
-		ChatMessageUpdated,
-		// handles messages deleted
-		ChatMessageDeleted,
-		BotServerMembershipCreated,
-		// handles nickname updates and other member data
-		ServerMemberJoined,
-		ServerMemberRemoved,
-		ServerMemberUpdated,
-		ServerMemberBanned,
-		ServerMemberUnbanned,
-		// List item name changes
-		ListItemCreated: ListItemEvent,
-		ListItemUpdated: ListItemEvent,
-		// Forum topic stuff
-		ForumTopicCreated,
-		ForumTopicUpdated,
-		ForumTopicDeleted,
-		ForumTopicLocked: (packet, ctx) => ForumTopicLockedEvent(packet, ctx, "Locked", Colors.red),
-		ForumTopicUnlocked: (packet, ctx) => ForumTopicLockedEvent(packet, ctx, "Unlocked", Colors.green),
-		ForumTopicCommentCreated: ForumTopicCommentEvent,
-		ForumTopicCommentUpdated: ForumTopicCommentEvent,
-		ForumTopicCommentDeleted,
-		// Docs
-		DocCommentCreated: DocCommentEvent,
-		DocCommentUpdated: DocCommentEvent,
-		DocCommentDeleted,
-		// Calendar events
-		CalendarEventCommentCreated: CalendarEventCommentEvent,
-		CalendarEventCommentUpdated: CalendarEventCommentEvent,
-		CalendarEventCommentDeleted,
-		// handles members getting new roles
-		ServerRolesUpdated,
-		// handles reactions
-		ChannelMessageReactionCreated,
-	};
-
 	readonly emitter = new EventEmitter() as TypedEmitter<ClientCustomEvents>;
 	readonly customEventHandler = {
 		ActionIssued,
@@ -148,11 +78,11 @@ export default class Client {
 		// starting the sweeper for mute scheduler
 		this.muteHandler.init();
 		// connecting to the WS gateway
-		return this.ws.connect();
+		return this.login();
 	}
 }
 
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 type ClientCustomEvents = {
-	ActionIssued: (data: Action, server: Server, client: Client) => unknown;
+	ActionIssued: (data: Action, server: Server, client: YokiClient) => unknown;
 };

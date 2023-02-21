@@ -15,4 +15,4 @@ export default [(input: string) => {
 		
 		If you want to indicate yes, use: ${listInlineCode(yesType)}
 		If you want to indicate no, use: ${listInlineCode(noType)}
-	`]satisfies CommandArgValidator;
+	`] satisfies CommandArgValidator;

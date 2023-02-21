@@ -1,9 +1,9 @@
 import { Action, LogChannelType, Severity } from "@prisma/client";
 
-import type Client from "../Client";
-import type { Server } from "../typings";
-import { Colors } from "../utils/color";
-import { getActionAdditionalInfo, getActionFields, getActionInfo } from "../utils/moderation";
+import type Client from "../../Client";
+import type { Server } from "../../typings";
+import { Colors } from "../../utils/color";
+import { getActionAdditionalInfo, getActionFields, getActionInfo } from "../../utils/moderation";
 
 export default async (data: Action, server: Server, client: Client) => {
 	const modLogChannel = await client.dbUtil.getLogChannel(data.serverId, LogChannelType.mod_actions);

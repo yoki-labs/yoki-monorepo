@@ -1,6 +1,6 @@
-import { Embed } from "@guildedjs/embeds";
 import type { ServerChannelPayload } from "@guildedjs/guilded-api-typings";
 import { ReactionActionType } from "@prisma/client";
+import { Embed } from "guilded.js";
 
 import reactions from "../../static/reactions.json";
 import { RoleType } from "../../typings";

@@ -1,7 +1,7 @@
 import type Collection from "@discordjs/collection";
-import { Embed } from "@guildedjs/embeds";
 import type { ChatMessagePayload, EmbedField, EmbedPayload, RESTPostChannelMessagesBody } from "@guildedjs/guilded-api-typings";
 import { stripIndents } from "common-tags";
+import { Embed } from "guilded.js";
 
 import type { Command, CommandArgument } from "../commands/Command";
 import { Colors } from "../utils/color";

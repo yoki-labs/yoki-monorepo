@@ -1,8 +1,8 @@
 import type { WSForumTopicCreated } from "@guildedjs/guilded-api-typings";
 
-import { FilteredContent } from "../modules/content-filter";
-import { Context, LogChannelType, Server } from "../typings";
-import { moderateContent } from "../utils/moderation";
+import { FilteredContent } from "../../modules/content-filter";
+import { Context, LogChannelType, Server } from "../../typings";
+import { moderateContent } from "../../utils/moderation";
 
 export default async (packet: WSForumTopicCreated, ctx: Context, server: Server) => {
     const { forumTopic, serverId } = packet.d;

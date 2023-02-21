@@ -8,4 +8,4 @@ export default [(_input: string, rawArgs: string[], index: number) => {
 
 	// concatenate all the args into one string
 	return restArgs.join(" ");
-}, (_arg) => "I was expecting a sentence or multiple phrases, but did not receive that."]satisfies CommandArgValidator;
+}, (_arg) => "I was expecting a sentence or multiple phrases, but did not receive that."] satisfies CommandArgValidator;

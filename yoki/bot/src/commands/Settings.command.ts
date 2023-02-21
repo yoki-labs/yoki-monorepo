@@ -1,4 +1,4 @@
-import { Embed } from "@guildedjs/embeds";
+import { Embed } from "guilded.js";
 
 import { RoleType } from "../typings";
 import { Colors } from "../utils/color";

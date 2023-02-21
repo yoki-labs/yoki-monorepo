@@ -3,22 +3,22 @@ import { Embed } from "@guildedjs/webhook-client";
 import { stripIndents } from "common-tags";
 import { nanoid } from "nanoid";
 
-import boolean from "../args/boolean";
-import channel from "../args/channel";
-import enumArg from "../args/enum";
-import enumList from "../args/enumList";
-import member from "../args/member";
-import number from "../args/number";
-import rest from "../args/rest";
-import string from "../args/string";
-import UUID from "../args/UUID";
-import type { CommandArgType, CommandArgValidator } from "../commands/Command";
-import { FilteredContent } from "../modules/content-filter";
-import type { Context, ResolvedArgs, Server, UsedMentions } from "../typings";
-import { Colors } from "../utils/color";
-import { codeBlock, inlineCode, inlineQuote } from "../utils/formatters";
-import { moderateContent } from "../utils/moderation";
-import { roleValues } from "../utils/util";
+import boolean from "../../args/boolean";
+import channel from "../../args/channel";
+import enumArg from "../../args/enum";
+import enumList from "../../args/enumList";
+import member from "../../args/member";
+import number from "../../args/number";
+import rest from "../../args/rest";
+import string from "../../args/string";
+import UUID from "../../args/UUID";
+import type { CommandArgType, CommandArgValidator } from "../../commands/Command";
+import { FilteredContent } from "../../modules/content-filter";
+import type { Context, ResolvedArgs, Server, UsedMentions } from "../../typings";
+import { Colors } from "../../utils/color";
+import { codeBlock, inlineCode, inlineQuote } from "../../utils/formatters";
+import { moderateContent } from "../../utils/moderation";
+import { roleValues } from "../../utils/util";
 
 const argCast: Record<
 	CommandArgType,
