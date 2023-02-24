@@ -289,6 +289,7 @@ enum LogChannelType {
     member_updates
     member_joins
     member_leaves
+    member_bans
     message_edits
     message_deletions
     topic_locks

@@ -1,5 +1,4 @@
 import { Embed } from "@guildedjs/webhook-client";
-import { stripIndents } from "common-tags";
 
 // Remove any inline code escapes
 export const escapeInlineCodeText = (code: any) => code.toString().replaceAll("\\", "\\\\").replaceAll("`", "'");
@@ -22,18 +21,22 @@ export const listInlineCode = (str: string[] | number[] | undefined) => (typeof 
 export const listInlineQuote = (str: string[] | undefined) => (typeof str === "undefined" ? "" : str.map(inlineQuote).join(", "));
 export const codeBlock = (code: any, language?: string) => `\`\`\`${language ? `${language}\n` : ""}${code}\`\`\``;
 export const quoteMarkdown = (code: string, limit: number) => `\`\`\`md\n${code.length > limit ? `${code.substring(0, limit)}...` : code}\n\`\`\``;
-export const errorEmbed = (err: Error | any, additional_details?: Record<string, string | number | null>) =>
-    new Embed()
-        .setDescription(
-            stripIndents`
-				${additional_details &&
-                Object.keys(additional_details as object)
-                    .map((key) => `${key}: \`${additional_details[key]}\``)
-                    .join("\n")
-                }
-				${err.stack ?? err.message ?? JSON.stringify(err).slice(0, 1350)}
-			`
-        )
+export function errorEmbed(err: Error | any, additionalDetails?: Record<string, string | number | null>) {
+    const embed = new Embed()
+        .setTitle(err.name)
+        .setDescription(codeBlock((err?.stack ?? err)?.slice(0, 2040) ?? "No error provided."))
+        .addField("Message", err?.message)
         .setColor("RED");
+
+    if (additionalDetails)
+        embed.addField("Additional Info", codeBlock(
+            Object.keys(additionalDetails as object)
+                .map((key) => `${key}: \`${additionalDetails[key]}\``)
+                .join("\n")
+                .slice(0, 1024)
+        ));
+
+    return embed;
+}
 export const channelName = (name: string, serverId: string, groupId: string, channelId: string, type?: string) =>
     `[#${name}](https://guilded.gg/teams/${serverId}/groups/${groupId}/channels/${channelId}/${type ?? "chat"})`;
