@@ -1,4 +1,4 @@
-import type { EmbedField, ForumTopicPayload } from "@guildedjs/guilded-api-typings";
+import type { EmbedField, WSForumTopicUpdated } from "@guildedjs/guilded-api-typings";
 
 import { FilteredContent } from "../modules/content-filter";
 import { Context, LogChannelType, Server } from "../typings";
@@ -7,7 +7,7 @@ import { inlineCode, inlineQuote } from "../utils/formatters";
 import { quoteChangedContent } from "../utils/messages";
 import { moderateContent } from "../utils/moderation";
 
-export default async (packet: { d: { serverId: string; forumTopic: ForumTopicPayload } }, ctx: Context, server: Server) => {
+export default async (packet: WSForumTopicUpdated, ctx: Context, server: Server) => {
 	const { forumTopic, serverId } = packet.d;
 
 	// get the old message from the database if we logged it before

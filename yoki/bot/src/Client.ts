@@ -36,6 +36,12 @@ import { LinkFilterUtil } from "./modules/link-filter";
 import { SpamFilterUtil } from "./modules/spam-filter";
 import type { Context, Server } from "./typings";
 import { Colors } from "./utils/color";
+import ForumTopicCommentEvent from "./events/ForumTopicCommentEvent";
+import ForumTopicCommentDeleted from "./events/ForumTopicCommentDeleted";
+import CalendarEventCommentEvent from "./events/CalendarEventCommentEvent";
+import CalendarEventCommentDeleted from "./events/CalendarEventCommentDeleted";
+import DocCommentEvent from "./events/DocCommentEvent";
+import DocCommentDeleted from "./events/DocCommentDeleted";
 
 /**
  * Main class that stores utils, connections to various providers, and ws
@@ -115,6 +121,17 @@ export default class Client {
 		ForumTopicDeleted,
 		ForumTopicLocked: (packet, ctx) => ForumTopicLockedEvent(packet, ctx, "Locked", Colors.red),
 		ForumTopicUnlocked: (packet, ctx) => ForumTopicLockedEvent(packet, ctx, "Unlocked", Colors.green),
+		ForumTopicCommentCreated: ForumTopicCommentEvent,
+		ForumTopicCommentUpdated: ForumTopicCommentEvent,
+		ForumTopicCommentDeleted,
+		// Docs
+		DocCommentCreated: DocCommentEvent,
+		DocCommentUpdated: DocCommentEvent,
+		DocCommentDeleted,
+		// Calendar events
+		CalendarEventCommentCreated: CalendarEventCommentEvent,
+		CalendarEventCommentUpdated: CalendarEventCommentEvent,
+		CalendarEventCommentDeleted,
 		// handles members getting new roles
 		ServerRolesUpdated,
 		// handles reactions

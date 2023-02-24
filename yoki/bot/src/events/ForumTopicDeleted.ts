@@ -1,11 +1,11 @@
-import type { ForumTopicPayload } from "@guildedjs/guilded-api-typings";
+import type { WSForumTopicDeleted } from "@guildedjs/guilded-api-typings";
 
 import { Context, LogChannelType } from "../typings";
 import { Colors } from "../utils/color";
 import { inlineCode, inlineQuote } from "../utils/formatters";
 import { quoteChangedContent } from "../utils/messages";
 
-export default async (packet: { d: { serverId: string; forumTopic: ForumTopicPayload } }, ctx: Context) => {
+export default async (packet: WSForumTopicDeleted, ctx: Context) => {
 	const { forumTopic, serverId } = packet.d;
 
 	await ctx.prisma.forumTopic.deleteMany({ where: { serverId, channelId: forumTopic.channelId, forumTopicId: forumTopic.id } });

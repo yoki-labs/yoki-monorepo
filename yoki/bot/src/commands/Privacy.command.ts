@@ -6,7 +6,7 @@ import { inlineCode } from "../utils/formatters";
 import { Category } from "./Category";
 import type { Command } from "./Command";
 
-const nonPrivateLogs: LogChannelType[] = [LogChannelType.message_edits, LogChannelType.message_deletions, LogChannelType.topic_edits, LogChannelType.topic_deletions];
+const nonPrivateLogs: LogChannelType[] = [LogChannelType.message_edits, LogChannelType.message_deletions, LogChannelType.topic_edits, LogChannelType.topic_deletions, LogChannelType.comment_deletions];
 const possibleNonPrivateLogs = nonPrivateLogs.concat(LogChannelType.all);
 
 const Privacy: Command = {
@@ -31,12 +31,12 @@ const Privacy: Command = {
                 ? Colors.green
                 : // Has all of the unprivate logs
                 localPrivacyIssue.length === nonPrivateLogs.length
-                ? Colors.red
-                : // Half or more of the unprivate logs are missing
-                localNoIssue.length > nonPrivateLogs.length / 2
-                ? Colors.yellow
-                : // Half or more than half of unprivate logs are there
-                  Colors.orangeRed;
+                    ? Colors.red
+                    : // Half or more of the unprivate logs are missing
+                    localNoIssue.length > nonPrivateLogs.length / 2
+                        ? Colors.yellow
+                        : // Half or more than half of unprivate logs are there
+                        Colors.orangeRed;
 
         return ctx.messageUtil.sendEmbed(
             message.channelId,

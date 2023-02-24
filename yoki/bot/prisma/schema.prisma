@@ -278,7 +278,7 @@ enum ChannelIgnoreType {
 enum ContentIgnoreType {
     MESSAGE
     FORUM_TOPIC
-    FORUM_REPLY
+    COMMENT
     LIST_ITEM
 }
 
@@ -295,6 +295,7 @@ enum LogChannelType {
     topic_locks
     topic_edits
     topic_deletions
+    comment_deletions
     notifications
     modmail_logs
 }
