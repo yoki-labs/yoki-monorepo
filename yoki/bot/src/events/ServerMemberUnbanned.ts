@@ -20,7 +20,7 @@ export default async (packet: WSTeamMemberUnbannedPayload, ctx: Context, server:
 				where: memberBanLogChannel.channelId,
 				title: `User Unbanned`,
 				serverId: server.serverId,
-				description: `<@${user.id}> (${inlineCode(user.id)}) had their ban (that was created by <@${createdBy}>) lifted.`,
+				description: `<@${user.id}> (${inlineCode(user.id)}) had their ban, which was created by <@${createdBy}>, lifted.`,
 				color: Colors.red,
 				fields: [
 					{

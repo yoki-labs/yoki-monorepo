@@ -23,6 +23,8 @@ import ListItemEvent from "./events/ListItemEvent";
 import ServerMemberJoined from "./events/ServerMemberJoined";
 import ServerMemberRemoved from "./events/ServerMemberRemoved";
 import ServerMemberUpdated from "./events/ServerMemberUpdated";
+import ServerMemberBanned from "./events/ServerMemberBanned";
+import ServerMemberUnbanned from "./events/ServerMemberUnbanned";
 import ServerRolesUpdated from "./events/ServerRolesUpdated";
 import { ChannelUtil } from "./helpers/channel";
 import { DatabaseUtil } from "./helpers/database";
@@ -102,6 +104,8 @@ export default class Client {
 		ServerMemberJoined,
 		ServerMemberRemoved,
 		ServerMemberUpdated,
+		ServerMemberBanned,
+		ServerMemberUnbanned,
 		// List item name changes
 		ListItemCreated: ListItemEvent,
 		ListItemUpdated: ListItemEvent,
