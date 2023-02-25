@@ -53,6 +53,7 @@ model Server {
     modmailEnabled    Boolean @default(false)
     modmailGroupId    String? @db.VarChar(255)
     modmailCategoryId Int?
+    modmailPingRoleId Int?
 
     // --- Spam and filter
     filterEnabled        Boolean @default(false)
