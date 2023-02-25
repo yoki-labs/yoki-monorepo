@@ -75,6 +75,7 @@ void (async (): Promise<void> => {
 	} catch (e) {
 		console.log(e);
 		console.log("ERROR!: You have not applied the migrations. You must run 'yarn migrate:dev'. Exiting...");
+		await client.errorHandler.send("URGENT! The prisma schema is OUT OF SYNC with the database. The bot WILL NOT start up until you fix this!! Run `yarn migrate:dev` and commit the generation migrations ASAP.").catch(() => null)
 		return process.exit(1);
 	}
 
