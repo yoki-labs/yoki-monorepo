@@ -32,7 +32,7 @@ const PingRole: Command = {
 					  ${unsetPingRole}
 					  `
                   )
-                : ctx.messageUtil.replyWithNullState(message, "No modmail ping role", "This server does not have modmail ping role set.");
+                : ctx.messageUtil.replyWithNullState(message, "No modmail ping role", "This server does not have modmail ping role set.\n\n*If you would like to set a ping role please rerun this command with the ID of the role you want to set suffixed.*");
         } else if (role.toUpperCase() === "REMOVE") {
             // The ability to delete modmail ping roles
             await ctx.prisma.server.updateMany({ data: { modmailPingRoleId: null }, where: { serverId: message.serverId } });
