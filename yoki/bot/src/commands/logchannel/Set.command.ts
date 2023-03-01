@@ -28,7 +28,7 @@ const Set: Command = {
 		const { "id": channelId } = args.channel as Channel;
 		let logTypes: LogChannelArgEnum[] = args.logTypes === null ? [] : (args.logTypes as LogChannelArgEnum[]);
 
-		const channel = await ctx.rest.router.getChannel(channelId).catch(() => null);
+		const channel = await ctx.channels.fetch(channelId).catch(() => null);
 		if (!channel)
 			return ctx.messageUtil.replyWithError(
 				message,
@@ -47,7 +47,7 @@ const Set: Command = {
 		}
 
 		try {
-			await ctx.messageUtil.send(channelId, "Checking for permission to send here...").then((x) => ctx.rest.router.deleteChannelMessage(channelId, x.id));
+			await ctx.messageUtil.send(channelId, "Checking for permission to send here...").then((x) => ctx.messages.delete(channelId, x.id));
 		} catch (e) {
 			return ctx.messageUtil.replyWithError(
 				message,

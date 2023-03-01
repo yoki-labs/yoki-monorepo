@@ -42,7 +42,7 @@ export class ContentFilterUtil extends BaseFilterUtil {
 					event_properties: { serverId },
 				});
 
-				this.client.rest.router.deleteChannelMessage(channelId, messageId).catch(() => null);
+				this.client.messages.delete(channelId, messageId).catch(() => null);
 				await this.client.messageUtil.sendWarningBlock(
 					channelId,
 					"Inappropriate Image!",

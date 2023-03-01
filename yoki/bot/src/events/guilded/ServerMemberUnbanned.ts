@@ -1,12 +1,12 @@
-import type { WSTeamMemberUnbannedPayload } from "";
+import type { WSTeamMemberUnbannedPayload } from "@guildedjs/guilded-api-typings";
 import { Embed as WebhookEmbed } from "@guildedjs/webhook-client";
 import { LogChannelType } from "@prisma/client";
 import { stripIndents } from "common-tags";
 import { nanoid } from "nanoid";
 
-import type { Context, Server } from "../typings";
-import { Colors } from "../utils/color";
-import { codeBlock, inlineCode } from "../utils/formatters";
+import type { Context, Server } from "../../typings";
+import { Colors } from "../../utils/color";
+import { codeBlock, inlineCode } from "../../utils/formatters";
 
 export default async (packet: WSTeamMemberUnbannedPayload, ctx: Context, server: Server) => {
 	const { serverId, serverMemberBan: { user, reason, createdBy } } = packet.d;

@@ -1,4 +1,4 @@
-import type { WSChatMessageUpdatedPayload } from "";
+import type { WSChatMessageUpdatedPayload } from "@guildedjs/guilded-api-typings";
 import { Embed as WebhookEmbed } from "@guildedjs/webhook-client";
 import { LogChannelType } from "@prisma/client";
 import { stripIndents } from "common-tags";
@@ -30,7 +30,7 @@ export default async (packet: WSChatMessageUpdatedPayload, ctx: Context, server:
 
 	// scan the updated message content
 	await moderateContent(ctx, server, message.channelId, "MESSAGE", FilteredContent.Message, message.authorId, message.content, message.mentions, () =>
-		ctx.rest.router.deleteChannelMessage(message.channelId, message.id)
+		ctx.messages.delete(message.channelId, message.id)
 	);
 
 	// get the log channel for message updates
@@ -76,7 +76,7 @@ export default async (packet: WSChatMessageUpdatedPayload, ctx: Context, server:
 		}
 
 		const author = message.authorIdWebhookId ? `Webhook (${inlineCode(message.authorIdWebhookId)})` : `<@${message.authorId}> (${inlineCode(message.authorId)})`;
-		const channel = await ctx.channelUtil.getChannel(message.channelId);
+		const channel = await ctx.channels.fetch(message.channelId);
 
 		const channelURL = `https://guilded.gg/teams/${message.serverId}/channels/${message.channelId}/chat`;
 		// send embed in log channel

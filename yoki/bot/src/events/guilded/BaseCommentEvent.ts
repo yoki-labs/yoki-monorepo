@@ -1,6 +1,6 @@
 import { MentionsPayload,UserType} from "guilded.js";
 
-import { FilteredContent } from "../../../../modules/content-filter";
+import { FilteredContent } from "../../modules/content-filter";
 import type { Context, Server } from "../../typings";
 import { moderateContent } from "../../utils/moderation";
 

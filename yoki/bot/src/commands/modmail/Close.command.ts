@@ -93,8 +93,7 @@ export async function closeModmailThread(server: Server, closedBy: string, ctx: 
 		});
 	}
 
-	await ctx.rest.router
-		.createChannelMessage(modmailThread.userFacingChannelId, {
+	await ctx.messages.send(modmailThread.userFacingChannelId, {
 			embeds: [
 				{
 					description: stripIndents`<@${modmailThread.openerId}>
@@ -114,7 +113,7 @@ export async function closeModmailThread(server: Server, closedBy: string, ctx: 
 	});
 
 	await ctx.prisma.modmailThread.update({ where: { id: modmailThread.id }, data: { closed: true } });
-	return ctx.rest.router.deleteChannel(modmailThread.modFacingChannelId);
+	return ctx.channels.delete(modmailThread.modFacingChannelId);
 }
 
 export default Close;

@@ -16,7 +16,7 @@ const Privacy: Command = {
     aliases: ["pr", "privacyreport"],
     category: Category.Logs,
     execute: async (message, _args, ctx) => {
-        await ctx.rest.router.deleteChannelMessage(message.channelId, message.id);
+        await ctx.messages.delete(message.channelId, message.id);
 
         const channels: LogChannelType[] = (await ctx.dbUtil.getMultipleLogChannels(message.serverId!, possibleNonPrivateLogs)).map((x) => x.type);
 

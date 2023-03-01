@@ -18,7 +18,7 @@ const Channel: Command = {
 	execute: async (message, args, ctx, commandCtx) => {
 		const channel = args.channel as GChannel | null;
 		if (!channel) {
-			const fetchedChannel = commandCtx.server.appealChannelId ? await ctx.rest.router.getChannel(commandCtx.server.appealChannelId).then(x => x.channel).catch(() => commandCtx.server.appealChannelId) : null;
+			const fetchedChannel = commandCtx.server.appealChannelId ? await ctx.channels.fetch(commandCtx.server.appealChannelId).catch(() => commandCtx.server.appealChannelId) : null;
 			return ctx.messageUtil.replyWithInfo(message, "Appeal channel", typeof fetchedChannel === "string" ? `Looks like the channel was deleted or I cannot access it. The current channel set has the ID of ${inlineCode(fetchedChannel)}` : fetchedChannel ? channelName(fetchedChannel.name, fetchedChannel.serverId, fetchedChannel.groupId, fetchedChannel.id) : "not set");
 		}
 

@@ -15,18 +15,18 @@ export default abstract class BaseFilterUtil<TFilterType = null> extends Util {
 		(userId: string, server: Server, channelId: string | null, filteredContent: FilteredContent, filterType: TFilterType | null) => unknown | undefined
 	> = {
 			[Severity.BAN]: (userId, server) => {
-				return this.rest.router.banMember(server.serverId, userId);
+				return this.client.members.ban(server.serverId, userId);
 			},
 			[Severity.KICK]: (userId, server) => {
-				return this.rest.router.kickMember(server.serverId, userId);
+				return this.client.members.kick(server.serverId, userId);
 			},
 			[Severity.SOFTBAN]: async (userId, server) => {
-				await this.rest.router.banMember(server.serverId, userId);
-				return this.rest.router.unbanMember(server.serverId, userId);
+				await this.client.members.ban(server.serverId, userId);
+				return this.client.bans.unban(server.serverId, userId);
 			},
 			[Severity.MUTE]: async (userId, server, channelId, filteredContent, filterType) => {
 				if (server.muteRoleId) {
-					await this.rest.router.assignRoleToMember(server.serverId, userId, server.muteRoleId);
+					await this.client.roles.addRoleToMember(server.serverId, userId, server.muteRoleId);
 					return this.onUserMute(userId, server, channelId, filteredContent, filterType);
 				}
 			},

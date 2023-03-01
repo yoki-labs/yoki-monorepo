@@ -1,4 +1,4 @@
-import type { WSListItemCreated } from "";
+import type { WSListItemCreated } from "@guildedjs/guilded-api-typings";
 
 import { FilteredContent } from "../../modules/content-filter";
 import type { Context, Server } from "../../typings";
@@ -17,6 +17,6 @@ export default async (event: WSListItemCreated, ctx: Context, server: Server) =>
             filteredContent: FilteredContent.ChannelContent,
             channelId,
             server,
-            resultingAction: () => ctx.rest.router.deleteListItem(channelId as string, id as string),
+            resultingAction: () => ctx.lists.delete(channelId as string, id as string),
         });
 };

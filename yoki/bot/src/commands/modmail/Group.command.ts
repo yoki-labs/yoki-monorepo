@@ -38,8 +38,8 @@ const ModmailGroup: Command = {
 		const endValue: string | null = isInputRemoveSetting(newGroup) ? null : newGroup;
 		if(endValue) {
 			try {
-				const createdChannel = await ctx.rest.router.createChannel({ name: "PLACEHOLDER-MODMAIL-CHANNEL", type: "chat", serverId: message.serverId!, categoryId: commandCtx.server.modmailCategoryId ?? undefined, groupId: newGroup})
-				await ctx.rest.router.deleteChannel(createdChannel.channel.id);
+				const createdChannel = await ctx.channels.create({ name: "PLACEHOLDER-MODMAIL-CHANNEL", type: "chat", serverId: message.serverId!, categoryId: commandCtx.server.modmailCategoryId ?? undefined, groupId: newGroup})
+				await ctx.channels.delete(createdChannel.id);
 			} catch(e) {
 				return ctx.messageUtil.replyWithError(message, "Error setting group!", 
 				stripIndents`

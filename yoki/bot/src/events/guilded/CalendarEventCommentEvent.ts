@@ -1,4 +1,4 @@
-import type { Context, Server } from "../typings";
+import type { Context, Server } from "../../typings";
 import BaseCommentEvent, { CommentPayload } from "./BaseCommentEvent";
 
 export interface CalendarCommentPayload extends CommentPayload {

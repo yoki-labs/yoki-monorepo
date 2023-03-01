@@ -1,3 +1,4 @@
+import type { WSBotTeamMembershipCreated } from "@guildedjs/guilded-api-typings";
 import { stripIndents } from "common-tags";
 import { Embed } from "guilded.js";
 

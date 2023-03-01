@@ -1,4 +1,4 @@
-import type { WSTeamRolesUpdatedPayload } from "";
+import type { WSTeamRolesUpdatedPayload } from "@guildedjs/guilded-api-typings";
 import { Embed as WebhookEmbed } from "@guildedjs/webhook-client";
 import { LogChannelType } from "@prisma/client";
 import { stripIndents } from "common-tags";
@@ -12,10 +12,6 @@ import { summarizeItems } from "../../utils/messages";
 export default async (event: WSTeamRolesUpdatedPayload, ctx: Context): Promise<void> => {
 	const { serverId, memberRoleIds } = event.d;
 
-	// Prevent repeation of `getCachedMember`
-	const memberCaches = {};
-	for (const memberRoleId of memberRoleIds) memberCaches[memberRoleId.userId] = ctx.serverUtil.getCachedMember(serverId, memberRoleId.userId);
-
 	// check if there's a log channel channel for message deletions
 	const roleUpdateLogChannel = await ctx.dbUtil.getLogChannel(serverId!, LogChannelType.member_roles_updates);
 	if (roleUpdateLogChannel) {
@@ -23,7 +19,7 @@ export default async (event: WSTeamRolesUpdatedPayload, ctx: Context): Promise<v
 		const cappedRoleChanges = memberRoleIds.slice(0, 4);
 
 		const roleDifferences = cappedRoleChanges.map(({ userId, roleIds }) => {
-			const previousState = memberCaches[userId];
+			const previousState = ctx.members.cache.get(userId);
 
 			if (!previousState) return { userId, roleIds };
 
@@ -81,17 +77,5 @@ export default async (event: WSTeamRolesUpdatedPayload, ctx: Context): Promise<v
 				]);
 			}
 		}
-	}
-
-	// go through all the updated members
-	for (const user of memberRoleIds) {
-		// check if this member is cached in our mem, indicates that they have some sort of elevated permission role
-		const cachedMember = memberCaches[user.userId];
-
-		if (cachedMember) {
-			// update the cache with the old data but with updated roleIds
-			await ctx.serverUtil.setMember(serverId, user.userId, { ...cachedMember, roleIds: user.roleIds });
-			console.log(`Updating cache for user ${cachedmember.user!.name} (${cachedmember.user!.id}) with new roles ${user.roleIds}`);
-		} else await ctx.members.fetch(serverId, user.userId, true, true);
 	}
 };

@@ -1,4 +1,4 @@
-import type { WSTeamMemberBannedPayload } from "";
+import type { WSTeamMemberBannedPayload } from "@guildedjs/guilded-api-typings";
 import { Embed as WebhookEmbed } from "@guildedjs/webhook-client";
 import { LogChannelType } from "@prisma/client";
 import { stripIndents } from "common-tags";

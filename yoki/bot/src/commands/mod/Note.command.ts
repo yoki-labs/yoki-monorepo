@@ -54,7 +54,7 @@ const Note: Command = {
 			}
 		);
 
-		return ctx.rest.router.deleteChannelMessage(message.channelId, message.id);
+		return ctx.messages.delete(message.channelId, message.id);
 	},
 };
 

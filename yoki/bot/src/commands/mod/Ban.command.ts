@@ -37,7 +37,7 @@ const Ban: Command = {
 			event_properties: { serverId: message.serverId! },
 		});
 		try {
-			await ctx.rest.router.banMember(message.serverId!, target.user!.id);
+			await ctx.members.ban(message.serverId!, target.user!.id);
 		} catch (e) {
 			return ctx.messageUtil.replyWithUnexpected(
 				message,
@@ -68,7 +68,7 @@ const Ban: Command = {
 			}
 		);
 
-		return ctx.rest.router.deleteChannelMessage(message.channelId, message.id);
+		return ctx.messages.delete(message.channelId, message.id);
 	},
 };
 

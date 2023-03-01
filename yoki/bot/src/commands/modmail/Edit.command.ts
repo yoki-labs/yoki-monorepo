@@ -32,15 +32,15 @@ const Edit: Command = {
 
         const sentModmailMessage = await ctx.prisma.modmailMessage.findFirst({ where: { originalMessageId: messageId } });
         if (!sentModmailMessage) return ctx.messageUtil.replyWithError(message, `Invalid message`, `That is not a valid sent modmail message!`);
-        const fetchSentModmailMessage = await ctx.rest.router.getChannelMessage(isCurrentChannelModmail.userFacingChannelId, sentModmailMessage.sentMessageId);
+        const fetchSentModmailMessage = await ctx.messages.fetch(isCurrentChannelModmail.userFacingChannelId, sentModmailMessage.sentMessageId);
         if (!fetchSentModmailMessage) return ctx.messageUtil.replyWithError(message, `Message deleted`, `This message has been manually deleted.`);
 
-        fetchSentModmailMessage.message.embeds![0].description = stripIndents`<@${isCurrentChannelModmail.openerId}>
+        fetchSentModmailMessage.embeds![0].description = stripIndents`<@${isCurrentChannelModmail.openerId}>
 			${content}
 		`;
 
-        await ctx.rest.router.updateChannelMessage(isCurrentChannelModmail.userFacingChannelId, sentModmailMessage.sentMessageId, {
-            embeds: fetchSentModmailMessage.message.embeds,
+        await ctx.messages.update(isCurrentChannelModmail.userFacingChannelId, sentModmailMessage.sentMessageId, {
+            embeds: fetchSentModmailMessage.embeds.map(x => x.toJSON()),
         });
 
         const createdModmailMessage = await ctx.prisma.modmailMessage.update({
@@ -51,9 +51,9 @@ const Edit: Command = {
                 content,
             },
         });
-        void ctx.rest.router.deleteChannelMessage(message.channelId, message.id);
+        void ctx.messages.delete(message.channelId, message.id);
 
-        return ctx.rest.router.createChannelMessage(message.channelId, {
+        return ctx.messages.send(message.channelId, {
             embeds: [
                 {
                     title: "Updated Message!",

@@ -1,4 +1,4 @@
-import type { WSForumTopicDeleted } from "";
+import type { WSForumTopicDeleted } from "@guildedjs/guilded-api-typings";
 
 import { Context, LogChannelType } from "../../typings";
 import { Colors } from "../../utils/color";
@@ -14,7 +14,7 @@ export default async (packet: WSForumTopicDeleted, ctx: Context) => {
 	const deletedTopicLogChannel = await ctx.dbUtil.getLogChannel(serverId, LogChannelType.topic_deletions);
 	if (!deletedTopicLogChannel) return void 0;
 
-	const channel = await ctx.channelUtil.getChannel(forumTopic.channelId).catch();
+	const channel = await ctx.channels.fetch(forumTopic.channelId).catch();
 
 	const channelURL = `https://guilded.gg/teams/${serverId}/channels/${forumTopic.channelId}/forums`;
 

@@ -53,7 +53,7 @@ const SendTrigger: Command = {
 			user_id: message.authorId,
 			event_properties: { serverId: message.serverId! },
 		});
-		await ctx.rest.router.addReactionEmote(targetChannel.id, sentMessage.id, resolvedEmoji);
+		await ctx.reactions.create(targetChannel.id, sentMessage.id, resolvedEmoji);
 		await ctx.prisma.reactionAction.create({
 			data: {
 				actionType: ReactionActionType.MODMAIL,

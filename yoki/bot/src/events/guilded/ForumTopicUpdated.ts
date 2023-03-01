@@ -1,4 +1,4 @@
-import type { EmbedField, WSForumTopicUpdated } from "";
+import type { EmbedField, WSForumTopicUpdated } from "@guildedjs/guilded-api-typings";
 
 import { FilteredContent } from "../../modules/content-filter";
 import { Context, LogChannelType, Server } from "../../typings";
@@ -37,7 +37,7 @@ export default async (packet: WSForumTopicUpdated, ctx: Context, server: Server)
 	const editedTopicLogChannel = await ctx.dbUtil.getLogChannel(serverId, LogChannelType.topic_edits);
 	if (!editedTopicLogChannel) return void 0;
 
-	const channel = await ctx.channelUtil.getChannel(forumTopic.channelId).catch();
+	const channel = await ctx.channels.fetch(forumTopic.channelId).catch();
 
 	const channelURL = `https://guilded.gg/teams/${serverId}/channels/${forumTopic.channelId}/forums`;
 

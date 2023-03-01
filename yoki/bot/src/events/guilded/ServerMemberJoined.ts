@@ -1,7 +1,9 @@
-import type { WSTeamMemberJoinedPayload } from "";
+import type { WSTeamMemberJoinedPayload } from "@guildedjs/guilded-api-typings";
+
 import { Embed as WebhookEmbed } from "@guildedjs/webhook-client";
 import { LogChannelType, Severity } from "@prisma/client";
 import { stripIndents } from "common-tags";
+import { UserType } from "guilded.js";
 import { nanoid } from "nanoid";
 
 import type { Context, Server } from "../../typings";
@@ -15,13 +17,13 @@ export default async (packet: WSTeamMemberJoinedPayload, ctx: Context, server: S
 
 	if (["!", "."].some((x) => member.user!.name.trim().startsWith(x))) {
 		void ctx.amp.logEvent({ event_type: "HOISTER_RENAMED_JOIN", user_id: member.user!.id, event_properties: { serverId: packet.d.serverId } });
-		await ctx.rest.router.updateMemberNickname(packet.d.serverId, packet.d.member.user!.id, packet.d.member.user!.name.slice(1).trim() || "NON-HOISTING NAME");
+		await ctx.members.updateNickname(packet.d.serverId, packet.d.member.user!.id, packet.d.member.user!.name.slice(1).trim() || "NON-HOISTING NAME");
 	}
 
 	// Re-add mute
 	if (server.muteRoleId && (await ctx.prisma.action.findFirst({ where: { serverId, targetId: member.user!.id, type: Severity.MUTE, expired: false } }))) {
 		void ctx.amp.logEvent({ event_type: "MEMBER_REMUTE_JOIN", user_id: member.user!.id, event_properties: { serverId: packet.d.serverId } });
-		await ctx.rest.router.assignRoleToMember(serverId, member.user!.id, server.muteRoleId);
+		await ctx.roles.addRoleToMember(serverId, member.user!.id, server.muteRoleId);
 	}
 
 	const userId = packet.d.member.user!.id;
@@ -48,7 +50,7 @@ export default async (packet: WSTeamMemberJoinedPayload, ctx: Context, server: S
 						userCaptcha = createdCaptcha;
 					}
 
-					if (server.muteRoleId) await ctx.rest.router.assignRoleToMember(serverId, member.user!.id, server.muteRoleId).catch(() => null);
+					if (server.muteRoleId) await ctx.roles.addRoleToMember(serverId, member.user!.id, server.muteRoleId).catch(() => null);
 					// Have to complete captcha
 					await ctx.messageUtil.sendWarningBlock(
 						server.antiRaidChallengeChannel,
@@ -78,7 +80,7 @@ export default async (packet: WSTeamMemberJoinedPayload, ctx: Context, server: S
 			}
 			case "KICK": {
 				void ctx.amp.logEvent({ event_type: "MEMBER_KICKED_JOIN", user_id: member.user!.id, event_properties: { serverId: packet.d.serverId } });
-				await ctx.rest.router.kickMember(packet.d.serverId, packet.d.member.user!.id);
+				await ctx.members.kick(packet.d.serverId, packet.d.member.user!.id);
 
 				// Add this action to the database
 				const createdCase = await ctx.dbUtil.addAction({
@@ -112,7 +114,7 @@ export default async (packet: WSTeamMemberJoinedPayload, ctx: Context, server: S
 					}
 
 					console.log(`Muting user ${userId} in ${server.serverId} for site captcha`)
-					if (server.muteRoleId) await ctx.rest.router.assignRoleToMember(serverId, member.user!.id, server.muteRoleId).catch(() => null);
+					if (server.muteRoleId) await ctx.roles.addRoleToMember(serverId, member.user!.id, server.muteRoleId).catch(() => null);
 					// Have to complete captcha
 					await ctx.messageUtil.sendWarningBlock(
 						server.antiRaidChallengeChannel,

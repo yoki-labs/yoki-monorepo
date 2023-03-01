@@ -1,4 +1,4 @@
-import type { WSForumTopicCreated } from "";
+import type { WSForumTopicCreated } from "@guildedjs/guilded-api-typings";
 
 import { FilteredContent } from "../../modules/content-filter";
 import { Context, LogChannelType, Server } from "../../typings";

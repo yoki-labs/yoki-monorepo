@@ -1,4 +1,4 @@
-import type { WSChatMessageDeletedPayload } from "";
+import type { WSChatMessageDeletedPayload } from "@guildedjs/guilded-api-typings";
 import { Embed as WebhookEmbed } from "@guildedjs/webhook-client";
 import { LogChannelType, Prisma } from "@prisma/client";
 import { stripIndents } from "common-tags";
@@ -26,7 +26,7 @@ export default async (packet: WSChatMessageDeletedPayload, ctx: Context) => {
 	// if there is a database entry for the message, get the member from the server so we can get their name and roles etc.
 	const oldMember = deletedMessage ? await ctx.members.fetch(deletedMessage.serverId!, deletedMessage.authorId).catch(() => null) : null;
 	if (oldMember?.user.type === UserType.Bot) return;
-	const channel = await ctx.channelUtil.getChannel(message.channelId).catch();
+	const channel = await ctx.channels.fetch(message.channelId).catch();
 
 	try {
 		const logContent = [

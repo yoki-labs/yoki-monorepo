@@ -21,7 +21,7 @@ export class SpamFilterUtil extends BaseFilterUtil<SpamType> {
     readonly messageCounter = new Map<string, Counter>();
 
     checkForMessageSpam(server: Server, message: Message) {
-        return this.checkForSpam(server, message.authorId, message.channelId, message.mentions, () => this.rest.router.deleteChannelMessage(message.channelId, message.id));
+        return this.checkForSpam(server, message.authorId, message.channelId, message.mentions, () => this.client.messages.delete(message.channelId, message.id));
     }
 
     async checkForSpam(server: Server, userId: string, channelId: string, mentions: MentionsPayload | undefined, resultingAction: () => unknown) {

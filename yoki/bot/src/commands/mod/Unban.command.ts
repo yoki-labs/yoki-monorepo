@@ -22,7 +22,7 @@ const Unban: Command = {
 		const target = args.targetId as string;
 
 		try {
-			await ctx.rest.router.unbanMember(message.serverId!, target);
+			await ctx.bans.unban(message.serverId!, target);
 		} catch (e) {
 			return ctx.messageUtil.replyWithUnexpected(
 				message,
@@ -44,7 +44,7 @@ const Unban: Command = {
 			}
 		);
 
-		return ctx.rest.router.deleteChannelMessage(message.channelId, message.id);
+		return ctx.messages.delete(message.channelId, message.id);
 	},
 };
 

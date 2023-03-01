@@ -1,4 +1,4 @@
-import type { WSChannelMessageReactionCreatedPayload } from "";
+import type { WSChannelMessageReactionCreatedPayload } from "@guildedjs/guilded-api-typings";
 import { ReactionActionType } from "@prisma/client";
 import { stripIndents } from "common-tags";
 import { nanoid } from "nanoid";
@@ -54,8 +54,8 @@ export default async (packet: WSChannelMessageReactionCreatedPayload, ctx: Conte
             });
             
             const modmailPingRole = server.modmailPingRoleId ? `<@${server.modmailPingRoleId}>` : "";
-            const member = await ctx.members.fetch(serverId, createdBy, true, true);
-            await ctx.rest.router.createChannelMessage(newChannel.channel.id, {
+            const member = await ctx.members.fetch(serverId, createdBy, true);
+            await ctx.messages.send(newChannel.channel.id, {
                 content: `${modmailPingRole} A new modmail thread has been opened!`,
             });
             await ctx.messageUtil.sendInfoBlock(
@@ -71,15 +71,15 @@ export default async (packet: WSChannelMessageReactionCreatedPayload, ctx: Conte
                         {
                             name: `Additional Info`,
                             value: stripIndents`
-                                **Account Created:** ${server.formatTimezone(new Date(member.user!.createdAt))} EST
-                                **Joined at:** ${server.formatTimezone(new Date(member.joinedAt))} EST
+                                **Account Created:** ${server.formatTimezone(member.user!.createdAt!)} EST
+                                **Joined at:** ${server.formatTimezone(member.joinedAt!)} EST
                             `,
                         },
                     ],
                 }
             );
 
-            await ctx.rest.router.createChannelMessage(channelId, {
+            await ctx.messages.send(channelId, {
                 embeds: [
                     {
                         title: "Successfully opened Modmail thread!",

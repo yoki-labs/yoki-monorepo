@@ -1,4 +1,4 @@
-import type { ForumTopicPayload } from "";
+import type { ForumTopicPayload } from "@guildedjs/guilded-api-typings";
 
 import { Context, LogChannelType } from "../../typings";
 import { inlineCode, inlineQuote } from "../../utils/formatters";
@@ -10,7 +10,7 @@ export default async (packet: { d: { serverId: string; forumTopic: ForumTopicPay
 	const lockedTopicLogChannel = await ctx.dbUtil.getLogChannel(serverId, LogChannelType.topic_locks);
 	if (!lockedTopicLogChannel) return void 0;
 
-	const channel = await ctx.channelUtil.getChannel(forumTopic.channelId).catch();
+	const channel = await ctx.channels.fetch(forumTopic.channelId).catch();
 
 	const channelURL = `https://guilded.gg/teams/${serverId}/channels/${forumTopic.channelId}/forums`;
 

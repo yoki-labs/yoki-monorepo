@@ -35,7 +35,7 @@ const Kick: Command = {
 			event_properties: { serverId: message.serverId! },
 		});
 		try {
-			await ctx.rest.router.kickMember(message.serverId!, target.user!.id);
+			await ctx.members.kick(message.serverId!, target.user!.id);
 		} catch (e) {
 			return ctx.messageUtil.replyWithUnexpected(
 				message,
@@ -68,7 +68,7 @@ const Kick: Command = {
 			}
 		);
 
-		return ctx.rest.router.deleteChannelMessage(message.channelId, message.id);
+		return ctx.messages.delete(message.channelId, message.id);
 	},
 };
 

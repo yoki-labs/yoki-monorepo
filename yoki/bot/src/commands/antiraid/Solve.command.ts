@@ -38,8 +38,8 @@ const Solve: Command = {
 		}
 
 		await ctx.prisma.captcha.update({ where: { id: captcha.id }, data: { solved: true } });
-		if (commandCtx.server.muteRoleId) await ctx.rest.router.removeRoleFromMember(message.serverId!, message.authorId, commandCtx.server.muteRoleId).catch(() => null);
-		if (commandCtx.server.memberRoleId) await ctx.rest.router.assignRoleToMember(message.serverId!, message.authorId, commandCtx.server.memberRoleId).catch(() => null);
+		if (commandCtx.server.muteRoleId) await ctx.roles.removeRoleFromMember(message.serverId!, message.authorId, commandCtx.server.muteRoleId).catch(() => null);
+		if (commandCtx.server.memberRoleId) await ctx.roles.addRoleToMember(message.serverId!, message.authorId, commandCtx.server.memberRoleId).catch(() => null);
 		void ctx.amp.logEvent({ event_type: "CAPTCHA_SUCCESS", user_id: message.authorId, event_properties: { serverId: message.serverId! } });
 		return ctx.messageUtil.reply(message, { content: "Congrats! You solved the captcha. You may now use the rest of the server." });
 	},

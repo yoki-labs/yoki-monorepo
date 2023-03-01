@@ -1,4 +1,4 @@
-import type { Context, Server } from "../typings";
+import type { Context, Server } from "../../typings";
 import BaseCommentDeleted from "./BaseCommentDeleted";
 import type { CalendarCommentPayload } from "./CalendarEventCommentEvent";
 

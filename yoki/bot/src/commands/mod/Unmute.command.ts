@@ -36,7 +36,7 @@ const Unmute: Command = {
 		if (target.user?.type === UserType.Bot) return ctx.messageUtil.replyWithError(message, `Cannot unmute bots`, `Bots cannot be unmuted.`);
 
 		try {
-			await ctx.rest.router.removeRoleFromMember(message.serverId!, target.user!.id, commandCtx.server.muteRoleId);
+			await ctx.roles.removeRoleFromMember(message.serverId!, target.user!.id, commandCtx.server.muteRoleId);
 		} catch (e) {
 			return ctx.messageUtil.replyWithUnexpected(
 				message,
@@ -95,7 +95,7 @@ const Unmute: Command = {
 		await ctx.messageUtil.sendSuccessBlock(message.channelId, `User unmuted`, successMessage, undefined, {
 			isPrivate: true,
 		});
-		return ctx.rest.router.deleteChannelMessage(message.channelId, message.id);
+		return ctx.messages.delete(message.channelId, message.id);
 	},
 };
 

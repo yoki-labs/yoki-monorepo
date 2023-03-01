@@ -47,7 +47,7 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context, server:
 
 	if (isModmailChannel) {
 		void ctx.amp.logEvent({ event_type: "MODMAIL_MESSAGE", user_id: message.authorId, event_properties: { serverId: message.serverId!, modmailId: isModmailChannel.id } });
-		void ctx.rest.router.deleteChannelMessage(message.channelId, message.id);
+		void ctx.messages.delete(message.channelId, message.id);
 
 		const member = await ctx.members.fetch(message.serverId!, message.authorId).catch(() => null);
 		if (!member) return;
@@ -82,7 +82,7 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context, server:
 		await ctx.dbUtil.storeMessage(message).catch(console.log);
 
 		await moderateContent(ctx, server, message.channelId, "MESSAGE", FilteredContent.Message, message.authorId, message.content, message.mentions, () =>
-			ctx.rest.router.deleteChannelMessage(message.channelId, message.id)
+			ctx.messages.delete(message.channelId, message.id)
 		);
 
 		if (server.scanNSFW) {

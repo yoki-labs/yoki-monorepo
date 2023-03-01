@@ -56,7 +56,7 @@ const Mute: Command = {
 		});
 
 		try {
-			await ctx.rest.router.assignRoleToMember(message.serverId!, target.user!.id, commandCtx.server.muteRoleId);
+			await ctx.roles.addRoleToMember(message.serverId!, target.user!.id, commandCtx.server.muteRoleId);
 		} catch (e) {
 			return ctx.messageUtil.replyWithUnexpected(
 				message,
@@ -111,7 +111,7 @@ const Mute: Command = {
 			isPrivate: true,
 		});
 
-		return ctx.rest.router.deleteChannelMessage(message.channelId, message.id);
+		return ctx.messages.delete(message.channelId, message.id);
 	},
 };
 

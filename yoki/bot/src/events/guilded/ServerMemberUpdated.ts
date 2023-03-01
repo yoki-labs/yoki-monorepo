@@ -1,4 +1,4 @@
-import type { WSTeamMemberUpdatedPayload } from "";
+import type { WSTeamMemberUpdatedPayload } from "@guildedjs/guilded-api-typings";
 
 import { FilteredContent } from "../../modules/content-filter";
 import type { Context, Server } from "../../typings";
@@ -8,16 +8,12 @@ export default async (event: WSTeamMemberUpdatedPayload, ctx: Context, server: S
         "userInfo": { "id": userId, nickname },
         serverId,
     } = event.d;
-
-    // Change member cache
-    const cachedMember = await ctx.serverUtil.getCachedMember(serverId, userId);
-    if (cachedMember) await ctx.serverUtil.setMember(serverId, userId, { ...cachedMember, nickname });
-
+    
     // if the member's nickname is updated, scan it for any harmful content
     if (nickname) {
         if (["!", "."].some((x) => nickname.trim().startsWith(x))) {
             void ctx.amp.logEvent({ event_type: "HOISTER_RENAMED_JOIN", user_id: userId, event_properties: { serverId } });
-            return ctx.rest.router.updateMemberNickname(event.d.serverId, event.d.userInfo.id, nickname.slice(1).trim() || "NON-HOISTING NAME");
+            return ctx.members.updateNickname(event.d.serverId, event.d.userInfo.id, nickname.slice(1).trim() || "NON-HOISTING NAME");
         }
 
         return ctx.contentFilterUtil.scanContent({
@@ -26,7 +22,7 @@ export default async (event: WSTeamMemberUpdatedPayload, ctx: Context, server: S
             filteredContent: FilteredContent.ServerContent,
             channelId: null,
             server,
-            resultingAction: () => ctx.rest.router.deleteMemberNickname(serverId, userId),
+            resultingAction: () => ctx.members.resetNickname(serverId, userId),
         });
     }
 };

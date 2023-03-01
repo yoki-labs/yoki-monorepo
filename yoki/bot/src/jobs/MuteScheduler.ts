@@ -13,7 +13,7 @@ export class MuteScheduler extends Scheduler<Action> {
         const member = await this.client.members.fetch(action.serverId, action.targetId).catch(() => null);
         if (!member) return;
         if (guild.muteRoleId) {
-            await this.client.rest.router.removeRoleFromMember(action.serverId, action.targetId, guild.muteRoleId);
+            await this.client.roles.removeRoleFromMember(action.serverId, action.targetId, guild.muteRoleId);
             if (action.channelId)
                 await this.client.messageUtil.sendInfoBlock(action.channelId, "You have been unmuted", `<@${action.targetId}>, you have been automatically unmuted.`, undefined, {
                     isPrivate: true,
