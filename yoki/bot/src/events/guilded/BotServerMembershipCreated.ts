@@ -1,16 +1,16 @@
-import type { WSBotTeamMembershipCreated } from "@guildedjs/guilded-api-typings";
 import { stripIndents } from "common-tags";
-import { Embed } from "guilded.js";
+import { Embed, User } from "guilded.js";
 
-import type { Context } from "../../typings";
+import type { GEvent } from "../../typings";
 import { Colors } from "../../utils/color";
 
-export default (packet: WSBotTeamMembershipCreated, ctx: Context) => {
-  const { server, createdBy } = packet.d;
-  void ctx.amp.logEvent({ event_type: "YOKI_SERVER_JOIN", user_id: server.id });
+export default {
+  execute: ([server, user, ctx]) => {
+    const createdBy = user instanceof User ? user.id : user;
+    void ctx.amp.logEvent({ event_type: "YOKI_SERVER_JOIN", user_id: server.id });
 
-  if (!server.defaultChannelId) return;
-  return ctx.messageUtil.sendEmbed(server.defaultChannelId, new Embed().setTitle("Welcome to Yoki!").setColor(Colors.green).setDescription(stripIndents`
+    if (!server.defaultChannelId) return;
+    return ctx.messageUtil.sendEmbed(server.defaultChannelId, new Embed().setTitle("Welcome to Yoki!").setColor(Colors.green).setDescription(stripIndents`
   <@${createdBy}> Thank you for inviting Yoki, your moderation companion! Yoki has numerous features to help make your community safer.
   Features: \`automod\`, \`antiraid\`, \`image filter\`, \`modmail\`, \`log channels\`, \`custom commands\`, and more!
 
@@ -25,4 +25,6 @@ export default (packet: WSBotTeamMembershipCreated, ctx: Context) => {
   🔗[Support Server](https://yoki.gg/support) • 🖥️ [Website](https://yoki.gg)"
 
   `).toJSON(), { isPrivate: true })
-}
+  },
+  name: "botServerCreated"
+} satisfies GEvent<"botServerCreated">;

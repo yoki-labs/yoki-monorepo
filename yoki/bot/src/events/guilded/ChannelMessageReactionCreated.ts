@@ -8,7 +8,8 @@ import { Colors } from "../../utils/color";
 import { errorEmbed, inlineCode } from "../../utils/formatters";
 import { summarizeRolesOrUsers } from "../../utils/messages";
 
-export default async (packet: WSChannelMessageReactionCreatedPayload, ctx: Context, server: Server) => {
+export default {
+     execute: async (packet: WSChannelMessageReactionCreatedPayload, ctx: Context, server: Server) => {
     const { reaction, serverId } = packet.d;
     const { channelId, messageId, emote, createdBy } = reaction;
 
@@ -92,4 +93,4 @@ export default async (packet: WSChannelMessageReactionCreatedPayload, ctx: Conte
             break;
         }
     }
-};
+}} satisfies GEvent;

@@ -10,7 +10,8 @@ import { Colors } from "../../utils/color";
 import { inlineCode, quoteMarkdown } from "../../utils/formatters";
 import { moderateContent } from "../../utils/moderation";
 
-export default async (packet: WSChatMessageUpdatedPayload, ctx: Context, server: Server) => {
+export default {
+     execute: async (packet: WSChatMessageUpdatedPayload, ctx: Context, server: Server) => {
 	const { message } = packet.d;
 
 	// if this message isn't updated in a server, or if the author is a bot, ignore
@@ -118,4 +119,4 @@ export default async (packet: WSChatMessageUpdatedPayload, ctx: Context, server:
 		}
 	}
 	return void 0;
-};
+}} satisfies GEvent;

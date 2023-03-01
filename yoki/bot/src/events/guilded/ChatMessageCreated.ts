@@ -33,9 +33,10 @@ const argCast: Record<
 	UUID,
 	member,
 	channel,
-};
+}} satisfies GEvent;
 
-export default async (packet: WSChatMessageCreatedPayload, ctx: Context, server: Server) => {
+export default {
+     execute: async (packet: WSChatMessageCreatedPayload, ctx: Context, server: Server) => {
 	const { message } = packet.d;
 	// if the message wasn't sent in a server, or the person was a bot then don't do anything
 	if (message.authorIdBotId || message.authorId === ctx.userId || message.authorId === "Ann6LewA" || !message.serverId) return void 0;
@@ -258,4 +259,4 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context, server:
 		);
 	}
 	return void 0;
-};
+}} satisfies GEvent;

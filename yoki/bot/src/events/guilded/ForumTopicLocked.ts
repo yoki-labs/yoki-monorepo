@@ -1,17 +1,14 @@
 import { GEvent, LogChannelType } from "../../typings";
 import { Colors } from "../../utils/color";
 import { inlineCode, inlineQuote } from "../../utils/formatters";
-import { quoteChangedContent } from "../../utils/messages";
 
 export default {
 	execute: async ([forumTopic, ctx]) => {
 		const { serverId } = forumTopic;
 
-		await ctx.prisma.forumTopic.deleteMany({ where: { serverId, channelId: forumTopic.channelId, forumTopicId: forumTopic.id } });
-
 		// check if there's a log channel channel for message deletions
-		const deletedTopicLogChannel = await ctx.dbUtil.getLogChannel(serverId, LogChannelType.topic_deletions);
-		if (!deletedTopicLogChannel) return void 0;
+		const lockedTopicLogChannel = await ctx.dbUtil.getLogChannel(serverId, LogChannelType.topic_locks);
+		if (!lockedTopicLogChannel) return void 0;
 
 		const channel = await ctx.channels.fetch(forumTopic.channelId).catch();
 
@@ -19,10 +16,10 @@ export default {
 
 		// send the log channel message with the content/data of the deleted message
 		await ctx.messageUtil.sendLog({
-			where: deletedTopicLogChannel.channelId,
+			where: lockedTopicLogChannel.channelId,
+			title: `Forum Topic Locked`,
 			serverId,
-			title: "Forum Topic Removed",
-			description: `A topic ${inlineQuote(forumTopic.title)} from <@${forumTopic.createdBy}> (${inlineCode(forumTopic.createdBy)}) was deleted in [#${channel.name
+			description: `A topic ${inlineQuote(forumTopic.title)} from <@${forumTopic.createdBy}> (${inlineCode(forumTopic.createdBy)}) was locked in [#${channel.name
 				}](${channelURL})
 
 			Topic ID: ${inlineCode(forumTopic.id)}
@@ -30,14 +27,8 @@ export default {
 		`,
 			color: Colors.red,
 			occurred: new Date().toISOString(),
-			fields: [
-				{
-					name: "Content",
-					value: await quoteChangedContent(ctx, serverId, forumTopic.id, "forums", forumTopic.content),
-				},
-			],
 		});
 
 		return void 0;
-	}, name: "forumTopicDeleted"
-} satisfies GEvent<"forumTopicDeleted">;
+	}, name: "forumTopicLocked"
+} satisfies GEvent<"forumTopicLocked">;

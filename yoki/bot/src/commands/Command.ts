@@ -1,5 +1,6 @@
 import type Collection from "@discordjs/collection";
 import type { Message } from "guilded.js";
+
 import type { CommandContext, Context, ResolvedArgs, RoleType, UsedMentions } from "../typings";
 
 export interface Command {

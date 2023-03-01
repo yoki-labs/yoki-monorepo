@@ -1,9 +1,10 @@
 import type { Context, Server } from "../typings";
-import BaseCommentEvent, { CommentPayload } from "./BaseCommentEvent";
+import BaseCommentEvent, { CommentPayload } from "./BaseCommentEvent.ignore";
 
 export interface DocCommentPayload extends CommentPayload {
     docId: number;
-};
+}} satisfies GEvent;
 
-export default async (packet: { d: { serverId: string; docComment: DocCommentPayload } }, ctx: Context, server: Server) =>
+export default {
+     execute: async (packet: { d: { serverId: string; docComment: DocCommentPayload } }, ctx: Context, server: Server) =>
     BaseCommentEvent(packet.d.serverId, packet.d.docComment.docId, packet.d.docComment, "docs", ctx, server);

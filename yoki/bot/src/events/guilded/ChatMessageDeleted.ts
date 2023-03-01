@@ -8,7 +8,8 @@ import type { Context } from "../../typings";
 import { Colors } from "../../utils/color";
 import { codeBlock, inlineCode } from "../../utils/formatters";
 
-export default async (packet: WSChatMessageDeletedPayload, ctx: Context) => {
+export default {
+     execute: async (packet: WSChatMessageDeletedPayload, ctx: Context) => {
 	const { message } = packet.d;
 
 	// check if there's a log channel channel for message deletions
@@ -96,4 +97,4 @@ export default async (packet: WSChatMessageDeletedPayload, ctx: Context) => {
 		}
 	}
 	return void 0;
-};
+}} satisfies GEvent;

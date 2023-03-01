@@ -44,7 +44,7 @@ export declare interface PresetLink {
 	route?: string[];
 }
 
-export interface GEvent {
-	execute: (...args: unknown[]) => unknown;
-	name: keyof ClientEvents;
+export interface GEvent<T extends keyof ClientEvents> {
+	execute: (args: [...Parameters<ClientEvents[T]>, YokiClient]) => unknown;
+	name: T;
 }

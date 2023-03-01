@@ -1,10 +1,10 @@
 import { config } from "dotenv";
+import type { ClientEvents } from "guilded.js";
 import { join } from "path";
 import recursive from "recursive-readdir";
 
 import YokiClient from "./Client";
 import type { Command } from "./commands/Command";
-import Welcome from "./events/guilded/Welcome";
 import unhandledPromiseRejection from "./events/other/unhandledPromiseRejection";
 import type { GEvent } from "./typings";
 import { errorEmbed } from "./utils/formatters";
@@ -26,9 +26,6 @@ client.ws.emitter.on("error", (err, errInfo, data) => {
 
 // This is for any custom events that we emit
 client.emitter.on("ActionIssued", client.customEventHandler.ActionIssued);
-
-// This event accepts the welcome data that allows us to get the botId and creatorId
-client.on("ready", () => Welcome(client));
 
 // This handler is simply just to log errors to our Guilded channel.
 process.on("unhandledRejection", (err) => unhandledPromiseRejection(err as Error, client));
@@ -52,16 +49,16 @@ void (async (): Promise<void> => {
 		client.commands.set(command.name.toLowerCase(), command);
 	}
 
-	for(const eventFile of eventFiles) {
-		const event = (await import(eventFile)).default as GEvent;
+	for(const eventFile of eventFiles.filter((x) => !x.endsWith(".ignore.ts"))) {
+		const event = (await import(eventFile)).default as GEvent<any>;
 		if(!event.name) {
 			console.log(`ERROR loading event ${eventFile}`);
 			continue;
 		}
 		console.log(`Loading event ${event.name}`);
-		client.on(event.name, async (...args: unknown[]) => {
+		client.on(event.name, async (args: Parameters<ClientEvents[keyof ClientEvents]>) => {
 			try {
-				await event.execute(...args);
+				await event.execute([...args, client]);
 			} catch(err) {
 				void client.errorHandler.send("Uncaught event error", [errorEmbed(err)])
 			}

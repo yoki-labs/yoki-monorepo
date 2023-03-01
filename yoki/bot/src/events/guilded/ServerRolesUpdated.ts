@@ -1,81 +1,85 @@
-import type { WSTeamRolesUpdatedPayload } from "@guildedjs/guilded-api-typings";
 import { Embed as WebhookEmbed } from "@guildedjs/webhook-client";
 import { LogChannelType } from "@prisma/client";
 import { stripIndents } from "common-tags";
 import { nanoid } from "nanoid";
 
-import type { Context } from "../../typings";
+import type { GEvent } from "../../typings";
 import { Colors } from "../../utils/color";
 import { inlineCode } from "../../utils/formatters";
 import { summarizeItems } from "../../utils/messages";
 
-export default async (event: WSTeamRolesUpdatedPayload, ctx: Context): Promise<void> => {
-	const { serverId, memberRoleIds } = event.d;
+export default {
+	execute: async ([newMembers, _oldMembers, ctx]): Promise<void> => {
+		const { serverId } = newMembers[0];
 
-	// check if there's a log channel channel for message deletions
-	const roleUpdateLogChannel = await ctx.dbUtil.getLogChannel(serverId!, LogChannelType.member_roles_updates);
-	if (roleUpdateLogChannel) {
-		// Prevent showcasing too many
-		const cappedRoleChanges = memberRoleIds.slice(0, 4);
+		// check if there's a log channel channel for message deletions
+		const roleUpdateLogChannel = await ctx.dbUtil.getLogChannel(serverId!, LogChannelType.member_roles_updates);
+		if (roleUpdateLogChannel) {
+			// Prevent showcasing too many
+			const cappedRoleChanges = newMembers.members.slice(0, 4);
 
-		const roleDifferences = cappedRoleChanges.map(({ userId, roleIds }) => {
-			const previousState = ctx.members.cache.get(userId);
+			const roleDifferences = cappedRoleChanges.map((member) => {
+				const { roleIds, userId } = member;
 
-			if (!previousState) return { userId, roleIds };
+				const previousState = ctx.members.cache.get(userId);
 
-			// Array difference
-			const addedRoles = roleIds.filter((currentRole) => !previousState.roleIds.includes(currentRole));
-			const removedRoles = previousState.roleIds.filter((previousRole) => !roleIds.includes(previousRole));
+				if (!previousState) return { userId, roleIds };
 
-			return { addedRoles, removedRoles, roleIds, userId };
-		});
+				// Array difference
+				const addedRoles = roleIds.filter((currentRole) => !previousState.roleIds.includes(currentRole));
+				const removedRoles = previousState.roleIds.filter((previousRole) => !roleIds.includes(previousRole));
 
-		const modifiedUsers = summarizeItems(memberRoleIds, (x) => `<@${x.userId}>`, 10);
+				return { addedRoles, removedRoles, roleIds, userId };
+			});
 
-		try {
-			// send the log channel message with the content/data of the deleted message
-			await ctx.messageUtil.sendLog({
-				where: roleUpdateLogChannel.channelId,
-				title: `Member Roles Changed`,
-				serverId,
-				description: `${modifiedUsers} had their roles changed.`,
-				color: Colors.blue,
-				occurred: new Date().toISOString(),
-				fields: roleDifferences.map((obj) => {
-					const { userId, addedRoles, removedRoles, roleIds } = obj;
+			const modifiedUsers = summarizeItems(newMembers.members, (x) => `<@${x.userId}>`, 10);
 
-					return {
-						name: `<@${userId}> (${inlineCode(userId)})`,
-						value:
-							addedRoles || removedRoles
-								? stripIndents`
+			try {
+				// send the log channel message with the content/data of the deleted message
+				await ctx.messageUtil.sendLog({
+					where: roleUpdateLogChannel.channelId,
+					title: `Member Roles Changed`,
+					serverId,
+					description: `${modifiedUsers} had their roles changed.`,
+					color: Colors.blue,
+					occurred: new Date().toISOString(),
+					fields: roleDifferences.map((obj) => {
+						const { userId, addedRoles, removedRoles, roleIds } = obj;
+
+						return {
+							name: `<@${userId}> (${inlineCode(userId)})`,
+							value:
+								addedRoles || removedRoles
+									? stripIndents`
                                     ${addedRoles?.length ? `**Added:** ${addedRoles.map((role) => `<@${role}>`).join(", ")}` : ""}
                                     ${removedRoles?.length ? `**Removed:** ${removedRoles.map((role) => `<@${role}>`).join(", ")}` : ""}
                                   `
-								: `Unknown role difference. Current roles: ${roleIds.map((role) => `<@${role}>`).join(", ")}`,
-					};
-				}),
-			});
-		} catch (e) {
-			// generate ID for this error, not persisted in database
-			const referenceId = nanoid();
-			// send error to the error webhook
-			if (e instanceof Error) {
-				console.error(e);
-				void ctx.errorHandler.send("Error in logging member roles updated event!", [
-					new WebhookEmbed()
-						.setDescription(
-							stripIndents`
+									: `Unknown role difference. Current roles: ${roleIds.map((role) => `<@${role}>`).join(", ")}`,
+						};
+					}),
+				});
+			} catch (e) {
+				// generate ID for this error, not persisted in database
+				const referenceId = nanoid();
+				// send error to the error webhook
+				if (e instanceof Error) {
+					console.error(e);
+					void ctx.errorHandler.send("Error in logging member roles updated event!", [
+						new WebhookEmbed()
+							.setDescription(
+								stripIndents`
                             Reference ID: ${inlineCode(referenceId)}
                             Server: ${inlineCode(serverId)}
                             Error: \`\`\`
                             ${e.stack ?? e.message}
                             \`\`\`
                         `
-						)
-						.setColor("RED"),
-				]);
+							)
+							.setColor("RED"),
+					]);
+				}
 			}
 		}
-	}
-};
+	},
+	name: "rolesUpdated"
+} satisfies GEvent<"rolesUpdated">;

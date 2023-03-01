@@ -1,4 +1,5 @@
 import { UserType } from "guilded.js";
+
 import { CachedMember, RoleType } from "../../typings";
 import { inlineCode } from "../../utils/formatters";
 import { getInfractionsFrom } from "../../utils/moderation";
