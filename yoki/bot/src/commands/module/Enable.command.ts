@@ -19,7 +19,7 @@ const Enable: Command = {
 			values: typeToDBPropMap
 		},
 	],
-	execute: async (message, args, ctx, commandCtx) => {
+	execute: (message, args, ctx, commandCtx) => {
 		const module = args.module as ResolvedEnum;
 		void ctx.amp.logEvent({ event_type: "MODULE_ENABLE", user_id: message.authorId, event_properties: { serverId: message.serverId!, module: module.resolved } });
 

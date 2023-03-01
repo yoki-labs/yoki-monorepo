@@ -65,7 +65,7 @@ export class DatabaseUtil extends Util {
 
 	getServer(serverId: string, createIfNotExists?: true): Promise<Server>;
 	getServer(serverId: string, createIfNotExists: false): Promise<Server | null>;
-	async getServer(serverId: string, createIfNotExists = true) {
+	getServer(serverId: string, createIfNotExists = true) {
 		return this.prisma.server
 			.findUnique({ where: { serverId } })
 			.then((server) => {
@@ -89,7 +89,7 @@ export class DatabaseUtil extends Util {
 		return logChannels.find((x) => x.type === type) ?? logChannels[0] ?? null;
 	}
 
-	async getMultipleLogChannels(serverId: string, types: LogChannelType[]): Promise<LogChannel[]> {
+	getMultipleLogChannels(serverId: string, types: LogChannelType[]): Promise<LogChannel[]> {
 		return this.prisma.logChannel.findMany({ where: { serverId, type: { in: types } } });
 	}
 
@@ -205,7 +205,7 @@ export class DatabaseUtil extends Util {
 		return this.prisma.action.update({ where: { id }, data: { logChannelId: channelId, logChannelMessage: messageId } });
 	}
 
-	async getChannelIgnore(serverId: string, channelId: string, contentType: ContentIgnoreType) {
+	getChannelIgnore(serverId: string, channelId: string, contentType: ContentIgnoreType) {
 		return this.prisma.channelIgnore.findMany({
 			where: {
 				serverId,
