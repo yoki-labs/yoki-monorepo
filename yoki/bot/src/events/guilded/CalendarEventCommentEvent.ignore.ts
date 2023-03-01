@@ -3,8 +3,7 @@ import BaseCommentEvent, { CommentPayload } from "./BaseCommentEvent.ignore";
 
 export interface CalendarCommentPayload extends CommentPayload {
     calendarEventId: number;
-}} satisfies GEvent;
+};
 
-export default {
-     execute: async (packet: { d: { serverId: string; calendarEventComment: CalendarCommentPayload } }, ctx: Context, server: Server) =>
+export default (packet: { d: { serverId: string; calendarEventComment: CalendarCommentPayload } }, ctx: Context, server: Server) =>
     BaseCommentEvent(packet.d.serverId, packet.d.calendarEventComment.calendarEventId, packet.d.calendarEventComment, "topics", ctx, server);

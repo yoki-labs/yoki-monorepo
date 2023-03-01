@@ -6,8 +6,7 @@ import { inlineCode } from "../../utils/formatters";
 import { quoteChangedContent } from "../../utils/messages";
 import type { CommentPayload } from "./BaseCommentEvent.ignore";
 
-export default {
-     execute: async (serverId: string, parentId: number, comment: CommentPayload, contentType: "forums" | "docs" | "calendar", ctx: Context) => {
+export default async (serverId: string, parentId: number, comment: CommentPayload, contentType: "forums" | "docs" | "calendar", ctx: Context) => {
     const member = await ctx.members.fetch(serverId, comment.createdBy).catch(() => null);
     if (member?.user?.type === UserType.Bot) return;
 
@@ -42,4 +41,4 @@ export default {
     });
 
     return void 0;
-}} satisfies GEvent;
+};

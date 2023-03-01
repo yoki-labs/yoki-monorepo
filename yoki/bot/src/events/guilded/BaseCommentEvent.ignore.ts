@@ -14,8 +14,7 @@ export interface CommentPayload {
     mentions: MentionsPayload;
 };
 
-export default {
-     execute: async (serverId: string, parentId: number, comment: CommentPayload, contentType: "topics" | "docs" | "events", ctx: Context, server: Server) => {
+export default  async (serverId: string, parentId: number, comment: CommentPayload, contentType: "topics" | "docs" | "events", ctx: Context, server: Server) => {
     const member = await ctx.members.fetch(serverId, comment.createdBy).catch(() => null);
     if (member?.user?.type === UserType.Bot) return;
 
@@ -42,4 +41,4 @@ export default {
     );
 
     return void 0;
-}};
+};
