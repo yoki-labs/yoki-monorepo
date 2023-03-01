@@ -1,4 +1,4 @@
-import type { WSChatMessageDeletedPayload } from "@guildedjs/guilded-api-typings";
+import type { WSChatMessageDeletedPayload } from "";
 import { Embed as WebhookEmbed } from "@guildedjs/webhook-client";
 import { LogChannelType, Prisma } from "@prisma/client";
 import { stripIndents } from "common-tags";
@@ -24,8 +24,8 @@ export default async (packet: WSChatMessageDeletedPayload, ctx: Context) => {
 		await ctx.prisma.message.updateMany({ where: { messageId: deletedMessage.messageId }, data: { deletedAt: packet.d.message.deletedAt } });
 	}
 	// if there is a database entry for the message, get the member from the server so we can get their name and roles etc.
-	const oldMember = deletedMessage ? await ctx.serverUtil.getMember(deletedMessage.serverId!, deletedMessage.authorId).catch(() => null) : null;
-	if (oldMember?.user.type === "bot") return;
+	const oldMember = deletedMessage ? await ctx.members.fetch(deletedMessage.serverId!, deletedMessage.authorId).catch(() => null) : null;
+	if (oldMember?.user.type === UserType.Bot) return;
 	const channel = await ctx.channelUtil.getChannel(message.channelId).catch();
 
 	try {
@@ -56,7 +56,7 @@ export default async (packet: WSChatMessageDeletedPayload, ctx: Context) => {
 			logContent[0].value = `This log is too big to display in Guilded. You can find the full log [here](${uploadToBucket.Location})`;
 		}
 
-		const author = deletedMessage && oldMember ? `<@${oldMember.user.id}> (${inlineCode(oldMember.user.id)})` : "Unknown author";
+		const author = deletedMessage && oldMember ? `<@${oldmember.user!.id}> (${inlineCode(oldmember.user!.id)})` : "Unknown author";
 		const channelURL = `https://guilded.gg/teams/${message.serverId}/channels/${message.channelId}/chat`;
 		// send the log channel message with the content/data of the deleted message
 		await ctx.messageUtil.sendLog({

@@ -1,6 +1,6 @@
 import type { CommandArgValidator } from "../commands/Command";
 
-export default [(_input: string, rawArgs: string[], index: number) => {
+export default [(_input, rawArgs, index) => {
 	// get all the rest of the arguments starting from this arg to the end
 	const restArgs = rawArgs.slice(index);
 	// if there are no args, then notify the user that it's invalid

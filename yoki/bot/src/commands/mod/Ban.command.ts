@@ -1,4 +1,5 @@
 import { stripIndents } from "common-tags";
+import { UserType } from "guilded.js";
 
 import { CachedMember, RoleType } from "../../typings";
 import { inlineCode } from "../../utils/formatters";
@@ -28,15 +29,15 @@ const Ban: Command = {
 		const target = args.target as CachedMember;
 		const reason = args.reason as string | null;
 
-		if (target.user.type === "bot") return ctx.messageUtil.replyWithError(message, `Cannot ban bots`, `Bots cannot be banned from the server.`);
+		if (target.user!.type === UserType.Bot) return ctx.messageUtil.replyWithError(message, `Cannot ban bots`, `Bots cannot be banned from the server.`);
 
 		void ctx.amp.logEvent({
 			event_type: "BOT_MEMBER_BAN",
-			user_id: message.createdBy,
-			event_properties: { serverId: message.serverId },
+			user_id: message.authorId,
+			event_properties: { serverId: message.serverId! },
 		});
 		try {
-			await ctx.rest.router.banMember(message.serverId!, target.user.id);
+			await ctx.rest.router.banMember(message.serverId!, target.user!.id);
 		} catch (e) {
 			return ctx.messageUtil.replyWithUnexpected(
 				message,
@@ -52,7 +53,7 @@ const Ban: Command = {
 		await ctx.dbUtil.addActionFromMessage(message, {
 			infractionPoints: 10,
 			reason,
-			targetId: target.user.id,
+			targetId: target.user!.id,
 			type: "BAN",
 			expiresAt: null,
 		}, commandCtx.server);
@@ -60,7 +61,7 @@ const Ban: Command = {
 		await ctx.messageUtil.sendSuccessBlock(
 			message.channelId,
 			`User banned`,
-			`<@${message.createdBy}>, you have successfully banned ${target.user.name} (${inlineCode(target.user.id)}).`,
+			`<@${message.authorId}>, you have successfully banned ${target.user!.name} (${inlineCode(target.user!.id)}).`,
 			undefined,
 			{
 				isPrivate: true,

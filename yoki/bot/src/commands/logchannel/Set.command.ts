@@ -1,5 +1,5 @@
-import type { ChatMessagePayload, ServerChannelPayload } from "@guildedjs/guilded-api-typings";
 import { stripIndents } from "common-tags";
+import type { Channel, Message } from "guilded.js";
 
 import type Client from "../../Client";
 import { LogChannelType, RoleType } from "../../typings";
@@ -25,7 +25,7 @@ const Set: Command = {
 		{ name: "logTypes", optional: true, type: "enumList", values: LogChannelArgs },
 	],
 	execute: async (message, args, ctx) => {
-		const { "id": channelId } = args.channel as ServerChannelPayload;
+		const { "id": channelId } = args.channel as Channel;
 		let logTypes: LogChannelArgEnum[] = args.logTypes === null ? [] : (args.logTypes as LogChannelArgEnum[]);
 
 		const channel = await ctx.rest.router.getChannel(channelId).catch(() => null);
@@ -75,7 +75,7 @@ const Set: Command = {
 	},
 };
 
-async function subscribeToLogs(ctx: Client, message: ChatMessagePayload, channelId: string, logTypes: LogChannelType[]): Promise<[string[], string[][]]> {
+async function subscribeToLogs(ctx: Client, message: Message, channelId: string, logTypes: LogChannelType[]): Promise<[string[], string[][]]> {
 	// Event subscribe handling.
 	const failedTypes: string[][] = [];
 	const successfulTypes: string[] = [];

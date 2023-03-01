@@ -25,7 +25,7 @@ const Age: Command = {
         if (!duration || duration < 600000 || duration > 1209600000)
             return ctx.messageUtil.replyWithError(message, `Invalid Duration`, `Your duration must be between 10m and 2w.`);
 
-        void ctx.amp.logEvent({ event_type: "ANTIRAID_AGE_SET", user_id: message.createdBy, event_properties: { serverId: message.serverId, age: duration } });
+        void ctx.amp.logEvent({ event_type: "ANTIRAID_AGE_SET", user_id: message.authorId, event_properties: { serverId: message.serverId!, age: duration } });
         await ctx.prisma.server.update({ where: { id: commandCtx.server.id }, data: { antiRaidAgeFilter: duration, antiRaidResponse: ResponseType.TEXT_CAPTCHA } });
         return ctx.messageUtil.replyWithSuccess(
             message,

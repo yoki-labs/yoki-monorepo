@@ -27,7 +27,7 @@ const Edit: Command = {
     execute: async (message, args, ctx, { member }) => {
         const messageId = args.messageId as string;
         const content = args.content as string;
-        const isCurrentChannelModmail = await ctx.prisma.modmailThread.findFirst({ where: { serverId: message.serverId, modFacingChannelId: message.channelId, closed: false } });
+        const isCurrentChannelModmail = await ctx.prisma.modmailThread.findFirst({ where: { serverId: message.serverId!, modFacingChannelId: message.channelId, closed: false } });
         if (!isCurrentChannelModmail) return ctx.messageUtil.replyWithError(message, `Not a modmail channel`, `This channel is not a modmail channel!`);
 
         const sentModmailMessage = await ctx.prisma.modmailMessage.findFirst({ where: { originalMessageId: messageId } });
@@ -59,7 +59,7 @@ const Edit: Command = {
                     title: "Updated Message!",
                     description: content,
                     author: {
-                        name: `${member.user.name} (${member.user.id})`,
+                        name: `${member.user!.name} (${member.user!.id})`,
                     },
                     color: Colors.green,
                     timestamp: new Date().toISOString(),

@@ -37,7 +37,7 @@ const Unban: Command = {
 		await ctx.messageUtil.sendSuccessBlock(
 			message.channelId,
 			`User unbanned`,
-			`<@${message.createdBy}>, you have successfully unbanned ${inlineCode(target)}.`,
+			`<@${message.authorId}>, you have successfully unbanned ${inlineCode(target)}.`,
 			undefined,
 			{
 				isPrivate: true,

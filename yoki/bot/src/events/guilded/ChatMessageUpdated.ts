@@ -1,4 +1,4 @@
-import type { WSChatMessageUpdatedPayload } from "@guildedjs/guilded-api-typings";
+import type { WSChatMessageUpdatedPayload } from "";
 import { Embed as WebhookEmbed } from "@guildedjs/webhook-client";
 import { LogChannelType } from "@prisma/client";
 import { stripIndents } from "common-tags";
@@ -14,22 +14,22 @@ export default async (packet: WSChatMessageUpdatedPayload, ctx: Context, server:
 	const { message } = packet.d;
 
 	// if this message isn't updated in a server, or if the author is a bot, ignore
-	if (message.createdByBotId || message.createdBy === ctx.userId || message.createdBy === "Ann6LewA" || !message.serverId) return void 0;
-	void ctx.amp.logEvent({ event_type: "MESSAGE_UPDATE", user_id: message.createdBy, event_properties: { serverId: message.serverId! } });
+	if (message.authorIdBotId || message.authorId === ctx.userId || message.authorId === "Ann6LewA" || !message.serverId) return void 0;
+	void ctx.amp.logEvent({ event_type: "MESSAGE_UPDATE", user_id: message.authorId, event_properties: { serverId: message.serverId! } });
 
-	const member = await ctx.serverUtil.getMember(packet.d.serverId, packet.d.message.createdBy).catch(() => null);
-	if (member?.user.type === "bot") return;
+	const member = await ctx.members.fetch(packet.d.serverId, packet.d.message.authorId).catch(() => null);
+	if (member?.user.type === UserType.Bot) return;
 
 	// get the old message from the database if we logged it before
 	const oldMessage = await ctx.dbUtil.getMessage(message.channelId, message.id);
 	// if we did log it in the past, update it with the new content (logMessage uses upsert)
 	if (oldMessage) {
-		void ctx.amp.logEvent({ event_type: "MESSAGE_UPDATE_DB", user_id: message.createdBy, event_properties: { serverId: message.serverId } });
+		void ctx.amp.logEvent({ event_type: "MESSAGE_UPDATE_DB", user_id: message.authorId, event_properties: { serverId: message.serverId! } });
 		await ctx.dbUtil.storeMessage(message);
 	}
 
 	// scan the updated message content
-	await moderateContent(ctx, server, message.channelId, "MESSAGE", FilteredContent.Message, message.createdBy, message.content, message.mentions, () =>
+	await moderateContent(ctx, server, message.channelId, "MESSAGE", FilteredContent.Message, message.authorId, message.content, message.mentions, () =>
 		ctx.rest.router.deleteChannelMessage(message.channelId, message.id)
 	);
 
@@ -75,7 +75,7 @@ export default async (packet: WSChatMessageUpdatedPayload, ctx: Context, server:
 			];
 		}
 
-		const author = message.createdByWebhookId ? `Webhook (${inlineCode(message.createdByWebhookId)})` : `<@${message.createdBy}> (${inlineCode(message.createdBy)})`;
+		const author = message.authorIdWebhookId ? `Webhook (${inlineCode(message.authorIdWebhookId)})` : `<@${message.authorId}> (${inlineCode(message.authorId)})`;
 		const channel = await ctx.channelUtil.getChannel(message.channelId);
 
 		const channelURL = `https://guilded.gg/teams/${message.serverId}/channels/${message.channelId}/chat`;
@@ -107,7 +107,7 @@ export default async (packet: WSChatMessageUpdatedPayload, ctx: Context, server:
 						Reference ID: ${inlineCode(referenceId)}
 						Server: ${inlineCode(message.serverId)}
 						Channel: ${inlineCode(message.channelId)}
-						User: ${inlineCode(message.createdBy)}
+						User: ${inlineCode(message.authorId)}
 						Error: \`\`\`
 						${e.stack ?? e.message}
 						\`\`\`

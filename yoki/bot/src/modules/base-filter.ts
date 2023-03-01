@@ -1,6 +1,7 @@
 import { Embed } from "@guildedjs/webhook-client";
 import { Action, Severity } from "@prisma/client";
 import { stripIndents } from "common-tags";
+import { UserType } from "guilded.js";
 
 import { Util } from "../helpers/util";
 import type { Server } from "../typings";
@@ -99,10 +100,10 @@ export default abstract class BaseFilterUtil<TFilterType = null> extends Util {
 	async shouldFilterUser(server: Server, userId: string) {
 		// By now, we assume the member has violated a filter or preset
 		// Get the member from cache or API
-		const member = await this.client.serverUtil.getMember(server.serverId, userId);
+		const member = await this.client.members.fetch(server.serverId, userId);
 
 		// Don't moderate bots
-		if (member.user.type === "bot") return false;
+		if (member.user!.type === UserType.Bot) return false;
 
 		// Get all the mod roles in this server
 		const modRoles = await this.prisma.role.findMany({ where: { serverId: server.serverId } });

@@ -1,5 +1,5 @@
-import type { EmbedField } from "@guildedjs/guilded-api-typings";
 import { stripIndents } from "common-tags";
+import { EmbedField, UserType } from "guilded.js";
 
 import { CachedMember, RoleType } from "../../typings";
 import { inlineCode } from "../../utils/formatters";
@@ -35,18 +35,18 @@ const Warn: Command = {
 		const target = args.target as CachedMember;
 		const [reason, infractionPoints] = getInfractionsFrom(args);
 
-		if (target.user.type === "bot") return ctx.messageUtil.replyWithError(message, `Cannot warn bots`, `Bots cannot be warned.`);
+		if (target.user!.type === UserType.Bot) return ctx.messageUtil.replyWithError(message, `Cannot warn bots`, `Bots cannot be warned.`);
 
 		void ctx.amp.logEvent({
 			event_type: "BOT_MEMBER_WARN",
-			user_id: message.createdBy,
-			event_properties: { serverId: message.serverId },
+			user_id: message.authorId,
+			event_properties: { serverId: message.serverId! },
 		});
 		try {
 			await ctx.messageUtil.sendWarningBlock(
 				message.channelId,
 				"You have been warned",
-				`<@${target.user.id}>, you have been manually warned by a staff member of this server.`,
+				`<@${target.user!.id}>, you have been manually warned by a staff member of this server.`,
 				{
 					fields: [
 						reason && {
@@ -74,7 +74,7 @@ const Warn: Command = {
 		await ctx.dbUtil.addActionFromMessage(message, {
 			reason,
 			infractionPoints,
-			targetId: target.user.id,
+			targetId: target.user!.id,
 			type: "WARN",
 			expiresAt: null,
 		}, commandCtx.server);
@@ -82,7 +82,7 @@ const Warn: Command = {
 		await ctx.messageUtil.sendSuccessBlock(
 			message.channelId,
 			`User warned`,
-			`<@${message.createdBy}>, you have successfully warned ${target.user.name} (${inlineCode(target.user.id)}).`,
+			`<@${message.authorId}>, you have successfully warned ${target.user!.name} (${inlineCode(target.user!.id)}).`,
 			undefined,
 			{
 				isPrivate: true,

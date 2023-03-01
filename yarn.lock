@@ -3077,10 +3077,10 @@ grapheme-splitter@^1.0.4:
   resolved "https://registry.yarnpkg.com/grapheme-splitter/-/grapheme-splitter-1.0.4.tgz#9cf3a665c6247479896834af35cf1dbb4400767e"
   integrity sha512-bzh50DW9kTPM00T8y4o8vQg89Di9oLJVLW/KaOGIXJWP/iqCN6WKYkbNOF04vFLJhwcpYUh9ydh/+5vpOqV4YQ==
 
-guilded.js@^0.17.1:
-  version "0.17.1"
-  resolved "https://registry.yarnpkg.com/guilded.js/-/guilded.js-0.17.1.tgz#6a3c80fe7b47928f047cbe284415d23e44d25413"
-  integrity sha512-+bmHjvuJGemjK798itQBHKAhihqYZoHya3rGZCa7DlNeihme/YDB2bQVM+u/qOBVMqhTjgPPl8/Uwo3PQnIKZw==
+guilded.js@0.17.4:
+  version "0.17.4"
+  resolved "https://registry.yarnpkg.com/guilded.js/-/guilded.js-0.17.4.tgz#bed125a85956b8b1904be85cbf4d76afea944010"
+  integrity sha512-+wV2Jvum4HFatxSbBfEkD8TJbPOoDFfFdvS9bU8fjCM+SMNrvo1ocXF99J5cWjcfJfP6d558+H1CcIcC9Mn9Nw==
   dependencies:
     "@discordjs/collection" "^1.3.0"
     "@guildedjs/rest" "3.0.0"

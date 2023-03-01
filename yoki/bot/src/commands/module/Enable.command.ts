@@ -21,7 +21,7 @@ const Enable: Command = {
 	],
 	execute: async (message, args, ctx, commandCtx) => {
 		const module = args.module as ResolvedEnum;
-		void ctx.amp.logEvent({ event_type: "MODULE_ENABLE", user_id: message.createdBy, event_properties: { serverId: message.serverId, module: module.resolved } });
+		void ctx.amp.logEvent({ event_type: "MODULE_ENABLE", user_id: message.authorId, event_properties: { serverId: message.serverId!, module: module.resolved } });
 
 		return ctx.prisma.server
 			.update({

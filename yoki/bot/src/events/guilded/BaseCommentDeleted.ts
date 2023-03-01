@@ -1,18 +1,20 @@
-import { Context, LogChannelType } from "../typings";
-import { Colors } from "../utils/color";
-import { inlineCode } from "../utils/formatters";
-import { quoteChangedContent } from "../utils/messages";
+import { UserType } from "guilded.js";
+
+import { Context, LogChannelType } from "../../typings";
+import { Colors } from "../../utils/color";
+import { inlineCode } from "../../utils/formatters";
+import { quoteChangedContent } from "../../utils/messages";
 import type { CommentPayload } from "./BaseCommentEvent";
 
 export default async (serverId: string, parentId: number, comment: CommentPayload, contentType: "forums" | "docs" | "calendar", ctx: Context) => {
-    const member = await ctx.serverUtil.getMember(serverId, comment.createdBy).catch(() => null);
-    if (member?.user.type === "bot") return;
+    const member = await ctx.members.fetch(serverId, comment.createdBy).catch(() => null);
+    if (member?.user?.type === UserType.Bot) return;
 
     // check if there's a log channel channel for message deletions
     const deletedCommentLogChannel = await ctx.dbUtil.getLogChannel(serverId, LogChannelType.comment_deletions);
     if (!deletedCommentLogChannel) return void 0;
 
-    const channel = await ctx.channelUtil.getChannel(comment.channelId).catch();
+    const channel = await ctx.channels.fetch(comment.channelId).catch();
 
     const channelURL = `https://guilded.gg/teams/${serverId}/channels/${comment.channelId}/${contentType}`;
 

@@ -1,4 +1,4 @@
-import type { ForumTopicPayload } from "@guildedjs/guilded-api-typings";
+import type { ForumTopicPayload } from "";
 
 import { Context, LogChannelType } from "../../typings";
 import { inlineCode, inlineQuote } from "../../utils/formatters";

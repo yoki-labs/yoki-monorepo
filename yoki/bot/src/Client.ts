@@ -8,10 +8,9 @@ import type TypedEmitter from "typed-emitter";
 
 import type { Command } from "./commands/Command";
 import ActionIssued from "./events/other/ActionIssued";
-import { ChannelUtil } from "./helpers/channel";
 import { DatabaseUtil } from "./helpers/database";
 import { MessageUtil } from "./helpers/message";
-import { ServerUtil } from "./helpers/server";
+import { RoleUtil } from "./helpers/role";
 import { MuteScheduler } from "./jobs/MuteScheduler";
 import { ContentFilterUtil } from "./modules/content-filter";
 import { LinkFilterUtil } from "./modules/link-filter";
@@ -54,10 +53,8 @@ export default class YokiClient extends Client {
 	readonly dbUtil = new DatabaseUtil(this);
 	// utility methods for message interactions
 	readonly messageUtil = new MessageUtil(this);
-	// utility methods for channel interactions
-	readonly channelUtil = new ChannelUtil(this);
 	// utility methods for server interactions
-	readonly serverUtil = new ServerUtil(this);
+	readonly roleUtil = new RoleUtil(this);
 	// utility methods for content filtering
 	readonly contentFilterUtil = new ContentFilterUtil(this);
 	// utility methods for preventing spam

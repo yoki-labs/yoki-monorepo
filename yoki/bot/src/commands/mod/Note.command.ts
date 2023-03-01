@@ -1,3 +1,4 @@
+import { UserType } from "guilded.js";
 import { CachedMember, RoleType } from "../../typings";
 import { inlineCode } from "../../utils/formatters";
 import { getInfractionsFrom } from "../../utils/moderation";
@@ -31,14 +32,14 @@ const Note: Command = {
 	execute: async (message, args, ctx, commandCtx) => {
 		const target = args.target as CachedMember;
 
-		if (target.user.type === "bot") return ctx.messageUtil.replyWithError(message, `Cannot place a note on bots`, `Bots cannot have moderation notes on them.`);
+		if (target.user!.type === UserType.Bot) return ctx.messageUtil.replyWithError(message, `Cannot place a note on bots`, `Bots cannot have moderation notes on them.`);
 
 		const [reason, infractionPoints] = getInfractionsFrom(args);
 
 		await ctx.dbUtil.addActionFromMessage(message, {
 			reason,
 			infractionPoints,
-			targetId: target.user.id,
+			targetId: target.user!.id,
 			type: "NOTE",
 			expiresAt: null,
 		}, commandCtx.server);
@@ -46,7 +47,7 @@ const Note: Command = {
 		await ctx.messageUtil.sendSuccessBlock(
 			message.channelId,
 			`Moderation note added`,
-			`<@${message.createdBy}>, you have successfully added a new moderation note on ${target.user.name} (${inlineCode(target.user.id)}).`,
+			`<@${message.authorId}>, you have successfully added a new moderation note on ${target.user!.name} (${inlineCode(target.user!.id)}).`,
 			undefined,
 			{
 				isPrivate: true,

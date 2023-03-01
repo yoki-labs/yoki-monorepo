@@ -1,6 +1,7 @@
 import type { EmbedField } from "@guildedjs/guilded-api-typings";
 import { Severity } from "@prisma/client";
 import { stripIndents } from "common-tags";
+import { UserType } from "guilded.js";
 
 import { CachedMember, RoleType } from "../../typings";
 import { inlineCode, listInlineCode } from "../../utils/formatters";
@@ -32,10 +33,10 @@ const Unmute: Command = {
 		const target = args.target as CachedMember;
 		const reason = args.reason as string | null;
 
-		if (target.user.type === "bot") return ctx.messageUtil.replyWithError(message, `Cannot unmute bots`, `Bots cannot be unmuted.`);
+		if (target.user?.type === UserType.Bot) return ctx.messageUtil.replyWithError(message, `Cannot unmute bots`, `Bots cannot be unmuted.`);
 
 		try {
-			await ctx.rest.router.removeRoleFromMember(message.serverId!, target.user.id, commandCtx.server.muteRoleId);
+			await ctx.rest.router.removeRoleFromMember(message.serverId!, target.user!.id, commandCtx.server.muteRoleId);
 		} catch (e) {
 			return ctx.messageUtil.replyWithUnexpected(
 				message,
@@ -51,7 +52,7 @@ const Unmute: Command = {
 		await ctx.prisma.action.updateMany({
 			where: {
 				type: Severity.MUTE,
-				targetId: target.user.id,
+				targetId: target.user!.id,
 				expired: false,
 			},
 			data: {
@@ -59,13 +60,13 @@ const Unmute: Command = {
 			},
 		});
 
-		let successMessage = `<@${message.createdBy}>, you have successfully unmuted <@${target.user.id}>.`;
+		let successMessage = `<@${message.authorId}>, you have successfully unmuted <@${target.user!.id}>.`;
 
 		try {
 			await ctx.messageUtil.sendInfoBlock(
 				message.channelId,
 				"You have been unmuted",
-				`<@${target.user.id}>, you have been manually unmuted by a staff member of this server.`,
+				`<@${target.user!.id}>, you have been manually unmuted by a staff member of this server.`,
 				{
 					fields: [
 						reason && {
@@ -83,9 +84,9 @@ const Unmute: Command = {
 			successMessage += "\n**I was unable to notify them.**";
 		}
 
-		const userRoles = await ctx.prisma.roleState.findFirst({ where: { serverId: message.serverId!, userId: target.user.id } });
+		const userRoles = await ctx.prisma.roleState.findFirst({ where: { serverId: message.serverId!, userId: target.user!.id } });
 		if (userRoles) {
-			const { failed } = await ctx.serverUtil.assignMultipleRoles(message.serverId!, target.user.id, userRoles.roles);
+			const { failed } = await ctx.roleUtil.assignMultipleRoles(message.serverId!, target.user!.id, userRoles.roles);
 			if (failed.length) {
 				successMessage += `\n\nThere was an issue adding some roles back to this user due to improper permissions. The roles are: ${listInlineCode(failed)}`;
 			}

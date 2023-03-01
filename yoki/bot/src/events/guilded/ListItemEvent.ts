@@ -1,4 +1,4 @@
-import type { WSListItemCreated } from "@guildedjs/guilded-api-typings";
+import type { WSListItemCreated } from "";
 
 import { FilteredContent } from "../../modules/content-filter";
 import type { Context, Server } from "../../typings";

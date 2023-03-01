@@ -1,4 +1,4 @@
-import type { WSTeamRolesUpdatedPayload } from "@guildedjs/guilded-api-typings";
+import type { WSTeamRolesUpdatedPayload } from "";
 import { Embed as WebhookEmbed } from "@guildedjs/webhook-client";
 import { LogChannelType } from "@prisma/client";
 import { stripIndents } from "common-tags";
@@ -91,7 +91,7 @@ export default async (event: WSTeamRolesUpdatedPayload, ctx: Context): Promise<v
 		if (cachedMember) {
 			// update the cache with the old data but with updated roleIds
 			await ctx.serverUtil.setMember(serverId, user.userId, { ...cachedMember, roleIds: user.roleIds });
-			console.log(`Updating cache for user ${cachedMember.user.name} (${cachedMember.user.id}) with new roles ${user.roleIds}`);
-		} else await ctx.serverUtil.getMember(serverId, user.userId, true, true);
+			console.log(`Updating cache for user ${cachedmember.user!.name} (${cachedmember.user!.id}) with new roles ${user.roleIds}`);
+		} else await ctx.members.fetch(serverId, user.userId, true, true);
 	}
 };

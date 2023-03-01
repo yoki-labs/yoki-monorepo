@@ -1,5 +1,5 @@
-import type { ChatMessagePayload, ForumTopicPayload } from "@guildedjs/guilded-api-typings";
-import type { ContentIgnoreType, FilterMatching, InviteFilter, LogChannel, Prisma, UrlFilter } from "@prisma/client";
+import type { ContentIgnoreType, FilterMatching, InviteFilter, LogChannel, UrlFilter } from "@prisma/client";
+import type { ForumTopic, Message } from "guilded.js";
 import { nanoid } from "nanoid";
 
 import { Action, ContentFilter, LogChannelType, Server } from "../typings";
@@ -122,16 +122,16 @@ export class DatabaseUtil extends Util {
 
 	// Store a message in the database
 	// This will either insert a whole new record, or update an existing record
-	storeMessage(message: ChatMessagePayload) {
+	storeMessage(message: Message) {
 		return this.prisma.message.upsert({
 			where: { messageId: message.id },
 			create: {
 				messageId: message.id,
-				authorId: message.createdBy,
+				authorId: message.authorId,
 				channelId: message.channelId,
 				content: message.content,
 				createdAt: message.createdAt,
-				embeds: message.embeds?.length ? (message.embeds as Prisma.JsonArray) : undefined,
+				embeds: [],
 				serverId: message.serverId!,
 				updatedAt: message.updatedAt,
 				isBot: Boolean(message.createdByBotId ?? message.createdByWebhookId),
@@ -140,12 +140,11 @@ export class DatabaseUtil extends Util {
 			update: {
 				content: message.content,
 				updatedAt: message.updatedAt,
-				embeds: JSON.stringify(message.embeds),
 			},
 		});
 	}
 
-	storeForumTopic(topic: ForumTopicPayload) {
+	storeForumTopic(topic: ForumTopic) {
 		return this.prisma.forumTopic.upsert({
 			where: { forumTopicId: topic.id },
 			create: {
@@ -188,11 +187,11 @@ export class DatabaseUtil extends Util {
 		return action;
 	}
 
-	addActionFromMessage(message: ChatMessagePayload, data: Pick<Action, "type" | "reason" | "targetId" | "infractionPoints" | "expiresAt">, server: Server) {
+	addActionFromMessage(message: Message, data: Pick<Action, "type" | "reason" | "targetId" | "infractionPoints" | "expiresAt">, server: Server) {
 		return this.emitAction(
 			{
 				serverId: message.serverId!,
-				executorId: message.createdBy,
+				executorId: message.authorId,
 				channelId: null,
 				triggerContent: null,
 				pardoned: false,

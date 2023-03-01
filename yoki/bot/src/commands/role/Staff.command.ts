@@ -27,10 +27,10 @@ const Staff: Command = {
 
         // Remove the staff role if it's not a level passed
         if (levelArg === "REMOVE") {
-            if (!(await ctx.prisma.role.findFirst({ where: { serverId: message.serverId, roleId: modroleId } })))
+            if (!(await ctx.prisma.role.findFirst({ where: { serverId: message.serverId!, roleId: modroleId } })))
                 return ctx.messageUtil.replyWithError(message, `Not a staff role`, `The given role is not a mod/admin role or does not exist.`);
 
-            await ctx.prisma.role.deleteMany({ where: { roleId: modroleId, serverId: message.serverId } });
+            await ctx.prisma.role.deleteMany({ where: { roleId: modroleId, serverId: message.serverId! } });
 
             return ctx.messageUtil.replyWithSuccess(message, `Removed staff role`, `<@${modroleId}> is no longer a staff role.`, undefined, { isSilent: true });
         }
@@ -38,7 +38,7 @@ const Staff: Command = {
         const staffLevel = RoleType[allowedTypes.includes(levelArg) ? levelArg : "MOD"] ?? RoleType.MOD;
 
         if (!modroleId) {
-            const modRoles = await ctx.prisma.role.findMany({ where: { serverId: message.serverId } });
+            const modRoles = await ctx.prisma.role.findMany({ where: { serverId: message.serverId! } });
             return modRoles.length
                 ? ctx.messageUtil.replyWithInfo(
                     message,
@@ -55,7 +55,7 @@ const Staff: Command = {
                 )
                 : ctx.messageUtil.replyWithNullState(message, `No staff roles`, `There are no staff roles set for this server yet.`);
         }
-        const existing = await ctx.prisma.role.findMany({ where: { serverId: message.serverId, roleId: modroleId, type: staffLevel } });
+        const existing = await ctx.prisma.role.findMany({ where: { serverId: message.serverId!, roleId: modroleId, type: staffLevel } });
         if (existing.find((x) => x.roleId === modroleId))
             return ctx.messageUtil.replyWithError(message, `Already a staff role`, `This role has already been set as ${staffLevel}.`);
 

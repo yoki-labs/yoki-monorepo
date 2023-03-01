@@ -1,4 +1,4 @@
-import type { EmbedField, WSForumTopicUpdated } from "@guildedjs/guilded-api-typings";
+import type { EmbedField, WSForumTopicUpdated } from "";
 
 import { FilteredContent } from "../../modules/content-filter";
 import { Context, LogChannelType, Server } from "../../typings";

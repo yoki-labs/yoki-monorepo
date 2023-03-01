@@ -1,4 +1,4 @@
-import type { WSChannelMessageReactionCreatedPayload } from "@guildedjs/guilded-api-typings";
+import type { WSChannelMessageReactionCreatedPayload } from "";
 import { ReactionActionType } from "@prisma/client";
 import { stripIndents } from "common-tags";
 import { nanoid } from "nanoid";
@@ -54,14 +54,14 @@ export default async (packet: WSChannelMessageReactionCreatedPayload, ctx: Conte
             });
             
             const modmailPingRole = server.modmailPingRoleId ? `<@${server.modmailPingRoleId}>` : "";
-            const member = await ctx.serverUtil.getMember(serverId, createdBy, true, true);
+            const member = await ctx.members.fetch(serverId, createdBy, true, true);
             await ctx.rest.router.createChannelMessage(newChannel.channel.id, {
                 content: `${modmailPingRole} A new modmail thread has been opened!`,
             });
             await ctx.messageUtil.sendInfoBlock(
                 newChannel.channel.id,
                 `New modmail thread opened!`,
-                `A new modmail thread by ID ${inlineCode(newModmailThread.id)} has been opened by <@${member.user.id}> (${inlineCode(member.user.id)})`,
+                `A new modmail thread by ID ${inlineCode(newModmailThread.id)} has been opened by <@${member.user!.id}> (${inlineCode(member.user!.id)})`,
                 {
                     fields: [
                         {
@@ -71,7 +71,7 @@ export default async (packet: WSChannelMessageReactionCreatedPayload, ctx: Conte
                         {
                             name: `Additional Info`,
                             value: stripIndents`
-                                **Account Created:** ${server.formatTimezone(new Date(member.user.createdAt))} EST
+                                **Account Created:** ${server.formatTimezone(new Date(member.user!.createdAt))} EST
                                 **Joined at:** ${server.formatTimezone(new Date(member.joinedAt))} EST
                             `,
                         },

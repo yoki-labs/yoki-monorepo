@@ -43,7 +43,7 @@ const IgnoreContent: Command = {
 		const contentTypeName = contentType.split("_").join(" ");
 
 		if (action === "REMOVE") {
-			await ctx.prisma.channelIgnore.deleteMany({ where: { serverId: message.serverId, type: ignoreType, contentType } });
+			await ctx.prisma.channelIgnore.deleteMany({ where: { serverId: message.serverId!, type: ignoreType, contentType } });
 			return ctx.messageUtil.replyWithSuccess(message, "Filtering ignore removed", `The ignore for ${what} in ${contentTypeName}s has been removed`);
 		}
 

@@ -1,7 +1,7 @@
-import type { ChatMessagePayload } from "@guildedjs/guilded-api-typings";
 import { Embed } from "@guildedjs/webhook-client";
 import { ContentFilter, FilterMatching, Preset } from "@prisma/client";
 import { stripIndents } from "common-tags";
+import { Message, UserType } from "guilded.js";
 
 import { ContentFilterScan, Server, Severity } from "../typings";
 import { Colors } from "../utils/color";
@@ -22,8 +22,8 @@ export class ContentFilterUtil extends BaseFilterUtil {
 	readonly imageFilterUtil = new ImageFilterUtil(this.client);
 	readonly presets = wordPresets;
 
-	async scanMessageMedia(message: ChatMessagePayload): Promise<void> {
-		const { serverId, channelId, content, createdBy: userId, id: messageId } = message;
+	async scanMessageMedia(message: Message): Promise<void> {
+		const { serverId, channelId, content, authorId: userId, id: messageId } = message;
 		const matches = [...content.matchAll(IMAGE_REGEX)];
 		if (!matches.length) return;
 
@@ -122,10 +122,10 @@ export class ContentFilterUtil extends BaseFilterUtil {
 
 		// By now, we assume the member has violated a filter or preset
 		// Get the member from cache or API
-		const member = await this.client.serverUtil.getMember(serverId, userId);
+		const member = await this.client.members.fetch(serverId, userId);
 
 		// Don't moderate bots
-		if (member.user.type === "bot") return;
+		if (member.user!.type === UserType.Bot) return;
 
 		// Get all the mod roles in this server
 		const modRoles = await this.prisma.role.findMany({ where: { serverId } });
@@ -176,8 +176,8 @@ export class ContentFilterUtil extends BaseFilterUtil {
 		// Execute the punishing action. If this is a threshold exceeding, execute the punishment associated with the exceeded threshold
 		// Otherwise, execute the action associated with this specific filter word or preset entry
 		return exceededThreshold
-			? this.severityAction[exceededThreshold](member.user.id, server, channelId, filteredContent, null)
-			: this.severityAction[triggeredWord.severity]?.(member.user.id, server, channelId, filteredContent, null);
+			? this.severityAction[exceededThreshold](member.user!.id, server, channelId, filteredContent, null)
+			: this.severityAction[triggeredWord.severity]?.(member.user!.id, server, channelId, filteredContent, null);
 	}
 
 	tripsFilter(contentFilter: ContentFilter | Omit<ContentFilterScan, "severity">, words: string[]) {

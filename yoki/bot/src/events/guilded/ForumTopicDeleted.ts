@@ -1,4 +1,4 @@
-import type { WSForumTopicDeleted } from "@guildedjs/guilded-api-typings";
+import type { WSForumTopicDeleted } from "";
 
 import { Context, LogChannelType } from "../../typings";
 import { Colors } from "../../utils/color";

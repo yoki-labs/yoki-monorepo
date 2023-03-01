@@ -43,7 +43,7 @@ const Privacy: Command = {
             {
                 title: "Server's Content Privacy",
                 description: stripIndents`
-                <@${message.createdBy}>, here's a report about server's content privacy:
+                <@${message.authorId}>, here's a report about server's content privacy:
                 ${localNoIssue.map(formatNoIssue).join("\n")}
                 ${localPrivacyIssue.map(formatPrivacyIssue).join("\n")}
             `,

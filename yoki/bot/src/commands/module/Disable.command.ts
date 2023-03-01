@@ -27,7 +27,7 @@ const Disable: Command = {
 				`The module you wish to disable must be one of the following: ${typeToDBPropKeys.map((x) => `\`${x}\``).join(", ")}`
 			);
 
-		void ctx.amp.logEvent({ event_type: "MODULE_DISABLE", user_id: message.createdBy, event_properties: { serverId: message.serverId, module: typeToDBPropMap[module] } });
+		void ctx.amp.logEvent({ event_type: "MODULE_DISABLE", user_id: message.authorId, event_properties: { serverId: message.serverId!, module: typeToDBPropMap[module] } });
 		return ctx.prisma.server
 			.update({
 				where: { id: commandCtx.server.id },

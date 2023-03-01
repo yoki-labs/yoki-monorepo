@@ -40,7 +40,7 @@ const View: Command = {
 		const actions = await ctx.prisma.action.findMany({
 			where: {
 				serverId: message.serverId!,
-				targetId: target.user.id,
+				targetId: target.user!.id,
 			},
 		});
 
@@ -51,7 +51,7 @@ const View: Command = {
 		return ctx.messageUtil.replyWithPaginatedContent<Action>({
 			replyTo: message,
 			items: actions,
-			title: `${target.user.name}'s History`,
+			title: `${target.user!.name}'s History`,
 			itemMapping: (x) => {
 				const trimmedReason = x.reason && x.reason.length > maxReason ? `${x.reason.substring(0, maxReason)}...` : x.reason;
 

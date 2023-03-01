@@ -1,7 +1,7 @@
 import Collection from "@discordjs/collection";
-import type { ChatMessagePayload, ServerChannelPayload } from "@guildedjs/guilded-api-typings";
 import { LogChannelType } from "@prisma/client";
 import { stripIndents } from "common-tags";
+import type { Channel, Message } from "guilded.js";
 
 import type Client from "../../Client";
 import { LogChannel as LogChannelPrisma, RoleType } from "../../typings";
@@ -20,7 +20,7 @@ const List: Command = {
 	requiredRole: RoleType.ADMIN,
 	args: [{ name: "channel", type: "channel", optional: true }],
 	execute: async (message, args, ctx) => {
-		const channel = args.channel as ServerChannelPayload;
+		const channel = args.channel as Channel;
 
 		const logChannels = await ctx.dbUtil.getLogChannels(message.serverId!);
 		if (logChannels.length <= 0)
@@ -71,9 +71,9 @@ function cleanupChannels(logChannels: LogChannelPrisma[]): Collection<string, Lo
 }
 
 // Gives channel list or nothing
-async function replyWithChannelList(logChannels: LogChannelPrisma[], message: ChatMessagePayload, ctx: Client) {
+async function replyWithChannelList(logChannels: LogChannelPrisma[], message: Message, ctx: Client) {
 	const formattedChannels = cleanupChannels(logChannels);
-	const channelNames = (await Promise.all(formattedChannels.map((_, k) => ctx.channelUtil.getChannel(k).catch(() => k)))).map((x) =>
+	const channelNames = (await Promise.all(formattedChannels.map((_, k) => ctx.channels.fetch(k).catch(() => k)))).map((x) =>
 		typeof x === "string" ? `Unknown Channel - ${x}` : channelName(x.name, x.serverId, x.groupId, x.id)
 	);
 
@@ -86,7 +86,7 @@ async function replyWithChannelList(logChannels: LogChannelPrisma[], message: Ch
 	);
 }
 
-async function replyWithChannel(channel: ServerChannelPayload, logTypes: LogChannelType[] | undefined, message: ChatMessagePayload, ctx: Client) {
+async function replyWithChannel(channel: Channel, logTypes: LogChannelType[] | undefined, message: Message, ctx: Client) {
 	return ctx.messageUtil.replyWithInfo(
 		message,
 		`Log channel subscriptions`,

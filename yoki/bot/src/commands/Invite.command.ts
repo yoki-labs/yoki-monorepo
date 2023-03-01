@@ -7,8 +7,8 @@ const Invite: Command = {
     execute: (message, _args, ctx) => {
         void ctx.amp.logEvent({
             event_type: "BOT_INVITE",
-            user_id: message.createdBy,
-            event_properties: { serverId: message.serverId },
+            user_id: message.authorId,
+            event_properties: { serverId: message.serverId! },
         });
         return ctx.messageUtil.replyWithInfo(
             message,

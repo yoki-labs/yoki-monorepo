@@ -1,5 +1,5 @@
-import type { EmbedPayload } from "@guildedjs/guilded-api-typings";
 import { stripIndents } from "common-tags";
+import { Embed } from "guilded.js";
 
 import { RoleType } from "../../typings";
 import { Colors } from "../../utils/color";
@@ -24,52 +24,41 @@ const Reply: Command = {
     ],
     execute: async (message, args, ctx, { member }) => {
         const content = (args.content as string).slice(0, 2000);
-        const isCurrentChannelModmail = await ctx.prisma.modmailThread.findFirst({ where: { serverId: message.serverId, modFacingChannelId: message.channelId, closed: false } });
+        const isCurrentChannelModmail = await ctx.prisma.modmailThread.findFirst({ where: { serverId: message.serverId!, modFacingChannelId: message.channelId, closed: false } });
         if (!isCurrentChannelModmail) return ctx.messageUtil.replyWithError(message, `Not a modmail channel`, `This channel is not a modmail channel!`);
 
-        const baseEmbedData: EmbedPayload = {
-            author: {
-                name: `${member.user.name} (${member.user.id})`,
-                icon_url: member.user.avatar,
-            },
-            color: Colors.green,
-            timestamp: new Date().toISOString(),
-        };
-        const newSentMessage = await ctx.rest.router.createChannelMessage(isCurrentChannelModmail.userFacingChannelId, {
+        const embed: Embed = new Embed()
+            .setAuthor(member.user!.name, member.user!.id)
+            .setColor(Colors.green)
+            .setTimestamp()
+            .setDescription(stripIndents`<@${isCurrentChannelModmail.openerId}>
+                ${content}
+            `)
+            .setFooter("Moderator");
+
+        const newSentMessage = await message.client.messages.send(isCurrentChannelModmail.userFacingChannelId, {
             embeds: [
-                {
-                    description: stripIndents`<@${isCurrentChannelModmail.openerId}>
-						${content}
-					`,
-                    footer: {
-                        text: "Moderator",
-                    },
-                    ...baseEmbedData,
-                },
+                embed
             ],
             isPrivate: true,
         });
+
         await ctx.prisma.modmailMessage.create({
             data: {
-                authorId: message.createdBy,
+                authorId: message.authorId,
                 channelId: message.channelId,
                 content,
                 modmailThreadId: isCurrentChannelModmail.id,
-                sentMessageId: newSentMessage.message.id,
+                sentMessageId: newSentMessage.id,
                 originalMessageId: message.id,
             },
         });
-        void ctx.rest.router.deleteChannelMessage(message.channelId, message.id);
-        return ctx.rest.router.createChannelMessage(message.channelId, {
-            embeds: [
-                {
-                    description: content,
-                    footer: {
-                        text: `Ticket ${isCurrentChannelModmail.id}`,
-                    },
-                    ...baseEmbedData,
-                },
-            ],
+        void message.delete().catch(() => null);
+
+        embed.setDescription(content);
+        embed.setFooter(`Ticket ${isCurrentChannelModmail.id}`)
+        return message.send({
+            embeds: [embed],
         });
     },
 };

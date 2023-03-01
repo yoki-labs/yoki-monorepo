@@ -37,7 +37,7 @@ const Mute: Command = {
                 : ctx.messageUtil.replyWithNullState(message, `No mute role`, `There is no mute role set.`);
         } else if (role.toUpperCase() === "REMOVE") {
             // The ability to delete mute roles
-            await ctx.prisma.server.updateMany({ data: { muteRoleId: null }, where: { serverId: message.serverId } });
+            await ctx.prisma.server.updateMany({ data: { muteRoleId: null }, where: { serverId: message.serverId! } });
 
             return ctx.messageUtil.replyWithSuccess(message, `Mute role removed`, `<@${commandCtx.server.muteRoleId}> is no longer the mute role.`, undefined, { isSilent: true });
         }

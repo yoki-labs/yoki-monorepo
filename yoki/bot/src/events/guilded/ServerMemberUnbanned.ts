@@ -1,4 +1,4 @@
-import type { WSTeamMemberBannedPayload } from "@guildedjs/guilded-api-typings";
+import type { WSTeamMemberUnbannedPayload } from "";
 import { Embed as WebhookEmbed } from "@guildedjs/webhook-client";
 import { LogChannelType } from "@prisma/client";
 import { stripIndents } from "common-tags";
@@ -8,8 +8,8 @@ import type { Context, Server } from "../typings";
 import { Colors } from "../utils/color";
 import { codeBlock, inlineCode } from "../utils/formatters";
 
-export default async (packet: WSTeamMemberBannedPayload, ctx: Context, server: Server) => {
-	const { serverId, serverMemberBan: { user, reason, createdAt, createdBy } } = packet.d;
+export default async (packet: WSTeamMemberUnbannedPayload, ctx: Context, server: Server) => {
+	const { serverId, serverMemberBan: { user, reason, createdBy } } = packet.d;
 
 	// check if there's a log channel channel for member leaves
 	const memberBanLogChannel = await ctx.dbUtil.getLogChannel(serverId!, LogChannelType.member_bans);
@@ -18,17 +18,17 @@ export default async (packet: WSTeamMemberBannedPayload, ctx: Context, server: S
 			// send the log channel message with the content/data of the deleted message
 			await ctx.messageUtil.sendLog({
 				where: memberBanLogChannel.channelId,
-				title: `User Banned`,
+				title: `User Unbanned`,
 				serverId: server.serverId,
-				description: `<@${user.id}> (${inlineCode(user.id)}) has been banned from the server by <@${createdBy}>.`,
+				description: `<@${user.id}> (${inlineCode(user.id)}) had their ban, which was created by <@${createdBy}>, lifted.`,
 				color: Colors.red,
 				fields: [
 					{
-						name: "Reason",
+						name: "Ban Reason",
 						value: reason ? codeBlock(reason) : "No reason provided."
 					}
 				],
-				occurred: createdAt,
+				occurred: new Date().toISOString(),
 			});
 		} catch (e) {
 			// generate ID for this error, not persisted in database
@@ -36,7 +36,7 @@ export default async (packet: WSTeamMemberBannedPayload, ctx: Context, server: S
 			// send error to the error webhook
 			if (e instanceof Error) {
 				console.error(e);
-				void ctx.errorHandler.send("Error in logging member banned event!", [
+				void ctx.errorHandler.send("Error in logging member *un*banned event!", [
 					new WebhookEmbed()
 						.setDescription(
 							stripIndents`

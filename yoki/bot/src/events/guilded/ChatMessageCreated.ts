@@ -1,6 +1,6 @@
-import type { WSChatMessageCreatedPayload } from "@guildedjs/guilded-api-typings";
-import { Embed } from "@guildedjs/webhook-client";
+import { Embed as WebhookEmbed } from "@guildedjs/webhook-client";
 import { stripIndents } from "common-tags";
+import { Embed, UserType } from "guilded.js";
 import { nanoid } from "nanoid";
 
 import boolean from "../../args/boolean";
@@ -38,39 +38,33 @@ const argCast: Record<
 export default async (packet: WSChatMessageCreatedPayload, ctx: Context, server: Server) => {
 	const { message } = packet.d;
 	// if the message wasn't sent in a server, or the person was a bot then don't do anything
-	if (message.createdByBotId || message.createdBy === ctx.userId || message.createdBy === "Ann6LewA" || !message.serverId) return void 0;
-	void ctx.amp.logEvent({ event_type: "MESSAGE_CREATE", user_id: message.createdBy, event_properties: { serverId: message.serverId! } });
+	if (message.authorIdBotId || message.authorId === ctx.userId || message.authorId === "Ann6LewA" || !message.serverId) return void 0;
+	void ctx.amp.logEvent({ event_type: "MESSAGE_CREATE", user_id: message.authorId, event_properties: { serverId: message.serverId! } });
 
 	const isModmailChannel = await ctx.prisma.modmailThread.findFirst({
-		where: { serverId: message.serverId, userFacingChannelId: message.channelId, openerId: message.createdBy, closed: false },
+		where: { serverId: message.serverId!, userFacingChannelId: message.channelId, openerId: message.authorId, closed: false },
 	});
+
 	if (isModmailChannel) {
-		void ctx.amp.logEvent({ event_type: "MODMAIL_MESSAGE", user_id: message.createdBy, event_properties: { serverId: message.serverId!, modmailId: isModmailChannel.id } });
+		void ctx.amp.logEvent({ event_type: "MODMAIL_MESSAGE", user_id: message.authorId, event_properties: { serverId: message.serverId!, modmailId: isModmailChannel.id } });
 		void ctx.rest.router.deleteChannelMessage(message.channelId, message.id);
-		const member = await ctx.serverUtil.getMember(message.serverId, message.createdBy, true, true);
-		const newModmailMessage = await ctx.rest.router.createChannelMessage(isModmailChannel.modFacingChannelId, {
-			embeds: [
-				{
-					description: message.content,
-					author: {
-						icon_url: member.user.avatar,
-						name: `${member.user.name} (${member.user.id})`,
-					},
-					color: Colors.yellow,
-					footer: {
-						text: message.id,
-					},
-					timestamp: new Date().toISOString(),
-				},
-			],
-		});
+
+		const member = await ctx.members.fetch(message.serverId!, message.authorId).catch(() => null);
+		if (!member) return;
+		const newModmailMessage = await ctx.messages.send(isModmailChannel.modFacingChannelId,
+			new Embed()
+				.setDescription(message.content)
+				.setAuthor(member.user!.avatar ?? undefined, `${member.user!.name} (${member.user!.id})`)
+				.setColor(Colors.yellow)
+				.setFooter(message.id)
+				.setTimestamp());
 		return ctx.prisma.modmailMessage.create({
 			data: {
-				authorId: message.createdBy,
+				authorId: message.authorId,
 				channelId: message.channelId,
 				content: message.content,
 				originalMessageId: message.id,
-				sentMessageId: newModmailMessage.message.id,
+				sentMessageId: newModmailMessage.id,
 				modmailThreadId: isModmailChannel.id,
 			},
 		});
@@ -81,13 +75,13 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context, server:
 
 	// if the message does not start with the prefix
 	if (!message.content.startsWith(prefix)) {
-		const member = await ctx.serverUtil.getMember(message.serverId, message.createdBy).catch(() => null);
-		if (member?.user.type === "bot") return;
+		const member = await ctx.members.fetch(message.serverId!, message.authorId).catch(() => null);
+		if (member?.user?.type === UserType.Bot) return;
 
 		// store the message in the database
 		await ctx.dbUtil.storeMessage(message).catch(console.log);
 
-		await moderateContent(ctx, server, message.channelId, "MESSAGE", FilteredContent.Message, message.createdBy, message.content, message.mentions, () =>
+		await moderateContent(ctx, server, message.channelId, "MESSAGE", FilteredContent.Message, message.authorId, message.content, message.mentions, () =>
 			ctx.rest.router.deleteChannelMessage(message.channelId, message.id)
 		);
 
@@ -109,8 +103,8 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context, server:
 	// if not a valid command, don't do anything
 	if (!command) {
 		const customCommand = await ctx.prisma.customTag.findFirst({ where: { serverId: message.serverId!, name: commandName } });
-		if (!customCommand) return ctx.amp.logEvent({ event_type: "INVALID_COMMAND", user_id: message.createdBy, event_properties: { serverId: message.serverId } });
-		void ctx.amp.logEvent({ event_type: "TAG_RAN", user_id: message.createdBy, event_properties: { serverId: message.serverId } });
+		if (!customCommand) return ctx.amp.logEvent({ event_type: "INVALID_COMMAND", user_id: message.authorId, event_properties: { serverId: message.serverId! } });
+		void ctx.amp.logEvent({ event_type: "TAG_RAN", user_id: message.authorId, event_properties: { serverId: message.serverId! } });
 		return ctx.messageUtil.send(message.channelId, customCommand.content);
 	}
 
@@ -119,8 +113,8 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context, server:
 		if (!args[0]) {
 			void ctx.amp.logEvent({
 				event_type: "COMMAND_MISSING_SUBCOMMAND",
-				user_id: message.createdBy,
-				event_properties: { serverId: message.serverId, command: command.name },
+				user_id: message.authorId,
+				event_properties: { serverId: message.serverId!, command: command.name },
 			});
 			const subCommandName = command.subCommands.firstKey();
 			const subCommand = command.subCommands.get(subCommandName as string)!;
@@ -134,8 +128,8 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context, server:
 		if (!subCommand) {
 			void ctx.amp.logEvent({
 				event_type: "COMMAND_INVALID_SUBCOMMAND",
-				user_id: message.createdBy,
-				event_properties: { serverId: message.serverId, command: command.name },
+				user_id: message.authorId,
+				event_properties: { serverId: message.serverId!, command: command.name },
 			});
 			return ctx.messageUtil.replyWithError(message, `No such sub-command`, `The specified sub-command ${inlineQuote(args[0], 100)} could not be found.`, {
 				fields: [...ctx.messageUtil.createSubCommandFields(command.subCommands), ctx.messageUtil.createExampleField(command, prefix)],
@@ -164,14 +158,14 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context, server:
 			const [argValidator, invalidStringGenerator] = argCast[commandArg.type];
 
 			// run the caster and see if the arg is valid
-			const castArg = args[i] ? await argValidator(args[i], args, i, ctx, packet, commandArg, usedMentions) : null;
+			const castArg = args[i] ? await argValidator(args[i], args, i, message, commandArg, usedMentions) : null;
 
 			// if the arg is not valid, inform the user
 			if (castArg === null || (commandArg.max && ((castArg as any).length ?? castArg) > commandArg.max)) {
 				void ctx.amp.logEvent({
 					event_type: "COMMAND_BAD_ARGS",
-					user_id: message.createdBy,
-					event_properties: { serverId: message.serverId, command: command.name, trippedArg: commandArg },
+					user_id: message.authorId,
+					event_properties: { serverId: message.serverId!, command: command.name, trippedArg: commandArg },
 				});
 				return ctx.messageUtil.replyWithError(message, "Incorrect Command Usage", stripIndents`
 					For the argument \`${commandArg.name}\`, ${stripIndents(invalidStringGenerator(commandArg, castArg?.toString()))}
@@ -195,23 +189,23 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context, server:
 	}
 
 	// fetch the member from either the server or the mem cache
-	const member = await ctx.serverUtil.getMember(message.serverId, message.createdBy).catch(() => null);
+	const member = await ctx.members.fetch(message.serverId!, message.authorId).catch(() => null);
 	if (!member) return;
 
 	// check if this user is not an operator
-	if (!ctx.operators.includes(message.createdBy)) {
+	if (!ctx.operators.includes(message.authorId)) {
 		// if this command requires a user to have a specific role, then check if they have it
 		if (command.requiredRole && !member.isOwner) {
 			// get all the roles of the required type for this command
-			const modRoles = await ctx.prisma.role.findMany({ where: { serverId: message.serverId } });
+			const modRoles = await ctx.prisma.role.findMany({ where: { serverId: message.serverId! } });
 			const userModRoles = modRoles.filter((modRole) => member.roleIds.includes(modRole.roleId));
 			const requiredValue = roleValues[command.requiredRole];
 			// check if the user has any of the roles of this required type
 			if (!userModRoles.some((role) => roleValues[role.type] >= requiredValue)) {
 				void ctx.amp.logEvent({
 					event_type: "COMMAND_INVALID_USER_PERMISSIONS",
-					user_id: message.createdBy,
-					event_properties: { serverId: message.serverId },
+					user_id: message.authorId,
+					event_properties: { serverId: message.serverId! },
 				});
 				return ctx.messageUtil.replyWithUnpermitted(message, `Unfortunately, you are missing the ${inlineCode(command.requiredRole)} role!`);
 			}
@@ -220,7 +214,7 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context, server:
 	}
 
 	try {
-		void ctx.amp.logEvent({ event_type: "COMMAND_RAN", user_id: message.createdBy, event_properties: { serverId: message.serverId!, command: command.name } });
+		void ctx.amp.logEvent({ event_type: "COMMAND_RAN", user_id: message.authorId, event_properties: { serverId: message.serverId!, command: command.name } });
 		// run the command with the message object, the casted arguments, the global context object (datbase, rest, ws),
 		// and the command context (raw packet, database server entry, member from API or cache)
 		await command.execute(message, resolvedArgs, ctx, { packet, server, member });
@@ -238,13 +232,13 @@ export default async (packet: WSChatMessageCreatedPayload, ctx: Context, server:
 
 			// send the error to the error channel
 			void ctx.errorHandler.send("Error in command usage!", [
-				new Embed()
+				new WebhookEmbed()
 					.setDescription(
 						stripIndents`
 						Reference ID: ${inlineCode(referenceId)}
 						Server: ${inlineCode(message.serverId)}
 						Channel: ${inlineCode(message.channelId)}
-						User: ${inlineCode(message.createdBy)} (${inlineCode(member?.user.name)})
+						User: ${inlineCode(message.authorId)} (${inlineCode(member?.user!.name)})
 						Error: \`\`\`${e.stack ?? e.message}\`\`\`
 					`
 					)

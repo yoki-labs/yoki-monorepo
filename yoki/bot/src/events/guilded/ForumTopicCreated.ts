@@ -1,4 +1,4 @@
-import type { WSForumTopicCreated } from "@guildedjs/guilded-api-typings";
+import type { WSForumTopicCreated } from "";
 
 import { FilteredContent } from "../../modules/content-filter";
 import { Context, LogChannelType, Server } from "../../typings";
@@ -7,8 +7,8 @@ import { moderateContent } from "../../utils/moderation";
 export default async (packet: WSForumTopicCreated, ctx: Context, server: Server) => {
     const { forumTopic, serverId } = packet.d;
 
-    const member = await ctx.serverUtil.getMember(serverId, forumTopic.createdBy).catch(() => null);
-    if (member?.user.type === "bot") return;
+    const member = await ctx.members.fetch(serverId, forumTopic.createdBy).catch(() => null);
+    if (member?.user.type === UserType.Bot) return;
 
     // check if there's a log channel channel if it needs to be even logged
     const editedTopicLogChannel = await ctx.dbUtil.getLogChannel(serverId, LogChannelType.topic_edits);

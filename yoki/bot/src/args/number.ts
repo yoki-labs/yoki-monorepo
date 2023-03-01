@@ -1,6 +1,6 @@
 import type { CommandArgValidator } from "../commands/Command";
 
-export default [(input: string) => {
+export default [(input) => {
 	const castedNumber = Number(input);
 	// if the argument is not properly castable to a number, then notify the user that their input is invalid
 	if (Number.isNaN(castedNumber)) return null;

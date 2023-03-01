@@ -18,14 +18,14 @@ const Solve: Command = {
 		const captcha = await ctx.prisma.captcha.findFirst({
 			where: {
 				serverId: message.serverId!,
-				triggeringUser: message.createdBy,
+				triggeringUser: message.authorId,
 				solved: false,
 			},
 		});
 
 		if (!captcha) return ctx.messageUtil.reply(message, { content: "You do not have an active captcha!" });
 		if (code.toLowerCase() !== captcha.value) {
-			void ctx.amp.logEvent({ event_type: "CAPTCHA_FAIL", user_id: message.createdBy, event_properties: { serverId: message.serverId } });
+			void ctx.amp.logEvent({ event_type: "CAPTCHA_FAIL", user_id: message.authorId, event_properties: { serverId: message.serverId! } });
 			const { value, url } = await generateCaptcha(ctx.s3, captcha.id);
 			await ctx.prisma.captcha.update({ where: { id: captcha.id }, data: { value, url } });
 			return ctx.messageUtil.replyWithError(
@@ -38,9 +38,9 @@ const Solve: Command = {
 		}
 
 		await ctx.prisma.captcha.update({ where: { id: captcha.id }, data: { solved: true } });
-		if (commandCtx.server.muteRoleId) await ctx.rest.router.removeRoleFromMember(message.serverId!, message.createdBy, commandCtx.server.muteRoleId).catch(() => null);
-		if (commandCtx.server.memberRoleId) await ctx.rest.router.assignRoleToMember(message.serverId!, message.createdBy, commandCtx.server.memberRoleId).catch(() => null);
-		void ctx.amp.logEvent({ event_type: "CAPTCHA_SUCCESS", user_id: message.createdBy, event_properties: { serverId: message.serverId } });
+		if (commandCtx.server.muteRoleId) await ctx.rest.router.removeRoleFromMember(message.serverId!, message.authorId, commandCtx.server.muteRoleId).catch(() => null);
+		if (commandCtx.server.memberRoleId) await ctx.rest.router.assignRoleToMember(message.serverId!, message.authorId, commandCtx.server.memberRoleId).catch(() => null);
+		void ctx.amp.logEvent({ event_type: "CAPTCHA_SUCCESS", user_id: message.authorId, event_properties: { serverId: message.serverId! } });
 		return ctx.messageUtil.reply(message, { content: "Congrats! You solved the captcha. You may now use the rest of the server." });
 	},
 };

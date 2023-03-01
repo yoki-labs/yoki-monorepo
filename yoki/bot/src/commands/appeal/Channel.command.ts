@@ -1,4 +1,4 @@
-import type { ServerChannelPayload } from "@guildedjs/guilded-api-typings";
+import type { Channel as GChannel } from "guilded.js";
 
 import { RoleType } from "../../typings";
 import { channelName, inlineCode } from "../../utils/formatters";
@@ -16,7 +16,7 @@ const Channel: Command = {
 	requiredRole: RoleType.ADMIN,
 	args: [{ name: "channel", type: "channel", optional: true }],
 	execute: async (message, args, ctx, commandCtx) => {
-		const channel = args.channel as ServerChannelPayload | null;
+		const channel = args.channel as GChannel | null;
 		if (!channel) {
 			const fetchedChannel = commandCtx.server.appealChannelId ? await ctx.rest.router.getChannel(commandCtx.server.appealChannelId).then(x => x.channel).catch(() => commandCtx.server.appealChannelId) : null;
 			return ctx.messageUtil.replyWithInfo(message, "Appeal channel", typeof fetchedChannel === "string" ? `Looks like the channel was deleted or I cannot access it. The current channel set has the ID of ${inlineCode(fetchedChannel)}` : fetchedChannel ? channelName(fetchedChannel.name, fetchedChannel.serverId, fetchedChannel.groupId, fetchedChannel.id) : "not set");

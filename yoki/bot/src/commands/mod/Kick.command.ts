@@ -1,4 +1,5 @@
 import { stripIndents } from "common-tags";
+import { UserType } from "guilded.js";
 
 import { CachedMember, RoleType } from "../../typings";
 import { inlineCode } from "../../utils/formatters";
@@ -30,11 +31,11 @@ const Kick: Command = {
 
 		void ctx.amp.logEvent({
 			event_type: "BOT_MEMBER_KICK",
-			user_id: message.createdBy,
-			event_properties: { serverId: message.serverId },
+			user_id: message.authorId,
+			event_properties: { serverId: message.serverId! },
 		});
 		try {
-			await ctx.rest.router.kickMember(message.serverId!, target.user.id);
+			await ctx.rest.router.kickMember(message.serverId!, target.user!.id);
 		} catch (e) {
 			return ctx.messageUtil.replyWithUnexpected(
 				message,
@@ -48,11 +49,11 @@ const Kick: Command = {
 		}
 
 		// Don't need a history for bots
-		if (target.user.type !== "bot")
+		if (target.user!.type !== UserType.Bot)
 			await ctx.dbUtil.addActionFromMessage(message, {
 				infractionPoints: 10,
 				reason,
-				targetId: target.user.id,
+				targetId: target.user!.id,
 				type: "KICK",
 				expiresAt: null,
 			}, commandCtx.server);
@@ -60,7 +61,7 @@ const Kick: Command = {
 		await ctx.messageUtil.sendSuccessBlock(
 			message.channelId,
 			`User kicked`,
-			`<@${message.createdBy}>, you have successfully kicked ${target.user.name} (${inlineCode(target.user.id)}).`,
+			`<@${message.authorId}>, you have successfully kicked ${target.user!.name} (${inlineCode(target.user!.id)}).`,
 			undefined,
 			{
 				isPrivate: true,

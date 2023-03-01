@@ -1,7 +1,7 @@
-import type { CommandArgument, CommandArgValidator } from "../commands/Command";
+import type { CommandArgValidator } from "../commands/Command";
 import { listInlineCode } from "../utils/formatters";
 
-export default [(_input: string, args: string[], index: number, _, __, arg: CommandArgument) => {
+export default [(_input, args, index, _message, arg) => {
 	// get all the rest of the arguments starting from this arg to the end
 	const restArgs = args.slice(index);
 	// if there are no args and the argument isn't optional, then notify the user that their input is invalid
