@@ -5,7 +5,7 @@
     "description": "Overarching repository for Yoki",
     "author": "Zaid \"Nico\" <contact@nico.engineer>",
     "scripts": {
-        "build": "yarn workspaces foreach run build",
+        "build": "yarn workspaces foreach --exclude=\"@yoki/site\" run build",
         "lint": "yarn workspaces foreach run lint",
         "lint:fix": "yarn lint --fix",
         "prepare": "husky install",
