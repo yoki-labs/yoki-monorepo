@@ -5,8 +5,8 @@
     "description": "Overarching repository for Yoki",
     "author": "Zaid \"Nico\" <contact@nico.engineer>",
     "scripts": {
-        "build": "yarn workspaces foreach --exclude=\"@yoki/site\" run build",
-        "lint": "yarn workspaces foreach run lint",
+        "build": "yarn workspaces foreach --verbose --exclude=\"@yoki/site\" run build",
+        "lint": "yarn workspaces foreach --verbose run lint",
         "lint:fix": "yarn lint --fix",
         "prepare": "husky install",
         "prettier": "prettier --write **/*.{ts,js,json,yml,yaml,md}",

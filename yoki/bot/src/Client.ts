@@ -2,11 +2,17 @@ import { init } from "@amplitude/node";
 import Collection from "@discordjs/collection";
 import { Action, PrismaClient } from "@prisma/client";
 import { S3 } from "aws-sdk";
-import { Client,WebhookClient } from "guilded.js";
+import { Client, WebhookClient } from "guilded.js";
 import EventEmitter from "node:events";
 import type TypedEmitter from "typed-emitter";
 
 import type { Command } from "./commands/Command";
+import CalendarEventCommentDeleted from "./events/guilded/CalendarEventCommentDeleted.ignore";
+import CalendarEventCommentEvent from "./events/guilded/CalendarEventCommentEvent.ignore";
+import DocCommentDeleted from "./events/guilded/DocCommentDeleted.ignore";
+import DocCommentEvent from "./events/guilded/DocCommentEvent.ignore";
+import ForumTopicCommentDeleted from "./events/guilded/ForumTopicCommentDeleted.ignore";
+import ForumTopicCommentEvent from "./events/guilded/ForumTopicCommentEvent.ignore";
 import ActionIssued from "./events/other/ActionIssued";
 import { DatabaseUtil } from "./helpers/database";
 import { MessageUtil } from "./helpers/message";
@@ -15,7 +21,7 @@ import { MuteScheduler } from "./jobs/MuteScheduler";
 import { ContentFilterUtil } from "./modules/content-filter";
 import { LinkFilterUtil } from "./modules/link-filter";
 import { SpamFilterUtil } from "./modules/spam-filter";
-import type { Server } from "./typings";
+import type { Context, Server } from "./typings";
 
 /**
  * Main class that stores utils, connections to various providers, and ws
@@ -64,6 +70,21 @@ export default class YokiClient extends Client {
 
 	// scheduler that will check for (impending) expired mutes and remove them
 	readonly muteHandler = new MuteScheduler(this, 15 * 60);
+
+	// events that this bot handles that aren't supported by g.js yet, directly from the ws manager
+	readonly eventHandler: { [x: string]: (packet: any, ctx: Context, server: Server) => Promise<any> } = {
+		ForumTopicCommentCreated: ForumTopicCommentEvent,
+		ForumTopicCommentUpdated: ForumTopicCommentEvent,
+		ForumTopicCommentDeleted,
+
+		DocCommentCreated: DocCommentEvent,
+		DocCommentUpdated: DocCommentEvent,
+		DocCommentDeleted,
+		
+		CalendarEventCommentCreated: CalendarEventCommentEvent,
+		CalendarEventCommentUpdated: CalendarEventCommentEvent,
+		CalendarEventCommentDeleted,
+	};
 
 	readonly emitter = new EventEmitter() as TypedEmitter<ClientCustomEvents>;
 	readonly customEventHandler = {
