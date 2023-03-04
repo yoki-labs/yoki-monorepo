@@ -19,6 +19,22 @@ config({ path: join(__dirname, "..", "..", "..", ".env") });
 
 const client = new YokiClient({ token: process.env.GUILDED_TOKEN });
 
+// Under client.eventHandler, we register a bunch of events that we can execute
+// This makes it simple to add new events to our bot by just creating a file and adding it to that object.
+// And any unhandled objects are simply ignored thanks to optional chaining
+client.ws.emitter.on("gatewayEvent", async (event, data) => {
+	const { serverId } = data.d as { serverId?: string | null };
+	if (!serverId || ["XjBWymwR", "DlZMvw1R"].includes(serverId)) return;
+
+	const serverFromDb = await client.dbUtil.getServer(serverId).catch((err) =>
+		void client.errorHandler.send("Error creating/fetching server for gateway event.", [errorEmbed(err, { server: serverId, event })])
+	);
+	if (!serverFromDb || serverFromDb?.blacklisted) return void 0;
+	return client.eventHandler[event]?.(data, client, serverFromDb).catch((err) =>
+		client.errorHandler.send("Uncaught event error", [errorEmbed(err, { server: serverId, event })])
+	);
+});
+
 client.ws.emitter.on("error", (err, errInfo, data) => {
 	console.log(`[WS ERR]: ${err}\n  ${errInfo?.message}\n  [WS ERR STACK]:${errInfo?.stack}`);
 	void client.errorHandler.send(`Error in command usage! ${err}`, [errorEmbed(err, data)]);
@@ -49,17 +65,17 @@ void (async (): Promise<void> => {
 		client.commands.set(command.name.toLowerCase(), command);
 	}
 
-	for(const eventFile of eventFiles.filter((x) => !x.endsWith(".ignore.ts"))) {
+	for (const eventFile of eventFiles.filter((x) => !x.endsWith(".ignore.js") && !x.endsWith(".map"))) {
 		const event = (await import(eventFile)).default as GEvent<any>;
-		if(!event.name) {
+		if (!event.name) {
 			console.log(`ERROR loading event ${eventFile}`);
 			continue;
 		}
 		console.log(`Loading event ${event.name}`);
-		client.on(event.name, async (args: Parameters<ClientEvents[keyof ClientEvents]>) => {
+		client.on(event.name, async (...args: Parameters<ClientEvents[keyof ClientEvents]>) => {
 			try {
 				await event.execute([...args, client]);
-			} catch(err) {
+			} catch (err) {
 				void client.errorHandler.send("Uncaught event error", [errorEmbed(err)])
 			}
 		});
