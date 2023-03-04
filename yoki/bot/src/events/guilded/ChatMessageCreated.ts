@@ -109,6 +109,31 @@ export default {
 			return ctx.messageUtil.send(message.channelId, customCommand.content);
 		}
 
+		// fetch the member from either the server or the mem cache
+		const member = await ctx.members.fetch(message.serverId!, message.authorId).catch(() => null);
+		if (!member) return;
+
+		// check if this user is not an operator
+		if (!ctx.operators.includes(message.authorId)) {
+			// if this command requires a user to have a specific role, then check if they have it
+			if (command.requiredRole && !member.isOwner) {
+				// get all the roles of the required type for this command
+				const modRoles = await ctx.prisma.role.findMany({ where: { serverId: message.serverId! } });
+				const userModRoles = modRoles.filter((modRole) => member.roleIds.includes(modRole.roleId));
+				const requiredValue = roleValues[command.requiredRole];
+				// check if the user has any of the roles of this required type
+				if (!userModRoles.some((role) => roleValues[role.type] >= requiredValue)) {
+					void ctx.amp.logEvent({
+						event_type: "COMMAND_INVALID_USER_PERMISSIONS",
+						user_id: message.authorId,
+						event_properties: { serverId: message.serverId! },
+					});
+					return ctx.messageUtil.replyWithUnpermitted(message, `Unfortunately, you are missing the ${inlineCode(command.requiredRole)} role!`);
+				}
+				// if this command is operator only, then silently ignore because of privacy reasons
+			} else if (command.devOnly) return void 0;
+		}
+
 		while (command.parentCommand && command.subCommands?.size) {
 			// if no sub command, list all the available sub commands
 			if (!args[0]) {
@@ -187,31 +212,6 @@ export default {
 				// if the arg is valid, add it to the resolved args obj
 				resolvedArgs[commandArg.name] = castArg;
 			}
-		}
-
-		// fetch the member from either the server or the mem cache
-		const member = await ctx.members.fetch(message.serverId!, message.authorId).catch(() => null);
-		if (!member) return;
-
-		// check if this user is not an operator
-		if (!ctx.operators.includes(message.authorId)) {
-			// if this command requires a user to have a specific role, then check if they have it
-			if (command.requiredRole && !member.isOwner) {
-				// get all the roles of the required type for this command
-				const modRoles = await ctx.prisma.role.findMany({ where: { serverId: message.serverId! } });
-				const userModRoles = modRoles.filter((modRole) => member.roleIds.includes(modRole.roleId));
-				const requiredValue = roleValues[command.requiredRole];
-				// check if the user has any of the roles of this required type
-				if (!userModRoles.some((role) => roleValues[role.type] >= requiredValue)) {
-					void ctx.amp.logEvent({
-						event_type: "COMMAND_INVALID_USER_PERMISSIONS",
-						user_id: message.authorId,
-						event_properties: { serverId: message.serverId! },
-					});
-					return ctx.messageUtil.replyWithUnpermitted(message, `Unfortunately, you are missing the ${inlineCode(command.requiredRole)} role!`);
-				}
-				// if this command is operator only, then silently ignore because of privacy reasons
-			} else if (command.devOnly) return void 0;
 		}
 
 		try {

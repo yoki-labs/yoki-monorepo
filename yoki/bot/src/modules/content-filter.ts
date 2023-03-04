@@ -148,7 +148,7 @@ export class ContentFilterUtil extends BaseFilterUtil {
 			// Whether this action is a result of the threshold exceeding or a severity
 			type: exceededThreshold ?? triggeredWord.severity,
 			// The bot ID
-			executorId: this.client.userId!,
+			executorId: this.client.user!.id,
 			// The reason for this action, whether it's the threshold exceeded or a filter was violated
 			reason: `[AUTOMOD] Content filter tripped.${exceededThreshold ? ` ${exceededThreshold} threshold exceeded.` : ""}`,
 			// The offending content

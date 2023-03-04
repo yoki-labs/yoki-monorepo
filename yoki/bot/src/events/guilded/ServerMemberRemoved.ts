@@ -5,7 +5,7 @@ import { Member } from "guilded.js";
 import { nanoid } from "nanoid";
 
 import { closeModmailThread } from "../../commands/modmail/Close.command";
-import type {GEvent } from "../../typings";
+import type { GEvent } from "../../typings";
 import { Colors } from "../../utils/color";
 import { inlineCode } from "../../utils/formatters";
 
