@@ -2,46 +2,71 @@ import { Embed } from "@guildedjs/embeds";
 
 import { RoleType } from "../typings";
 import { Colors } from "../utils/color";
-import { bold, inlineCode } from "../utils/formatters";
 import { Category } from "./Category";
 import type { Command } from "./Command";
 
 const viewSettings = [
-	["id", "string"],
-	["prefix", "string"],
-	["locale", "string"],
-	["timezone", "string"],
+	{
+		category: "General",
+		properties: [
+			["id", "string"],
+			["prefix", "string"],
+			["locale", "string"],
+			["timezone", "string"]
+		],
+	},
+	{
+		category: "Severity & Infractions",
+		properties: [
+			["muteInfractionDuration", "string"],
 
-	["muteRoleId", "string"],
-	["linkSeverity", "string"],
+			["muteInfractionThreshold", "string"],
+			["kickInfractionThreshold", "string"],
+			["banInfractionThreshold", "string"],
+			["softbanInfractionThreshold", "string"],
+			["linkSeverity", "string"],
+		]
+	},
+	{
+		category: "Antiraid & Appeals",
+		properties: [
+			["antiRaidEnabled", "boolean"],
+			["antiRaidAgeFilter", "string"],
+			["antiRaidChallengeChannel", "string"],
 
-	["muteInfractionThreshold", "string"],
-	["muteInfractionDuration", "string"],
+			["appealsEnabled", "boolean"],
+			["appealChannelId", "string"],
+		]
+	},
+	{
+		category: "Modmail",
+		properties: [
+			["modmailEnabled", "boolean"],
+			["modmailGroupId", "string"],
+			["modmailGroupCategoryId", "string"],
+		]
+	},
+	{
+		category: "Roles",
+		properties: [
+			["muteRoleId", "string"],
+			["memberRoleId", "string"],
+		]
+	},
+	{
+		category: "Filters",
+		properties: [
+			["filterEnabled", "boolean"],
+			["filterOnMods", "boolean"],
+			["filterInvites", "boolean"],
 
-	["kickInfractionThreshold", "string"],
-	["banInfractionThreshold", "string"],
-	["softbanInfractionThreshold", "string"],
+			["spamFrequency", "string"],
+			["spamMentionFrequency", "string"],
 
-	["antiRaidEnabled", "boolean"],
-	["antiRaidAgeFilter", "string"],
-	["antiRaidChallengeChannel", "string"],
-	["memberRoleId", "string"],
-
-	["appealsEnabled", "boolean"],
-	["appealChannelId", "string"],
-
-	["modmailEnabled", "boolean"],
-	["modmailGroupId", "string"],
-	["modmailGroupCategoryId", "string"],
-
-	["filterEnabled", "boolean"],
-	["filterOnMods", "boolean"],
-	["filterInvites", "boolean"],
-	["antiHoistEnabled", "boolean"],
-	["scanNSFW", "boolean"],
-
-	["spamFrequency", "string"],
-	["spamMentionFrequency", "string"]
+			["scanNSFW", "boolean"],
+			["antiHoistEnabled", "boolean"],
+		]
+	},
 ] as const;
 const Settings: Command = {
 	name: "settings",
@@ -53,16 +78,26 @@ const Settings: Command = {
 	args: [],
 	execute: async (message, _args, ctx, commandCtx) => {
 		const embed = new Embed();
-		let description = "";
+		let description = "```csharp\n";
 
-		for (const [propKey, type] of viewSettings) {
-			description += `${bold(propKey)} - `;
-			if (type === "string") description += commandCtx.server[propKey] ? inlineCode(commandCtx.server[propKey]) : "not set";
-			else if (type === "boolean") description += bold(commandCtx.server[propKey] ? ":x:" : ":check:");
+		for (const { category, properties } of viewSettings) {
+			description += `// ${category} //\n`;
+			// Each property
+			for (const [propKey, type] of properties) {
+				description += `[${propKey}]: `;
+
+				// Write content based on its type
+				if (type === "string") description += commandCtx.server[propKey] ? JSON.stringify(commandCtx.server[propKey]) : "unset";
+				else if (type === "boolean") description += commandCtx.server[propKey] ? "🟢 enabled" : "🔴 disabled";
+
+				description += "\n";
+			}
+			// Additional padding between categories
 			description += "\n";
 		}
+		description += "```";
 
-		embed.setTitle("Settings for this server");
+		embed.setTitle("Server settings code");
 		embed.setColor(Colors.blockBackground);
 		embed.setDescription(description);
 
