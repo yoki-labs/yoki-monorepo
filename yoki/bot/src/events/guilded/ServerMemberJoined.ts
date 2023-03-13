@@ -35,12 +35,12 @@ export default {
 			(Date.now() - new Date(member.user!.createdAt!).getTime() <= server.antiRaidAgeFilter || !member.user!.avatar)
 		) {
 			console.log(`User ${userId} tripped antiraid in server ${server.serverId}, response ${server.antiRaidResponse}`)
-			void ctx.amp.logEvent({ event_type: "FRESH_ACCOUNT_JOIN", user_id:userId, event_properties: { serverId } });
+			void ctx.amp.logEvent({ event_type: "FRESH_ACCOUNT_JOIN", user_id: userId, event_properties: { serverId } });
 			switch (server.antiRaidResponse) {
 				case "TEXT_CAPTCHA": {
 					if (server.antiRaidChallengeChannel) {
 						let userCaptcha = await ctx.prisma.captcha.findFirst({ where: { serverId, triggeringUser: userId, solved: false } });
-						void ctx.amp.logEvent({ event_type: "MEMBER_CAPTCHA_JOIN", user_id:userId, event_properties: { serverId } });
+						void ctx.amp.logEvent({ event_type: "MEMBER_CAPTCHA_JOIN", user_id: userId, event_properties: { serverId } });
 
 						if (!userCaptcha) {
 							const { id, value, url } = await generateCaptcha(ctx.s3);
@@ -50,7 +50,7 @@ export default {
 							userCaptcha = createdCaptcha;
 						}
 
-						if (server.muteRoleId) await ctx.roles.addRoleToMember(serverId,userId, server.muteRoleId).catch(() => null);
+						if (server.muteRoleId) await ctx.roles.addRoleToMember(serverId, userId, server.muteRoleId).catch(() => null);
 						// Have to complete captcha
 						await ctx.messageUtil.sendWarningBlock(
 							server.antiRaidChallengeChannel,
@@ -79,14 +79,14 @@ export default {
 					break;
 				}
 				case "KICK": {
-					void ctx.amp.logEvent({ event_type: "MEMBER_KICKED_JOIN", user_id:userId, event_properties: { serverId } });
+					void ctx.amp.logEvent({ event_type: "MEMBER_KICKED_JOIN", user_id: userId, event_properties: { serverId } });
 					await ctx.members.kick(serverId, userId);
 
 					// Add this action to the database
 					const createdCase = await ctx.dbUtil.addAction({
 						serverId,
 						type: "KICK",
-						executorId: ctx.userId!,
+						executorId: ctx.user!.id,
 						reason: `[AUTOMOD] User failed account age requirement.`,
 						triggerContent: null,
 						channelId: null,
@@ -102,7 +102,7 @@ export default {
 				case "SITE_CAPTCHA": {
 					if (server.antiRaidChallengeChannel) {
 						let userCaptcha = await ctx.prisma.captcha.findFirst({ where: { serverId, triggeringUser: userId, solved: false } });
-						void ctx.amp.logEvent({ event_type: "MEMBER_SITE_CAPTCHA_JOIN", user_id:userId, event_properties: { serverId } });
+						void ctx.amp.logEvent({ event_type: "MEMBER_SITE_CAPTCHA_JOIN", user_id: userId, event_properties: { serverId } });
 
 						if (!userCaptcha) {
 							const id = nanoid();
@@ -114,7 +114,7 @@ export default {
 						}
 
 						console.log(`Muting user ${userId} in ${server.serverId} for site captcha`)
-						if (server.muteRoleId) await ctx.roles.addRoleToMember(serverId,userId, server.muteRoleId).catch(() => null);
+						if (server.muteRoleId) await ctx.roles.addRoleToMember(serverId, userId, server.muteRoleId).catch(() => null);
 						// Have to complete captcha
 						await ctx.messageUtil.sendWarningBlock(
 							server.antiRaidChallengeChannel,

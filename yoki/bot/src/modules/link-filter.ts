@@ -82,7 +82,8 @@ export class LinkFilterUtil extends BaseFilterUtil {
         // To not re-fetch
         const enabledPresets = (presets ?? (await this.dbUtil.getEnabledPresets(server.serverId))).filter((x) => x.preset in this.presets);
 
-        if (!(greylistedUrls?.length || server.urlFilterIsWhitelist) && !whitelistedInvites?.length && !enabledPresets.length) return;
+        // If there are no blacklisted URLs, no presets enabled and invites shouldn't be filtered, there is no point in checking the links
+        if (!(greylistedUrls?.length || server.urlFilterIsWhitelist || enabledPresets.length) && dontFilterInvites) return;
 
         void this.client.amp.logEvent({
             event_type: "MESSAGE_LINKS_SCAN",

@@ -38,7 +38,7 @@ const argCast: Record<
 export default {
 	execute: async ([message, ctx]) => {
 		// if the message wasn't sent in a server, or the person was a bot then don't do anything
-		if (message.createdByWebhookId || message.authorId === ctx.userId || message.authorId === "Ann6LewA" || !message.serverId) return void 0;
+		if (message.createdByWebhookId || message.authorId === ctx.user!.id || message.authorId === "Ann6LewA" || !message.serverId) return void 0;
 		void ctx.amp.logEvent({ event_type: "MESSAGE_CREATE", user_id: message.authorId, event_properties: { serverId: message.serverId! } });
 
 		const isModmailChannel = await ctx.prisma.modmailThread.findFirst({

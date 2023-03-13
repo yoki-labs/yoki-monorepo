@@ -27,8 +27,8 @@ import type { Context, Server } from "./typings";
  * Main class that stores utils, connections to various providers, and ws
  */
 export default class YokiClient extends Client {
-	// user ID of the bot
-	userId: string | null = null;
+	// // user ID of the bot
+	// userId: string | null = null;
 	// ID of the person who created the bot
 	ownerId: string | null = null;
 	// List of operators who have elevated permissions with the bot
@@ -80,7 +80,7 @@ export default class YokiClient extends Client {
 		DocCommentCreated: DocCommentEvent,
 		DocCommentUpdated: DocCommentEvent,
 		DocCommentDeleted,
-		
+
 		CalendarEventCommentCreated: CalendarEventCommentEvent,
 		CalendarEventCommentUpdated: CalendarEventCommentEvent,
 		CalendarEventCommentDeleted,

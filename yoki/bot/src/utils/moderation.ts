@@ -32,7 +32,7 @@ export function getActionInfo(ctx: Context, data: Action & { isAutomod?: boolean
 	const [title, description] = describeAction(data);
 
 	return [
-		`${data.executorId === ctx.userId ? ":gear: " : ""} ${title}`,
+		`${data.executorId === ctx.user!.id ? ":gear: " : ""} ${title}`,
 		`<@${data.targetId}> (${inlineCode(data.targetId)}) ${description} by <@${data.executorId}> (${inlineCode(data.executorId)})`,
 	];
 }

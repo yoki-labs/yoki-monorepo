@@ -74,7 +74,7 @@ export class ContentFilterUtil extends BaseFilterUtil {
 		resultingAction: () => unknown;
 	}) {
 		// If the bot is the one who did this action, ignore.
-		if (userId === this.client.userId) return void 0;
+		if (userId === this.client.user!.id) return void 0;
 		const { serverId } = server;
 
 		// Get all the banned words in this server
