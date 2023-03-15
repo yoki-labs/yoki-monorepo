@@ -18,9 +18,9 @@
         "dev:down": "yarn dev:prefix down",
         "dev:logs": "yarn dev:prefix logs -f bot nsfw",
         "prod:prefix": "cd docker/compose && docker-compose -f docker-compose.yml -f docker-compose.prod.yml",
-        "prod:start": "yarn prod:start up -d --build",
-        "prod:down": "yarn prod:start down",
-        "prod:logs": "yarn prod:start logs -f bot nsfw",
+        "prod:start": "yarn prod:prefix up -d --build",
+        "prod:down": "yarn prod:prefix down",
+        "prod:logs": "yarn prod:prefix logs -f bot nsfw",
         "migrate:dev": "cd yoki/bot && yarn migrate:dev"
     },
     "devDependencies": {
