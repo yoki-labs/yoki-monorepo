@@ -1,13 +1,12 @@
-import type { WSBotTeamMembershipCreated } from "@guildedjs/guilded-api-typings";
 import { config } from "dotenv";
+import type { ClientEvents } from "guilded.js";
 import { join } from "path";
 import recursive from "recursive-readdir";
 
-import Client from "./Client";
+import YokiClient from "./Client";
 import type { Command } from "./commands/Command";
-import BotServerMembershipCreated from "./events/BotServerMembershipCreated";
-import unhandledPromiseRejection from "./events/unhandledPromiseRejection";
-import Welcome from "./events/Welcome";
+import unhandledPromiseRejection from "./events/other/unhandledPromiseRejection";
+import type { GEvent } from "./typings";
 import { errorEmbed } from "./utils/formatters";
 
 // Load env variables
@@ -18,13 +17,12 @@ config({ path: join(__dirname, "..", "..", "..", ".env") });
 	if (!process.env[x]) throw new Error(`Missing env var ${x}`);
 });
 
-const client = new Client();
+const client = new YokiClient({ token: process.env.GUILDED_TOKEN });
 
 // Under client.eventHandler, we register a bunch of events that we can execute
 // This makes it simple to add new events to our bot by just creating a file and adding it to that object.
 // And any unhandled objects are simply ignored thanks to optional chaining
 client.ws.emitter.on("gatewayEvent", async (event, data) => {
-	if (event === "BotTeamMembershipCreated") return BotServerMembershipCreated(data as WSBotTeamMembershipCreated, client);
 	const { serverId } = data.d as { serverId?: string | null };
 	if (!serverId || ["XjBWymwR", "DlZMvw1R"].includes(serverId)) return;
 
@@ -45,27 +43,42 @@ client.ws.emitter.on("error", (err, errInfo, data) => {
 // This is for any custom events that we emit
 client.emitter.on("ActionIssued", client.customEventHandler.ActionIssued);
 
-// This event accepts the welcome data that allows us to get the botId and creatorId
-client.ws.emitter.on("ready", (data) => Welcome(data, client));
-
 // This handler is simply just to log errors to our Guilded channel.
-process.on("unhandledRejection", (err) => unhandledPromiseRejection(err as Error, client.errorHandler));
+process.on("unhandledRejection", (err) => unhandledPromiseRejection(err as Error, client));
 
 void (async (): Promise<void> => {
 	// Load all filse & directories in the commands dir recursively
 	const commandFiles = await recursive(join(__dirname, "commands"));
+	// Load guilded events
+	const eventFiles = await recursive(join(__dirname, "events", "guilded"));
 
 	// go through every file that ends with .command.js (so we can ignore non-command files)
 	for (const commandFile of commandFiles.filter((x) => x.endsWith(".command.js"))) {
 		// load command file's default export
 		const command = (await import(commandFile)).default as Command;
-		console.log(`Loading command ${command.name}`);
 		if (!command.name) {
-			console.log(`ERROR loading ${commandFile}`);
+			console.log(`ERROR loading command ${commandFile}`);
 			continue;
 		}
+		console.log(`Loading command ${command.name}`);
 		// add command to our global collection of commands
 		client.commands.set(command.name.toLowerCase(), command);
+	}
+
+	for (const eventFile of eventFiles.filter((x) => !x.endsWith(".ignore.js") && !x.endsWith(".map"))) {
+		const event = (await import(eventFile)).default as GEvent<any>;
+		if (!event.name) {
+			console.log(`ERROR loading event ${eventFile}`);
+			continue;
+		}
+		console.log(`Loading event ${event.name}`);
+		client.on(event.name, async (...args: Parameters<ClientEvents[keyof ClientEvents]>) => {
+			try {
+				await event.execute([...args, client]);
+			} catch (err) {
+				void client.errorHandler.send("Uncaught event error", [errorEmbed(err)])
+			}
+		});
 	}
 
 	try {

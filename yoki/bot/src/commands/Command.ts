@@ -1,5 +1,5 @@
 import type Collection from "@discordjs/collection";
-import type { ChatMessagePayload, WSChatMessageCreatedPayload } from "@guildedjs/guilded-api-typings";
+import type { Message } from "guilded.js";
 
 import type { CommandContext, Context, ResolvedArgs, RoleType, UsedMentions } from "../typings";
 
@@ -19,10 +19,10 @@ export interface Command {
 	clientPermissions?: string[];
 	userPermissions?: string[];
 	args?: CommandArgument[];
-	preRunCheck?: (message: ChatMessagePayload, args: string[], ctx: Context) => unknown;
+	preRunCheck?: (message: Message, args: string[], ctx: Context) => unknown;
 	requiredRole?: RoleType;
 	devOnly?: boolean;
-	execute: (message: ChatMessagePayload, args: Record<string, ResolvedArgs>, ctx: Context, raw: CommandContext) => unknown;
+	execute: (message: Message, args: Record<string, ResolvedArgs>, ctx: Context, raw: CommandContext) => unknown;
 }
 
 export interface CommandArgument {
@@ -40,8 +40,7 @@ export type CommandArgValidator = [
 		input: string,
 		rawArgs: string[],
 		index: number,
-		ctx: Context,
-		packet: WSChatMessageCreatedPayload,
+		message: Message,
 		argument: CommandArgument,
 		usedMentions: UsedMentions
 	) => ResolvedArgs | Promise<ResolvedArgs>,

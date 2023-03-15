@@ -50,7 +50,7 @@ const Add: Command = {
 
 		await ctx.dbUtil.addWordToFilter({
 			content,
-			creatorId: message.createdBy,
+			creatorId: message.authorId,
 			serverId: message.serverId!,
 			matching,
 			severity,

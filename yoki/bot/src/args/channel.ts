@@ -1,19 +1,16 @@
-import type { WSChatMessageCreatedPayload } from "@guildedjs/guilded-api-typings";
-
 import type { CommandArgValidator } from "../commands/Command";
-import type { Context, UsedMentions } from "../typings";
 import { isUUID } from "../utils/matching";
 
-export default [async (input: string, args: string[], index: number, ctx: Context, packet: WSChatMessageCreatedPayload, __, usedMentions: UsedMentions) => {
+export default [async (input, args, index, message, __, usedMentions) => {
 	if (input.startsWith("#")) {
 		// Get the mentioned user and increment used mentions
-		const mention = packet.d.message.mentions?.channels?.[usedMentions.channel++];
+		const mention = message.mentions?.channels?.[usedMentions.channel++];
 		if (!mention) return null;
 
-		const channel = await ctx.rest.router.getChannel(mention.id).catch(() => null);
+		const channel = await message.client.channels.fetch(mention.id).catch(() => null);
 		if (!channel) return null;
 
-		const { name } = channel.channel;
+		const { name } = channel;
 		const spaceCount = name.split(" ").length;
 
 		// [..., "#super", "cool", "channel", ...] => [..., "#super cool channel", ...]
@@ -21,11 +18,10 @@ export default [async (input: string, args: string[], index: number, ctx: Contex
 
 		args[index] = name;
 
-		return channel.channel;
+		return channel;
 	} else if (isUUID(input)) {
-		return ctx.rest.router
-			.getChannel(input)
-			.then((x) => x.channel)
+		return message.client.channels
+			.fetch(input)
 			.catch(() => null);
 	}
 
@@ -36,4 +32,4 @@ export default [async (input: string, args: string[], index: number, ctx: Contex
 	**The bot must have read, send, & manage permission on the channel**
 	
 	Ensure **none** of the bot's roles deny these permissions.
-`]satisfies CommandArgValidator;
+`] satisfies CommandArgValidator;

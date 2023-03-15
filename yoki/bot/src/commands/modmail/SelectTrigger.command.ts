@@ -1,5 +1,5 @@
-import type { ServerChannelPayload } from "@guildedjs/guilded-api-typings";
 import { ReactionActionType } from "@prisma/client";
+import type { Channel } from "guilded.js";
 
 import { RoleType } from "../../typings";
 import { Category } from "../Category";
@@ -16,7 +16,7 @@ const SelectTrigger: Command = {
 	category: Category.Modmail,
 	args: [
 		{
-			name: "targetChannelId",
+			name: "targetChannel",
 			type: "channel",
 		},
 		{
@@ -35,7 +35,7 @@ const SelectTrigger: Command = {
 				`No modmail group or category set`,
 				"You can set either by using the `?modmail group` or `?modmail category` command."
 			);
-		const targetChannel = args.targetChannelId as ServerChannelPayload;
+		const targetChannel = args.targetChannel as Channel;
 		if (!targetChannel) return ctx.messageUtil.replyWithError(message, `Invalid ID`, `That is not a valid channel ID!`);
 
 		const sentMessageId = args.sentMessageId as string;
@@ -48,8 +48,8 @@ const SelectTrigger: Command = {
 		const emoteId = args.emoteId as number;
 		void ctx.amp.logEvent({
 			event_type: "MODMAIL_SELECT_TRIGGER",
-			user_id: message.createdBy,
-			event_properties: { serverId: message.serverId },
+			user_id: message.authorId,
+			event_properties: { serverId: message.serverId! },
 		});
 		await ctx.prisma.reactionAction.create({
 			data: {

@@ -68,7 +68,7 @@ const Add: Command = {
 			domain,
 			subdomain: subdomain ?? null,
 			route: route ?? null,
-			creatorId: message.createdBy,
+			creatorId: message.authorId,
 			serverId: message.serverId!,
 			severity,
 			infractionPoints,

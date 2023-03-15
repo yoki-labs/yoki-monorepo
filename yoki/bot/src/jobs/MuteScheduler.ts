@@ -10,17 +10,17 @@ export class MuteScheduler extends Scheduler<Action> {
         // get the server in the database
         const guild = await this.client.dbUtil.getServer(action.serverId, false);
         if (!guild) return void 0;
-        const member = await this.client.serverUtil.getMember(action.serverId, action.targetId).catch(() => null);
+        const member = await this.client.members.fetch(action.serverId, action.targetId).catch(() => null);
         if (!member) return;
         if (guild.muteRoleId) {
-            await this.client.rest.router.removeRoleFromMember(action.serverId, action.targetId, guild.muteRoleId);
+            await this.client.roles.removeRoleFromMember(action.serverId, action.targetId, guild.muteRoleId);
             if (action.channelId)
                 await this.client.messageUtil.sendInfoBlock(action.channelId, "You have been unmuted", `<@${action.targetId}>, you have been automatically unmuted.`, undefined, {
                     isPrivate: true,
                 });
 
             const userRoles = await this.client.prisma.roleState.findFirst({ where: { serverId: action.serverId, userId: action.targetId } });
-            if (userRoles) await this.client.serverUtil.assignMultipleRoles(action.serverId, action.targetId, userRoles.roles);
+            if (userRoles) await this.client.roleUtil.assignMultipleRoles(action.serverId, action.targetId, userRoles.roles);
         }
     }
 

@@ -1,4 +1,4 @@
-import type { ChatMessagePayload, MentionsPayload } from "@guildedjs/guilded-api-typings";
+import type { MentionsPayload, Message } from "guilded.js";
 
 import { Server, Severity } from "../typings";
 import { Colors } from "../utils/color";
@@ -20,8 +20,8 @@ export class SpamFilterUtil extends BaseFilterUtil<SpamType> {
     readonly spamPeriod = 5000;
     readonly messageCounter = new Map<string, Counter>();
 
-    checkForMessageSpam(server: Server, message: ChatMessagePayload) {
-        return this.checkForSpam(server, message.createdBy, message.channelId, message.mentions, () => this.rest.router.deleteChannelMessage(message.channelId, message.id));
+    checkForMessageSpam(server: Server, message: Message) {
+        return this.checkForSpam(server, message.authorId, message.channelId, message.mentions, () => this.client.messages.delete(message.channelId, message.id));
     }
 
     async checkForSpam(server: Server, userId: string, channelId: string, mentions: MentionsPayload | undefined, resultingAction: () => unknown) {
@@ -97,8 +97,7 @@ export class SpamFilterUtil extends BaseFilterUtil<SpamType> {
             return this.client.messageUtil.sendWarningBlock(
                 channelId!,
                 `Stop spamming`,
-                `**Alert:** <@${userId}>, you have been posting too many ${
-                    spamType === SpamType.Mention ? "mentions" : "messages"
+                `**Alert:** <@${userId}>, you have been posting too many ${spamType === SpamType.Mention ? "mentions" : "messages"
                 } in a short period of time. This is a warning for you to not do it again, otherwise moderation actions may be taken against you.`,
                 undefined,
                 { isPrivate: true }
@@ -114,9 +113,8 @@ export class SpamFilterUtil extends BaseFilterUtil<SpamType> {
                 channelId!,
                 {
                     title: `:mute: You have been muted`,
-                    description: `**Alert:** <@${userId}>, you have been muted for posting too many ${
-                        spamType === SpamType.Mention ? "mentions" : "messages"
-                    } in a short period of time.`,
+                    description: `**Alert:** <@${userId}>, you have been muted for posting too many ${spamType === SpamType.Mention ? "mentions" : "messages"
+                        } in a short period of time.`,
                     color: Colors.red,
                 },
                 { isPrivate: true }

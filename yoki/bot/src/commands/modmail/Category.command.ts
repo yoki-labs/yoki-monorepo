@@ -40,8 +40,8 @@ const ModmailCategory: Command = {
 
 		if(endValue) {
 			try {
-				const createdChannel = await ctx.rest.router.createChannel({ name: "PLACEHOLDER-MODMAIL-CHANNEL", type: "chat", serverId: message.serverId!, categoryId: endValue, groupId: commandCtx.server.modmailGroupId ?? undefined})
-				await ctx.rest.router.deleteChannel(createdChannel.channel.id);
+				const createdChannel = await ctx.channels.create({ name: "PLACEHOLDER-MODMAIL-CHANNEL", type: "chat", serverId: message.serverId!, categoryId: endValue, groupId: commandCtx.server.modmailGroupId ?? undefined})
+				await ctx.channels.delete(createdChannel.id);
 			} catch(e) {
 				return ctx.messageUtil.replyWithError(message, "Error setting category!", stripIndents`
 					This category either doesn't exist in ${commandCtx.server.modmailGroupId ? "the previously set group" : "this group"} or the bot does not the permissions to create/delete channels in it.

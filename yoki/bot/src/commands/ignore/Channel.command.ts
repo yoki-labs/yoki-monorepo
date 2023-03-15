@@ -1,5 +1,5 @@
-import type { ServerChannelPayload } from "@guildedjs/guilded-api-typings";
 import type { ChannelIgnoreType } from "@prisma/client";
+import type { Channel } from "guilded.js";
 
 import { ResolvedEnum, RoleType } from "../../typings";
 import { inlineCode } from "../../utils/formatters";
@@ -22,7 +22,7 @@ const IgnoreChannel: Command = {
 		{ name: "action", type: "enum", optional: true, values: ChannelIgnoreSettingAction },
 	],
 	execute: async (message, args, ctx) => {
-		const channel = args.channel as ServerChannelPayload;
+		const channel = args.channel as Channel;
 		const ignoreType = (args.type as ResolvedEnum).resolved as ChannelIgnoreType;
 		const action = (args.action as ResolvedEnum | null)?.resolved as ChannelIgnoreSettingAction | null;
 

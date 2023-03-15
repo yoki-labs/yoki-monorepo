@@ -1,5 +1,6 @@
 import type { EmbedField } from "@guildedjs/guilded-api-typings";
 import { stripIndents } from "common-tags";
+import { UserType } from "guilded.js";
 import ms from "ms";
 
 import { CachedMember, RoleType } from "../../typings";
@@ -36,7 +37,7 @@ const Mute: Command = {
 		if (!commandCtx.server.muteRoleId) return ctx.messageUtil.replyWithError(message, `No mute role set`, `There is no mute role configured for this server.`);
 
 		const target = args.target as CachedMember;
-		if (target.user.type === "bot") return;
+		if (target.user?.type === UserType.Bot) return;
 
 		const reason = args.reason as string | null;
 		const duration = ms(args.duration as string);
@@ -45,17 +46,17 @@ const Mute: Command = {
 
 		void ctx.amp.logEvent({
 			event_type: "BOT_MEMBER_MUTE",
-			user_id: message.createdBy,
-			event_properties: { serverId: message.serverId },
+			user_id: message.authorId,
+			event_properties: { serverId: message.serverId! },
 		});
 		await ctx.prisma.roleState.upsert({
-			where: { serverId_userId: { serverId: message.serverId!, userId: target.user.id } },
+			where: { serverId_userId: { serverId: message.serverId!, userId: target.user!.id } },
 			update: { roles: target.roleIds },
-			create: { serverId: message.serverId!, userId: target.user.id, roles: target.roleIds },
+			create: { serverId: message.serverId!, userId: target.user!.id, roles: target.roleIds },
 		});
 
 		try {
-			await ctx.rest.router.assignRoleToMember(message.serverId!, target.user.id, commandCtx.server.muteRoleId);
+			await ctx.roles.addRoleToMember(message.serverId!, target.user!.id, commandCtx.server.muteRoleId);
 		} catch (e) {
 			return ctx.messageUtil.replyWithUnexpected(
 				message,
@@ -71,19 +72,19 @@ const Mute: Command = {
 		await ctx.dbUtil.addActionFromMessage(message, {
 			infractionPoints: 10,
 			reason,
-			targetId: target.user.id,
+			targetId: target.user!.id,
 			type: "MUTE",
 			expiresAt,
 		}, commandCtx.server);
 
-		let successMessage = `<@${message.createdBy}>, you have successfully muted <@${target.user.id}>.`;
+		let successMessage = `<@${message.authorId}>, you have successfully muted <@${target.user!.id}>.`;
 
 		try {
 			await ctx.messageUtil.sendEmbed(
 				message.channelId,
 				{
 					title: ":mute: You have been muted",
-					description: `<@${target.user.id}>, you have been muted for ${bold(duration / 60000)} minutes.`,
+					description: `<@${target.user!.id}>, you have been muted for ${bold(duration / 60000)} minutes.`,
 					color: Colors.red,
 					fields: [
 						reason && {
@@ -101,7 +102,7 @@ const Mute: Command = {
 			successMessage += "\n**I was unable to notify them.**";
 		}
 
-		const { failed } = await ctx.serverUtil.removeMultipleRoles(message.serverId!, target.user.id, target.roleIds);
+		const { failed } = await ctx.roleUtil.removeMultipleRoles(message.serverId!, target.user!.id, target.roleIds);
 		if (failed.length) {
 			successMessage += `\n\nThere was an issue removing the following roles due to improper permissions: ${listInlineCode(failed)}`;
 		}
@@ -110,7 +111,7 @@ const Mute: Command = {
 			isPrivate: true,
 		});
 
-		return ctx.rest.router.deleteChannelMessage(message.channelId, message.id);
+		return ctx.messages.delete(message.channelId, message.id);
 	},
 };
 

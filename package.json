@@ -5,19 +5,19 @@
     "description": "Overarching repository for Yoki",
     "author": "Zaid \"Nico\" <contact@nico.engineer>",
     "scripts": {
-        "build": "yarn workspaces run build",
-        "lint": "yarn workspaces run lint",
+        "build": "yarn workspaces foreach --verbose --exclude=\"@yoki/site\" run build",
+        "lint": "yarn workspaces foreach --verbose run lint",
         "lint:fix": "yarn lint --fix",
         "prepare": "husky install",
         "prettier": "prettier --write **/*.{ts,js,json,yml,yaml,md}",
         "generate": "cd yoki/bot && yarn generate",
         "refresh": "ts-node scripts/refresh.ts",
-		"dev:prefix": "cd docker/compose && docker-compose -f docker-compose.yml -f docker-compose.dev.yml",
+        "dev:prefix": "cd docker/compose && docker-compose -f docker-compose.yml -f docker-compose.dev.yml",
         "dev:start": "yarn dev:prefix up -d --build && yarn dev:prefix logs --follow bot nsfw ",
         "dev:db": "yarn dev:prefix up -d --build db",
         "dev:down": "yarn dev:prefix down",
         "dev:logs": "yarn dev:prefix logs -f bot nsfw",
-		"prod:prefix": "cd docker/compose && docker-compose -f docker-compose.yml -f docker-compose.prod.yml",
+        "prod:prefix": "cd docker/compose && docker-compose -f docker-compose.yml -f docker-compose.prod.yml",
         "prod:start": "yarn prod:start up -d --build",
         "prod:down": "yarn prod:start down",
         "prod:logs": "yarn prod:start logs -f bot nsfw",
@@ -47,7 +47,7 @@
         "rimraf": "3.0.2"
     },
     "dependencies": {
-        "typescript": "^4.0.5"
+        "typescript": "^4.9.5"
     },
     "workspaces": [
         "yoki/bot",
@@ -64,5 +64,6 @@
         "yoki/bot/src/*.{js,ts}": "npx eslint -c ./yoki/bot/.eslintrc.js --fix",
         "yoki/nsfw/src/*.{js,ts}": "npx eslint -c ./yoki/nsfw/.eslintrc.js --fix",
         "yoki/site/src/*.{ts,tsx}": "npx eslint -c ./yoki/site/.eslintrc.js --fix"
-    }
+    },
+    "packageManager": "yarn@3.4.1"
 }

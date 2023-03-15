@@ -16,7 +16,7 @@ const Privacy: Command = {
     aliases: ["pr", "privacyreport"],
     category: Category.Logs,
     execute: async (message, _args, ctx) => {
-        await ctx.rest.router.deleteChannelMessage(message.channelId, message.id);
+        await ctx.messages.delete(message.channelId, message.id);
 
         const channels: LogChannelType[] = (await ctx.dbUtil.getMultipleLogChannels(message.serverId!, possibleNonPrivateLogs)).map((x) => x.type);
 
@@ -43,7 +43,7 @@ const Privacy: Command = {
             {
                 title: "Server's Content Privacy",
                 description: stripIndents`
-                <@${message.createdBy}>, here's a report about server's content privacy:
+                <@${message.authorId}>, here's a report about server's content privacy:
                 ${localNoIssue.map(formatNoIssue).join("\n")}
                 ${localPrivacyIssue.map(formatPrivacyIssue).join("\n")}
             `,

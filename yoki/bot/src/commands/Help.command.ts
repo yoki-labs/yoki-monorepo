@@ -1,7 +1,7 @@
 import Collection from "@discordjs/collection";
-import { Embed } from "@guildedjs/embeds";
-import type { ChatMessagePayload, EmbedField } from "@guildedjs/guilded-api-typings";
+import type { EmbedField } from "@guildedjs/guilded-api-typings";
 import { stripIndents } from "common-tags";
+import { Embed, Message } from "guilded.js";
 
 import type Client from "../Client";
 import type { CommandContext } from "../typings";
@@ -33,8 +33,8 @@ const Help: Command = {
 
         void ctx.amp.logEvent({
             event_type: "HELP_ALL_COMMANDS",
-            user_id: message.createdBy,
-            event_properties: { serverId: message.serverId },
+            user_id: message.authorId,
+            event_properties: { serverId: message.serverId! },
         });
 
         const commandCategoryMap = getAllCommands(ctx.commands);
@@ -64,7 +64,7 @@ function getAllCommands(cmds: Client["commands"]) {
     return commandCategoryMap.filter((x) => Boolean(x.length));
 }
 
-function replyWithSingleCommand(ctx: Client, commandCtx: CommandContext, message: ChatMessagePayload, commandPath: string) {
+function replyWithSingleCommand(ctx: Client, commandCtx: CommandContext, message: Message, commandPath: string) {
     // We got 'abc xyz' from the rest arg, so we need ['abc', 'xyz']
     const commandPathSegments = commandPath.split(" ");
 
@@ -115,8 +115,8 @@ function replyWithSingleCommand(ctx: Client, commandCtx: CommandContext, message
 
     void ctx.amp.logEvent({
         event_type: "HELP_SINGLE_COMMAND",
-        user_id: message.createdBy,
-        event_properties: { serverId: message.serverId },
+        user_id: message.authorId,
+        event_properties: { serverId: message.serverId! },
     });
 
     const fields: (EmbedField | undefined | "")[] = command.subCommands ? ctx.messageUtil.createSubCommandFields(command.subCommands) : [];

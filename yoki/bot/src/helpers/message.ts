@@ -1,7 +1,7 @@
 import type Collection from "@discordjs/collection";
-import { Embed } from "@guildedjs/embeds";
-import type { ChatMessagePayload, EmbedField, EmbedPayload, RESTPostChannelMessagesBody } from "@guildedjs/guilded-api-typings";
+import type { EmbedField, EmbedPayload, RESTPostChannelMessagesBody } from "@guildedjs/guilded-api-typings";
 import { stripIndents } from "common-tags";
+import { Embed, Message } from "guilded.js";
 
 import type { Command, CommandArgument } from "../commands/Command";
 import { Colors } from "../utils/color";
@@ -54,20 +54,35 @@ export class MessageUtil extends Util {
 		};
 	}
 
+	transformEmbed(embed: Embed | EmbedPayload, embedPartial?: Embed | EmbedPayload): EmbedPayload {
+		const ret: EmbedPayload = {};
+		if (embed instanceof Embed) {
+			Object.assign(ret, embed.toJSON());
+		} else {
+			Object.assign(ret, embed);
+		}
+
+		if (embedPartial instanceof Embed) {
+			Object.assign(ret, embedPartial.toJSON);
+		} else if (embed) {
+			Object.assign(ret, embedPartial);
+		}
+
+		return ret;
+	}
+
 	// Send a message using either string, embed object, or raw object
 	send(channelId: string, content: string | RESTPostChannelMessagesBody | Embed) {
-		return this.rest.router
-			.createChannelMessage(channelId, content instanceof Embed ? { embeds: [content.toJSON()] } : typeof content === "string" ? { content } : content)
-			.then((x) => x.message);
+		return this.client.messages.send(channelId, content instanceof Embed ? { embeds: [content.toJSON()] } : typeof content === "string" ? { content } : content)
 	}
 
 	// Reply to a message
-	reply(message: ChatMessagePayload, content: string | RESTPostChannelMessagesBody) {
+	reply(message: Message, content: string | RESTPostChannelMessagesBody) {
 		const opts: RESTPostChannelMessagesBody | string = typeof content === "string" ? { replyMessageIds: [message.id], content } : content;
-		return this.rest.router.createChannelMessage(message.channelId, opts);
+		return this.client.messages.send(message.channelId, opts);
 	}
 
-	handleBadArg(message: ChatMessagePayload, prefix: string, commandArg: CommandArgument, command: Command) {
+	handleBadArg(message: Message, prefix: string, commandArg: CommandArgument, command: Command) {
 		return this.replyWithError(
 			message,
 			`Incorrect argument`,
@@ -79,10 +94,10 @@ export class MessageUtil extends Util {
 		);
 	}
 
-	sendEmbed(channelId: string, embed: EmbedPayload, messagePartial?: Partial<RESTPostChannelMessagesBody>) {
+	sendEmbed(channelId: string, embed: Embed | EmbedPayload, messagePartial?: Partial<RESTPostChannelMessagesBody>) {
 		return this.send(channelId, {
 			...messagePartial,
-			embeds: [embed],
+			embeds: [(embed instanceof Embed ? embed.toJSON() : embed)],
 		});
 	}
 
@@ -105,8 +120,7 @@ export class MessageUtil extends Util {
 		additionalInfo?: string;
 		fields?: EmbedField[];
 	}) {
-		console.log("Log sending");
-		return this.client.rest.router.createChannelMessage(where, {
+		return this.client.messages.send(where, {
 			embeds: [
 				{
 					title,
@@ -117,214 +131,202 @@ export class MessageUtil extends Util {
 				},
 			],
 			isSilent: true,
-		})
-			.then(x => x.message).catch(async (e) => {
-				const existing = this.logchannelErrCounter[where] ?? 0;
-				console.log(`EXISTING: ${existing}`);
+		}).catch(async (e) => {
+			const existing = this.logchannelErrCounter[where] ?? 0;
+			console.log(`EXISTING: ${existing}`);
 
-				if (existing > 3) {
-					const server = await this.client.rest.router.getServer(serverId).catch(() => null);
-					if (!server) return;
+			if (existing > 3) {
+				const server = await this.client.servers.fetch(serverId).catch(() => null);
+				if (!server) return;
 
-					const { defaultChannelId } = server.server;
-					if (defaultChannelId) await this.client.messageUtil.send(defaultChannelId, {
-						embeds: [{
-							color: Colors.red, description: stripIndents`
-						<@${server.server.ownerId}>, the log channel with the ID \`${where}\` has blocked the bot from sending a log message three consistent times. 
+				const { defaultChannelId } = server;
+				if (defaultChannelId) await this.client.messageUtil.send(defaultChannelId, {
+					embeds: [{
+						color: Colors.red, description: stripIndents`
+						<@${server.ownerId}>, the log channel with the ID \`${where}\` has blocked the bot from sending a log message three consistent times. 
 						As such, we've gone ahead and deleted it from your settings. 
 						Please readjust the channel permissions and add the channel back once done.
 						
 						[Need help? Join our support server](https://guilded.gg/Yoki)`
-						}]
-					});
-					await this.prisma.logChannel.deleteMany({ where: { channelId: where, serverId } });
-					await this.client.errorHandler.send(stripIndents`
+					}]
+				});
+				await this.prisma.logChannel.deleteMany({ where: { channelId: where, serverId } });
+				await this.client.errorHandler.send(stripIndents`
 					Deleted log channel for count
 					Channel: \`${where}\`
 					Count: \`${existing}\`
 				`)
-					delete this.logchannelErrCounter[where];
-				} else {
-					await this.client.errorHandler.send(stripIndents`
+				delete this.logchannelErrCounter[where];
+			} else {
+				await this.client.errorHandler.send(stripIndents`
 					Log channel err. ${e.message}
 					Channel: \`${where}\`
 					Count: \`${existing}\`
 				`)
-					this.logchannelErrCounter[where] = existing + 1;
-				}
-				return null;
-			});
+				this.logchannelErrCounter[where] = existing + 1;
+			}
+			return null;
+		});
 	}
 
-	replyWithEmbed(message: ChatMessagePayload, embed: EmbedPayload, messagePartial?: Partial<RESTPostChannelMessagesBody>) {
+	replyWithEmbed(message: Message, embed: EmbedPayload, messagePartial?: Partial<RESTPostChannelMessagesBody>) {
 		return this.sendEmbed(message.channelId, embed, { replyMessageIds: [message.id], ...messagePartial });
 	}
 
 	// State blocks
-	replyWithError(message: ChatMessagePayload, title: string, description: string, embedPartial?: EmbedPayload, messagePartial?: Partial<RESTPostChannelMessagesBody>) {
+	replyWithError(message: Message, title: string, description: string, embedPartial?: Embed | EmbedPayload, messagePartial?: Partial<RESTPostChannelMessagesBody>) {
 		return this.replyWithEmbed(
 			message,
-			{
+			this.transformEmbed({
 				author: { name: title, icon_url: BotImages.crossmark },
 				description,
 				color: Colors.red,
 				thumbnail: { url: StateImages.notFound },
-				...embedPartial,
-			},
+			}, embedPartial),
 			messagePartial
 		);
 	}
 
-	replyWithUnexpected(message: ChatMessagePayload, description: string, embedPartial?: EmbedPayload, messagePartial?: Partial<RESTPostChannelMessagesBody>) {
+	replyWithUnexpected(message: Message, description: string, embedPartial?: Embed | EmbedPayload, messagePartial?: Partial<RESTPostChannelMessagesBody>) {
 		return this.replyWithEmbed(
 			message,
-			{
+			this.transformEmbed({
 				author: { name: `Oh no, something went wrong!`, icon_url: BotImages.crossmark },
 				description,
 				color: Colors.red,
 				thumbnail: { url: StateImages.error },
-				...embedPartial,
-			},
+			}, embedPartial),
 			messagePartial
 		);
 	}
 
-	replyWithUnpermitted(message: ChatMessagePayload, description: string, embedPartial?: EmbedPayload, messagePartial?: Partial<RESTPostChannelMessagesBody>) {
+	replyWithUnpermitted(message: Message, description: string, embedPartial?: Embed | EmbedPayload, messagePartial?: Partial<RESTPostChannelMessagesBody>) {
 		return this.replyWithEmbed(
 			message,
-			{
+			this.transformEmbed({
 				author: { name: `Can't do that!`, icon_url: BotImages.crossmark },
 				description,
 				color: Colors.red,
 				thumbnail: { url: StateImages.stop },
-				...embedPartial,
-			},
+			}, embedPartial),
 			messagePartial
 		);
 	}
 
-	replyWithNullState(message: ChatMessagePayload, title: string, description: string, embedPartial?: EmbedPayload, messagePartial?: Partial<RESTPostChannelMessagesBody>) {
+	replyWithNullState(message: Message, title: string, description: string, embedPartial?: Embed | EmbedPayload, messagePartial?: Partial<RESTPostChannelMessagesBody>) {
 		return this.replyWithEmbed(
 			message,
-			{
+			this.transformEmbed({
 				title: `:grey_question: ${title}`,
 				description,
 				color: Colors.blockBackground,
 				thumbnail: { url: StateImages.nothingHere },
-				...embedPartial,
-			},
+			}, embedPartial),
 			messagePartial
 		);
 	}
 
-	replyWithInfo(message: ChatMessagePayload, title: string, description: string, embedPartial?: EmbedPayload, messagePartial?: Partial<RESTPostChannelMessagesBody>) {
+	replyWithInfo(message: Message, title: string, description: string, embedPartial?: Embed | EmbedPayload, messagePartial?: Partial<RESTPostChannelMessagesBody>) {
 		return this.replyWithEmbed(
 			message,
-			{
+			this.transformEmbed({
 				title,
 				description,
 				color: Colors.blockBackground,
-				...embedPartial,
-			},
+			}, embedPartial),
 			messagePartial
 		);
 	}
 
-	replyWithBotInfo(message: ChatMessagePayload, title: string, description: string, embedPartial?: EmbedPayload, messagePartial?: Partial<RESTPostChannelMessagesBody>) {
+	replyWithBotInfo(message: Message, title: string, description: string, embedPartial?: Embed | EmbedPayload, messagePartial?: Partial<RESTPostChannelMessagesBody>) {
 		return this.send(message.channelId, {
 			embeds: [
-				{
+				this.transformEmbed({
 					author: {
 						name: `Yoki's ${title}`,
 						icon_url: BotImages.avatar,
 					},
 					description,
 					color: Colors.blockBackground,
-					...embedPartial,
-				},
+				}, embedPartial),
 			],
 			replyMessageIds: [message.id],
 			...messagePartial,
 		});
 	}
 
-	sendWarningBlock(channelId: string, title: string, description: string, embedPartial?: EmbedPayload, messagePartial?: Partial<RESTPostChannelMessagesBody>) {
+	sendWarningBlock(channelId: string, title: string, description: string, embedPartial?: Embed | EmbedPayload, messagePartial?: Partial<RESTPostChannelMessagesBody>) {
 		return this.sendEmbed(
 			channelId,
-			{
+			this.transformEmbed({
 				title,
 				description,
 				color: Colors.yellow,
 				thumbnail: { url: StateImages.stop },
-				...embedPartial,
-			},
+			}, embedPartial),
 			messagePartial
 		);
 	}
 
-	sendErrorBlock(channelId: string, title: string, description: string, embedPartial?: EmbedPayload, messagePartial?: Partial<RESTPostChannelMessagesBody>) {
+	sendErrorBlock(channelId: string, title: string, description: string, embedPartial?: Embed | EmbedPayload, messagePartial?: Partial<RESTPostChannelMessagesBody>) {
 		return this.sendEmbed(
 			channelId,
-			{
+			this.transformEmbed({
 				author: { name: title, icon_url: BotImages.crossmark },
 				description,
 				color: Colors.red,
 				thumbnail: { url: StateImages.notFound },
-				...embedPartial,
-			},
+			}, embedPartial),
 			messagePartial
 		);
 	}
 
-	sendInfoBlock(channelId: string, title: string, description: string, embedPartial?: EmbedPayload, messagePartial?: Partial<RESTPostChannelMessagesBody>) {
+	sendInfoBlock(channelId: string, title: string, description: string, embedPartial?: Embed | EmbedPayload, messagePartial?: Partial<RESTPostChannelMessagesBody>) {
 		return this.sendEmbed(
 			channelId,
-			{
+			this.transformEmbed({
 				title,
 				description,
 				color: Colors.blockBackground,
-				...embedPartial,
-			},
+			}, embedPartial),
 			messagePartial
 		);
 	}
 
 	// Value blocks
-	sendSuccessBlock(channelId: string, title: string, description: string, embedPartial?: EmbedPayload, messagePartial?: Partial<RESTPostChannelMessagesBody>) {
+	sendSuccessBlock(channelId: string, title: string, description: string, embedPartial?: Embed | EmbedPayload, messagePartial?: Partial<RESTPostChannelMessagesBody>) {
 		return this.sendEmbed(
 			channelId,
-			{
+			this.transformEmbed({
 				author: { name: title, icon_url: BotImages.checkmark },
 				description,
 				color: Colors.green,
-				...embedPartial,
-			},
+			}, embedPartial),
 			messagePartial
 		);
 	}
 
-	replyWithSuccess(message: ChatMessagePayload, title: string, description: string, embedPartial?: EmbedPayload, messagePartial?: Partial<RESTPostChannelMessagesBody>) {
+	replyWithSuccess(message: Message, title: string, description: string, embedPartial?: Embed | EmbedPayload, messagePartial?: Partial<RESTPostChannelMessagesBody>) {
 		return this.replyWithEmbed(
 			message,
-			{
+			this.transformEmbed({
 				author: { name: title, icon_url: BotImages.checkmark },
 				description,
 				color: Colors.green,
-				...embedPartial,
-			},
+			}, embedPartial),
 			messagePartial
 		);
 	}
 
 	// Special blocks
 	replyWithPaginatedContent<T>(info: {
-		replyTo: ChatMessagePayload;
+		replyTo: Message;
 		title: string;
 		items: T[];
 		itemsPerPage: number;
 		itemMapping: (item: T) => string | T;
 		page?: number;
-		embed?: EmbedPayload;
+		embed?: Embed | EmbedPayload;
 		message?: Partial<RESTPostChannelMessagesBody>;
 	}) {
 		const { "replyTo": message, title, items, itemsPerPage, itemMapping, "page": pageOrNull, "embed": embedPartial, "message": messagePartial } = info;
@@ -347,17 +349,16 @@ export class MessageUtil extends Util {
 			message,
 			title,
 			items.slice(startingIndex, endingIndex).map(itemMapping).join("\n"),
-			{
-				...embedPartial,
+			this.transformEmbed({
 				footer: {
 					text: `Page ${incrementedPage}/${possiblePages} • ${items.length} total items`,
 				},
-			},
+			}, embedPartial),
 			messagePartial
 		);
 	}
 
-	replyWithEnableStateList(message: ChatMessagePayload, title: string, enabledItems: string[], allItems: string[], descriptions: Record<string, string>) {
+	replyWithEnableStateList(message: Message, title: string, enabledItems: string[], allItems: string[], descriptions: Record<string, string>) {
 		const itemDisplays = allItems.map((item) => {
 			const formattedItem = `\`${item}\``;
 			const itemWithState = enabledItems.includes(item) ? `:white_check_mark: **${formattedItem}**` : formattedItem;

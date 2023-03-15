@@ -29,13 +29,13 @@ const Close: Command = {
 
 		const modmailChannel = userId
 			? await ctx.prisma.modmailThread.findFirst({ where: { serverId: message.serverId!, openerId: userId, closed: false } })
-			: await ctx.prisma.modmailThread.findFirst({ where: { serverId: message.serverId, modFacingChannelId: message.channelId, closed: false } });
+			: await ctx.prisma.modmailThread.findFirst({ where: { serverId: message.serverId!, modFacingChannelId: message.channelId, closed: false } });
 		if (!modmailChannel)
 			return userId
 				? ctx.messageUtil.replyWithError(message, "No open modmail ticket for user", "User does not have an open modmail ticket")
 				: ctx.messageUtil.replyWithError(message, `Not a modmail channel`, `This channel is not a modmail channel!`);
 
-		return closeModmailThread(commandCtx.server, message.createdBy, ctx, modmailChannel!, "closed by a staff member");
+		return closeModmailThread(commandCtx.server, message.authorId, ctx, modmailChannel!, "closed by a staff member");
 	},
 };
 
@@ -93,8 +93,7 @@ export async function closeModmailThread(server: Server, closedBy: string, ctx: 
 		});
 	}
 
-	await ctx.rest.router
-		.createChannelMessage(modmailThread.userFacingChannelId, {
+	await ctx.messages.send(modmailThread.userFacingChannelId, {
 			embeds: [
 				{
 					description: stripIndents`<@${modmailThread.openerId}>
@@ -114,7 +113,7 @@ export async function closeModmailThread(server: Server, closedBy: string, ctx: 
 	});
 
 	await ctx.prisma.modmailThread.update({ where: { id: modmailThread.id }, data: { closed: true } });
-	return ctx.rest.router.deleteChannel(modmailThread.modFacingChannelId);
+	return ctx.channels.delete(modmailThread.modFacingChannelId);
 }
 
 export default Close;

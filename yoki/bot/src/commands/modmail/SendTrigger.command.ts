@@ -1,6 +1,5 @@
-import { Embed } from "@guildedjs/embeds";
-import type { ServerChannelPayload } from "@guildedjs/guilded-api-typings";
 import { ReactionActionType } from "@prisma/client";
+import { Channel, Embed } from "guilded.js";
 
 import reactions from "../../static/reactions.json";
 import { RoleType } from "../../typings";
@@ -34,7 +33,7 @@ const SendTrigger: Command = {
 				`No modmail group or category set`,
 				"You can set either by using the `?modmail group` or `?modmail category` command."
 			);
-		const targetChannel = args.targetChannel as ServerChannelPayload;
+		const targetChannel = args.targetChannel as Channel;
 		const reaction = (args.emoji as string).trim();
 
 		if (!reaction.startsWith(":") && reaction.endsWith(":")) return ctx.messageUtil.replyWithError(message, "Invalid emoji", "Could not detect a valid emoji in your message.");
@@ -51,10 +50,10 @@ const SendTrigger: Command = {
 		);
 		void ctx.amp.logEvent({
 			event_type: "MODMAIL_SEND_TRIGGER",
-			user_id: message.createdBy,
-			event_properties: { serverId: message.serverId },
+			user_id: message.authorId,
+			event_properties: { serverId: message.serverId! },
 		});
-		await ctx.rest.router.addReactionEmote(targetChannel.id, sentMessage.id, resolvedEmoji);
+		await ctx.reactions.create(targetChannel.id, sentMessage.id, resolvedEmoji);
 		await ctx.prisma.reactionAction.create({
 			data: {
 				actionType: ReactionActionType.MODMAIL,

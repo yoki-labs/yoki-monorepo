@@ -1,6 +1,7 @@
 import { Embed } from "@guildedjs/webhook-client";
 import { Action, Severity } from "@prisma/client";
 import { stripIndents } from "common-tags";
+import { UserType } from "guilded.js";
 
 import { Util } from "../helpers/util";
 import type { Server } from "../typings";
@@ -14,18 +15,18 @@ export default abstract class BaseFilterUtil<TFilterType = null> extends Util {
 		(userId: string, server: Server, channelId: string | null, filteredContent: FilteredContent, filterType: TFilterType | null) => unknown | undefined
 	> = {
 			[Severity.BAN]: (userId, server) => {
-				return this.rest.router.banMember(server.serverId, userId);
+				return this.client.members.ban(server.serverId, userId);
 			},
 			[Severity.KICK]: (userId, server) => {
-				return this.rest.router.kickMember(server.serverId, userId);
+				return this.client.members.kick(server.serverId, userId);
 			},
 			[Severity.SOFTBAN]: async (userId, server) => {
-				await this.rest.router.banMember(server.serverId, userId);
-				return this.rest.router.unbanMember(server.serverId, userId);
+				await this.client.members.ban(server.serverId, userId);
+				return this.client.bans.unban(server.serverId, userId);
 			},
 			[Severity.MUTE]: async (userId, server, channelId, filteredContent, filterType) => {
 				if (server.muteRoleId) {
-					await this.rest.router.assignRoleToMember(server.serverId, userId, server.muteRoleId);
+					await this.client.roles.addRoleToMember(server.serverId, userId, server.muteRoleId);
 					return this.onUserMute(userId, server, channelId, filteredContent, filterType);
 				}
 			},
@@ -57,6 +58,7 @@ export default abstract class BaseFilterUtil<TFilterType = null> extends Util {
 		const memberExceeds = await this.getMemberExceedsThreshold(server, userId, server.spamInfractionPoints);
 		const actionType = memberExceeds ?? fallbackSeverity;
 
+
 		await this.dbUtil.emitAction(
 			{
 				type: actionType,
@@ -64,7 +66,7 @@ export default abstract class BaseFilterUtil<TFilterType = null> extends Util {
 				serverId: server.serverId,
 				channelId,
 				targetId: userId,
-				executorId: this.client.userId!,
+				executorId: this.client.user!.id,
 				infractionPoints,
 				triggerContent,
 				pardoned: false,
@@ -99,10 +101,10 @@ export default abstract class BaseFilterUtil<TFilterType = null> extends Util {
 	async shouldFilterUser(server: Server, userId: string) {
 		// By now, we assume the member has violated a filter or preset
 		// Get the member from cache or API
-		const member = await this.client.serverUtil.getMember(server.serverId, userId);
+		const member = await this.client.members.fetch(server.serverId, userId);
 
 		// Don't moderate bots
-		if (member.user.type === "bot") return false;
+		if (member.user!.type === UserType.Bot) return false;
 
 		// Get all the mod roles in this server
 		const modRoles = await this.prisma.role.findMany({ where: { serverId: server.serverId } });

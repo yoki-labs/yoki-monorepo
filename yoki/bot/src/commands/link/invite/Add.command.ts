@@ -31,7 +31,7 @@ const Add: Command = {
 
         await ctx.dbUtil.addInviteToFilter({
             targetServerId,
-            creatorId: message.createdBy,
+            creatorId: message.authorId,
             serverId: message.serverId!,
         });
         return ctx.messageUtil.replyWithSuccess(message, `New server added`, `Successfully added ${inlineQuote(targetServerId)} to the invite whitelist!`);

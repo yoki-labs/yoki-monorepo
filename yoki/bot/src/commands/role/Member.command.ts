@@ -37,7 +37,7 @@ const Member: Command = {
                 : ctx.messageUtil.replyWithNullState(message, `No member role`, `There is no member role set.`);
         } else if (role.toUpperCase() === "REMOVE") {
             // The ability to delete member roles
-            await ctx.prisma.server.updateMany({ data: { memberRoleId: null }, where: { serverId: message.serverId } });
+            await ctx.prisma.server.updateMany({ data: { memberRoleId: null }, where: { serverId: message.serverId! } });
 
             return ctx.messageUtil.replyWithSuccess(message, `Member role removed`, `<@${commandCtx.server.memberRoleId}> is no longer the member role.`, undefined, {
                 isSilent: true,
