@@ -14,12 +14,14 @@ RUN apk update \
 	&& curl -L https://yarnpkg.com/install.sh | bash 
 
 COPY tsconfig.json ./
+
+WORKDIR /opt/build/yoki
+COPY ./yoki/prisma/. ./prisma/
+
 WORKDIR /opt/build/yoki/bot
 
 COPY ./yoki/bot/package.json ./
 RUN yarn install
-
-COPY ./yoki/bot/prisma/. ./prisma/
 RUN yarn generate
 
 COPY ./yoki/bot/tsconfig.json ./yoki/bot/nodemon.json ./
