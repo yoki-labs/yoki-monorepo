@@ -71,12 +71,11 @@ export default class YokiClient extends Client {
 	// scheduler that will check for (impending) expired mutes and remove them
 	readonly muteHandler = new MuteScheduler(this, 15 * 60);
 
-	// events that this bot handles that aren't supported by g.js yet, directly from the ws manager
+	// events that this bot handles that aren't supported by g.js yet, directly from the ws manager.
 	readonly eventHandler: { [x: string]: (packet: any, ctx: Context, server: Server) => Promise<any> } = {
 		ForumTopicCommentCreated: ForumTopicCommentEvent,
 		ForumTopicCommentUpdated: ForumTopicCommentEvent,
 		ForumTopicCommentDeleted,
-
 		DocCommentCreated: DocCommentEvent,
 		DocCommentUpdated: DocCommentEvent,
 		DocCommentDeleted,
