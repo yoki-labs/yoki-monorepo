@@ -2246,6 +2246,7 @@ __metadata:
     graphql: ^16.6.0
     graphql-fields: ^2.0.3
     graphql-scalars: ^1.20.4
+    prisma: ~4.8.0
     reflect-metadata: ^0.1.13
     tsc-alias: ^1.6.5
     tslib: ^2.5.0
@@ -2278,10 +2279,12 @@ __metadata:
     nanoid: ^3.3.2
     node-fetch: 2.6.6
     nodemon: ^2.0.14
+    prisma: ~4.8.0
     recursive-readdir: ^2.2.2
     tsc-alias: ^1.6.5
     tslib: ^2.0.3
     typed-emitter: ^2.1.0
+    typegraphql-prisma: 0.23.2
     typescript: ^4.9.5
   languageName: unknown
   linkType: soft
@@ -2363,6 +2366,7 @@ __metadata:
     next-auth: ^4.12.2
     next-auth-guilded: ^1.0.1
     postcss: ^8.4.14
+    prisma: ~4.8.0
     react: 18.2.0
     react-dom: 18.2.0
     react-flatpickr: ^3.10.13
@@ -2373,6 +2377,7 @@ __metadata:
     styled-components: ^5.3.5
     tailwindcss: ^3.1.6
     tailwindcss-animate: ^1.0.5
+    typegraphql-prisma: 0.23.2
     typescript: 4.7.3
   languageName: unknown
   linkType: soft
