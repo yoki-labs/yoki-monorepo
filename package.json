@@ -7,7 +7,7 @@
 	"scripts": {
 		"build": "yarn workspaces foreach --verbose --exclude=\"@yoki/site\" run build",
 		"lint": "yarn workspaces foreach --verbose run lint",
-		"lint:fix": "yarn lint --fix",
+		"lint:fix": "yarn lint --fix --ignore-path ../../.eslintignore",
 		"prepare": "husky install",
 		"prettier": "prettier --write **/*.{ts,js,json,yml,yaml,md}",
 		"generate": "cd yoki/bot && yarn generate",

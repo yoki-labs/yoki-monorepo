@@ -5,7 +5,7 @@
 		"build": "tsc",
 		"start": "node dist/index.js",
 		"dev": "npx nodemon",
-		"lint": "eslint src/",
+		"lint": "eslint --ignore-path ../../.eslintignore src/",
 		"lint:fix": "yarn lint --fix",
 		"generate": "npx dotenv -e ../../.env -- npx prisma generate"
 	},
