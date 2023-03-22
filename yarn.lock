@@ -633,17 +633,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@guildedjs/guilded-api-typings@npm:2.8.9":
-  version: 2.8.9
-  resolution: "@guildedjs/guilded-api-typings@npm:2.8.9"
-  checksum: 98cc62503aaf40782ddc108da201c1633cf0f39a14504ead893960d96d7e42933c6c5996edacbe4966761941975a8a3cf0227c50e3a29abfb2b65de5ae4cce1b
-  languageName: node
-  linkType: hard
-
-"@guildedjs/guilded-api-typings@npm:3.0.0":
-  version: 3.0.0
-  resolution: "@guildedjs/guilded-api-typings@npm:3.0.0"
-  checksum: c78012ef5e8a26773d6a1dd87f012a491f7ea18abbd47e15707c67d6e234480252528f016ed7ad16bf5e6d26044498f3d25a0727ba9af54040120224b36f9f6e
+"@guildedjs/guilded-api-typings@npm:3.0.1":
+  version: 3.0.1
+  resolution: "@guildedjs/guilded-api-typings@npm:3.0.1"
+  checksum: f14e1b42a1face1638374403562305f0d85b9fbd6954252cb71712cd9eebeb8be9666ccc0870ffa78c3b97b5a13c9fbf230b60a209f57778b4e5cc6c27abf2ec
   languageName: node
   linkType: hard
 
@@ -664,14 +657,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@guildedjs/rest@npm:3.0.0":
-  version: 3.0.0
-  resolution: "@guildedjs/rest@npm:3.0.0"
+"@guildedjs/rest@npm:3.1.0":
+  version: 3.1.0
+  resolution: "@guildedjs/rest@npm:3.1.0"
   dependencies:
     form-data: ^4.0.0
     node-fetch: 2.6.7
     qs: ^6.10.5
-  checksum: 3e0dcf7f0693b41b7fa14a941e56369f12cfea48e7f48e4e23ab7710d35ae466c17aae26bae9f2e27c666bb393b74ffea35bd51813250d7d6dcbade753a5eac1
+  checksum: 02a1feecb2961e5d1874c56aa4a19c93f34e1d0f3d2b9b8c73ea7f6d2c616433b0dda7bb6f54dc4708feb2851770b30fe7695972a81ca99d4a984e09a78b6522
   languageName: node
   linkType: hard
 
@@ -686,17 +679,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@guildedjs/webhook-client@npm:0.4.5":
-  version: 0.4.5
-  resolution: "@guildedjs/webhook-client@npm:0.4.5"
-  dependencies:
-    "@guildedjs/guilded-api-typings": 3.0.0
-    "@guildedjs/rest": 3.0.0
-    form-data: ^4.0.0
-  checksum: 847174bcbb0253c792db26d78bcd9891fdb10b837ca45a0d198d8d307570a206dcb091b4a0127d517e4c556e2f6535b331bca6f9370d2e293dafaf4e887ab3e4
-  languageName: node
-  linkType: hard
-
 "@guildedjs/webhook-client@npm:^0.3.7":
   version: 0.3.13
   resolution: "@guildedjs/webhook-client@npm:0.3.13"
@@ -706,15 +688,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@guildedjs/ws@npm:1.6.0":
-  version: 1.6.0
-  resolution: "@guildedjs/ws@npm:1.6.0"
+"@guildedjs/ws@npm:1.6.1":
+  version: 1.6.1
+  resolution: "@guildedjs/ws@npm:1.6.1"
   dependencies:
-    "@guildedjs/guilded-api-typings": 3.0.0
-    "@types/ws": 8.5.3
+    "@guildedjs/guilded-api-typings": 3.0.1
+    "@types/ws": 8.5.4
     typed-emitter: 2.1.0
-    ws: 8.11.0
-  checksum: 475e4c19f63512402055413306e108052261b4085ed257c44f3a55a42e9e0499cd354cda2951222d78ebfbfc6f1455b21d5ea9a7d81d86da2a430b3f7a5f8d9e
+    ws: 8.12.0
+  checksum: 154f6570392ba8b50b31dbd3f49facfc1b3cda62203f78ea02025c9ac85ca0bbf7b85eb2070df6a67cee1bc62f953be118c71fff7e4e4e751e7a273668ac57a4
   languageName: node
   linkType: hard
 
@@ -1976,12 +1958,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/ws@npm:8.5.3":
-  version: 8.5.3
-  resolution: "@types/ws@npm:8.5.3"
+"@types/ws@npm:8.5.4":
+  version: 8.5.4
+  resolution: "@types/ws@npm:8.5.4"
   dependencies:
     "@types/node": "*"
-  checksum: 0ce46f850d41383fcdc2149bcacc86d7232fa7a233f903d2246dff86e31701a02f8566f40af5f8b56d1834779255c04ec6ec78660fe0f9b2a69cf3d71937e4ae
+  checksum: fefbad20d211929bb996285c4e6f699b12192548afedbe4930ab4384f8a94577c9cd421acaad163cacd36b88649509970a05a0b8f20615b30c501ed5269038d1
   languageName: node
   linkType: hard
 
@@ -2262,7 +2244,7 @@ __metadata:
   dependencies:
     "@amplitude/node": ^1.10.0
     "@discordjs/collection": ^0.5.0
-    "@guildedjs/guilded-api-typings": 2.8.9
+    "@guildedjs/guilded-api-typings": 3.0.1
     "@prisma/client": ^4.2.1
     "@types/common-tags": ^1.8.1
     "@types/ms": ^0.7.31
@@ -2274,7 +2256,7 @@ __metadata:
     common-tags: ^1.8.2
     dotenv: ^8.2.0
     dotenv-cli: ^5.1.0
-    guilded.js: 0.19.0
+    guilded.js: 0.20.0
     ms: ^2.1.3
     nanoid: ^3.3.2
     node-fetch: 2.6.6
@@ -5392,16 +5374,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"guilded.js@npm:0.19.0":
-  version: 0.19.0
-  resolution: "guilded.js@npm:0.19.0"
+"guilded.js@npm:0.20.0":
+  version: 0.20.0
+  resolution: "guilded.js@npm:0.20.0"
   dependencies:
     "@discordjs/collection": ^1.3.0
-    "@guildedjs/rest": 3.0.0
-    "@guildedjs/webhook-client": 0.4.5
-    "@guildedjs/ws": 1.6.0
+    "@guildedjs/rest": 3.1.0
+    "@guildedjs/ws": 1.6.1
     typed-emitter: 2.1.0
-  checksum: 1e642ea97acf85e1be9de8e846141b4cf319af729a170eaa1b031fd8ca419bf002f6f63a2d09d644baca694d1fd374082002278923b4f4a4118667e265bd2bfb
+  checksum: 2f4f890e2eb2ef16e3b72618bcd9160dcec1642f8511332e0c8c573faa6fb9780151406260cf5bc1d3bebce73708477d0a40a65b376a36de30ca50b9463053a7
   languageName: node
   linkType: hard
 
@@ -10177,18 +10158,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ws@npm:8.11.0":
-  version: 8.11.0
-  resolution: "ws@npm:8.11.0"
+"ws@npm:8.12.0":
+  version: 8.12.0
+  resolution: "ws@npm:8.12.0"
   peerDependencies:
     bufferutil: ^4.0.1
-    utf-8-validate: ^5.0.2
+    utf-8-validate: ">=5.0.2"
   peerDependenciesMeta:
     bufferutil:
       optional: true
     utf-8-validate:
       optional: true
-  checksum: 316b33aba32f317cd217df66dbfc5b281a2f09ff36815de222bc859e3424d83766d9eb2bd4d667de658b6ab7be151f258318fb1da812416b30be13103e5b5c67
+  checksum: 818ff3f8749c172a95a114cceb8b89cedd27e43a82d65c7ad0f7882b1e96a2ee6709e3746a903c3fa88beec0c8bae9a9fcd75f20858b32a166dfb7519316a5d7
   languageName: node
   linkType: hard
 
