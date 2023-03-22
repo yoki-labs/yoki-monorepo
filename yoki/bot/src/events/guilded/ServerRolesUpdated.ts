@@ -16,7 +16,7 @@ export default {
 		const roleUpdateLogChannel = await ctx.dbUtil.getLogChannel(serverId!, LogChannelType.member_roles_updates);
 		if (roleUpdateLogChannel) {
 			// Prevent showcasing too many
-			const cappedRoleChanges = newMembers.members.slice(0, 4);
+			const cappedRoleChanges = newMembers.slice(0, 4);
 
 			const roleDifferences = cappedRoleChanges.map((member) => {
 				const { roleIds, userId } = member;
@@ -32,7 +32,7 @@ export default {
 				return { addedRoles, removedRoles, roleIds, userId };
 			});
 
-			const modifiedUsers = summarizeItems(newMembers.members, (x) => `<@${x.userId}>`, 10);
+			const modifiedUsers = summarizeItems(newMembers, (x) => `<@${x.userId}>`, 10);
 
 			try {
 				// send the log channel message with the content/data of the deleted message
