@@ -1,7 +1,6 @@
-import { Embed } from "@guildedjs/webhook-client";
 import { ContentFilter, FilterMatching, Preset } from "@prisma/client";
 import { stripIndents } from "common-tags";
-import { Message, UserType } from "guilded.js";
+import { Message, UserType, WebhookEmbed } from "guilded.js";
 
 import { ContentFilterScan, Server, Severity } from "../typings";
 import { Colors } from "../utils/color";
@@ -170,7 +169,7 @@ export class ContentFilterUtil extends BaseFilterUtil {
 			// Perform resulting action, for message filtering it's deleting the original message
 			await resultingAction();
 		} catch (err: any) {
-			if (err instanceof Error) await this.client.errorHandler.send("Error in filtering callback", [new Embed().setDescription(stripIndents`${err.stack}`).setColor("RED")]);
+			if (err instanceof Error) await this.client.errorHandler.send("Error in filtering callback", [new WebhookEmbed().setDescription(stripIndents`${err.stack}`).setColor("RED")]);
 		}
 
 		// Execute the punishing action. If this is a threshold exceeding, execute the punishment associated with the exceeded threshold

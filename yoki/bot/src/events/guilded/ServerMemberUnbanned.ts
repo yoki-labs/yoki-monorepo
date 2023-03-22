@@ -1,20 +1,17 @@
-import { Embed as WebhookEmbed } from "@guildedjs/webhook-client";
 import { LogChannelType } from "@prisma/client";
 import { stripIndents } from "common-tags";
-import { MemberBan } from "guilded.js";
+import { WebhookEmbed } from "guilded.js";
 import { nanoid } from "nanoid";
 
-import type {GEvent } from "../../typings";
+import type { GEvent } from "../../typings";
 import { Colors } from "../../utils/color";
 import { codeBlock, inlineCode } from "../../utils/formatters";
 
 export default {
 	execute: async ([memberBan, ctx]) => {
-		const { serverId } = memberBan;
-		const isMemberBanObj = memberBan instanceof MemberBan;
-		const reason = isMemberBanObj ? memberBan.reason : memberBan.serverMemberBan.reason;
-		const userId = isMemberBanObj ? memberBan.target.id : memberBan.serverMemberBan.user.id;
-		const authorId = isMemberBanObj ? memberBan.createdById : memberBan.serverMemberBan.createdBy;
+		const { serverId, reason } = memberBan;
+		const userId = memberBan.user.id;
+		const authorId = memberBan.createdBy;
 
 		// check if there's a log channel channel for member leaves
 		const memberBanLogChannel = await ctx.dbUtil.getLogChannel(serverId!, LogChannelType.member_bans);

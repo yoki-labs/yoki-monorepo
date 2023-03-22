@@ -1,6 +1,5 @@
-import { Embed as WebhookEmbed } from "@guildedjs/webhook-client";
 import { stripIndents } from "common-tags";
-import { Embed, UserType } from "guilded.js";
+import { Embed, UserType, WebhookEmbed } from "guilded.js";
 import { nanoid } from "nanoid";
 
 import boolean from "../../args/boolean";

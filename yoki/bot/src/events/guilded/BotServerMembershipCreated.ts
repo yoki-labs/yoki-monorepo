@@ -1,12 +1,12 @@
 import { stripIndents } from "common-tags";
-import { Embed, User } from "guilded.js";
+import { Embed } from "guilded.js";
 
 import type { GEvent } from "../../typings";
 import { Colors } from "../../utils/color";
 
 export default {
   execute: ([server, user, ctx]) => {
-    const createdBy = user instanceof User ? user.id : user;
+    const createdBy = user;
     void ctx.amp.logEvent({ event_type: "YOKI_SERVER_JOIN", user_id: server.id });
 
     if (!server.defaultChannelId) return;

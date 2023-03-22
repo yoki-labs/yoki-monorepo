@@ -1,7 +1,6 @@
-import { Embed as WebhookEmbed } from "@guildedjs/webhook-client";
 import { LogChannelType } from "@prisma/client";
 import { stripIndents } from "common-tags";
-import { UserType } from "guilded.js";
+import { UserType, WebhookEmbed } from "guilded.js";
 import { nanoid } from "nanoid";
 
 import { FilteredContent } from "../../modules/content-filter";

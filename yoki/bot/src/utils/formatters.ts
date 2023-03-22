@@ -1,4 +1,4 @@
-import { Embed } from "@guildedjs/webhook-client";
+import { WebhookEmbed } from "guilded.js";
 
 // Remove any inline code escapes
 export const escapeInlineCodeText = (code: any) => code.toString().replaceAll("\\", "\\\\").replaceAll("`", "'");
@@ -22,7 +22,7 @@ export const listInlineQuote = (str: string[] | undefined) => (typeof str === "u
 export const codeBlock = (code: any, language?: string) => `\`\`\`${language ? `${language}\n` : ""}${code}\`\`\``;
 export const quoteMarkdown = (code: string, limit: number) => `\`\`\`md\n${code.length > limit ? `${code.substring(0, limit)}...` : code}\n\`\`\``;
 export function errorEmbed(err: Error | any, additionalDetails?: Record<string, string | number | null>) {
-	const embed = new Embed()
+	const embed = new WebhookEmbed()
 		.setTitle(err.name)
 		.setDescription(codeBlock((err?.stack ?? err)?.slice(0, 2040) ?? "No error provided."))
 		.addField("Message", err?.message)

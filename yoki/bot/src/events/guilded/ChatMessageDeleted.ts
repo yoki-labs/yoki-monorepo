@@ -1,7 +1,6 @@
-import { Embed as WebhookEmbed } from "@guildedjs/webhook-client";
 import { LogChannelType, Prisma } from "@prisma/client";
 import { stripIndents } from "common-tags";
-import { Message, UserType } from "guilded.js";
+import { UserType, WebhookEmbed } from "guilded.js";
 import { nanoid } from "nanoid";
 
 import type { GEvent } from "../../typings";
@@ -10,25 +9,23 @@ import { codeBlock, inlineCode } from "../../utils/formatters";
 
 export default {
 	execute: async ([message, ctx]) => {
-		const isMsgObj = message instanceof Message;
-		const narrowedMessage = isMsgObj ? message : message.message;
 
 		// check if there's a log channel channel for message deletions
-		const deletedMessageLogChannel = await ctx.dbUtil.getLogChannel(narrowedMessage.serverId!, LogChannelType.message_deletions);
+		const deletedMessageLogChannel = await ctx.dbUtil.getLogChannel(message.serverId!, LogChannelType.message_deletions);
 		if (!deletedMessageLogChannel) return void 0;
 
 		// get the database entry for the deleted message
-		const deletedMessage = await ctx.dbUtil.getMessage(narrowedMessage.channelId, narrowedMessage.id);
+		const deletedMessage = await ctx.dbUtil.getMessage(message.channelId, message.id);
 
 		// mark this message as deleted if it's in the database, that way our runner can clear this message from the database after two weeks
 		if (deletedMessage) {
-			void ctx.amp.logEvent({ event_type: "MESSAGE_DELETE_DB", user_id: deletedMessage.authorId, event_properties: { serverId: narrowedMessage.serverId! } });
-			await ctx.prisma.message.updateMany({ where: { messageId: deletedMessage.messageId }, data: { deletedAt: narrowedMessage.deletedAt } });
+			void ctx.amp.logEvent({ event_type: "MESSAGE_DELETE_DB", user_id: deletedMessage.authorId, event_properties: { serverId: message.serverId! } });
+			await ctx.prisma.message.updateMany({ where: { messageId: deletedMessage.messageId }, data: { deletedAt: message.deletedAt } });
 		}
 		// if there is a database entry for the message, get the member from the server so we can get their name and roles etc.
 		const oldMember = deletedMessage ? await ctx.members.fetch(deletedMessage.serverId!, deletedMessage.authorId).catch(() => null) : null;
 		if (oldMember?.user?.type === UserType.Bot) return;
-		const channel = await ctx.channels.fetch(narrowedMessage.channelId).catch();
+		const channel = await ctx.channels.fetch(message.channelId).catch();
 
 		try {
 			const logContent = [
@@ -46,7 +43,7 @@ export default {
 				const uploadToBucket = await ctx.s3
 					.upload({
 						Bucket: process.env.S3_BUCKET,
-						Key: `logs/message-delete-${narrowedMessage.serverId}-${narrowedMessage.id}.txt`,
+						Key: `logs/message-delete-${message.serverId}-${message.id}.txt`,
 						Body: Buffer.from(stripIndents`
 						Content: ${deletedMessage.content}
 						------------------------------------
@@ -59,21 +56,19 @@ export default {
 			}
 
 			const author = deletedMessage && oldMember ? `<@${oldMember.user!.id}> (${inlineCode(oldMember.user!.id)})` : "Unknown author";
-			const channelURL = `https://guilded.gg/teams/${narrowedMessage.serverId}/channels/${narrowedMessage.channelId}/chat`;
+			const channelURL = `https://guilded.gg/teams/${message.serverId}/channels/${message.channelId}/chat`;
 			// send the log channel message with the content/data of the deleted message
 			await ctx.messageUtil.sendLog({
 				where: deletedMessageLogChannel.channelId,
-				serverId: narrowedMessage.serverId!,
+				serverId: message.serverId!,
 				title: "Message Removed",
 				description: `A message from ${author} was deleted in [#${channel.name}](${channelURL})
 			
-					Message ID: ${inlineCode(narrowedMessage.id)}
-					Channel ID: ${inlineCode(narrowedMessage.channelId)}
+					Message ID: ${inlineCode(message.id)}
+					Channel ID: ${inlineCode(message.channelId)}
 					`,
 				color: Colors.red,
-				occurred: narrowedMessage.deletedAt instanceof Date ? 
-					narrowedMessage.deletedAt!.toISOString() 
-					: narrowedMessage.deletedAt!,
+				occurred: message.deletedAt,
 				fields: logContent,
 			});
 		} catch (e) {
@@ -88,7 +83,7 @@ export default {
 							stripIndents`
 						Reference ID: ${inlineCode(referenceId)}
 						Server: ${inlineCode(deletedMessage?.serverId ?? "not cached")}
-						Channel: ${inlineCode(narrowedMessage.channelId)}
+						Channel: ${inlineCode(message.channelId)}
 						User: ${inlineCode(deletedMessage?.authorId ?? "not cached")}
 						Error: \`\`\`
 						${e.stack ?? e.message}

@@ -1,7 +1,6 @@
-import { Embed as WebhookEmbed } from "@guildedjs/webhook-client";
 import { LogChannelType } from "@prisma/client";
 import { stripIndents } from "common-tags";
-import { Member } from "guilded.js";
+import { WebhookEmbed } from "guilded.js";
 import { nanoid } from "nanoid";
 
 import { closeModmailThread } from "../../commands/modmail/Close.command";
@@ -10,13 +9,9 @@ import { Colors } from "../../utils/color";
 import { inlineCode } from "../../utils/formatters";
 
 export default {
-	execute: async ([member, ctx]) => {
-		const { serverId } = member;
-		const isMemberObj = member instanceof Member;
-		const userId = isMemberObj ? member.user!.id : member.userId;
-		const isBan = isMemberObj ? member.banned : member.isBan;
-		const isKick = isMemberObj ? member.kicked : member.isKick;
-		const server = await ctx.dbUtil.getServer(member.serverId);
+	execute: async ([event, ctx]) => {
+		const { serverId, userId, isBan, isKick } = event;
+		const server = await ctx.dbUtil.getServer(serverId);
 
 		if (isBan) void ctx.amp.logEvent({ event_type: "MEMBER_BAN", user_id: userId, event_properties: { serverId } });
 		else if (isKick) void ctx.amp.logEvent({ event_type: "MEMBER_KICK", user_id: userId, event_properties: { serverId } });

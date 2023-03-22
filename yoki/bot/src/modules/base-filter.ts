@@ -1,7 +1,6 @@
-import { Embed } from "@guildedjs/webhook-client";
 import { Action, Severity } from "@prisma/client";
 import { stripIndents } from "common-tags";
-import { UserType } from "guilded.js";
+import { UserType, WebhookEmbed } from "guilded.js";
 
 import { Util } from "../helpers/util";
 import type { Server } from "../typings";
@@ -52,7 +51,7 @@ export default abstract class BaseFilterUtil<TFilterType = null> extends Util {
 			await resultingAction();
 		} catch (err: any) {
 			if (err instanceof Error)
-				await this.client.errorHandler.send("Error in base filter filtering callback", [new Embed().setDescription(stripIndents`${err.stack}`).setColor("RED")]);
+				await this.client.errorHandler.send("Error in base filter filtering callback", [new WebhookEmbed().setDescription(stripIndents`${err.stack}`).setColor("RED")]);
 		}
 
 		const memberExceeds = await this.getMemberExceedsThreshold(server, userId, server.spamInfractionPoints);
