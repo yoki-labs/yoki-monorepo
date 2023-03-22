@@ -10,7 +10,7 @@ import { WebhookEmbed } from "guilded.js";
 
 export default {
 	execute: async ([event, _oldMembers, ctx]): Promise<void> => {
-		const { serverId, members: newMembers } = events;
+		const { serverId, members: newMembers } = event;
 
 		// check if there's a log channel channel for message deletions
 		const roleUpdateLogChannel = await ctx.dbUtil.getLogChannel(serverId!, LogChannelType.member_roles_updates);
