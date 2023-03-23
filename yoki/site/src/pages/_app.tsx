@@ -4,8 +4,10 @@ import "../styles/styles.css";
 import type { AppProps } from "next/app";
 import Head from "next/head";
 import { SessionProvider } from "next-auth/react";
-import { ReactElement, ReactNode } from "react";
+import { ReactElement, ReactNode, useContext } from "react";
 import { NextPage } from "next/types";
+import { gqlClientContext } from "../utils/gqlContext";
+import { QueryClient, QueryClientProvider } from "react-query";
 
 const ogDescription = "Meet Yoki, your moderation companion. Guilded's first moderation bot.";
 const ogUrl = "https://yoki.gg/";
@@ -20,8 +22,11 @@ type AppPropsWithLayout = AppProps & {
 	Component: NextPageWithLayout
 }
 
+const queryClient = new QueryClient()
+
 function MyApp({ Component, pageProps: { session, ...pageProps } }: AppPropsWithLayout) {
 	const layout = Component.getLayout ?? ((page) => page);
+	const gql = useContext(gqlClientContext);
 
 	return layout(
 		<>
@@ -45,7 +50,11 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }: AppPropsWith
 				<link rel="icon" href="/favicon.ico" />
 			</Head>
 			<SessionProvider session={session}>
-				<Component {...pageProps} />
+				<QueryClientProvider client={queryClient}>
+					<gqlClientContext.Provider value={gql}>
+						<Component {...pageProps} />
+					</gqlClientContext.Provider>
+				</QueryClientProvider>
 			</SessionProvider>
 		</>
 	);
