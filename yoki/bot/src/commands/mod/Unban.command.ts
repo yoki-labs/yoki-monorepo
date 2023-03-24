@@ -9,7 +9,7 @@ const Unban: Command = {
 	name: "unban",
 	description: "unban a user.",
 	usage: "<targetId>",
-	examples: ["R40Mp0Wd"],
+	examples: ["R40Mp0Wd", "<@R40Mp0Wd>"],
 	requiredRole: RoleType.MOD,
 	category: Category.Moderation,
 	args: [

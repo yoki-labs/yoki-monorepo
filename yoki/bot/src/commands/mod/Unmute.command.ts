@@ -12,7 +12,7 @@ const Unmute: Command = {
 	name: "unmute",
 	description: "Removes a mute from the specified user.",
 	usage: "<target> [reason]",
-	examples: ["R40Mp0Wd", "R40Mp0Wd Stopped playing Town of Salem"],
+	examples: ["R40Mp0Wd", "<@R40Mp0Wd> Stopped playing Town of Salem"],
 	requiredRole: RoleType.MINIMOD,
 	category: Category.Moderation,
 	aliases: ["unhush", "untimeout", "um"],
