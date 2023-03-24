@@ -1,41 +1,35 @@
-import type { WSChatMessageCreatedPayload } from "@guildedjs/guilded-api-typings";
+import type { CommandArgValidator } from "../commands/Command";
+import { isUUID } from "../utils/matching";
 
-import { isUUID } from "@yokilabs/util";
-import type AbstractClient from "../Client";
-import type { UsedMentions } from "../commands/arguments";
+export default [async (input, args, index, message, __, usedMentions) => {
+	if (input.startsWith("#")) {
+		// Get the mentioned user and increment used mentions
+		const mention = message.mentions?.channels?.[usedMentions.channel++];
+		if (!mention) return null;
 
-export default async <TClient extends AbstractClient<TClient, any, any>>(
-    input: string,
-    args: string[],
-    index: number,
-    ctx: TClient,
-    packet: WSChatMessageCreatedPayload,
-    __: any,
-    usedMentions: UsedMentions
-) => {
-    if (input.startsWith("#")) {
-        // Get the mentioned user and increment used mentions
-        const mention = packet.d.message.mentions?.channels?.[usedMentions.channel++];
-        if (!mention) return null;
+		const channel = await message.client.channels.fetch(mention.id).catch(() => null);
+		if (!channel) return null;
 
-        const channel = await ctx.rest.router.getChannel(mention.id).catch(() => null);
-        if (!channel) return null;
+		const { name } = channel;
+		const spaceCount = name.split(" ").length;
 
-        const { name } = channel.channel;
-        const spaceCount = name.split(" ").length;
+		// [..., "#super", "cool", "channel", ...] => [..., "#super cool channel", ...]
+		args.splice(index + 1, spaceCount - 1);
 
-        // [..., "#super", "cool", "channel", ...] => [..., "#super cool channel", ...]
-        args.splice(index + 1, spaceCount - 1);
+		args[index] = name;
 
-        args[index] = name;
+		return channel;
+	} else if (isUUID(input)) {
+		return message.client.channels
+			.fetch(input)
+			.catch(() => null);
+	}
 
-        return channel.channel;
-    } else if (isUUID(input)) {
-        return ctx.rest.router
-            .getChannel(input)
-            .then((x) => x.channel)
-            .catch(() => null);
-    }
+	return null;
+}, (_arg) => `
+	I was expecting either a mention or ID of a channel. I received either an incorrect input, or I cannot find the specified channel.
 
-    return null;
-};
+	**The bot must have read, send, & manage permission on the channel**
+	
+	Ensure **none** of the bot's roles deny these permissions.
+`] satisfies CommandArgValidator;

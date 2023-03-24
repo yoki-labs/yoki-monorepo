@@ -1,7 +1,7 @@
-import type { TeamMemberPayload, WSChatMessageCreatedPayload } from "@guildedjs/guilded-api-typings";
 import { Embed } from "@guildedjs/webhook-client";
 import { codeBlock, inlineCode, inlineQuote } from "@yokilabs/util";
 import { stripIndents } from "common-tags";
+import type { Member, Message } from "guilded.js";
 
 // import { nanoid } from "nanoid";
 import booleanArg from "../args/boolean";
@@ -16,32 +16,7 @@ import UUID from "../args/UUID";
 import type AbstractClient from "../Client";
 import type { IRole, IServer } from "../db-types";
 import type { UsedMentions } from "./arguments";
-import type { BaseCommand, CommandArgument } from "./command-typings";
-
-// const argCast: Record<
-//     CommandArgType,
-//     (
-//         input: string,
-//         rawArgs: string[],
-//         index: number,
-//         ctx: AbstractContext,
-//         packet: WSChatMessageCreatedPayload,
-//         argument: CommandArgument,
-//         usedMentions: UsedMentions
-//     ) => ResolvedArgs | Promise<ResolvedArgs>
-// > = {
-//     string,
-//     number,
-//     boolean,
-//     enum: enumArg,
-//     enumList,
-//     rest,
-//     UUID,
-//     member,
-//     channel,
-// };
-
-type MessagePayload = WSChatMessageCreatedPayload;
+import type { BaseCommand, CommandArgType, CommandArgValidator } from "./command-typings";
 
 export default function createCommandHandler<
     TClient extends AbstractClient<TClient, TServer, TCommand>,
@@ -49,37 +24,31 @@ export default function createCommandHandler<
     TCommand extends BaseCommand<TCommand, TClient, TRoleType, TServer>,
     TRoleType extends string
 >(roleValues: Record<TRoleType, number>) {
-    type ArgumentConverter = (input: string, rawArgs: string[], index: number, ctx: TClient, packet: MessagePayload, argument: CommandArgument, usedMentions: UsedMentions) => any;
-
-    const argumentConverters: Record<string, ArgumentConverter> = { boolean: booleanArg, channel, enum: enumArg, enumList, member, number, rest, stringArg, UUID };
+    const argumentConverters: Record<CommandArgType, CommandArgValidator> = { boolean: booleanArg, channel, enum: enumArg, enumList, member, number, rest, string: stringArg, UUID };
 
     type AsyncUnit = Promise<unknown> | undefined;
 
     // Lambda incase JS detects there is no context in lambdas from the object and garbage collects the object
     return {
         fetchPrefix: async (
-            onNext: (packet: MessagePayload, ctx: TClient, server: TServer, prefix: string) => Promise<unknown> | undefined,
-            packet: MessagePayload,
-            ctx: TClient,
+            onNext: (context: [Message, TClient], server: TServer, prefix: string) => Promise<unknown> | undefined,
+            context: [Message, TClient],
             server: TServer
         ) => {
-            const { message } = packet.d;
-
-            if (message.createdByBotId || message.createdBy === ctx.userId || !message.serverId) return void 0;
-
             const prefix = server.prefix ?? process.env.DEFAULT_PREFIX!;
 
-            return onNext(packet, ctx, server, prefix);
+            return onNext(context, server, prefix);
         },
         parseCommand: async (
-            executeCommand: (packet: MessagePayload, ctx: TClient, server: TServer, prefix: string, command: TCommand | undefined, args: string[]) => Promise<unknown> | undefined,
-            packet: MessagePayload,
-            ctx: TClient,
+            executeCommand: (context: [Message, TClient], server: TServer, prefix: string, command: TCommand | undefined, args: string[]) => Promise<unknown> | undefined,
+            context: [Message, TClient],
             server: TServer,
             prefix: string
         ) => {
+            const [message, ctx] = context;
+
             // Parse the message into the command name and args ("?test arg1 arg2 arg3" = [ "test", "arg1", "arg2", "arg3" ])
-            let [commandName, ...args] = packet.d.message.content.slice(prefix.length).trim().split(/ +/g);
+            let [commandName, ...args] = message.content.slice(prefix.length).trim().split(/ +/g);
 
             if (!commandName) return void 0;
 
@@ -88,25 +57,24 @@ export default function createCommandHandler<
             // Get the command by the name or if it's an alias of a command
             const command = ctx.commands.get(commandName) ?? ctx.commands.find((command) => command.aliases?.includes(commandName) ?? false);
 
-            return executeCommand(packet, ctx, server, prefix, command, args);
+            return executeCommand(context, server, prefix, command, args);
         },
         fetchCommandInfo: async (
-            onNext: (packet: MessagePayload, ctx: TClient, server: TServer, command: TCommand, args: Record<string, any>) => AsyncUnit,
-            packet: MessagePayload,
-            ctx: TClient,
+            onNext: (context: [Message, TClient], server: TServer, command: TCommand, args: Record<string, any>) => AsyncUnit,
+            context: [Message, TClient],
             server: TServer,
             prefix: string,
             command: TCommand,
             args: string[]
         ) => {
-            const { message } = packet.d;
+            const [message, ctx] = context;
 
             while (command.parentCommand && command.subCommands?.size) {
                 // If no sub command, list all the available sub commands
                 if (!args[0]) {
                     void ctx.amp.logEvent({
                         event_type: "COMMAND_MISSING_SUBCOMMAND",
-                        user_id: message.createdBy,
+                        user_id: message.createdById,
                         event_properties: { serverId: message.serverId, command: command.name },
                     });
                     const subCommandName = command.subCommands.firstKey();
@@ -121,7 +89,7 @@ export default function createCommandHandler<
                 if (!subCommand) {
                     void ctx.amp.logEvent({
                         event_type: "COMMAND_INVALID_SUBCOMMAND",
-                        user_id: message.createdBy,
+                        user_id: message.createdById,
                         event_properties: { serverId: message.serverId, command: command.name },
                     });
                     return ctx.messageUtil.replyWithError(message, `No such sub-command`, `The specified sub-command ${inlineQuote(args[0], 100)} could not be found.`, {
@@ -149,17 +117,19 @@ export default function createCommandHandler<
                         continue;
                     }
 
-                    // Run the converter and see if the arg is valid
-                    const castArg = args[i] ? await argumentConverters[commandArg.type](args[i], args, i, ctx, packet, commandArg, usedMentions) : null;
+                    const [argValidator] = argumentConverters[commandArg.type];
+
+                    // run the caster and see if the arg is valid
+                    const castArg = args[i] ? await argValidator(args[i], args, i, message, commandArg, usedMentions) : null;
 
                     // If the arg is not valid, inform the user
                     if (castArg === null || (commandArg.max && ((castArg as any).length ?? castArg) > commandArg.max)) {
                         void ctx.amp.logEvent({
                             event_type: "COMMAND_BAD_ARGS",
-                            user_id: message.createdBy,
+                            user_id: message.createdById,
                             event_properties: { serverId: message.serverId, command: command.name, trippedArg: commandArg },
                         });
-                        return ctx.messageUtil.handleBadArg(message, prefix, commandArg, command);
+                        return ctx.messageUtil.handleBadArg(message, prefix, commandArg, command, argumentConverters, castArg);
                     }
 
                     // Resolve correctly converted argument
@@ -167,29 +137,30 @@ export default function createCommandHandler<
                 }
             }
 
-            return onNext(packet, ctx, server, command, resolvedArgs);
+            return onNext(context, server, command, resolvedArgs);
         },
         checkUserPermissions: async (
-            executeCommand: (packet: MessagePayload, ctx: TClient, server: TServer, member: TeamMemberPayload, command: TCommand, args: Record<string, any>) => AsyncUnit,
+            executeCommand: (context: [Message, TClient], server: TServer, member: Member, command: TCommand, args: Record<string, any>) => AsyncUnit,
             getRoles: (ctx: TClient, serverId: string) => Promise<IRole<TRoleType>[]>,
-            packet: MessagePayload,
-            ctx: TClient,
+            context: [Message, TClient],
             server: TServer,
             command: TCommand,
             args: Record<string, any>
         ) => {
-            const { message, serverId } = packet.d;
+            const [message, ctx] = context;
+            const { serverId } = message;
 
             // Fetch the member from either the server or the redis cache
-            const member = await ctx.serverUtil.getMember(message.serverId!, message.createdBy);
+            const member = await ctx.members.fetch(message.serverId!, message.createdById).catch(() => null);
+            if (!member) return;
 
             // Check if this user is not an operator
-            if (!ctx.operators.includes(message.createdBy)) {
+            if (!ctx.operators.includes(message.createdById)) {
                 // If this command requires a user to have a specific role, then check if they have it
                 if (command.requiredRole && !member.isOwner) {
                     // Get all the roles of the required type for this command
                     // const modRoles = await ctx.prisma.role.findMany({ where: { serverId: message.serverId } });
-                    const modRoles = await getRoles(ctx, serverId);
+                    const modRoles = await getRoles(ctx, serverId!);
                     const userModRoles = modRoles.filter((modRole) => member.roleIds.includes(modRole.roleId));
                     const requiredValue = roleValues[command.requiredRole];
 
@@ -197,7 +168,7 @@ export default function createCommandHandler<
                     if (!userModRoles.some((role) => roleValues[role.type] >= requiredValue)) {
                         void ctx.amp.logEvent({
                             event_type: "COMMAND_INVALID_USER_PERMISSIONS",
-                            user_id: message.createdBy,
+                            user_id: message.createdById,
                             event_properties: { serverId: message.serverId },
                         });
 
@@ -207,17 +178,15 @@ export default function createCommandHandler<
                 } else if (command.devOnly) return void 0;
             }
 
-            return executeCommand(packet, ctx, server, member, command, args);
+            return executeCommand(context, server, member, command, args);
         },
-        tryExecuteCommand: async (packet: MessagePayload, ctx: TClient, server: TServer, member: TeamMemberPayload, command: TCommand, args: Record<string, any>) => {
-            const { message } = packet.d;
-
+        tryExecuteCommand: async ([message, ctx]: [Message, TClient], server: TServer, member: Member, command: TCommand, args: Record<string, any>) => {
             try {
-                void ctx.amp.logEvent({ event_type: "COMMAND_RAN", user_id: message.createdBy, event_properties: { serverId: message.serverId!, command: command.name } });
+                void ctx.amp.logEvent({ event_type: "COMMAND_RAN", user_id: message.createdById, event_properties: { serverId: message.serverId!, command: command.name } });
 
                 // run the command with the message object, the casted arguments, the global context object (datbase, rest, ws),
                 // and the command context (raw packet, database server entry, member from API or cache)
-                await command.execute(message, args, ctx, { packet, server, member });
+                await command.execute(message, args, ctx, { message, server, member });
             } catch (e) {
                 // ID for error, not persisted in database at all
                 const referenceId = 10; // nanoid();
@@ -231,7 +200,7 @@ export default function createCommandHandler<
                                 Reference ID: ${inlineCode(referenceId)}
                                 Server: ${inlineCode(message.serverId)}
                                 Channel: ${inlineCode(message.channelId)}
-                                User: ${inlineCode(message.createdBy)} (${inlineCode(member?.user.name)})
+                                User: ${inlineCode(message.createdById)} (${inlineCode(member?.user?.name)})
                                 Error: \`\`\`${e.stack ?? e.message}\`\`\`
                             `
                             )

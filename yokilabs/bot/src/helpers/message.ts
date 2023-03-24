@@ -1,11 +1,13 @@
 import type { Collection } from "@discordjs/collection";
 import { Embed } from "@guildedjs/embeds";
-import type { ChatMessagePayload, EmbedField, EmbedPayload, RESTPostChannelMessagesBody } from "@guildedjs/guilded-api-typings";
-import { BotImages, Colors, cutArray, inlineCode, listInlineCode, StateImages } from "@yokilabs/util";
+import type { EmbedField, EmbedPayload, RESTPostChannelMessagesBody } from "@guildedjs/guilded-api-typings";
+import { BotImages, Colors, cutArray, inlineCode, StateImages } from "@yokilabs/util";
 import { stripIndents } from "common-tags";
+import type { Message } from "guilded.js";
 
 import type AbstractClient from "../Client";
-import type { BaseCommand, CommandArgument } from "../commands/command-typings";
+import type { ResolvedArgs } from "../commands/arguments";
+import type { BaseCommand, CommandArgType, CommandArgument, CommandArgValidator } from "../commands/command-typings";
 import type { IServer } from "../db-types";
 import Util from "./util";
 
@@ -57,24 +59,26 @@ export default class MessageUtil<
 
     // Send a message using either string, embed object, or raw object
     send(channelId: string, content: string | RESTPostChannelMessagesBody | Embed) {
-        return this.rest.router
-            .createChannelMessage(channelId, content instanceof Embed ? { embeds: [content.toJSON()] } : typeof content === "string" ? { content } : content)
-            .then((x) => x.message);
+        return this.client.messages.send(channelId, content instanceof Embed ? { embeds: [content.toJSON()] } : typeof content === "string" ? { content } : content);
     }
 
     // Reply to a message
-    reply(message: ChatMessagePayload, content: string | RESTPostChannelMessagesBody) {
+    reply(message: Message, content: string | RESTPostChannelMessagesBody) {
         const opts: RESTPostChannelMessagesBody | string = typeof content === "string" ? { replyMessageIds: [message.id], content } : content;
-        return this.rest.router.createChannelMessage(message.channelId, opts);
+        return this.client.messages.send(message.channelId, opts);
     }
 
-    handleBadArg(message: ChatMessagePayload, prefix: string, commandArg: CommandArgument, command: TCommand) {
+    handleBadArg(message: Message, prefix: string, commandArg: CommandArgument, command: TCommand, argumentConverters: Record<CommandArgType, CommandArgValidator>, castArg: ResolvedArgs) {
+        const [, invalidStringGenerator] = argumentConverters[commandArg.type];
+
         return this.replyWithError(
             message,
-            `Incorrect argument`,
-            `Sorry, but the usage of argument ${inlineCode(commandArg.name.split("-").join(" "))} was not correct. Was expecting a ${
-                commandArg.type === "enum" || commandArg.type === "enumList" ? listInlineCode(Object.keys(commandArg.values).map((x) => x.toLowerCase())) : commandArg.type
-            }${commandArg.max ? ` with the limit of ${commandArg.max}` : ""}.`,
+            "Incorrect Command Usage",
+            stripIndents`
+                For the argument \`${commandArg.name}\`, ${stripIndents(invalidStringGenerator(commandArg, castArg?.toString()))}
+            
+                _Need more help? [Join our support server](https://guilded.gg/Yoki)_
+            `,
             {
                 fields: [this.createUsageField(command, prefix)],
             }
@@ -119,12 +123,12 @@ export default class MessageUtil<
         });
     }
 
-    replyWithEmbed(message: ChatMessagePayload, embed: EmbedPayload, messagePartial?: Partial<RESTPostChannelMessagesBody>) {
+    replyWithEmbed(message: Message, embed: EmbedPayload, messagePartial?: Partial<RESTPostChannelMessagesBody>) {
         return this.sendEmbed(message.channelId, embed, { replyMessageIds: [message.id], ...messagePartial });
     }
 
     // State blocks
-    replyWithError(message: ChatMessagePayload, title: string, description: string, embedPartial?: EmbedPayload, messagePartial?: Partial<RESTPostChannelMessagesBody>) {
+    replyWithError(message: Message, title: string, description: string, embedPartial?: EmbedPayload, messagePartial?: Partial<RESTPostChannelMessagesBody>) {
         return this.replyWithEmbed(
             message,
             {
@@ -138,7 +142,7 @@ export default class MessageUtil<
         );
     }
 
-    replyWithUnexpected(message: ChatMessagePayload, description: string, embedPartial?: EmbedPayload, messagePartial?: Partial<RESTPostChannelMessagesBody>) {
+    replyWithUnexpected(message: Message, description: string, embedPartial?: EmbedPayload, messagePartial?: Partial<RESTPostChannelMessagesBody>) {
         return this.replyWithEmbed(
             message,
             {
@@ -152,7 +156,7 @@ export default class MessageUtil<
         );
     }
 
-    replyWithUnpermitted(message: ChatMessagePayload, description: string, embedPartial?: EmbedPayload, messagePartial?: Partial<RESTPostChannelMessagesBody>) {
+    replyWithUnpermitted(message: Message, description: string, embedPartial?: EmbedPayload, messagePartial?: Partial<RESTPostChannelMessagesBody>) {
         return this.replyWithEmbed(
             message,
             {
@@ -166,7 +170,7 @@ export default class MessageUtil<
         );
     }
 
-    replyWithNullState(message: ChatMessagePayload, title: string, description: string, embedPartial?: EmbedPayload, messagePartial?: Partial<RESTPostChannelMessagesBody>) {
+    replyWithNullState(message: Message, title: string, description: string, embedPartial?: EmbedPayload, messagePartial?: Partial<RESTPostChannelMessagesBody>) {
         return this.replyWithEmbed(
             message,
             {
@@ -180,7 +184,7 @@ export default class MessageUtil<
         );
     }
 
-    replyWithInfo(message: ChatMessagePayload, title: string, description: string, embedPartial?: EmbedPayload, messagePartial?: Partial<RESTPostChannelMessagesBody>) {
+    replyWithInfo(message: Message, title: string, description: string, embedPartial?: EmbedPayload, messagePartial?: Partial<RESTPostChannelMessagesBody>) {
         return this.replyWithEmbed(
             message,
             {
@@ -193,7 +197,7 @@ export default class MessageUtil<
         );
     }
 
-    replyWithBotInfo(message: ChatMessagePayload, title: string, description: string, embedPartial?: EmbedPayload, messagePartial?: Partial<RESTPostChannelMessagesBody>) {
+    replyWithBotInfo(message: Message, title: string, description: string, embedPartial?: EmbedPayload, messagePartial?: Partial<RESTPostChannelMessagesBody>) {
         return this.send(message.channelId, {
             embeds: [
                 {
@@ -266,7 +270,7 @@ export default class MessageUtil<
         );
     }
 
-    replyWithSuccess(message: ChatMessagePayload, title: string, description: string, embedPartial?: EmbedPayload, messagePartial?: Partial<RESTPostChannelMessagesBody>) {
+    replyWithSuccess(message: Message, title: string, description: string, embedPartial?: EmbedPayload, messagePartial?: Partial<RESTPostChannelMessagesBody>) {
         return this.replyWithEmbed(
             message,
             {
@@ -281,7 +285,7 @@ export default class MessageUtil<
 
     // Special blocks
     replyWithPaginatedContent<T>(info: {
-        replyTo: ChatMessagePayload;
+        replyTo: Message;
         title: string;
         items: T[];
         itemsPerPage: number;
@@ -320,7 +324,7 @@ export default class MessageUtil<
         );
     }
 
-    replyWithEnableStateList(message: ChatMessagePayload, title: string, enabledItems: string[], allItems: string[], descriptions: Record<string, string>) {
+    replyWithEnableStateList(message: Message, title: string, enabledItems: string[], allItems: string[], descriptions: Record<string, string>) {
         const itemDisplays = allItems.map((item) => {
             const formattedItem = `\`${item}\``;
             const itemWithState = enabledItems.includes(item) ? `:white_check_mark: **${formattedItem}**` : formattedItem;

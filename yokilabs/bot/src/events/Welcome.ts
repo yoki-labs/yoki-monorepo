@@ -1,16 +1,9 @@
-import type { WSWelcomePayload } from "@guildedjs/guilded-api-typings";
 import type AbstractClient from "../Client";
 
-export default <TClient extends AbstractClient<any, any, any>>(data: WSWelcomePayload["d"]["user"], client: TClient) => {
-    // user ID of bot
-    client.userId = data.id;
-
-    // creator of the bot
-    client.ownerId = data.createdBy;
-
+export default <TClient extends AbstractClient<any, any, any>>(client: TClient) => {
     // parsing the env variable of operators (string1,string2,string3) and setting to array
     client.operators = process.env.OPERATOR_IDS?.split(",") ?? [];
 
     // add owner of bot to operators list
-    client.operators.push(client.ownerId);
+    if (client.user) client.operators.push(client.user.createdBy);
 };

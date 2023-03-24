@@ -1,6 +1,13 @@
-import type { ServerChannelPayload, TeamMemberPayload } from "@guildedjs/guilded-api-typings";
+import type { Channel, Member } from "guilded.js";
 
-export type ResolvedArgs = string | string[] | number | boolean | TeamMemberPayload | ServerChannelPayload | null;
+// member cached in mem
+export type CachedMember = Member;
+
+// channel cached in mem
+export type CachedChannel = Channel;
+
+export interface ResolvedEnum { original: string, resolved: string }
+export type ResolvedArgs = string | string[] | number | boolean | ResolvedEnum | CachedMember | Channel | null;
 export interface UsedMentions {
     user: number;
     role: number;

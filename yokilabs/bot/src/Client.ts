@@ -1,15 +1,14 @@
 import { init } from "@amplitude/node";
 import { Collection } from "@discordjs/collection";
-import { RestManager } from "@guildedjs/rest";
 import { WebhookClient } from "@guildedjs/webhook-client";
-import { WebSocketManager } from "@guildedjs/ws";
+import { Client, ClientOptions } from "guilded.js";
 import RedisClient from "ioredis";
 
 import type { BaseCommand } from "./commands/command-typings";
 import type { IServer } from "./db-types";
 import Welcome from "./events/Welcome";
 import type MessageUtil from "./helpers/message";
-import type ServerUtil from "./helpers/server";
+import type { RoleUtil } from "./helpers/role";
 
 /**
  * Main class that stores utils, connections to various providers, and ws
@@ -18,20 +17,12 @@ export default abstract class AbstractClient<
     TClient extends AbstractClient<TClient, TServer, TCommand>,
     TServer extends IServer,
     TCommand extends BaseCommand<TCommand, TClient, string, TServer>
-> {
-    // user ID of the bot
-    userId: string | null = null;
-    // ID of the person who created the bot
-    ownerId: string | null = null;
+> extends Client {
     // List of operators who have elevated permissions with the bot
     operators: string[] = [];
 
     prefix: string;
 
-    // ws manager
-    readonly ws = new WebSocketManager({ token: process.env.GUILDED_TOKEN! });
-    // rest manager
-    readonly rest = new RestManager({ token: process.env.GUILDED_TOKEN! });
     // // database connection
     // readonly prisma = new PrismaClient();
     // cache connection
@@ -50,21 +41,21 @@ export default abstract class AbstractClient<
     readonly commands = new Collection<string, TCommand>();
 
     // Util
-    abstract serverUtil: ServerUtil<TClient>;
+    abstract roleUtil: RoleUtil<TClient>;
     abstract messageUtil: MessageUtil<TClient, TServer, TCommand>;
 
     // events that this bot handles, directly from the ws manager
     abstract eventHandler: { [x: string]: (packet: any, ctx: TClient, server: TServer) => Promise<unknown> | undefined };
 
-    constructor(prefix: string) {
-        // On welcome message
-        this.ws.emitter.on("ready", (data) => Welcome(data, this));
+    constructor(options: ClientOptions, prefix: string) {
+        super(options);
 
         this.prefix = prefix;
     }
 
     /** Start the bot connection */
     init() {
+        this.on("ready", () => Welcome(this));
         // Connecting to the WS gateway
         return this.ws.connect();
     }
