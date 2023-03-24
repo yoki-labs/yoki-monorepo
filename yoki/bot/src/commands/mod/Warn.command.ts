@@ -11,6 +11,7 @@ const Warn: Command = {
 	name: "warn",
 	description: "Warn a user.",
 	usage: "<target> [infraction points] [...reason]",
+	examples: ["R40Mp0Wd Not following rules", "<@R40Mp0Wd> Doing weird shenanigans.", "<@R40Mp0Wd> 20 After what you did, you definitely need +20 infractions."],
 	requiredRole: RoleType.MINIMOD,
 	category: Category.Moderation,
 	aliases: ["alert", "w"],

@@ -10,6 +10,7 @@ const Note: Command = {
 	name: "note",
 	description: "Adds an entry to someone's offence history without notifying them.",
 	usage: "<target> [infraction points] [...reason]",
+	examples: ["R40Mp0Wd Talked about Town of Salem. Warned them in DMs.", "<@R40Mp0Wd> Can't stop talking about Town of Salem. Warned them publicly in chat.", "<@R40Mp0Wd> 2 Suspicious account, likely a bot."],
 	requiredRole: RoleType.MINIMOD,
 	category: Category.Moderation,
 	aliases: ["n"],
