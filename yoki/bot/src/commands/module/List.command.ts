@@ -10,6 +10,7 @@ const descriptions: Record<string, string> = {
     antiraid: "Forces new people to use captcha and deals with raids.",
     nsfwscan: "Filters out NSFW/NSFL images from chat.",
     invitescan: "Filters out server invites and links that aren't of this server or aren't whitelisted.",
+    appeals: "Allows people who were banned to appeal for an unban."
 };
 
 const List: Command = {

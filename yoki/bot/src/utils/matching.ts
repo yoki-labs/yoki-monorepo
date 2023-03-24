@@ -1,5 +1,5 @@
 export const isUUID = (str: string) => /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/.test(str);
-export const isHashId = (str: string) => /^[0-9A-Za-z]{8,}$/.test(str);
+export const isHashId = (str: string) => /^[0-9A-Za-z]{8,12}$/.test(str);
 export const isDomain = (str: string) => /^[^!@#$%^&*()?<>.,~`'":;\\\/|\s()\[\]]+\.[^!@#$%^&*()?<>.,~`'":;\\\/|\s()\[\]]+$/.test(str);
 
 export const IMAGE_REGEX = /!\[[^\]]*\]\((?<filename>.*?)(?=\"|\))(?<optionalpart>\".*\")?\)/g;
