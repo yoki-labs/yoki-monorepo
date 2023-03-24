@@ -6,7 +6,20 @@ import { inlineCode } from "../utils/formatters";
 import { Category } from "./Category";
 import type { Command } from "./Command";
 
-const nonPrivateLogs: LogChannelType[] = [LogChannelType.message_edits, LogChannelType.message_deletions, LogChannelType.topic_edits, LogChannelType.topic_deletions, LogChannelType.comment_deletions];
+// Kind of spellchecker
+type UnprivateLogChannelType = Extract<LogChannelType, "message_edits" | "message_deletions" | "topic_edits" | "topic_deletions" | "comment_deletions" | "member_updates">;
+
+const nonPrivateLogDescriptions: Record<UnprivateLogChannelType, string> = {
+    [LogChannelType.message_edits]: "New and old contents of an edited message will be shown in the mod logs.",
+    [LogChannelType.message_deletions]: "Deleted messages and their previous content will be shown in the mod logs.",
+    [LogChannelType.topic_edits]: "New and old contents of an edited forum topic will be shown in the mod logs.",
+    [LogChannelType.topic_deletions]: "Deleted forum topics and their previous content will be shown in the mod logs.",
+    [LogChannelType.comment_deletions]: "Deleted forum topic comments and their previous content will be shown in the mod logs.",
+    [LogChannelType.member_updates]: "Nicknames changes with old nickname and new nickname will be shown in the mod logs.",
+};
+
+const nonPrivateLogs: LogChannelType[] = Object.keys(nonPrivateLogDescriptions) as LogChannelType[];
+
 const possibleNonPrivateLogs = nonPrivateLogs.concat(LogChannelType.all);
 
 const Privacy: Command = {
@@ -54,7 +67,7 @@ const Privacy: Command = {
     },
 };
 
-const formatNoIssue = (log: LogChannelType) => `:white_check_mark: **Doesn't have ${inlineCode(log)} logging.**`;
-const formatPrivacyIssue = (log: LogChannelType) => `:x: **Has ${inlineCode(log)} logging.**`;
+const formatNoIssue = (log: LogChannelType) => `:large_green_circle: **Doesn't have ${inlineCode(log)} logging.**`;
+const formatPrivacyIssue = (log: LogChannelType) => `:red_circle: **Has ${inlineCode(log)} logging.**\n${nonPrivateLogDescriptions[log]}`;
 
 export default Privacy;

@@ -28,9 +28,9 @@ const List: Command = {
 				message,
 				`No log channels`,
 				stripIndents`
-                There are no log channels set for this server.
-                You can set the following types: ${listInlineCode(Object.values(LogChannelType))}
-            `
+					There are no log channels set for this server.
+					You can set the following types: ${listInlineCode(Object.values(LogChannelType))}
+				`
 			);
 
 		if (channel === null) {
