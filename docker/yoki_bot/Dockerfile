@@ -14,7 +14,6 @@ RUN apk update \
 	&& curl -L https://yarnpkg.com/install.sh | bash 
 
 COPY tsconfig.json ./
-
 WORKDIR /opt/build/yoki/bot
 
 COPY ./yoki/bot/package.json ./

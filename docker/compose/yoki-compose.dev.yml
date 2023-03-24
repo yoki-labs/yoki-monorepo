@@ -1,0 +1,45 @@
+version: "3.7"
+services:
+    db:
+        image: postgres
+        restart: unless-stopped
+        container_name: YOKI_DB
+        environment:
+            POSTGRES_DB: yoki
+            POSTGRES_USER: yoki_user
+            POSTGRES_PASSWORD: yoki_pass
+        networks:
+            - main-network
+        volumes:
+            - yoki-postgres-data:/var/lib/postgresql/data
+        ports:
+            - 5432:5432
+    bot:
+        build:
+            context: ../../
+            dockerfile: ./docker/yoki_bot/Dockerfile
+        env_file: ../../.env
+        command: "yarn run dev"
+        depends_on:
+            - db
+        volumes:
+            - "../../yoki/bot/src:/usr/app/yoki/bot/src"
+        restart: "unless-stopped"
+        environment:
+            DATABASE_URL: "postgresql://yoki_user:yoki_pass@db:5432/yoki?schema=public"
+            BUILD_ENV: development
+    nsfw:
+        build:
+            context: ../../
+            dockerfile: ./docker/nsfw/Dockerfile
+        env_file: ../../.env
+        platform: linux/x86_64
+        command: "yarn run dev"
+        volumes:
+            - "../../yoki/nsfw/src:/usr/app/yoki/nsfw/src"
+        restart: "no"
+        environment:
+            TOKEN_SECRET: "TESTTOKENSECRET"
+
+volumes:
+    yoki-postgres-data:

@@ -1,0 +1,34 @@
+version: "3.7"
+services:
+    db:
+        image: postgres
+        restart: unless-stopped
+        container_name: TUXEDO_DB
+        environment:
+            POSTGRES_DB: tuxedo
+            POSTGRES_USER: tuxedo_user
+            POSTGRES_PASSWORD: tuxedo_pass
+        networks:
+            - main-network
+        volumes:
+            - tuxedo-postgres-data:/var/lib/postgresql/data
+        ports:
+            - 5432:5432
+    bot:
+        build:
+            context: ../../
+            dockerfile: ./docker/tuxedo_bot/Dockerfile
+        env_file: ../../tuxedo/.env
+        command: "yarn run dev"
+        depends_on:
+            - db
+            - cache
+        volumes:
+            - "../../tuxedo/bot/src:/usr/app/tuxedo/bot/src"
+        restart: "unless-stopped"
+        environment:
+            DATABASE_URL: "postgresql://tuxedo_user:tuxedo_pass@db:5432/tuxedo?schema=public"
+            BUILD_ENV: development
+
+volumes:
+    tuxedo-postgres-data:
