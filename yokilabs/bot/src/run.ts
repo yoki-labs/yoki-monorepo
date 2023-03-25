@@ -28,7 +28,7 @@ export async function setClientEvents<TClient extends AbstractClient<TClient, an
     const eventFiles = await recursive(dir);
 
     for (const eventFile of eventFiles.filter((x) => !x.endsWith(".ignore.js") && !x.endsWith(".map"))) {
-        const event = (await import(eventFile)).default as GEvent<any>;
+        const event = (await import(eventFile)).default as GEvent<TClient, any>;
         if (!event.name) {
             console.log(`ERROR loading event ${eventFile}`);
             continue;

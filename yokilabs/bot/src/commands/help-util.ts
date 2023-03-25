@@ -1,7 +1,8 @@
 import { Collection } from "@discordjs/collection";
-import type { ChatMessagePayload, EmbedField } from "@guildedjs/guilded-api-typings";
+import type { EmbedField } from "@guildedjs/guilded-api-typings";
 import { inlineCode, inlineQuote, listInlineCode } from "@yokilabs/util";
 import { stripIndents } from "common-tags";
+import type { Message } from "guilded.js";
 import type AbstractClient from "../Client";
 import type { IServer } from "../db-types";
 import type { CommandContext } from "../typings";
@@ -18,7 +19,7 @@ export function getAllCommands<TClient extends AbstractClient<any, any, any>, TS
     return commandCategoryMap.filter((x) => Boolean(x.length));
 }
 
-export function replyWithSingleCommand<TClient extends AbstractClient<any, any, any>, TServer extends IServer, TCommand extends BaseCommand<TCommand, TClient, string, TServer>>(ctx: TClient, commandCtx: CommandContext<TServer>, message: ChatMessagePayload, commandPath: string, categories: string[]) {
+export function replyWithSingleCommand<TClient extends AbstractClient<any, any, any>, TServer extends IServer, TCommand extends BaseCommand<TCommand, TClient, string, TServer>>(ctx: TClient, commandCtx: CommandContext<TServer>, message: Message, commandPath: string, categories: string[]) {
     // We got 'abc xyz' from the rest arg, so we need ['abc', 'xyz']
     const commandPathSegments = commandPath.split(" ");
 
@@ -69,7 +70,7 @@ export function replyWithSingleCommand<TClient extends AbstractClient<any, any, 
 
     void ctx.amp.logEvent({
         event_type: "HELP_SINGLE_COMMAND",
-        user_id: message.createdBy,
+        user_id: message.createdById,
         event_properties: { serverId: message.serverId },
     });
 

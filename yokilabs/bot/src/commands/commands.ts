@@ -1,7 +1,6 @@
-import { Embed } from "@guildedjs/webhook-client";
 import { codeBlock, inlineCode, inlineQuote } from "@yokilabs/util";
 import { stripIndents } from "common-tags";
-import type { Member, Message } from "guilded.js";
+import { Member, Message, WebhookEmbed } from "guilded.js";
 
 // import { nanoid } from "nanoid";
 import booleanArg from "../args/boolean";
@@ -194,7 +193,7 @@ export default function createCommandHandler<
                     console.error(e);
                     // send the error to the error channel
                     void ctx.errorHandler.send("Error in command usage!", [
-                        new Embed()
+                        new WebhookEmbed()
                             .setDescription(
                                 stripIndents`
                                 Reference ID: ${inlineCode(referenceId)}

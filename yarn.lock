@@ -389,20 +389,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@guildedjs/embeds@npm:^0.2.0":
-  version: 0.2.0
-  resolution: "@guildedjs/embeds@npm:0.2.0"
-  checksum: 16069358f1ac42469e4fbd6890b572274412ee27dcf6cb52c8f697136b6947a4c482b20d32d16e22695b36627609beab3e5509015520299e678e43ba5085cda6
-  languageName: node
-  linkType: hard
-
-"@guildedjs/guilded-api-typings@npm:3.0.0":
-  version: 3.0.0
-  resolution: "@guildedjs/guilded-api-typings@npm:3.0.0"
-  checksum: c78012ef5e8a26773d6a1dd87f012a491f7ea18abbd47e15707c67d6e234480252528f016ed7ad16bf5e6d26044498f3d25a0727ba9af54040120224b36f9f6e
-  languageName: node
-  linkType: hard
-
 "@guildedjs/guilded-api-typings@npm:3.0.1":
   version: 3.0.1
   resolution: "@guildedjs/guilded-api-typings@npm:3.0.1"
@@ -424,17 +410,6 @@ __metadata:
     node-fetch: 2.6.7
     qs: ^6.10.5
   checksum: 347e45f242b188af26640145aa894baefcbf8a448b8afcb3f75c668fc7684c7ad7e403953a2b0ac22e8d2f1311d23851fed9661b429a9ee90e183f68357ebcfe
-  languageName: node
-  linkType: hard
-
-"@guildedjs/rest@npm:3.0.0":
-  version: 3.0.0
-  resolution: "@guildedjs/rest@npm:3.0.0"
-  dependencies:
-    form-data: ^4.0.0
-    node-fetch: 2.6.7
-    qs: ^6.10.5
-  checksum: 3e0dcf7f0693b41b7fa14a941e56369f12cfea48e7f48e4e23ab7710d35ae466c17aae26bae9f2e27c666bb393b74ffea35bd51813250d7d6dcbade753a5eac1
   languageName: node
   linkType: hard
 
@@ -469,18 +444,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@guildedjs/webhook-client@npm:^0.4.2":
-  version: 0.4.5
-  resolution: "@guildedjs/webhook-client@npm:0.4.5"
-  dependencies:
-    "@guildedjs/guilded-api-typings": 3.0.0
-    "@guildedjs/rest": 3.0.0
-    form-data: ^4.0.0
-  checksum: 847174bcbb0253c792db26d78bcd9891fdb10b837ca45a0d198d8d307570a206dcb091b4a0127d517e4c556e2f6535b331bca6f9370d2e293dafaf4e887ab3e4
-  languageName: node
-  linkType: hard
-
-"@guildedjs/ws@npm:1.6.1, @guildedjs/ws@npm:^1.4.11":
+"@guildedjs/ws@npm:1.6.1":
   version: 1.6.1
   resolution: "@guildedjs/ws@npm:1.6.1"
   dependencies:
@@ -1337,11 +1301,7 @@ __metadata:
   dependencies:
     "@amplitude/node": ^1.10.2
     "@discordjs/collection": ^1.2.0
-    "@guildedjs/embeds": ^0.2.0
     "@guildedjs/guilded-api-typings": ^2.8.7
-    "@guildedjs/rest": ^2.9.1
-    "@guildedjs/webhook-client": ^0.4.2
-    "@guildedjs/ws": ^1.4.11
     "@node-redis/json": ^1.0.2
     "@prisma/client": ^4.6.1
     "@types/common-tags": ^1.8.1
@@ -1362,6 +1322,7 @@ __metadata:
     eslint-plugin-react-hooks: ^4.6.0
     eslint-plugin-simple-import-sort: ^7.0.0
     eslint-plugin-unused-imports: ^2.0.0
+    guilded.js: 0.20.0
     husky: 7.0.4
     ioredis: ^5.2.4
     lint-staged: 12.3.7
@@ -2128,11 +2089,7 @@ __metadata:
   dependencies:
     "@amplitude/node": ^1.10.2
     "@discordjs/collection": ^1.2.0
-    "@guildedjs/embeds": ^0.2.0
     "@guildedjs/guilded-api-typings": ^2.8.7
-    "@guildedjs/rest": ^2.9.1
-    "@guildedjs/webhook-client": ^0.4.2
-    "@guildedjs/ws": ^1.4.11
     "@node-redis/json": ^1.0.2
     "@types/common-tags": ^1.8.1
     "@types/node": ^18.11.9
@@ -2141,6 +2098,7 @@ __metadata:
     common-tags: ^1.8.2
     dotenv: ^16.0.3
     dotenv-cli: ^6.0.0
+    guilded.js: 0.20.0
     ioredis: ^5.2.4
     nanoid: ^4.0.0
     node-fetch: ^3.2.10
@@ -2167,11 +2125,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@yokilabs/util@workspace:yokilabs/util"
   dependencies:
-    "@guildedjs/embeds": ^0.2.0
     "@guildedjs/guilded-api-typings": ^2.8.7
-    "@guildedjs/rest": ^2.9.1
-    "@guildedjs/webhook-client": ^0.4.2
-    "@guildedjs/ws": ^1.4.11
     "@node-redis/json": ^1.0.2
     "@types/common-tags": ^1.8.1
     "@types/node": ^18.11.9
@@ -2179,6 +2133,7 @@ __metadata:
     common-tags: ^1.8.2
     dotenv: ^16.0.3
     dotenv-cli: ^6.0.0
+    guilded.js: 0.20.0
     ioredis: ^5.2.4
     nanoid: ^4.0.0
     node-fetch: ^3.2.10

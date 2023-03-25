@@ -1,6 +1,6 @@
-import { Embed } from "@guildedjs/embeds";
 import { getAllCommands, replyWithSingleCommand } from "@yokilabs/bot";
 import { Colors, inlineCode, listInlineCode } from "@yokilabs/util";
+import { Embed } from "guilded.js";
 import { Category } from "./Category";
 import type { Command } from "./Command";
 const categories = Object.values(Category) as string[];
@@ -27,7 +27,7 @@ const Help: Command = {
 
         void ctx.amp.logEvent({
             event_type: "HELP_ALL_COMMANDS",
-            user_id: message.createdBy,
+            user_id: message.createdById,
             event_properties: { serverId: message.serverId },
         });
 

@@ -1,6 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-import { AbstractClient, MessageUtil } from "@yokilabs/bot";
-import { RoleUtil } from "@yokilabs/bot/src/helpers/role";
+import { AbstractClient, MessageUtil, RoleUtil } from "@yokilabs/bot";
 
 import { DatabaseUtil } from "./helpers/database";
 import type { Command, Server } from "./typings";

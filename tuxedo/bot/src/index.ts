@@ -1,8 +1,7 @@
-import { Embed } from "@guildedjs/webhook-client";
-import { setClientCommands } from "@yokilabs/bot";
-import { setClientEvents } from "@yokilabs/bot/src";
+import { setClientCommands, setClientEvents } from "@yokilabs/bot";
 import { codeBlock, errorEmbed } from "@yokilabs/util";
 import { config } from "dotenv";
+import { WebhookEmbed } from "guilded.js";
 import { join } from "path";
 
 import TuxedoClient from "./Client";
@@ -32,7 +31,7 @@ client.ws.emitter.on("gatewayEvent", async (event, data) => {
 
 client.ws.emitter.on("error", (err) => {
     console.log(`[WS ERR]: ${err}`);
-    void client.errorHandler.send("Error in command usage!", [new Embed().setDescription("[WS ERR]:").addField(`Err`, codeBlock(err)).setColor("RED")]);
+    void client.errorHandler.send("Error in command usage!", [new WebhookEmbed().setDescription("[WS ERR]:").addField(`Err`, codeBlock(err)).setColor("RED")]);
 });
 
 client.ws.emitter.on("gatewayEvent", async (event, data) => {
@@ -50,7 +49,7 @@ client.ws.emitter.on("gatewayEvent", async (event, data) => {
 
 client.ws.emitter.on("error", (err) => {
     console.log(`[WS ERR]: ${err}`);
-    void client.errorHandler.send("Error in command usage!", [new Embed().setDescription("[WS ERR]:").addField(`Err`, codeBlock(err)).setColor("RED")]);
+    void client.errorHandler.send("Error in command usage!", [new WebhookEmbed().setDescription("[WS ERR]:").addField(`Err`, codeBlock(err)).setColor("RED")]);
 });
 
 void (async (): Promise<void> => {

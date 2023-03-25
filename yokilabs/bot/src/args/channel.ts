@@ -1,5 +1,5 @@
-import type { CommandArgValidator } from "../commands/Command";
-import { isUUID } from "../utils/matching";
+import { isUUID } from "@yokilabs/util";
+import type { CommandArgValidator } from "../commands/command-typings";
 
 export default [async (input, args, index, message, __, usedMentions) => {
 	if (input.startsWith("#")) {
@@ -32,4 +32,4 @@ export default [async (input, args, index, message, __, usedMentions) => {
 	**The bot must have read, send, & manage permission on the channel**
 	
 	Ensure **none** of the bot's roles deny these permissions.
-`] satisfies CommandArgValidator;
+`]satisfies CommandArgValidator;

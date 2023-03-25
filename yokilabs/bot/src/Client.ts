@@ -1,14 +1,13 @@
 import { init } from "@amplitude/node";
 import { Collection } from "@discordjs/collection";
-import { WebhookClient } from "@guildedjs/webhook-client";
-import { Client, ClientOptions } from "guilded.js";
+import { Client, ClientOptions, WebhookClient } from "guilded.js";
 import RedisClient from "ioredis";
 
 import type { BaseCommand } from "./commands/command-typings";
 import type { IServer } from "./db-types";
 import Welcome from "./events/Welcome";
 import type MessageUtil from "./helpers/message";
-import type { RoleUtil } from "./helpers/role";
+import type RoleUtil from "./helpers/role";
 
 /**
  * Main class that stores utils, connections to various providers, and ws
