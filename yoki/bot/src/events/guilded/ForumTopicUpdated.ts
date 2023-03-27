@@ -10,7 +10,8 @@ import { moderateContent } from "../../utils/moderation";
 export default {
 	execute: async ([forumTopic, _oldForumTopic, ctx]) => {
 		const { serverId } = forumTopic;
-		const server = await ctx.dbUtil.getServer(serverId);
+		const server = await ctx.dbUtil.getServer(serverId, false);
+		if(!server) return;
 
 		// get the old message from the database if we logged it before
 		const oldContent = await ctx.dbUtil.getForumTopic(forumTopic.channelId, forumTopic.id);

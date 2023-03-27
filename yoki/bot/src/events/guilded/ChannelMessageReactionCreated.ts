@@ -9,9 +9,9 @@ import { summarizeRolesOrUsers } from "../../utils/messages";
 
 export default {
     execute: async ([reaction, ctx]) => {
-        const { serverId } = reaction;
-        const { channelId, messageId, emote, createdBy } = reaction;
-        const server = await ctx.dbUtil.getServer(serverId);
+        const { serverId, channelId, messageId, emote, createdBy } = reaction;
+		const server = await ctx.dbUtil.getServer(serverId, false);
+		if(!server) return;
 
         const lookupReaction = await ctx.prisma.reactionAction.findFirst({
             where: { messageId, channelId, serverId, emoteId: emote.id },

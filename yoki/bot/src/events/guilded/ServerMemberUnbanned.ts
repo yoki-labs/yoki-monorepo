@@ -10,6 +10,7 @@ import { codeBlock, inlineCode } from "../../utils/formatters";
 export default {
 	execute: async ([memberBan, ctx]) => {
 		const { serverId, reason } = memberBan;
+		
 		const userId = memberBan.user.id;
 		const authorId = memberBan.createdBy;
 

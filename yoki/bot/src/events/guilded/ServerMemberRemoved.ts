@@ -10,8 +10,9 @@ import { inlineCode } from "../../utils/formatters";
 
 export default {
 	execute: async ([event, ctx]) => {
-		const { serverId, userId, isBan, isKick } = event;
-		const server = await ctx.dbUtil.getServer(serverId);
+		const { serverId, userId, isBan, isKick } = event;	
+		const server = await ctx.dbUtil.getServer(serverId, false);
+		if(!server) return;
 
 		if (isBan) void ctx.amp.logEvent({ event_type: "MEMBER_BAN", user_id: userId, event_properties: { serverId } });
 		else if (isKick) void ctx.amp.logEvent({ event_type: "MEMBER_KICK", user_id: userId, event_properties: { serverId } });
