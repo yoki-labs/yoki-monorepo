@@ -3,7 +3,7 @@ dist/
 types/
 *.d.ts
 *.json
-generated/
+generated/type-graphql/**
 
 next.config.js
 postcss.config.js
