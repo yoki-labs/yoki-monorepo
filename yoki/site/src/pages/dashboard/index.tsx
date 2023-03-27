@@ -2,7 +2,7 @@ import { GetServerSideProps, GetServerSidePropsResult, NextPage } from "next";
 import { unstable_getServerSession } from "next-auth";
 import Image from "next/image";
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { GuildedServer } from "../../lib/@types/guilded/Server";
 import { methods } from "../../lib/Fetcher";
 
@@ -13,10 +13,10 @@ import { authOptions } from "../api/auth/[...nextauth]";
 
 export const getServerSideProps: GetServerSideProps = async (ctx): Promise<GetServerSidePropsResult<{ servers: GuildedServer[] }>> => {
     const session = await unstable_getServerSession(ctx.req, ctx.res, authOptions);
-    if (!session?.user.access_token) return { redirect: { "destination": "/auth/signin", permanent: false } };
+    if (!session?.user.access_token) return { redirect: { destination: "/auth/signin", permanent: false } };
 
     const servers = await methods(session.user.access_token).get("https://authlink.guildedapi.com/api/v1/users/@me/servers");
-    if (servers.status === 403) return { redirect: { "destination": "/auth/signin", permanent: false } };
+    if (servers.status === 403) return { redirect: { destination: "/auth/signin", permanent: false } };
     return { props: { servers } };
 };
 
@@ -50,7 +50,9 @@ const Dashboard: NextPage<{ servers: GuildedServer[] }> = ({ servers }) => {
                                             height={75}
                                             alt={server.name}
                                         />
-                                        <h3 className={`text-white align-middle max-w-[7rem] break-words text-lg`}>{server.name.length > 17 ? server.name.slice(0, 17) + "..." : server.name}</h3>
+                                        <h3 className={`text-white align-middle max-w-[7rem] break-words text-lg`}>
+                                            {server.name.length > 17 ? server.name.slice(0, 17) + "..." : server.name}
+                                        </h3>
                                     </div>
                                 </Link>
                             ))}
