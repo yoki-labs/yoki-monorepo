@@ -1,4 +1,5 @@
 import Collection from "@discordjs/collection";
+import { RoleType } from "@prisma/client";
 
 import { Category } from "../Category";
 import type { Command } from "../Command";
@@ -11,6 +12,7 @@ const Ignore: Command = {
     examples: ["channel channel_id"],
     parentCommand: true,
     category: Category.Filter,
+    requiredRole: RoleType.ADMIN,
     subCommands: new Collection<string, Command>().set("channel", IgnoreChannel).set("content", IgnoreContent),
     execute: () => void 0,
 };

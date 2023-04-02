@@ -1,4 +1,5 @@
 import Collection from "@discordjs/collection";
+import { RoleType } from "@prisma/client";
 
 import { Category } from "../Category";
 import type { Command } from "../Command";
@@ -12,6 +13,7 @@ const Preset: Command = {
     examples: ["enable slurs", "disable slurs"],
     aliases: ["presets"],
     category: Category.Filter,
+    requiredRole: RoleType.MOD,
     parentCommand: true,
     subCommands: new Collection<string, Command>().set("enable", Enable).set("disable", Disable).set("list", List),
     execute: () => void 0,

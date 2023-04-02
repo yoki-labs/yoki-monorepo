@@ -1,4 +1,5 @@
 import Collection from "@discordjs/collection";
+import { RoleType } from "@prisma/client";
 
 import { Category } from "../../Category";
 import type { Command } from "../../Command";
@@ -14,6 +15,7 @@ const Url: Command = {
     parentCommand: true,
     subCommand: true,
     category: Category.Settings,
+    requiredRole: RoleType.MOD,
     subCommands: new Collection<string, Command>().set("add", Add).set("remove", Remove).set("whitelist", Whitelist),
     execute: () => void 0,
 };
