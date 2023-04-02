@@ -1,4 +1,5 @@
 import Collection from "@discordjs/collection";
+import { RoleType } from "@prisma/client";
 
 import { Category } from "../Category";
 import type { Command } from "../Command";
@@ -13,6 +14,7 @@ const Role: Command = {
     examples: ["mute", "mute 12345678"],
     aliases: ["levels", "level", "modaction", "sv"],
     category: Category.Settings,
+    requiredRole: RoleType.ADMIN,
     parentCommand: true,
     subCommands: new Collection<string, Command>().set("staff", Staff).set("mute", Mute).set("member", Member),
     execute: () => void 0,
