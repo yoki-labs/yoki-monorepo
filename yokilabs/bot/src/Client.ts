@@ -55,7 +55,7 @@ export default abstract class AbstractClient<
     /** Start the bot connection */
     init() {
         this.on("ready", () => Welcome(this));
-        // Connecting to the WS gateway
-        return this.ws.connect();
+
+        return this.login();
     }
 }

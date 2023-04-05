@@ -16,19 +16,6 @@ config({ path: join(__dirname, "..", "..", ".env") });
 
 const client = new TuxedoClient({ token: process.env.GUILDED_TOKEN! }, process.env.DEFAULT_PREFIX!);
 
-client.ws.emitter.on("gatewayEvent", async (event, data) => {
-    const { serverId } = data.d as { serverId?: string | null };
-    if (!serverId) return;
-
-    const serverFromDb = await client.dbUtil.getServer(serverId);
-
-    if (serverFromDb?.blacklisted) return void 0;
-
-    return client.eventHandler[event]?.(data, client, serverFromDb).catch(
-        (err) => client.errorHandler.send("Uncaught event error", [errorEmbed(err, { server: serverId, event })])
-    );
-});
-
 client.ws.emitter.on("error", (err) => {
     console.log(`[WS ERR]: ${err}`);
     void client.errorHandler.send("Error in command usage!", [new WebhookEmbed().setDescription("[WS ERR]:").addField(`Err`, codeBlock(err)).setColor("RED")]);
@@ -45,11 +32,6 @@ client.ws.emitter.on("gatewayEvent", async (event, data) => {
     return client.eventHandler[event]?.(data, client, serverFromDb).catch((err) =>
         client.errorHandler.send("Uncaught event error", [errorEmbed(err, { server: serverId, event })])
     );
-});
-
-client.ws.emitter.on("error", (err) => {
-    console.log(`[WS ERR]: ${err}`);
-    void client.errorHandler.send("Error in command usage!", [new WebhookEmbed().setDescription("[WS ERR]:").addField(`Err`, codeBlock(err)).setColor("RED")]);
 });
 
 void (async (): Promise<void> => {
