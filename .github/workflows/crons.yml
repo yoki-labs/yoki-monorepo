@@ -1,36 +1,39 @@
 name: Crons
 
 on:
-  workflow_dispatch:
-  schedule:
-    - cron: '0 0 * * 5'
+    workflow_dispatch:
+    schedule:
+        - cron: "0 0 * * 5"
 
 jobs:
-  messages:
-    name: Clear old messages
-    runs-on: ubuntu-latest
-    steps:
-      - name: Clone repo
-        uses: actions/checkout@v3
+    messages:
+        name: Clear old messages
+        runs-on: ubuntu-latest
+        steps:
+            - name: Clone repo
+              uses: actions/checkout@v3
 
-      - name: Set up Node v16
-        uses: actions/setup-node@v3
-        with:
-          node-version: '16'
-          cache: 'yarn'
+            - name: Set up Node v16
+              uses: actions/setup-node@v3
+              with:
+                  node-version: "16"
+                  cache: "yarn"
 
-      - name: Install dependencies
-        run: yarn install
+            - name: Install dependencies
+              run: yarn install
 
-      - name: Run Message Clearer
-        run: npx ts-node yoki/bot/scripts/delete-old-messages.ts
-        env:
-          DATABASE_URL: ${{ secrets.DATABASE_MIGRATION_URL }}
+            - name: Generate Prisma TypeScript
+              run: yarn generate
 
-      - name: Guilded notification
-        uses: guildedjs/guilded-webhook-action@v1
-        env:
-          WEBHOOK_URL: ${{ secrets.GUILDED_WEBHOOK }}
-        with:
-          title: 'Old Messages Cleared'
-          description: '${{ steps.t.outputs.year }}/${{ steps.t.outputs.month }}/${{ steps.t.outputs.day }}'
+            - name: Run Message Clearer
+              run: npx ts-node yoki/bot/scripts/delete-old-messages.ts
+              env:
+                  DATABASE_URL: ${{ secrets.DATABASE_MIGRATION_URL }}
+
+            - name: Guilded notification
+              uses: guildedjs/guilded-webhook-action@v1
+              env:
+                  WEBHOOK_URL: ${{ secrets.GUILDED_WEBHOOK }}
+              with:
+                  title: "Old Messages Cleared"
+                  description: "${{ steps.t.outputs.year }}/${{ steps.t.outputs.month }}/${{ steps.t.outputs.day }}"

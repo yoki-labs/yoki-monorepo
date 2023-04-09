@@ -15,49 +15,54 @@ const ogFace = "https://yoki.gg/face.png";
 const ogTitle = "Yoki";
 
 export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
-	getLayout?: (page: ReactElement) => ReactNode
-}
+    getLayout?: (page: ReactElement) => ReactNode;
+};
 
 type AppPropsWithLayout = AppProps & {
-	Component: NextPageWithLayout
-}
+    Component: NextPageWithLayout;
+};
 
-const queryClient = new QueryClient()
+const queryClient = new QueryClient();
 
 function MyApp({ Component, pageProps: { session, ...pageProps } }: AppPropsWithLayout) {
-	const layout = Component.getLayout ?? ((page) => page);
-	const gql = useContext(gqlClientContext);
+    const layout = Component.getLayout ?? ((page) => page);
+    const gql = useContext(gqlClientContext);
 
-	return layout(
-		<>
-			<Head>
-				<title>{ogTitle}</title>
-				<meta name="description" content={ogDescription} />
+    return layout(
+        <>
+            <Head>
+                <title>{ogTitle}</title>
+                <meta name="description" content={ogDescription} />
 
-				<meta property="og:url" content={ogUrl} />
-				<meta property="og:type" content="website" />
-				<meta property="og:title" content={ogTitle} />
-				<meta property="og:description" content={ogDescription} />
-				<meta property="og:image" content={ogFace} />
+                <meta property="og:url" content={ogUrl} />
+                <meta property="og:type" content="website" />
+                <meta property="og:title" content={ogTitle} />
+                <meta property="og:description" content={ogDescription} />
+                <meta property="og:image" content={ogFace} />
 
-				<meta name="twitter:card" content="summary_large_image" />
-				<meta property="twitter:domain" content="yoki.gg" />
-				<meta property="twitter:url" content={ogUrl} />
-				<meta name="twitter:title" content={ogTitle} />
-				<meta name="twitter:description" content={ogDescription} />
-				<meta name="twitter:image" content={ogFace} />
+                <meta name="twitter:card" content="summary_large_image" />
+                <meta property="twitter:domain" content="yoki.gg" />
+                <meta property="twitter:url" content={ogUrl} />
+                <meta name="twitter:title" content={ogTitle} />
+                <meta name="twitter:description" content={ogDescription} />
+                <meta name="twitter:image" content={ogFace} />
 
-				<link rel="icon" href="/favicon.ico" />
-			</Head>
-			<SessionProvider session={session}>
-				<QueryClientProvider client={queryClient}>
-					<gqlClientContext.Provider value={gql}>
-						<Component {...pageProps} />
-					</gqlClientContext.Provider>
-				</QueryClientProvider>
-			</SessionProvider>
-		</>
-	);
+                <link rel="icon" href="/favicon.ico" />
+
+                <link rel="preload" href="/fonts/inter/Inter-Bold.ttf" as="font/ttf" crossOrigin="anonymous" />
+                <link rel="preload" href="/fonts/inter/Inter-Medium.ttf" as="font/ttf" crossOrigin="anonymous" />
+                <link rel="preload" href="/fonts/inter/Inter-Regular.ttf" as="font/ttf" crossOrigin="anonymous" />
+                <link rel="preload" href="/fonts/inter/Inter-SemiBold.ttf" as="font/ttf" crossOrigin="anonymous" />
+            </Head>
+            <SessionProvider session={session}>
+                <QueryClientProvider client={queryClient}>
+                    <gqlClientContext.Provider value={gql}>
+                        <Component {...pageProps} />
+                    </gqlClientContext.Provider>
+                </QueryClientProvider>
+            </SessionProvider>
+        </>
+    );
 }
 
 export default MyApp;

@@ -1,4 +1,5 @@
 import Collection from "@discordjs/collection";
+import { RoleType } from "@prisma/client";
 
 import { Category } from "../Category";
 import type { Command } from "../Command";
@@ -11,6 +12,7 @@ const Severity: Command = {
     examples: ["threshold mute 5"],
     aliases: ["levels", "level", "modaction", "sv"],
     category: Category.Settings,
+    requiredRole: RoleType.ADMIN,
     parentCommand: true,
     subCommands: new Collection<string, Command>().set("threshold", Threshold),
     execute: () => void 0,

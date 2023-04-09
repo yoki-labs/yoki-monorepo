@@ -93,19 +93,17 @@ export async function closeModmailThread(server: Server, closedBy: string, ctx: 
 		});
 	}
 
-	await ctx.messages.send(modmailThread.userFacingChannelId, {
-			embeds: [
-				{
-					description: stripIndents`<@${modmailThread.openerId}>
-						This ticket has now been closed.
-					`,
-					color: Colors.blue,
-					timestamp: new Date().toISOString(),
-				},
-			],
-			isPrivate: true,
-		})
+	await ctx
+		.messageUtil
+		.sendInfoBlock(
+			modmailThread.userFacingChannelId,
+			"Ticket Closed",
+			`<@${modmailThread.openerId}>, the ticket that you have created has been closed by a moderator.`,
+			{ timestamp: new Date().toISOString() },
+			{ isPrivate: true }
+		)
 		.catch(() => void 0);
+
 	void ctx.amp.logEvent({
 		event_type: "MODMAIL_CLOSE",
 		user_id: closedBy,

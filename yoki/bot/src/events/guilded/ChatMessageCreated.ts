@@ -53,9 +53,9 @@ export default {
 			const newModmailMessage = await ctx.messages.send(isModmailChannel.modFacingChannelId,
 				new Embed()
 					.setDescription(message.content)
-					.setAuthor(member.user!.avatar ?? undefined, `${member.user!.name} (${member.user!.id})`)
-					.setColor(Colors.yellow)
-					.setFooter(message.id)
+					.setAuthor(`${member.user!.name} (${member.user!.id})`, member.user!.avatar)
+					.setColor(Colors.blockBackground)
+					.setFooter("User's message")
 					.setTimestamp());
 			return ctx.prisma.modmailMessage.create({
 				data: {

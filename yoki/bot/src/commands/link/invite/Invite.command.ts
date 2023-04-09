@@ -1,4 +1,5 @@
 import Collection from "@discordjs/collection";
+import { RoleType } from "@prisma/client";
 
 import { Category } from "../../Category";
 import type { Command } from "../../Command";
@@ -13,6 +14,7 @@ const Invite: Command = {
     parentCommand: true,
     subCommand: true,
     category: Category.Filter,
+    requiredRole: RoleType.MOD,
     subCommands: new Collection<string, Command>().set("add", Add).set("remove", Remove),
     execute: () => void 0,
 };

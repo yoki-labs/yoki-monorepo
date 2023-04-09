@@ -1,5 +1,6 @@
 import type { Action, Prisma } from "@prisma/client";
 import type { Message } from "guilded.js";
+
 import type YokiClient from "../../Client";
 import { ContentFilterUtil } from "../../modules/content-filter";
 import { inlineCode } from "../../utils/formatters";
@@ -11,7 +12,14 @@ const maxCase = 17 + 27 + 7 + 12 + maxReason + maxFiltered;
 // How many cases to show per page
 const maxCases = Math.floor(2048 / maxCase);
 
-export async function displayHistory<T extends Prisma.ActionFindManyArgs>(message: Message, ctx: YokiClient, findInfo: Prisma.SelectSubset<T, Prisma.ActionFindManyArgs>, page: number, historyName: string, multipleUsers: boolean = false) {
+export async function displayHistory<T extends Prisma.ActionFindManyArgs>(
+    message: Message,
+    ctx: YokiClient,
+    findInfo: Prisma.SelectSubset<T, Prisma.ActionFindManyArgs>,
+    page: number,
+    historyName: string,
+    multipleUsers = false
+) {
     // -1, -2, etc.
     if (page < 0) return ctx.messageUtil.replyWithError(message, `Specify appropriate page`, `The page number must not be below \`1\`.`);
 
@@ -26,23 +34,28 @@ export async function displayHistory<T extends Prisma.ActionFindManyArgs>(messag
         itemMapping: (x) => {
             const trimmedReason = x.reason && x.reason.length > maxReason ? `${x.reason.substring(0, maxReason)}...` : x.reason;
 
-            return `[${inlineCode(x.id)}] ${multipleUsers ? `<@${x.targetId}> got ` : " "}**${x.type}** for ${trimmedReason ?? "no provided reason"} ${displayFilteredContent(x.triggerContent)}`;
+            return `[${inlineCode(x.id)}] ${multipleUsers ? `<@${x.targetId}> got ` : " "}**${x.type}** for ${trimmedReason ?? "no provided reason"} ${displayFilteredContent(
+                x.triggerContent
+            )}`;
         },
         itemsPerPage: maxCases,
         page,
         message: {
             isSilent: true,
         },
-        embed: multipleUsers ? undefined : {
-            fields: [
-                {
-                    name: "Total Infraction Points",
-                    value: ContentFilterUtil.totalAllInfractionPoints(actions).toString(),
-                },
-            ],
-        },
+        embed: multipleUsers
+            ? undefined
+            : {
+                  fields: [
+                      {
+                          name: "Total Infraction Points",
+                          value: ContentFilterUtil.totalAllInfractionPoints(actions).toString(),
+                      },
+                  ],
+              },
     });
 }
 
 // Displays filtered content in || || if they exist and makes it smaller in length if necessary.
-const displayFilteredContent = (triggerContent: string | null) => (triggerContent && `||${triggerContent.length > maxFiltered ? `${triggerContent.substring(0, maxFiltered - 3)}...` : triggerContent}||`) ?? ""
+const displayFilteredContent = (triggerContent: string | null) =>
+    (triggerContent && `||${triggerContent.length > maxFiltered ? `${triggerContent.substring(0, maxFiltered - 3)}...` : triggerContent}||`) ?? "";

@@ -1,13 +1,18 @@
 import { stripIndents } from "common-tags";
 import { WebhookEmbed } from "guilded.js";
 import { nanoid } from "nanoid";
+
 import { FilteredContent } from "../../modules/content-filter";
 import { GEvent, LogChannelType } from "../../typings";
 import { Colors } from "../../utils/color";
 import { inlineCode, inlineQuote } from "../../utils/formatters";
 
-const numberCharCodeStart = 48, numberCharCodeEnd = 57, capitalLetterCharCodeStart = 65,
-    capitalLetterCharCodeEnd = 90, smallLetterCharCodeStart = 97, smallLetterCharCodeEnd = 122;
+const numberCharCodeStart = 48; 
+const numberCharCodeEnd = 57; 
+const capitalLetterCharCodeStart = 65;
+const capitalLetterCharCodeEnd = 90; 
+const smallLetterCharCodeStart = 97; 
+const smallLetterCharCodeEnd = 122;
 
 export default {
     execute: async ([event, ctx]) => {

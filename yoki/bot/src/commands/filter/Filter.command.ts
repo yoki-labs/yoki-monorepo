@@ -1,4 +1,5 @@
 import Collection from "@discordjs/collection";
+import { RoleType } from "@prisma/client";
 
 import { Category } from "../Category";
 import type { Command } from "../Command";
@@ -16,6 +17,7 @@ const Filter: Command = {
     examples: ["add test-word warn", "add another-test-word ban"],
     parentCommand: true,
     category: Category.Filter,
+    requiredRole: RoleType.MOD,
     subCommands: new Collection<string, Command>()
         .set("onmods", FilterOnMods)
         .set("spamfrequency", SpamFrequency)

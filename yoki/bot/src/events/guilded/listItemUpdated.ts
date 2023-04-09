@@ -3,7 +3,9 @@ import type { GEvent } from "../../typings";
 
 export default {
     execute: async ([listItem, _oldListItem, ctx]) => {
-        const server = await ctx.dbUtil.getServer(listItem.serverId);
+		const server = await ctx.dbUtil.getServer(listItem.serverId, false);
+		if(!server) return;
+        
         const { id, channelId, createdBy, message, note, serverId } = listItem;
 
         // If it's a thread

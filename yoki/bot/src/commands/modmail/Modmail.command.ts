@@ -1,4 +1,5 @@
 import Collection from "@discordjs/collection";
+import { RoleType } from "@prisma/client";
 
 import { Category } from "../Category";
 import type { Command } from "../Command";
@@ -19,6 +20,7 @@ const Modmail: Command = {
     examples: ["modmail reply Hi, what can I help you with?"],
     parentCommand: true,
     category: Category.Modmail,
+    requiredRole: RoleType.MINIMOD,
     subCommands: new Collection<string, Command>()
         .set("reply", Reply)
         .set("close", Close)

@@ -243,8 +243,8 @@ export class MessageUtil extends Util {
 			embeds: [
 				this.transformEmbed({
 					author: {
-						name: `Yoki's ${title}`,
-						icon_url: BotImages.avatar,
+						name: `${this.client.user?.name}'s ${title}`,
+						icon_url: this.client.user?.avatar ?? undefined,
 					},
 					description,
 					color: Colors.blockBackground,

@@ -1,4 +1,5 @@
 import Collection from "@discordjs/collection";
+import { RoleType } from "@prisma/client";
 
 import { Category } from "../Category";
 import type { Command } from "../Command";
@@ -10,6 +11,7 @@ const Appeal: Command = {
 	description: "Configures appeal accepting.",
 	parentCommand: true,
 	category: Category.Appeal,
+	requiredRole: RoleType.ADMIN,
 	subCommands: new Collection<string, Command>()
 		.set("channel", Channel),
 	execute: () => void 0,

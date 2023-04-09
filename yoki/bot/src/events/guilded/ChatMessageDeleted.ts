@@ -62,11 +62,11 @@ export default {
 				where: deletedMessageLogChannel.channelId,
 				serverId: message.serverId!,
 				title: "Message Removed",
-				description: `A message from ${author} was deleted in [#${channel.name}](${channelURL})
+				description: stripIndents`A message from ${author} was deleted in [#${channel.name}](${channelURL})
 			
 					Message ID: ${inlineCode(message.id)}
 					Channel ID: ${inlineCode(message.channelId)}
-					`,
+				`,
 				color: Colors.red,
 				occurred: message.deletedAt,
 				fields: logContent,
