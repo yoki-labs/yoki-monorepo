@@ -57,7 +57,7 @@ export default {
                 const modmailPingRole = server.modmailPingRoleId ? `<@${server.modmailPingRoleId}>` : "";
                 const member = await ctx.members.fetch(serverId, createdBy, true);
                 await ctx.messages.send(newChannel.id, {
-                    content: `${modmailPingRole} A new modmail thread has been opened!`,
+                    content: `${modmailPingRole} A new modmail thread has been opened! You can send messages to this user by doing \`${server.prefix}reply content-here\``,
                 });
                 await ctx.messageUtil.sendInfoBlock(
                     newChannel.id,
