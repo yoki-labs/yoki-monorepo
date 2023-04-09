@@ -28,13 +28,13 @@ const Reply: Command = {
         if (!isCurrentChannelModmail) return ctx.messageUtil.replyWithError(message, `Not a modmail channel`, `This channel is not a modmail channel!`);
 
         const embed: Embed = new Embed()
-            .setAuthor(member.user!.name, member.user!.id)
-            .setColor(Colors.green)
+            .setAuthor(member.user!.name, member.user!.avatar)
+            .setColor(Colors.blockBackground)
             .setTimestamp()
             .setDescription(stripIndents`<@${isCurrentChannelModmail.openerId}>
                 ${content}
             `)
-            .setFooter("Moderator");
+            .setFooter("Moderator's message");
 
         const newSentMessage = await message.client.messages.send(isCurrentChannelModmail.userFacingChannelId, {
             embeds: [
