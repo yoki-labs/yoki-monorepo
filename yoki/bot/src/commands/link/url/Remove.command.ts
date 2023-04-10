@@ -1,8 +1,7 @@
 import { RoleType } from "../../../typings";
-import { inlineQuote } from "../../../utils/formatters";
+import { inlineQuote } from "@yokilabs/util";
 import { MAX_URL_LENGTH, ONLY_URL_REGEX } from "../../../utils/matching";
-import { Category } from "../../Category";
-import type { Command } from "../../Command";
+import { Category, Command } from "../../commands";
 
 const Remove: Command = {
     name: "link-url-remove",

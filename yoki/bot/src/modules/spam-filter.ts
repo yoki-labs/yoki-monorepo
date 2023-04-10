@@ -1,7 +1,7 @@
 import type { MentionsPayload, Message } from "guilded.js";
 
 import { Server, Severity } from "../typings";
-import { Colors } from "../utils/color";
+import { Colors } from "@yokilabs/util";
 import BaseFilterUtil from "./base-filter";
 import { FilteredContent } from "./content-filter";
 

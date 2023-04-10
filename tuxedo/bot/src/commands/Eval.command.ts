@@ -2,7 +2,7 @@ import { stripIndents } from "common-tags";
 import { inspect } from "node:util";
 // import fetch from "node-fetch";
 
-import type { Command } from "./Command";
+import type { Command } from "./commands";
 import { inlineCode } from "@yokilabs/util";
 
 const _clean = async (text: any) => {

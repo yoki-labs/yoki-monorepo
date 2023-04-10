@@ -3,9 +3,9 @@ import { stripIndents } from "common-tags";
 import { nanoid } from "nanoid";
 
 import type { GEvent } from "../../typings";
-import { Colors } from "../../utils/color";
-import { inlineCode } from "../../utils/formatters";
-import { summarizeItems } from "../../utils/messages";
+import { Colors } from "@yokilabs/util";
+import { inlineCode } from "@yokilabs/util";
+import { summarizeItems } from "@yokilabs/util";
 import { WebhookEmbed } from "guilded.js";
 
 export default {

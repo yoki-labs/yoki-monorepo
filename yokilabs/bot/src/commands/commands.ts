@@ -39,7 +39,7 @@ export default function createCommandHandler<
             return onNext(context, server, prefix);
         },
         parseCommand: async (
-            executeCommand: (context: [Message, TClient], server: TServer, prefix: string, command: TCommand | undefined, args: string[]) => Promise<unknown> | undefined,
+            executeCommand: (context: [Message, TClient], server: TServer, prefix: string, command: TCommand | undefined, commandName: string, args: string[]) => Promise<unknown> | undefined,
             context: [Message, TClient],
             server: TServer,
             prefix: string
@@ -56,14 +56,15 @@ export default function createCommandHandler<
             // Get the command by the name or if it's an alias of a command
             const command = ctx.commands.get(commandName) ?? ctx.commands.find((command) => command.aliases?.includes(commandName) ?? false);
 
-            return executeCommand(context, server, prefix, command, args);
+            return executeCommand(context, server, prefix, command, commandName, args);
         },
         fetchCommandInfo: async (
-            onNext: (context: [Message, TClient], server: TServer, command: TCommand, args: Record<string, any>) => AsyncUnit,
+            onNext: (context: [Message, TClient], server: TServer, prefix: string, command: TCommand, args: string[]) => AsyncUnit,
             context: [Message, TClient],
             server: TServer,
             prefix: string,
             command: TCommand,
+            _commandName: string,
             args: string[]
         ) => {
             const [message, ctx] = context;
@@ -99,6 +100,61 @@ export default function createCommandHandler<
                 // Remove the sub command from the list of args, as that's the command name
                 args = args.slice(1);
             }
+
+            return onNext(context, server, prefix, command, args);
+        },
+        checkUserPermissions: async (
+            executeCommand: (context: [Message, TClient], server: TServer, member: Member, prefix: string, command: TCommand, args: string[]) => AsyncUnit,
+            getRoles: (ctx: TClient, serverId: string) => Promise<IRole<TRoleType>[]>,
+            context: [Message, TClient],
+            server: TServer,
+            prefix: string,
+            command: TCommand,
+            args: string[]
+        ) => {
+            const [message, ctx] = context;
+            const { serverId } = message;
+
+            // Fetch the member from either the server or the redis cache
+            const member = await ctx.members.fetch(message.serverId!, message.createdById).catch(() => null);
+            if (!member) return;
+
+            // Check if this user is not an operator
+            if (!ctx.operators.includes(message.createdById)) {
+                // If this command requires a user to have a specific role, then check if they have it
+                if (command.requiredRole && !member.isOwner) {
+                    // Get all the roles of the required type for this command
+                    // const modRoles = await ctx.prisma.role.findMany({ where: { serverId: message.serverId } });
+                    const modRoles = await getRoles(ctx, serverId!);
+                    const userModRoles = modRoles.filter((modRole) => member.roleIds.includes(modRole.roleId));
+                    const requiredValue = roleValues[command.requiredRole];
+
+                    // check if the user has any of the roles of this required type
+                    if (!userModRoles.some((role) => roleValues[role.type] >= requiredValue)) {
+                        void ctx.amp.logEvent({
+                            event_type: "COMMAND_INVALID_USER_PERMISSIONS",
+                            user_id: message.createdById,
+                            event_properties: { serverId: message.serverId },
+                        });
+
+                        return ctx.messageUtil.replyWithUnpermitted(message, `Unfortunately, you are missing the ${inlineCode(command.requiredRole)} role!`);
+                    }
+                    // if this command is operator only, then silently ignore because of privacy reasons
+                } else if (command.devOnly) return void 0;
+            }
+
+            return executeCommand(context, server, member, prefix, command, args);
+        },
+        resolveArguments: async (
+            onNext: (context: [Message, TClient], server: TServer, member: Member, command: TCommand, args: Record<string, any>) => AsyncUnit,
+            context: [Message, TClient],
+            server: TServer,
+            member: Member,
+            prefix: string,
+            command: TCommand,
+            args: string[]
+        ) => {
+            const [message, ctx] = context;
 
             // The object of casted args casted to their proper types
             const resolvedArgs: Record<string, any> = {};
@@ -136,48 +192,7 @@ export default function createCommandHandler<
                 }
             }
 
-            return onNext(context, server, command, resolvedArgs);
-        },
-        checkUserPermissions: async (
-            executeCommand: (context: [Message, TClient], server: TServer, member: Member, command: TCommand, args: Record<string, any>) => AsyncUnit,
-            getRoles: (ctx: TClient, serverId: string) => Promise<IRole<TRoleType>[]>,
-            context: [Message, TClient],
-            server: TServer,
-            command: TCommand,
-            args: Record<string, any>
-        ) => {
-            const [message, ctx] = context;
-            const { serverId } = message;
-
-            // Fetch the member from either the server or the redis cache
-            const member = await ctx.members.fetch(message.serverId!, message.createdById).catch(() => null);
-            if (!member) return;
-
-            // Check if this user is not an operator
-            if (!ctx.operators.includes(message.createdById)) {
-                // If this command requires a user to have a specific role, then check if they have it
-                if (command.requiredRole && !member.isOwner) {
-                    // Get all the roles of the required type for this command
-                    // const modRoles = await ctx.prisma.role.findMany({ where: { serverId: message.serverId } });
-                    const modRoles = await getRoles(ctx, serverId!);
-                    const userModRoles = modRoles.filter((modRole) => member.roleIds.includes(modRole.roleId));
-                    const requiredValue = roleValues[command.requiredRole];
-
-                    // check if the user has any of the roles of this required type
-                    if (!userModRoles.some((role) => roleValues[role.type] >= requiredValue)) {
-                        void ctx.amp.logEvent({
-                            event_type: "COMMAND_INVALID_USER_PERMISSIONS",
-                            user_id: message.createdById,
-                            event_properties: { serverId: message.serverId },
-                        });
-
-                        return ctx.messageUtil.replyWithUnpermitted(message, `Unfortunately, you are missing the ${inlineCode(command.requiredRole)} role!`);
-                    }
-                    // if this command is operator only, then silently ignore because of privacy reasons
-                } else if (command.devOnly) return void 0;
-            }
-
-            return executeCommand(context, server, member, command, args);
+            return onNext(context, server, member, command, resolvedArgs);
         },
         tryExecuteCommand: async ([message, ctx]: [Message, TClient], server: TServer, member: Member, command: TCommand, args: Record<string, any>) => {
             try {

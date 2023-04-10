@@ -1,9 +1,8 @@
 import type { ModmailThread } from "@prisma/client";
 
 import { RoleType } from "../../typings";
-import { inlineCode } from "../../utils/formatters";
-import { Category } from "../Category";
-import type { Command } from "../Command";
+import { inlineCode } from "@yokilabs/util";
+import { Command, Category } from "../commands";
 
 const History: Command = {
     name: "modmail-history",

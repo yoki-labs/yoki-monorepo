@@ -2,8 +2,7 @@ import { stripIndents } from "common-tags";
 
 import { RoleType } from "../../typings";
 import { addOrRemoveMemberRoleMessage } from "../../utils/util";
-import { Category } from "../Category";
-import type { Command } from "../Command";
+import { Command, Category } from "../commands";
 
 const Member: Command = {
     name: "role-member",
@@ -24,16 +23,16 @@ const Member: Command = {
 
             return memberRoleId
                 ? ctx.messageUtil.replyWithInfo(
-                      message,
-                      `Member role`,
-                      stripIndents`
+                    message,
+                    `Member role`,
+                    stripIndents`
                     The member role is set to role <@${memberRoleId}>.
 
                     ${addOrRemoveMemberRoleMessage(commandCtx.server.getPrefix())}
                 `,
-                      undefined,
-                      { isSilent: true }
-                  )
+                    undefined,
+                    { isSilent: true }
+                )
                 : ctx.messageUtil.replyWithNullState(message, `No member role`, `There is no member role set.`);
         } else if (role.toUpperCase() === "REMOVE") {
             // The ability to delete member roles

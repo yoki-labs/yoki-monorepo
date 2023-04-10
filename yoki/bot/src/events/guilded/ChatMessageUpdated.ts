@@ -5,8 +5,8 @@ import { nanoid } from "nanoid";
 
 import { FilteredContent } from "../../modules/content-filter";
 import type { GEvent } from "../../typings";
-import { Colors } from "../../utils/color";
-import { inlineCode, quoteMarkdown } from "../../utils/formatters";
+import { Colors } from "@yokilabs/util";
+import { inlineCode, quoteMarkdown } from "@yokilabs/util";
 import { moderateContent } from "../../utils/moderation";
 
 export default {

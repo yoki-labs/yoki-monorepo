@@ -3,7 +3,7 @@ import type { Message } from "guilded.js";
 
 import type YokiClient from "../../Client";
 import { ContentFilterUtil } from "../../modules/content-filter";
-import { inlineCode } from "../../utils/formatters";
+import { inlineCode } from "@yokilabs/util";
 
 // ID -- 17; Text -- 27; User ID -- 12, Max action name -- 7, Max reason -- 100; Max filtered word length -- 59
 const maxReason = 100;
@@ -46,13 +46,13 @@ export async function displayHistory<T extends Prisma.ActionFindManyArgs>(
         embed: multipleUsers
             ? undefined
             : {
-                  fields: [
-                      {
-                          name: "Total Infraction Points",
-                          value: ContentFilterUtil.totalAllInfractionPoints(actions).toString(),
-                      },
-                  ],
-              },
+                fields: [
+                    {
+                        name: "Total Infraction Points",
+                        value: ContentFilterUtil.totalAllInfractionPoints(actions).toString(),
+                    },
+                ],
+            },
     });
 }
 

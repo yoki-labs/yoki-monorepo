@@ -2,7 +2,7 @@ import { Action, LogChannelType, Severity } from "@prisma/client";
 
 import type Client from "../../Client";
 import type { Server } from "../../typings";
-import { Colors } from "../../utils/color";
+import { Colors } from "@yokilabs/util";
 import { getActionAdditionalInfo, getActionFields, getActionInfo } from "../../utils/moderation";
 
 export default async (data: Action, server: Server, client: Client) => {

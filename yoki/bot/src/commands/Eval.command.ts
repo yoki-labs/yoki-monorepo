@@ -2,8 +2,8 @@ import { stripIndents } from "common-tags";
 import { inspect } from "node:util";
 import fetch from "node-fetch";
 
-import { inlineCode } from "../utils/formatters";
-import type { Command } from "./Command";
+import { inlineCode } from "@yokilabs/util";
+import type { Command } from "./commands";
 
 const _clean = async (text: any) => {
     if (text?.then && text.catch) text = await text;

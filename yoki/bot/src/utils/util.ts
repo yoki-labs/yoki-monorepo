@@ -63,11 +63,6 @@ export const DBPropToTypeMap = Object.assign({}, ...Object.keys(typeToDBPropMap)
 export const typeToDBPropKeys = Object.keys(typeToDBPropMap);
 export const DBPropToTypeKeys = Object.values(typeToDBPropMap);
 
-export function cutArray<T>(array: T[]): [T[], T[]] {
-    const halfLength = Math.round(array.length / 2);
-    return [array.slice(0, halfLength), array.slice(halfLength, array.length)];
-}
-
 export const removeSettingKeys = ["remove", "null"];
 export const isInputRemoveSetting = (str: string) => removeSettingKeys.some((x) => str === x);
 export const removeGroupMessage = (prefix: string) => `*You can unset the modmail group by doing:* \`${prefix}modmail group remove\``;

@@ -2,14 +2,13 @@ import { ResponseType } from "@prisma/client";
 
 import { RoleType } from "../../typings";
 import { antiRaidResponseTransformer } from "../../utils/util";
-import { Category } from "../Category";
-import type { Command } from "../Command";
+import { Command, Category } from "../commands";
 
 const responseTypes = ["captcha", "site", "kick"];
 const responseTypesDescriptions = {
     [ResponseType.TEXT_CAPTCHA]: "presenting them with a captcha to solve which will kick them if they fail 3 times in a row.",
     [ResponseType.KICK]: "automatically kicking the user.",
-	[ResponseType.SITE_CAPTCHA]: "verifying them with a link."
+    [ResponseType.SITE_CAPTCHA]: "verifying them with a link."
 };
 const mappedResponseTypes = `${responseTypes.map((x) => `\`${x}\``).join(", ")}`;
 
@@ -49,11 +48,11 @@ const Challenge: Command = {
                 `No mute role`,
                 `You need to set a mute role using \`${commandCtx.server.getPrefix()}config muterole\`, otherwise unverified members would still have access to your community.`
             );
-			
+
         if (commandCtx.server.antiRaidResponse === transformedChallenge)
             return ctx.messageUtil.replyWithError(message, `Already set`, "You already have the anti-raid response set to this.");
-        
-		await ctx.prisma.server.update({ where: { id: commandCtx.server.id }, data: { antiRaidResponse: transformedChallenge } });
+
+        await ctx.prisma.server.update({ where: { id: commandCtx.server.id }, data: { antiRaidResponse: transformedChallenge } });
         return ctx.messageUtil.replyWithSuccess(
             message,
             "Successfully set anti-raid response",

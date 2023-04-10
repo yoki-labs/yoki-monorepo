@@ -4,10 +4,9 @@ import { UserType } from "guilded.js";
 import ms from "ms";
 
 import { CachedMember, RoleType } from "../../typings";
-import { Colors } from "../../utils/color";
-import { bold, inlineCode, listInlineCode } from "../../utils/formatters";
-import { Category } from "../Category";
-import type { Command } from "../Command";
+import { Colors } from "@yokilabs/util";
+import { bold, inlineCode, listInlineCode } from "@yokilabs/util";
+import { Command, Category } from "../commands";
 
 const Mute: Command = {
 	name: "mute",

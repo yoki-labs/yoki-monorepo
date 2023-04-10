@@ -1,6 +1,8 @@
+import { Util } from "@yokilabs/bot";
 import fetch from "node-fetch";
+import type YokiClient from "../Client";
 
-import { Util } from "../helpers/util";
+//import { Util } from "../helpers/util";
 
 interface ImageScanResult {
     hentai: number;
@@ -10,7 +12,7 @@ interface ImageScanResult {
     neutral: number;
 }
 
-export class ImageFilterUtil extends Util {
+export class ImageFilterUtil extends Util<YokiClient> {
     readonly hostURL = process.env.IMAGE_SCANNER_URL ?? "http://nsfw:4433/nsfw";
 
     public async scanImage(imageURL: string) {

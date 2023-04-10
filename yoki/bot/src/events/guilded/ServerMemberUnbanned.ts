@@ -4,13 +4,13 @@ import { WebhookEmbed } from "guilded.js";
 import { nanoid } from "nanoid";
 
 import type { GEvent } from "../../typings";
-import { Colors } from "../../utils/color";
-import { codeBlock, inlineCode } from "../../utils/formatters";
+import { Colors } from "@yokilabs/util";
+import { codeBlock, inlineCode } from "@yokilabs/util";
 
 export default {
 	execute: async ([memberBan, ctx]) => {
 		const { serverId, reason } = memberBan;
-		
+
 		const userId = memberBan.user.id;
 		const authorId = memberBan.createdBy;
 

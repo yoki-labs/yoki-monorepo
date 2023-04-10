@@ -1,5 +1,5 @@
 import { RoleType } from "../../typings";
-import type { Command } from "../Command";
+import type { Command } from "../commands";
 
 const descriptions: Record<string, string> = {
     "sexual": "Words for sexual objects or actions",

@@ -1,12 +1,14 @@
 import { Action, Severity } from "@prisma/client";
+import { Util } from "@yokilabs/bot";
 import { stripIndents } from "common-tags";
 import { UserType, WebhookEmbed } from "guilded.js";
+import type YokiClient from "../Client";
 
-import { Util } from "../helpers/util";
+// import { Util } from "../helpers/util";
 import type { Server } from "../typings";
 import type { FilteredContent } from "./content-filter";
 
-export default abstract class BaseFilterUtil<TFilterType = null> extends Util {
+export default abstract class BaseFilterUtil<TFilterType = null> extends Util<YokiClient> {
 	// An object mapping the Action type -> Action punishment
 	// Easy way for us to organize punishments into reusable code
 	readonly severityAction: Record<
@@ -58,7 +60,7 @@ export default abstract class BaseFilterUtil<TFilterType = null> extends Util {
 		const actionType = memberExceeds ?? fallbackSeverity;
 
 
-		await this.dbUtil.emitAction(
+		await this.client.dbUtil.emitAction(
 			{
 				type: actionType,
 				reason: `[AUTOMOD] ${reason}.${memberExceeds ? ` ${memberExceeds} threshold exceeded.` : ""}`,
@@ -106,7 +108,7 @@ export default abstract class BaseFilterUtil<TFilterType = null> extends Util {
 		if (member.user!.type === UserType.Bot) return false;
 
 		// Get all the mod roles in this server
-		const modRoles = await this.prisma.role.findMany({ where: { serverId: server.serverId } });
+		const modRoles = await this.client.prisma.role.findMany({ where: { serverId: server.serverId } });
 
 		// If the server doesn't have "filterOnMods" setting enabled and a mod violates the filter/preset, ignore
 		if (!server.filterOnMods && modRoles.some((modRole) => member.roleIds.includes(modRole.roleId))) return false;
@@ -124,7 +126,7 @@ export default abstract class BaseFilterUtil<TFilterType = null> extends Util {
 
 	async getMemberInfractionPoints(serverId: string, userId: string) {
 		// Get this member's past infraction history
-		const pastActions = await this.dbUtil.getMemberHistory(serverId, userId);
+		const pastActions = await this.client.dbUtil.getMemberHistory(serverId, userId);
 
 		// Total up all the infraction points from all these infractions
 		return BaseFilterUtil.totalAllInfractionPoints(pastActions);

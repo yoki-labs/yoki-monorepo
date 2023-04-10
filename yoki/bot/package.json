@@ -1,21 +1,27 @@
 {
 	"name": "@yoki/bot",
+	"packageManager": "yarn@1.22.19",
 	"private": true,
 	"version": "1.0.0",
 	"description": "Yoki BOT service",
 	"main": "./dist/index.js",
+	"author": "Yoki-Labs",
+	"license": "PROPRIETARY",
+	"files": [
+		"dist"
+	],
 	"scripts": {
 		"build": "npx tsc && npx tsc-alias",
 		"start": "node dist/index.js",
 		"dev": "npx nodemon",
 		"lint": "eslint --ignore-path ../../.eslintignore src/",
 		"lint:fix": "yarn lint --fix",
-		"migrate:dev": "npx dotenv -e ../../.env -- npx prisma migrate dev --name init",
-		"migrate:prod": "npx dotenv -e ../../.env.prod -- npx prisma migrate deploy",
+		"migrate:dev": "npx dotenv -e ../.env -- npx prisma migrate dev --name init",
+		"migrate:prod": "npx dotenv -e ../.env.prod -- npx prisma migrate deploy",
 		"migrate:prod:ci": "prisma migrate deploy",
-		"prisma:env:prod": "npx dotenv -e ../../.env.prod --",
-		"prisma:env:dev": "npx dotenv -e ../../.env --",
-		"generate": "npx dotenv -e ../../.env -- npx prisma generate",
+		"prisma:env:prod": "npx dotenv -e ../.env.prod --",
+		"prisma:env:dev": "npx dotenv -e ../.env --",
+		"generate": "npx dotenv -e ../.env -- npx prisma generate",
 		"commands": "ts-node scripts/gen-cmds-list.ts"
 	},
 	"devDependencies": {
@@ -34,9 +40,11 @@
 	},
 	"dependencies": {
 		"@amplitude/node": "^1.10.0",
-		"@discordjs/collection": "^0.5.0",
+		"@discordjs/collection": "^1.5.0",
 		"@prisma/client": "^4.2.1",
+		"@yokilabs/bot": "1.0.0",
 		"@yokilabs/captcha-generator": "1.1.1",
+		"@yokilabs/util": "1.0.0",
 		"aws-sdk": "^2.1168.0",
 		"common-tags": "^1.8.2",
 		"dotenv": "^8.2.0",
@@ -50,7 +58,5 @@
 	},
 	"imports": {
 		"#functions/*": "./dist/functions/*.js"
-	},
-	"author": "Nico",
-	"license": "UNLICENSED"
+	}
 }

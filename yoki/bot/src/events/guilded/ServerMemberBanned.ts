@@ -4,8 +4,8 @@ import { WebhookEmbed } from "guilded.js";
 import { nanoid } from "nanoid";
 
 import type { GEvent } from "../../typings";
-import { Colors } from "../../utils/color";
-import { inlineCode } from "../../utils/formatters";
+import { Colors } from "@yokilabs/util";
+import { inlineCode } from "@yokilabs/util";
 
 
 export default {

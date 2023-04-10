@@ -4,7 +4,7 @@ import MessageUtil from "./helpers/message";
 import RoleUtil from "./helpers/role";
 import Util from "./helpers/util";
 
-export { BaseCommand, CommandArgType, CommandArgument } from "./commands/command-typings";
+export { BaseCommand, CommandArgType, CommandArgument, CommandArgValidator } from "./commands/command-typings";
 export { AbstractClient, createCommandHandler, MessageUtil, RoleUtil, Util };
 export { ResolvedArgs, UsedMentions, CachedChannel, CachedMember } from "./commands/arguments";
 export { IRole, IServer } from "./db-types";

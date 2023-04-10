@@ -5,7 +5,7 @@ import type { MentionsPayload } from "guilded.js";
 
 import type { FilteredContent } from "../modules/content-filter";
 import type { Context, Server } from "../typings";
-import { codeBlock, inlineCode } from "./formatters";
+import { codeBlock, inlineCode } from "@yokilabs/util";
 import { FormatDate } from "./util";
 
 export function getInfractionsFrom(args: Record<string, any>): [string | null, number] {

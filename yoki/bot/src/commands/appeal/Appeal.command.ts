@@ -1,8 +1,7 @@
-import Collection from "@discordjs/collection";
+import { Collection } from "@discordjs/collection";
 import { RoleType } from "@prisma/client";
 
-import { Category } from "../Category";
-import type { Command } from "../Command";
+import { Command, Category } from "../commands";
 import Channel from "./Channel.command";
 
 const Appeal: Command = {

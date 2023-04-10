@@ -1,6 +1,5 @@
 import { RoleType } from "../../../typings";
-import { Category } from "../../Category";
-import type { Command } from "../../Command";
+import { Category, Command } from "../../commands";
 
 const UrlWhitelist: Command = {
     name: "link-url-whitelist",

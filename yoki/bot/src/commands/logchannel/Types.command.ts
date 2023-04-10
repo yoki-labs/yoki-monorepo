@@ -1,6 +1,5 @@
 import { LogChannelType, RoleType } from "../../typings";
-import { Category } from "../Category";
-import type { Command } from "../Command";
+import { Command, Category } from "../commands";
 
 const Types: Command = {
 	name: "logs-types",

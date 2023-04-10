@@ -1,8 +1,7 @@
 import { getAllCommands, replyWithSingleCommand } from "@yokilabs/bot";
 import { Colors, inlineCode, listInlineCode } from "@yokilabs/util";
 import { Embed } from "guilded.js";
-import { Category } from "./Category";
-import type { Command } from "./Command";
+import { Command, Category } from "./commands";
 const categories = Object.values(Category) as string[];
 
 const Help: Command = {

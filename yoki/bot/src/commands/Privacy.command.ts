@@ -1,10 +1,9 @@
 import { LogChannelType } from "@prisma/client";
 import { stripIndents } from "common-tags";
 
-import { Colors } from "../utils/color";
-import { inlineCode } from "../utils/formatters";
-import { Category } from "./Category";
-import type { Command } from "./Command";
+import { Colors } from "@yokilabs/util";
+import { inlineCode } from "@yokilabs/util";
+import { Command, Category } from "./commands";
 
 // Kind of spellchecker
 type UnprivateLogChannelType = Extract<LogChannelType, "message_edits" | "message_deletions" | "topic_edits" | "topic_deletions" | "comment_deletions" | "member_updates">;

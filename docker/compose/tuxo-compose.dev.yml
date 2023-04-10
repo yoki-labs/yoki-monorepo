@@ -22,7 +22,6 @@ services:
         command: "yarn run dev"
         depends_on:
             - db
-            - cache
         volumes:
             - "../../tuxedo/bot/src:/usr/app/tuxedo/bot/src"
         restart: "unless-stopped"

@@ -17,6 +17,7 @@
         "yk:db": "yarn yk:docker up -d --build db",
         "yk:down": "yarn yk:docker down",
         "yk:logs": "yarn yk:docker logs -f bot nsfw",
+        "yk:migrate": "cd yoki/bot && yarn migrate:dev",
         "tx:docker": "cd docker/compose && docker-compose -f tuxo-compose.yml -f tuxo-compose.dev.yml",
         "tx:db": "yarn tx:docker up -d --build db",
         "tx:start": "yarn tx:docker up -d --build && yarn tx:docker logs --follow bot",
@@ -26,7 +27,7 @@
         "yk:start:prod": "yarn yk:docker up -d --build",
         "yk:down:prod": "yarn yk:docker down",
         "yk:logs:prod": "yarn yk:docker logs -f bot nsfw",
-        "yk:migrate:prod": "cd yoki/bot && yarn migrate:dev"
+        "yk:migrate:prod": "cd yoki/bot && yarn migrate:prod"
     },
     "devDependencies": {
         "@sapphire/eslint-config": "^4.3.2",

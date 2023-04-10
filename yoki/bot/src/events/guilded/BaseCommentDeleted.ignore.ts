@@ -1,8 +1,8 @@
 import { UserType } from "guilded.js";
 
 import { Context, LogChannelType } from "../../typings";
-import { Colors } from "../../utils/color";
-import { inlineCode } from "../../utils/formatters";
+import { Colors } from "@yokilabs/util";
+import { inlineCode } from "@yokilabs/util";
 import { quoteChangedContent } from "../../utils/messages";
 import type { CommentPayload } from "./BaseCommentEvent.ignore";
 

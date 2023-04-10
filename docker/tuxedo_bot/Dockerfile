@@ -36,8 +36,7 @@ WORKDIR /opt/build/tuxedo/bot
 # for workspaces
 RUN yarn install
 
-# root /yokilabs/bot and /yokilabs/util
-
+# root /tuxedo/bot/prisma/ for DB stuff
 COPY ./tuxedo/bot/prisma/. ./prisma/
 RUN yarn generate
 
@@ -47,6 +46,8 @@ RUN yarn build
 
 RUN if [[ "$BUILD_ENV" = "development" ]]; then yarn remove $(cat package.json | jq -r '.devDependencies | keys | join(" ")'); fi
 FROM node:16-alpine
+
+# Copy over to and install stuff in /usr/app to run the bot
 WORKDIR /usr/app
 
 RUN apk update \
@@ -55,7 +56,6 @@ RUN apk update \
 COPY --from=0 ./opt/build/tsconfig.json .
 COPY --from=0 ./opt/build/package.json .
 COPY --from=0 ./opt/build/node_modules node_modules
-# COPY --from=0 ./opt/build/package.json .
 COPY --from=0 ./opt/build/tuxedo/bot/ tuxedo/bot/
 COPY --from=0 ./opt/build/yokilabs/ yokilabs/
 

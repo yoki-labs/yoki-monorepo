@@ -2,8 +2,8 @@ import { ChannelIgnoreType, ContentIgnoreType, InviteFilter, Preset } from "@pri
 import fetch from "node-fetch";
 
 import type { PresetLink, Server } from "../typings";
-import { Colors } from "../utils/color";
-import { isHashId, URL_REGEX } from "../utils/matching";
+import { Colors, isHashId } from "@yokilabs/util";
+import { URL_REGEX } from "../utils/matching";
 import { urlPresets } from "../utils/presets";
 import BaseFilterUtil from "./base-filter";
 import { FilteredContent } from "./content-filter";
@@ -55,7 +55,7 @@ export class LinkFilterUtil extends BaseFilterUtil {
         resultingAction: () => unknown;
     }) {
         // Too many DB stuff to fetch to be honest
-        const ignored = await this.prisma.channelIgnore.findMany({
+        const ignored = await this.client.prisma.channelIgnore.findMany({
             where: {
                 serverId: server.serverId,
                 OR: [
@@ -76,11 +76,11 @@ export class LinkFilterUtil extends BaseFilterUtil {
         if (dontFilterUrls && dontFilterInvites) return;
 
         // Server settings
-        const greylistedUrls = dontFilterUrls ? null : await this.prisma.urlFilter.findMany({ where: { serverId: server.serverId } });
-        const whitelistedInvites = dontFilterInvites ? null : await this.prisma.inviteFilter.findMany({ where: { serverId: server.serverId } });
+        const greylistedUrls = dontFilterUrls ? null : await this.client.prisma.urlFilter.findMany({ where: { serverId: server.serverId } });
+        const whitelistedInvites = dontFilterInvites ? null : await this.client.prisma.inviteFilter.findMany({ where: { serverId: server.serverId } });
 
         // To not re-fetch
-        const enabledPresets = (presets ?? (await this.dbUtil.getEnabledPresets(server.serverId))).filter((x) => x.preset in this.presets);
+        const enabledPresets = (presets ?? (await this.client.dbUtil.getEnabledPresets(server.serverId))).filter((x) => x.preset in this.presets);
 
         // If there are no blacklisted URLs, no presets enabled and invites shouldn't be filtered, there is no point in checking the links
         if (!(greylistedUrls?.length || server.urlFilterIsWhitelist || enabledPresets.length) && dontFilterInvites) return;

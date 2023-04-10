@@ -1,11 +1,11 @@
 import { stripIndents } from "common-tags";
 import { Embed, Member } from "guilded.js";
 
-import { Colors } from "../utils/color";
-import { inlineCode } from "../utils/formatters";
-import { summarizeRolesOrUsers } from "../utils/messages";
+import { Colors } from "@yokilabs/util";
+import { inlineCode } from "@yokilabs/util";
+import { summarizeRolesOrUsers } from "@yokilabs/util";
 import { suspicious as sus } from "../utils/util";
-import type { Command } from "./Command";
+import type { Command } from "./commands";
 
 const UserInfo: Command = {
     name: "userinfo",
@@ -32,8 +32,7 @@ const UserInfo: Command = {
                     .setTitle(`${target.isOwner ? ":crown: " : ""}<@${target.user!.id}> (${inlineCode(target.user!.id)})`)
                     .setColor(Colors.blockBackground)
                     .setDescription(
-                        `Info about user ${inlineCode(target.user!.name)}. ${
-                            target.nickname ? `Their nickname is ${inlineCode(target.nickname)}.` : `They do not have a nickname.`
+                        `Info about user ${inlineCode(target.user!.name)}. ${target.nickname ? `Their nickname is ${inlineCode(target.nickname)}.` : `They do not have a nickname.`
                         }`
                     )
                     .addFields([

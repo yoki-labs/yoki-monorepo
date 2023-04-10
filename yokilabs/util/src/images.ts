@@ -1,5 +1,4 @@
 export const BotImages = {
-    avatar: "https://img.guildedcdn.com/UserAvatar/51962e70b38b8411180729438247023f-Small.webp",
     checkmark: "https://img.guildedcdn.com/MediaChannelUpload/04657f95a439b1ce8f3db3dc2456e2a5-Full.png",
     crossmark: "https://img.guildedcdn.com/MediaChannelUpload/ebe00159ad8977bdc6c31381d98ae272-Full.png",
 };

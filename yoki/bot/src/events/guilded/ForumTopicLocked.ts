@@ -1,6 +1,6 @@
 import { GEvent, LogChannelType } from "../../typings";
-import { Colors } from "../../utils/color";
-import { inlineCode, inlineQuote } from "../../utils/formatters";
+import { Colors } from "@yokilabs/util";
+import { inlineCode, inlineQuote } from "@yokilabs/util";
 
 export default {
 	execute: async ([forumTopic, ctx]) => {

@@ -1,10 +1,9 @@
 import { UserType } from "guilded.js";
 
 import { CachedMember, RoleType } from "../../typings";
-import { inlineCode } from "../../utils/formatters";
+import { inlineCode } from "@yokilabs/util";
 import { getInfractionsFrom } from "../../utils/moderation";
-import { Category } from "../Category";
-import type { Command } from "../Command";
+import { Command, Category } from "../commands";
 
 const Note: Command = {
 	name: "note",

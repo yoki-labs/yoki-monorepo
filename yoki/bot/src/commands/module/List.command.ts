@@ -1,7 +1,6 @@
 import { RoleType } from "../../typings";
 import { DBPropToTypeKeys, DBPropToTypeMap, typeToDBPropKeys } from "../../utils/util";
-import { Category } from "../Category";
-import type { Command } from "../Command";
+import { Command, Category } from "../commands";
 
 const descriptions: Record<string, string> = {
     modmail: "Allows people to send a message to server staff.",

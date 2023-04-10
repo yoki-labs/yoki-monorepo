@@ -91,36 +91,36 @@ export default class MessageUtil<
         });
     }
 
-    sendLog({
-        where,
-        title,
-        description,
-        color,
-        occurred,
-        additionalInfo,
-        fields,
-    }: {
-        where: string;
-        title: string;
-        description: string;
-        color: number;
-        occurred: string;
-        additionalInfo?: string;
-        fields?: EmbedField[];
-    }) {
-        return this.send(where, {
-            embeds: [
-                {
-                    title,
-                    description,
-                    color,
-                    fields: additionalInfo ? (fields ?? []).concat({ name: "Additional Info", value: additionalInfo }) : fields,
-                    timestamp: occurred,
-                },
-            ],
-            isSilent: true,
-        });
-    }
+    // sendLog({
+    //     where,
+    //     title,
+    //     description,
+    //     color,
+    //     occurred,
+    //     additionalInfo,
+    //     fields,
+    // }: {
+    //     where: string;
+    //     title: string;
+    //     description: string;
+    //     color: number;
+    //     occurred: string;
+    //     additionalInfo?: string;
+    //     fields?: EmbedField[];
+    // }) {
+    //     return this.send(where, {
+    //         embeds: [
+    //             {
+    //                 title,
+    //                 description,
+    //                 color,
+    //                 fields: additionalInfo ? (fields ?? []).concat({ name: "Additional Info", value: additionalInfo }) : fields,
+    //                 timestamp: occurred,
+    //             },
+    //         ],
+    //         isSilent: true,
+    //     });
+    // }
 
     replyWithEmbed(message: Message, embed: EmbedPayload, messagePartial?: Partial<RESTPostChannelMessagesBody>) {
         return this.sendEmbed(message.channelId, embed, { replyMessageIds: [message.id], ...messagePartial });

@@ -1,9 +1,8 @@
 import { Embed } from "guilded.js";
 
 import { RoleType } from "../typings";
-import { Colors } from "../utils/color";
-import { Category } from "./Category";
-import type { Command } from "./Command";
+import { Colors } from "@yokilabs/util";
+import { Command, Category } from "./commands";
 
 const viewSettings = [
 	{

@@ -1,4 +1,4 @@
-import type { Command } from "./Command";
+import type { Command } from "./commands";
 
 const Support: Command = {
     name: "support",

@@ -10,12 +10,23 @@ RUN apt-get update && \
 	libc6-dev \
 	jq
 
+# root /
 COPY tsconfig.json ./
+COPY .eslintrc.json ./
+COPY package.json ./
+
+# # Package stuff
 WORKDIR /opt/build/yoki/nsfw
 
 COPY ./yoki/nsfw/package.json ./
-RUN yarn install
+# COPY ./yoki/nsfw/package.json ./yoki/nsfw
+# RUN yarn install
+WORKDIR /opt/build/
+RUN yarn
 
+WORKDIR /opt/build/yoki/nsfw
+
+# Copy over sources and build them
 COPY ./yoki/nsfw/tsconfig.json ./yoki/nsfw/nodemon.json ./
 COPY ./yoki/nsfw/src/. ./src/
 RUN yarn build
@@ -30,7 +41,9 @@ RUN apt-get update && \
 	libc6-dev 
 
 COPY --from=0 ./opt/build/tsconfig.json .
-COPY --from=0 ./opt/build/yoki/nsfw/ yoki/nsfw/
+COPY --from=0 ./opt/build/.eslintrc.json .
+COPY --from=0 ./opt/build/package.json .
+COPY --from=0 ./opt/build/yoki/nsfw/ ./yoki/nsfw/
 
 WORKDIR /usr/app/yoki/nsfw
 CMD ["yarn", "run", "start"]
