@@ -1,7 +1,7 @@
 import { init } from "@amplitude/node";
 import { Collection } from "@discordjs/collection";
 import { Client, ClientOptions, WebhookClient } from "guilded.js";
-import RedisClient from "ioredis";
+// import RedisClient from "ioredis";
 
 import type { BaseCommand } from "./commands/command-typings";
 import type { IServer } from "./db-types";
@@ -25,7 +25,7 @@ export default abstract class AbstractClient<
     // // database connection
     // readonly prisma = new PrismaClient();
     // cache connection
-    readonly redis = new RedisClient(process.env.REDIS_URL ?? "cache:6379");
+    // readonly redis = new RedisClient(process.env.REDIS_URL ?? "cache:6379");
 
     // analytics
     readonly amp = init(process.env.AMPLITUDE_API_KEY!);
