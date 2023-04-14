@@ -1,20 +1,13 @@
 name: Deploy to Production
 on:
     workflow_dispatch:
-    push:
-        branches:
-            - main
-        paths:
-            - "yoki/**"
-            - "!yoki/landing/**"
-            - "!yoki/dashboard/**"
-            - "docker/**"
+
 jobs:
     docker:
         runs-on: ubuntu-latest
         strategy:
             matrix:
-                service-name: [bot, nsfw]
+                service-name: [yoki_bot, nsfw]
         steps:
             - name: Checkout
               uses: actions/checkout@v2
