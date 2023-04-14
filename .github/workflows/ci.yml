@@ -6,6 +6,7 @@ jobs:
         name: Quality Check
         runs-on: ubuntu-latest
         strategy:
+            fail-fast: false
             matrix:
                 service-name: [yoki, tuxedo]
         steps:
@@ -26,7 +27,7 @@ jobs:
               run: pnpm install
 
             - name: Generate Prisma TypeScript
-              run: cd ${{ matrix.service-name }}/bot && npx prisma generate
+              run: cd ${{ matrix.service-name }}/bot && pnpx prisma generate
 
             - name: Run linter
               run: pnpm lint
