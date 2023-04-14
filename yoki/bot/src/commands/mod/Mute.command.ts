@@ -1,5 +1,5 @@
 import type { EmbedField } from "@guildedjs/guilded-api-typings";
-import { bold, Colors,inlineCode, listInlineCode } from "@yokilabs/util";
+import { bold, Colors, inlineCode, listInlineCode } from "@yokilabs/util";
 import { stripIndents } from "common-tags";
 import { UserType } from "guilded.js";
 import ms from "ms";
@@ -53,20 +53,6 @@ const Mute: Command = {
             create: { serverId: message.serverId!, userId: target.user!.id, roles: target.roleIds },
         });
 
-        try {
-            await ctx.roles.addRoleToMember(message.serverId!, target.user!.id, commandCtx.server.muteRoleId);
-        } catch (e) {
-            return ctx.messageUtil.replyWithUnexpected(
-                message,
-                stripIndents`
-					There was an issue muting this user. This is most likely due to misconfigured permissions for your server.
-					${inlineCode((e as Error).message)}
-				`,
-                undefined,
-                { isPrivate: true }
-            );
-        }
-
         await ctx.dbUtil.addActionFromMessage(
             message,
             {
@@ -107,6 +93,20 @@ const Mute: Command = {
         const { failed } = await ctx.roleUtil.removeMultipleRoles(message.serverId!, target.user!.id, target.roleIds);
         if (failed.length) {
             successMessage += `\n\nThere was an issue removing the following roles due to improper permissions: ${listInlineCode(failed)}`;
+        }
+
+        try {
+            await ctx.roles.addRoleToMember(message.serverId!, target.user!.id, commandCtx.server.muteRoleId);
+        } catch (e) {
+            return ctx.messageUtil.replyWithUnexpected(
+                message,
+                stripIndents`
+					There was an issue muting this user. This is most likely due to misconfigured permissions for your server.
+					${inlineCode((e as Error).message)}
+				`,
+                undefined,
+                { isPrivate: true }
+            );
         }
 
         await ctx.messageUtil.sendSuccessBlock(message.channelId, `User muted`, successMessage, undefined, {
