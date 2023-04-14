@@ -46,7 +46,7 @@ jobs:
                   cache: "pnpm"
 
             - name: Install Dependencies
-              run: pnpm -r install
+              run: cd ${{ matrix.service-name }}/bot && pnpm install
 
             - name: Build Prisma Types
               run: cd ${{ matrix.service-name }}/bot && pnpm generate
