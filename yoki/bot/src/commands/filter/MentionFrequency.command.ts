@@ -1,7 +1,7 @@
+import { inlineCode } from "@yokilabs/util";
+
 import { RoleType } from "../../typings";
-import { inlineCode } from "../../utils/formatters";
-import { Category } from "../Category";
-import type { Command } from "../Command";
+import { Category,Command } from "../commands";
 
 const MentionSpamFrequency: Command = {
     name: "antiraid-mentionfrequency",

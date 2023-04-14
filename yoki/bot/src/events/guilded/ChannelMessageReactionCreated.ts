@@ -1,17 +1,15 @@
 import { ReactionActionType } from "@prisma/client";
+import { Colors, errorEmbed, inlineCode, summarizeRolesOrUsers } from "@yokilabs/util";
 import { stripIndents } from "common-tags";
 import { nanoid } from "nanoid";
 
 import type { GEvent } from "../../typings";
-import { Colors } from "../../utils/color";
-import { errorEmbed, inlineCode } from "../../utils/formatters";
-import { summarizeRolesOrUsers } from "../../utils/messages";
 
 export default {
     execute: async ([reaction, ctx]) => {
         const { serverId, channelId, messageId, emote, createdBy } = reaction;
-		const server = await ctx.dbUtil.getServer(serverId, false);
-		if(!server) return;
+        const server = await ctx.dbUtil.getServer(serverId, false);
+        if (!server) return;
 
         const lookupReaction = await ctx.prisma.reactionAction.findFirst({
             where: { messageId, channelId, serverId, emoteId: emote.id },

@@ -1,7 +1,6 @@
 import { RoleType } from "../../typings";
 import { DBPropToTypeKeys, DBPropToTypeMap, typeToDBPropKeys } from "../../utils/util";
-import { Category } from "../Category";
-import type { Command } from "../Command";
+import { Category, Command } from "../commands";
 
 const descriptions: Record<string, string> = {
     modmail: "Allows people to send a message to server staff.",
@@ -10,7 +9,7 @@ const descriptions: Record<string, string> = {
     antiraid: "Forces new people to use captcha and deals with raids.",
     nsfwscan: "Filters out NSFW/NSFL images from chat.",
     invitescan: "Filters out server invites and links that aren't of this server or aren't whitelisted.",
-    appeals: "Allows people who were banned to appeal for an unban."
+    appeals: "Allows people who were banned to appeal for an unban.",
 };
 
 const List: Command = {
@@ -21,7 +20,7 @@ const List: Command = {
     subCommand: true,
     category: Category.Moderation,
     requiredRole: RoleType.ADMIN,
-    execute: async (message, _args, ctx, commandCtx) => {
+    execute: (message, _args, ctx, commandCtx) => {
         const serverDbProps = Object.keys(commandCtx.server).filter((x) => DBPropToTypeKeys.includes(x) && commandCtx.server[x]);
         const serverModules = serverDbProps.map((x) => DBPropToTypeMap[x]);
 

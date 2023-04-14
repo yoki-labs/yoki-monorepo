@@ -1,7 +1,6 @@
-import Collection from "@discordjs/collection";
+import { Collection } from "@discordjs/collection";
 
-import { Category } from "../Category";
-import type { Command } from "../Command";
+import { Category,Command } from "../commands";
 import Invite from "./invite/Invite.command";
 import List from "./List.command";
 import Severity from "./Severity.command";

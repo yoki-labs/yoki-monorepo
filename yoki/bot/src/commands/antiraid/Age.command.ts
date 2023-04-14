@@ -1,10 +1,9 @@
 import { ResponseType } from "@prisma/client";
+import { inlineCode } from "@yokilabs/util";
 import ms from "ms";
 
 import { RoleType } from "../../typings";
-import { inlineCode } from "../../utils/formatters";
-import { Category } from "../Category";
-import type { Command } from "../Command";
+import { Category,Command } from "../commands";
 
 const Age: Command = {
     name: "antiraid-age",

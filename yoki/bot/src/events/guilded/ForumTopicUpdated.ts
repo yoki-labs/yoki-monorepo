@@ -1,9 +1,8 @@
+import { Colors,inlineCode, inlineQuote } from "@yokilabs/util";
 import type { EmbedField } from "guilded.js";
 
 import { FilteredContent } from "../../modules/content-filter";
 import { GEvent, LogChannelType } from "../../typings";
-import { Colors } from "../../utils/color";
-import { inlineCode, inlineQuote } from "../../utils/formatters";
 import { quoteChangedContent } from "../../utils/messages";
 import { moderateContent } from "../../utils/moderation";
 
@@ -11,7 +10,7 @@ export default {
 	execute: async ([forumTopic, _oldForumTopic, ctx]) => {
 		const { serverId } = forumTopic;
 		const server = await ctx.dbUtil.getServer(serverId, false);
-		if(!server) return;
+		if (!server) return;
 
 		// get the old message from the database if we logged it before
 		const oldContent = await ctx.dbUtil.getForumTopic(forumTopic.channelId, forumTopic.id);

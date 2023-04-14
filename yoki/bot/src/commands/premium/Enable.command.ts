@@ -1,6 +1,6 @@
 import { PremiumType } from "@prisma/client";
 
-import type { Command } from "../Command";
+import type { Command } from "../commands";
 
 const TierTypes = {
     gold: PremiumType.Gold,

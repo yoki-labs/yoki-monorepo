@@ -1,6 +1,6 @@
 import { RoleType } from "@prisma/client";
 
-import type { Command } from "../Command";
+import type { Command } from "../commands";
 
 const Enroll: Command = {
     name: "beta-enroll",

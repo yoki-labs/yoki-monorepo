@@ -1,72 +1,75 @@
 import type { ContentIgnoreType, FilterMatching, InviteFilter, LogChannel, UrlFilter } from "@prisma/client";
+import { Util } from "@yokilabs/bot";
 import type { ForumTopic, Message } from "guilded.js";
 import { nanoid } from "nanoid";
 
+import type YokiClient from "../Client";
 import { Action, ContentFilter, LogChannelType, Server } from "../typings";
 import { FormatDate } from "../utils/util";
-import { Util } from "./util";
+// import { Util } from "./util";
+
 // test
-export class DatabaseUtil extends Util {
+export class DatabaseUtil extends Util<YokiClient> {
 	addWordToFilter(data: Omit<ContentFilter, "id" | "createdAt">) {
-		return this.prisma.contentFilter.create({ data });
+		return this.client.prisma.contentFilter.create({ data });
 	}
 
 	removeWordFromFilter(serverId: string, content: string, matching: FilterMatching) {
-		return this.prisma.contentFilter.deleteMany({ where: { serverId, content, matching } });
+		return this.client.prisma.contentFilter.deleteMany({ where: { serverId, content, matching } });
 	}
 
 	addUrlToFilter(data: Omit<UrlFilter, "id" | "createdAt">) {
-		return this.prisma.urlFilter.create({ data });
+		return this.client.prisma.urlFilter.create({ data });
 	}
 
 	removeUrlFromFilter(serverId: string, domain: string, subdomain?: string, route?: string) {
-		return this.prisma.urlFilter.deleteMany({ where: { serverId, domain, subdomain, route } });
+		return this.client.prisma.urlFilter.deleteMany({ where: { serverId, domain, subdomain, route } });
 	}
 
 	addInviteToFilter(data: Omit<InviteFilter, "id" | "createdAt">) {
-		return this.prisma.inviteFilter.create({ data });
+		return this.client.prisma.inviteFilter.create({ data });
 	}
 
 	removeInviteFromFilter(serverId: string, targetServerId: string) {
-		return this.prisma.inviteFilter.deleteMany({ where: { serverId, targetServerId } });
+		return this.client.prisma.inviteFilter.deleteMany({ where: { serverId, targetServerId } });
 	}
 
 	getBannedWords(serverId: string) {
-		return this.prisma.contentFilter.findMany({ where: { serverId } });
+		return this.client.prisma.contentFilter.findMany({ where: { serverId } });
 	}
 
 	getMemberHistory(serverId: string, targetId: string) {
-		return this.prisma.action.findMany({ where: { targetId, serverId } });
+		return this.client.prisma.action.findMany({ where: { targetId, serverId } });
 	}
 
 	enableFilter(serverId: string) {
-		return this.prisma.server.updateMany({ data: { filterEnabled: true }, where: { serverId } });
+		return this.client.prisma.server.updateMany({ data: { filterEnabled: true }, where: { serverId } });
 	}
 
 	disableFilter(serverId: string) {
-		return this.prisma.server.updateMany({ data: { filterEnabled: false }, where: { serverId } });
+		return this.client.prisma.server.updateMany({ data: { filterEnabled: false }, where: { serverId } });
 	}
 
 	getEnabledPresets(serverId: string) {
-		return this.prisma.preset.findMany({ where: { serverId } });
+		return this.client.prisma.preset.findMany({ where: { serverId } });
 	}
 
 	disablePreset(serverId: string, preset: string) {
-		return this.prisma.preset.deleteMany({ where: { serverId, preset } });
+		return this.client.prisma.preset.deleteMany({ where: { serverId, preset } });
 	}
 
 	getMessage(channelId: string, messageId: string) {
-		return this.prisma.message.findFirst({ where: { messageId, channelId } });
+		return this.client.prisma.message.findFirst({ where: { messageId, channelId } });
 	}
 
 	getForumTopic(channelId: string, forumTopicId: number) {
-		return this.prisma.forumTopic.findFirst({ where: { forumTopicId, channelId } });
+		return this.client.prisma.forumTopic.findFirst({ where: { forumTopicId, channelId } });
 	}
 
 	getServer(serverId: string, createIfNotExists?: true): Promise<Server>;
 	getServer(serverId: string, createIfNotExists: false): Promise<Server | null>;
 	getServer(serverId: string, createIfNotExists = true) {
-		return this.prisma.server
+		return this.client.prisma.server
 			.findUnique({ where: { serverId } })
 			.then((server) => {
 				if (!server && createIfNotExists) return this.createFreshServerInDatabase(serverId);
@@ -85,24 +88,24 @@ export class DatabaseUtil extends Util {
 	}
 
 	async getLogChannel(serverId: string, type: LogChannelType) {
-		const logChannels = await this.prisma.logChannel.findMany({ where: { serverId, type: { in: [type, LogChannelType.all] } } });
+		const logChannels = await this.client.prisma.logChannel.findMany({ where: { serverId, type: { in: [type, LogChannelType.all] } } });
 		return logChannels.find((x) => x.type === type) ?? logChannels[0] ?? null;
 	}
 
 	getMultipleLogChannels(serverId: string, types: LogChannelType[]): Promise<LogChannel[]> {
-		return this.prisma.logChannel.findMany({ where: { serverId, type: { in: types } } });
+		return this.client.prisma.logChannel.findMany({ where: { serverId, type: { in: types } } });
 	}
 
 	getLogChannels(serverId: string) {
-		return this.prisma.logChannel.findMany({ where: { serverId } });
+		return this.client.prisma.logChannel.findMany({ where: { serverId } });
 	}
 
 	getMuteRole(serverId: string) {
-		return this.prisma.server.findFirst({ select: { muteRoleId: true }, where: { serverId } });
+		return this.client.prisma.server.findFirst({ select: { muteRoleId: true }, where: { serverId } });
 	}
 
 	createFreshServerInDatabase(serverId: string, data?: Record<string, any>) {
-		return this.prisma.server.create({
+		return this.client.prisma.server.create({
 			data: {
 				serverId,
 				locale: "en-US",
@@ -123,7 +126,7 @@ export class DatabaseUtil extends Util {
 	// Store a message in the database
 	// This will either insert a whole new record, or update an existing record
 	storeMessage(message: Message) {
-		return this.prisma.message.upsert({
+		return this.client.prisma.message.upsert({
 			where: { messageId: message.id },
 			create: {
 				messageId: message.id,
@@ -145,7 +148,7 @@ export class DatabaseUtil extends Util {
 	}
 
 	storeForumTopic(topic: ForumTopic) {
-		return this.prisma.forumTopic.upsert({
+		return this.client.prisma.forumTopic.upsert({
 			where: { forumTopicId: topic.id },
 			create: {
 				forumTopicId: topic.id,
@@ -170,7 +173,7 @@ export class DatabaseUtil extends Util {
 	}
 
 	addAction(data: Omit<Action, "id" | "referenceId" | "createdAt" | "updatedAt" | "expired" | "logChannelId" | "logChannelMessage" | "pardoned">) {
-		return this.prisma.action.create({
+		return this.client.prisma.action.create({
 			data: {
 				id: nanoid(17),
 				createdAt: new Date(),
@@ -202,11 +205,11 @@ export class DatabaseUtil extends Util {
 	}
 
 	populateActionMessage(id: string, channelId: string, messageId: string) {
-		return this.prisma.action.update({ where: { id }, data: { logChannelId: channelId, logChannelMessage: messageId } });
+		return this.client.prisma.action.update({ where: { id }, data: { logChannelId: channelId, logChannelMessage: messageId } });
 	}
 
 	getChannelIgnore(serverId: string, channelId: string, contentType: ContentIgnoreType) {
-		return this.prisma.channelIgnore.findMany({
+		return this.client.prisma.channelIgnore.findMany({
 			where: {
 				serverId,
 				OR: [

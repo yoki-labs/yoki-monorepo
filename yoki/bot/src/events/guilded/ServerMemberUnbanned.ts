@@ -1,16 +1,15 @@
 import { LogChannelType } from "@prisma/client";
+import { codeBlock, Colors,inlineCode } from "@yokilabs/util";
 import { stripIndents } from "common-tags";
 import { WebhookEmbed } from "guilded.js";
 import { nanoid } from "nanoid";
 
 import type { GEvent } from "../../typings";
-import { Colors } from "../../utils/color";
-import { codeBlock, inlineCode } from "../../utils/formatters";
 
 export default {
 	execute: async ([memberBan, ctx]) => {
 		const { serverId, reason } = memberBan;
-		
+
 		const userId = memberBan.user.id;
 		const authorId = memberBan.createdBy;
 

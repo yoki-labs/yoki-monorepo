@@ -1,12 +1,9 @@
+import { Colors, inlineCode, summarizeRolesOrUsers } from "@yokilabs/util";
 import { stripIndents } from "common-tags";
 import { Embed, Member } from "guilded.js";
 
-import { Colors } from "../utils/color";
-import { inlineCode } from "../utils/formatters";
-import { summarizeRolesOrUsers } from "../utils/messages";
 import { suspicious as sus } from "../utils/util";
-import type { Command } from "./Command";
-
+import type { Command } from "./commands";
 const UserInfo: Command = {
     name: "userinfo",
     description: "View information about a user or yourself.",
@@ -21,7 +18,7 @@ const UserInfo: Command = {
         },
     ],
     execute: async (message, args, ctx, commandCtx) => {
-        const target = (args.target as Member) ?? await message.client.members.fetch(message.serverId!, message.authorId);
+        const target = (args.target as Member) ?? (await message.client.members.fetch(message.serverId!, message.authorId));
 
         const creationDate = target.user!.createdAt!;
         const suspicious = sus(creationDate);
@@ -44,7 +41,9 @@ const UserInfo: Command = {
                         {
                             name: "Additional Info",
                             value: stripIndents`
-                                ${target.isOwner ? `**Owns this server.**\n` : ``}**Account Created:** ${commandCtx.server.formatTimezone(creationDate)} EST ${suspicious ? "(:warning: recent)" : ""}
+                                ${target.isOwner ? `**Owns this server.**\n` : ``}**Account Created:** ${commandCtx.server.formatTimezone(creationDate)} EST ${
+                                suspicious ? "(:warning: recent)" : ""
+                            }
                                 **Joined at:** ${commandCtx.server.formatTimezone(new Date(target.joinedAt!))} EST
                             `,
                         },

@@ -1,8 +1,7 @@
+import { inlineQuote, isHashId } from "@yokilabs/util";
+
 import { RoleType } from "../../../typings";
-import { inlineQuote } from "../../../utils/formatters";
-import { isHashId } from "../../../utils/matching";
-import { Category } from "../../Category";
-import type { Command } from "../../Command";
+import { Category, Command } from "../../commands";
 
 const Remove: Command = {
     name: "link-invite-remove",

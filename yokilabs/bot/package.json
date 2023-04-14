@@ -1,0 +1,32 @@
+{
+    "name": "@yokilabs/bot",
+    "version": "1.0.0",
+    "private": true,
+    "description": "Common client code",
+    "main": "./dist/src/index.js",
+    "author": "Yoki-Labs",
+    "license": "PROPRIETARY",
+    "files": [
+        "dist"
+    ],
+    "scripts": {
+        "build": "npx tsc && npx tsc-alias"
+    },
+    "imports": {
+        "#functions/*": "./dist/functions/*.js"
+    },
+    "dependencies": {
+        "@discordjs/collection": "^1.2.0",
+        "@yokilabs/util": "workspace:*",
+        "common-tags": "^1.8.2",
+        "guilded.js": "0.20.0",
+        "nodemon": "^2.0.20",
+        "tslib": "^2.4.1"
+    },
+    "devDependencies": {
+        "@guildedjs/guilded-api-typings": "^2.8.7",
+        "@types/common-tags": "^1.8.1",
+        "@types/node": "^18.11.9",
+        "typescript": "^4.8.4"
+    }
+}

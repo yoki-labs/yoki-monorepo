@@ -1,0 +1,53 @@
+{
+    "name": "@tuxedo/bot",
+    "private": true,
+    "version": "1.0.0",
+    "description": "Tuxedo bot Docker service",
+    "main": "./dist/index.js",
+    "author": "Yoki-Labs",
+    "license": "PROPRIETARY",
+    "files": [
+        "dist"
+    ],
+    "scripts": {
+        "build": "npx tsc && npx tsc-alias",
+        "start": "node dist/index.js",
+        "dev": "npx nodemon",
+        "lint": "eslint src/",
+        "lint:fix": "pnpm lint --fix",
+        "migrate:dev": "npx dotenv -e ../.env -- npx prisma migrate dev --name init",
+        "migrate:prod": "npx dotenv -e ../.env.prod -- npx prisma migrate deploy",
+        "migrate:prod:ci": "prisma migrate deploy",
+        "generate": "npx dotenv -e ../.env -- npx prisma generate",
+        "commands": "ts-node scripts/gen-cmds-list.ts"
+    },
+    "workspaces": [
+        "../../yokilabs/bot",
+        "../../yokilabs/util"
+    ],
+    "dependencies": {
+        "@discordjs/collection": "^1.2.0",
+        "@yokilabs/bot": "1.0.0",
+        "@yokilabs/util": "1.0.0",
+        "common-tags": "^1.8.2",
+        "dotenv": "^16.0.3",
+        "guilded.js": "0.20.0",
+        "nanoid": "^4.0.0",
+        "node-fetch": "^3.2.10",
+        "nodemon": "^2.0.20",
+        "recursive-readdir": "^2.2.3",
+        "tslib": "^2.4.1"
+    },
+    "devDependencies": {
+        "@guildedjs/guilded-api-typings": "3.0.1",
+        "@types/common-tags": "^1.8.1",
+        "@types/ms": "^0.7.31",
+        "@types/node": "^16.11.6",
+        "@types/node-fetch": "2.5.12",
+        "@types/recursive-readdir": "^2.2.0",
+        "dotenv-cli": "^5.1.0",
+        "prisma": "~4.8.0",
+        "tsc-alias": "^1.6.5",
+        "typescript": "^4.9.5"
+    }
+}

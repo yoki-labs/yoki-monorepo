@@ -1,11 +1,10 @@
 import { LogChannelType } from "@prisma/client";
+import { Colors, inlineCode } from "@yokilabs/util";
 import { codeBlock, stripIndents } from "common-tags";
 import { WebhookEmbed } from "guilded.js";
 import { nanoid } from "nanoid";
 
 import type { GEvent } from "../../typings";
-import { Colors } from "../../utils/color";
-import { inlineCode } from "../../utils/formatters";
 
 
 export default {

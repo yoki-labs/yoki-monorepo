@@ -1,3 +1,3 @@
-- [ ] Did you test it locally?
-- [ ] If you are RENAMING any prisma enums, DOUBLE CHECK WITH NICO!!
-- [ ] Did you generate the migrations if you modified the database? (`yarn migrate:dev`)
+-   [ ] Did you test it locally?
+-   [ ] If you are RENAMING any prisma enums, DOUBLE CHECK WITH NICO!!
+-   [ ] Did you generate the migrations if you modified the database? (`pnpm migrate:dev`)

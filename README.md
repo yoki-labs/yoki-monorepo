@@ -13,7 +13,7 @@ That was a lot of jargon, I admit. To simplify it a lot: development in the dock
 ### Requirements
 
 -   [Node v16.0.0+](https://nodejs.org/en/)
--   [Yarn v1.22.17](https://classic.yarnpkg.com/en/)
+-   [PNPM](https://pnpm.io/)
 -   [Docker](https://www.docker.com/) ([install](https://docs.docker.com/get-docker/)) and [Docker-Compose](https://docs.docker.com/compose/) ([install](https://docs.docker.com/compose/install/))
 
 ## Starting the bot
@@ -21,12 +21,12 @@ That was a lot of jargon, I admit. To simplify it a lot: development in the dock
 **A video demonstration of the below steps is available [here](https://github.com/Yoki-Labs/yoki/issues/1)**
 
 -   Clone the repository `git clone https://github.com/Yoki-Labs/yoki.git`
--   Cd in and install the packages `cd yoki && yarn install`
--   Generate the Prisma typings `yarn generate`
+-   Cd in and install the packages `cd yoki && pnpm install`
+-   Generate the Prisma typings `pnpm generate`
 -   Populate the [environment variables in a .env file in the root](#environment-variables)
--   Start the database `yarn dev:db`
--   Run the migrations `yarn migrate:dev`
--   And finally, start the bot. In the root, run `yarn dev:start` (you can stop everything using `yarn dev:down` (add the -v flag to the end if you want to wipe the database))
+-   Start the database `pnpm dev:db`
+-   Run the migrations `pnpm migrate:dev`
+-   And finally, start the bot. In the root, run `pnpm dev:start` (you can stop everything using `pnpm dev:down` (add the -v flag to the end if you want to wipe the database))
 
 ## Environment Variables
 
@@ -42,7 +42,7 @@ NODE_ENV="development"
 ## Standards
 
 **Once we have a stable prod, never commit straight to main! Always use a feature branch and create PRs!**.
-Please make sure you run `yarn build` and `yarn lint:fix` before pushing commits to your branch. The husky git commit hook should do it for you, but if it doesn't, be sure to do it yourself.
+Please make sure you run `pnpm build` and `pnpm lint:fix` before pushing commits to your branch. The husky git commit hook should do it for you, but if it doesn't, be sure to do it yourself.
 
 ## Terms
 

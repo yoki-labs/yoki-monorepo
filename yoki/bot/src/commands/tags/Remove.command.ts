@@ -1,8 +1,7 @@
 import { RoleType } from "@prisma/client";
+import { inlineCode } from "@yokilabs/util";
 
-import { inlineCode } from "../../utils/formatters";
-import { Category } from "../Category";
-import type { Command } from "../Command";
+import { Category,Command } from "../commands";
 
 const Remove: Command = {
     name: "tag-remove",

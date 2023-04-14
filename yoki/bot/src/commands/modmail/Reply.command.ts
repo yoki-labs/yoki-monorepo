@@ -1,10 +1,9 @@
+import { Colors } from "@yokilabs/util";
 import { stripIndents } from "common-tags";
 import { Embed } from "guilded.js";
 
 import { RoleType } from "../../typings";
-import { Colors } from "../../utils/color";
-import { Category } from "../Category";
-import type { Command } from "../Command";
+import { Category,Command } from "../commands";
 
 const Reply: Command = {
     name: "reply",

@@ -1,6 +1,5 @@
 import { CachedMember, RoleType } from "../../typings";
-import { Category } from "../Category";
-import type { Command } from "../Command";
+import { Category,Command } from "../commands";
 import { displayHistory } from "./util";
 
 const View: Command = {

@@ -13,17 +13,21 @@ jobs:
             - name: Clone repo
               uses: actions/checkout@v3
 
+            - uses: pnpm/action-setup@v2
+              with:
+                  version: 7.28.0
+
             - name: Set up Node v16
               uses: actions/setup-node@v3
               with:
                   node-version: "16"
-                  cache: "yarn"
+                  cache: "pnpm"
 
             - name: Install dependencies
-              run: yarn install
+              run: pnpm -r install
 
             - name: Generate Prisma TypeScript
-              run: yarn generate
+              run: npx prisma generate
 
             - name: Run Message Clearer
               run: npx ts-node yoki/bot/scripts/delete-old-messages.ts

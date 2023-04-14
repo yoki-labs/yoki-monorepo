@@ -1,9 +1,8 @@
+import { channelName, inlineCode } from "@yokilabs/util";
 import type { Channel as GChannel } from "guilded.js";
 
 import { RoleType } from "../../typings";
-import { channelName, inlineCode } from "../../utils/formatters";
-import { Category } from "../Category";
-import type { Command } from "../Command";
+import { Category,Command } from "../commands";
 
 const Channel: Command = {
 	name: "appeal-channel",

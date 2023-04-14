@@ -1,6 +1,7 @@
+import { inlineCode } from "@yokilabs/util";
+
 import { RoleType } from "../../typings";
-import { inlineCode } from "../../utils/formatters";
-import type { Command } from "../Command";
+import type { Command } from "../commands";
 
 const Enable: Command = {
     name: "preset-disable",

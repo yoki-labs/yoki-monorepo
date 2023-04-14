@@ -1,19 +1,18 @@
 import { LogChannelType, Severity } from "@prisma/client";
+import { codeBlock, Colors,inlineCode } from "@yokilabs/util";
 import { stripIndents } from "common-tags";
 import { UserType, WebhookEmbed } from "guilded.js";
 import { nanoid } from "nanoid";
 
 import type { GEvent } from "../../typings";
 import { generateCaptcha } from "../../utils/antiraid";
-import { Colors } from "../../utils/color";
-import { codeBlock, inlineCode } from "../../utils/formatters";
 import { suspicious as sus } from "../../utils/util";
 
 export default {
 	execute: async ([member, ctx]) => {
-		const { serverId } = member;		
+		const { serverId } = member;
 		const server = await ctx.dbUtil.getServer(serverId, false);
-		if(!server) return;
+		if (!server) return;
 
 		const userId = member.user!.id;
 

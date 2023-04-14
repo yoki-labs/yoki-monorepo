@@ -1,8 +1,7 @@
 import { ChannelIgnoreType, ContentIgnoreType } from "@prisma/client";
 
 import { ResolvedEnum, RoleType } from "../../typings";
-import { Category } from "../Category";
-import type { Command } from "../Command";
+import { Category,Command } from "../commands";
 import { ChannelIgnoreSettingAction, ChannelIgnoreTypeMap } from "./filterenum";
 
 const IgnoreContent: Command = {

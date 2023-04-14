@@ -1,6 +1,6 @@
-import Collection from "@discordjs/collection";
+import { Collection } from "@discordjs/collection";
 
-import type { Command } from "../Command";
+import type { Command } from "../commands";
 import Enroll from "./Enroll.command";
 import Remove from "./Remove.command";
 

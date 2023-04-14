@@ -1,10 +1,9 @@
 import { RoleType } from "@prisma/client";
+import { inlineCode } from "@yokilabs/util";
 import { stripIndents } from "common-tags";
 
-import { inlineCode } from "../../utils/formatters";
 import { removePingRole } from "../../utils/util";
-import { Category } from "../Category";
-import type { Command } from "../Command";
+import { Category,Command } from "../commands";
 
 const PingRole: Command = {
     name: "modmail-pingrole",
@@ -18,20 +17,20 @@ const PingRole: Command = {
     args: [{ name: "role", type: "string", optional: true }],
     execute: async (message, args, ctx, commandCtx) => {
         const role = args.role as string | null;
-		const unsetPingRole = removePingRole(commandCtx.server.getPrefix()); 
+        const unsetPingRole = removePingRole(commandCtx.server.getPrefix());
 
         // No argument? Give info instead
         if (!role) {
             return commandCtx.server.modmailPingRoleId
                 ? ctx.messageUtil.replyWithInfo(
-                      message,
-                      "Modmail ping role",
-                      stripIndents`
+                    message,
+                    "Modmail ping role",
+                    stripIndents`
 					  This server's modmail ping role has been set as the ID ${inlineCode(commandCtx.server.modmailPingRoleId)}.
 					  
 					  ${unsetPingRole}
 					  `
-                  )
+                )
                 : ctx.messageUtil.replyWithNullState(message, "No modmail ping role", "This server does not have modmail ping role set.\n\n*If you would like to set a ping role please rerun this command with the ID of the role you want to set suffixed.*");
         } else if (role.toUpperCase() === "REMOVE") {
             // The ability to delete modmail ping roles
@@ -42,7 +41,7 @@ const PingRole: Command = {
             });
         }
 
-		const roleId = role ? Number(role as string) : null;
+        const roleId = role ? Number(role as string) : null;
 
         if (Number.isNaN(roleId))
             return ctx.messageUtil.replyWithError(message, `Provide role ID`, `Provide a valid ID of the role you want to set as a modmail ping role or pass \`remove\` to remove it.`);

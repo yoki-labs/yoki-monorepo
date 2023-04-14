@@ -1,6 +1,6 @@
-import { bold } from "../utils/formatters";
-import type { Command } from "./Command";
+import { bold } from "@yokilabs/util";
 
+import type { Command } from "./commands";
 const Ping: Command = {
     name: "ping",
     description: "Check Yoki's latency.",

@@ -1,4 +1,4 @@
-import type { Command } from "../Command";
+import type { Command } from "../commands";
 
 const Remove: Command = {
     name: "beta-remove",

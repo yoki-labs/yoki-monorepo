@@ -1,9 +1,9 @@
 import { ContentFilter, FilterMatching, Preset } from "@prisma/client";
+import { Colors } from "@yokilabs/util";
 import { stripIndents } from "common-tags";
 import { Message, UserType, WebhookEmbed } from "guilded.js";
 
 import { ContentFilterScan, Server, Severity } from "../typings";
-import { Colors } from "../utils/color";
 import { IMAGE_REGEX } from "../utils/matching";
 import { wordPresets } from "../utils/presets";
 import BaseFilterUtil from "./base-filter";
@@ -77,9 +77,9 @@ export class ContentFilterUtil extends BaseFilterUtil {
 		const { serverId } = server;
 
 		// Get all the banned words in this server
-		const bannedWordsList = await this.dbUtil.getBannedWords(serverId);
+		const bannedWordsList = await this.client.dbUtil.getBannedWords(serverId);
 		// Get all the enabled presets in this server
-		const enabledPresets = (presets ?? (await this.dbUtil.getEnabledPresets(serverId))).filter((x) => x.preset in this.presets);
+		const enabledPresets = (presets ?? (await this.client.dbUtil.getEnabledPresets(serverId))).filter((x) => x.preset in this.presets);
 
 		if (!bannedWordsList.length && !enabledPresets.length) return;
 		void this.client.amp.logEvent({ event_type: "MESSAGE_TEXT_SCAN", user_id: userId, event_properties: { serverId: server.serverId } });
@@ -127,7 +127,7 @@ export class ContentFilterUtil extends BaseFilterUtil {
 		if (member.user!.type === UserType.Bot) return;
 
 		// Get all the mod roles in this server
-		const modRoles = await this.prisma.role.findMany({ where: { serverId } });
+		const modRoles = await this.client.prisma.role.findMany({ where: { serverId } });
 
 		// If the server doesn't have "filterOnMods" setting enabled and a mod violates the filter/preset, ignore
 		if (!server.filterOnMods && modRoles.some((modRole) => member.roleIds.includes(modRole.roleId))) return;

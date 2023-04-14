@@ -1,8 +1,8 @@
+import { inlineQuote } from "@yokilabs/util";
+
 import timezones from "../static/timezones.json";
 import { RoleType } from "../typings";
-import { inlineQuote } from "../utils/formatters";
-import { Category } from "./Category";
-import type { Command } from "./Command";
+import { Category, Command } from "./commands";
 
 const Timezone: Command = {
     name: "timezone",
@@ -17,10 +17,14 @@ const Timezone: Command = {
         if (!newTimezone) {
             return ctx.messageUtil.replyWithInfo(message, "Timezone", `The timezone for this server is ${inlineQuote(commandCtx.server.getTimezone())}`);
         }
-		if (!timezones.includes(newTimezone)) {
-			return ctx.messageUtil.replyWithError(message, "Invalid timezone", "Your timezone selection must be from the following [list](https://www.guilded.gg/Yoki/groups/2dXLMBPd/channels/0a2069b9-2e7d-45da-9121-ab3b463f9af2/docs)")
-		}
-		await ctx.prisma.server.update({ where: { id: commandCtx.server.id }, data: { timezone: newTimezone } });
+        if (!timezones.includes(newTimezone)) {
+            return ctx.messageUtil.replyWithError(
+                message,
+                "Invalid timezone",
+                "Your timezone selection must be from the following [list](https://www.guilded.gg/Yoki/groups/2dXLMBPd/channels/0a2069b9-2e7d-45da-9121-ab3b463f9af2/docs)"
+            );
+        }
+        await ctx.prisma.server.update({ where: { id: commandCtx.server.id }, data: { timezone: newTimezone } });
         return ctx.messageUtil.replyWithSuccess(message, `Server timezone set`, `The timezone for this server has been set to ${inlineQuote(newTimezone)}.`);
     },
 };
