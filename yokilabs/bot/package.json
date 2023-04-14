@@ -10,17 +10,16 @@
         "dist"
     ],
     "scripts": {
-        "build": "npx tsc && npx tsc-alias"
-    },
-    "imports": {
-        "#functions/*": "./dist/functions/*.js"
+        "build": "npx tsc"
     },
     "dependencies": {
+        "@amplitude/node": "^1.10.0",
         "@discordjs/collection": "^1.2.0",
         "@yokilabs/util": "workspace:*",
         "common-tags": "^1.8.2",
         "guilded.js": "0.20.0",
         "nodemon": "^2.0.20",
+        "recursive-readdir": "^2.2.2",
         "tslib": "^2.4.1"
     },
     "devDependencies": {

@@ -52,7 +52,8 @@
 		"node-fetch": "2.6.6",
 		"nodemon": "^2.0.14",
 		"recursive-readdir": "^2.2.2",
-		"tslib": "^2.0.3"
+		"tslib": "^2.0.3",
+		"typed-emitter": "^2.1.0"
 	},
 	"imports": {
 		"#functions/*": "./dist/functions/*.js"
