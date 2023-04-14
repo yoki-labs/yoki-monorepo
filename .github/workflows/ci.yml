@@ -12,6 +12,10 @@ jobs:
             - name: Clone repo
               uses: actions/checkout@v3
 
+            - uses: pnpm/action-setup@v2
+              with:
+                  version: 7.28.0
+
             - name: Set up Node v16
               uses: actions/setup-node@v3
               with:

@@ -5,7 +5,7 @@ import { stripIndents } from "common-tags";
 import { Embed, Message } from "guilded.js";
 
 import type Client from "../Client";
-import { Command, CommandContext, Category } from "./commands";
+import { Category,Command, CommandContext } from "./commands";
 
 const categories = Object.values(Category);
 

@@ -72,6 +72,10 @@ jobs:
                         - 'yoki/bot/prisma/migrations/**'
                         - 'yoki/bot/prisma/schema.prisma'
 
+            - uses: pnpm/action-setup@v2
+              with:
+                  version: 7.28.0
+
             - name: Install Node v14
               if: steps.verify-changed-files.outputs.db == 'true'
               uses: actions/setup-node@9ced9a43a244f3ac94f13bfd896db8c8f30da67a # tag=v3
