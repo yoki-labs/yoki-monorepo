@@ -93,6 +93,5 @@ jobs:
                   port: 22
                   script: |
                       cd yoki
-                      cd docker/compose && docker-compose pull
-                      cd ../../
+                      pnpm yk:docker:prod pull
                       pnpm prod:start
