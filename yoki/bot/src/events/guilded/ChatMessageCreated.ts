@@ -39,7 +39,7 @@ const fn = fetchPrefix.bind(
 			return;
 		}
 
-		parseCommand(
+		await parseCommand(
 			async (context, server, prefix, command, commandName, args) => {
 				// if not a valid command, try doing a custom command instead
 				if (!command) {

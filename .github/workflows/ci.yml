@@ -49,7 +49,7 @@ jobs:
               run: pnpm -r install
 
             - name: Build Prisma Types
-              run: cd ${{ matrix.service-name }}/bot && pnpx prisma generate
+              run: cd ${{ matrix.service-name }}/bot && pnpm generate
 
             - name: Run linter
               run: cd ${{ matrix.service-name }}/bot && pnpm build

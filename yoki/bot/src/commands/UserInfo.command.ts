@@ -1,6 +1,4 @@
-import { Colors } from "@yokilabs/util";
-import { inlineCode } from "@yokilabs/util";
-import { summarizeRolesOrUsers } from "@yokilabs/util";
+import { Colors, inlineCode, summarizeRolesOrUsers } from "@yokilabs/util";
 import { stripIndents } from "common-tags";
 import { Embed, Member } from "guilded.js";
 
