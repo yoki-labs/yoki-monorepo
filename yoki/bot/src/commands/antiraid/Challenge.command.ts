@@ -2,7 +2,7 @@ import { ResponseType } from "@prisma/client";
 
 import { RoleType } from "../../typings";
 import { antiRaidResponseTransformer } from "../../utils/util";
-import { Command, Category } from "../commands";
+import { Category,Command } from "../commands";
 
 const responseTypes = ["captcha", "site", "kick"];
 const responseTypesDescriptions = {

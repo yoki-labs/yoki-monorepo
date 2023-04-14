@@ -2,7 +2,7 @@ import { stripIndents } from "common-tags";
 
 import { RoleType } from "../../typings";
 import { addOrRemoveMuteRoleMessage } from "../../utils/util";
-import { Command, Category } from "../commands";
+import { Category,Command } from "../commands";
 
 const Mute: Command = {
     name: "role-mute",

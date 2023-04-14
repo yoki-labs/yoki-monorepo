@@ -2,27 +2,30 @@ name: CI workflows
 on: [push, pull_request]
 
 jobs:
-  quality:
-    name: Quality Check
-    runs-on: ubuntu-latest
-    steps:
-      - name: Clone repo
-        uses: actions/checkout@v3
+    quality:
+        name: Quality Check
+        runs-on: ubuntu-latest
+        strategy:
+            matrix:
+                service-name: [yoki, tuxedo]
+        steps:
+            - name: Clone repo
+              uses: actions/checkout@v3
 
-      - name: Set up Node v16
-        uses: actions/setup-node@v3
-        with:
-          node-version: '16'
-          cache: 'yarn'
+            - name: Set up Node v16
+              uses: actions/setup-node@v3
+              with:
+                  node-version: "16"
+                  cache: "pnpm"
 
-      - name: Install dependencies
-        run: yarn install
+            - name: Install dependencies
+              run: pnpm install
 
-      - name: Generate Prisma TypeScript
-        run: yarn generate
+            - name: Generate Prisma TypeScript
+              run: cd ${{ matrix.service-name }}/bot && pnpm generate
 
-      - name: Run linter
-        run: yarn lint
+            - name: Run linter
+              run: pnpm lint
 
-      - name: Run TypeScript Compiler
-        run: yarn build
+            - name: Run TypeScript Compiler
+              run: pnpm build

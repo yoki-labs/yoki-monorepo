@@ -1,11 +1,9 @@
 import { ReactionActionType } from "@prisma/client";
+import { Colors, errorEmbed, inlineCode, summarizeRolesOrUsers } from "@yokilabs/util";
 import { stripIndents } from "common-tags";
 import { nanoid } from "nanoid";
 
 import type { GEvent } from "../../typings";
-import { Colors } from "@yokilabs/util";
-import { errorEmbed, inlineCode } from "@yokilabs/util";
-import { summarizeRolesOrUsers } from "@yokilabs/util";
 
 export default {
     execute: async ([reaction, ctx]) => {

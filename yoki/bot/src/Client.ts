@@ -3,8 +3,8 @@ import { AbstractClient, RoleUtil } from "@yokilabs/bot";
 import { S3 } from "aws-sdk";
 import EventEmitter from "node:events";
 import type TypedEmitter from "typed-emitter";
-import type { Command } from "./commands/commands";
 
+import type { Command } from "./commands/commands";
 import CalendarEventCommentDeleted from "./events/guilded/CalendarEventCommentDeleted.ignore";
 import CalendarEventCommentEvent from "./events/guilded/CalendarEventCommentEvent.ignore";
 import DocCommentDeleted from "./events/guilded/DocCommentDeleted.ignore";
@@ -14,8 +14,8 @@ import ForumTopicCommentEvent from "./events/guilded/ForumTopicCommentEvent.igno
 import ActionIssued from "./events/other/ActionIssued";
 import { DatabaseUtil } from "./helpers/database";
 import { MessageUtil } from "./helpers/message";
-//import { MessageUtil } from "./helpers/message";
-//import { RoleUtil } from "./helpers/role";
+// import { MessageUtil } from "./helpers/message";
+// import { RoleUtil } from "./helpers/role";
 import { MuteScheduler } from "./jobs/MuteScheduler";
 import { ContentFilterUtil } from "./modules/content-filter";
 import { LinkFilterUtil } from "./modules/link-filter";

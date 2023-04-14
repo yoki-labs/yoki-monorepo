@@ -1,8 +1,8 @@
+import { Colors } from "@yokilabs/util";
 import { stripIndents } from "common-tags";
 
 import { RoleType } from "../../typings";
-import { Colors } from "@yokilabs/util";
-import { Command, Category } from "../commands";
+import { Category,Command } from "../commands";
 
 const Edit: Command = {
     name: "modmail-edit",

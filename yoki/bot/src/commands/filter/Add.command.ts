@@ -1,9 +1,9 @@
 import { Severity } from "@prisma/client";
+import { inlineCode, inlineQuote } from "@yokilabs/util";
 
 import { ResolvedEnum, RoleType } from "../../typings";
-import { inlineCode, inlineQuote } from "@yokilabs/util";
 import { getFilterFromSyntax } from "../../utils/util";
-import { Command, Category } from "../commands";
+import { Category,Command } from "../commands";
 
 const Add: Command = {
 	name: "filter-add",

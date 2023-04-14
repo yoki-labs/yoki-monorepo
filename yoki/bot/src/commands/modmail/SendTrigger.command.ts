@@ -3,7 +3,7 @@ import { Channel, Embed } from "guilded.js";
 
 import reactions from "../../static/reactions.json";
 import { RoleType } from "../../typings";
-import { Command, Category } from "../commands";
+import { Category,Command } from "../commands";
 
 const SendTrigger: Command = {
 	name: "modmail-sendtrigger",

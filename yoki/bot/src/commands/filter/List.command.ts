@@ -1,7 +1,8 @@
-import { RoleType } from "../../typings";
 import { inlineCode } from "@yokilabs/util";
+
+import { RoleType } from "../../typings";
 import { filterToString } from "../../utils/util";
-import { Command, Category } from "../commands";
+import { Category,Command } from "../commands";
 
 const List: Command = {
     name: "filter-list",

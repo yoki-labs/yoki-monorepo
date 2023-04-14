@@ -1,9 +1,9 @@
+import { inlineCode } from "@yokilabs/util";
 import { stripIndents } from "common-tags";
 import { inspect } from "node:util";
-// import fetch from "node-fetch";
 
-import type { Command } from "./commands";
-import { inlineCode } from "@yokilabs/util";
+// import fetch from "node-fetch";
+import type { Command } from "./Command";
 
 const _clean = async (text: any) => {
     if (text?.then && text.catch) text = await text;
@@ -55,7 +55,7 @@ const Eval: Command = {
         const final = format(code, clean);
 
         if (final.length > 2048) {
-            //const key = await _tooLong(clean);
+            // const key = await _tooLong(clean);
             return ctx.messageUtil.replyWithInfo(message, `Output over the limit`, `Output exceeded 2048 characters (${final.length}).`);
         }
 

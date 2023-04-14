@@ -1,7 +1,7 @@
 import { Collection } from "@discordjs/collection";
 import { RoleType } from "@prisma/client";
 
-import { Command, Category } from "../commands";
+import { Category,Command } from "../commands";
 import CategoryCommand from "./Category.command";
 import Close from "./Close.command";
 import Edit from "./Edit.command";

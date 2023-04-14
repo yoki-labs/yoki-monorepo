@@ -1,9 +1,9 @@
 import { RoleType } from "@prisma/client";
+import { inlineCode } from "@yokilabs/util";
 import { stripIndents } from "common-tags";
 
-import { inlineCode } from "@yokilabs/util";
 import { removePingRole } from "../../utils/util";
-import { Command, Category } from "../commands";
+import { Category,Command } from "../commands";
 
 const PingRole: Command = {
     name: "modmail-pingrole",

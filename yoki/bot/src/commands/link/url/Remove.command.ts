@@ -1,5 +1,6 @@
-import { RoleType } from "../../../typings";
 import { inlineQuote } from "@yokilabs/util";
+
+import { RoleType } from "../../../typings";
 import { MAX_URL_LENGTH, ONLY_URL_REGEX } from "../../../utils/matching";
 import { Category, Command } from "../../commands";
 

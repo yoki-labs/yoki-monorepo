@@ -1,6 +1,6 @@
 import type { ContentFilter, FilterMatching, Server as DBServer } from "@prisma/client";
-import type { Channel, ClientEvents, Member } from "guilded.js";
 import type { GEvent as AbstractGEvent } from "@yokilabs/bot";
+import type { Channel, ClientEvents, Member } from "guilded.js";
 
 import type YokiClient from "./Client";
 

@@ -1,9 +1,8 @@
 import { LogChannelType } from "@prisma/client";
+import { Colors, inlineCode } from "@yokilabs/util";
 import { stripIndents } from "common-tags";
 
-import { Colors } from "@yokilabs/util";
-import { inlineCode } from "@yokilabs/util";
-import { Command, Category } from "./commands";
+import { Category, Command } from "./commands";
 
 // Kind of spellchecker
 type UnprivateLogChannelType = Extract<LogChannelType, "message_edits" | "message_deletions" | "topic_edits" | "topic_deletions" | "comment_deletions" | "member_updates">;
@@ -43,12 +42,12 @@ const Privacy: Command = {
                 ? Colors.green
                 : // Has all of the unprivate logs
                 localPrivacyIssue.length === nonPrivateLogs.length
-                    ? Colors.red
-                    : // Half or more of the unprivate logs are missing
-                    localNoIssue.length > nonPrivateLogs.length / 2
-                        ? Colors.yellow
-                        : // Half or more than half of unprivate logs are there
-                        Colors.orangeRed;
+                ? Colors.red
+                : // Half or more of the unprivate logs are missing
+                localNoIssue.length > nonPrivateLogs.length / 2
+                ? Colors.yellow
+                : // Half or more than half of unprivate logs are there
+                  Colors.orangeRed;
 
         return ctx.messageUtil.sendEmbed(
             message.channelId,

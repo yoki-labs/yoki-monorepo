@@ -1,9 +1,9 @@
 import { ContentFilter, FilterMatching, Preset } from "@prisma/client";
+import { Colors } from "@yokilabs/util";
 import { stripIndents } from "common-tags";
 import { Message, UserType, WebhookEmbed } from "guilded.js";
 
 import { ContentFilterScan, Server, Severity } from "../typings";
-import { Colors } from "@yokilabs/util";
 import { IMAGE_REGEX } from "../utils/matching";
 import { wordPresets } from "../utils/presets";
 import BaseFilterUtil from "./base-filter";

@@ -1,11 +1,11 @@
 import type { EmbedField } from "@guildedjs/guilded-api-typings";
 import { Severity } from "@prisma/client";
+import { inlineCode, listInlineCode } from "@yokilabs/util";
 import { stripIndents } from "common-tags";
 import { UserType } from "guilded.js";
 
 import { CachedMember, RoleType } from "../../typings";
-import { inlineCode, listInlineCode } from "@yokilabs/util";
-import { Command, Category } from "../commands";
+import { Category,Command } from "../commands";
 
 const Unmute: Command = {
 	name: "unmute",

@@ -1,12 +1,11 @@
 import { LogChannelType } from "@prisma/client";
+import { Colors,inlineCode, quoteMarkdown } from "@yokilabs/util";
 import { stripIndents } from "common-tags";
 import { UserType, WebhookEmbed } from "guilded.js";
 import { nanoid } from "nanoid";
 
 import { FilteredContent } from "../../modules/content-filter";
 import type { GEvent } from "../../typings";
-import { Colors } from "@yokilabs/util";
-import { inlineCode, quoteMarkdown } from "@yokilabs/util";
 import { moderateContent } from "../../utils/moderation";
 
 export default {
@@ -93,7 +92,7 @@ export default {
                 [Jump to the message](${channelURL}?messageId=${message.id})
             `,
 				color: Colors.yellow,
-				occurred: message.updatedAt!.toISOString(),
+				occurred: message.updatedAt?.toISOString() ?? new Date().toISOString(),
 				fields: logContent,
 			});
 		} catch (e) {

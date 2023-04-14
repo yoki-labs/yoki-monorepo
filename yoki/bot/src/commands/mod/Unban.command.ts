@@ -1,8 +1,8 @@
+import { inlineCode } from "@yokilabs/util";
 import { stripIndents } from "common-tags";
 
 import { RoleType } from "../../typings";
-import { inlineCode } from "@yokilabs/util";
-import { Command, Category } from "../commands";
+import { Category,Command } from "../commands";
 
 const Unban: Command = {
 	name: "unban",

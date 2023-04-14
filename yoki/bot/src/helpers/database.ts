@@ -2,8 +2,8 @@ import type { ContentIgnoreType, FilterMatching, InviteFilter, LogChannel, UrlFi
 import { Util } from "@yokilabs/bot";
 import type { ForumTopic, Message } from "guilded.js";
 import { nanoid } from "nanoid";
-import type YokiClient from "../Client";
 
+import type YokiClient from "../Client";
 import { Action, ContentFilter, LogChannelType, Server } from "../typings";
 import { FormatDate } from "../utils/util";
 // import { Util } from "./util";

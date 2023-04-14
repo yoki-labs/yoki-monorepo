@@ -19,7 +19,7 @@ services:
             context: ../../
             dockerfile: ./docker/yoki_bot/Dockerfile
         env_file: ../../yoki/.env
-        command: "yarn run dev"
+        command: "npm run dev"
         depends_on:
             - db
         volumes:
@@ -34,7 +34,7 @@ services:
             dockerfile: ./docker/nsfw/Dockerfile
         env_file: ../../yoki/.env
         platform: linux/x86_64
-        command: "yarn run dev"
+        command: "npm run dev"
         volumes:
             - "../../yoki/nsfw/src:/usr/app/yoki/nsfw/src"
         restart: "no"

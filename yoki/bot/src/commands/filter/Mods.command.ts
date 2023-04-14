@@ -1,5 +1,5 @@
 import { RoleType } from "../../typings";
-import { Command, Category } from "../commands";
+import { Category,Command } from "../commands";
 
 const FilterOnMods: Command = {
 	name: "filter-onmods",

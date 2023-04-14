@@ -25,9 +25,9 @@ client.ws.emitter.on("gatewayEvent", async (event, data) => {
     const { serverId } = data.d as { serverId?: string | null };
     if (!serverId) return;
 
-    const serverFromDb = await client.dbUtil.getServer(serverId).catch((err) =>
-        void client.errorHandler.send("Error creating/fetching server for gateway event.", [errorEmbed(err, { server: serverId, event })])
-    );
+    const serverFromDb = await client.dbUtil
+        .getServer(serverId)
+        .catch((err) => void client.errorHandler.send("Error creating/fetching server for gateway event.", [errorEmbed(err, { server: serverId, event })]));
     if (!serverFromDb || serverFromDb?.blacklisted) return void 0;
     return client.eventHandler[event]?.(data, client, serverFromDb).catch((err) =>
         client.errorHandler.send("Uncaught event error", [errorEmbed(err, { server: serverId, event })])
@@ -36,7 +36,7 @@ client.ws.emitter.on("gatewayEvent", async (event, data) => {
 
 void (async (): Promise<void> => {
     await setClientCommands(client, join(__dirname, "commands"));
-    await setClientEvents(client, join(__dirname, "events", "guilded"))
+    await setClientEvents(client, join(__dirname, "events", "guilded"));
 
     try {
         // check if the main server exists and is in the database, this check is mostly to make sure our prisma migrations are applied
@@ -44,7 +44,7 @@ void (async (): Promise<void> => {
         if (!existingMainServer.length) await client.dbUtil.createFreshServerInDatabase(process.env.MAIN_SERVER!);
     } catch (e) {
         console.log(e);
-        console.log("ERROR!: You have not applied the migrations. You must run 'yarn migrate:dev'. Exiting...");
+        console.log("ERROR!: You have not applied the migrations. You must run 'pnpm migrate:dev'. Exiting...");
         return process.exit(1);
     }
 

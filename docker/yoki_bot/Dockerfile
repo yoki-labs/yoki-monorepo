@@ -2,6 +2,7 @@ FROM node:16-alpine
 WORKDIR /opt/build
 ENV BUILD_ENV=production
 
+COPY pnpm-workspace.yaml pnpm-lock.yaml ./
 RUN apk update \
 	&& apk add --no-cache --virtual .build-deps build-base \
 	libpng \
@@ -11,38 +12,31 @@ RUN apk update \
 	curl \
 	bash \ 
 	jq \
-	&& curl -L https://yarnpkg.com/install.sh | bash 
-# root /
-COPY tsconfig.json ./
-COPY .eslintrc.json ./
-COPY package.json ./
+	&& corepack enable && corepack prepare pnpm@7.18.0 --activate
 
+# root /
+COPY tsconfig.json package.json ./
 COPY ./yokilabs ./yokilabs
+
+RUN pnpm install --silent
+RUN pnpm run build
 
 # root /yoki/bot
 WORKDIR /opt/build/yoki/bot
 
 COPY ./yoki/bot/package.json ./
-COPY ./yoki/.env ../
-
 # for workspaces
-RUN yarn install
+RUN pnpm install --silent
 
 # root /yoki/bot/prisma/ for DB stuff
 COPY ./yoki/bot/prisma/. ./prisma/
-RUN yarn generate
-
-# Install packages
-WORKDIR /opt/build/
-RUN yarn
-
-WORKDIR /opt/build/yoki/bot
+RUN npx prisma generate
 
 COPY ./yoki/bot/tsconfig.json ./yoki/bot/nodemon.json ./
 COPY ./yoki/bot/src/. ./src/
-RUN yarn build
+RUN pnpm run build
 
-RUN if [[ "$BUILD_ENV" = "development" ]]; then yarn remove $(cat package.json | jq -r '.devDependencies | keys | join(" ")'); fi
+# RUN if [[ "$BUILD_ENV" = "production" ]]; then pnpm prune --prod; fi
 FROM node:16-alpine
 
 # Copy over to and install stuff in /usr/app to run the bot
@@ -51,12 +45,10 @@ WORKDIR /usr/app
 RUN apk update \
 	&& apk add cairo-dev pango-dev jpeg-dev
 
-COPY --from=0 ./opt/build/tsconfig.json .
-COPY --from=0 ./opt/build/package.json .
+COPY --from=0 ./opt/build/tsconfig.json ./opt/build/package.json ./
 COPY --from=0 ./opt/build/node_modules node_modules
-COPY --from=0 ./opt/build/yoki/bot/ yoki/bot/
 COPY --from=0 ./opt/build/yokilabs/ yokilabs/
-
+COPY --from=0 ./opt/build/yoki/bot/ yoki/bot/
 
 WORKDIR /usr/app/yoki/bot
-CMD ["yarn", "run", "start"]
+CMD ["npm", "run", "start"]

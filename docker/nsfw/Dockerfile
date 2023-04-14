@@ -1,6 +1,7 @@
 FROM node:16-buster-slim
 WORKDIR /opt/build
 
+COPY pnpm-workspace.yaml pnpm-lock.yaml ./
 RUN apt-get update && \ 
 	apt-get install -y build-essential \
 	wget \
@@ -8,30 +9,25 @@ RUN apt-get update && \
 	make \
 	gcc \ 
 	libc6-dev \
-	jq
+	jq \
+	&& corepack enable && corepack prepare pnpm@7.18.0 --activate
 
 # root /
-COPY tsconfig.json ./
-COPY .eslintrc.json ./
-COPY package.json ./
+COPY tsconfig.json package.json ./
+RUN pnpm install --silent
 
 # # Package stuff
 WORKDIR /opt/build/yoki/nsfw
 
 COPY ./yoki/nsfw/package.json ./
-# COPY ./yoki/nsfw/package.json ./yoki/nsfw
-# RUN yarn install
-WORKDIR /opt/build/
-RUN yarn
-
-WORKDIR /opt/build/yoki/nsfw
+RUN pnpm install --silent
 
 # Copy over sources and build them
 COPY ./yoki/nsfw/tsconfig.json ./yoki/nsfw/nodemon.json ./
 COPY ./yoki/nsfw/src/. ./src/
-RUN yarn build
+RUN pnpm build
 
-RUN if [[ "$BUILD_ENV" = "development" ]] ; then yarn remove $(cat package.json | jq -r '.devDependencies | keys | join(" ")') ; fi
+# RUN if [[ "$BUILD_ENV" = "production" ]]; then pnpm prune --prod; fi
 
 FROM node:16-buster-slim
 WORKDIR /usr/app
@@ -40,10 +36,9 @@ RUN apt-get update && \
 	apt-get install -y build-essential \
 	libc6-dev 
 
-COPY --from=0 ./opt/build/tsconfig.json .
-COPY --from=0 ./opt/build/.eslintrc.json .
-COPY --from=0 ./opt/build/package.json .
+COPY --from=0 ./opt/build/package.json ./opt/build/tsconfig.json ./
 COPY --from=0 ./opt/build/yoki/nsfw/ ./yoki/nsfw/
+COPY --from=0 ./opt/build/node_modules node_modules
 
 WORKDIR /usr/app/yoki/nsfw
-CMD ["yarn", "run", "start"]
+CMD ["npm", "run", "start"]

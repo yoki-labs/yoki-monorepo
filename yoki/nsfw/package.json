@@ -6,7 +6,7 @@
 	"main": "./dist/index.js",
 	"scripts": {
 		"lint": "eslint --ignore-path ../../.eslintignore src/",
-		"lint:fix": "yarn lint --fix",
+		"lint:fix": "pnpm lint --fix",
 		"build": "tsc && npx tsc-alias",
 		"start": "node dist/index.js",
 		"dev": "nodemon"

@@ -1,6 +1,7 @@
-import { RoleType } from "../typings";
 import { inlineQuote } from "@yokilabs/util";
-import { Command, Category } from "./commands";
+
+import { RoleType } from "../typings";
+import { Category, Command } from "./commands";
 
 const Prefix: Command = {
     name: "prefix",

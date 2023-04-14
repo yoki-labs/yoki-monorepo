@@ -1,6 +1,7 @@
-import { ResolvedEnum, RoleType, Severity } from "../../typings";
 import { inlineCode } from "@yokilabs/util";
-import { Command, Category } from "../commands";
+
+import { ResolvedEnum, RoleType, Severity } from "../../typings";
+import { Category,Command } from "../commands";
 
 const LinkSeverity: Command = {
 	name: "link-severity",

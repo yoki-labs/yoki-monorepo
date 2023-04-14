@@ -1,11 +1,10 @@
 import { LogChannelType } from "@prisma/client";
+import { codeBlock, Colors,inlineCode } from "@yokilabs/util";
 import { stripIndents } from "common-tags";
 import { WebhookEmbed } from "guilded.js";
 import { nanoid } from "nanoid";
 
 import type { GEvent } from "../../typings";
-import { Colors } from "@yokilabs/util";
-import { codeBlock, inlineCode } from "@yokilabs/util";
 
 export default {
 	execute: async ([memberBan, ctx]) => {

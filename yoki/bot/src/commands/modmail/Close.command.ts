@@ -1,10 +1,10 @@
 import type { ModmailThread } from "@prisma/client";
+import { Colors } from "@yokilabs/util";
 import { stripIndents } from "common-tags";
 
 import type Client from "../../Client";
 import { LogChannelType, RoleType, Server } from "../../typings";
-import { Colors } from "@yokilabs/util";
-import { Command, Category } from "../commands";
+import { Category,Command } from "../commands";
 
 const Close: Command = {
 	name: "close",

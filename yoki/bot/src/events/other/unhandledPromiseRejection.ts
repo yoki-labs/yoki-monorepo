@@ -1,5 +1,6 @@
-import type YokiClient from "../../Client";
 import { errorEmbed } from "@yokilabs/util";
+
+import type YokiClient from "../../Client";
 
 let errorCounter = 0;
 let resetCounter: NodeJS.Timer | null = null;

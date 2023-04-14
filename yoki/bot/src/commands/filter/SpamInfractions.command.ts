@@ -1,6 +1,7 @@
-import { RoleType } from "../../typings";
 import { inlineCode } from "@yokilabs/util";
-import { Command, Category } from "../commands";
+
+import { RoleType } from "../../typings";
+import { Category,Command } from "../commands";
 
 const SpamInfractions: Command = {
     name: "antiraid-spaminfractions",

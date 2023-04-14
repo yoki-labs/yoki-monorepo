@@ -9,7 +9,6 @@
 		"skipLibCheck": true,
 		"declaration": false,
 		"emitDecoratorMetadata": true,
-		"importsNotUsedAsValues": "preserve",
 		"experimentalDecorators": true,
 		"noUnusedLocals": false,
 		"noUnusedParameters": false,

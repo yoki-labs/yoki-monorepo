@@ -1,7 +1,7 @@
 import { RoleType } from "@prisma/client";
-
 import { inlineCode } from "@yokilabs/util";
-import { Command, Category } from "../commands";
+
+import { Category,Command } from "../commands";
 
 const List: Command = {
     name: "tag-list",

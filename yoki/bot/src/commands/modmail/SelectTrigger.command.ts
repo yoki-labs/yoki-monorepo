@@ -2,7 +2,7 @@ import { ReactionActionType } from "@prisma/client";
 import type { Channel } from "guilded.js";
 
 import { RoleType } from "../../typings";
-import { Command, Category } from "../commands";
+import { Category,Command } from "../commands";
 
 const SelectTrigger: Command = {
 	name: "modmail-selecttrigger",

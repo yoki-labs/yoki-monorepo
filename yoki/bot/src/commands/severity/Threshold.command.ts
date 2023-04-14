@@ -1,10 +1,10 @@
 import { Severity } from "@prisma/client";
+import { inlineCode } from "@yokilabs/util";
 import { stripIndents } from "common-tags";
 import ms from "ms";
 
 import { ResolvedEnum, RoleType } from "../../typings";
-import { inlineCode } from "@yokilabs/util";
-import { Command, Category } from "../commands";
+import { Category,Command } from "../commands";
 
 enum MutableSeverities {
 	MUTE = "MUTE",

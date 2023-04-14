@@ -1,9 +1,9 @@
 import type { ChannelIgnoreType } from "@prisma/client";
+import { inlineCode } from "@yokilabs/util";
 import type { Channel } from "guilded.js";
 
 import { ResolvedEnum, RoleType } from "../../typings";
-import { inlineCode } from "@yokilabs/util";
-import { Command, Category } from "../commands";
+import { Category,Command } from "../commands";
 import { ChannelIgnoreSettingAction, ChannelIgnoreTypeMap } from "./filterenum";
 
 const IgnoreChannel: Command = {

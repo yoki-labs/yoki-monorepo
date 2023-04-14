@@ -1,7 +1,7 @@
 import { Collection } from "@discordjs/collection";
 import { RoleType } from "@prisma/client";
 
-import { Command, Category } from "../commands";
+import { Category,Command } from "../commands";
 import IgnoreChannel from "./Channel.command";
 import IgnoreContent from "./Content.command";
 

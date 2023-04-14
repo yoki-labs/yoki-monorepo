@@ -1,9 +1,8 @@
+import { Colors,inlineCode, inlineQuote } from "@yokilabs/util";
 import type { EmbedField } from "guilded.js";
 
 import { FilteredContent } from "../../modules/content-filter";
 import { GEvent, LogChannelType } from "../../typings";
-import { Colors } from "@yokilabs/util";
-import { inlineCode, inlineQuote } from "@yokilabs/util";
 import { quoteChangedContent } from "../../utils/messages";
 import { moderateContent } from "../../utils/moderation";
 

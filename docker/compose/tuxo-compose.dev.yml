@@ -19,7 +19,7 @@ services:
             context: ../../
             dockerfile: ./docker/tuxedo_bot/Dockerfile
         env_file: ../../tuxedo/.env
-        command: "yarn run dev"
+        command: "npm run dev"
         depends_on:
             - db
         volumes:

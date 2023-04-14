@@ -1,8 +1,8 @@
 import { ChannelIgnoreType, ContentIgnoreType, InviteFilter, Preset } from "@prisma/client";
+import { Colors, isHashId } from "@yokilabs/util";
 import fetch from "node-fetch";
 
 import type { PresetLink, Server } from "../typings";
-import { Colors, isHashId } from "@yokilabs/util";
 import { URL_REGEX } from "../utils/matching";
 import { urlPresets } from "../utils/presets";
 import BaseFilterUtil from "./base-filter";

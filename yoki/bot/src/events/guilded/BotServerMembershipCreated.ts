@@ -1,8 +1,8 @@
+import { Colors } from "@yokilabs/util";
 import { stripIndents } from "common-tags";
 import { Embed } from "guilded.js";
 
 import type { GEvent } from "../../typings";
-import { Colors } from "@yokilabs/util";
 
 export default {
   execute: ([server, user, ctx]) => {

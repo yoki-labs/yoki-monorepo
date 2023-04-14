@@ -1,7 +1,7 @@
 import { Collection } from "@discordjs/collection";
 
 import { RoleType } from "../../typings";
-import { Command, Category } from "../commands";
+import { Category,Command } from "../commands";
 import All from "./All.command";
 import Clear from "./Clear.command";
 import ForceView from "./ForceView.command";

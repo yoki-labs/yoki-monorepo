@@ -2,7 +2,7 @@ import { stripIndents } from "common-tags";
 
 import { RoleType } from "../../typings";
 import { addOrRemoveMemberRoleMessage } from "../../utils/util";
-import { Command, Category } from "../commands";
+import { Category,Command } from "../commands";
 
 const Member: Command = {
     name: "role-member",

@@ -1,6 +1,5 @@
 import type { Server as DBServer } from "@prisma/client";
-import type { BaseCommand, CommandContext as BaseCommandContext } from "@yokilabs/bot";
-import type { GEvent as AbstractGEvent } from "@yokilabs/bot";
+import type { BaseCommand, CommandContext as BaseCommandContext, GEvent as AbstractGEvent } from "@yokilabs/bot";
 import type { ClientEvents } from "guilded.js";
 
 import type TuxedoClient from "./Client";

@@ -1,5 +1,5 @@
 import { generateCaptcha } from "../../utils/antiraid";
-import { Command, Category } from "../commands";
+import { Category,Command } from "../commands";
 
 const Solve: Command = {
 	name: "solve",

@@ -1,6 +1,7 @@
+import { inlineCode } from "@yokilabs/util";
+
 import { transformSeverityStringToEnum } from "../../modules/content-filter";
 import { RoleType } from "../../typings";
-import { inlineCode } from "@yokilabs/util";
 import type { Command } from "../commands";
 
 const Enable: Command = {

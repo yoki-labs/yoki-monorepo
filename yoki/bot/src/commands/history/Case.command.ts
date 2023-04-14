@@ -1,7 +1,8 @@
-import { RoleType } from "../../typings";
 import { inlineCode } from "@yokilabs/util";
+
+import { RoleType } from "../../typings";
 import { getActionAdditionalInfo, getActionFields, getActionInfo } from "../../utils/moderation";
-import { Command, Category } from "../commands";
+import { Category,Command } from "../commands";
 
 const Case: Command = {
 	name: "case",

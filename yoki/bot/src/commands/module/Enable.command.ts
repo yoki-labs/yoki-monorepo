@@ -1,7 +1,8 @@
-import { ResolvedEnum, RoleType } from "../../typings";
 import { inlineCode } from "@yokilabs/util";
+
+import { ResolvedEnum, RoleType } from "../../typings";
 import { typeToDBPropMap } from "../../utils/util";
-import { Command, Category } from "../commands";
+import { Category,Command } from "../commands";
 
 const Enable: Command = {
 	name: "module-enable",

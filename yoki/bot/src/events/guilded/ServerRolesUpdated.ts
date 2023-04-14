@@ -1,12 +1,10 @@
 import { LogChannelType } from "@prisma/client";
+import { Colors, inlineCode,summarizeItems } from "@yokilabs/util";
 import { stripIndents } from "common-tags";
+import { WebhookEmbed } from "guilded.js";
 import { nanoid } from "nanoid";
 
 import type { GEvent } from "../../typings";
-import { Colors } from "@yokilabs/util";
-import { inlineCode } from "@yokilabs/util";
-import { summarizeItems } from "@yokilabs/util";
-import { WebhookEmbed } from "guilded.js";
 
 export default {
 	execute: async ([event, _oldMembers, ctx]): Promise<void> => {

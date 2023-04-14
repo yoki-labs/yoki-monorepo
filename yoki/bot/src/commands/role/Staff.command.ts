@@ -1,9 +1,9 @@
 import { RoleType } from "@prisma/client";
+import { inlineCode } from "@yokilabs/util";
 import { stripIndents } from "common-tags";
 
-import { inlineCode } from "@yokilabs/util";
 import { addOrRemoveStaffRoleMessage } from "../../utils/util";
-import { Command, Category } from "../commands";
+import { Category,Command } from "../commands";
 
 const allowedTypes = ["MINIMOD", "MOD", "ADMIN"];
 

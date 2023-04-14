@@ -1,11 +1,10 @@
+import { Colors,inlineCode, inlineQuote } from "@yokilabs/util";
 import { stripIndents } from "common-tags";
 import { WebhookEmbed } from "guilded.js";
 import { nanoid } from "nanoid";
 
 import { FilteredContent } from "../../modules/content-filter";
 import { GEvent, LogChannelType } from "../../typings";
-import { Colors } from "@yokilabs/util";
-import { inlineCode, inlineQuote } from "@yokilabs/util";
 
 const numberCharCodeStart = 48;
 const numberCharCodeEnd = 57;

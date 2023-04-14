@@ -1,8 +1,8 @@
 import { Severity } from "@prisma/client";
+import { inlineCode, inlineQuote } from "@yokilabs/util";
 import { stripIndents } from "common-tags";
 
 import { ResolvedEnum, RoleType } from "../../../typings";
-import { inlineCode, inlineQuote } from "@yokilabs/util";
 import { MAX_URL_LENGTH, ONLY_URL_REGEX } from "../../../utils/matching";
 import { Category, Command } from "../../commands";
 

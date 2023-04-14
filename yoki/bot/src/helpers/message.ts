@@ -1,10 +1,10 @@
 import type { EmbedField } from "@guildedjs/guilded-api-typings";
+import { MessageUtil as BaseMessageUtil } from "@yokilabs/bot";
+import { Colors } from "@yokilabs/util";
 import { stripIndents } from "common-tags";
 
-import type { Command } from "../commands/commands";
-import { Colors } from "@yokilabs/util";
-import { MessageUtil as BaseMessageUtil } from "@yokilabs/bot";
 import type YokiClient from "../Client";
+import type { Command } from "../commands/commands";
 import type { Server } from "../typings";
 
 export class MessageUtil extends BaseMessageUtil<YokiClient, Server, Command> {

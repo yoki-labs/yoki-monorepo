@@ -1,12 +1,11 @@
 import { LogChannelType } from "@prisma/client";
+import { Colors,inlineCode } from "@yokilabs/util";
 import { stripIndents } from "common-tags";
 import { WebhookEmbed } from "guilded.js";
 import { nanoid } from "nanoid";
 
 import { closeModmailThread } from "../../commands/modmail/Close.command";
 import type { GEvent } from "../../typings";
-import { Colors } from "@yokilabs/util";
-import { inlineCode } from "@yokilabs/util";
 
 export default {
 	execute: async ([event, ctx]) => {

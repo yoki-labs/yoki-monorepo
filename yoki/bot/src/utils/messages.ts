@@ -1,8 +1,8 @@
 import type { ChannelType } from "@guildedjs/guilded-api-typings";
+import { codeBlock } from "@yokilabs/util";
 import { stripIndents } from "common-tags";
 
 import type Client from "../Client";
-import { codeBlock } from "@yokilabs/util";
 
 export const quoteChangedContent = (ctx: Client, serverId: string, contentId: string | number, contentType: ChannelType, content?: string): string | Promise<string> =>
     content

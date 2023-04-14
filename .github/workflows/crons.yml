@@ -17,13 +17,13 @@ jobs:
               uses: actions/setup-node@v3
               with:
                   node-version: "16"
-                  cache: "yarn"
+                  cache: "pnpm"
 
             - name: Install dependencies
-              run: yarn install
+              run: pnpm install
 
             - name: Generate Prisma TypeScript
-              run: yarn generate
+              run: pnpm generate
 
             - name: Run Message Clearer
               run: npx ts-node yoki/bot/scripts/delete-old-messages.ts

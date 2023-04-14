@@ -1,5 +1,6 @@
-import { RoleType } from "../../typings";
 import { inlineCode } from "@yokilabs/util";
+
+import { RoleType } from "../../typings";
 import type { Command } from "../commands";
 
 const Enable: Command = {

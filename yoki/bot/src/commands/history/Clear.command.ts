@@ -1,6 +1,7 @@
-import { CachedMember, RoleType } from "../../typings";
 import { inlineCode } from "@yokilabs/util";
-import { Command, Category } from "../commands";
+
+import { CachedMember, RoleType } from "../../typings";
+import { Category,Command } from "../commands";
 
 const Clear: Command = {
 	name: "history-clear",

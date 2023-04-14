@@ -3,6 +3,3 @@ services:
     bot:
         env_file:
             - ../../stack.env
-    nsfw:
-        env_file:
-            - ../../stack.env

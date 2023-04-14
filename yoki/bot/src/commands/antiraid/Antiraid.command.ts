@@ -1,7 +1,7 @@
 import { Collection } from "@discordjs/collection";
 
 import { RoleType } from "../../typings";
-import { Command, Category } from "../commands";
+import { Category,Command } from "../commands";
 import Age from "./Age.command";
 import Challenge from "./Challenge.command";
 import Channel from "./Channel.command";

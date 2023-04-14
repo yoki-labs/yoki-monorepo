@@ -1,4 +1,4 @@
-import type { Command } from "./commands";
+import type { Command } from "./Command";
 
 const Invite: Command = {
     name: "invite",
@@ -10,15 +10,9 @@ const Invite: Command = {
             user_id: message.createdById,
             event_properties: { serverId: message.serverId },
         });
-        return ctx.messageUtil.replyWithInfo(
-            message,
-            `Invite the bot`,
-            `[**Click here**]() to invite Tuxedo to your server.`,
-            undefined,
-            {
-                isPrivate: true,
-            }
-        );
+        return ctx.messageUtil.replyWithInfo(message, `Invite the bot`, `[**Click here**]() to invite Tuxedo to your server.`, undefined, {
+            isPrivate: true,
+        });
     },
 };
 

@@ -1,6 +1,5 @@
 {
     "name": "@yokilabs/util",
-    "packageManager": "yarn@1.22.19",
     "version": "1.0.0",
     "private": true,
     "description": "Common utilities code",
@@ -17,15 +16,12 @@
         "#functions/*": "./dist/functions/*.js"
     },
     "dependencies": {
-        "@node-redis/json": "^1.0.2",
         "common-tags": "^1.8.2",
         "dotenv": "^16.0.3",
         "guilded.js": "0.20.0",
-        "ioredis": "^5.2.4",
         "nanoid": "^4.0.0",
         "node-fetch": "^3.2.10",
         "nodemon": "^2.0.20",
-        "redis-json": "^6.0.3",
         "tslib": "^2.4.1"
     },
     "devDependencies": {

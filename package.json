@@ -5,29 +5,29 @@
     "description": "Overarching repository for Yoki",
     "author": "Zaid \"Nico\" <contact@nico.engineer>",
     "scripts": {
-        "build": "yarn workspaces run build",
-        "lint": "yarn workspaces run lint",
-        "lint:fix": "yarn lint --fix",
+        "build": "pnpm -r --filter=!@yoki/site run build",
+        "lint": "pnpm -r run lint",
+        "lint:fix": "pnpm lint --fix",
         "prepare": "husky install",
         "prettier": "prettier --write **/*.{ts,js,json,yml,yaml,md}",
-        "generate": "cd yoki/bot && yarn generate",
-        "refresh": "ts-node scripts/refresh.ts",
+        "generate": "cd yoki/bot && pnpm generate",
         "yk:docker": "cd docker/compose && docker-compose -f yoki-compose.yml -f yoki-compose.dev.yml",
-        "yk:start": "yarn yk:docker up -d --build && yarn yk:docker logs --follow bot nsfw ",
-        "yk:db": "yarn yk:docker up -d --build db",
-        "yk:down": "yarn yk:docker down",
-        "yk:logs": "yarn yk:docker logs -f bot nsfw",
-        "yk:migrate": "cd yoki/bot && yarn migrate:dev",
+        "yk:start": "pnpm yk:docker up -d --build && pnpm yk:docker logs --follow bot nsfw ",
+        "yk:db": "pnpm yk:docker up -d --build db",
+        "yk:down": "pnpm yk:docker down",
+        "yk:logs": "pnpm yk:docker logs -f bot nsfw",
+        "yk:migrate": "cd yoki/bot && pnpm migrate:dev",
         "tx:docker": "cd docker/compose && docker-compose -f tuxo-compose.yml -f tuxo-compose.dev.yml",
-        "tx:db": "yarn tx:docker up -d --build db",
-        "tx:start": "yarn tx:docker up -d --build && yarn tx:docker logs --follow bot",
-        "tx:down": "yarn tx:docker down",
-        "tx:migrate": "cd tuxedo/bot && yarn migrate:dev",
+        "tx:db": "pnpm tx:docker up -d --build db",
+        "tx:start": "pnpm tx:docker up -d --build && pnpm tx:docker logs --follow bot",
+        "tx:down": "pnpm tx:docker down",
+        "tx:migrate": "cd tuxedo/bot && pnpm migrate:dev",
+        "tx:migrate:prod": "cd tuxedo/bot && pnpm migrate:prod",
         "yk:docker:prod": "cd docker/compose && docker-compose -f yoki-compose.yml -f yoki-compose.prod.yml",
-        "yk:start:prod": "yarn yk:docker up -d --build",
-        "yk:down:prod": "yarn yk:docker down",
-        "yk:logs:prod": "yarn yk:docker logs -f bot nsfw",
-        "yk:migrate:prod": "cd yoki/bot && yarn migrate:prod"
+        "yk:start:prod": "pnpm yk:docker up -d --build",
+        "yk:down:prod": "pnpm yk:docker down",
+        "yk:logs:prod": "pnpm yk:docker logs -f bot nsfw",
+        "yk:migrate:prod": "cd yoki/bot && pnpm migrate:prod"
     },
     "devDependencies": {
         "@sapphire/eslint-config": "^4.3.2",
@@ -57,11 +57,11 @@
         "typescript": "^4.9.5"
     },
     "workspaces": [
+        "yokilabs/util",
+        "yokilabs/bot",
         "yoki/bot",
         "yoki/nsfw",
         "yoki/site",
-        "yokilabs/bot",
-        "yokilabs/util",
         "tuxedo/bot"
     ],
     "prettier": {
@@ -71,10 +71,10 @@
         "tabWidth": 4
     },
     "lint-staged": {
-        "yoki-labs/bot/src/*.{js,ts}": "npx eslint -c ./yoki-labs/bot/.eslintrc.js --fix",
-        "yoki-labs/util/src/*.{js,ts}": "npx eslint -c ./yoki-labs/util/.eslintrc.js --fix",
-        "yoki/bot/src/*.{js,ts}": "npx eslint -c ./yoki/bot/.eslintrc.js --fix",
-        "yoki/nsfw/src/*.{js,ts}": "npx eslint -c ./yoki/nsfw/.eslintrc.js --fix",
-        "yoki/site/src/*.{ts,tsx}": "npx eslint -c ./yoki/site/.eslintrc.js --fix"
+        "yoki-labs/bot/src/*.{js,ts}": "npx eslint -c ./yoki-labs/bot/.eslintrc.json --fix",
+        "yoki-labs/util/src/*.{js,ts}": "npx eslint -c ./yoki-labs/util/.eslintrc.json --fix",
+        "yoki/bot/src/*.{js,ts}": "npx eslint -c ./yoki/bot/.eslintrc.json --fix",
+        "yoki/nsfw/src/*.{js,ts}": "npx eslint -c ./yoki/nsfw/.eslintrc.json --fix",
+        "yoki/site/src/*.{ts,tsx}": "npx eslint -c ./yoki/site/.eslintrc.json --fix"
     }
 }

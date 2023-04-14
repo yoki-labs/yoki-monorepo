@@ -1,6 +1,6 @@
+import { Colors,inlineCode, inlineQuote } from "@yokilabs/util";
+
 import { GEvent, LogChannelType } from "../../typings";
-import { Colors } from "@yokilabs/util";
-import { inlineCode, inlineQuote } from "@yokilabs/util";
 import { quoteChangedContent } from "../../utils/messages";
 
 export default {

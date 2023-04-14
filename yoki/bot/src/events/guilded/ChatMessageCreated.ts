@@ -1,10 +1,10 @@
 import { createCommandHandler } from "@yokilabs/bot";
 import { Colors } from "@yokilabs/util";
 import { Embed, UserType } from "guilded.js";
+
 import type YokiClient from "../../Client";
 import type { Command } from "../../commands/commands";
 import { FilteredContent } from "../../modules/content-filter";
-
 import type { GEvent, RoleType, Server } from "../../typings";
 import { moderateContent } from "../../utils/moderation";
 import { roleValues } from "../../utils/util";
@@ -14,7 +14,7 @@ const { fetchPrefix, parseCommand, fetchCommandInfo, resolveArguments, checkUser
 // Fetches minimod/mod/admin roles
 const fetchServerRoles =
 	(ctx: YokiClient, serverId: string) =>
-		ctx.prisma.role.findMany({ where: { serverId: serverId } });
+		ctx.prisma.role.findMany({ where: { serverId } });
 
 const fn = fetchPrefix.bind(
     null,

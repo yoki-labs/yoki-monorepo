@@ -1,8 +1,7 @@
+import { Colors, inlineCode } from "@yokilabs/util";
 import { UserType } from "guilded.js";
 
 import { Context, LogChannelType } from "../../typings";
-import { Colors } from "@yokilabs/util";
-import { inlineCode } from "@yokilabs/util";
 import { quoteChangedContent } from "../../utils/messages";
 import type { CommentPayload } from "./BaseCommentEvent.ignore";
 
@@ -23,8 +22,7 @@ export default async (serverId: string, parentId: number, comment: CommentPayloa
         where: deletedCommentLogChannel.channelId,
         serverId,
         title: "Comment Removed",
-        description: `A comment by <@${comment.createdBy}> (${inlineCode(comment.createdBy)}) was deleted in [#${channel.name
-            }](${channelURL})
+        description: `A comment by <@${comment.createdBy}> (${inlineCode(comment.createdBy)}) was deleted in [#${channel.name}](${channelURL})
 
 			Comment ID: ${inlineCode(comment.id)}
             Parent Content ID: ${inlineCode(parentId)} 
