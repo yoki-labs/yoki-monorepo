@@ -5,6 +5,28 @@ jobs:
     quality:
         name: Quality Check
         runs-on: ubuntu-latest
+        steps:
+            - name: Clone repo
+              uses: actions/checkout@v3
+
+            - uses: pnpm/action-setup@v2
+              with:
+                  version: 7.28.0
+
+            - name: Set up Node v16
+              uses: actions/setup-node@v3
+              with:
+                  node-version: "16"
+                  cache: "pnpm"
+
+            - name: Install Dependencies
+              run: pnpm -r install
+
+            - name: Run linter
+              run: pnpm lint
+    tsc:
+        name: TypeScript Check
+        runs-on: ubuntu-latest
         strategy:
             fail-fast: false
             matrix:
@@ -23,14 +45,11 @@ jobs:
                   node-version: "16"
                   cache: "pnpm"
 
-            - name: Install dependencies
+            - name: Install Dependencies
               run: pnpm -r install
 
-            - name: Generate Prisma TypeScript
+            - name: Build Prisma Types
               run: cd ${{ matrix.service-name }}/bot && pnpx prisma generate
 
             - name: Run linter
-              run: pnpm lint
-
-            - name: Run TypeScript Compiler
-              run: pnpm build
+              run: cd ${{ matrix.service-name }}/bot && pnpm build
