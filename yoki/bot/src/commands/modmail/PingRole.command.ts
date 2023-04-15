@@ -23,19 +23,19 @@ const PingRole: Command = {
         if (!role) {
             return commandCtx.server.modmailPingRoleId
                 ? ctx.messageUtil.replyWithInfo(
-                    message,
-                    "Modmail ping role",
-                    stripIndents`
+                      message,
+                      "Modmail ping role",
+                      stripIndents`
 					  This server's modmail ping role has been set as the ID ${inlineCode(commandCtx.server.modmailPingRoleId)}.
 					  
 					  ${unsetPingRole}
 					  `
-                )
+                  )
                 : ctx.messageUtil.replyWithNullState(
-                    message,
-                    "No modmail ping role",
-                    "This server does not have modmail ping role set.\n\n*If you would like to set a ping role please rerun this command with the ID of the role you want to set suffixed.*"
-                );
+                      message,
+                      "No modmail ping role",
+                      "This server does not have modmail ping role set.\n\n*If you would like to set a ping role please rerun this command with the ID of the role you want to set suffixed.*"
+                  );
         }
         if (role.toUpperCase() === "REMOVE") {
             // The ability to delete modmail ping roles

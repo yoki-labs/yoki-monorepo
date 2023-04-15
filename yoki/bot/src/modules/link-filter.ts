@@ -98,7 +98,7 @@ export class LinkFilterUtil extends BaseFilterUtil {
             const domain = groups.full_domain ?? groups.routed_domain ?? groups.short_domain!;
             const subdomain = groups.full_subdomain ?? groups.routed_subdomain!;
             const route = groups.full_route ?? groups.routed_route!;
-            //const { domain, subdomain, route } = groups;
+            // const { domain, subdomain, route } = groups;
 
             // Not .some, because severity and infraction points
             const greylistedUrl = greylistedUrls?.find((x) => x.domain === domain && (!x.subdomain || x.subdomain === subdomain) && (!x.route || x.route === route));

@@ -23,16 +23,16 @@ const Mute: Command = {
 
             return muteRole
                 ? ctx.messageUtil.replyWithInfo(
-                    message,
-                    `Mute role`,
-                    stripIndents`
+                      message,
+                      `Mute role`,
+                      stripIndents`
                     The mute role is set to role <@${muteRole}>.
 
                     ${addOrRemoveMuteRoleMessage(commandCtx.server.getPrefix())}
                 `,
-                    undefined,
-                    { isSilent: true }
-                )
+                      undefined,
+                      { isSilent: true }
+                  )
                 : ctx.messageUtil.replyWithNullState(message, `No mute role`, `There is no mute role set.`);
         }
         if (role.toUpperCase() === "REMOVE") {

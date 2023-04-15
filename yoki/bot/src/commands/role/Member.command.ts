@@ -23,16 +23,16 @@ const Member: Command = {
 
             return memberRoleId
                 ? ctx.messageUtil.replyWithInfo(
-                    message,
-                    `Member role`,
-                    stripIndents`
+                      message,
+                      `Member role`,
+                      stripIndents`
                     The member role is set to role <@${memberRoleId}>.
 
                     ${addOrRemoveMemberRoleMessage(commandCtx.server.getPrefix())}
                 `,
-                    undefined,
-                    { isSilent: true }
-                )
+                      undefined,
+                      { isSilent: true }
+                  )
                 : ctx.messageUtil.replyWithNullState(message, `No member role`, `There is no member role set.`);
         }
         if (role.toUpperCase() === "REMOVE") {
@@ -49,7 +49,11 @@ const Member: Command = {
         // This could be merged back with `if (!role)`, but I am too lazy to handle it well with
         // `REMOVE` + it is better to tell someone they are wrong than just make them confused
         if (Number.isNaN(roleId))
-            return ctx.messageUtil.replyWithError(message, `Provide role`, `Provide a valid ID or mention of the role you want to set as a member role or pass \`remove\` to remove it.`);
+            return ctx.messageUtil.replyWithError(
+                message,
+                `Provide role`,
+                `Provide a valid ID or mention of the role you want to set as a member role or pass \`remove\` to remove it.`
+            );
 
         await ctx.prisma.server.updateMany({ data: { memberRoleId: roleId }, where: { serverId: message.serverId! } });
         return ctx.messageUtil.replyWithSuccess(message, `Member role set`, `Successfully set <@${roleId}> as the member role`, undefined, { isSilent: true });
