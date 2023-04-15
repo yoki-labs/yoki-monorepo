@@ -94,4 +94,4 @@ jobs:
           script: |
             cd yoki
             pnpm yk:docker:prod pull
-            pnpm prod:start
+            pnpm yk:start:prod

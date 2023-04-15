@@ -19,7 +19,7 @@ COPY tsconfig.json package.json ./
 COPY ./yokilabs ./yokilabs
 
 RUN pnpm install --silent
-RUN pnpm run build
+RUN pnpm run build:deps
 
 # root /tuxedo/bot
 WORKDIR /opt/build/tuxedo/bot

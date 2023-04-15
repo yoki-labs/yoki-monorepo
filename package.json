@@ -19,7 +19,6 @@
 		"prepare": "husky install",
 		"prettier": "prettier --write **/*.{ts,js,json,yml,yaml,md}",
 		"###": "Scripts for docker related util. Starting up a dev env, or deploying in a prod env",
-		"yk:docker": "cd docker/compose && docker-compose -f yoki-compose.yml -f yoki-compose.dev.yml",
 		"yk:start": "pnpm yk:docker up -d --build && pnpm yk:docker logs --follow bot nsfw ",
 		"yk:db": "pnpm yk:docker up -d --build db",
 		"yk:down": "pnpm yk:docker down",
@@ -32,10 +31,11 @@
 		"tx:migrate": "cd tuxedo/bot && pnpm migrate:dev",
 		"tx:migrate:prod": "cd tuxedo/bot && pnpm migrate:prod",
 		"####": "These are 'prefix' scripts. They're used in other scripts. The purpose of these is to make sure we aren't repeating long commands.",
+		"yk:docker": "cd docker/compose && docker-compose -f yoki-compose.yml -f yoki-compose.dev.yml",
 		"yk:docker:prod": "cd docker/compose && docker-compose -f yoki-compose.yml -f yoki-compose.prod.yml",
-		"yk:start:prod": "pnpm yk:docker up -d --build",
-		"yk:down:prod": "pnpm yk:docker down",
-		"yk:logs:prod": "pnpm yk:docker logs -f bot nsfw",
+		"yk:start:prod": "pnpm yk:docker:prod up -d --build",
+		"yk:down:prod": "pnpm yk:docker:prod down",
+		"yk:logs:prod": "pnpm yk:docker:prod logs -f bot nsfw",
 		"yk:migrate:prod": "cd yoki/bot && pnpm migrate:prod"
 	},
 	"devDependencies": {
