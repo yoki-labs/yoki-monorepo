@@ -3,7 +3,7 @@ import { Colors, isHashId } from "@yokilabs/util";
 import fetch from "node-fetch";
 
 import type { PresetLink, Server } from "../typings";
-import { URL_REGEX } from "../utils/matching";
+import { URL_REGEX, UrlRegexGroups } from "../utils/matching";
 import { urlPresets } from "../utils/presets";
 import BaseFilterUtil from "./base-filter";
 import { FilteredContent } from "./content-filter";
@@ -94,12 +94,15 @@ export class LinkFilterUtil extends BaseFilterUtil {
         const links = content.matchAll(URL_REGEX);
         for (const link of links) {
             // Matched link parts
-            const groups = link.groups! as { subdomain?: string; domain: string; route?: string };
-            const { domain, subdomain, route } = groups;
+            const groups = link.groups! as UrlRegexGroups;
+            const domain = groups.full_domain ?? groups.routed_domain ?? groups.short_domain!;
+            const subdomain = groups.full_subdomain ?? groups.routed_subdomain!;
+            const route = groups.full_route ?? groups.routed_route!;
+            //const { domain, subdomain, route } = groups;
 
             // Not .some, because severity and infraction points
             const greylistedUrl = greylistedUrls?.find((x) => x.domain === domain && (!x.subdomain || x.subdomain === subdomain) && (!x.route || x.route === route));
-            const inPreset = enabledPresets.find((x) => this.presets[x.preset].some((y) => this.matchesPresetLink(y, groups)));
+            const inPreset = enabledPresets.find((x) => this.presets[x.preset].some((y) => this.matchesPresetLink(y, subdomain, domain, route)));
 
             // Bad URL
             // && ...:
@@ -179,7 +182,7 @@ export class LinkFilterUtil extends BaseFilterUtil {
         }
     }
 
-    matchesPresetLink(presetLink: PresetLink, { subdomain, domain, route }: { subdomain?: string; domain: string; route?: string }) {
+    matchesPresetLink(presetLink: PresetLink, subdomain: string | undefined, domain: string, route: string | undefined) {
         // If preset has no subdomain, match it by other parts.
         // Otherwise, expect specific subdomain
         const matchesSubdomain = presetLink.subdomain === undefined || subdomain === presetLink.subdomain;
