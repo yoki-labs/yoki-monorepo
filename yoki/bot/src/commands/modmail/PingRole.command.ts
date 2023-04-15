@@ -23,19 +23,19 @@ const PingRole: Command = {
         if (!role) {
             return commandCtx.server.modmailPingRoleId
                 ? ctx.messageUtil.replyWithInfo(
-                      message,
-                      "Modmail ping role",
-                      stripIndents`
+                    message,
+                    "Modmail ping role",
+                    stripIndents`
 					  This server's modmail ping role has been set as the ID ${inlineCode(commandCtx.server.modmailPingRoleId)}.
 					  
 					  ${unsetPingRole}
 					  `
-                  )
+                )
                 : ctx.messageUtil.replyWithNullState(
-                      message,
-                      "No modmail ping role",
-                      "This server does not have modmail ping role set.\n\n*If you would like to set a ping role please rerun this command with the ID of the role you want to set suffixed.*"
-                  );
+                    message,
+                    "No modmail ping role",
+                    "This server does not have modmail ping role set.\n\n*If you would like to set a ping role please rerun this command with the ID of the role you want to set suffixed.*"
+                );
         }
         if (role.toUpperCase() === "REMOVE") {
             // The ability to delete modmail ping roles
@@ -51,8 +51,8 @@ const PingRole: Command = {
         if (Number.isNaN(roleId))
             return ctx.messageUtil.replyWithError(
                 message,
-                `Provide role ID`,
-                `Provide a valid ID of the role you want to set as a modmail ping role or pass \`remove\` to remove it.`
+                `Provide a role`,
+                `Provide a valid ID or mention of the role you want to set as a modmail ping role or pass \`remove\` to remove it.`
             );
         await ctx.prisma.server.update({ where: { id: commandCtx.server.id }, data: { modmailPingRoleId: roleId } });
         return ctx.messageUtil.replyWithSuccess(

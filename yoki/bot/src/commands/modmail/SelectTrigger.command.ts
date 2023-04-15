@@ -31,7 +31,7 @@ const SelectTrigger: Command = {
         if (!commandCtx.server.modmailGroupId && !commandCtx.server.modmailCategoryId)
             return ctx.messageUtil.replyWithError(message, `No modmail group or category set`, "You can set either by using the `?modmail group` or `?modmail category` command.");
         const targetChannel = args.targetChannel as Channel;
-        if (!targetChannel) return ctx.messageUtil.replyWithError(message, `Invalid ID`, `That is not a valid channel ID!`);
+        if (!targetChannel) return ctx.messageUtil.replyWithError(message, `Invalid channel`, `That is not a valid channel mention or ID!`);
 
         const sentMessageId = args.sentMessageId as string;
         const sentMessage = await ctx.rest.router

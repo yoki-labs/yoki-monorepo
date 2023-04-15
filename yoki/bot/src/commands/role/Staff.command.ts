@@ -11,7 +11,7 @@ const Staff: Command = {
     name: "role-staff",
     description: "Adds moderator/staff roles.",
     subCommand: true,
-    usage: "[role ID] [minimod/mod/admin/remove]",
+    usage: "[role] [minimod/mod/admin/remove]",
     examples: ["12345678", "12345678 admin", "12345678 remove"],
     subName: "staff",
     category: Category.Settings,
@@ -40,18 +40,18 @@ const Staff: Command = {
             const modRoles = await ctx.prisma.role.findMany({ where: { serverId: message.serverId! } });
             return modRoles.length
                 ? ctx.messageUtil.replyWithInfo(
-                      message,
-                      `Staff roles`,
-                      stripIndents`
+                    message,
+                    `Staff roles`,
+                    stripIndents`
                         Here are the staff roles for this server:\n- ${modRoles.map((modRole) => `<@${modRole.roleId}> (${inlineCode(modRole.type)})`).join("\n- ")}
 
                         ${addOrRemoveStaffRoleMessage(commandCtx.server.getPrefix())}
                     `,
-                      undefined,
-                      {
-                          isSilent: true,
-                      }
-                  )
+                    undefined,
+                    {
+                        isSilent: true,
+                    }
+                )
                 : ctx.messageUtil.replyWithNullState(message, `No staff roles`, `There are no staff roles set for this server yet.`);
         }
         const existing = await ctx.prisma.role.findMany({ where: { serverId: message.serverId!, roleId: modroleId, type: staffLevel } });

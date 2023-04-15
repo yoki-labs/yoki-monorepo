@@ -7,7 +7,7 @@ import { Category, Command } from "../commands";
 const Mute: Command = {
     name: "role-mute",
     description: "Set or view the mute role for this server.",
-    usage: "[role ID/remove]",
+    usage: "[role mention or ID/remove]",
     examples: ["12345678", ""],
     category: Category.Settings,
     subCommand: true,
@@ -23,16 +23,16 @@ const Mute: Command = {
 
             return muteRole
                 ? ctx.messageUtil.replyWithInfo(
-                      message,
-                      `Mute role`,
-                      stripIndents`
+                    message,
+                    `Mute role`,
+                    stripIndents`
                     The mute role is set to role <@${muteRole}>.
 
                     ${addOrRemoveMuteRoleMessage(commandCtx.server.getPrefix())}
                 `,
-                      undefined,
-                      { isSilent: true }
-                  )
+                    undefined,
+                    { isSilent: true }
+                )
                 : ctx.messageUtil.replyWithNullState(message, `No mute role`, `There is no mute role set.`);
         }
         if (role.toUpperCase() === "REMOVE") {
@@ -47,7 +47,7 @@ const Mute: Command = {
         // This could be merged back with `if (!role)`, but I am too lazy to handle it well with
         // `REMOVE` + it is better to tell someone they are wrong than just make them confused
         if (Number.isNaN(roleId))
-            return ctx.messageUtil.replyWithError(message, `Provide role ID`, `Provide the ID of the role you want to set as a mute role or pass \`remove\` to remove it.`);
+            return ctx.messageUtil.replyWithError(message, `Provide role`, `Provide the mention or ID of the role you want to set as a mute role or pass \`remove\` to remove it.`);
 
         await ctx.prisma.server.updateMany({ data: { muteRoleId: roleId }, where: { serverId: message.serverId! } });
         return ctx.messageUtil.replyWithSuccess(message, `Mute role set`, `Successfully set <@${roleId}> as the mute role`, undefined, { isSilent: true });
