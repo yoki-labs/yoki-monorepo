@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        service-name: [yoki_bot, nsfw]
+        service-name: [yoki, nsfw]
     steps:
       - name: Checkout
         uses: actions/checkout@v2

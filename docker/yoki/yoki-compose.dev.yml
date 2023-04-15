@@ -1,4 +1,4 @@
-version: "3.7"
+version: '3.7'
 services:
     db:
         image: postgres
@@ -17,16 +17,16 @@ services:
     bot:
         build:
             context: ../../
-            dockerfile: ./docker/yoki_bot/Dockerfile
+            dockerfile: ./docker/yoki/Dockerfile
         env_file: ../../yoki/.env
-        command: "npm run dev"
+        command: 'npm run dev'
         depends_on:
             - db
         volumes:
-            - "../../yoki/bot/src:/usr/app/yoki/bot/src"
-        restart: "unless-stopped"
+            - '../../yoki/bot/src:/usr/app/yoki/bot/src'
+        restart: 'unless-stopped'
         environment:
-            DATABASE_URL: "postgresql://yoki_user:yoki_pass@db:5432/yoki?schema=public"
+            DATABASE_URL: 'postgresql://yoki_user:yoki_pass@db:5432/yoki?schema=public'
             BUILD_ENV: development
     nsfw:
         build:
@@ -34,12 +34,12 @@ services:
             dockerfile: ./docker/nsfw/Dockerfile
         env_file: ../../yoki/.env
         platform: linux/x86_64
-        command: "npm run dev"
+        command: 'npm run dev'
         volumes:
-            - "../../yoki/nsfw/src:/usr/app/yoki/nsfw/src"
-        restart: "no"
+            - '../../yoki/nsfw/src:/usr/app/yoki/nsfw/src'
+        restart: 'no'
         environment:
-            TOKEN_SECRET: "TESTTOKENSECRET"
+            TOKEN_SECRET: 'TESTTOKENSECRET'
 
 volumes:
     yoki-postgres-data:
