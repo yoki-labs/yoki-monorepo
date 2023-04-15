@@ -4,6 +4,7 @@ import { Embed, Member } from "guilded.js";
 
 import { suspicious as sus } from "../utils/util";
 import type { Command } from "./commands";
+
 const UserInfo: Command = {
     name: "userinfo",
     description: "View information about a user or yourself.",

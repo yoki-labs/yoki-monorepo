@@ -4,13 +4,13 @@ import { BotImages, Colors, cutArray, inlineCode, StateImages } from "@yokilabs/
 import { stripIndents } from "common-tags";
 import { Embed, Message } from "guilded.js";
 
-import type AbstractClient from "../Client";
+import type { AbstractClient } from "../Client";
 import type { ResolvedArgs } from "../commands/arguments";
 import type { BaseCommand, CommandArgType, CommandArgument, CommandArgValidator } from "../commands/command-typings";
 import type { IServer } from "../db-types";
-import Util from "./util";
+import { Util } from "./util";
 
-export default class MessageUtil<
+export class MessageUtil<
     TClient extends AbstractClient<TClient, TServer, TCommand>,
     TServer extends IServer,
     TCommand extends BaseCommand<TCommand, TClient, string, TServer>
@@ -67,7 +67,14 @@ export default class MessageUtil<
         return this.client.messages.send(message.channelId, opts);
     }
 
-    handleBadArg(message: Message, prefix: string, commandArg: CommandArgument, command: TCommand, argumentConverters: Record<CommandArgType, CommandArgValidator>, castArg: ResolvedArgs) {
+    handleBadArg(
+        message: Message,
+        prefix: string,
+        commandArg: CommandArgument,
+        command: TCommand,
+        argumentConverters: Record<CommandArgType, CommandArgValidator>,
+        castArg: ResolvedArgs
+    ) {
         const [, invalidStringGenerator] = argumentConverters[commandArg.type];
 
         return this.replyWithError(

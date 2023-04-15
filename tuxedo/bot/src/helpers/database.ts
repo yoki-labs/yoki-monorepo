@@ -1,6 +1,6 @@
 import { Util } from "@yokilabs/bot";
 
-import type TuxedoClient from "../Client";
+import type { TuxedoClient } from "../Client";
 import type { Server } from "../typings";
 
 export class DatabaseUtil extends Util<TuxedoClient> {

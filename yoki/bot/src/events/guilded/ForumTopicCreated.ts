@@ -7,9 +7,9 @@ import { moderateContent } from "../../utils/moderation";
 export default {
     execute: async ([forumTopic, ctx]) => {
         const { serverId } = forumTopic;
-		const server = await ctx.dbUtil.getServer(serverId, false);
-		if(!server) return;
-        
+        const server = await ctx.dbUtil.getServer(serverId, false);
+        if (!server) return;
+
         const member = await ctx.members.fetch(serverId, forumTopic.createdBy).catch(() => null);
         if (member?.user?.type === UserType.Bot) return;
 
@@ -38,5 +38,5 @@ export default {
 
         return void 0;
     },
-    name: "forumTopicCreated"
+    name: "forumTopicCreated",
 } satisfies GEvent<"forumTopicCreated">;

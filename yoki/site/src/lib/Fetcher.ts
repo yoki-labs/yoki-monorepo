@@ -1,4 +1,4 @@
-export async function req<T = any>(
+export function req<T = any>(
     url: string,
     access_token: string,
     options: Partial<RequestInit> & { method: "get" | "post" | "put" | "delete" },

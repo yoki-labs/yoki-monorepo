@@ -117,52 +117,58 @@ export class MessageUtil extends BaseMessageUtil<YokiClient, Server, Command> {
         additionalInfo?: string;
         fields?: EmbedField[];
     }) {
-        return this.client.messages.send(where, {
-            embeds: [
-                {
-                    title,
-                    description,
-                    color,
-                    fields: additionalInfo ? (fields ?? []).concat({ name: "Additional Info", value: additionalInfo }) : fields,
-                    timestamp: occurred,
-                },
-            ],
-            isSilent: true,
-        }).catch(async (e) => {
-            const existing = this.logchannelErrCounter[where] ?? 0;
+        return this.client.messages
+            .send(where, {
+                embeds: [
+                    {
+                        title,
+                        description,
+                        color,
+                        fields: additionalInfo ? (fields ?? []).concat({ name: "Additional Info", value: additionalInfo }) : fields,
+                        timestamp: occurred,
+                    },
+                ],
+                isSilent: true,
+            })
+            .catch(async (e) => {
+                const existing = this.logchannelErrCounter[where] ?? 0;
 
-            if (existing > 3) {
-                const server = await this.client.servers.fetch(serverId).catch(() => null);
-                if (!server) return;
+                if (existing > 3) {
+                    const server = await this.client.servers.fetch(serverId).catch(() => null);
+                    if (!server) return;
 
-                const { defaultChannelId } = server;
-                if (defaultChannelId) await this.client.messageUtil.send(defaultChannelId, {
-                    embeds: [{
-                        color: Colors.red, description: stripIndents`
+                    const { defaultChannelId } = server;
+                    if (defaultChannelId)
+                        await this.client.messageUtil.send(defaultChannelId, {
+                            embeds: [
+                                {
+                                    color: Colors.red,
+                                    description: stripIndents`
 						<@${server.ownerId}>, the log channel with the ID \`${where}\` has blocked the bot from sending a log message three consistent times. 
 						As such, we've gone ahead and deleted it from your settings. 
 						Please readjust the channel permissions and add the channel back once done.
 						
-						[Need help? Join our support server](https://guilded.gg/Yoki)`
-                    }]
-                });
-                await this.client.prisma.logChannel.deleteMany({ where: { channelId: where, serverId } });
-                await this.client.errorHandler.send(stripIndents`
+						[Need help? Join our support server](https://guilded.gg/Yoki)`,
+                                },
+                            ],
+                        });
+                    await this.client.prisma.logChannel.deleteMany({ where: { channelId: where, serverId } });
+                    await this.client.errorHandler.send(stripIndents`
 					Deleted log channel for count
 					Channel: \`${where}\`
 					Count: \`${existing}\`
-				`)
-                delete this.logchannelErrCounter[where];
-            } else {
-                await this.client.errorHandler.send(stripIndents`
+				`);
+                    delete this.logchannelErrCounter[where];
+                } else {
+                    await this.client.errorHandler.send(stripIndents`
 					Log channel err. ${e.message}
 					Channel: \`${where}\`
 					Count: \`${existing}\`
-				`)
-                this.logchannelErrCounter[where] = existing + 1;
-            }
-            return null;
-        });
+				`);
+                    this.logchannelErrCounter[where] = existing + 1;
+                }
+                return null;
+            });
     }
 
     // 	replyWithEmbed(message: Message, embed: EmbedPayload, messagePartial?: Partial<RESTPostChannelMessagesBody>) {

@@ -1,5 +1,5 @@
-import { Hammer } from "../../../styles/components/hammer";
 import { StatusWrapper } from "./styles";
+import { Hammer } from "../../../styles/components/hammer";
 
 export default function StatusPreview(props: { statusTitle: string; statusDescription: string }) {
     return (

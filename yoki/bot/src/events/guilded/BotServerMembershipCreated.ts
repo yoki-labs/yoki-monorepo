@@ -5,12 +5,18 @@ import { Embed } from "guilded.js";
 import type { GEvent } from "../../typings";
 
 export default {
-  execute: ([server, user, ctx]) => {
-    const createdBy = user;
-    void ctx.amp.logEvent({ event_type: "YOKI_SERVER_JOIN", user_id: server.id });
+    execute: ([server, user, ctx]) => {
+        const createdBy = user;
+        void ctx.amp.logEvent({ event_type: "YOKI_SERVER_JOIN", user_id: server.id });
 
-    if (!server.defaultChannelId) return;
-    return ctx.messageUtil.sendEmbed(server.defaultChannelId, new Embed().setTitle("Welcome to Yoki!").setColor(Colors.green).setDescription(stripIndents`
+        if (!server.defaultChannelId) return;
+        return ctx.messageUtil.sendEmbed(
+            server.defaultChannelId,
+            new Embed()
+                .setTitle("Welcome to Yoki!")
+                .setColor(Colors.green)
+                .setDescription(
+                    stripIndents`
   <@${createdBy}> Thank you for inviting Yoki, your moderation companion! Yoki has numerous features to help make your community safer.
   Features: \`automod\`, \`antiraid\`, \`image filter\`, \`modmail\`, \`log channels\`, \`custom commands\`, and more!
 
@@ -24,7 +30,11 @@ export default {
   Want to explore more commands? Run the \`?help\` command!
   🔗[Support Server](https://yoki.gg/support) • 🖥️ [Website](https://yoki.gg)"
 
-  `).toJSON(), { isPrivate: true })
-  },
-  name: "botServerCreated"
+  `
+                )
+                .toJSON(),
+            { isPrivate: true }
+        );
+    },
+    name: "botServerCreated",
 } satisfies GEvent<"botServerCreated">;

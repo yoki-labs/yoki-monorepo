@@ -1,4 +1,4 @@
-import type AbstractClient from "../Client";
+import type { AbstractClient } from "../Client";
 
 export default <TClient extends AbstractClient<any, any, any>>(client: TClient) => {
     // parsing the env variable of operators (string1,string2,string3) and setting to array

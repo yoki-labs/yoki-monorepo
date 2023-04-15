@@ -1,4 +1,5 @@
 import type { Command } from "./commands";
+
 const Kill: Command = {
     name: "kill",
     description: "Terminate Yoki's process.",

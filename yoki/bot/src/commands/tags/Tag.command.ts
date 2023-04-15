@@ -1,6 +1,6 @@
 import { Collection } from "@discordjs/collection";
 
-import { Category,Command } from "../commands";
+import { Category, Command } from "../commands";
 import Add from "./Add.command";
 import List from "./List.command";
 import Remove from "./Remove.command";

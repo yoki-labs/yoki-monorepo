@@ -46,13 +46,13 @@ export async function displayHistory<T extends Prisma.ActionFindManyArgs>(
         embed: multipleUsers
             ? undefined
             : {
-                fields: [
-                    {
-                        name: "Total Infraction Points",
-                        value: ContentFilterUtil.totalAllInfractionPoints(actions).toString(),
-                    },
-                ],
-            },
+                  fields: [
+                      {
+                          name: "Total Infraction Points",
+                          value: ContentFilterUtil.totalAllInfractionPoints(actions).toString(),
+                      },
+                  ],
+              },
     });
 }
 

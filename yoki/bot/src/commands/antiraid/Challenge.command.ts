@@ -2,13 +2,13 @@ import { ResponseType } from "@prisma/client";
 
 import { RoleType } from "../../typings";
 import { antiRaidResponseTransformer } from "../../utils/util";
-import { Category,Command } from "../commands";
+import { Category, Command } from "../commands";
 
 const responseTypes = ["captcha", "site", "kick"];
 const responseTypesDescriptions = {
     [ResponseType.TEXT_CAPTCHA]: "presenting them with a captcha to solve which will kick them if they fail 3 times in a row.",
     [ResponseType.KICK]: "automatically kicking the user.",
-    [ResponseType.SITE_CAPTCHA]: "verifying them with a link."
+    [ResponseType.SITE_CAPTCHA]: "verifying them with a link.",
 };
 const mappedResponseTypes = `${responseTypes.map((x) => `\`${x}\``).join(", ")}`;
 
@@ -28,21 +28,18 @@ const Challenge: Command = {
             return ctx.messageUtil.replyWithInfo(
                 message,
                 "Current challenge",
-                `The bot challenges new members who fail the age account filter check by **${commandCtx.server.antiRaidResponse ? responseTypesDescriptions[commandCtx.server.antiRaidResponse] : "doing nothing."
+                `The bot challenges new members who fail the age account filter check by **${
+                    commandCtx.server.antiRaidResponse ? responseTypesDescriptions[commandCtx.server.antiRaidResponse] : "doing nothing."
                 }**
 				
 				You can set this by running the command again with one of the following options: ${mappedResponseTypes}
 				`
             );
         if (!responseTypes.includes(challenge))
-            return ctx.messageUtil.replyWithError(
-                message,
-                `Invalid response type`,
-                `Your response type must be one of the following: ${mappedResponseTypes}`
-            );
+            return ctx.messageUtil.replyWithError(message, `Invalid response type`, `Your response type must be one of the following: ${mappedResponseTypes}`);
         const transformedChallenge = antiRaidResponseTransformer(challenge);
 
-        if (["captcha", "site"].some(x => x === transformedChallenge) && !commandCtx.server.muteRoleId)
+        if (["captcha", "site"].some((x) => x === transformedChallenge) && !commandCtx.server.muteRoleId)
             return ctx.messageUtil.replyWithError(
                 message,
                 `No mute role`,

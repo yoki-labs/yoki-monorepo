@@ -9,110 +9,109 @@ import type { GEvent, RoleType, Server } from "../../typings";
 import { moderateContent } from "../../utils/moderation";
 import { roleValues } from "../../utils/util";
 
-const { fetchPrefix, parseCommand, fetchCommandInfo, resolveArguments, checkUserPermissions, tryExecuteCommand } = createCommandHandler<YokiClient, Server, Command, RoleType>(roleValues);
+const { fetchPrefix, parseCommand, fetchCommandInfo, resolveArguments, checkUserPermissions, tryExecuteCommand } = createCommandHandler<YokiClient, Server, Command, RoleType>(
+    roleValues
+);
 
 // Fetches minimod/mod/admin roles
-const fetchServerRoles =
-	(ctx: YokiClient, serverId: string) =>
-		ctx.prisma.role.findMany({ where: { serverId } });
+const fetchServerRoles = (ctx: YokiClient, serverId: string) => ctx.prisma.role.findMany({ where: { serverId } });
 
-const fn = fetchPrefix.bind(
-    null,
-    async (context, server, prefix) => {
-		const [message, ctx] = context;
+const fn = fetchPrefix.bind(null, async (context, server, prefix) => {
+    const [message, ctx] = context;
 
-		// if the message does not start with the prefix
-		if (!message.content.startsWith(prefix)) {
-			const member = await ctx.members.fetch(message.serverId!, message.authorId).catch(() => null);
-			if (member?.user?.type === UserType.Bot) return;
+    // if the message does not start with the prefix
+    if (!message.content.startsWith(prefix)) {
+        const member = await ctx.members.fetch(message.serverId!, message.authorId).catch(() => null);
+        if (member?.user?.type === UserType.Bot) return;
 
-			// store the message in the database
-			await ctx.dbUtil.storeMessage(message).catch(console.log);
+        // store the message in the database
+        await ctx.dbUtil.storeMessage(message).catch(console.log);
 
-			await moderateContent(ctx, server, message.channelId, "MESSAGE", FilteredContent.Message, message.authorId, message.content, message.mentions, () =>
-				ctx.messages.delete(message.channelId, message.id)
-			);
+        await moderateContent(ctx, server, message.channelId, "MESSAGE", FilteredContent.Message, message.authorId, message.content, message.mentions, () =>
+            ctx.messages.delete(message.channelId, message.id)
+        );
 
-			if (server.scanNSFW) {
-				await ctx.contentFilterUtil.scanMessageMedia(message);
-			}
-			return;
-		}
+        if (server.scanNSFW) {
+            await ctx.contentFilterUtil.scanMessageMedia(message);
+        }
+        return;
+    }
 
-		await parseCommand(
-			async (context, server, prefix, command, commandName, args) => {
-				// if not a valid command, try doing a custom command instead
-				if (!command) {
-					const customCommand = await ctx.prisma.customTag.findFirst({ where: { serverId: message.serverId!, name: commandName } });
-					if (!customCommand) return ctx.amp.logEvent({ event_type: "INVALID_COMMAND", user_id: message.authorId, event_properties: { serverId: message.serverId! } });
-					void ctx.amp.logEvent({ event_type: "TAG_RAN", user_id: message.authorId, event_properties: { serverId: message.serverId! } });
-					return ctx.messageUtil.send(message.channelId, customCommand.content);
-				}
+    await parseCommand(
+        async (context, server, prefix, command, commandName, args) => {
+            // if not a valid command, try doing a custom command instead
+            if (!command) {
+                const customCommand = await ctx.prisma.customTag.findFirst({ where: { serverId: message.serverId!, name: commandName } });
+                if (!customCommand) return ctx.amp.logEvent({ event_type: "INVALID_COMMAND", user_id: message.authorId, event_properties: { serverId: message.serverId! } });
+                void ctx.amp.logEvent({ event_type: "TAG_RAN", user_id: message.authorId, event_properties: { serverId: message.serverId! } });
+                return ctx.messageUtil.send(message.channelId, customCommand.content);
+            }
 
-				// Get the command's sub-commands, args and then execute it
-				return fetchCommandInfo(
-					checkUserPermissions.bind(
-						null,
-						// If user is capable of executing the command, it will start parsing arguments
-						resolveArguments.bind(null, tryExecuteCommand),
-						// Get server roles and their types
-						fetchServerRoles.bind(null, context[1], server.serverId)
-					),
-					context,
-					server,
-					prefix,
-					command,
-					commandName,
-					args
-				);
-			},
-			context,
-			server,
-			prefix
-		);
-	}
-);
+            // Get the command's sub-commands, args and then execute it
+            return fetchCommandInfo(
+                checkUserPermissions.bind(
+                    null,
+                    // If user is capable of executing the command, it will start parsing arguments
+                    resolveArguments.bind(null, tryExecuteCommand),
+                    // Get server roles and their types
+                    fetchServerRoles.bind(null, context[1], server.serverId)
+                ),
+                context,
+                server,
+                prefix,
+                command,
+                commandName,
+                args
+            );
+        },
+        context,
+        server,
+        prefix
+    );
+});
 
 export default {
     execute: async (args) => {
         const [message, ctx] = args;
 
-		// if the message wasn't sent in a server, or the person was a bot then don't do anything
-		if (message.createdByWebhookId || message.authorId === ctx.user!.id || message.authorId === "Ann6LewA" || !message.serverId) return void 0;
-		void ctx.amp.logEvent({ event_type: "MESSAGE_CREATE", user_id: message.authorId, event_properties: { serverId: message.serverId! } });
+        // if the message wasn't sent in a server, or the person was a bot then don't do anything
+        if (message.createdByWebhookId || message.authorId === ctx.user!.id || message.authorId === "Ann6LewA" || !message.serverId) return void 0;
+        void ctx.amp.logEvent({ event_type: "MESSAGE_CREATE", user_id: message.authorId, event_properties: { serverId: message.serverId! } });
 
-		const isModmailChannel = await ctx.prisma.modmailThread.findFirst({
-			where: { serverId: message.serverId!, userFacingChannelId: message.channelId, openerId: message.authorId, closed: false },
-		});
+        const isModmailChannel = await ctx.prisma.modmailThread.findFirst({
+            where: { serverId: message.serverId!, userFacingChannelId: message.channelId, openerId: message.authorId, closed: false },
+        });
 
-		if (isModmailChannel) {
-			void ctx.amp.logEvent({ event_type: "MODMAIL_MESSAGE", user_id: message.authorId, event_properties: { serverId: message.serverId!, modmailId: isModmailChannel.id } });
-			void ctx.messages.delete(message.channelId, message.id);
+        if (isModmailChannel) {
+            void ctx.amp.logEvent({ event_type: "MODMAIL_MESSAGE", user_id: message.authorId, event_properties: { serverId: message.serverId!, modmailId: isModmailChannel.id } });
+            void ctx.messages.delete(message.channelId, message.id);
 
-			const member = await ctx.members.fetch(message.serverId!, message.authorId).catch(() => null);
-			if (!member) return;
-			const newModmailMessage = await ctx.messages.send(isModmailChannel.modFacingChannelId,
-				new Embed()
-					.setDescription(message.content)
-					.setAuthor(`${member.user!.name} (${member.user!.id})`, member.user!.avatar)
-					.setColor(Colors.blockBackground)
-					.setFooter("User's message")
-					.setTimestamp());
-			return ctx.prisma.modmailMessage.create({
-				data: {
-					authorId: message.authorId,
-					channelId: message.channelId,
-					content: message.content,
-					originalMessageId: message.id,
-					sentMessageId: newModmailMessage.id,
-					modmailThreadId: isModmailChannel.id,
-				},
-			});
-		}
+            const member = await ctx.members.fetch(message.serverId!, message.authorId).catch(() => null);
+            if (!member) return;
+            const newModmailMessage = await ctx.messages.send(
+                isModmailChannel.modFacingChannelId,
+                new Embed()
+                    .setDescription(message.content)
+                    .setAuthor(`${member.user!.name} (${member.user!.id})`, member.user!.avatar)
+                    .setColor(Colors.blockBackground)
+                    .setFooter("User's message")
+                    .setTimestamp()
+            );
+            return ctx.prisma.modmailMessage.create({
+                data: {
+                    authorId: message.authorId,
+                    channelId: message.channelId,
+                    content: message.content,
+                    originalMessageId: message.id,
+                    sentMessageId: newModmailMessage.id,
+                    modmailThreadId: isModmailChannel.id,
+                },
+            });
+        }
 
         return fn(args, await args[1].dbUtil.getServer(args[0].serverId!));
     },
-    name: "messageCreated"
+    name: "messageCreated",
 } satisfies GEvent<"messageCreated">;
 
 // import { stripIndents } from "common-tags";
@@ -140,8 +139,6 @@ export default {
 // 	member,
 // 	channel,
 // };
-
-
 
 // export default {
 // 	execute: async ([message, ctx]) => {
@@ -303,7 +300,7 @@ export default {
 // 					});
 // 					return ctx.messageUtil.replyWithError(message, "Incorrect Command Usage", stripIndents`
 // 					For the argument \`${commandArg.name}\`, ${stripIndents(invalidStringGenerator(commandArg, castArg?.toString()))}
-				
+
 // 					_Need more help? [Join our support server](https://guilded.gg/Yoki)_
 // 				`, {
 // 						fields: [
@@ -356,7 +353,6 @@ export default {
 // 				]);
 
 // 			}
-
 
 // 			// notify the user that there was an error executing the command
 // 			return ctx.messageUtil.replyWithUnexpected(

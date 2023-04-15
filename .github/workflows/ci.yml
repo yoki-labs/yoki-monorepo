@@ -2,54 +2,37 @@ name: CI workflows
 on: [push, pull_request]
 
 jobs:
-    quality:
-        name: Quality Check
-        runs-on: ubuntu-latest
-        steps:
-            - name: Clone repo
-              uses: actions/checkout@v3
+  quality:
+    name: Quality Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clone repo
+        uses: actions/checkout@v3
 
-            - uses: pnpm/action-setup@v2
-              with:
-                  version: 7.28.0
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 7.28.0
 
-            - name: Set up Node v16
-              uses: actions/setup-node@v3
-              with:
-                  node-version: "16"
-                  cache: "pnpm"
+      - name: Set up Node v16
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+          cache: 'pnpm'
 
-            - name: Install Dependencies
-              run: pnpm -r install
+      - name: Install Dependencies
+        run: pnpm -r install
 
-            - name: Run linter
-              run: pnpm lint
-    tsc:
-        name: TypeScript Check
-        runs-on: ubuntu-latest
-        strategy:
-            fail-fast: false
-            matrix:
-                service-name: [yoki, tuxedo]
-        steps:
-            - name: Clone repo
-              uses: actions/checkout@v3
+      - name: Run linter
+        run: pnpm lint
 
-            - uses: pnpm/action-setup@v2
-              with:
-                  version: 7.28.0
+      - name: Build Yoki Prisma
+        run: cd yoki/bot && pnpm generate
 
-            - name: Set up Node v16
-              uses: actions/setup-node@v3
-              with:
-                  node-version: "16"
-                  cache: "pnpm"
+      - name: Build Yoki
+        run: pnpm build:yoki
 
-            - name: Install Dependencies
-              run: cd ${{ matrix.service-name }}/bot && pnpm install
+      - name: Build Tuxedo Prisma
+        run: cd tuxedo/bot && pnpm generate
 
-            - name: Build Prisma Types
-              run: cd ${{ matrix.service-name }}/bot && pnpm generate
-
-            - name: Run linter
-              run: cd ${{ matrix.service-name }}/bot && pnpm build
+      - name: Build Tuxedo
+        run: pnpm build:tuxedo

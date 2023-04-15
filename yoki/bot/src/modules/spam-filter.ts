@@ -18,6 +18,7 @@ enum SpamType {
 
 export class SpamFilterUtil extends BaseFilterUtil<SpamType> {
     readonly spamPeriod = 5000;
+
     readonly messageCounter = new Map<string, Counter>();
 
     checkForMessageSpam(server: Server, message: Message) {
@@ -97,7 +98,8 @@ export class SpamFilterUtil extends BaseFilterUtil<SpamType> {
             return this.client.messageUtil.sendWarningBlock(
                 channelId!,
                 `Stop spamming`,
-                `**Alert:** <@${userId}>, you have been posting too many ${spamType === SpamType.Mention ? "mentions" : "messages"
+                `**Alert:** <@${userId}>, you have been posting too many ${
+                    spamType === SpamType.Mention ? "mentions" : "messages"
                 } in a short period of time. This is a warning for you to not do it again, otherwise moderation actions may be taken against you.`,
                 undefined,
                 { isPrivate: true }
@@ -113,8 +115,9 @@ export class SpamFilterUtil extends BaseFilterUtil<SpamType> {
                 channelId!,
                 {
                     title: `:mute: You have been muted`,
-                    description: `**Alert:** <@${userId}>, you have been muted for posting too many ${spamType === SpamType.Mention ? "mentions" : "messages"
-                        } in a short period of time.`,
+                    description: `**Alert:** <@${userId}>, you have been muted for posting too many ${
+                        spamType === SpamType.Mention ? "mentions" : "messages"
+                    } in a short period of time.`,
                     color: Colors.red,
                 },
                 { isPrivate: true }

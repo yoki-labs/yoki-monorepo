@@ -1,7 +1,7 @@
 import type { Collection } from "@discordjs/collection";
 import type { Message } from "guilded.js";
 
-import type AbstractClient from "../Client";
+import type { AbstractClient } from "../Client";
 import type { IServer } from "../db-types";
 import type { CommandContext } from "../typings";
 import type { ResolvedArgs, UsedMentions } from "./arguments";
@@ -44,13 +44,6 @@ export interface CommandArgument {
 }
 export type CommandArgType = "string" | "UUID" | "member" | "number" | "boolean" | "enum" | "rest" | "enumList" | "channel";
 export type CommandArgValidator = [
-    (
-        input: string,
-        rawArgs: string[],
-        index: number,
-        message: Message,
-        argument: CommandArgument,
-        usedMentions: UsedMentions
-    ) => ResolvedArgs | Promise<ResolvedArgs>,
+    (input: string, rawArgs: string[], index: number, message: Message, argument: CommandArgument, usedMentions: UsedMentions) => ResolvedArgs | Promise<ResolvedArgs>,
     (arg: CommandArgument, received?: string) => string
 ];

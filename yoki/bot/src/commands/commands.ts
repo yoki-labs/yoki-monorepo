@@ -17,5 +17,5 @@ export enum Category {
     Logs = "Logging",
     Antiraid = "Antiraid",
     Appeal = "Appeals",
-    Scan = "Scanning"
+    Scan = "Scanning",
 }

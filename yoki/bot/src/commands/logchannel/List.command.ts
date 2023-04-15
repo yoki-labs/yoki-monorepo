@@ -85,7 +85,7 @@ async function replyWithChannelList(logChannels: LogChannelPrisma[], message: Me
     );
 }
 
-async function replyWithChannel(channel: Channel, logTypes: LogChannelType[] | undefined, message: Message, ctx: Client) {
+function replyWithChannel(channel: Channel, logTypes: LogChannelType[] | undefined, message: Message, ctx: Client) {
     return ctx.messageUtil.replyWithInfo(
         message,
         `Log channel subscriptions`,

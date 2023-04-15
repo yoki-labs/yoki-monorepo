@@ -2,9 +2,9 @@ import { RoleType } from "../../typings";
 import type { Command } from "../commands";
 
 const descriptions: Record<string, string> = {
-    "sexual": "Words for sexual objects or actions",
-    "slurs": "Words that are derogatory towards specific groups",
-    "profanity": "Day-to-day casual swear words",
+    sexual: "Words for sexual objects or actions",
+    slurs: "Words that are derogatory towards specific groups",
+    profanity: "Day-to-day casual swear words",
     "sexual-links": "Links that are of sexual nature",
 };
 

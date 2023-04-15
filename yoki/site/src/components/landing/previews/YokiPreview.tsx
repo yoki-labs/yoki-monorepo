@@ -1,10 +1,10 @@
-import Activity from "../icons/Activity";
-import Users from "../icons/Users";
-import Label from "../text/Label";
 import ProfilePreview from "./ProfilePreview";
 import RolePreview from "./RolePreview";
 import StatisticPreview from "./StatisticPreview";
 import StatusPreview from "./StatusPreview";
+import Activity from "../icons/Activity";
+import Users from "../icons/Users";
+import Label from "../text/Label";
 
 export default function YokiPreview() {
     return (

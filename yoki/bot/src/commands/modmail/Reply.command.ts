@@ -3,7 +3,7 @@ import { stripIndents } from "common-tags";
 import { Embed } from "guilded.js";
 
 import { RoleType } from "../../typings";
-import { Category,Command } from "../commands";
+import { Category, Command } from "../commands";
 
 const Reply: Command = {
     name: "reply",
@@ -30,15 +30,15 @@ const Reply: Command = {
             .setAuthor(member.user!.name, member.user!.avatar)
             .setColor(Colors.blockBackground)
             .setTimestamp()
-            .setDescription(stripIndents`<@${isCurrentChannelModmail.openerId}>
+            .setDescription(
+                stripIndents`<@${isCurrentChannelModmail.openerId}>
                 ${content}
-            `)
+            `
+            )
             .setFooter("Moderator's message");
 
         const newSentMessage = await message.client.messages.send(isCurrentChannelModmail.userFacingChannelId, {
-            embeds: [
-                embed
-            ],
+            embeds: [embed],
             isPrivate: true,
         });
 
@@ -55,7 +55,7 @@ const Reply: Command = {
         void message.delete().catch(() => null);
 
         embed.setDescription(content);
-        embed.setFooter(`Ticket ${isCurrentChannelModmail.id}`)
+        embed.setFooter(`Ticket ${isCurrentChannelModmail.id}`);
         return message.send({
             embeds: [embed],
         });

@@ -1,7 +1,7 @@
 import { inlineCode } from "@yokilabs/util";
 
 import { RoleType } from "../../typings";
-import { Category,Command } from "../commands";
+import { Category, Command } from "../commands";
 
 const MentionSpamFrequency: Command = {
     name: "antiraid-mentionfrequency",
@@ -23,7 +23,7 @@ const MentionSpamFrequency: Command = {
                 `Mention spam frequency has been set to ${inlineCode(server.spamMentionFrequency)} mentions per 5 seconds.`
             );
         // Cannot make people auto-muted over 1 message
-        else if (frequency < 2)
+        if (frequency < 2)
             return ctx.messageUtil.replyWithError(
                 message,
                 `Mention frequency cannot be zero`,

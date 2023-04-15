@@ -2,7 +2,7 @@ import { stripIndents } from "common-tags";
 
 import { RoleType } from "../../typings";
 import { addOrRemoveMuteRoleMessage } from "../../utils/util";
-import { Category,Command } from "../commands";
+import { Category, Command } from "../commands";
 
 const Mute: Command = {
     name: "role-mute",
@@ -23,18 +23,19 @@ const Mute: Command = {
 
             return muteRole
                 ? ctx.messageUtil.replyWithInfo(
-                    message,
-                    `Mute role`,
-                    stripIndents`
+                      message,
+                      `Mute role`,
+                      stripIndents`
                     The mute role is set to role <@${muteRole}>.
 
                     ${addOrRemoveMuteRoleMessage(commandCtx.server.getPrefix())}
                 `,
-                    undefined,
-                    { isSilent: true }
-                )
+                      undefined,
+                      { isSilent: true }
+                  )
                 : ctx.messageUtil.replyWithNullState(message, `No mute role`, `There is no mute role set.`);
-        } else if (role.toUpperCase() === "REMOVE") {
+        }
+        if (role.toUpperCase() === "REMOVE") {
             // The ability to delete mute roles
             await ctx.prisma.server.updateMany({ data: { muteRoleId: null }, where: { serverId: message.serverId! } });
 

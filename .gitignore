@@ -10,7 +10,6 @@ worker/
 min/
 generated/
 
-.npmrc
 *.tsbuildinfo
 *.log
 *.local

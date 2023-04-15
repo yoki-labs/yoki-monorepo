@@ -126,7 +126,7 @@ export class LinkFilterUtil extends BaseFilterUtil {
             }
             // No bad invites (filter invites enabled, it's guilded gg, route exists and it's none of Guilded's subdomains)
             // E.g., we don't need to filter support.guilded.gg/hc/en-us -- support. is there, which we can match
-            else if (dontFilterInvites || !(domain === "guilded.gg" && route && (subdomain === "www." || !subdomain))) return;
+            if (dontFilterInvites || !(domain === "guilded.gg" && route && (subdomain === "www." || !subdomain))) return;
 
             const breadCrumbs = route.split("/");
 

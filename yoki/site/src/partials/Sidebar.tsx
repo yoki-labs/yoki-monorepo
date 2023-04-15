@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useRef } from "react";
-import { NavLink } from "../components/dashboard/NavLink";
 import { useRouter } from "next/router";
+import React, { useEffect, useRef, useState } from "react";
 
 import SidebarLinkGroup from "./SidebarLinkGroup";
+import { NavLink } from "../components/dashboard/NavLink";
 
 export default function Sidebar({ sidebarOpen, setSidebarOpen }: { sidebarOpen: boolean; setSidebarOpen: (input: boolean) => void }) {
     const router = useRouter();
@@ -52,8 +52,9 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }: { sidebarOpen: 
         <div>
             {/* Sidebar backdrop (mobile only) */}
             <div
-                className={`fixed inset-0 bg-slate-900 bg-opacity-30 z-40 lg:hidden lg:z-auto transition-opacity duration-200 ${sidebarOpen ? "opacity-100" : "opacity-0 pointer-events-none"
-                    }`}
+                className={`fixed inset-0 bg-slate-900 bg-opacity-30 z-40 lg:hidden lg:z-auto transition-opacity duration-200 ${
+                    sidebarOpen ? "opacity-100" : "opacity-0 pointer-events-none"
+                }`}
                 aria-hidden="true"
             />
 
@@ -61,8 +62,9 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }: { sidebarOpen: 
             <div
                 id="sidebar"
                 ref={sidebar}
-                className={`flex flex-col absolute z-40 left-0 top-0 lg:static lg:left-auto lg:top-auto lg:translate-x-0 h-screen overflow-y-scroll lg:overflow-y-auto no-scrollbar w-64 lg:w-20 lg:sidebar-expanded:!w-64 2xl:!w-64 shrink-0 bg-slate-900 p-4 transition-all duration-200 ease-in-out ${sidebarOpen ? "translate-x-0" : "-translate-x-64"
-                    }`}
+                className={`flex flex-col absolute z-40 left-0 top-0 lg:static lg:left-auto lg:top-auto lg:translate-x-0 h-screen overflow-y-scroll lg:overflow-y-auto no-scrollbar w-64 lg:w-20 lg:sidebar-expanded:!w-64 2xl:!w-64 shrink-0 bg-slate-900 p-4 transition-all duration-200 ease-in-out ${
+                    sidebarOpen ? "translate-x-0" : "-translate-x-64"
+                }`}
             >
                 {/* Sidebar header */}
                 <div className="flex justify-between mb-10 pr-3 sm:px-2">
@@ -98,15 +100,17 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }: { sidebarOpen: 
                         <ul className="mt-3">
                             {/* Dashboard */}
                             <SidebarLinkGroup activecondition={pathname === "/" || pathname.includes("dashboard")}>
-                                {(handleClick: () => void, open: boolean) => (
+                                {(handleClick: () => void) => (
                                     <>
                                         <a
                                             href="#0"
-                                            className={`block text-slate-200 hover:text-white truncate transition duration-150 ${(pathname === "/" || pathname.includes("dashboard")) && "hover:text-slate-200"
-                                                }`}
+                                            className={`block text-slate-200 hover:text-white truncate transition duration-150 ${
+                                                (pathname === "/" || pathname.includes("dashboard")) && "hover:text-slate-200"
+                                            }`}
                                             onClick={(e) => {
                                                 e.preventDefault();
-                                                sidebarExpanded ? handleClick() : setSidebarExpanded(true);
+                                                if (sidebarExpanded) handleClick();
+                                                else setSidebarExpanded(true);
                                             }}
                                         >
                                             <div className="flex items-center justify-between">
@@ -135,15 +139,17 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }: { sidebarOpen: 
                                 )}
                             </SidebarLinkGroup>
                             <SidebarLinkGroup activecondition={pathname.includes("moderation")}>
-                                {(handleClick: () => void, open: boolean) => (
+                                {(handleClick: () => void) => (
                                     <>
                                         <a
                                             href="#0"
-                                            className={`block text-slate-200 hover:text-white truncate transition duration-150 ${(pathname === "/" || pathname.includes("dashboard")) && "hover:text-slate-200"
-                                                }`}
+                                            className={`block text-slate-200 hover:text-white truncate transition duration-150 ${
+                                                (pathname === "/" || pathname.includes("dashboard")) && "hover:text-slate-200"
+                                            }`}
                                             onClick={(e) => {
                                                 e.preventDefault();
-                                                sidebarExpanded ? handleClick() : setSidebarExpanded(true);
+                                                if (sidebarExpanded) handleClick();
+                                                else setSidebarExpanded(true);
                                             }}
                                         >
                                             <div className="flex items-center justify-between">

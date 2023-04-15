@@ -3,8 +3,8 @@ import type { GEvent } from "../../typings";
 
 export default {
     execute: async ([listItem, ctx]) => {
-		const server = await ctx.dbUtil.getServer(listItem.serverId, false);
-		if(!server) return;
+        const server = await ctx.dbUtil.getServer(listItem.serverId, false);
+        if (!server) return;
         const { id, channelId, createdBy, message, note, serverId } = listItem;
 
         // If it's a thread
@@ -18,5 +18,6 @@ export default {
                 server,
                 resultingAction: () => ctx.lists.delete(channelId as string, id as string),
             });
-    }, name: "listItemCreated"
+    },
+    name: "listItemCreated",
 } satisfies GEvent<"listItemCreated">;

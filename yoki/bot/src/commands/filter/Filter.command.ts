@@ -1,7 +1,7 @@
 import { Collection } from "@discordjs/collection";
 import { RoleType } from "@prisma/client";
 
-import { Category,Command } from "../commands";
+import { Category, Command } from "../commands";
 import Add from "./Add.command";
 import List from "./List.command";
 import MentionSpamFrequency from "./MentionFrequency.command";

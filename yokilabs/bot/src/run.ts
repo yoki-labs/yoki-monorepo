@@ -1,10 +1,10 @@
-import recursive from "recursive-readdir";
+import { errorEmbed } from "@yokilabs/util";
 import type { ClientEvents } from "guilded.js";
+import recursive from "recursive-readdir";
 
-import type AbstractClient from "./Client";
+import type { AbstractClient } from "./Client";
 import type { BaseCommand } from "./commands/command-typings";
 import type { GEvent } from "./typings";
-import { errorEmbed } from "@yokilabs/util";
 
 export async function setClientCommands<TClient extends AbstractClient<TClient, any, any>>(client: TClient, dir: string) {
     // Load all filse & directories in the commands dir recursively
@@ -38,7 +38,7 @@ export async function setClientEvents<TClient extends AbstractClient<TClient, an
             try {
                 await event.execute([...args, client]);
             } catch (err) {
-                void client.errorHandler.send("Uncaught event error", [errorEmbed(err)])
+                void client.errorHandler.send("Uncaught event error", [errorEmbed(err)]);
             }
         });
     }

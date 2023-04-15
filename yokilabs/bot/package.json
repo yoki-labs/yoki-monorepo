@@ -4,6 +4,7 @@
     "private": true,
     "description": "Common client code",
     "main": "./dist/src/index.js",
+    "types": "./dist/src/index.d.ts",
     "author": "Yoki-Labs",
     "license": "PROPRIETARY",
     "files": [

@@ -1,4 +1,5 @@
 import type { Command } from "./commands";
+
 const Support: Command = {
     name: "support",
     description: "Get a link for our support server.",

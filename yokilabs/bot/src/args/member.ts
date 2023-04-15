@@ -1,39 +1,38 @@
-import type { Member } from "guilded.js";
-import type { CommandArgValidator } from "../commands/command-typings";
 import { isHashId } from "@yokilabs/util";
+import type { Member } from "guilded.js";
 
-export default [async (
-	input,
-	args,
-	index,
-	message,
-	_,
-	usedMentions
-): Promise<Member | null> => {
-	if (input.startsWith("@")) {
-		// Get the mentioned user and increment used mentions
-		const mention = message.mentions?.users?.[usedMentions.user++];
-		if (!mention) return null;
+import type { CommandArgValidator } from "../commands/command-typings";
 
-		const member = await message.client.members.fetch(message.serverId!, mention.id).catch(() => null);
-		if (!member) return null;
+export default [
+    async (input, args, index, message, _, usedMentions): Promise<Member | null> => {
+        if (input.startsWith("@")) {
+            // Get the mentioned user and increment used mentions
+            const mention = message.mentions?.users?.[usedMentions.user++];
+            if (!mention) return null;
 
-		const name = member.nickname ?? member.user!.name;
-		const spaceCount = name.split(" ").length;
+            const member = await message.client.members.fetch(message.serverId!, mention.id).catch(() => null);
+            if (!member) return null;
 
-		// If we have `@nico's alt`, remove ` alt` part and modify `@nico's` to be `@nico's alt`
-		args.splice(index + 1, spaceCount - 1);
+            const name = member.nickname ?? member.user!.name;
+            const spaceCount = name.split(" ").length;
 
-		args[index] = name;
+            // If we have `@nico's alt`, remove ` alt` part and modify `@nico's` to be `@nico's alt`
+            args.splice(index + 1, spaceCount - 1);
 
-		return member;
-	} else if (isHashId(input)) {
-		return message.client.members.fetch(message.serverId!, input).catch(() => null) ?? null;
-	}
+            args[index] = name;
 
-	return null;
-}, (_arg) => `
+            return member;
+        }
+
+        if (isHashId(input)) {
+            return message.client.members.fetch(message.serverId!, input).catch(() => null);
+        }
+
+        return null;
+    },
+    (_arg) => `
 		I was expecting a mention or ID of a user. 
 		
 		This user **must** currently be in the server.
-	`]satisfies CommandArgValidator;
+	`,
+] satisfies CommandArgValidator;

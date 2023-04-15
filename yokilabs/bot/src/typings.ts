@@ -1,7 +1,7 @@
 import type { ClientEvents, Message } from "guilded.js";
-import type AbstractClient from "./Client";
-import type { CachedMember } from "./commands/arguments";
 
+import type { AbstractClient } from "./Client";
+import type { CachedMember } from "./commands/arguments";
 import type { IServer } from "./db-types";
 
 // context available in every execution of a command

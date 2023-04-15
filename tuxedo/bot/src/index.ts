@@ -4,7 +4,7 @@ import { config } from "dotenv";
 import { WebhookEmbed } from "guilded.js";
 import { join } from "path";
 
-import TuxedoClient from "./Client";
+import { TuxedoClient } from "./Client";
 
 // Load env variables
 config({ path: join(__dirname, "..", "..", ".env") });

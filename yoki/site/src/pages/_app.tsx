@@ -1,13 +1,14 @@
+import type { AppProps } from "next/app";
+import Head from "next/head";
+import { NextPage } from "next/types";
+import { SessionProvider } from "next-auth/react";
+import { ReactElement, ReactNode, useContext } from "react";
+import { QueryClient, QueryClientProvider } from "react-query";
+
 import "../styles/globals.css";
 import "../styles/styles.css";
 
-import type { AppProps } from "next/app";
-import Head from "next/head";
-import { SessionProvider } from "next-auth/react";
-import { ReactElement, ReactNode, useContext } from "react";
-import { NextPage } from "next/types";
 import { gqlClientContext } from "../utils/gqlContext";
-import { QueryClient, QueryClientProvider } from "react-query";
 
 const ogDescription = "Meet Yoki, your moderation companion. Guilded's first moderation bot.";
 const ogUrl = "https://yoki.gg/";

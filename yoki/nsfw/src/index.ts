@@ -1,18 +1,18 @@
 import { config } from "dotenv";
+import express from "express";
+import { inspect } from "node:util";
+import fetch from "node-fetch";
+import * as nsfwJS from "nsfwjs";
 import { join } from "path";
+
+import { convert } from "./convertImage";
+import { validateOptions } from "./util";
+
 config({ path: join(__dirname, "..", "..", "..", ".env") });
 
 ["TOKEN_SECRET"].forEach((x) => {
     if (!process.env[x]) throw new Error(`Missing env var ${x}`);
 });
-
-import express from "express";
-import { inspect } from "node:util";
-import fetch from "node-fetch";
-import * as nsfwJS from "nsfwjs";
-
-import { convert } from "./convertImage";
-import { validateOptions } from "./util";
 
 const app = express();
 app.use(express.json());

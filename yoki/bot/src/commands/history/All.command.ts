@@ -1,5 +1,5 @@
 import { RoleType } from "../../typings";
-import { Category,Command } from "../commands";
+import { Category, Command } from "../commands";
 import { displayHistory } from "./util";
 
 const All: Command = {

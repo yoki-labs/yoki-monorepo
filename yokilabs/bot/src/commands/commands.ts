@@ -12,18 +12,28 @@ import number from "../args/number";
 import rest from "../args/rest";
 import stringArg from "../args/string";
 import UUID from "../args/UUID";
-import type AbstractClient from "../Client";
+import type { AbstractClient } from "../Client";
 import type { IRole, IServer } from "../db-types";
 import type { UsedMentions } from "./arguments";
 import type { BaseCommand, CommandArgType, CommandArgValidator } from "./command-typings";
 
-export default function createCommandHandler<
+export function createCommandHandler<
     TClient extends AbstractClient<TClient, TServer, TCommand>,
     TServer extends IServer,
     TCommand extends BaseCommand<TCommand, TClient, TRoleType, TServer>,
     TRoleType extends string
 >(roleValues: Record<TRoleType, number>) {
-    const argumentConverters: Record<CommandArgType, CommandArgValidator> = { boolean: booleanArg, channel, enum: enumArg, enumList, member, number, rest, string: stringArg, UUID };
+    const argumentConverters: Record<CommandArgType, CommandArgValidator> = {
+        boolean: booleanArg,
+        channel,
+        enum: enumArg,
+        enumList,
+        member,
+        number,
+        rest,
+        string: stringArg,
+        UUID,
+    };
 
     type AsyncUnit = Promise<unknown> | undefined;
 
@@ -39,7 +49,14 @@ export default function createCommandHandler<
             return onNext(context, server, prefix);
         },
         parseCommand: async (
-            executeCommand: (context: [Message, TClient], server: TServer, prefix: string, command: TCommand | undefined, commandName: string, args: string[]) => Promise<unknown> | undefined,
+            executeCommand: (
+                context: [Message, TClient],
+                server: TServer,
+                prefix: string,
+                command: TCommand | undefined,
+                commandName: string,
+                args: string[]
+            ) => Promise<unknown> | undefined,
             context: [Message, TClient],
             server: TServer,
             prefix: string

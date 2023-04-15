@@ -1,7 +1,7 @@
-import type AbstractClient from "../Client";
-import Util from "./util";
+import type { AbstractClient } from "../Client";
+import { Util } from "./util";
 
-export default class RoleUtil<TClient extends AbstractClient<any, any, any>> extends Util<TClient> {
+export class RoleUtil<TClient extends AbstractClient<any, any, any>> extends Util<TClient> {
     async assignMultipleRoles(serverId: string, userId: string, roles: number[]) {
         const roleRequests: Promise<unknown>[] = [];
         for (const role of roles) {

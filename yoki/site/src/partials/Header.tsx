@@ -1,9 +1,5 @@
 import React from "react";
 
-import Notifications from "../components/dashboard/DropdownNotifications";
-import Help from "../components/dashboard/DropdownHelp";
-import UserMenu from "../components/dashboard/DropdownProfile";
-
 function Header({ sidebarOpen, setSidebarOpen }: { sidebarOpen: boolean; setSidebarOpen: (input: boolean) => void }) {
     return (
         <header className="sticky top-0 bg-custom-gray z-30">

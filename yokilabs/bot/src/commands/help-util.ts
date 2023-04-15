@@ -3,12 +3,16 @@ import type { EmbedField } from "@guildedjs/guilded-api-typings";
 import { inlineCode, inlineQuote, listInlineCode } from "@yokilabs/util";
 import { stripIndents } from "common-tags";
 import type { Message } from "guilded.js";
-import type AbstractClient from "../Client";
+
+import type { AbstractClient } from "../Client";
 import type { IServer } from "../db-types";
 import type { CommandContext } from "../typings";
 import type { BaseCommand } from "./command-typings";
 
-export function getAllCommands<TClient extends AbstractClient<any, any, any>, TServer extends IServer, TCommand extends BaseCommand<TCommand, TClient, string, TServer>>(cmds: TClient["commands"], categories: string[]) {
+export function getAllCommands<TClient extends AbstractClient<any, any, any>, TServer extends IServer, TCommand extends BaseCommand<TCommand, TClient, string, TServer>>(
+    cmds: TClient["commands"],
+    categories: string[]
+) {
     const commandCategoryMap: Collection<string, TCommand[]> = new Collection();
 
     for (const category of [...categories, undefined]) {
@@ -19,7 +23,13 @@ export function getAllCommands<TClient extends AbstractClient<any, any, any>, TS
     return commandCategoryMap.filter((x) => Boolean(x.length));
 }
 
-export function replyWithSingleCommand<TClient extends AbstractClient<any, any, any>, TServer extends IServer, TCommand extends BaseCommand<TCommand, TClient, string, TServer>>(ctx: TClient, commandCtx: CommandContext<TServer>, message: Message, commandPath: string, categories: string[]) {
+export function replyWithSingleCommand<TClient extends AbstractClient<any, any, any>, TServer extends IServer, TCommand extends BaseCommand<TCommand, TClient, string, TServer>>(
+    ctx: TClient,
+    commandCtx: CommandContext<TServer>,
+    message: Message,
+    commandPath: string,
+    categories: string[]
+) {
     // We got 'abc xyz' from the rest arg, so we need ['abc', 'xyz']
     const commandPathSegments = commandPath.split(" ");
 
@@ -45,18 +55,18 @@ export function replyWithSingleCommand<TClient extends AbstractClient<any, any, 
                 fields: i
                     ? ctx.messageUtil.createSubCommandFields(subCommandList)
                     : [
-                        {
-                            name: "Commands",
-                            value: getAllCommands(ctx.commands, categories)
-                                .map(
-                                    (commands, category) => stripIndents`
+                          {
+                              name: "Commands",
+                              value: getAllCommands(ctx.commands, categories)
+                                  .map(
+                                      (commands, category) => stripIndents`
                                         **${category}:**
                                         ${listInlineCode(commands.map((x) => x.name))}
                                     `
-                                )
-                                .join("\n\n"),
-                        },
-                    ],
+                                  )
+                                  .join("\n\n"),
+                          },
+                      ],
             });
         }
 

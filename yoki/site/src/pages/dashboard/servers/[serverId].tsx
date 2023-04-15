@@ -1,11 +1,12 @@
-import Sidebar from "../../../partials/Sidebar";
-import Header from "../../../partials/Header";
-import { useContext, useState } from "react";
-import { useQuery } from "react-query";
-import { gqlClientContext } from "../../../utils/gqlContext";
 import { gql } from "graphql-request";
 import { useRouter } from "next/router";
+import { useContext, useState } from "react";
+import { useQuery } from "react-query";
+
 import { Setting } from "../../../components/dashboard/menus/Setting";
+import Header from "../../../partials/Header";
+import Sidebar from "../../../partials/Sidebar";
+import { gqlClientContext } from "../../../utils/gqlContext";
 
 const getServer = gql`
     query Content($where: ServerWhereUniqueInput!) {

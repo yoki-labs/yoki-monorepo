@@ -1,5 +1,5 @@
-import { WebhookEmbed } from "guilded.js";
 import { stripIndents } from "common-tags";
+import { WebhookEmbed } from "guilded.js";
 
 // Remove any inline code escapes
 export const escapeInlineCodeText = (code: any) => code.toString().replaceAll("\\", "\\\\").replaceAll("`", "'");
@@ -7,10 +7,11 @@ export const errorEmbed = (err: Error | any, additional_details?: Record<string,
     new WebhookEmbed()
         .setDescription(
             stripIndents`
-				${additional_details &&
-                Object.keys(additional_details as object)
-                    .map((key) => `${key}: \`${additional_details[key]}\``)
-                    .join("\n")
+				${
+                    additional_details &&
+                    Object.keys(additional_details as object)
+                        .map((key) => `${key}: \`${additional_details[key]}\``)
+                        .join("\n")
                 }
 				${err.stack ?? err.message ?? JSON.stringify(err).slice(0, 1350)}
 			`

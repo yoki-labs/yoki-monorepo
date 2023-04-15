@@ -15,9 +15,7 @@ const _clean = async (text: any) => {
         .replace(process.env.GUILDED_TOKEN!, "this is supposed to be the bot's token");
 };
 
-const _tooLong = (body: string): Promise<string> => {
-    return fetch("https://paste.discord.land/documents", { method: "POST", body }).then((d) => d.json().then((v) => v.key));
-};
+const _tooLong = (body: string): Promise<string> => fetch("https://paste.discord.land/documents", { method: "POST", body }).then((d) => d.json().then((v) => v.key));
 
 const format = (first: string, second: string) => stripIndents`
 	📥 **Input**

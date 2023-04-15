@@ -4,6 +4,7 @@ import { Embed } from "guilded.js";
 
 import { Category } from "./Category";
 import { Command } from "./Command";
+
 const categories = Object.values(Category) as string[];
 
 const Help: Command = {

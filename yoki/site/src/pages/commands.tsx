@@ -1,12 +1,12 @@
 import type { NextPage } from "next";
 import { useState } from "react";
 
-import commands from "../../commands.json";
 import Accordion from "../components/landing/accordion/Accordion";
 import { AccordionBodyContent, AccordionHeaderText } from "../components/landing/accordion/styles";
 import { LandingPage } from "../components/landing/LandingPage";
 import { Command } from "../lib/Command";
 import { Category, CommandNavigation, CommandTop, UpArrow } from "../styles/components/commands";
+import commands from "../../commands.json";
 
 interface GroupedCommands {
     [x: string]: Command[];

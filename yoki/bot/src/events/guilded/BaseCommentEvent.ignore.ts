@@ -1,4 +1,4 @@
-import { MentionsPayload,UserType} from "guilded.js";
+import { MentionsPayload, UserType } from "guilded.js";
 
 import { FilteredContent } from "../../modules/content-filter";
 import type { Context, Server } from "../../typings";
@@ -12,9 +12,9 @@ export interface CommentPayload {
     createdBy: string;
     channelId: string;
     mentions: MentionsPayload;
-};
+}
 
-export default  async (serverId: string, parentId: number, comment: CommentPayload, contentType: "topics" | "docs" | "events", ctx: Context, server: Server) => {
+export default async (serverId: string, parentId: number, comment: CommentPayload, contentType: "topics" | "docs" | "events", ctx: Context, server: Server) => {
     const member = await ctx.members.fetch(serverId, comment.createdBy).catch(() => null);
     if (member?.user?.type === UserType.Bot) return;
 
@@ -28,17 +28,7 @@ export default  async (serverId: string, parentId: number, comment: CommentPaylo
     // Scanning
     const deletion = () => ctx.rest.delete(`/channels/${comment.channelId}/${contentType}/${parentId}/comments/${comment.id}`);
 
-    await moderateContent(
-        ctx,
-        server,
-        comment.channelId,
-        "COMMENT",
-        FilteredContent.ChannelContent,
-        comment.createdBy,
-        comment.content,
-        comment.mentions,
-        deletion
-    );
+    await moderateContent(ctx, server, comment.channelId, "COMMENT", FilteredContent.ChannelContent, comment.createdBy, comment.content, comment.mentions, deletion);
 
     return void 0;
 };

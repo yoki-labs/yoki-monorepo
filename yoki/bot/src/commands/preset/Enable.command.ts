@@ -50,12 +50,12 @@ const Enable: Command = {
         return (
             existingPreset
                 ? ctx.prisma.preset.update({
-                    where: { id: existingPreset.id },
-                    data: { severity, infractionPoints },
-                })
+                      where: { id: existingPreset.id },
+                      data: { severity, infractionPoints },
+                  })
                 : ctx.prisma.preset.create({
-                    data: { serverId: message.serverId!, preset, severity, infractionPoints },
-                })
+                      data: { serverId: message.serverId!, preset, severity, infractionPoints },
+                  })
         )
             .then(() =>
                 ctx.messageUtil.replyWithSuccess(

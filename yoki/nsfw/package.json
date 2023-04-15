@@ -5,9 +5,7 @@
 	"description": "Yoki NSFW detection service",
 	"main": "./dist/index.js",
 	"scripts": {
-		"lint": "eslint --ignore-path ../../.eslintignore src/",
-		"lint:fix": "pnpm lint --fix",
-		"build": "tsc && npx tsc-alias",
+		"build": "tsc",
 		"start": "node dist/index.js",
 		"dev": "nodemon"
 	},

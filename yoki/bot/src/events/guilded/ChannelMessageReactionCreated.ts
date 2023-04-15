@@ -92,5 +92,5 @@ export default {
             }
         }
     },
-    name: "messageReactionCreated"
+    name: "messageReactionCreated",
 } satisfies GEvent<"messageReactionCreated">;

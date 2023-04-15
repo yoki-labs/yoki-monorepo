@@ -3,7 +3,7 @@ import { inlineCode } from "@yokilabs/util";
 import ms from "ms";
 
 import { RoleType } from "../../typings";
-import { Category,Command } from "../commands";
+import { Category, Command } from "../commands";
 
 const Age: Command = {
     name: "antiraid-age",
@@ -17,7 +17,13 @@ const Age: Command = {
     args: [{ name: "duration", type: "string", optional: true }],
     execute: async (message, args, ctx, commandCtx) => {
         if (!args.duration) {
-            return ctx.messageUtil.replyWithInfo(message, "Current Antiraid Age", `The current minimum account age for the antiraid filter is ${commandCtx.server.antiRaidAgeFilter ? `${inlineCode(commandCtx.server.antiRaidAgeFilter / 60 / 1000)} minutes` : "not set"}.`);
+            return ctx.messageUtil.replyWithInfo(
+                message,
+                "Current Antiraid Age",
+                `The current minimum account age for the antiraid filter is ${
+                    commandCtx.server.antiRaidAgeFilter ? `${inlineCode(commandCtx.server.antiRaidAgeFilter / 60 / 1000)} minutes` : "not set"
+                }.`
+            );
         }
 
         const duration = ms(args.duration as string);
@@ -29,7 +35,8 @@ const Age: Command = {
         return ctx.messageUtil.replyWithSuccess(
             message,
             "Successfully set age filter",
-            `Accounts younger than ${duration / 60 / 1000
+            `Accounts younger than ${
+                duration / 60 / 1000
             } minutes will be caught in the filter. By default, the bot will present them with a captcha to solve, but you can configure this using the \`antiraid response\` command.`
         );
     },

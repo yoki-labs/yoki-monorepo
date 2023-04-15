@@ -2,7 +2,7 @@ import { Colors } from "@yokilabs/util";
 import { stripIndents } from "common-tags";
 
 import { RoleType } from "../../typings";
-import { Category,Command } from "../commands";
+import { Category, Command } from "../commands";
 
 const Edit: Command = {
     name: "modmail-edit",
@@ -39,7 +39,7 @@ const Edit: Command = {
 		`;
 
         await ctx.messages.update(isCurrentChannelModmail.userFacingChannelId, sentModmailMessage.sentMessageId, {
-            embeds: fetchSentModmailMessage.embeds.map(x => x.toJSON()),
+            embeds: fetchSentModmailMessage.embeds.map((x) => x.toJSON()),
         });
 
         const createdModmailMessage = await ctx.prisma.modmailMessage.update({

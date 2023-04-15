@@ -1,4 +1,4 @@
-import { Colors,inlineCode, inlineQuote } from "@yokilabs/util";
+import { Colors, inlineCode, inlineQuote } from "@yokilabs/util";
 import { stripIndents } from "common-tags";
 import { WebhookEmbed } from "guilded.js";
 import { nanoid } from "nanoid";
@@ -32,8 +32,10 @@ export default {
                     fields: [
                         {
                             name: "Nickname Changes",
-                            value: `${oldMember ? oldMember.nickname ? inlineQuote(oldMember.nickname) : "No nickname" : "Unknown nickname"} -> ${nickname ? inlineQuote(nickname) : "No nickname"}`
-                        }
+                            value: `${oldMember ? (oldMember.nickname ? inlineQuote(oldMember.nickname) : "No nickname") : "Unknown nickname"} -> ${
+                                nickname ? inlineQuote(nickname) : "No nickname"
+                            }`,
+                        },
                     ],
                     occurred: new Date().toISOString(),
                 });
@@ -69,7 +71,7 @@ export default {
 
             // Some optimizations. Better than sifting through every item in array to check whether
             // the first letter is not a letter and not a number (and it's better than using Number() as well)
-            // 0-9 between and including [48, 57], A-Z -- [65, 90], a-z -- [97, 122] 
+            // 0-9 between and including [48, 57], A-Z -- [65, 90], a-z -- [97, 122]
             if (
                 firstCharCode < numberCharCodeStart ||
                 (firstCharCode > numberCharCodeEnd && firstCharCode < capitalLetterCharCodeStart) ||
@@ -90,5 +92,5 @@ export default {
             });
         }
     },
-    name: "memberUpdated"
+    name: "memberUpdated",
 } satisfies GEvent<"memberUpdated">;

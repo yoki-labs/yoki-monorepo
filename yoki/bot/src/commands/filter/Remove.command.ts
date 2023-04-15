@@ -2,7 +2,7 @@ import { inlineCode } from "@yokilabs/util";
 
 import { RoleType } from "../../typings";
 import { getFilterFromSyntax } from "../../utils/util";
-import { Category,Command } from "../commands";
+import { Category, Command } from "../commands";
 
 const Delete: Command = {
     name: "filter-remove",

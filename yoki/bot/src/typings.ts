@@ -20,22 +20,25 @@ export { Action, ContentFilter, LogChannel, LogChannelType, RoleType, Severity }
 
 // presets object
 export type ContentFilterScan = Pick<ContentFilter, "content" | "matching" | "infractionPoints" | "severity">;
-export interface ResolvedEnum { original: string, resolved: string }
+export interface ResolvedEnum {
+    original: string;
+    resolved: string;
+}
 export type ResolvedArgs = string | string[] | number | boolean | ResolvedEnum | CachedMember | Channel | null;
 export interface UsedMentions {
-	user: number;
-	role: number;
-	channel: number;
+    user: number;
+    role: number;
+    channel: number;
 }
 
 export declare interface PresetPatternObject {
-	type: FilterMatching;
-	_: PresetPattern[];
+    type: FilterMatching;
+    _: PresetPattern[];
 }
 export type PresetPattern = string | string[] | PresetPatternObject;
 
 export declare interface PresetLink {
-	domain: string;
-	subdomain?: string;
-	route?: string[];
+    domain: string;
+    subdomain?: string;
+    route?: string[];
 }
