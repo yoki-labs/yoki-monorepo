@@ -25,6 +25,7 @@ jobs:
         with:
           filters: |
             service:
+              - '${{ matrix.service-name }}/bot/**'
               - 'yoki/${{ matrix.service-name }}/src/**'
               - 'docker/${{ matrix.service-name }}/**'
 
