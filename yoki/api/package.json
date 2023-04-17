@@ -5,7 +5,7 @@
 		"build": "tsc",
 		"start": "node dist/index.js",
 		"dev": "npx nodemon",
-		"generate": "npx dotenv -e ../../.env -- npx prisma generate"
+		"generate": "pnpx dotenv-cli -e ../../.env -- npx prisma generate"
 	},
 	"devDependencies": {
 		"@types/graphql-fields": "^1.3.5",
