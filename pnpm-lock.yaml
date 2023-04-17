@@ -268,7 +268,7 @@ importers:
         version: 1.8.5
       typegraphql-prisma:
         specifier: 0.23.2
-        version: 0.23.2(@prisma/client@4.12.0)(@types/graphql-fields@1.3.5)(@types/node@16.18.23)(graphql-fields@2.0.3)(graphql-scalars@1.21.3)(prisma@4.8.1)(tslib@2.5.0)(type-graphql@1.1.1)
+        version: 0.23.2(@prisma/client@4.12.0)(@types/graphql-fields@1.3.5)(@types/node@16.18.23)(graphql-fields@2.0.3)(graphql-scalars@1.21.3)(prisma@4.8.1)(tslib@2.5.0)(type-graphql@2.0.0-beta.1)
       typescript:
         specifier: ^4.9.5
         version: 4.9.5
@@ -457,6 +457,9 @@ importers:
       guilded.js:
         specifier: 0.20.0
         version: 0.20.0
+      lexure:
+        specifier: ^0.17.0
+        version: 0.17.0
       nodemon:
         specifier: ^2.0.20
         version: 2.0.22
@@ -1853,13 +1856,6 @@ packages:
       '@types/express-serve-static-core': 4.17.33
       '@types/qs': 6.9.7
       '@types/serve-static': 1.15.1
-
-  /@types/glob@7.2.0:
-    resolution: {integrity: sha512-ZUxbzKl0IfJILTS6t7ip5fQQM/J3TJYubDm3nMbgubNNYS62eXeUpoLUC8/7fJNiFYHTrGPQn7hspDUzIHX3UA==}
-    dependencies:
-      '@types/minimatch': 5.1.2
-      '@types/node': 16.18.23
-    dev: true
 
   /@types/glob@8.1.0:
     resolution: {integrity: sha512-IO+MJPVhoqz+28h1qLAcBEH2+xHMK6MTyHJc7MTnnYb6wsoLR29POVGJ7LycmVXIqyy/4/2ShP5sUwTXuOwb/w==}
@@ -4418,15 +4414,6 @@ packages:
       graphql: 16.6.0
       lodash.get: 4.4.2
 
-  /graphql-query-complexity@0.7.2(graphql@15.8.0):
-    resolution: {integrity: sha512-+VgmrfxGEjHI3zuojWOR8bsz7Ycz/BZjNjxnlUieTz5DsB92WoIrYCSZdWG7UWZ3rfcA1Gb2Nf+wB80GsaZWuQ==}
-    peerDependencies:
-      graphql: ^0.13.0 || ^14.0.0 || ^15.0.0
-    dependencies:
-      graphql: 15.8.0
-      lodash.get: 4.4.2
-    dev: true
-
   /graphql-request@5.2.0(graphql@16.6.0):
     resolution: {integrity: sha512-pLhKIvnMyBERL0dtFI3medKqWOz/RhHdcgbZ+hMMIb32mEPa5MJSzS4AuXxfI4sRAu6JVVk5tvXuGfCWl9JYWQ==}
     peerDependencies:
@@ -4441,16 +4428,6 @@ packages:
       - encoding
     dev: false
 
-  /graphql-scalars@1.21.3(graphql@15.8.0):
-    resolution: {integrity: sha512-QLWw3BHmqHZMp9JeYmPpjq7JT9aw/H8TpwmWKJEuMSE3+O7Xe7TduQbOLFzbs1q9UxX6CVkc0O1JO/YfkP/pAw==}
-    engines: {node: '>=10'}
-    peerDependencies:
-      graphql: ^0.8.0 || ^0.9.0 || ^0.10.0 || ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0 || ^16.0.0
-    dependencies:
-      graphql: 15.8.0
-      tslib: 2.5.0
-    dev: true
-
   /graphql-scalars@1.21.3(graphql@16.6.0):
     resolution: {integrity: sha512-QLWw3BHmqHZMp9JeYmPpjq7JT9aw/H8TpwmWKJEuMSE3+O7Xe7TduQbOLFzbs1q9UxX6CVkc0O1JO/YfkP/pAw==}
     engines: {node: '>=10'}
@@ -4460,15 +4437,6 @@ packages:
       graphql: 16.6.0
       tslib: 2.5.0
 
-  /graphql-subscriptions@1.2.1(graphql@15.8.0):
-    resolution: {integrity: sha512-95yD/tKi24q8xYa7Q9rhQN16AYj5wPbrb8tmHGM3WRc9EBmWrG/0kkMl+tQG8wcEuE9ibR4zyOM31p5Sdr2v4g==}
-    peerDependencies:
-      graphql: ^0.10.5 || ^0.11.3 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0
-    dependencies:
-      graphql: 15.8.0
-      iterall: 1.3.0
-    dev: true
-
   /graphql-subscriptions@2.0.0(graphql@16.6.0):
     resolution: {integrity: sha512-s6k2b8mmt9gF9pEfkxsaO1lTxaySfKoEJzEfmwguBbQ//Oq23hIXCfR1hm4kdh5hnR20RdwB+s3BCb+0duHSZA==}
     peerDependencies:
@@ -4476,11 +4444,6 @@ packages:
     dependencies:
       graphql: 16.6.0
       iterall: 1.3.0
-
-  /graphql@15.8.0:
-    resolution: {integrity: sha512-5gghUc24tP9HRznNpV2+FIoq3xKkj5dTQqf4v0CpdPbFVwFkWoxOM+o+2OC9ZSvjEMTjfmG9QT+gcvggTwW1zw==}
-    engines: {node: '>= 10.x'}
-    dev: true
 
   /graphql@16.6.0:
     resolution: {integrity: sha512-KPIBPDlW7NxrbT/eh4qPXz5FiFdL5UbaA0XUNz2Rp3Z3hqBSkbj0GVjwFDztsWVauZUWsbKHgMg++sk8UX0bkw==}
@@ -5148,6 +5111,11 @@ packages:
       prelude-ls: 1.2.1
       type-check: 0.4.0
     dev: true
+
+  /lexure@0.17.0:
+    resolution: {integrity: sha512-0L8GqFgPW36sLNqxdp2VOOef5Ajpb98kc0Zk4AzE+Yf0xYTDndcT1vpFqwkTdrCCw+FV8DH4mC9NUw0RlARThA==}
+    engines: {node: '>=12.0.0'}
+    dev: false
 
   /libphonenumber-js@1.10.26:
     resolution: {integrity: sha512-oB3l4J5gEhMV+ymmlIjWedsbCpsNRqbEZ/E/MpN2QVyinKNra6DcuXywxSk/72M3DZDoH/6kzurOq1erznBMwQ==}
@@ -7561,26 +7529,6 @@ packages:
     engines: {node: '>=8'}
     dev: true
 
-  /type-graphql@1.1.1(class-validator@0.14.0)(graphql@15.8.0):
-    resolution: {integrity: sha512-iOOWVn0ehCYMukmnXStbkRwFE9dcjt7/oDcBS1JyQZo9CbhlIll4lHHps54HMEk4A4c8bUPd+DjK8w1/ZrxB4A==}
-    engines: {node: '>= 10.3'}
-    requiresBuild: true
-    peerDependencies:
-      class-validator: '>=0.12.0'
-      graphql: ^15.3.0
-    dependencies:
-      '@types/glob': 7.2.0
-      '@types/node': 16.18.23
-      '@types/semver': 7.3.13
-      class-validator: 0.14.0
-      glob: 7.2.3
-      graphql: 15.8.0
-      graphql-query-complexity: 0.7.2(graphql@15.8.0)
-      graphql-subscriptions: 1.2.1(graphql@15.8.0)
-      semver: 7.4.0
-      tslib: 2.5.0
-    dev: true
-
   /type-graphql@2.0.0-beta.1(class-validator@0.14.0)(graphql@16.6.0):
     resolution: {integrity: sha512-eafe1WJAdiCTEma43Imi1NRRgioIL1nk2FIprpQ0uvodcpIz0uoR+SZgRGu0AXof7DdcrlL3ZdRVoOiuolOQMA==}
     engines: {node: '>= 14.5.0'}
@@ -7621,7 +7569,7 @@ packages:
     optionalDependencies:
       rxjs: 7.8.0
 
-  /typegraphql-prisma@0.23.2(@prisma/client@4.12.0)(@types/graphql-fields@1.3.5)(@types/node@16.18.23)(graphql-fields@2.0.3)(graphql-scalars@1.21.3)(prisma@4.8.1)(tslib@2.5.0)(type-graphql@1.1.1):
+  /typegraphql-prisma@0.23.2(@prisma/client@4.12.0)(@types/graphql-fields@1.3.5)(@types/node@16.18.23)(graphql-fields@2.0.3)(graphql-scalars@1.21.3)(prisma@4.8.1)(tslib@2.5.0)(type-graphql@2.0.0-beta.1):
     resolution: {integrity: sha512-mD9OIdDAXA2qYt3dAydYI3ZbnHTZPPlyvVAuSNALm1NYcPMtBguYMaFPhuQM6veT1n/1tA/bBeCPtavtDKYYmg==}
     engines: {node: '>=12.4'}
     hasBin: true
@@ -7641,13 +7589,13 @@ packages:
       '@types/graphql-fields': 1.3.5
       '@types/node': 16.18.23
       graphql-fields: 2.0.3
-      graphql-scalars: 1.21.3(graphql@15.8.0)
+      graphql-scalars: 1.21.3(graphql@16.6.0)
       pluralize: 8.0.0
       prisma: 4.8.1
       semver: 7.4.0
       ts-morph: 17.0.1
       tslib: 2.5.0
-      type-graphql: 1.1.1(class-validator@0.14.0)(graphql@15.8.0)
+      type-graphql: 2.0.0-beta.1(class-validator@0.14.0)(graphql@16.6.0)
     transitivePeerDependencies:
       - encoding
       - supports-color

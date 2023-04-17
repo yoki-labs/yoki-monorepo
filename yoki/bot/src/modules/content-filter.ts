@@ -87,9 +87,9 @@ export class ContentFilterUtil extends BaseFilterUtil {
 
         // Sanitize data into standard form
         const lowerCasedMessageContent = text.toLowerCase();
-        const split = lowerCasedMessageContent.split(/[ \t\n-.?!,—]/g);
+        const trimmedContent = lowerCasedMessageContent.replace(/\s+/g, " ").trim();
         // Check if any word triggers the content filter (user provided words). Checks if message content includes a word
-        const ifTriggersCustom: ContentFilterScan | undefined = bannedWordsList.find((word) => this.tripsFilter(word, split));
+        const ifTriggersCustom: ContentFilterScan | undefined = bannedWordsList.find((word) => this.tripsFilter(word, trimmedContent));
 
         // This will check if the message content contains any words listed in any enabled presets
         let ifTriggersPreset: ContentFilterScan | undefined;
@@ -184,9 +184,9 @@ export class ContentFilterUtil extends BaseFilterUtil {
             : this.severityAction[triggeredWord.severity]?.(member.user!.id, server, channelId, filteredContent, null);
     }
 
-    tripsFilter(contentFilter: ContentFilter | Omit<ContentFilterScan, "severity">, words: string[]) {
+    tripsFilter(contentFilter: ContentFilter | Omit<ContentFilterScan, "severity">, message: string) {
         // return contentFilter.matching === FilterMatching.WORD ? message.includes(contentFilter.content) :
-        return words.some((word) => this.matchesFilter(contentFilter, word));
+        return this.matchesFilter(contentFilter, message);
     }
 
     matchesFilter(contentFilter: ContentFilter | Omit<ContentFilterScan, "severity">, phrase: string) {

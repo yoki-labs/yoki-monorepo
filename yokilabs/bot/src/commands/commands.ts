@@ -1,6 +1,7 @@
 import { codeBlock, inlineCode, inlineQuote } from "@yokilabs/util";
 import { stripIndents } from "common-tags";
 import { Member, Message, WebhookEmbed } from "guilded.js";
+import * as lexure from "lexure";
 
 // import { nanoid } from "nanoid";
 import booleanArg from "../args/boolean";
@@ -63,12 +64,20 @@ export function createCommandHandler<
         ) => {
             const [message, ctx] = context;
 
-            // Parse the message into the command name and args ("?test arg1 arg2 arg3" = [ "test", "arg1", "arg2", "arg3" ])
-            let [commandName, ...args] = message.content.slice(prefix.length).trim().split(/ +/g);
+            const lexer = new lexure.Lexer(message.content).setQuotes([
+                ['"', '"'],
+                ["“", "”"],
+                ["'", "'"],
+            ]);
+            const res = lexer.lexCommand((lexS) => (lexS.startsWith(prefix) ? 1 : null));
 
-            if (!commandName) return void 0;
+            if (!res) return void 0;
 
-            commandName = commandName.toLowerCase();
+            const [lexCommand, getRest] = res;
+
+            const args = getRest().map((x) => x.value);
+
+            const commandName = lexCommand.value.toLowerCase();
 
             // Get the command by the name or if it's an alias of a command
             const command = ctx.commands.get(commandName) ?? ctx.commands.find((command) => command.aliases?.includes(commandName) ?? false);

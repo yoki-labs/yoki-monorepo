@@ -19,6 +19,7 @@
         "@yokilabs/util": "workspace:*",
         "common-tags": "^1.8.2",
         "guilded.js": "0.20.0",
+        "lexure": "^0.17.0",
         "nodemon": "^2.0.20",
         "recursive-readdir": "^2.2.2",
         "tslib": "^2.4.1"
