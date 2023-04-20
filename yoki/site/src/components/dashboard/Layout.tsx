@@ -1,12 +1,24 @@
-import { faCog } from "@fortawesome/free-solid-svg-icons";
+import { faCamera, faCog, faDoorClosed, faGavel, faImage, faPray, faRoadSpikes, faVoteYea } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
 import { GuildedServer } from "../../lib/@types/guilded/Server";
+
+const sidebar = [
+    { name: "Main Settings", icon: faCog },
+    { name: "Automod", icon: faGavel },
+    { name: "Logging", icon: faCamera },
+    { name: "Modmail", icon: faVoteYea },
+    { name: "Antiraid", icon: faDoorClosed },
+    { name: "Image Scanning", icon: faImage },
+    { name: "Antihoist", icon: faRoadSpikes },
+    { name: "Appeals", icon: faPray },
+];
 
 export default function Layout(props: { servers: GuildedServer[]; children: React.ReactNode }) {
     return (
         <div className="drawer drawer-mobile">
             <input id="my-drawer-2" type="checkbox" className="drawer-toggle" />
-            <div className="drawer-content flex flex-col m-12">
+            <div className="drawer-content flex flex-col m-12 h-fit">
                 <div>{props.children}</div>
                 <label htmlFor="my-drawer-2" className="btn bg-custom-guilded drawer-button lg:hidden">
                     Open drawer
@@ -25,12 +37,16 @@ export default function Layout(props: { servers: GuildedServer[]; children: Reac
                         ))}
                     </select>
 
-                    <div className="my-16 mx-4">
-                        <div className="flex flex-row">
-                            <FontAwesomeIcon icon={faCog} className="text-3xl" />
-                            <p className="text-xl">Main Settings</p>
-                        </div>
-                    </div>
+                    <ul className="my-4 space-y-2">
+                        {sidebar.map((item) => (
+                            <li>
+                                <div className="flex flex-row">
+                                    <FontAwesomeIcon icon={item.icon} className="w-8 mr-2" />
+                                    <p className="text-lg">{item.name}</p>
+                                </div>
+                            </li>
+                        ))}
+                    </ul>
                 </ul>
             </div>
         </div>
