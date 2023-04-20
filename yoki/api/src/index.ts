@@ -10,7 +10,7 @@ import { buildSchema } from "type-graphql";
 import { resolvers } from "./generated/type-graphql";
 
 // Load env variables
-config({ path: join(__dirname, "..", "..", "..", ".env") });
+config({ path: join(__dirname, "..", "..", ".env") });
 const PORT = process.env.PORT ? Number(process.env.PORT) : 2222;
 
 async function bootstrap() {

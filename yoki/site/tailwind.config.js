@@ -50,6 +50,7 @@ module.exports = withMT({
         },
     },
     plugins: [
+        require("daisyui"),
         require("tailwindcss-animate"),
         // eslint-disable-next-line global-require
         require("@tailwindcss/forms"),

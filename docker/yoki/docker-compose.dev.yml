@@ -40,6 +40,17 @@ services:
         restart: 'no'
         environment:
             TOKEN_SECRET: 'TESTTOKENSECRET'
+    api:
+        build:
+            context: ../../
+            dockerfile: ./docker/yoki/api/Dockerfile
+        env_file: ../../yoki/.env
+        command: 'npm run dev'
+        volumes:
+            - '../../yoki/api/src:/usr/app/yoki/api/src'
+        restart: 'no'
+        ports:
+            - 2222:2222
 
 volumes:
     yoki-postgres-data:

@@ -21,6 +21,7 @@
 		"###": "Scripts for docker related util. Starting up a dev env, or deploying in a prod env",
 		"yk:start": "pnpm yk:docker up -d --build && pnpm yk:docker logs --follow bot nsfw ",
 		"yk:db": "pnpm yk:docker up -d --build db",
+		"yk:api": "pnpm yk:db api",
 		"yk:down": "pnpm yk:docker down",
 		"yk:logs": "pnpm yk:docker logs -f bot nsfw",
 		"yk:migrate": "cd yoki/bot && pnpm migrate:dev",
