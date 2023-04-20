@@ -14,6 +14,7 @@
 		"cross-cat": "^1.0.0",
 		"dotenv": "^8.2.0",
 		"dotenv-cli": "^7.2.1",
+		"nodemon": "^2.0.22",
 		"prisma": "~4.8.0",
 		"prisma-merge": "^0.2.0",
 		"tsc-alias": "^1.6.5",
