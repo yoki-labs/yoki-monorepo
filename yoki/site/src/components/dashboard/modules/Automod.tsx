@@ -4,6 +4,7 @@ import { tempToastAtom } from "../../../state/toast";
 import { actions } from "../../../utils/dummyData";
 import { faBroom, faCircleExclamation, faHammer, faShoePrints, faVolumeMute } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useState } from "react";
 
 const actionTypes = {
     MUTE: faVolumeMute,
@@ -18,7 +19,7 @@ const getActionIcon = (action: string) => {
 };
 
 const getReason = (reason: string) => {
-    if (reason.startsWith("[AUTOMOD]")) return <span className="py-1 px-2 bg-primary rounded-lg text-black">User violated automod rules.</span>;
+    if (reason.startsWith("[AUTOMOD]")) return <span className="py-1 px-2 bg-primary rounded-lg text-black">User violated automod rules</span>;
     if (reason.length > 40) return `${reason.substring(0, 40)}...`;
     return reason;
 };
@@ -33,6 +34,7 @@ const transformToDate = (date: string | null) => {
 
 export default function Automod() {
     const writeToast = useSetAtom(tempToastAtom);
+    const [showIds, setShowIds] = useState(false);
 
     const alert = (actionId: string) => {
         navigator.clipboard.writeText(actionId);
@@ -41,7 +43,7 @@ export default function Automod() {
 
     return (
         <div>
-            <div className="mb-4 flex flex-row space-x-8">
+            <div className="mb-4 flex flex-col space-y-2 md:space-y-0 md:flex-row md:space-x-8">
                 {Object.keys(actionTypes).map((action) => {
                     return (
                         <div className="flex flex-row space-x-2">
@@ -52,25 +54,25 @@ export default function Automod() {
                 })}
             </div>
 
-            <div className="flex flex-row">
-                <div className="form-control mb-2">
+            <div className="flex flex-col space-y-2 md:space-y-0 mb-6 md:mb-4 md:flex-row md:space-x-2">
+                <div className="form-control w-full max-w-xs">
                     <label className="label">
                         <span className="label-text">Filter by target users</span>
                     </label>
                     <input type="text" placeholder="Example: pmbOB8VA" className="input input-bordered w-60 input-sm" />
                 </div>
-                <div className="form-control w-full max-w-xs mb-2">
+                <div className="form-control w-full max-w-xs">
                     <label className="label">
                         <span className="label-text">Filter by executing users</span>
                     </label>
                     <input type="text" placeholder="Example: pmbOB8VA" className="input input-bordered w-60 input-sm" />
                 </div>
-                <div className="form-control w-full max-w-xs mb-2">
+                <div className="form-control w-full max-w-xs">
                     <label className="label">
                         <span className="label-text">Filter by type</span>
                     </label>
 
-                    <div className="grid grid-cols-3 form-control">
+                    <div className="place-items-center w-full place-items-start grid grid-cols-3 form-control">
                         {Object.keys(actionTypes).map((action) => {
                             return (
                                 <div className="flex flex-row space-x-2 mt-1">
@@ -88,7 +90,10 @@ export default function Automod() {
                     {/* head */}
                     <thead>
                         <tr>
-                            <th>ID</th>
+                            <th className="flex flex-row">
+                                <p className="mr-2">ID</p>
+                                <input type="checkbox" checked={showIds} onChange={() => setShowIds(!showIds)} className="checkbox checkbox-md md:checkbox-xs" />
+                            </th>
                             <th>User Actioned</th>
                             <th>Type</th>
                             <th>Reason</th>
@@ -102,7 +107,7 @@ export default function Automod() {
                         {actions.map((action) => (
                             <tr className="hover">
                                 <th onClick={() => alert(action.id)} className="text-xs hover:cursor-pointer">
-                                    {action.id}
+                                    {showIds ? action.id : "Click to copy"}
                                 </th>
                                 <td>{action.targetId}</td>
                                 <td>
