@@ -45,7 +45,7 @@ export default function MainSettings() {
                 );
             })}
 
-            <button className="btn bg-custom-guilded text-black text-xl">Submit</button>
+            <button className="btn btn-primary text-black text-xl">Submit</button>
         </>
     );
 }

@@ -37,7 +37,7 @@ a {
 /* For Firefox Browser */
 .scrollbar {
   scrollbar-width: thin;
-  scrollbar-color: #000 #fff;
+  scrollbar-color: var(--guilded-yellow) var(--grey-bg);
 }
 
 
@@ -47,9 +47,31 @@ a {
 }
 
 .scrollbar::-webkit-scrollbar-track {
-  background: #fff;
+  background: rgb(51 65 85);
 }
 
 .scrollbar::-webkit-scrollbar-thumb {
-  background: #000;
+  background: var(--guilded-yellow);
+}
+
+@layer utilities {
+  .scrollbar::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  .scrollbar::-webkit-scrollbar-track {
+    border-radius: 100vh;
+    background: var(--guilded-yellow);
+  }
+
+  .scrollbar::-webkit-scrollbar-thumb {
+    background: #e0cbcb;
+    border-radius: 100vh;
+    border: 3px solid var(--guilded-yellow);
+  }
+
+  .scrollbar::-webkit-scrollbar-thumb:hover {
+    background: var(--guilded-yellow);
+  }
 }
