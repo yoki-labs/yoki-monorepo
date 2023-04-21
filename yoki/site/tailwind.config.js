@@ -50,15 +50,20 @@ module.exports = withMT({
         },
     },
     plugins: [
-        require("daisyui"),
-        require("tailwindcss-animate"),
-        // eslint-disable-next-line global-require
-        require("@tailwindcss/forms"),
-        // add custom variant for expanding sidebar
-        plugin(({ addVariant, e }) => {
-            addVariant("sidebar-expanded", ({ modifySelectors, separator }) => {
-                modifySelectors(({ className }) => `.sidebar-expanded .${e(`sidebar-expanded${separator}${className}`)}`);
-            });
-        }),
+        require("daisyui")
     ],
+    daisyui: {
+        themes: [
+          {
+            light: {
+              ...require("daisyui/src/colors/themes")["[data-theme=light]"],
+              primary: "#F5C400",
+            },
+            dark: {
+                ...require("daisyui/src/colors/themes")["[data-theme=dark]"],
+                primary: "#F5C400",
+            },
+          },
+        ],
+      },
 });

@@ -2,6 +2,7 @@ import { faCamera, faCog, faDoorClosed, faGavel, faImage, faPray, faRoadSpikes, 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import { GuildedServer } from "../../lib/@types/guilded/Server";
+import { useState } from "react";
 
 const sidebar = [
     { name: "Main Settings", icon: faCog },
@@ -15,16 +16,18 @@ const sidebar = [
 ];
 
 export default function Layout(props: { servers: GuildedServer[]; children: React.ReactNode }) {
+    const [currentModule, setModule] = useState("Main Settings");
+
     return (
         <div className="drawer drawer-mobile">
             <input id="my-drawer-2" type="checkbox" className="drawer-toggle" />
-            <div className="drawer-content flex flex-col m-12 h-fit">
-                <div>{props.children}</div>
+            <div className="drawer-content flex flex-col m-12">
+                <div className="h-fit">{props.children}</div>
                 <label htmlFor="my-drawer-2" className="btn bg-custom-guilded drawer-button lg:hidden">
                     Open drawer
                 </label>
             </div>
-            <div className="drawer-side">
+            <div className="drawer-side h-screen">
                 <label htmlFor="my-drawer-2" className="drawer-overlay"></label>
                 <ul className="menu p-4 w-72 bg-gray-900 text-base-content flex flex-col">
                     <select className="select select-warning select-lg w-full max-w-xs">
@@ -39,7 +42,7 @@ export default function Layout(props: { servers: GuildedServer[]; children: Reac
 
                     <ul className="my-4 space-y-2">
                         {sidebar.map((item) => (
-                            <li>
+                            <li className={currentModule === item.name ? "bg-custom-gilded text-black rounded-lg" : "rounded-lg"} onClick={() => setModule(item.name)}>
                                 <div className="flex flex-row">
                                     <FontAwesomeIcon icon={item.icon} className="w-8 mr-2" />
                                     <p className="text-lg">{item.name}</p>
