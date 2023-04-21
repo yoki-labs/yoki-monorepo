@@ -46,7 +46,7 @@ export default function Automod() {
             <div className="mb-4 flex flex-col space-y-2 md:space-y-0 md:flex-row md:space-x-8">
                 {Object.keys(actionTypes).map((action) => {
                     return (
-                        <div className="flex flex-row space-x-2">
+                        <div key={action} className="flex flex-row space-x-2">
                             <FontAwesomeIcon className="w-6" icon={actionTypes[action as keyof typeof actionTypes]} />
                             <p> = {action[0].toUpperCase() + action.substring(1).toLowerCase()}</p>
                         </div>
@@ -75,7 +75,7 @@ export default function Automod() {
                     <div className="place-items-center w-full place-items-start grid grid-cols-3 form-control">
                         {Object.keys(actionTypes).map((action) => {
                             return (
-                                <div className="flex flex-row space-x-2 mt-1">
+                                <div key={action} className="flex flex-row space-x-2 mt-1">
                                     <span>{action.toLowerCase()}</span>
                                     <input type="checkbox" value={action} className="checkbox" />
                                 </div>
@@ -105,7 +105,7 @@ export default function Automod() {
                     </thead>
                     <tbody>
                         {actions.map((action) => (
-                            <tr className="hover">
+                            <tr key={action.id} className="hover">
                                 <th onClick={() => alert(action.id)} className="text-xs hover:cursor-pointer">
                                     {showIds ? action.id : "Click to copy"}
                                 </th>
