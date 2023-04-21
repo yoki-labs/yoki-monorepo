@@ -1,8 +1,9 @@
 import { faCamera, faCog, faDoorClosed, faGavel, faImage, faPray, faRoadSpikes, faVoteYea } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useAtom } from "jotai";
 
 import { GuildedServer } from "../../lib/@types/guilded/Server";
-import { useState } from "react";
+import { navbarAtom } from "../../state/navbar";
 
 const sidebar = [
     { name: "Main Settings", icon: faCog },
@@ -16,7 +17,7 @@ const sidebar = [
 ];
 
 export default function Layout(props: { servers: GuildedServer[]; children: React.ReactNode }) {
-    const [currentModule, setModule] = useState("Main Settings");
+    const [currentModule, setModule] = useAtom(navbarAtom);
 
     return (
         <div className="drawer drawer-mobile">
@@ -30,10 +31,8 @@ export default function Layout(props: { servers: GuildedServer[]; children: Reac
             <div className="drawer-side h-screen">
                 <label htmlFor="my-drawer-2" className="drawer-overlay"></label>
                 <ul className="menu p-4 w-72 bg-gray-900 text-base-content flex flex-col">
-                    <select className="select select-warning select-lg w-full max-w-xs">
-                        <option disabled selected>
-                            Pick a server
-                        </option>
+                    <select className="select select-warning select-lg w-full max-w-xs" defaultValue={"Pick a server"}>
+                        <option disabled>Pick a server</option>
 
                         {props.servers.map((server) => (
                             <option>{server.name.length > 17 ? `${server.name.slice(0, 17)}...` : server.name}</option>
