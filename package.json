@@ -8,7 +8,7 @@
 		"#": "Scripts for building the typescript/prisma code in all the services. They're sectioned by shared local packages and services",
 		"build": "pnpm -r --filter=!@yoki/site run build",
 		"build:deps": "pnpm -r --filter=@yokilabs/** run build",
-		"build:yoki": "pnpm build:deps && pnpm -r --filter=!@yoki/site --filter=@yoki/** run build",
+		"build:yoki": "pnpm build:deps && pnpm -r --filter=!@yoki/site --filter=!@yoki/api --filter=@yoki/** run build",
 		"build:tuxedo": "pnpm build:deps && pnpm -r --filter=@tuxedo/** run build",
 		"generate": "cd yoki/bot && pnpm generate",
 		"##": "Scripts for code quality and CI",
