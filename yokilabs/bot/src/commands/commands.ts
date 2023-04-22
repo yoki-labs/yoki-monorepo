@@ -69,7 +69,7 @@ export function createCommandHandler<
                 ["“", "”"],
                 ["'", "'"],
             ]);
-            const res = lexer.lexCommand((lexS) => (lexS.startsWith(prefix) ? 1 : null));
+            const res = lexer.lexCommand((lexS) => (lexS.startsWith(prefix) ? prefix.length : null));
 
             if (!res) return void 0;
 
