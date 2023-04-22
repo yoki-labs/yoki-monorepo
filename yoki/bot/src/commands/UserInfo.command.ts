@@ -30,7 +30,8 @@ const UserInfo: Command = {
                     .setTitle(`${target.isOwner ? ":crown: " : ""}<@${target.user!.id}> (${inlineCode(target.user!.id)})`)
                     .setColor(Colors.blockBackground)
                     .setDescription(
-                        `Info about user ${inlineCode(target.user!.name)}. ${target.nickname ? `Their nickname is ${inlineCode(target.nickname)}.` : `They do not have a nickname.`
+                        `Info about user ${inlineCode(target.user!.name)}. ${
+                            target.nickname ? `Their nickname is ${inlineCode(target.nickname)}.` : `They do not have a nickname.`
                         }`
                     )
                     .addFields([
@@ -41,8 +42,9 @@ const UserInfo: Command = {
                         {
                             name: "Additional Info",
                             value: stripIndents`
-                                ${target.isOwner ? `:crown: **Owns this server.**\n` : ``}**Account created:** ${commandCtx.server.formatTimezone(creationDate)} EST ${suspicious ? "(:warning: recent)" : ""
-                                }
+                                ${target.isOwner ? `:crown: **Owns this server.**\n` : ``}**Account created:** ${commandCtx.server.formatTimezone(creationDate)} EST ${
+                                suspicious ? "(:warning: recent)" : ""
+                            }
                                 **Joined at:** ${commandCtx.server.formatTimezone(new Date(target.joinedAt!))} EST
                             `,
                         },

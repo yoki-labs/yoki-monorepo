@@ -20,37 +20,39 @@ const ServerInfo: Command = {
                     .setTitle(`${guildedServer.isVerified ? ":white_check_mark: " : ""}${guildedServer.name} (${inlineCode(guildedServer.id)})`)
                     .setColor(Colors.blockBackground)
                     .setDescription(`Info about the current server.`)
-                    .addFields([
-                        {
-                            name: "Basic Configuration",
-                            value: stripIndents`
+                    .addFields(
+                        [
+                            {
+                                name: "Basic Configuration",
+                                value: stripIndents`
                                 **Prefix:** ${inlineCode(escapeInlineCodeText(server.getPrefix()))},
                                 **Locale:** ${inlineCode(server.locale)}
                                 **Premium level:** ${server.premium ? inlineCode(server.premium) : "none"}
                             `,
-                            inline: true
-                        },
-                        {
-                            name: "Members",
-                            value: stripIndents`
+                                inline: true,
+                            },
+                            {
+                                name: "Members",
+                                value: stripIndents`
                                 **Owner:** :crown: <@${guildedServer.ownerId}> (${inlineCode(guildedServer.ownerId)})
                                 **Member count:** ${inlineCode(memberCount)}
                             `,
-                            inline: true
-                        },
-                        guildedServer.description && {
-                            name: "Description",
-                            value: guildedServer.description
-                        },
-                        {
-                            name: "Additional Info",
-                            value: stripIndents`
+                                inline: true,
+                            },
+                            guildedServer.description && {
+                                name: "Description",
+                                value: guildedServer.description,
+                            },
+                            {
+                                name: "Additional Info",
+                                value: stripIndents`
                                 ${guildedServer.isVerified ? ":white_check_mark: **Is verified.**\n" : ""}**URL:** \`/${guildedServer.shortURL}\`
                                 **Timezone:** ${inlineCode(guildedServer.timezone)}
                                 **Server created:** ${server.formatTimezone(guildedServer.createdAt)} EST
-                            `
-                        },
-                    ].filter(Boolean) as EmbedField[])
+                            `,
+                            },
+                        ].filter(Boolean) as EmbedField[]
+                    )
                     .setThumbnail(guildedServer.iconURL ?? void 0)
                     .toJSON(),
             ],
