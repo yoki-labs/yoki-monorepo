@@ -14,7 +14,9 @@ export default function DashForm() {
 
     return (
         <div className="py-8 px-6 flex flex-col space-y-8 h-fit scrollbar">
-            <h1 className="text-3xl font-semibold">{currentPage}</h1>
+            <div className="border-b-2">
+                <h1 className="text-4xl font-semibold mb-4">{currentPage[0].toUpperCase() + currentPage.substring(1)}</h1>
+            </div>
 
             {pages[currentPage as keyof typeof pages] ?? <h1 className="text-2xl font-bold">Work in progress! Check back in later...</h1>}
         </div>
