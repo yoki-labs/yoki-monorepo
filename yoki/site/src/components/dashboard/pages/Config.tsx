@@ -26,7 +26,7 @@ const questions = {
     },
 };
 
-export default function MainSettings() {
+export default function Config() {
     return (
         <>
             {Object.keys(questions).map((qKey) => {

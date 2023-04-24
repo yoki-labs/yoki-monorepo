@@ -1,22 +1,22 @@
 import { useAtomValue } from "jotai";
 
 import { navbarAtom } from "../../state/navbar";
-import MainSettings from "./modules/MainSettings";
-import Automod from "./modules/Automod";
+import Config from "./pages/Config";
+import History from "./pages/History";
 
-const modules = {
-    "Main Settings": <MainSettings />,
-    Automod: <Automod />,
+const pages = {
+    main: <Config />,
+    history: <History />,
 };
 
 export default function DashForm() {
-    const currentModule = useAtomValue(navbarAtom);
+    const currentPage = useAtomValue(navbarAtom);
 
     return (
-        <div className="bg-gray-900 py-8 px-6 flex flex-col space-y-8 h-fit scrollbar">
-            <h1 className="text-3xl font-semibold">{currentModule}</h1>
+        <div className="py-8 px-6 flex flex-col space-y-8 h-fit scrollbar">
+            <h1 className="text-3xl font-semibold">{currentPage}</h1>
 
-            {modules[currentModule as keyof typeof modules] ?? <h1 className="text-2xl font-bold">Work in progress! Check back in later...</h1>}
+            {pages[currentPage as keyof typeof pages] ?? <h1 className="text-2xl font-bold">Work in progress! Check back in later...</h1>}
         </div>
     );
 }
