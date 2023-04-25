@@ -13,9 +13,9 @@ export default function Layout(props: { servers: GuildedServer[]; children: Reac
 
     return (
         <>
-            <div className="drawer drawer-mobile bg-spacedark-950">
+            <div className="drawer drawer-mobile bg-spacedark-800">
                 <input id="my-drawer-2" type="checkbox" className="drawer-toggle" />
-                <div className="drawer-content flex flex-col md:ml-6 md:my-4">
+                <div className="drawer-content flex flex-col md:ml-3 md:my-4">
                     <label htmlFor="my-drawer-2" className="btn bg-primary text-black drawer-button lg:hidden">
                         Open sidebar
                     </label>
