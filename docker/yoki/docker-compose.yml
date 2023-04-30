@@ -4,17 +4,7 @@ services:
         image: ghcr.io/yoki-labs/yoki/yoki/bot:latest
         container_name: YOKI_BOT
         restart: unless-stopped
-        networks:
-            - main-network
     nsfw:
         image: ghcr.io/yoki-labs/yoki/yoki/nsfw:latest
         container_name: YOKI_NSFW_DETECTION
         restart: unless-stopped
-        networks:
-            - main-network
-        ports:
-            - "4433:4433"
-
-networks:
-    main-network:
-        driver: bridge

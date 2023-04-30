@@ -42,7 +42,7 @@ const UserInfo: Command = {
                         {
                             name: "Additional Info",
                             value: stripIndents`
-                                ${target.isOwner ? `**Owns this server.**\n` : ``}**Account Created:** ${commandCtx.server.formatTimezone(creationDate)} EST ${
+                                ${target.isOwner ? `:crown: **Owns this server.**\n` : ``}**Account created:** ${commandCtx.server.formatTimezone(creationDate)} EST ${
                                 suspicious ? "(:warning: recent)" : ""
                             }
                                 **Joined at:** ${commandCtx.server.formatTimezone(new Date(target.joinedAt!))} EST

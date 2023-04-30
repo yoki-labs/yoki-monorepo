@@ -3,6 +3,8 @@ services:
     bot:
         env_file:
             - ../../stack.env
+        network_mode: host
     nsfw:
         env_file:
             - ../../stack.env
+        network_mode: host
