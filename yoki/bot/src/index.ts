@@ -37,6 +37,8 @@ client.ws.emitter.on("error", (err, errInfo, data) => {
     void client.errorHandler.send(`Error in command usage! ${err}`, [errorEmbed(err, data)]);
 });
 
+client.ws.emitter.on("debug", console.log);
+
 // This is for any custom events that we emit
 client.emitter.on("ActionIssued", client.customEventHandler.ActionIssued);
 

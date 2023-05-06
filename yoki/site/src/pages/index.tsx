@@ -52,9 +52,6 @@ const Home: NextPage = () => {
                                 </span>
                                 <span className="text-xl">Your moderation companion</span>
                             </h1>
-                            <div className="py-6 md:pt-2 md:py-4">
-                                <p className="text-md text-white">Yoki has a powerful set of tools to make your community safer</p>
-                            </div>
                             <div className="py-2 md:py-2 text-white">
                                 <div className="inline-block space-y-2 text-left">
                                     <FeatureListItem text="Moderation + automod" />
