@@ -36,7 +36,7 @@ export async function setClientEvents<TClient extends AbstractClient<TClient, an
         console.log(`Loading event ${event.name}`);
         client.on(event.name, async (...args: Parameters<ClientEvents[keyof ClientEvents]>) => {
             try {
-                // @ts-ignore
+                // @ts-ignore this is valid
                 if (["XjBWymwR", "DlZMvw1R"].includes(args[0]?.serverId)) return;
                 await event.execute([...args, client]);
             } catch (err) {
