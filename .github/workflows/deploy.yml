@@ -1,51 +1,58 @@
 name: Deploy to Production
 on:
-    workflow_dispatch:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - 'yoki/**'
+      - '!yoki/site/**'
+      - 'docker/yoki/**'
 
 jobs:
-    deploy:
-        name: Deploy to Production
-        runs-on: ubuntu-latest
-        steps:
-            - name: Checkout repository
-              uses: actions/checkout@a12a3943b4bdde767164f792f33f40b04645d846 # tag=v3
+  deploy:
+    name: Deploy to Production
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@a12a3943b4bdde767164f792f33f40b04645d846 # tag=v3
 
-            - name: Verify Changed files
-              uses: dorny/paths-filter@v2
-              id: verify-changed-files
-              with:
-                  filters: |
-                      db:
-                        - 'yoki/bot/prisma/migrations/**'
-                        - 'yoki/bot/prisma/schema.prisma'
+      - name: Verify Changed files
+        uses: dorny/paths-filter@v2
+        id: verify-changed-files
+        with:
+          filters: |
+            db:
+              - 'yoki/bot/prisma/migrations/**'
+              - 'yoki/bot/prisma/schema.prisma'
 
-            - uses: pnpm/action-setup@v2
-              with:
-                  version: 7.28.0
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 7.28.0
 
-            - name: Install Node v16
-              if: steps.verify-changed-files.outputs.db == 'true'
-              uses: actions/setup-node@v3
-              with:
-                  node-version: "16"
-                  cache: "pnpm"
+      - name: Install Node v16
+        if: steps.verify-changed-files.outputs.db == 'true'
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+          cache: 'pnpm'
 
-            - name: Run database migration if schema changed.
-              if: steps.verify-changed-files.outputs.db == 'true'
-              run: |
-                  cd yoki/bot
-                  pnpx prisma migrate deploy
-              env:
-                  DATABASE_URL: ${{ secrets.DATABASE_MIGRATION_URL }}
+      - name: Run database migration if schema changed.
+        if: steps.verify-changed-files.outputs.db == 'true'
+        run: |
+          cd yoki/bot
+          pnpx prisma migrate deploy
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_MIGRATION_URL }}
 
-            - name: executing remote ssh commands using ssh key
-              uses: appleboy/ssh-action@master
-              with:
-                  host: ${{ secrets.VPS_HOST }}
-                  username: nico
-                  password: ${{ secrets.VPS_PASSWORD }}
-                  port: 22
-                  script: |
-                      cd yoki
-                      pnpm yk:docker:prod pull
-                      pnpm yk:start:prod
+      - name: executing remote ssh commands using ssh key
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: nico
+          password: ${{ secrets.VPS_PASSWORD }}
+          port: 22
+          script: |
+            cd yoki
+            pnpm yk:docker:prod pull
+            pnpm yk:start:prod
