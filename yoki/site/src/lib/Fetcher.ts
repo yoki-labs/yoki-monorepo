@@ -23,8 +23,8 @@ export function req<T = Record<string, string>>(
 }
 
 export const methods = (token: string) => ({
-    get: (url: string) => req(url, token, { method: "get" }),
-    post: (url: string, body: Record<string, string | number | boolean>) => req(url, token, { method: "post" }, body),
-    delete: (url: string) => req(url, token, { method: "delete" }),
-    put: (url: string, body: Record<string, string | number | boolean>) => req(url, token, { method: "put" }, body),
+    get: <T = Record<string, string>>(url: string) => req<T>(url, token, { method: "get" }),
+    post: <T = Record<string, string>>(url: string, body: Record<string, string | number | boolean>) => req<T>(url, token, { method: "post" }, body),
+    delete: <T = Record<string, string>>(url: string) => req<T>(url, token, { method: "delete" }),
+    put: <T = Record<string, string>>(url: string, body: Record<string, string | number | boolean>) => req<T>(url, token, { method: "put" }, body),
 });
