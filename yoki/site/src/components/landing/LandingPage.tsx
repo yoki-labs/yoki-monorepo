@@ -1,7 +1,7 @@
 import Footer from "./footer/Footer";
 import Navbar from "./navbar/navbar";
 
-export const LandingPage = ({ children }: { children: any }) => {
+export const LandingPage = ({ children }: { children: React.ReactNode }) => {
     return (
         <>
             <Navbar />

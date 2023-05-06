@@ -1,8 +1,8 @@
 import { useAtomValue } from "jotai";
 
-import { navbarAtom } from "../../state/navbar";
 import Config from "./pages/Config";
 import History from "./pages/History";
+import { navbarAtom } from "../../state/navbar";
 
 const pages = {
     main: <Config />,

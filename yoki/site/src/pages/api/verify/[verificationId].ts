@@ -36,7 +36,7 @@ const PostVerifyRoute = async (req: NextApiRequest, res: NextApiResponse) => {
 
     try {
         const req = await fetch("https://challenges.cloudflare.com/turnstile/v0/siteverify", {
-            // @ts-ignore
+            // @ts-ignore Formdata IS valid here
             body: formData,
             method: "POST",
         });
@@ -50,7 +50,7 @@ const PostVerifyRoute = async (req: NextApiRequest, res: NextApiResponse) => {
         }
         return res.status(200).json({ error: true, message: "There was an issue validating your captcha request." });
     } catch (e) {
-        void errorHandler.send("Issue with site captcha verify", [errorEmbed(e)]);
+        void errorHandler.send("Issue with site captcha verify", [errorEmbed(e as Error)]);
         console.error(e);
         return res.status(500).json({ error: true, message: "Internal Error." });
     }

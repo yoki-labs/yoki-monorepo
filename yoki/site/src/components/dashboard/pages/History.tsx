@@ -1,10 +1,10 @@
+import { faAngleLeft, faAngleRight, faBroom, faCircleExclamation, faHammer, faShoePrints, faVolumeMute } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useSetAtom } from "jotai";
+import { useState } from "react";
 
 import { tempToastAtom } from "../../../state/toast";
 import { actions } from "../../../utils/dummyData";
-import { faAngleLeft, faAngleRight, faArrowLeft, faArrowRight, faBroom, faCircleExclamation, faHammer, faShoePrints, faVolumeMute } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useState } from "react";
 
 const actionTypes = {
     MUTE: faVolumeMute,
@@ -100,12 +100,16 @@ export default function History() {
 
             <footer className="mt-12 flex flex-col content-center items-center">
                 <div className="btn-group">
-                    <button className="btn inactive"><FontAwesomeIcon className="w-2" icon={faAngleLeft} /></button>
+                    <button className="btn inactive">
+                        <FontAwesomeIcon className="w-2" icon={faAngleLeft} />
+                    </button>
                     <button className="btn active">1</button>
                     <button className="btn">2</button>
                     <button className="btn">3</button>
                     <button className="btn">4</button>
-                    <button className="btn"><FontAwesomeIcon className="w-2" icon={faAngleRight} /></button>
+                    <button className="btn">
+                        <FontAwesomeIcon className="w-2" icon={faAngleRight} />
+                    </button>
                 </div>
             </footer>
         </div>
@@ -116,8 +120,7 @@ const getActionIcon = (action: string) => {
     return actionTypes[action as keyof typeof actionTypes];
 };
 
-const getReason = (reason: string, executorId: string) =>
-    executorId === botId && reason.startsWith("[AUTOMOD]") ? reason.substring(10) : reason;
+const getReason = (reason: string, executorId: string) => (executorId === botId && reason.startsWith("[AUTOMOD]") ? reason.substring(10) : reason);
 // {
 //     if (reason.startsWith("[AUTOMOD]")) return <span className="py-1 px-2 rounded-lg text-spacelight-800">User violated automod rules</span>;
 //     if (reason.length > 40) return `${reason.substring(0, 40)}...`;

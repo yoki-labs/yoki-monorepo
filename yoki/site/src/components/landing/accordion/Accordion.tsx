@@ -2,7 +2,8 @@ import { ReactNode, useState } from "react";
 
 import { AccordionBody, AccordionHeader, AccordionWrapper } from "./styles";
 
-interface Props extends React.PropsWithChildren<any> {
+// eslint-disable-next-line @typescript-eslint/ban-types
+interface Props extends React.PropsWithChildren<{}> {
     children: ReactNode[];
 }
 

@@ -1,10 +1,11 @@
 import { faArrowDownZA, faBan, faClipboardUser, faCog, faEnvelope, faHashtag, faPrayingHands, faShieldHalved } from "@fortawesome/free-solid-svg-icons";
-import { GuildedServer } from "../../lib/@types/guilded/Server";
-import LayoutSidebarTab from "./LayoutSidebarTab";
-import { navbarAtom } from "../../state/navbar";
 import { useAtom } from "jotai";
 
-type Prop = {
+import LayoutSidebarTab from "./LayoutSidebarTab";
+import { GuildedServer } from "../../lib/@types/guilded/Server";
+import { navbarAtom } from "../../state/navbar";
+
+interface Prop {
     servers: GuildedServer[];
 }
 
@@ -26,7 +27,7 @@ export function LayoutSidebar({ servers }: Prop) {
         <div className="drawer-side h-screen">
             <label htmlFor="my-drawer-2" className="drawer-overlay"></label>
             <ul className="menu p-6 w-72 text-base-content flex flex-col">
-                <select className="select select-warning select-lg w-full max-w-xs" defaultValue={"Pick a server"}>
+                <select className="select select-warning select-lg w-full max-w-xs" defaultValue="Pick a server">
                     <option disabled>Pick a server</option>
 
                     {servers.map((server) => (
@@ -36,7 +37,7 @@ export function LayoutSidebar({ servers }: Prop) {
 
                 <ul className="my-4 space-y-2">
                     {sidebarItems.map((item) => (
-                        <LayoutSidebarTab item={item} isActive={currentPage === item.id} onClick={() => setModule(item.id)} />
+                        <LayoutSidebarTab key={item.id} item={item} isActive={currentPage === item.id} onClick={() => setModule(item.id)} />
                     ))}
                 </ul>
             </ul>

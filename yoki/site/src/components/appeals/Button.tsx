@@ -1,4 +1,4 @@
-export default function Button(props: any) {
+export default function Button(props: { children: React.ReactNode; color?: string; bold?: string; disabled?: boolean }) {
     const colorName: string = props.color ?? "gilded";
     let className = "px-4 py-1 rounded text-lg hover:shadow-2xl transition-shadow hover:cursor-pointer ";
 

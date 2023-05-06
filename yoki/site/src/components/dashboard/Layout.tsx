@@ -1,14 +1,14 @@
 // import { faCamera, faCog, faDoorClosed, faGavel, faImage, faPray, faRoadSpikes, faVoteYea } from "@fortawesome/free-solid-svg-icons";
 // import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useAtom, useAtomValue } from "jotai";
+import { useAtomValue } from "jotai";
 
+import { LayoutSidebar } from "./LayoutSidebar";
 import { GuildedServer } from "../../lib/@types/guilded/Server";
 // import { navbarAtom } from "../../state/navbar";
 import { tempToastAtom } from "../../state/toast";
-import { LayoutSidebar } from "./LayoutSidebar";
 
 export default function Layout(props: { servers: GuildedServer[]; children: React.ReactNode }) {
-    //const [currentModule, setModule] = useAtom(navbarAtom);
+    // const [currentModule, setModule] = useAtom(navbarAtom);
     const toast = useAtomValue(tempToastAtom);
 
     return (
