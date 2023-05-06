@@ -2,19 +2,18 @@ import type { AppProps } from "next/app";
 import Head from "next/head";
 import { NextPage } from "next/types";
 import { SessionProvider } from "next-auth/react";
-import { ReactElement, ReactNode, useContext } from "react";
+import { ReactElement, ReactNode } from "react";
 import { QueryClient, QueryClientProvider } from "react-query";
 
 import "../styles/globals.css";
 import "../styles/styles.css";
-
-import { gqlClientContext } from "../utils/gqlContext";
 
 const ogDescription = "Meet Yoki, your moderation companion. Guilded's first moderation bot.";
 const ogUrl = "https://yoki.gg/";
 const ogFace = "https://yoki.gg/face.png";
 const ogTitle = "Yoki";
 
+// eslint-disable-next-line @typescript-eslint/ban-types
 export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
     getLayout?: (page: ReactElement) => ReactNode;
 };
@@ -27,7 +26,7 @@ const queryClient = new QueryClient();
 
 function MyApp({ Component, pageProps: { session, ...pageProps } }: AppPropsWithLayout) {
     const layout = Component.getLayout ?? ((page) => page);
-    const gql = useContext(gqlClientContext);
+    // const gql = useContext(gqlClientContext);
 
     return layout(
         <>
@@ -57,9 +56,9 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }: AppPropsWith
             </Head>
             <SessionProvider session={session}>
                 <QueryClientProvider client={queryClient}>
-                    <gqlClientContext.Provider value={gql}>
-                        <Component {...pageProps} />
-                    </gqlClientContext.Provider>
+                    {/* <gqlClientContext.Provider value={gql}> */}
+                    <Component {...pageProps} />
+                    {/* </gqlClientContext.Provider> */}
                 </QueryClientProvider>
             </SessionProvider>
         </>

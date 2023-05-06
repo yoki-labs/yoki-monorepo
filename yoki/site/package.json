@@ -9,14 +9,18 @@
 		"generate": "npx prisma generate --schema=../bot/prisma/schema.prisma"
 	},
 	"dependencies": {
+		"@fortawesome/fontawesome-svg-core": "^6.4.0",
+		"@fortawesome/free-regular-svg-icons": "^6.4.0",
+		"@fortawesome/free-solid-svg-icons": "^6.4.0",
+		"@fortawesome/react-fontawesome": "^0.2.0",
 		"@guildedjs/rest": "^2.9.1",
 		"@guildedjs/webhook-client": "^0.3.7",
 		"@prisma/client": "^4.2.1",
-		"@tailwindcss/forms": "^0.5.2",
 		"common-tags": "^1.8.2",
+		"daisyui": "^2.51.5",
 		"form-data": "^4.0.0",
 		"graphql-request": "^5.2.0",
-		"moment": "^2.29.4",
+		"jotai": "^2.0.4",
 		"next": "12.2.0",
 		"next-auth": "^4.12.2",
 		"next-auth-guilded": "^1.0.1",
@@ -24,12 +28,9 @@
 		"react-dom": "18.2.0",
 		"react-flatpickr": "^3.10.13",
 		"react-query": "^3.39.3",
-		"react-router-dom": "^6.4.0",
 		"react-transition-group": "^4.4.2",
 		"react-turnstile": "^1.0.5",
-		"strip-indent": "^4.0.0",
-		"styled-components": "^5.3.5",
-		"tailwindcss-animate": "^1.0.5"
+		"styled-components": "^5.3.5"
 	},
 	"devDependencies": {
 		"@guildedjs/guilded-api-typings": "^2.9.0",
@@ -44,8 +45,6 @@
 		"postcss": "^8.4.14",
 		"prisma": "~4.8.0",
 		"tailwindcss": "^3.1.6",
-		"type-graphql": "2.0.0-beta.1",
-		"typegraphql-prisma": "0.23.2",
 		"typescript": "4.7.3"
 	},
 	"prisma": {

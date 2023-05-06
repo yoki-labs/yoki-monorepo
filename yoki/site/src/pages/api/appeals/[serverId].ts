@@ -50,7 +50,7 @@ const PostAppealRoute = async (req: NextApiRequest, res: NextApiResponse) => {
         });
         return res.status(200).json({ error: false });
     } catch (e) {
-        void errorHandler.send("Issue with site appeal", [errorEmbed(e)]);
+        void errorHandler.send("Issue with site appeal", [errorEmbed(e as Error)]);
         console.error(e);
         return res.status(500).json({ error: true, message: "Internal Error." });
     }

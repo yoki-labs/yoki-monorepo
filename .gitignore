@@ -21,3 +21,4 @@ docs/
 .env.prod
 
 .next/
+generated.prisma

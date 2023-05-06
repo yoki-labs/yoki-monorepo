@@ -1,3 +1,4 @@
+/* eslint-disable no-alert */
 import type { TeamMemberBanPayload } from "@guildedjs/guilded-api-typings";
 import type { GetServerSideProps, NextPage } from "next";
 import { unstable_getServerSession } from "next-auth";
@@ -36,7 +37,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async (ctx) => {
     return { props: { id: server.serverId, enabled: true, banInfo: ban ?? null, tooRecent: recentAppeal.length > 0 } };
 };
 
-const HalfScreenWidth = ({ children }: any) => (
+const HalfScreenWidth = ({ children }: { children: React.ReactNode }) => (
     <div style={{ height: "50vh" }} className="flex place-items-center text-center">
         {children}
     </div>
@@ -46,7 +47,7 @@ const AppealPage: NextPage<Props> = ({ id, enabled, banInfo, tooRecent }) => {
     const [appealContent, setAppealContent] = useState("");
     const { data: session } = useSession();
 
-    const appealReq = async (event: any) => {
+    const appealReq = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         if (!session) return alert("Must be logged in to make this request.");
         if (!appealContent) return alert("You must provide a reason for your appeal");
@@ -111,7 +112,7 @@ const AppealPage: NextPage<Props> = ({ id, enabled, banInfo, tooRecent }) => {
                                 appealContentLength >= 200 ? "text-red-400/70" : appealContentLength >= 100 ? "text-guilded-gilded/70" : "text-guilded-white/70"
                             }`}
                         >
-                            {appealContent == null ? 0 : appealContentLength}/1000
+                            {appealContent === null ? 0 : appealContentLength}/1000
                         </p>
                     </div>
                     <div className="pt-2">

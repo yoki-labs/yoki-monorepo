@@ -6,7 +6,7 @@ export default function FeaturePreview(props: { header: string; shortHeader: str
                 <h2 className="text-xl text-gray-500 font-bold capitalize pb-2">{props.shortHeader}</h2>
                 <p>{props.description}</p>
             </div>
-            <img src={props.src} className={`rounded-lg pt-4 md:pt-0  ${props.position === "left" ? "-order-1" : ""}`} />
+            <img alt={`feature preview ${props.header}`} src={props.src} className={`rounded-lg pt-4 md:pt-0  ${props.position === "left" ? "-order-1" : ""}`} />
         </div>
     );
 }

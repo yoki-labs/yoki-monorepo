@@ -35,17 +35,17 @@ export default function Navbar() {
                         </div>
                     </Link>
                     <NavbarItemList>
-                        <Link href="/">
-                            <a className="link">Home</a>
+                        <Link href="/" className="no-underline">
+                            <a className="nav-link">Home</a>
                         </Link>
-                        <Link href="/commands">
-                            <a className="link">Commands</a>
+                        <Link href="/commands" className="no-underline">
+                            <a className="nav-link">Commands</a>
                         </Link>
-                        <Link href="/premium">
-                            <a className="link premium">Premium</a>
+                        <Link href="/premium" className="no-underline">
+                            <a className="nav-link premium">Premium</a>
                         </Link>
-                        <Link href="/invite">
-                            <a className="link invite">Get Yoki</a>
+                        <Link href="/invite" className="no-underline">
+                            <a className="nav-link invite">Get Yoki</a>
                         </Link>
                     </NavbarItemList>
                     <Hamburger onClick={() => toggleSidebar()}>

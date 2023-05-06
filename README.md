@@ -6,9 +6,7 @@ An automod/moderation bot that helps assist communities to protect their servers
 
 ### Setting up your dev environment
 
-You have two options for setting up Yoki. One is using node.js/NPM directly, and the other is using the provided docker-compose files. There is better stability and mirroring of the prod environment by using the docker-compose files. There are two docker-compose files included, one for the development environment, which starts up a Postgres server and mounts the source code as a volume in the container for fast hot code reloading, and the other for production which just builds the bot image.
-
-That was a lot of jargon, I admit. To simplify it a lot: development in the docker-compose environment is exactly how it's gonna be in prod. So that way, we never have to worry about the VPS itself being a problem, and that we can deploy on almost any system that supports docker. For simplicity sake, I'm going to assume you are all going to use the docker-compose environment.
+There are two docker-compose files included, one for the development environment, which starts up a Postgres server, and the other for production which builds the bot/nsfw image.
 
 ### Requirements
 
@@ -24,9 +22,9 @@ That was a lot of jargon, I admit. To simplify it a lot: development in the dock
 -   Cd in and install the packages `cd yoki && pnpm install`
 -   Generate the Prisma typings `pnpm generate`
 -   Populate the [environment variables in a .env file in the root](#environment-variables)
--   Start the database `pnpm dev:db`
--   Run the migrations `pnpm migrate:dev`
--   And finally, start the bot. In the root, run `pnpm dev:start` (you can stop everything using `pnpm dev:down` (add the -v flag to the end if you want to wipe the database))
+-   Start the database `pnpm yoki:db`
+-   Run the migrations `pnpm yoki:migrate`
+-   And finally, start the bot. In the bot dir, run `pnpm dev`
 
 ## Environment Variables
 
@@ -41,7 +39,6 @@ NODE_ENV="development"
 
 ## Standards
 
-**Once we have a stable prod, never commit straight to main! Always use a feature branch and create PRs!**.
 Please make sure you run `pnpm build` and `pnpm lint:fix` before pushing commits to your branch. The husky git commit hook should do it for you, but if it doesn't, be sure to do it yourself.
 
 ## Terms

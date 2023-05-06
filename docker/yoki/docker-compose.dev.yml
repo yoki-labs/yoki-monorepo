@@ -8,47 +8,14 @@ services:
             POSTGRES_DB: yoki
             POSTGRES_USER: yoki_user
             POSTGRES_PASSWORD: yoki_pass
-        networks:
-            - main-network
         volumes:
             - yoki-postgres-data:/var/lib/postgresql/data
         ports:
             - 5432:5432
-    bot:
-        build:
-            context: ../../
-            dockerfile: ./docker/yoki/bot/Dockerfile
-        env_file: ../../yoki/.env
-        command: 'npm run dev'
-        depends_on:
-            - db
-        volumes:
-            - '../../yoki/bot/src:/usr/app/yoki/bot/src'
-        restart: 'unless-stopped'
-        environment:
-            DATABASE_URL: 'postgresql://yoki_user:yoki_pass@db:5432/yoki?schema=public'
-            BUILD_ENV: development
-        networks:
-            - main-network
-    nsfw:
-        build:
-            context: ../../
-            dockerfile: ./docker/yoki/nsfw/Dockerfile
-        env_file: ../../yoki/.env
-        platform: linux/x86_64
-        command: 'npm run dev'
-        volumes:
-            - '../../yoki/nsfw/src:/usr/app/yoki/nsfw/src'
-        restart: 'no'
-        environment:
-            TOKEN_SECRET: 'TESTTOKENSECRET'
-        networks:
-            - main-network
-        ports:
-            - "4433:4433"
 
 volumes:
     yoki-postgres-data:
+
 
 networks:
     main-network:

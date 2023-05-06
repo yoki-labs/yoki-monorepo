@@ -4,14 +4,19 @@
 	"scripts": {
 		"build": "tsc",
 		"start": "node dist/index.js",
-		"dev": "npx nodemon",
-		"generate": "pnpx dotenv-cli -e ../../.env -- npx prisma generate"
+		"dev": "pnpx nodemon",
+		"generate:prod": "cat ./schema.prisma ./base.prisma > ./generated.prisma && pnpx prisma generate",
+		"generate:dev": "pnpx cross-cat ./schema.prisma ../bot/prisma/schema.prisma > generated.prisma && pnpx prisma generate"
 	},
 	"devDependencies": {
 		"@types/graphql-fields": "^1.3.5",
 		"@types/node": "^18.11.18",
+		"cross-cat": "^1.0.0",
 		"dotenv": "^8.2.0",
+		"dotenv-cli": "^7.2.1",
+		"nodemon": "^2.0.22",
 		"prisma": "~4.8.0",
+		"prisma-merge": "^0.2.0",
 		"tsc-alias": "^1.6.5",
 		"typegraphql-prisma": "0.23.2",
 		"typescript": "^4.9.5"
@@ -19,7 +24,7 @@
 	"dependencies": {
 		"@apollo/server": "^4.5.0",
 		"@apollo/server-plugin-landing-page-graphql-playground": "^4.0.0",
-		"@prisma/client": "^4.2.1",
+		"@prisma/client": "^4.13.0",
 		"class-validator": "^0.14.0",
 		"graphql": "^16.6.0",
 		"graphql-fields": "^2.0.3",
@@ -29,7 +34,7 @@
 		"type-graphql": "2.0.0-beta.1"
 	},
 	"prisma": {
-		"schema": "../bot/prisma/schema.prisma"
+		"schema": "./generated.prisma"
 	},
 	"imports": {
 		"#generated/*": "./dist/generated/*.js"

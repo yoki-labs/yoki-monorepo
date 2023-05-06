@@ -14,6 +14,26 @@ module.exports = withMT({
     theme: {
         colors: {
             ...colors,
+            spacedark: {
+                950: "#06020a",
+                900: "#0e0816",
+                800: "#15101e",
+                700: "#211c2c",
+                600: "#2c2737",
+                500: "#3d3945",
+                400: "#56525e",
+                300: "#716e76",
+            },
+            spacelight: {
+                950: "#f9f5fd",
+                900: "#efe7f9",
+                800: "#e4daf6",
+                700: "#d4c7ef",
+                600: "#bcafd9",
+                500: "#a99cc3",
+                400: "#9084a8",
+                300: "#7c7094",
+            },
         },
         extend: {
             boxShadow: {
@@ -38,26 +58,45 @@ module.exports = withMT({
             },
             colors: {
                 custom: {
-                    "dark-gray": "#191B1F",
-                    gray: "#191B1F",
+                    "dark-gray": "#0e0816",
+                    gray: "#15101e",
                     guilded: "#F5C400",
                     black: "#111820",
                     gilded: "#F5C400",
                     slate: "#292B32",
-                    white: "#ececee"
+                    white: "#ececee",
                 },
             },
         },
     },
-    plugins: [
-        require("tailwindcss-animate"),
-        // eslint-disable-next-line global-require
-        require("@tailwindcss/forms"),
-        // add custom variant for expanding sidebar
-        plugin(({ addVariant, e }) => {
-            addVariant("sidebar-expanded", ({ modifySelectors, separator }) => {
-                modifySelectors(({ className }) => `.sidebar-expanded .${e(`sidebar-expanded${separator}${className}`)}`);
-            });
-        }),
-    ],
+    plugins: [require("daisyui")],
+    daisyui: {
+        themes: [
+            {
+                light: {
+                    ...require("daisyui/src/colors/themes")["[data-theme=light]"],
+                    primary: "#8147ec",
+                },
+                dark: {
+                    ...require("daisyui/src/colors/themes")["[data-theme=dark]"],
+                    primary: "#8147ec",
+                },
+            },
+            {
+                light: {
+                    "base-100": "#f9f5fd",
+                    neutral: "#efe7f9",
+                    primary: "#8147ec",
+                },
+                dark: {
+                    "base-100": "#06020a",
+                    "base-200": "#0e0816",
+                    "base-300": "#15101e",
+                    neutral: "#0e0816",
+                    "neutral-content": "#bcafd9",
+                    primary: "#8147ec",
+                },
+            },
+        ],
+    },
 });
