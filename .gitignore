@@ -9,6 +9,7 @@ volumes/
 worker/
 min/
 generated/
+generated.prisma
 
 *.tsbuildinfo
 *.log

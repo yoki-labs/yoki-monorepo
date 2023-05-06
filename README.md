@@ -16,9 +16,9 @@ There are two docker-compose files included, one for the development environment
 
 ## Starting the bot
 
-**A video demonstration of the below steps is available [here](https://github.com/Yoki-Labs/yoki/issues/1)**
+**A video demonstration of the below steps is available [here](https://github.com/yoki-labs/bots/issues/1)**
 
--   Clone the repository `git clone https://github.com/Yoki-Labs/yoki.git`
+-   Clone the repository `git clone https://github.com/yoki-labs/bots.git`
 -   Cd in and install the packages `cd yoki && pnpm install`
 -   Generate the Prisma typings `pnpm generate`
 -   Populate the [environment variables in a .env file in the root](#environment-variables)

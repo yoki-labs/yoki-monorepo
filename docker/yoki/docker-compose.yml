@@ -1,13 +1,13 @@
 version: "3.7"
 services:
     bot:
-        image: ghcr.io/yoki-labs/yoki/yoki/bot:latest
+        image: ghcr.io/yoki-labs/bots/yoki/bot:latest
         container_name: YOKI_BOT
         restart: unless-stopped
         env_file:
             - ../../stack.env
     nsfw:
-        image: ghcr.io/yoki-labs/yoki/yoki/nsfw:latest
+        image: ghcr.io/yoki-labs/bots/yoki/nsfw:latest
         container_name: YOKI_NSFW_DETECTION
         restart: unless-stopped
         ports:
