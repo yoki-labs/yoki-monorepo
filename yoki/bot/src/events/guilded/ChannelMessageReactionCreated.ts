@@ -10,16 +10,18 @@ export default {
         const { serverId, channelId, messageId, emote, createdBy } = reaction;
         const server = await ctx.dbUtil.getServer(serverId, false);
         if (!server) return;
-
-        console.log(reaction);
+        
+        console.log("Received reaction. Now lookup");
         const lookupReaction = await ctx.prisma.reactionAction.findFirst({
             where: { messageId, channelId, serverId, emoteId: emote.id },
         });
-        console.log(lookupReaction);
+        console.log("Reaction lookup done");
+        
         if (!lookupReaction) return;
-
+        
         switch (lookupReaction.actionType) {
             case ReactionActionType.MODMAIL: {
+                console.log("Doing modmail. No message afterwards");
                 if (!server.modmailGroupId && !server.modmailCategoryId) return;
                 const userAlreadyHasChannel = await ctx.prisma.modmailThread.findFirst({ where: { openerId: createdBy, serverId, closed: false } });
                 if (userAlreadyHasChannel) return;
