@@ -40,8 +40,8 @@ client.ws.emitter.on("error", (err, errInfo, data) => {
 client.ws.emitter.on("debug", console.log);
 client.ws.emitter.on("exit", (reason) => {
     console.log(reason);
-    console.log("Restarting...");
-    process.exit(1);
+    // console.log("Restarting...");
+    // process.exit(1);
 });
 client.rest.emitter.on("error", (req, res) => console.log(`[REST:ERR]: req - ${JSON.stringify(req)}\nRes - ${JSON.stringify(res)}`));
 client.rest.emitter.on("ratelimit", (data) => console.log(`[RATELIMIT]: ${JSON.stringify(data)}`));
