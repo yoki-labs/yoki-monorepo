@@ -17,5 +17,5 @@ export default (err: Error, client: YokiClient) => {
         }, 600000);
 
     // send error to guilded channel
-    if (errorCounter <= 15) void client.errorHandler.send(`Unhandled error! Current burst ${errorCounter}/${15}`, [errorEmbed(err)]);
+    if (errorCounter <= 15) void client.errorHandler.send(`Unhandled error! Current burst ${errorCounter}/${15}`, [errorEmbed((err as Error).stack ?? (err as Error).message)]);
 };

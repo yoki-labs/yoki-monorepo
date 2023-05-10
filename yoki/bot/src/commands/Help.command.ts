@@ -47,7 +47,7 @@ const Help: Command = {
             embed.addField(key in Category ? Category[key] : key, listInlineCode(value.map((x) => x.name))!, value.length < 4);
         });
 
-        return ctx.messageUtil.reply(message, { embeds: [embed.toJSON()] });
+        return ctx.messageUtil.reply(message, { embeds: [embed] });
     },
 };
 

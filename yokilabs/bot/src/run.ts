@@ -40,7 +40,7 @@ export async function setClientEvents<TClient extends AbstractClient<TClient, an
                 if (["XjBWymwR", "DlZMvw1R"].includes(args[0]?.serverId)) return;
                 await event.execute([...args, client]);
             } catch (err) {
-                void client.errorHandler.send("Uncaught event error", [errorEmbed(err)]);
+                void client.errorHandler.send("Uncaught event error", [errorEmbed((err as Error).stack!)]);
             }
         });
     }

@@ -1,8 +1,7 @@
-import type { EmbedField } from "@guildedjs/guilded-api-typings";
+import type { EmbedField, Schema } from "@guildedjs/guilded-api-typings";
 import { Action, ContentIgnoreType, Severity } from "@prisma/client";
 import { codeBlock, inlineCode } from "@yokilabs/util";
 import { stripIndents } from "common-tags";
-import type { MentionsPayload } from "guilded.js";
 
 import type { FilteredContent } from "../modules/content-filter";
 import type { Context, Server } from "../typings";
@@ -66,7 +65,7 @@ export async function moderateContent(
     filteredContent: FilteredContent,
     createdBy: string,
     content: string,
-    mentions: MentionsPayload | undefined,
+    mentions: Schema<"Mentions"> | undefined,
     resultingAction: () => Promise<unknown>
 ) {
     const { serverId } = server;

@@ -29,6 +29,7 @@ export interface BaseCommand<
     args?: CommandArgument[];
     preRunCheck?: (message: Message, args: string[], ctx: TClient) => unknown;
     requiredRole?: TRoleType;
+    rawArgs?: boolean;
     devOnly?: boolean;
     execute: (message: Message, args: Record<string, ResolvedArgs>, ctx: TClient, raw: CommandContext<TServer>) => unknown;
 }

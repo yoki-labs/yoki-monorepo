@@ -44,7 +44,7 @@ jobs:
         run: pnpm -r install
 
       - name: Generate Prisma TypeScript
-        run: cd yoki/bot && pnpx prisma generate
+        run: pnpm run generate
 
       - name: Run Message Clearer
         run: cd yoki/bot && pnpx ts-node scripts/delete-old-messages.ts

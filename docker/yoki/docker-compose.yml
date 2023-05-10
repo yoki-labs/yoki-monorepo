@@ -4,13 +4,13 @@ services:
         image: ghcr.io/yoki-labs/bots/yoki/bot:latest
         container_name: YOKI_BOT
         restart: unless-stopped
+        network_mode: "host"
         env_file:
             - ../../stack.env
     nsfw:
         image: ghcr.io/yoki-labs/bots/yoki/nsfw:latest
         container_name: YOKI_NSFW_DETECTION
         restart: unless-stopped
-        ports:
-            - "4433:4433"
+        network_mode: "host"
         env_file:
             - ../../stack.env

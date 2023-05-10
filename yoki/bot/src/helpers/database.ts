@@ -8,7 +8,7 @@ import { Action, ContentFilter, LogChannelType, Server } from "../typings";
 import { FormatDate } from "../utils/util";
 // import { Util } from "./util";
 
-// test
+// test 2
 export class DatabaseUtil extends Util<YokiClient> {
     addWordToFilter(data: Omit<ContentFilter, "id" | "createdAt">) {
         return this.client.prisma.contentFilter.create({ data });
@@ -137,7 +137,7 @@ export class DatabaseUtil extends Util<YokiClient> {
                 embeds: [],
                 serverId: message.serverId!,
                 updatedAt: message.updatedAt,
-                isBot: Boolean(message.createdByBotId ?? message.createdByWebhookId),
+                isBot: Boolean(message.createdByWebhookId),
                 deletedAt: null,
             },
             update: {
@@ -160,7 +160,7 @@ export class DatabaseUtil extends Util<YokiClient> {
                 embeds: undefined,
                 serverId: topic.serverId!,
                 updatedAt: undefined,
-                isBot: Boolean(topic.createdByWebhookId),
+                isBot: false,
                 deletedAt: null,
             },
             update: {

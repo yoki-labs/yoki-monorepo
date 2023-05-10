@@ -17,6 +17,3 @@ volumes:
     yoki-postgres-data:
 
 
-networks:
-    main-network:
-        driver: bridge

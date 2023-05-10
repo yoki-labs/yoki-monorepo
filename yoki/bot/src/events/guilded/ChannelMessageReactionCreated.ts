@@ -11,9 +11,11 @@ export default {
         const server = await ctx.dbUtil.getServer(serverId, false);
         if (!server) return;
 
+        console.log(reaction);
         const lookupReaction = await ctx.prisma.reactionAction.findFirst({
             where: { messageId, channelId, serverId, emoteId: emote.id },
         });
+        console.log(lookupReaction);
         if (!lookupReaction) return;
 
         switch (lookupReaction.actionType) {

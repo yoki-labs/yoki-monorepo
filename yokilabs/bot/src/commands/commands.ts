@@ -82,6 +82,22 @@ export function createCommandHandler<
             // Get the command by the name or if it's an alias of a command
             const command = ctx.commands.get(commandName) ?? ctx.commands.find((command) => command.aliases?.includes(commandName) ?? false);
 
+            if (command?.rawArgs) {
+                const lexer = new lexure.Lexer(message.content).setQuotes([]);
+                const res = lexer.lexCommand((lexS) => (lexS.startsWith(prefix) ? prefix.length : null));
+                if (!res) return;
+                const [_, getRest] = res;
+
+                return executeCommand(
+                    context,
+                    server,
+                    prefix,
+                    command,
+                    commandName,
+                    getRest().map((x) => x.value)
+                );
+            }
+
             return executeCommand(context, server, prefix, command, commandName, args);
         },
         fetchCommandInfo: async (

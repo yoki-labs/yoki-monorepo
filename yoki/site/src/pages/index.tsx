@@ -46,11 +46,11 @@ const Home: NextPage = () => {
                 <div className="pb-20">
                     <HomePreview>
                         <div className="flex flex-col justify-center meet-yoki">
-                            <h1 className="flex flex-col text-6xl text-white font-bold">
+                            <h1 className="flex flex-col text-6xl md:text-8xl text-white font-bold">
                                 <span>
                                     Meet <span className="text-custom-guilded">Yoki</span>
                                 </span>
-                                <span className="text-xl">Your moderation companion</span>
+                                <span className="text-xl md:text-2xl">Your moderation companion</span>
                             </h1>
                             <div className="py-2 md:py-2 text-white">
                                 <div className="inline-block space-y-2 text-left">

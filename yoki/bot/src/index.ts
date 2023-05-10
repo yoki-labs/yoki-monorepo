@@ -15,6 +15,7 @@ config({ path: join(__dirname, "..", "..", ".env") });
 });
 
 const client = new YokiClient({ token: process.env.GUILDED_TOKEN }, process.env.DEFAULT_PREFIX!);
+client.ws.options.replayMissedEvents = false;
 
 // Under client.eventHandler, we register a bunch of events that we can execute
 // This makes it simple to add new events to our bot by just creating a file and adding it to that object.
@@ -23,9 +24,8 @@ client.ws.emitter.on("gatewayEvent", async (event, data) => {
     const { serverId } = data.d as { serverId?: string | null };
     if (!serverId || ["XjBWymwR", "DlZMvw1R"].includes(serverId)) return;
 
-    const serverFromDb = await client.dbUtil
-        .getServer(serverId)
-        .catch((err) => void client.errorHandler.send("Error creating/fetching server for gateway event.", [errorEmbed(err, { server: serverId, event })]));
+    if (!client.eventHandler[event]) return;
+    const serverFromDb = await client.dbUtil.getServer(serverId).catch((err) => unhandledPromiseRejection(err as Error, client));
     if (!serverFromDb || serverFromDb?.blacklisted) return void 0;
     return client.eventHandler[event]?.(data, client, serverFromDb).catch((err) =>
         client.errorHandler.send("Uncaught event error", [errorEmbed(err, { server: serverId, event })])
@@ -38,6 +38,14 @@ client.ws.emitter.on("error", (err, errInfo, data) => {
 });
 
 client.ws.emitter.on("debug", console.log);
+client.ws.emitter.on("exit", (reason) => {
+    console.log(reason);
+    console.log("Restarting...");
+    process.exit(1);
+});
+client.rest.emitter.on("error", (req, res) => console.log(`[REST:ERR]: req - ${JSON.stringify(req)}\nRes - ${JSON.stringify(res)}`));
+client.rest.emitter.on("ratelimit", (data) => console.log(`[RATELIMIT]: ${JSON.stringify(data)}`));
+client.rest.emitter.on("request", (req) => console.log(`[REQ]: ${JSON.stringify(req)}`));
 
 // This is for any custom events that we emit
 client.emitter.on("ActionIssued", client.customEventHandler.ActionIssued);

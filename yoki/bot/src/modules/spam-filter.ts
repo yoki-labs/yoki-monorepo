@@ -1,5 +1,6 @@
+import type { Schema } from "@guildedjs/guilded-api-typings";
 import { Colors } from "@yokilabs/util";
-import type { MentionsPayload, Message } from "guilded.js";
+import type { Message } from "guilded.js";
 
 import { Server, Severity } from "../typings";
 import BaseFilterUtil from "./base-filter";
@@ -25,7 +26,7 @@ export class SpamFilterUtil extends BaseFilterUtil<SpamType> {
         return this.checkForSpam(server, message.authorId, message.channelId, message.mentions, () => this.client.messages.delete(message.channelId, message.id));
     }
 
-    async checkForSpam(server: Server, userId: string, channelId: string, mentions: MentionsPayload | undefined, resultingAction: () => unknown) {
+    async checkForSpam(server: Server, userId: string, channelId: string, mentions: Schema<"Mentions"> | undefined, resultingAction: () => unknown) {
         void this.client.amp.logEvent({ event_type: "SPAM_SCAN", user_id: userId, event_properties: { serverId: server.serverId } });
         // Only do it for a specific server
         const key = `${server.serverId}:${userId}`;

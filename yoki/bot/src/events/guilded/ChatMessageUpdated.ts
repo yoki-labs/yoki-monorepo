@@ -13,7 +13,7 @@ export default {
         const server = await ctx.dbUtil.getServer(message.serverId!);
 
         // if this message isn't updated in a server, or if the author is a bot, ignore
-        if (message.createdByBotId || message.authorId === ctx.user!.id || message.authorId === "Ann6LewA" || !message.serverId) return void 0;
+        if (message.author?.type === UserType.Bot || message.authorId === ctx.user!.id || message.authorId === "Ann6LewA" || !message.serverId) return void 0;
         void ctx.amp.logEvent({ event_type: "MESSAGE_UPDATE", user_id: message.createdById, event_properties: { serverId: message.serverId! } });
 
         const member = await ctx.members.fetch(message.serverId, message.authorId).catch(() => null);

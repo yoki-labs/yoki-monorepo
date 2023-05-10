@@ -1,14 +1,16 @@
 import type { Collection } from "@discordjs/collection";
-import type { EmbedField, EmbedPayload, RESTPostChannelMessagesBody } from "@guildedjs/guilded-api-typings";
+import type { EmbedField, EmbedPayload, RestBody, RestPath } from "@guildedjs/guilded-api-typings";
 import { BotImages, Colors, cutArray, inlineCode, StateImages } from "@yokilabs/util";
 import { stripIndents } from "common-tags";
-import { Embed, Message } from "guilded.js";
+import { Embed, Message, MessageContent } from "guilded.js";
 
 import type { AbstractClient } from "../Client";
 import type { ResolvedArgs } from "../commands/arguments";
 import type { BaseCommand, CommandArgType, CommandArgument, CommandArgValidator } from "../commands/command-typings";
 import type { IServer } from "../db-types";
 import { Util } from "./util";
+
+type MessageBody = Omit<RestBody<RestPath<"/channels/{channelId}/messages">["post"]>, "embeds"> & { embeds?: Embed[] };
 
 export class MessageUtil<
     TClient extends AbstractClient<TClient, TServer, TCommand>,
@@ -57,13 +59,13 @@ export class MessageUtil<
     }
 
     // Send a message using either string, embed object, or raw object
-    send(channelId: string, content: string | RESTPostChannelMessagesBody | Embed) {
+    send(channelId: string, content: MessageContent) {
         return this.client.messages.send(channelId, content instanceof Embed ? { embeds: [content.toJSON()] } : typeof content === "string" ? { content } : content);
     }
 
     // Reply to a message
-    reply(message: Message, content: string | RESTPostChannelMessagesBody) {
-        const opts: RESTPostChannelMessagesBody | string = typeof content === "string" ? { replyMessageIds: [message.id], content } : content;
+    reply(message: Message, content: MessageBody) {
+        const opts: MessageBody = typeof content === "string" ? { replyMessageIds: [message.id], content } : content;
         return this.client.messages.send(message.channelId, opts);
     }
 
@@ -91,7 +93,7 @@ export class MessageUtil<
         );
     }
 
-    sendEmbed(channelId: string, embed: EmbedPayload, messagePartial?: Partial<RESTPostChannelMessagesBody>) {
+    sendEmbed(channelId: string, embed: EmbedPayload, messagePartial?: Partial<MessageBody>) {
         return this.send(channelId, {
             ...messagePartial,
             embeds: [embed],
@@ -129,12 +131,12 @@ export class MessageUtil<
     //     });
     // }
 
-    replyWithEmbed(message: Message, embed: EmbedPayload, messagePartial?: Partial<RESTPostChannelMessagesBody>) {
+    replyWithEmbed(message: Message, embed: EmbedPayload, messagePartial?: Partial<MessageBody>) {
         return this.sendEmbed(message.channelId, embed, { replyMessageIds: [message.id], ...messagePartial });
     }
 
     // State blocks
-    replyWithError(message: Message, title: string, description: string, embedPartial?: EmbedPayload, messagePartial?: Partial<RESTPostChannelMessagesBody>) {
+    replyWithError(message: Message, title: string, description: string, embedPartial?: EmbedPayload, messagePartial?: Partial<MessageBody>) {
         return this.replyWithEmbed(
             message,
             {
@@ -148,7 +150,7 @@ export class MessageUtil<
         );
     }
 
-    replyWithUnexpected(message: Message, description: string, embedPartial?: EmbedPayload, messagePartial?: Partial<RESTPostChannelMessagesBody>) {
+    replyWithUnexpected(message: Message, description: string, embedPartial?: EmbedPayload, messagePartial?: Partial<MessageBody>) {
         return this.replyWithEmbed(
             message,
             {
@@ -162,7 +164,7 @@ export class MessageUtil<
         );
     }
 
-    replyWithUnpermitted(message: Message, description: string, embedPartial?: EmbedPayload, messagePartial?: Partial<RESTPostChannelMessagesBody>) {
+    replyWithUnpermitted(message: Message, description: string, embedPartial?: EmbedPayload, messagePartial?: Partial<MessageBody>) {
         return this.replyWithEmbed(
             message,
             {
@@ -176,7 +178,7 @@ export class MessageUtil<
         );
     }
 
-    replyWithNullState(message: Message, title: string, description: string, embedPartial?: EmbedPayload, messagePartial?: Partial<RESTPostChannelMessagesBody>) {
+    replyWithNullState(message: Message, title: string, description: string, embedPartial?: EmbedPayload, messagePartial?: Partial<MessageBody>) {
         return this.replyWithEmbed(
             message,
             {
@@ -190,7 +192,7 @@ export class MessageUtil<
         );
     }
 
-    replyWithInfo(message: Message, title: string, description: string, embedPartial?: EmbedPayload, messagePartial?: Partial<RESTPostChannelMessagesBody>) {
+    replyWithInfo(message: Message, title: string, description: string, embedPartial?: EmbedPayload, messagePartial?: Partial<MessageBody>) {
         return this.replyWithEmbed(
             message,
             {
@@ -203,7 +205,7 @@ export class MessageUtil<
         );
     }
 
-    replyWithBotInfo(message: Message, title: string, description: string, embedPartial?: EmbedPayload, messagePartial?: Partial<RESTPostChannelMessagesBody>) {
+    replyWithBotInfo(message: Message, title: string, description: string, embedPartial?: EmbedPayload, messagePartial?: Partial<MessageBody>) {
         return this.send(message.channelId, {
             embeds: [
                 {
@@ -221,7 +223,7 @@ export class MessageUtil<
         });
     }
 
-    sendWarningBlock(channelId: string, title: string, description: string, embedPartial?: EmbedPayload, messagePartial?: Partial<RESTPostChannelMessagesBody>) {
+    sendWarningBlock(channelId: string, title: string, description: string, embedPartial?: EmbedPayload, messagePartial?: Partial<MessageBody>) {
         return this.sendEmbed(
             channelId,
             {
@@ -235,7 +237,7 @@ export class MessageUtil<
         );
     }
 
-    sendErrorBlock(channelId: string, title: string, description: string, embedPartial?: EmbedPayload, messagePartial?: Partial<RESTPostChannelMessagesBody>) {
+    sendErrorBlock(channelId: string, title: string, description: string, embedPartial?: EmbedPayload, messagePartial?: Partial<MessageBody>) {
         return this.sendEmbed(
             channelId,
             {
@@ -249,7 +251,7 @@ export class MessageUtil<
         );
     }
 
-    sendInfoBlock(channelId: string, title: string, description: string, embedPartial?: EmbedPayload, messagePartial?: Partial<RESTPostChannelMessagesBody>) {
+    sendInfoBlock(channelId: string, title: string, description: string, embedPartial?: EmbedPayload, messagePartial?: Partial<MessageBody>) {
         return this.sendEmbed(
             channelId,
             {
@@ -263,7 +265,7 @@ export class MessageUtil<
     }
 
     // Value blocks
-    sendSuccessBlock(channelId: string, title: string, description: string, embedPartial?: EmbedPayload, messagePartial?: Partial<RESTPostChannelMessagesBody>) {
+    sendSuccessBlock(channelId: string, title: string, description: string, embedPartial?: EmbedPayload, messagePartial?: Partial<MessageBody>) {
         return this.sendEmbed(
             channelId,
             {
@@ -276,7 +278,7 @@ export class MessageUtil<
         );
     }
 
-    replyWithSuccess(message: Message, title: string, description: string, embedPartial?: EmbedPayload, messagePartial?: Partial<RESTPostChannelMessagesBody>) {
+    replyWithSuccess(message: Message, title: string, description: string, embedPartial?: EmbedPayload, messagePartial?: Partial<MessageBody>) {
         return this.replyWithEmbed(
             message,
             {
@@ -298,7 +300,7 @@ export class MessageUtil<
         itemMapping: (item: T) => string | T;
         page?: number;
         embed?: EmbedPayload;
-        message?: Partial<RESTPostChannelMessagesBody>;
+        message?: Partial<MessageBody>;
     }) {
         const { replyTo: message, title, items, itemsPerPage, itemMapping, page: pageOrNull, embed: embedPartial, message: messagePartial } = info;
 

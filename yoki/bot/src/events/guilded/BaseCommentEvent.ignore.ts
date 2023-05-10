@@ -1,4 +1,5 @@
-import { MentionsPayload, UserType } from "guilded.js";
+import { Schema } from "@guildedjs/guilded-api-typings";
+import { UserType } from "guilded.js";
 
 import { FilteredContent } from "../../modules/content-filter";
 import type { Context, Server } from "../../typings";
@@ -11,7 +12,7 @@ export interface CommentPayload {
     updatedAt?: string | undefined;
     createdBy: string;
     channelId: string;
-    mentions: MentionsPayload;
+    mentions: Schema<"Mentions">;
 }
 
 export default async (serverId: string, parentId: number, comment: CommentPayload, contentType: "topics" | "docs" | "events", ctx: Context, server: Server) => {

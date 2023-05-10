@@ -3,8 +3,8 @@ import { WebhookEmbed } from "guilded.js";
 
 // Remove any inline code escapes
 export const escapeInlineCodeText = (code: any) => code.toString().replaceAll("\\", "\\\\").replaceAll("`", "'");
-export const errorEmbed = (err: Error | any, additional_details?: Record<string, string | number | null>) =>
-    new WebhookEmbed()
+export const errorEmbed = (err: string, additional_details?: Record<string, string | number | null>) => {
+    return new WebhookEmbed()
         .setDescription(
             stripIndents`
 				${
@@ -13,10 +13,12 @@ export const errorEmbed = (err: Error | any, additional_details?: Record<string,
                         .map((key) => `${key}: \`${additional_details[key]}\``)
                         .join("\n")
                 }
-				${err.stack ?? err.message ?? JSON.stringify(err).slice(0, 1350)}
-			`
+				${err.slice(0, 1350)}
+}
+`
         )
         .setColor("RED");
+};
 
 export const inlineCode = (code: any) => `\`${code}\``;
 export const bold = (text: any) => `**${text}**`;
