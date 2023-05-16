@@ -1,4 +1,4 @@
-import { bold } from "@yokilabs/util";
+import { bold } from "@yokilabs/bot";
 
 import type { Command } from "./Command";
 

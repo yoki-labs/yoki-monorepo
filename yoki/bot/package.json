@@ -39,7 +39,6 @@
 		"@prisma/client": "^4.2.1",
 		"@yokilabs/bot": "workspace:*",
 		"@yokilabs/captcha-generator": "1.1.1",
-		"@yokilabs/util": "workspace:*",
 		"aws-sdk": "^2.1168.0",
 		"common-tags": "^1.8.2",
 		"dotenv": "^8.2.0",

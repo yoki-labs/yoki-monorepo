@@ -5,18 +5,20 @@
     "description": "Common client code",
     "main": "./dist/src/index.js",
     "types": "./dist/src/index.d.ts",
-    "author": "Yoki-Labs",
-    "license": "PROPRIETARY",
     "files": [
         "dist"
     ],
+    "author": "Yoki-Labs",
+    "license": "PROPRIETARY",
     "scripts": {
         "build": "npx tsc"
+    },
+    "imports": {
+        "#functions/*": "./dist/functions/*.js"
     },
     "dependencies": {
         "@amplitude/node": "^1.10.0",
         "@discordjs/collection": "^1.2.0",
-        "@yokilabs/util": "workspace:*",
         "common-tags": "^1.8.2",
         "guilded.js": "0.20.8",
         "lexure": "^0.17.0",

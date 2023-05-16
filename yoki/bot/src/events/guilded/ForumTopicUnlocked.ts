@@ -1,4 +1,4 @@
-import { Colors, inlineCode, inlineQuote } from "@yokilabs/util";
+import { Colors, inlineCode, inlineQuote } from "@yokilabs/bot";
 
 import { GEvent, LogChannelType } from "../../typings";
 

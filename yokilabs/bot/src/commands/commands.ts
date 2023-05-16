@@ -1,4 +1,4 @@
-import { codeBlock, inlineCode, inlineQuote } from "@yokilabs/util";
+import { codeBlock, inlineCode, inlineQuote } from "../utils/formatting";
 import { stripIndents } from "common-tags";
 import { Member, Message, WebhookEmbed } from "guilded.js";
 import * as lexure from "lexure";

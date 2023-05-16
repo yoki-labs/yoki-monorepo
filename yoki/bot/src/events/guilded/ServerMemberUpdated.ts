@@ -1,4 +1,4 @@
-import { Colors, inlineCode, inlineQuote } from "@yokilabs/util";
+import { Colors, inlineCode, inlineQuote } from "@yokilabs/bot";
 import { stripIndents } from "common-tags";
 import { WebhookEmbed } from "guilded.js";
 import { nanoid } from "nanoid";

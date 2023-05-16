@@ -1,37 +1,33 @@
 {
-    "name": "@yokilabs/util",
+    "name": "@yokilabs/bot",
     "version": "1.0.0",
     "private": true,
-    "description": "Common utilities code",
+    "description": "Common client code",
     "main": "./dist/src/index.js",
     "types": "./dist/src/index.d.ts",
+    "author": "Yoki-Labs",
+    "license": "PROPRIETARY",
     "files": [
         "dist"
     ],
-    "author": "Yoki-Labs",
-    "license": "PROPRIETARY",
     "scripts": {
         "build": "npx tsc"
     },
-    "imports": {
-        "#functions/*": "./dist/functions/*.js"
-    },
     "dependencies": {
+        "@amplitude/node": "^1.10.0",
+        "@discordjs/collection": "^1.2.0",
+        "@yokilabs/bot": "workspace:*",
         "common-tags": "^1.8.2",
-        "dotenv": "^16.0.3",
         "guilded.js": "0.20.8",
-        "nanoid": "^4.0.0",
-        "node-fetch": "^3.2.10",
+        "lexure": "^0.17.0",
         "nodemon": "^2.0.20",
+        "recursive-readdir": "^2.2.2",
         "tslib": "^2.4.1"
     },
     "devDependencies": {
-        "@guildedjs/guilded-api-typings": "^4.0.0",
+        "@guildedjs/guilded-api-typings": "4.0.0",
         "@types/common-tags": "^1.8.1",
         "@types/node": "^18.11.9",
-        "@types/node-fetch": "^2.6.2",
-        "dotenv-cli": "^6.0.0",
-        "typed-emitter": "^2.1.0",
         "typescript": "^4.8.4"
     }
 }

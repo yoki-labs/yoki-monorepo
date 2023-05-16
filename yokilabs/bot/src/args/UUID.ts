@@ -1,4 +1,4 @@
-import { isUUID } from "@yokilabs/util";
+import { isUUID } from "../utils/value";
 
 import type { CommandArgValidator } from "../commands/command-typings";
 

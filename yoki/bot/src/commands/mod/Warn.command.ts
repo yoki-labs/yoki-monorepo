@@ -1,4 +1,4 @@
-import { inlineCode } from "@yokilabs/util";
+import { inlineCode } from "@yokilabs/bot";
 import { stripIndents } from "common-tags";
 import { EmbedField, UserType } from "guilded.js";
 

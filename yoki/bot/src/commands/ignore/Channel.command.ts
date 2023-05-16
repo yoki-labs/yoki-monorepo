@@ -1,5 +1,5 @@
 import type { ChannelIgnoreType } from "@prisma/client";
-import { inlineCode } from "@yokilabs/util";
+import { inlineCode } from "@yokilabs/bot";
 import type { Channel } from "guilded.js";
 
 import { ResolvedEnum, RoleType } from "../../typings";

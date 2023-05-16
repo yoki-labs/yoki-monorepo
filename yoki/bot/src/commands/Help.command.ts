@@ -1,6 +1,6 @@
 import { Collection } from "@discordjs/collection";
 import type { EmbedField } from "@guildedjs/guilded-api-typings";
-import { Colors, inlineCode, inlineQuote, listInlineCode } from "@yokilabs/util";
+import { Colors, inlineCode, inlineQuote, listInlineCode } from "@yokilabs/bot";
 import { stripIndents } from "common-tags";
 import { Embed, Message } from "guilded.js";
 

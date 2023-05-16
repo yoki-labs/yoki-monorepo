@@ -1,4 +1,4 @@
-import { channelName, inlineCode } from "@yokilabs/util";
+import { channelName, inlineCode } from "@yokilabs/bot";
 import type { Channel as GChannel } from "guilded.js";
 
 import { RoleType } from "../../typings";

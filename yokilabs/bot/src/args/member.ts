@@ -1,4 +1,4 @@
-import { isHashId } from "@yokilabs/util";
+import { isHashId } from "../utils/value";
 import type { Member } from "guilded.js";
 
 import type { CommandArgValidator } from "../commands/command-typings";

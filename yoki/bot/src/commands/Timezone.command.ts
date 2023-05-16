@@ -1,4 +1,4 @@
-import { inlineQuote } from "@yokilabs/util";
+import { inlineQuote } from "@yokilabs/bot";
 
 import timezones from "../static/timezones.json";
 import { RoleType } from "../typings";

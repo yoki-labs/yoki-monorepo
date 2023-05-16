@@ -1,6 +1,6 @@
 import type { EmbedField } from "@guildedjs/guilded-api-typings";
 import { Severity } from "@prisma/client";
-import { inlineCode, listInlineCode } from "@yokilabs/util";
+import { inlineCode, listInlineCode } from "@yokilabs/bot";
 import { stripIndents } from "common-tags";
 import { UserType } from "guilded.js";
 

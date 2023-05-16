@@ -1,4 +1,4 @@
-import { inlineQuote } from "@yokilabs/util";
+import { inlineQuote } from "@yokilabs/bot";
 
 import { RoleType } from "../typings";
 import { Category, Command } from "./commands";

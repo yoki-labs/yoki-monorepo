@@ -1,4 +1,4 @@
-import { inlineCode } from "@yokilabs/util";
+import { inlineCode } from "@yokilabs/bot";
 
 import { ResolvedEnum, RoleType } from "../../typings";
 import { typeToDBPropMap } from "../../utils/util";

@@ -1,4 +1,4 @@
-import { Colors, escapeInlineCodeText, inlineCode } from "@yokilabs/util";
+import { Colors, escapeInlineCodeText, inlineCode } from "@yokilabs/bot";
 import { stripIndents } from "common-tags";
 import { Embed, EmbedField } from "guilded.js";
 

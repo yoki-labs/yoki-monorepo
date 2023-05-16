@@ -1,4 +1,4 @@
-import { inlineCode, listInlineCode } from "@yokilabs/util";
+import { inlineCode, listInlineCode } from "@yokilabs/bot";
 import { stripIndents } from "common-tags";
 import type { Channel, Message } from "guilded.js";
 

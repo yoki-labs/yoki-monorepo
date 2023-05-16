@@ -1,4 +1,4 @@
-import { inlineCode } from "@yokilabs/util";
+import { inlineCode } from "@yokilabs/bot";
 
 import { RoleType } from "../../typings";
 import type { Command } from "../commands";

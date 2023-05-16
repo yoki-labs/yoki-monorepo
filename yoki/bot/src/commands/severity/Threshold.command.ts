@@ -1,5 +1,5 @@
 import { Severity } from "@prisma/client";
-import { inlineCode } from "@yokilabs/util";
+import { inlineCode } from "@yokilabs/bot";
 import { stripIndents } from "common-tags";
 import ms from "ms";
 

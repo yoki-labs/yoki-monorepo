@@ -1,5 +1,5 @@
 import { createCommandHandler } from "@yokilabs/bot";
-import { Colors } from "@yokilabs/util";
+import { Colors } from "@yokilabs/bot";
 import { Embed, UserType } from "guilded.js";
 
 import type YokiClient from "../../Client";
@@ -120,8 +120,8 @@ export default {
 
 // import { FilteredContent } from "../../modules/content-filter";
 // import type { GEvent, ResolvedArgs, UsedMentions } from "../../typings";
-// import { Colors } from "@yokilabs/util";
-// import { codeBlock, inlineCode, inlineQuote } from "@yokilabs/util";
+// import { Colors } from "@yokilabs/bot";
+// import { codeBlock, inlineCode, inlineQuote } from "@yokilabs/bot";
 // import { moderateContent } from "../../utils/moderation";
 // import { roleValues } from "../../utils/util";
 

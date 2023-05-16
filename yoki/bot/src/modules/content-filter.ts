@@ -1,5 +1,5 @@
 import { ContentFilter, FilterMatching, Preset } from "@prisma/client";
-import { Colors } from "@yokilabs/util";
+import { Colors } from "@yokilabs/bot";
 import { stripIndents } from "common-tags";
 import { Message, UserType, WebhookEmbed } from "guilded.js";
 

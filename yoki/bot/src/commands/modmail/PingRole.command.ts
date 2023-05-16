@@ -1,5 +1,5 @@
 import { RoleType } from "@prisma/client";
-import { inlineCode } from "@yokilabs/util";
+import { inlineCode } from "@yokilabs/bot";
 import { stripIndents } from "common-tags";
 
 import { removePingRole } from "../../utils/util";

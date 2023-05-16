@@ -1,6 +1,6 @@
 import { Collection } from "@discordjs/collection";
 import { LogChannelType } from "@prisma/client";
-import { channelName, listInlineCode } from "@yokilabs/util";
+import { channelName, listInlineCode } from "@yokilabs/bot";
 import { stripIndents } from "common-tags";
 import type { Channel, Message } from "guilded.js";
 

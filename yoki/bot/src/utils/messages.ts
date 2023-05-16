@@ -1,5 +1,5 @@
 import type { ChannelType } from "@guildedjs/guilded-api-typings";
-import { codeBlock } from "@yokilabs/util";
+import { codeBlock } from "@yokilabs/bot";
 import { stripIndents } from "common-tags";
 
 import type Client from "../Client";

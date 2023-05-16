@@ -1,4 +1,4 @@
-import { errorEmbed } from "@yokilabs/util";
+import { errorEmbed } from "./utils/formatting";
 import type { ClientEvents } from "guilded.js";
 import recursive from "recursive-readdir";
 

@@ -1,4 +1,4 @@
-import { listInlineCode } from "@yokilabs/util";
+import { listInlineCode } from "../utils/formatting";
 
 import type { CommandArgValidator } from "../commands/command-typings";
 

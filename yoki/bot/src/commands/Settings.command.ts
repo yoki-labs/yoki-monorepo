@@ -1,4 +1,4 @@
-import { Colors } from "@yokilabs/util";
+import { Colors } from "@yokilabs/bot";
 import { Embed } from "guilded.js";
 
 import { RoleType } from "../typings";

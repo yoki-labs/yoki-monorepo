@@ -1,4 +1,4 @@
-import { inlineCode } from "@yokilabs/util";
+import { inlineCode } from "@yokilabs/bot";
 
 import { transformSeverityStringToEnum } from "../../modules/content-filter";
 import { RoleType } from "../../typings";

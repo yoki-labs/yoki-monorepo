@@ -1,5 +1,5 @@
 import { LogChannelType } from "@prisma/client";
-import { Colors, inlineCode } from "@yokilabs/util";
+import { Colors, inlineCode } from "@yokilabs/bot";
 import { stripIndents } from "common-tags";
 
 import { Category, Command } from "./commands";

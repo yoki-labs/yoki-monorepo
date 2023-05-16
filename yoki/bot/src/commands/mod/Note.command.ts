@@ -1,4 +1,4 @@
-import { inlineCode } from "@yokilabs/util";
+import { inlineCode } from "@yokilabs/bot";
 import { UserType } from "guilded.js";
 
 import { CachedMember, RoleType } from "../../typings";

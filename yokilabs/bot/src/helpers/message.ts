@@ -1,6 +1,9 @@
 import type { Collection } from "@discordjs/collection";
 import type { EmbedField, EmbedPayload, RestBody, RestPath } from "@guildedjs/guilded-api-typings";
-import { BotImages, Colors, cutArray, inlineCode, StateImages } from "@yokilabs/util";
+import { inlineCode } from "../utils/formatting";
+import { BotImages, StateImages } from "../utils/images";
+import { cutArray } from "../utils/value";
+import { Colors } from "../utils/color";
 import { stripIndents } from "common-tags";
 import { Embed, Message, MessageContent } from "guilded.js";
 

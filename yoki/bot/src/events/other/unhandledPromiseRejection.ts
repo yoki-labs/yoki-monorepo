@@ -1,4 +1,4 @@
-import { errorEmbed } from "@yokilabs/util";
+import { errorEmbed } from "@yokilabs/bot";
 
 import type YokiClient from "../../Client";
 

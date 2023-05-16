@@ -10,7 +10,6 @@
 		"declaration": false,
 		"declarationMap": false,
         "paths": {
-            "@yokilabs/util": ["../../yokilabs/util/src"],
             "@yokilabs/bot": ["../../yokilabs/bot/src"],
         }
     },
@@ -19,9 +18,6 @@
     "references": [
         {
             "path": "../../yokilabs/bot"
-        },
-        {
-            "path": "../../yokilabs/util"
         }
     ]
 }

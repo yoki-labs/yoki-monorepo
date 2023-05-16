@@ -1,5 +1,5 @@
 import type { EmbedField } from "@guildedjs/guilded-api-typings";
-import { bold, Colors, inlineCode, listInlineCode } from "@yokilabs/util";
+import { bold, Colors, inlineCode, listInlineCode } from "@yokilabs/bot";
 import { stripIndents } from "common-tags";
 import { UserType } from "guilded.js";
 import ms from "ms";

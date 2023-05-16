@@ -1,4 +1,4 @@
-import { inlineCode } from "@yokilabs/util";
+import { inlineCode } from "@yokilabs/bot";
 
 import { ResolvedEnum, RoleType, Severity } from "../../typings";
 import { Category, Command } from "../commands";

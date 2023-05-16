@@ -1,5 +1,5 @@
 import { ResponseType } from "@prisma/client";
-import { inlineCode } from "@yokilabs/util";
+import { inlineCode } from "@yokilabs/bot";
 import ms from "ms";
 
 import { RoleType } from "../../typings";

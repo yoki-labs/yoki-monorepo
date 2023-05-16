@@ -1,5 +1,5 @@
 import { setClientCommands, setClientEvents } from "@yokilabs/bot";
-import { errorEmbed } from "@yokilabs/util";
+import { errorEmbed } from "@yokilabs/bot";
 import { config } from "dotenv";
 import { join } from "path";
 

@@ -1,5 +1,5 @@
 import type { Action, Prisma } from "@prisma/client";
-import { inlineCode } from "@yokilabs/util";
+import { inlineCode } from "@yokilabs/bot";
 import type { Message } from "guilded.js";
 
 import type YokiClient from "../../Client";

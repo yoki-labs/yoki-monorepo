@@ -1,5 +1,5 @@
 import { Severity } from "@prisma/client";
-import { inlineCode, inlineQuote } from "@yokilabs/util";
+import { inlineCode, inlineQuote } from "@yokilabs/bot";
 import { stripIndents } from "common-tags";
 
 import { ResolvedEnum, RoleType } from "../../../typings";

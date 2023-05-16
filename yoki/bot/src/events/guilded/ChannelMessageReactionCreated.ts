@@ -1,5 +1,5 @@
 import { ReactionActionType } from "@prisma/client";
-import { Colors, errorEmbed, inlineCode, summarizeRolesOrUsers } from "@yokilabs/util";
+import { Colors, errorEmbed, inlineCode, summarizeRolesOrUsers } from "@yokilabs/bot";
 import { stripIndents } from "common-tags";
 import { nanoid } from "nanoid";
 
