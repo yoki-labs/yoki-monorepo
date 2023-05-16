@@ -4,7 +4,6 @@ import { stripIndents } from "common-tags";
 import { UserType, WebhookEmbed } from "guilded.js";
 
 import type YokiClient from "../Client";
-// import { Util } from "../helpers/util";
 import type { Server } from "../typings";
 import type { FilteredContent } from "./content-filter";
 

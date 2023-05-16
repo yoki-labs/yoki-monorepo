@@ -3,8 +3,6 @@ import fetch from "node-fetch";
 
 import type YokiClient from "../Client";
 
-// import { Util } from "../helpers/util";
-
 interface ImageScanResult {
     hentai: number;
     porn: number;
