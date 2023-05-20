@@ -17,7 +17,23 @@ model Server {
     blacklisted Boolean      @default(false)
 }
 
+model Giveaway {
+    // Basics
+    id           String   @id @db.VarChar(255)
+    serverId     String   @db.VarChar(255)
+    channelId    String   @db.VarChar(255)
+    // Rewards, rewardees, etc.
+    text         String   @db.VarChar(200)
+    // Who, when
+    participants String[]
+    winnerCount  Int
+    endsAt       DateTime
+    createdBy    String   @db.VarChar(255)
+    createdAt    DateTime @default(now())
+}
+
 enum PremiumType {
     Gold
     Silver
+    Copper
 }

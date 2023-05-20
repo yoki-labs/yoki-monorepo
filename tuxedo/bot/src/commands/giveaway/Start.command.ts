@@ -8,15 +8,14 @@ const defaultJoinEmote = 90002569;
 const Start: Command = {
     name: "giveaway-start",
     description: "Creates a new giveaway",
-    // usage: "",
     subName: "start",
     subCommand: true,
     category: Category.Events,
     // requiredRole: RoleType.MOD,
     args: [
         {
-            name: "time",
-            type: "string",
+            name: "duration",
+            type: "time",
         },
         {
             name: "winners",
