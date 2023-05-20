@@ -1,6 +1,6 @@
 import { bold } from "@yokilabs/bot";
 
-import type { Command } from "./Command";
+import type { Command } from "./commands";
 
 const Ping: Command = {
     name: "ping",
