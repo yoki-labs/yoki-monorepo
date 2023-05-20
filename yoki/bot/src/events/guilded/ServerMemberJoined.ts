@@ -7,18 +7,22 @@ import { nanoid } from "nanoid";
 import type { GEvent } from "../../typings";
 import { generateCaptcha } from "../../utils/antiraid";
 import { suspicious as sus } from "../../utils/util";
+import { trimHoistingSymbols } from "../../utils/moderation";
 
 export default {
     execute: async ([member, ctx]) => {
         const { serverId } = member;
+        const user = member.user!;
         const server = await ctx.dbUtil.getServer(serverId, false);
         if (!server) return;
 
-        const userId = member.user!.id;
+        const userId = user.id;
 
-        if (["!", "."].some((x) => member.user!.name.trim().startsWith(x))) {
+        const nonHoistingName = trimHoistingSymbols(user.name);
+
+        if (server.antiHoistEnabled && nonHoistingName !== user.name) {
             void ctx.amp.logEvent({ event_type: "HOISTER_RENAMED_JOIN", user_id: userId, event_properties: { serverId } });
-            await ctx.members.updateNickname(serverId, userId, member.user!.name.slice(1).trim() || "NON-HOISTING NAME");
+            await ctx.members.updateNickname(serverId, userId, nonHoistingName?.trim() || "NON-HOISTING NAME");
         }
 
         // Re-add mute

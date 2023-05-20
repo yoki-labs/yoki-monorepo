@@ -5,18 +5,13 @@ import { nanoid } from "nanoid";
 
 import { FilteredContent } from "../../modules/content-filter";
 import { GEvent, LogChannelType } from "../../typings";
-
-const numberCharCodeStart = 48;
-const numberCharCodeEnd = 57;
-const capitalLetterCharCodeStart = 65;
-const capitalLetterCharCodeEnd = 90;
-const smallLetterCharCodeStart = 97;
-const smallLetterCharCodeEnd = 122;
+import { trimHoistingSymbols } from "../../utils/moderation";
 
 export default {
     execute: async ([event, ctx]) => {
         const { nickname, userId, oldMember, serverId } = event;
         const server = await ctx.dbUtil.getServer(serverId);
+        const name = nickname ?? oldMember?.username;
 
         // check if there's a log channel channel for message deletions
         const memberUpdateLogChannel = await ctx.dbUtil.getLogChannel(serverId, LogChannelType.member_updates);
@@ -66,25 +61,17 @@ export default {
         // If the member's nickname is updated, scan it for any harmful content
         // Since ServerMemberUpdated doesn't provide info about user itself, even `.displayName` might not exist within it
         // Of course, the member could be fetched.
-        if (nickname) {
-            const firstCharCode = nickname.charCodeAt(0);
+        if (server.antiHoistEnabled && name) {
+            const nonHoistingName = trimHoistingSymbols(name);
 
-            // Some optimizations. Better than sifting through every item in array to check whether
-            // the first letter is not a letter and not a number (and it's better than using Number() as well)
-            // 0-9 between and including [48, 57], A-Z -- [65, 90], a-z -- [97, 122]
-            if (
-                firstCharCode < numberCharCodeStart ||
-                (firstCharCode > numberCharCodeEnd && firstCharCode < capitalLetterCharCodeStart) ||
-                (firstCharCode > capitalLetterCharCodeEnd && firstCharCode < smallLetterCharCodeStart) ||
-                firstCharCode > smallLetterCharCodeEnd
-            ) {
+            if (nonHoistingName !== name) {
                 void ctx.amp.logEvent({ event_type: "HOISTER_RENAMED_JOIN", user_id: userId, event_properties: { serverId } });
-                return ctx.members.updateNickname(serverId, userId, nickname.slice(1).trim() || "NON-HOISTING NAME");
+                return ctx.members.updateNickname(serverId, userId, nonHoistingName?.trim() || "NON-HOISTING NAME");
             }
 
             return ctx.contentFilterUtil.scanContent({
                 userId,
-                text: nickname,
+                text: name,
                 filteredContent: FilteredContent.ServerContent,
                 channelId: null,
                 server,
