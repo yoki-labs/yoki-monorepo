@@ -5,7 +5,7 @@ import type { Command } from "./commands";
 const Ping: Command = {
     name: "ping",
     description: "Check Yoki's latency.",
-    usage: "",
+    // usage: "",
     aliases: ["p"],
     execute: (message, _args, ctx) =>
         ctx.messageUtil.send(message.channelId, { content: "PONG!", replyMessageIds: [message.id] }).then((pingMessage) =>

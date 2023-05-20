@@ -7,7 +7,7 @@ const Add: Command = {
     name: "link-invite-add",
     subName: "add",
     description: "Add a vanity url to the invite __whitelist__.",
-    usage: "<server id>",
+    // usage: "<server id>",
     examples: ["4R56dNkl"],
     subCommand: true,
     requiredRole: RoleType.ADMIN,
@@ -15,6 +15,7 @@ const Add: Command = {
     args: [
         {
             name: "targetServerId",
+            display: "server ID",
             type: "string",
         },
     ],

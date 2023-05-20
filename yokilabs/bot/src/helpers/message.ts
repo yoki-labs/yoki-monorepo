@@ -15,6 +15,13 @@ import { Util } from "./util";
 
 type MessageBody = Omit<RestBody<RestPath<"/channels/{channelId}/messages">["post"]>, "embeds"> & { embeds?: Embed[] };
 
+const argumentOptionalityBraces = [
+    // Mandatory
+    ["<", ">"],
+    // Optional
+    ["[", "]"]
+];
+
 export class MessageUtil<
     TClient extends AbstractClient<TClient, TServer, TCommand>,
     TServer extends IServer,
@@ -44,10 +51,15 @@ export class MessageUtil<
             name: "Usage",
             value: stripIndents`
                         \`\`\`clojure
-                        ${prefix}${commandPath ?? command.name.split("-").join(" ")} ${command.usage}
+                        ${prefix}${commandPath ?? command.name.split("-").join(" ")} ${this.createCommandUsage(command)}
                         \`\`\`
                     `,
         };
+    }
+
+    createCommandUsage(command: TCommand): string {
+        // Take each arg, and based on whether it's optional (0 if mandatory, 1 if optional), take an array with braces and join it with argument's name
+        return command.args?.map(x => argumentOptionalityBraces[Number(x.optional ?? false)].join(`${x.type === "rest" ? "..." : ""}${x.display ?? x.name}`))?.join(" ") ?? "";
     }
 
     createExampleField(command: TCommand, prefix: string, commandPath?: string): EmbedField {

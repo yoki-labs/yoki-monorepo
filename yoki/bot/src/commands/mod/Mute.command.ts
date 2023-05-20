@@ -2,7 +2,6 @@ import type { EmbedField } from "@guildedjs/guilded-api-typings";
 import { bold, Colors, inlineCode, listInlineCode } from "@yokilabs/bot";
 import { stripIndents } from "common-tags";
 import { UserType } from "guilded.js";
-import ms from "ms";
 
 import { CachedMember, RoleType } from "../../typings";
 import { Category, Command } from "../commands";
@@ -10,7 +9,7 @@ import { Category, Command } from "../commands";
 const Mute: Command = {
     name: "mute",
     description: "Mute a user for a specified amount of time (ex. 3h, 30m, 5d).",
-    usage: "<target> <time> [...reason]",
+    // usage: "<target> <time> [...reason]",
     examples: ["R40Mp0Wd 25m", "<@R40Mp0Wd> 1h Talking too much about Town of Salem"],
     requiredRole: RoleType.MINIMOD,
     category: Category.Moderation,
@@ -18,11 +17,12 @@ const Mute: Command = {
     args: [
         {
             name: "target",
+            display: "user",
             type: "member",
         },
         {
             name: "duration",
-            type: "string",
+            type: "time",
         },
         {
             name: "reason",
@@ -35,10 +35,11 @@ const Mute: Command = {
         if (!commandCtx.server.muteRoleId) return ctx.messageUtil.replyWithError(message, `No mute role set`, `There is no mute role configured for this server.`);
 
         const target = args.target as CachedMember;
+        const duration = args.duration as number;
         if (target.user?.type === UserType.Bot) return;
 
         const reason = args.reason as string | null;
-        const duration = ms(args.duration as string);
+        // const duration = ms(args.duration as string);
         if (!duration || duration <= 894000) return ctx.messageUtil.replyWithError(message, `Duration must be longer`, `Your mute duration must be longer than 15 minutes.`);
         const expiresAt = new Date(Date.now() + duration);
 

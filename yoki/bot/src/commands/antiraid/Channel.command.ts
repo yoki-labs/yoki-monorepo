@@ -7,13 +7,19 @@ import { Category, Command } from "../commands";
 const Channel: Command = {
     name: "antiraid-channel",
     description: "Set or view the channel where users are presented with challenges if they fail the age filter.",
-    usage: "[channel-id]",
+    // usage: "[channel-id]",
     examples: ["c8a6286c-557d-4909-9ae1-a2bb64e3d72f"],
     category: Category.Antiraid,
     subCommand: true,
     subName: "channel",
     requiredRole: RoleType.ADMIN,
-    args: [{ name: "channel", type: "channel", optional: true }],
+    args: [
+        {
+            name: "channel",
+            type: "channel",
+            optional: true
+        }
+    ],
     execute: async (message, args, ctx, commandCtx) => {
         const channel = args.channel as GChannel | null;
         if (!channel) {

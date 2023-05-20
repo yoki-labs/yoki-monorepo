@@ -16,7 +16,7 @@ const List: Command = {
     name: "module-list",
     subName: "list",
     description: "List the modules enabled for this server.",
-    usage: "",
+    // usage: "",
     subCommand: true,
     category: Category.Moderation,
     requiredRole: RoleType.ADMIN,

@@ -4,13 +4,13 @@ import { Category, Command } from "../commands";
 const FilterOnMods: Command = {
     name: "filter-onmods",
     description: "Set or view whether mods are filtered on this server.",
-    usage: "[new setting]",
+    // usage: "[new setting]",
     examples: ["enable", ""],
     subCommand: true,
     category: Category.Settings,
     subName: "onmods",
     requiredRole: RoleType.ADMIN,
-    args: [{ name: "newStatus", optional: true, type: "boolean" }],
+    args: [{ name: "newStatus", display: "whether to filter mods", optional: true, type: "boolean" }],
     execute: async (message, args, ctx, commandCtx) => {
         const newSetting = args.newStatus as boolean | null;
 

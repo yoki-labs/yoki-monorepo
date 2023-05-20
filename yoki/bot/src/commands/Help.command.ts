@@ -12,13 +12,14 @@ const categories = Object.values(Category);
 const Help: Command = {
     name: "help",
     description: "View a list of Yoki's commands.",
-    usage: "[command path]",
+    // usage: "[command path]",
     examples: ["", "ping"],
     aliases: ["commands", "command", "all", "h"],
     hidden: true,
     args: [
         {
             name: "commandPath",
+            display: "command path",
             type: "rest",
             optional: true,
         },
@@ -137,7 +138,7 @@ function replyWithSingleCommand(ctx: Client, commandCtx: CommandContext, message
             fields: fields
                 .concat([
                     // Usage
-                    command.usage && ctx.messageUtil.createUsageField(command, prefix),
+                    command.args && ctx.messageUtil.createUsageField(command, prefix),
                     // Examples
                     command.examples && ctx.messageUtil.createExampleField(command, prefix),
                     // Additional info

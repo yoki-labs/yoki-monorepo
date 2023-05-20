@@ -8,7 +8,7 @@ const History: Command = {
     name: "modmail-history",
     subName: "history",
     description: "View the modmail history for a user.",
-    usage: "<userId>",
+    // usage: "<userId>",
     examples: ["0mqNyllA"],
     subCommand: true,
     requiredRole: RoleType.MINIMOD,
@@ -16,6 +16,7 @@ const History: Command = {
     args: [
         {
             name: "userId",
+            display: "user",
             type: "string",
         },
         {

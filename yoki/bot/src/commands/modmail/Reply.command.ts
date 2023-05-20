@@ -10,7 +10,7 @@ const Reply: Command = {
     subName: "reply",
     forceShow: true,
     description: "Reply in a modmail thread.",
-    usage: "<...content>",
+    // usage: "<...content>",
     examples: ["Hello! What can I help you with?"],
     subCommand: true,
     requiredRole: RoleType.MINIMOD,

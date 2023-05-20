@@ -6,13 +6,13 @@ import { Category, Command } from "../commands";
 const SpamInfractions: Command = {
     name: "antiraid-spaminfractions",
     description: "Set how many infraction points a user will get if they spam.",
-    usage: "[infraction points]",
+    // usage: "[infraction points]",
     examples: ["5"],
     subCommand: true,
     category: Category.Settings,
     subName: "spaminfractions",
     requiredRole: RoleType.ADMIN,
-    args: [{ name: "infractionPoints", optional: true, type: "number" }],
+    args: [{ name: "infractionPoints", display: "infraction points", optional: true, type: "number" }],
     execute: async (message, args, ctx, { server }) => {
         const infractionPoints = args.infractionPoints as number | null;
 

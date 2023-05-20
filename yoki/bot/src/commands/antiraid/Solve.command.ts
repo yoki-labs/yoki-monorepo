@@ -4,7 +4,7 @@ import { Category, Command } from "../commands";
 const Solve: Command = {
     name: "solve",
     description: "Solve the current captcha.",
-    usage: "<code>",
+    // usage: "<code>",
     aliases: ["verify"],
     examples: ["djAshAJ"],
     category: Category.Antiraid,

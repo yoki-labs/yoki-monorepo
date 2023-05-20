@@ -7,13 +7,13 @@ import { Category, Command } from "../commands";
 const Mute: Command = {
     name: "role-mute",
     description: "Set or view the mute role for this server.",
-    usage: "[role mention or ID/remove]",
+    // usage: "[role mention or ID/remove]",
     examples: ["12345678", ""],
     category: Category.Settings,
     subCommand: true,
     subName: "mute",
     requiredRole: RoleType.ADMIN,
-    args: [{ name: "role", optional: true, type: "string" }],
+    args: [{ name: "role", display: "role mention or ID / remove", optional: true, type: "string" }],
     execute: async (message, args, ctx, commandCtx) => {
         const role = args.role as string | undefined;
 

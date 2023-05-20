@@ -6,13 +6,13 @@ import { Category, Command } from "../commands";
 const SpamFrequency: Command = {
     name: "antiraid-spamfrequency",
     description: "Sets required message count to activate the spam filter.",
-    usage: "[messages per 5 secs]",
+    // usage: "[messages per 5 secs]",
     examples: ["9"],
     subCommand: true,
     category: Category.Settings,
     subName: "spamfrequency",
     requiredRole: RoleType.ADMIN,
-    args: [{ name: "frequency", optional: true, type: "number" }],
+    args: [{ name: "frequency", display: "messages per 5 secs", optional: true, type: "number" }],
     execute: async (message, args, ctx, { server }) => {
         const frequency = args.frequency as number | null;
 

@@ -10,7 +10,7 @@ const SendTrigger: Command = {
     aliases: ["sendtrigger"],
     subName: "sendtrigger",
     description: "Send a modmail thread trigger.",
-    usage: "<channel-id> <emoji>",
+    // usage: "<channel-id> <emoji>",
     examples: ["17bce2fd-1a95-44b5-abc3-b2ff115c62fb :smile:"],
     subCommand: true,
     requiredRole: RoleType.MOD,
@@ -18,6 +18,7 @@ const SendTrigger: Command = {
     args: [
         {
             name: "targetChannel",
+            display: "channel",
             type: "channel",
         },
         {

@@ -8,13 +8,14 @@ const Remove: Command = {
     name: "link-url-remove",
     subName: "remove",
     description: "Removes a domain from the blacklist or whitelist.",
-    usage: "<domain>",
+    // usage: "<domain>",
     subCommand: true,
     category: Category.Filter,
     requiredRole: RoleType.ADMIN,
     args: [
         {
             name: "url",
+            display: "URL or domain",
             type: "string",
         },
     ],

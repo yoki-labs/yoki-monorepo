@@ -11,14 +11,14 @@ const Staff: Command = {
     name: "role-staff",
     description: "Adds moderator/staff roles.",
     subCommand: true,
-    usage: "[role] [minimod/mod/admin/remove]",
+    // usage: "[role] [minimod/mod/admin/remove]",
     examples: ["12345678", "12345678 admin", "12345678 remove"],
     subName: "staff",
     category: Category.Settings,
     requiredRole: RoleType.ADMIN,
     args: [
         { name: "role", type: "number", optional: true },
-        { name: "staffLevel", type: "string", optional: true },
+        { name: "staffLevel", display: "minimod / mod / admin / remove", type: "string", optional: true },
     ],
     execute: async (message, args, ctx, commandCtx) => {
         const modroleId = (args.role as number) ?? null;

@@ -6,7 +6,7 @@ const All: Command = {
     name: "history-all",
     subName: "all",
     description: "Gets the list of all moderation cases in this server.",
-    usage: "[page]",
+    // usage: "[page]",
     examples: ["", "2"],
     subCommand: true,
     aliases: ["see", "all", "v"],

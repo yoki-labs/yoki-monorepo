@@ -34,7 +34,7 @@ const Eval: Command = {
     name: "eval",
     description: "[PRIVATE]",
     hidden: true,
-    usage: "",
+    // usage: "",
     devOnly: true,
     // rawArgs: true,
     args: [{ type: "rest", name: "code" }],

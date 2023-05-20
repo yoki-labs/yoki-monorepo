@@ -9,12 +9,12 @@ const ModmailGroup: Command = {
     name: "modmail-group",
     description: "Set the modmail group where new channels are created.",
     subCommand: true,
-    usage: "[ID of the new group]",
+    // usage: "[ID of the new group]",
     examples: ["", "3GMgagKd"],
     subName: "group",
     category: Category.Settings,
     requiredRole: RoleType.ADMIN,
-    args: [{ name: "newGroup", type: "string", optional: true }],
+    args: [{ name: "newGroup", display: "group ID", type: "string", optional: true }],
     execute: async (message, args, ctx, commandCtx) => {
         const newGroup = args.newGroup as string | null;
         const unsetGroupMessage = removeGroupMessage(commandCtx.server.getPrefix());

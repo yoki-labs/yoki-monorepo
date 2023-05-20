@@ -7,11 +7,18 @@ import { Category, Command } from "./commands";
 const Timezone: Command = {
     name: "timezone",
     description: "Set or view the timezone of this server.",
-    usage: "[[new timezone](https://www.guilded.gg/Yoki/groups/2dXLMBPd/channels/0a2069b9-2e7d-45da-9121-ab3b463f9af2/docs/347606)]",
     examples: ["America/New_York", ""],
     category: Category.Settings,
     requiredRole: RoleType.ADMIN,
-    args: [{ name: "newTimezone", type: "string", optional: true, max: 20 }],
+    args: [
+        {
+            name: "newTimezone",
+            display: "[new timezone](https://www.guilded.gg/Yoki/groups/2dXLMBPd/channels/0a2069b9-2e7d-45da-9121-ab3b463f9af2/docs/347606)",
+            type: "string",
+            optional: true,
+            max: 20
+        }
+    ],
     execute: async (message, args, ctx, commandCtx) => {
         const newTimezone = (args.newTimezone as string | null)?.toLowerCase();
         if (!newTimezone) {

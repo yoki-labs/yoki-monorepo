@@ -3,7 +3,7 @@ import { Category, Command } from "../commands";
 const Stop: Command = {
     name: "giveaway-stop",
     description: "Stops an on-going giveaway without showing any winners",
-    usage: "",
+    // usage: "",
     subName: "stop",
     subCommand: true,
     category: Category.Events,

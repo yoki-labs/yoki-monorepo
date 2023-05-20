@@ -9,7 +9,7 @@ import { ChannelIgnoreSettingAction, ChannelIgnoreTypeMap } from "./filterenum";
 const IgnoreChannel: Command = {
     name: "ignore-channel",
     description: "Set channels ignored by the automod filter.",
-    usage: "<channel-id> <url/invite/automod> [remove]",
+    // usage: "<channel-id> <url/invite/automod> [remove]",
     examples: ["#offtopic-channel url", "#general automod remove"],
     category: Category.Filter,
     subCommand: true,
@@ -17,7 +17,7 @@ const IgnoreChannel: Command = {
     requiredRole: RoleType.ADMIN,
     args: [
         { name: "channel", type: "channel" },
-        { name: "type", type: "enum", values: ChannelIgnoreTypeMap },
+        { name: "type", type: "enum", display: "url / invite / automod", values: ChannelIgnoreTypeMap },
         { name: "action", type: "enum", optional: true, values: ChannelIgnoreSettingAction },
     ],
     execute: async (message, args, ctx) => {

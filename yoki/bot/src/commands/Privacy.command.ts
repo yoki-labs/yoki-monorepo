@@ -23,7 +23,7 @@ const possibleNonPrivateLogs = nonPrivateLogs.concat(LogChannelType.all);
 const Privacy: Command = {
     name: "privacy",
     description: "Gives the information in a private message about server's privacy on your content.",
-    usage: "",
+    // usage: "",
     aliases: ["pr", "privacyreport"],
     category: Category.Logs,
     execute: async (message, _args, ctx) => {

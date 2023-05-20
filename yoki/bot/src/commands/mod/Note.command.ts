@@ -8,7 +8,7 @@ import { Category, Command } from "../commands";
 const Note: Command = {
     name: "note",
     description: "Adds an entry to someone's offence history without notifying them.",
-    usage: "<target> [infraction points] [...reason]",
+    // usage: "<target> [infraction points] [...reason]",
     examples: [
         "R40Mp0Wd Talked about Town of Salem. Warned them in DMs.",
         "<@R40Mp0Wd> Can't stop talking about Town of Salem. Warned them publicly in chat.",
@@ -20,10 +20,12 @@ const Note: Command = {
     args: [
         {
             name: "target",
+            display: "user",
             type: "member",
         },
         {
             name: "infractionPoints",
+            display: "infraction points",
             type: "string",
             optional: true,
         },

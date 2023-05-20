@@ -9,12 +9,12 @@ const ModmailCategory: Command = {
     name: "modmail-category",
     description: "Set the category where new modmail channels are created.",
     subCommand: true,
-    usage: "[ID of the new category]",
+    // usage: "[ID of the new category]",
     examples: ["", "532372"],
     subName: "category",
     category: Category.Settings,
     requiredRole: RoleType.ADMIN,
-    args: [{ name: "newCategory", type: "string", optional: true }],
+    args: [{ name: "newCategory", display: "category ID", type: "string", optional: true }],
     execute: async (message, args, ctx, commandCtx) => {
         const newCategory = args.newCategory as string | null;
         const unsetCategoryMessage = removeCategoryMessage(commandCtx.server.getPrefix());

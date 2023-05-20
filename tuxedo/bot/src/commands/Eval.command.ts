@@ -36,7 +36,7 @@ const Eval: Command = {
     name: "eval",
     description: "[PRIVATE]",
     hidden: true,
-    usage: "",
+    // usage: "",
     devOnly: true,
     args: [{ type: "rest", name: "code" }],
     // @ts-ignore _ causes italics, which get turned to *

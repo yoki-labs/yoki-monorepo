@@ -7,7 +7,7 @@ const Clear: Command = {
     name: "history-clear",
     subName: "clear",
     description: "Clear the history of a user.",
-    usage: "<target>",
+    // usage: "<target>",
     examples: ["R40Mp0Wd"],
     subCommand: true,
     aliases: ["purge", "c"],

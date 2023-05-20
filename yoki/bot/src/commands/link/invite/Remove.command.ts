@@ -7,13 +7,14 @@ const Remove: Command = {
     name: "link-invite-remove",
     subName: "remove",
     description: "Removes a server from the __whitelist__.",
-    usage: "<server id>",
+    // usage: "<server id>",
     subCommand: true,
     category: Category.Filter,
     requiredRole: RoleType.ADMIN,
     args: [
         {
             name: "targetServerId",
+            display: "server ID",
             type: "string",
         },
     ],

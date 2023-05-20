@@ -8,7 +8,7 @@ const Enable: Command = {
     name: "preset-enable",
     subName: "enable",
     description: "Enables a filter preset.",
-    usage: "<preset-to-enable> <severity> [infraction points=5]",
+    // usage: "<preset-to-enable> <severity> [infraction points=5]",
     subCommand: true,
     requiredRole: RoleType.MOD,
     args: [
@@ -23,6 +23,7 @@ const Enable: Command = {
         },
         {
             name: "infractionPoints",
+            display: "infraction points = 5",
             type: "number",
             optional: true,
         },

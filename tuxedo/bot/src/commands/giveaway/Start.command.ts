@@ -8,7 +8,7 @@ const defaultJoinEmote = 90002569;
 const Start: Command = {
     name: "giveaway-start",
     description: "Creates a new giveaway",
-    usage: "",
+    // usage: "",
     subName: "start",
     subCommand: true,
     category: Category.Events,

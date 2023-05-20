@@ -7,7 +7,7 @@ import { Category, Command } from "../commands";
 const Case: Command = {
     name: "case",
     description: "View info of a case.",
-    usage: "<caseId> [remove]",
+    // usage: "<caseId> [remove]",
     examples: ["123456789-1234567", "123456789-1234567 remove"],
     aliases: ["modaction", "action", "c"],
     requiredRole: RoleType.MINIMOD,
@@ -15,6 +15,7 @@ const Case: Command = {
     args: [
         {
             name: "caseId",
+            display: "case ID",
             type: "string",
         },
         {

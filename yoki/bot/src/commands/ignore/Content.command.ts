@@ -7,16 +7,16 @@ import { ChannelIgnoreSettingAction, ChannelIgnoreTypeMap } from "./filterenum";
 const IgnoreContent: Command = {
     name: "ignore-content",
     description: "Set channel content ignored by the automod filter.",
-    usage: "<contentType> <type> [remove]",
+    // usage: "<contentType> <type> [remove]",
     examples: ["message automod", "forum_topic automod remove"],
     category: Category.Filter,
     subCommand: true,
     subName: "content",
     requiredRole: RoleType.ADMIN,
     args: [
-        { name: "contentType", type: "enum", values: ContentIgnoreType },
-        { name: "type", type: "enum", values: ChannelIgnoreTypeMap },
-        { name: "action", type: "enum", optional: true, values: ChannelIgnoreSettingAction },
+        { name: "contentType", display: "content type", type: "enum", values: ContentIgnoreType },
+        { name: "type", display: "module to ignore", type: "enum", values: ChannelIgnoreTypeMap },
+        { name: "action", display: "remove", type: "enum", optional: true, values: ChannelIgnoreSettingAction },
     ],
     execute: async (message, args, ctx) => {
         const contentType = (args.contentType as ResolvedEnum).resolved as ContentIgnoreType;

@@ -10,7 +10,7 @@ import { Category, Command } from "../commands";
 const Unmute: Command = {
     name: "unmute",
     description: "Remove a mute from the specified user.",
-    usage: "<target> [reason]",
+    // usage: "<target> [reason]",
     examples: ["R40Mp0Wd", "<@R40Mp0Wd> Stopped playing Town of Salem"],
     requiredRole: RoleType.MINIMOD,
     category: Category.Moderation,
@@ -18,6 +18,7 @@ const Unmute: Command = {
     args: [
         {
             name: "target",
+            display: "user",
             type: "member",
         },
         {

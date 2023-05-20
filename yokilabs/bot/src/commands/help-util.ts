@@ -104,7 +104,7 @@ export function replyWithSingleCommand<TClient extends AbstractClient<any, any, 
             fields: fields
                 .concat([
                     // Usage
-                    command.usage && ctx.messageUtil.createUsageField(command, prefix),
+                    command.args && ctx.messageUtil.createUsageField(command, prefix),
                     // Examples
                     command.examples && ctx.messageUtil.createExampleField(command, prefix),
                     // Additional info

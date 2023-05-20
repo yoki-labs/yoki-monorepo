@@ -7,7 +7,7 @@ const LinkSeverity: Command = {
     name: "link-severity",
     subName: "severity",
     description: "Sets severity and infraction points of non-whitelisted links.",
-    usage: "<severity> <infraction points>",
+    // usage: "<severity> <infraction points>",
     examples: ["warn 5"],
     subCommand: true,
     requiredRole: RoleType.ADMIN,
@@ -21,6 +21,7 @@ const LinkSeverity: Command = {
         },
         {
             name: "infractions",
+            display: "infraction points",
             type: "number",
             optional: true,
         },

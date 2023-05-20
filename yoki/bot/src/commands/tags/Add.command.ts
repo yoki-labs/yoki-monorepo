@@ -7,17 +7,19 @@ const Add: Command = {
     name: "tag-add",
     subName: "add",
     description: "Add a custom tag.",
-    usage: "<tag-name> <...tag-content>",
+    // usage: "<tag-name> <...tag-content>",
     subCommand: true,
     category: Category.Tags,
     requiredRole: RoleType.MOD,
     args: [
         {
             name: "tagName",
+            display: "tag name",
             type: "string",
         },
         {
             name: "tagContent",
+            display: "content",
             type: "rest",
         },
     ],

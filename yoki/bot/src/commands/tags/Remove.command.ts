@@ -7,13 +7,14 @@ const Remove: Command = {
     name: "tag-remove",
     subName: "remove",
     description: "Remove a custom tag.",
-    usage: "<tag-name>",
+    // usage: "<tag-name>",
     subCommand: true,
     category: Category.Tags,
     requiredRole: RoleType.MOD,
     args: [
         {
             name: "tagName",
+            display: "tag name",
             type: "string",
         },
     ],

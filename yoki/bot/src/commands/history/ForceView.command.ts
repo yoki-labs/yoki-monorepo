@@ -6,7 +6,7 @@ const ForceView: Command = {
     name: "history-forceview",
     subName: "forceview",
     description: "Get the list of moderation cases of a user. Regardless of if they're in the server or not.",
-    usage: "<targetId> [page number]",
+    // usage: "<targetId> [page number]",
     examples: ["R40Mp0Wd", "R40Mp0Wd 2"],
     subCommand: true,
     aliases: ["see", "all", "v"],
@@ -15,6 +15,7 @@ const ForceView: Command = {
     args: [
         {
             name: "targetId",
+            display: "user",
             type: "string",
         },
         {

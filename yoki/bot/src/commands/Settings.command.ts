@@ -71,11 +71,9 @@ const viewSettings = [
 const Settings: Command = {
     name: "settings",
     description: "View the settings of this server",
-    usage: "",
-    examples: [""],
+    // usage: "",
     category: Category.Settings,
     requiredRole: RoleType.ADMIN,
-    args: [],
     execute: (message, _args, ctx, commandCtx) => {
         const embed = new Embed();
         let description = "```csharp\n";

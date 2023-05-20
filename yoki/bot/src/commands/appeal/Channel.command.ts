@@ -7,7 +7,7 @@ import { Category, Command } from "../commands";
 const Channel: Command = {
     name: "appeal-channel",
     description: "Set or view the channel where appeals are sent.",
-    usage: "[channel-id]",
+    // usage: "[channel-id]",
     examples: ["#appeals-channel"],
     category: Category.Appeal,
     subCommand: true,

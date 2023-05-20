@@ -11,7 +11,7 @@ const Enable: Command = {
     name: "premium-enable",
     subName: "enable",
     description: "Enable premium on a server.",
-    usage: "<serverId> <tier>",
+    // usage: "<serverId> <tier>",
     subCommand: true,
     devOnly: true,
     args: [

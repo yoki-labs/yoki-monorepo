@@ -3,7 +3,7 @@ import type { Command } from "./commands";
 const Support: Command = {
     name: "support",
     description: "Get a link for our support server.",
-    usage: "",
+    // usage: "",
     execute: (message, _args, ctx) => {
         void ctx.amp.logEvent({
             event_type: "BOT_SUPPORT",

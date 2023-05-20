@@ -9,7 +9,7 @@ import Staff from "./Staff.command";
 const Role: Command = {
     name: "role",
     description: "Manages moderation roles.",
-    usage: "<threshold> <..args>",
+    // usage: "<threshold> <..args>",
     examples: ["mute", "mute 12345678"],
     aliases: ["levels", "level", "modaction", "sv"],
     category: Category.Settings,

@@ -5,7 +5,7 @@ import type { Command } from "../commands";
 const Enroll: Command = {
     name: "beta-enroll",
     description: "Enroll a server into the beta.",
-    usage: "<serverId> [roleId]",
+    // usage: "<serverId> [roleId]",
     subCommand: true,
     hidden: true,
     subName: "enroll",

@@ -7,7 +7,7 @@ const Enable: Command = {
     name: "preset-disable",
     subName: "disable",
     description: "Disables a filter preset.",
-    usage: "<preset>",
+    // usage: "<preset>",
     subCommand: true,
     requiredRole: RoleType.MOD,
     args: [

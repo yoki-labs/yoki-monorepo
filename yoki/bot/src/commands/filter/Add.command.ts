@@ -9,7 +9,7 @@ const Add: Command = {
     name: "filter-add",
     subName: "add",
     description: "Add a word or phrase to the automod filter.",
-    usage: "<phrase> [severity=warn] [infraction_points=5]",
+    // usage: "<phrase> [severity=warn] [infraction_points=5]",
     examples: ["test_word warn", "test_word_2 kick"],
     subCommand: true,
     requiredRole: RoleType.ADMIN,
@@ -22,11 +22,13 @@ const Add: Command = {
         {
             name: "severity",
             type: "enum",
+            display: "severity = warn",
             optional: true,
             values: Severity,
         },
         {
             name: "infraction_points",
+            display: "infraction points = 5",
             type: "number",
             optional: true,
         },

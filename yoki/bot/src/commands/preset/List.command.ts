@@ -11,7 +11,7 @@ const descriptions: Record<string, string> = {
 const List: Command = {
     name: "preset-list",
     description: "List the presets enabled for this server, along with the presets Yoki offers.",
-    usage: "",
+    // usage: "",
     subName: "list",
     subCommand: true,
     requiredRole: RoleType.MOD,

@@ -5,7 +5,7 @@ const UrlWhitelist: Command = {
     name: "link-url-whitelist",
     subName: "whitelist",
     description: "Sets whether the URL filter is whitelisted or blacklisted.",
-    usage: "<is whitelist>",
+    // usage: "<is whitelist>",
     examples: ["true", "false"],
     subCommand: true,
     requiredRole: RoleType.ADMIN,
@@ -13,6 +13,7 @@ const UrlWhitelist: Command = {
     args: [
         {
             name: "isWhitelist",
+            display: "is whitelist",
             type: "boolean",
             optional: true,
         },

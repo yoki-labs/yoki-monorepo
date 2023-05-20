@@ -9,13 +9,14 @@ const categories = Object.values(Category) as string[];
 const Help: Command = {
     name: "help",
     description: "View a list of Tuxedo's commands.",
-    usage: "[command path]",
+    // usage: "[command path]",
     examples: ["", "ping"],
     aliases: ["commands", "command", "all", "h"],
     hidden: true,
     args: [
         {
             name: "commandPath",
+            display: "command path",
             type: "rest",
             optional: true,
         },

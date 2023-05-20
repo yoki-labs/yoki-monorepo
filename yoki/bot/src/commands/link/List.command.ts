@@ -7,7 +7,7 @@ import { Category, Command } from "../commands";
 const List: Command = {
     name: "link-list",
     description: "Lists every link domain that is blacklisted.",
-    usage: "",
+    // usage: "",
     subName: "list",
     subCommand: true,
     category: Category.Filter,

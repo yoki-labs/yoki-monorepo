@@ -9,7 +9,7 @@ import { Category, Command } from "../commands";
 const Warn: Command = {
     name: "warn",
     description: "Warn a user.",
-    usage: "<target> [infraction points] [...reason]",
+    // usage: "<target> [infraction points] [...reason]",
     examples: ["R40Mp0Wd Not following rules", "<@R40Mp0Wd> Doing weird shenanigans.", "<@R40Mp0Wd> 20 After what you did, you definitely need +20 infractions."],
     requiredRole: RoleType.MINIMOD,
     category: Category.Moderation,
@@ -17,10 +17,12 @@ const Warn: Command = {
     args: [
         {
             name: "target",
+            display: "user",
             type: "member",
         },
         {
             name: "infractionPoints",
+            display: "infraction points",
             type: "string",
             optional: true,
         },

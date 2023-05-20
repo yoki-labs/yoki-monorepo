@@ -9,7 +9,7 @@ const PingRole: Command = {
     name: "modmail-pingrole",
     description: "Set the role that gets pinged when new modmail threads are created.",
     subCommand: true,
-    usage: "[ID of the role]",
+    // usage: "[ID of the role]",
     examples: ["", "28086950"],
     subName: "pingrole",
     category: Category.Settings,

@@ -6,13 +6,13 @@ import { Category, Command } from "../commands";
 const MentionSpamFrequency: Command = {
     name: "antiraid-mentionfrequency",
     description: "Sets required mention count to count it as a mention spaam.",
-    usage: "[mentions per 5 secs]",
+    // usage: "[mentions per 5 secs]",
     examples: ["5"],
     subCommand: true,
     category: Category.Settings,
     subName: "mentionfrequency",
     requiredRole: RoleType.ADMIN,
-    args: [{ name: "frequency", optional: true, type: "number" }],
+    args: [{ name: "frequency", display: "mentions per 5 secs", optional: true, type: "number" }],
     execute: async (message, args, ctx, { server }) => {
         const frequency = args.frequency as number | null;
 

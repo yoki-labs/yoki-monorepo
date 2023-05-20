@@ -1,6 +1,5 @@
 import { ResponseType } from "@prisma/client";
 import { inlineCode } from "@yokilabs/bot";
-import ms from "ms";
 
 import { RoleType } from "../../typings";
 import { Category, Command } from "../commands";
@@ -8,14 +7,21 @@ import { Category, Command } from "../commands";
 const Age: Command = {
     name: "antiraid-age",
     description: "Set or view the minimum account age requirement for users to be exempt from the antiraid.",
-    usage: "[duration]",
+    // usage: "[duration]",
     examples: ["2d"],
     category: Category.Antiraid,
     subCommand: true,
     subName: "age",
     requiredRole: RoleType.ADMIN,
-    args: [{ name: "duration", type: "string", optional: true }],
+    args: [
+        {
+            name: "duration",
+            type: "time",
+            optional: true
+        }
+    ],
     execute: async (message, args, ctx, commandCtx) => {
+        const duration = args.duration as number;
         if (!args.duration) {
             return ctx.messageUtil.replyWithInfo(
                 message,
@@ -26,7 +32,7 @@ const Age: Command = {
             );
         }
 
-        const duration = ms(args.duration as string);
+        // const duration = ms(args.duration as string);
         if (!duration || duration < 600000 || duration > 1209600000)
             return ctx.messageUtil.replyWithError(message, `Invalid Duration`, `Your duration must be between 10m and 2w.`);
 

@@ -18,10 +18,10 @@ const Set: Command = {
     category: Category.Logs,
     subName: "set",
     requiredRole: RoleType.ADMIN,
-    usage: "<channel> [logTypes]",
+    // usage: "<channel> [logTypes]",
     args: [
         { name: "channel", optional: false, type: "channel" },
-        { name: "logTypes", optional: true, type: "enumList", values: LogChannelArgs },
+        { name: "logTypes", display: "log types", optional: true, type: "enumList", values: LogChannelArgs },
     ],
     execute: async (message, args, ctx) => {
         const { id: channelId } = args.channel as Channel;

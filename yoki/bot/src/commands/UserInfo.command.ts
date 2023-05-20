@@ -8,12 +8,13 @@ import type { Command } from "./commands";
 const UserInfo: Command = {
     name: "userinfo",
     description: "View information about a user or yourself.",
-    usage: "[id-of-user]",
+    // usage: "[id-of-user]",
     examples: ["0mqNyllA"],
     aliases: ["user"],
     args: [
         {
             name: "target",
+            display: "user",
             type: "member",
             optional: true,
         },

@@ -7,7 +7,7 @@ import Threshold from "./Threshold.command";
 const Severity: Command = {
     name: "severity",
     description: "Manages action severity/auto-mod actions.",
-    usage: "<threshold> <..args>",
+    // usage: "<threshold> <..args>",
     examples: ["threshold mute 5"],
     aliases: ["levels", "level", "modaction", "sv"],
     category: Category.Settings,

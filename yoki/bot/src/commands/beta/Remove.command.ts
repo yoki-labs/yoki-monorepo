@@ -3,7 +3,7 @@ import type { Command } from "../commands";
 const Remove: Command = {
     name: "beta-remove",
     description: "Remove a server from the beta.",
-    usage: "<serverId>",
+    // usage: "<serverId>",
     subCommand: true,
     hidden: true,
     subName: "remove",

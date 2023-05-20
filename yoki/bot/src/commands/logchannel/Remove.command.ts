@@ -14,14 +14,14 @@ type LogChannelArgEnum = keyof typeof LogChannelArgs;
 const Remove: Command = {
     name: "logs-remove",
     description: "Unsubscribe a specified channel from a specified log type.",
-    usage: "<channel> [logTypes]",
+    // usage: "<channel> [logTypes]",
     subCommand: true,
     category: Category.Logs,
     subName: "remove",
     requiredRole: RoleType.ADMIN,
     args: [
         { name: "channel", optional: false, type: "channel" },
-        { name: "logTypes", optional: true, type: "enumList", values: LogChannelArgs },
+        { name: "logTypes", display: "log types", optional: true, type: "enumList", values: LogChannelArgs },
     ],
     execute: async (message, args, ctx) => {
         const { id: channelId } = args.channel as Channel;

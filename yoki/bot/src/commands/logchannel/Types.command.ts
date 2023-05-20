@@ -4,7 +4,7 @@ import { Category, Command } from "../commands";
 const Types: Command = {
     name: "logs-types",
     description: "List all possible Log Channel types.",
-    usage: "",
+    // usage: "",
     subCommand: true,
     category: Category.Logs,
     subName: "types",

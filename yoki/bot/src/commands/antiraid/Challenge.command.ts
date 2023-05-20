@@ -15,13 +15,20 @@ const mappedResponseTypes = `${responseTypes.map((x) => `\`${x}\``).join(", ")}`
 const Challenge: Command = {
     name: "antiraid-challenge",
     description: "Set or view the response the bot takes when a user fails the age filter.",
-    usage: "[site|captcha|kick|none]",
+    // usage: "[site|captcha|kick|none]",
     examples: ["captcha", "site"],
     category: Category.Antiraid,
     subCommand: true,
     subName: "challenge",
     requiredRole: RoleType.ADMIN,
-    args: [{ name: "challenge", type: "string", optional: true }],
+    args: [
+        {
+            name: "challenge",
+            type: "string",
+            display: "site / captcha / kick / none",
+            optional: true
+        }
+    ],
     execute: async (message, args, ctx, commandCtx) => {
         const challenge = (args.challenge as string | null)?.toLowerCase();
         if (!challenge)

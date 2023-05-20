@@ -10,7 +10,7 @@ const Add: Command = {
     name: "link-url-add",
     subName: "add",
     description: "Add a domain to the blacklist or whitelist.",
-    usage: "<domain> [severity=warn] [infraction_points=5]",
+    // usage: "<domain> [severity=warn] [infraction_points=5]",
     examples: ["example.com warn", "discord.com ban"],
     subCommand: true,
     requiredRole: RoleType.ADMIN,
@@ -22,12 +22,14 @@ const Add: Command = {
         },
         {
             name: "severity",
+            display: "severity = warn",
             type: "enum",
             optional: true,
             values: Severity,
         },
         {
             name: "infraction_points",
+            display: "infraction points = 5",
             type: "number",
             optional: true,
         },

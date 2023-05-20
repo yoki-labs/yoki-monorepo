@@ -7,7 +7,7 @@ const List: Command = {
     name: "tag-list",
     subName: "list",
     description: "Get all the custom tags.",
-    usage: "",
+    // usage: "",
     subCommand: true,
     category: Category.Tags,
     requiredRole: RoleType.MOD,

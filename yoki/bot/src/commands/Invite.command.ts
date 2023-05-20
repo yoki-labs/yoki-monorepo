@@ -3,7 +3,7 @@ import type { Command } from "./commands";
 const Invite: Command = {
     name: "invite",
     description: "Get a link for inviting the bot.",
-    usage: "",
+    // usage: "",
     execute: (message, _args, ctx) => {
         void ctx.amp.logEvent({
             event_type: "BOT_INVITE",

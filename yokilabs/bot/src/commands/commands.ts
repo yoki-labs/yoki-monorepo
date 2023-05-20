@@ -10,6 +10,7 @@ import enumArg from "../args/enum";
 import enumList from "../args/enumList";
 import member from "../args/member";
 import number from "../args/number";
+import time from "../args/time";
 import rest from "../args/rest";
 import stringArg from "../args/string";
 import UUID from "../args/UUID";
@@ -29,6 +30,7 @@ export function createCommandHandler<
         channel,
         enum: enumArg,
         enumList,
+        time,
         member,
         number,
         rest,

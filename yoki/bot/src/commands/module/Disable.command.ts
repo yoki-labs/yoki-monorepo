@@ -8,13 +8,14 @@ const Disable: Command = {
     name: "module-disable",
     subName: "disable",
     description: "Disable a module.",
-    usage: `<${DBPropToTypeKeys.join("|")}>`,
+    // usage: `<${DBPropToTypeKeys.join("|")}>`,
     subCommand: true,
     requiredRole: RoleType.ADMIN,
     category: Category.Moderation,
     args: [
         {
             name: "module",
+            display: DBPropToTypeKeys.join(" / "),
             type: "string",
         },
     ],

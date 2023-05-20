@@ -7,7 +7,7 @@ import { Category, Command } from "../commands";
 const List: Command = {
     name: "filter-list",
     description: "Lists every word or phrase that will be filtered by automod.",
-    usage: "",
+    // usage: "",
     subName: "list",
     subCommand: true,
     category: Category.Filter,

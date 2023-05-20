@@ -17,7 +17,7 @@ export interface BaseCommand<
     hidden?: boolean;
     forceShow?: boolean;
     description: string;
-    usage?: string;
+    // usage?: string;
     category?: string;
     examples?: string[];
     aliases?: string[];
@@ -35,15 +35,22 @@ export interface BaseCommand<
 }
 
 export interface CommandArgument {
+    // In-code basics
     name: string;
     type: CommandArgType;
     optional?: boolean;
+
+    // Display
+    display?: string;
+
+    // Type-based
     separator?: string;
     max?: number;
+    min?: number;
     values?: any;
     resolver?: (...content: any[]) => any;
 }
-export type CommandArgType = "string" | "UUID" | "member" | "number" | "boolean" | "enum" | "rest" | "enumList" | "channel";
+export type CommandArgType = "string" | "UUID" | "member" | "number" | "boolean" | "enum" | "time" | "rest" | "enumList" | "channel";
 export type CommandArgValidator = [
     (input: string, rawArgs: string[], index: number, message: Message, argument: CommandArgument, usedMentions: UsedMentions) => ResolvedArgs | Promise<ResolvedArgs>,
     (arg: CommandArgument, received?: string) => string
