@@ -51,6 +51,9 @@ void (async (): Promise<void> => {
     try {
         // connect redis & ws connection
         await client.init();
+
+        await client.giveawayUtil.cacheGiveaways();
+        client.giveawayUtil.tickGiveaways();
     } catch (e) {
         console.error(e);
         return process.exit(1);

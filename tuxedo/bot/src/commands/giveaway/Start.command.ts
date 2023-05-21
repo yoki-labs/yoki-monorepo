@@ -1,9 +1,7 @@
-import { inlineCode } from "@yokilabs/bot";
-
 import { Category, Command } from "../commands";
-import { stripIndents } from "common-tags";
 
-const defaultJoinEmote = 90002569;
+const minDuration = 15 * 60 * 1000;
+const maxDuration = 14 * 24 * 60 * 60 * 1000;
 
 const Start: Command = {
     name: "giveaway-start",
@@ -27,41 +25,23 @@ const Start: Command = {
         }
     ],
     execute: async (message, _args, ctx) => {
-        const time = _args.time as string;
+        const duration = _args.duration as number;
         const text = _args.text as string;
-        const winners = _args.winners as number;
+        const winnerCount = _args.winners as number;
 
-        // // To not trash the channel with giveaway commands
-        // await message.delete();
+        if (winnerCount < 0 || winnerCount > 10)
+            return ctx.messageUtil.replyWithError(message, `Invalid winner count`, `Winner count must be between 1 and 10.`);
+        else if (duration < minDuration || duration > maxDuration)
+            return ctx.messageUtil.replyWithError(message, `Invalid duration`, `Giveaway duration should be between 15 minutes and 2 weeks.`);
 
-        const giveawayMessage = await ctx.messageUtil.sendInfoBlock(
-            message.channelId,
-            ":tada: Giveaway has started!",
+        return ctx.giveawayUtil.createGiveaway({
+            serverId: message.serverId!,
+            channelId: message.channelId,
+            createdBy: message.createdById,
             text,
-            {
-                fields: [
-                    {
-                        name: "Information",
-                        value: stripIndents`
-                            **Possible winner count:** ${inlineCode(winners)}
-                            **Ends in:** ${time} (${time} left)
-                            **Giveaway ID:** ${inlineCode("ExampleID")}
-                        `,
-                        inline: true
-                    },
-                    {
-                        name: "How to Join",
-                        value: `React with :plus1: to join the giveaway!`,
-                        inline: true
-                    }
-                ],
-            },
-            {
-                isSilent: true
-            }
-        );
-
-        return giveawayMessage.addReaction(defaultJoinEmote);
+            endsAt: new Date(Date.now() + duration),
+            winnerCount,
+        });
     },
 };
 

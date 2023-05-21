@@ -81,8 +81,8 @@ importers:
         specifier: 0.20.8
         version: 0.20.8
       nanoid:
-        specifier: ^4.0.0
-        version: 4.0.2
+        specifier: ^3.3.2
+        version: 3.3.2
       node-fetch:
         specifier: ^3.2.10
         version: 3.3.1
@@ -5774,6 +5774,12 @@ packages:
     resolution: {integrity: sha512-flnngywOoQ0lLQOTRNexn2gGSNuM9bKj9RZAWSzhQ+UJYaAFG9bac4DW9VHjUAzrOaIcajHybCTHe/bkvozQqA==}
     dependencies:
       big-integer: 1.6.51
+    dev: false
+
+  /nanoid@3.3.2:
+    resolution: {integrity: sha512-CuHBogktKwpm5g2sRgv83jEy2ijFzBwMoYA60orPDR7ynsLijJDqgsi4RDGj3OJpy3Ieb+LYwiRmIOGyytgITA==}
+    engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
+    hasBin: true
     dev: false
 
   /nanoid@3.3.6:

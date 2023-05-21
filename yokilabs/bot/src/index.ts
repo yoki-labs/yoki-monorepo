@@ -15,4 +15,4 @@ export { Colors } from "./utils/color";
 export { summarizeItems, summarizeRolesOrUsers } from "./utils/content";
 export { bold, channelName, codeBlock, errorEmbed, escapeInlineCodeText, highlight, inlineCode, inlineQuote, listInlineCode, listInlineQuote, quoteMarkdown } from "./utils/formatting";
 export { BotImages, StateImages } from "./utils/images";
-export { cutArray, isHashId, isUUID } from "./utils/value";
+export { cutArray, shuffleArray, isHashId, isUUID } from "./utils/value";

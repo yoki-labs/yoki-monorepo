@@ -22,6 +22,7 @@ model Giveaway {
     id           String   @id @db.VarChar(255)
     serverId     String   @db.VarChar(255)
     channelId    String   @db.VarChar(255)
+    messageId    String   @db.VarChar(255)
     // Rewards, rewardees, etc.
     text         String   @db.VarChar(200)
     // Who, when
