@@ -129,57 +129,71 @@ export class GiveawayUtil extends Util<TuxedoClient> {
 
             // End it
             console.log("Is giveaway ending:", giveaway.endsAt.getTime() <= now, giveaway);
-            if (giveaway.endsAt.getTime() <= now) {
-                console.log("Getting winners");
-                console.log("Giveaway ID:", giveaway.id);
-                console.log("All participants:", this.participants);
-                console.log("Participants:", this.participants[giveaway.messageId]);
-                const winners = shuffleArray(this.participants[giveaway.messageId].users).slice(0, giveaway.winnerCount);
-                console.log("Winners", winners);
 
-                await Promise.all([
-                    this.client.messages.update(channelId, messageId, this.createGiveawayEmbed(giveaway, true))
-                        .then(m => console.log("Updated message", m)).catch(x => console.log("Update message error", x)),
-                    this.client.messageUtil.sendSuccessBlock(
-                        channelId,
-                        `Giveaway has concluded!`,
-                        winners.length
-                        ? `The giveaway has ended and winners have been picked.`
-                        : `The giveaway has ended, but it seems that no one has joined the giveaway.`,
-                        {
-                            fields: winners.length ? [
-                                {
-                                    name: "Winners",
-                                    value: winners.map(x => `<@${x}>`).join(", ")
-                                },
-                                {
-                                    name: "Reward",
-                                    value: giveaway.text
-                                }
-                            ] : undefined
-                        },
-                        {
-                            replyMessageIds: [giveaway.messageId]
-                        }
-                    ).then(x => console.log("Sent giveaway reply", x)).catch(x => console.log("Giveaway reply error", x)),
-                    this.client.prisma.giveaway
-                        .delete({ where: { id: giveaway.id } })
-                        .then(x => console.log("Deleted giveaway in DB", x))
-                        .then(() =>
-                            this.removeGiveaway(giveaway.id, giveaway.messageId)
-                        )
-                        .then(() => console.log("Done with giveaway in DB"))
-                        .catch(x =>
-                            console.log("Giveaway DB delete error", x)
-                        )
-                ]);
-            } else await this.client.messages.update(channelId, messageId, this.createGiveawayEmbed(giveaway));
+            if (giveaway.endsAt.getTime() <= now) await this.concludeGiveaway(giveaway);
+            else await this.client.messages.update(channelId, messageId, this.createGiveawayEmbed(giveaway));
         } catch(e) {
             console.error("Error", e);
         }
     }
 
-    createGiveawayEmbed(giveaway: Omit<Giveaway, "messageId">, ended = false): Embed {
+    concludeGiveaway(giveaway: Giveaway) {
+        const { channelId, messageId } = giveaway;
+        const winners = shuffleArray(this.participants[giveaway.messageId].users).slice(0, giveaway.winnerCount);
+
+        return Promise.all([
+            this.client.messages.update(channelId, messageId, this.createGiveawayEmbed(giveaway, true)),
+            this.client.messageUtil.sendSuccessBlock(
+                channelId,
+                `Giveaway has concluded!`,
+                winners.length
+                ? `The giveaway has ended and winners have been picked.`
+                : `The giveaway has ended, but it seems that no one has joined the giveaway.`,
+                {
+                    fields: winners.length ? [
+                        {
+                            name: "Winners",
+                            value: winners.map(x => `<@${x}>`).join(", ")
+                        },
+                        {
+                            name: "Reward",
+                            value: giveaway.text
+                        }
+                    ] : undefined
+                },
+                {
+                    replyMessageIds: [giveaway.messageId]
+                }
+            ),
+            this.client.prisma.giveaway
+                .delete({ where: { id: giveaway.id } })
+                .then(() =>
+                    this.removeGiveaway(giveaway.id, giveaway.messageId)
+                )
+        ]);
+    }
+
+    cancelGiveaway(giveaway: Giveaway) {
+        const { channelId, messageId } = giveaway;
+
+        return Promise.all([
+            this.client.messages.update(channelId, messageId, this.createGiveawayEmbed(giveaway, true, true)),
+            this.client.prisma.giveaway
+                .delete({ where: { id: giveaway.id } })
+                .then(() =>
+                    this.removeGiveaway(giveaway.id, giveaway.messageId)
+                )
+        ]);
+    }
+
+    createGiveawayEmbed(giveaway: Omit<Giveaway, "messageId">, ended = false, canceled = false): Embed {
+        const endDateMessage =
+            canceled
+            ? ":x: **Has been cancelled.**"
+            : ended
+            ? ":white_check_mark: **Has ended.**"
+            : `**Ends in:** ${giveaway.endsAt} (${ms(giveaway.endsAt.getTime() - Date.now(), { long: true })} left)`;
+
         return new Embed({
             title: ":tada: Giveaway has been started!",
             description: giveaway.text,
@@ -188,7 +202,7 @@ export class GiveawayUtil extends Util<TuxedoClient> {
                 {
                     name: "Information",
                     value: stripIndents`
-                        ${ended ? ":white_check_mark: **Has ended.**" : `**Ends in:** ${giveaway.endsAt} (${ms(giveaway.endsAt.getTime() - Date.now(), { long: true })} left)`}
+                        ${endDateMessage}
                         **Possible winner count:** ${inlineCode(giveaway.winnerCount)}
                         **Giveaway ID:** ${inlineCode(giveaway.id)}
                         **Created by:** <@${giveaway.createdBy}>
