@@ -7,7 +7,7 @@ module.exports = {
     },
     parserOptions: {
         ecmaVersion: 2023,
-        project: "./tsconfig.eslint.json",
+        project: "../../tsconfig.eslint.json",
     },
     plugins: ["@typescript-eslint", "simple-import-sort", "unused-imports"],
     extends: ["eslint:recommended", "next", "next/core-web-vitals", "plugin:@typescript-eslint/recommended", "prettier"],

@@ -5,6 +5,7 @@
 	"scripts": {
 		"dev": "next dev",
 		"build": "next build",
+		"lint": "eslint -c ../../.eslintrc.web.js src --ext .ts",
 		"start": "next start",
 		"generate": "npx prisma generate --schema=../bot/prisma/schema.prisma"
 	},

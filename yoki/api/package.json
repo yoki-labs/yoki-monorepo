@@ -5,6 +5,7 @@
 		"build": "tsc",
 		"start": "node dist/index.js",
 		"dev": "pnpx nodemon",
+		"lint": "eslint -c ../../.eslintrc.js src --ext .ts",
 		"generate:prod": "cat ./schema.prisma ./base.prisma > ./generated.prisma && pnpx prisma generate",
 		"generate:dev": "pnpx cross-cat ./schema.prisma ../bot/prisma/schema.prisma > generated.prisma && pnpx prisma generate"
 	},

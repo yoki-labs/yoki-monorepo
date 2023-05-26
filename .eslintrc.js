@@ -3,7 +3,7 @@ module.exports = {
     parser: "@typescript-eslint/parser",
     parserOptions: {
         ecmaVersion: 2023,
-        project: "./tsconfig.eslint.json",
+        project: "../../tsconfig.eslint.json",
     },
     plugins: ["simple-import-sort", "unused-imports"],
     root: true,

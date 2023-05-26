@@ -10,8 +10,9 @@
         "dist"
     ],
     "scripts": {
-        "build": "npx tsc && npx tsc-alias",
+        "build": "tsc && tsc-alias",
         "start": "node dist/index.js",
+        "lint": "eslint -c ../../.eslintrc.js src --ext .ts",
         "dev": "npx nodemon",
         "migrate:dev": "pnpx dotenv-cli -e ../.env -- npx prisma migrate dev --name init",
         "migrate:prod": "pnpx dotenv-cli -e ../.env.prod -- npx prisma migrate deploy",
