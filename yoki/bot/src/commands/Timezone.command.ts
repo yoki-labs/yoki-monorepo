@@ -16,8 +16,8 @@ const Timezone: Command = {
             display: "[new timezone](https://www.guilded.gg/Yoki/groups/2dXLMBPd/channels/0a2069b9-2e7d-45da-9121-ab3b463f9af2/docs/347606)",
             type: "string",
             optional: true,
-            max: 20
-        }
+            max: 20,
+        },
     ],
     execute: async (message, args, ctx, commandCtx) => {
         const newTimezone = (args.newTimezone as string | null)?.toLowerCase();

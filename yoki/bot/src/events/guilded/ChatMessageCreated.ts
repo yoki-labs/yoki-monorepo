@@ -1,5 +1,4 @@
-import { createCommandHandler } from "@yokilabs/bot";
-import { Colors } from "@yokilabs/bot";
+import { Colors, createCommandHandler } from "@yokilabs/bot";
 import { Embed, UserType } from "guilded.js";
 
 import type YokiClient from "../../Client";

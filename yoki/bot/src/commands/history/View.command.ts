@@ -6,7 +6,7 @@ const View: Command = {
     name: "history-view",
     subName: "view",
     description: "Get the list of moderation cases of a user.",
-    //usage: "<target> [page number]",
+    // usage: "<target> [page number]",
     examples: ["R40Mp0Wd", "R40Mp0Wd 2"],
     subCommand: true,
     aliases: ["see", "all", "v"],

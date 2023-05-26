@@ -1,5 +1,4 @@
-import { setClientCommands, setClientEvents } from "@yokilabs/bot";
-import { codeBlock, errorEmbed } from "@yokilabs/bot";
+import { codeBlock, errorEmbed, setClientCommands, setClientEvents } from "@yokilabs/bot";
 import { config } from "dotenv";
 import { WebhookEmbed } from "guilded.js";
 import { join } from "path";

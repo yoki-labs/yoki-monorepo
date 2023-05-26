@@ -12,7 +12,7 @@
 		"build:tuxedo": "pnpm build:deps && pnpm -r --filter=@tuxedo/** run build",
 		"generate": "cd yoki/bot && pnpm generate",
 		"##": "Scripts for code quality and CI",
-		"lint:bots": "eslint -c .eslintrc.js yoki/bot yoki/nsfw tuxedo/bot yokilabs/bot yokilabs/util",
+		"lint:bots": "eslint -c .eslintrc.js yoki/bot yoki/nsfw tuxedo/bot yokilabs/bot",
 		"lint:web": "eslint -c .eslintrc.web.js yoki/site",
 		"lint": "pnpm run lint:web && pnpm run lint:bots",
 		"lint:fix": "pnpm run lint:web --fix && pnpm run lint:bots --fix",

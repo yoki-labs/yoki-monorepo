@@ -13,6 +13,18 @@ export * from "./typings";
 // Utils
 export { Colors } from "./utils/color";
 export { summarizeItems, summarizeRolesOrUsers } from "./utils/content";
-export { bold, channelName, codeBlock, errorEmbed, escapeInlineCodeText, highlight, inlineCode, inlineQuote, listInlineCode, listInlineQuote, quoteMarkdown } from "./utils/formatting";
+export {
+    bold,
+    channelName,
+    codeBlock,
+    errorEmbed,
+    escapeInlineCodeText,
+    highlight,
+    inlineCode,
+    inlineQuote,
+    listInlineCode,
+    listInlineQuote,
+    quoteMarkdown,
+} from "./utils/formatting";
 export { BotImages, StateImages } from "./utils/images";
-export { cutArray, shuffleArray, isHashId, isUUID } from "./utils/value";
+export { cutArray, isHashId, isUUID, shuffleArray } from "./utils/value";

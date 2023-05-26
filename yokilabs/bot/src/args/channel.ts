@@ -1,6 +1,5 @@
-import { isUUID } from "../utils/value";
-
 import type { CommandArgValidator } from "../commands/command-typings";
+import { isUUID } from "../utils/value";
 
 export default [
     async (input, args, index, message, __, usedMentions) => {

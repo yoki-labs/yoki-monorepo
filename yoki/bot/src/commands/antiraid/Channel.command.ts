@@ -17,8 +17,8 @@ const Channel: Command = {
         {
             name: "channel",
             type: "channel",
-            optional: true
-        }
+            optional: true,
+        },
     ],
     execute: async (message, args, ctx, commandCtx) => {
         const channel = args.channel as GChannel | null;

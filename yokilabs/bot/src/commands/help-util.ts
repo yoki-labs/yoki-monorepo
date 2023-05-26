@@ -1,12 +1,12 @@
 import { Collection } from "@discordjs/collection";
 import type { EmbedField } from "@guildedjs/guilded-api-typings";
-import { inlineCode, inlineQuote, listInlineCode } from "../utils/formatting";
 import { stripIndents } from "common-tags";
 import type { Message } from "guilded.js";
 
 import type { AbstractClient } from "../Client";
 import type { IServer } from "../db-types";
 import type { CommandContext } from "../typings";
+import { inlineCode, inlineQuote, listInlineCode } from "../utils/formatting";
 import type { BaseCommand } from "./command-typings";
 
 export function getAllCommands<TClient extends AbstractClient<any, any, any>, TServer extends IServer, TCommand extends BaseCommand<TCommand, TClient, string, TServer>>(

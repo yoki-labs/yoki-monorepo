@@ -17,8 +17,8 @@ const Age: Command = {
         {
             name: "duration",
             type: "time",
-            optional: true
-        }
+            optional: true,
+        },
     ],
     execute: async (message, args, ctx, commandCtx) => {
         const duration = args.duration as number;

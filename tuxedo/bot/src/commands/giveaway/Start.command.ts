@@ -17,20 +17,19 @@ const Start: Command = {
         },
         {
             name: "winners",
-            type: "number"
+            type: "number",
         },
         {
             name: "text",
-            type: "rest"
-        }
+            type: "rest",
+        },
     ],
     execute: async (message, _args, ctx) => {
         const duration = _args.duration as number;
         const text = _args.text as string;
         const winnerCount = _args.winners as number;
 
-        if (winnerCount < 0 || winnerCount > 10)
-            return ctx.messageUtil.replyWithError(message, `Invalid winner count`, `Winner count must be between 1 and 10.`);
+        if (winnerCount < 0 || winnerCount > 10) return ctx.messageUtil.replyWithError(message, `Invalid winner count`, `Winner count must be between 1 and 10.`);
         else if (duration < minDuration || duration > maxDuration)
             return ctx.messageUtil.replyWithError(message, `Invalid duration`, `Giveaway duration should be between 15 minutes and 2 weeks.`);
 

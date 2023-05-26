@@ -1,10 +1,10 @@
-import { errorEmbed } from "./utils/formatting";
 import type { ClientEvents } from "guilded.js";
 import recursive from "recursive-readdir";
 
 import type { AbstractClient } from "./Client";
 import type { BaseCommand } from "./commands/command-typings";
 import type { GEvent } from "./typings";
+import { errorEmbed } from "./utils/formatting";
 
 export async function setClientCommands<TClient extends AbstractClient<TClient, any, any>>(client: TClient, dir: string) {
     // Load all filse & directories in the commands dir recursively

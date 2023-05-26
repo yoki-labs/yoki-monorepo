@@ -1,6 +1,5 @@
-import { listInlineCode } from "../utils/formatting";
-
 import type { CommandArgValidator } from "../commands/command-typings";
+import { listInlineCode } from "../utils/formatting";
 
 export default [
     (input, _args, _index, _message, arg) => {

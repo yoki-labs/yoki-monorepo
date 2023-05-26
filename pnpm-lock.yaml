@@ -489,52 +489,6 @@ importers:
         specifier: ^4.8.4
         version: 4.9.5
 
-  yokilabs/util:
-    dependencies:
-      common-tags:
-        specifier: ^1.8.2
-        version: 1.8.2
-      dotenv:
-        specifier: ^16.0.3
-        version: 16.0.3
-      guilded.js:
-        specifier: 0.20.8
-        version: 0.20.8
-      nanoid:
-        specifier: ^4.0.0
-        version: 4.0.2
-      node-fetch:
-        specifier: ^3.2.10
-        version: 3.3.1
-      nodemon:
-        specifier: ^2.0.20
-        version: 2.0.22
-      tslib:
-        specifier: ^2.4.1
-        version: 2.5.0
-    devDependencies:
-      '@guildedjs/guilded-api-typings':
-        specifier: ^4.0.0
-        version: 4.0.0
-      '@types/common-tags':
-        specifier: ^1.8.1
-        version: 1.8.1
-      '@types/node':
-        specifier: ^18.11.9
-        version: 18.16.3
-      '@types/node-fetch':
-        specifier: ^2.6.2
-        version: 2.6.3
-      dotenv-cli:
-        specifier: ^6.0.0
-        version: 6.0.0
-      typed-emitter:
-        specifier: ^2.1.0
-        version: 2.1.0
-      typescript:
-        specifier: ^4.8.4
-        version: 4.9.5
-
 packages:
 
   /@alloc/quick-lru@5.2.0:
@@ -949,7 +903,7 @@ packages:
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
     dependencies:
       ajv: 6.12.6
-      debug: 4.3.4(supports-color@5.5.0)
+      debug: 4.3.4(supports-color@9.3.1)
       espree: 9.5.1
       globals: 13.20.0
       ignore: 5.2.4
@@ -1147,7 +1101,7 @@ packages:
     engines: {node: '>=10.10.0'}
     dependencies:
       '@humanwhocodes/object-schema': 1.2.1
-      debug: 4.3.4(supports-color@5.5.0)
+      debug: 4.3.4(supports-color@9.3.1)
       minimatch: 3.1.2
     transitivePeerDependencies:
       - supports-color
@@ -1467,7 +1421,7 @@ packages:
       '@oclif/errors': 1.3.6
       '@oclif/help': 1.0.5
       '@oclif/parser': 3.8.10
-      debug: 4.3.4(supports-color@5.5.0)
+      debug: 4.3.4(supports-color@9.3.1)
       semver: 7.5.0
     transitivePeerDependencies:
       - supports-color
@@ -1483,7 +1437,7 @@ packages:
       '@oclif/errors': 1.3.6
       '@oclif/help': 1.0.5
       '@oclif/parser': 3.8.10
-      debug: 4.3.4(supports-color@5.5.0)
+      debug: 4.3.4(supports-color@9.3.1)
       semver: 7.5.0
     transitivePeerDependencies:
       - supports-color
@@ -1495,7 +1449,7 @@ packages:
     dependencies:
       '@oclif/errors': 1.3.5
       '@oclif/parser': 3.8.10
-      debug: 4.3.4(supports-color@5.5.0)
+      debug: 4.3.4(supports-color@9.3.1)
       globby: 11.1.0
       is-wsl: 2.2.0
       tslib: 2.5.0
@@ -1509,7 +1463,7 @@ packages:
     dependencies:
       '@oclif/errors': 1.3.6
       '@oclif/parser': 3.8.10
-      debug: 4.3.4(supports-color@5.5.0)
+      debug: 4.3.4(supports-color@9.3.1)
       globby: 11.1.0
       is-wsl: 2.2.0
       tslib: 2.5.0
@@ -1523,7 +1477,7 @@ packages:
     dependencies:
       '@oclif/errors': 1.3.6
       '@oclif/parser': 3.8.10
-      debug: 4.3.4(supports-color@5.5.0)
+      debug: 4.3.4(supports-color@9.3.1)
       globby: 11.1.0
       is-wsl: 2.2.0
       tslib: 2.5.0
@@ -1679,7 +1633,7 @@ packages:
     resolution: {integrity: sha512-BcShw74uZWWuuDPRpvIj8lqF6ywfcaeTqJF6VTiMd3VXxiB+c0F/mCshnYqoURoEaDmwwrBubWjBgmoWBHoPLQ==}
     dependencies:
       '@types/debug': 4.1.7
-      debug: 4.3.4(supports-color@5.5.0)
+      debug: 4.3.4(supports-color@9.3.1)
       strip-ansi: 6.0.1
     transitivePeerDependencies:
       - supports-color
@@ -2110,6 +2064,7 @@ packages:
     dependencies:
       '@types/node': 18.16.3
       form-data: 3.0.1
+    dev: false
 
   /@types/node@16.18.25:
     resolution: {integrity: sha512-rUDO6s9Q/El1R1I21HG4qw/LstTHCPO/oQNAwI/4b2f9EWvMnqt4d3HJwPMawfZ3UvodB8516Yg+VAq54YM+eA==}
@@ -2244,7 +2199,7 @@ packages:
       '@typescript-eslint/scope-manager': 5.59.1
       '@typescript-eslint/type-utils': 5.59.1(eslint@8.38.0)(typescript@5.0.4)
       '@typescript-eslint/utils': 5.59.1(eslint@8.38.0)(typescript@5.0.4)
-      debug: 4.3.4(supports-color@5.5.0)
+      debug: 4.3.4(supports-color@9.3.1)
       eslint: 8.38.0
       grapheme-splitter: 1.0.4
       ignore: 5.2.4
@@ -2269,7 +2224,7 @@ packages:
       '@typescript-eslint/scope-manager': 5.59.1
       '@typescript-eslint/types': 5.59.1
       '@typescript-eslint/typescript-estree': 5.59.1(typescript@4.9.5)
-      debug: 4.3.4(supports-color@5.5.0)
+      debug: 4.3.4(supports-color@9.3.1)
       eslint: 8.38.0
       typescript: 4.9.5
     transitivePeerDependencies:
@@ -2296,7 +2251,7 @@ packages:
     dependencies:
       '@typescript-eslint/typescript-estree': 5.59.1(typescript@5.0.4)
       '@typescript-eslint/utils': 5.59.1(eslint@8.38.0)(typescript@5.0.4)
-      debug: 4.3.4(supports-color@5.5.0)
+      debug: 4.3.4(supports-color@9.3.1)
       eslint: 8.38.0
       tsutils: 3.21.0(typescript@5.0.4)
       typescript: 5.0.4
@@ -2320,7 +2275,7 @@ packages:
     dependencies:
       '@typescript-eslint/types': 5.59.1
       '@typescript-eslint/visitor-keys': 5.59.1
-      debug: 4.3.4(supports-color@5.5.0)
+      debug: 4.3.4(supports-color@9.3.1)
       globby: 11.1.0
       is-glob: 4.0.3
       semver: 7.5.0
@@ -2341,7 +2296,7 @@ packages:
     dependencies:
       '@typescript-eslint/types': 5.59.1
       '@typescript-eslint/visitor-keys': 5.59.1
-      debug: 4.3.4(supports-color@5.5.0)
+      debug: 4.3.4(supports-color@9.3.1)
       globby: 11.1.0
       is-glob: 4.0.3
       semver: 7.5.0
@@ -2438,7 +2393,7 @@ packages:
     resolution: {integrity: sha512-RZNwNclF7+MS/8bDg70amg32dyeZGZxiDuQmZxKLAlQjr3jGyLx+4Kkk58UO7D2QdgFIQCovuSuZESne6RG6XQ==}
     engines: {node: '>= 6.0.0'}
     dependencies:
-      debug: 4.3.4(supports-color@5.5.0)
+      debug: 4.3.4(supports-color@9.3.1)
     transitivePeerDependencies:
       - supports-color
 
@@ -3348,6 +3303,7 @@ packages:
     dependencies:
       ms: 2.1.2
       supports-color: 5.5.0
+    dev: false
 
   /debug@4.3.4(supports-color@9.3.1):
     resolution: {integrity: sha512-PRWFHuSU3eDtQJPvnNY7Jcket1j0t5OuOsFzPPzsekD52Zl8qUfFIPEiswXqIvHWGVHOgX+7G/vCNNhehwxfkQ==}
@@ -3360,7 +3316,6 @@ packages:
     dependencies:
       ms: 2.1.2
       supports-color: 9.3.1
-    dev: true
 
   /decompress-response@4.2.1:
     resolution: {integrity: sha512-jOSne2qbyE+/r8G1VU+G/82LBs2Fs4LAsTiLSHOCOMZQl2OKZ6i8i4IyHemTe+/yIXOtTcRQMzPcgyhoFlqPkw==}
@@ -3509,16 +3464,6 @@ packages:
 
   /dotenv-cli@5.1.0:
     resolution: {integrity: sha512-NoEZAlKo9WVrG0b3i9mBxdD6INdDuGqdgR74t68t8084QcI077/1MnPerRW1odl+9uULhcdnQp2U0pYVppKHOA==}
-    hasBin: true
-    dependencies:
-      cross-spawn: 7.0.3
-      dotenv: 16.0.3
-      dotenv-expand: 8.0.3
-      minimist: 1.2.8
-    dev: true
-
-  /dotenv-cli@6.0.0:
-    resolution: {integrity: sha512-qXlCOi3UMDhCWFKe0yq5sg3X+pJAz+RQDiFN38AMSbUrnY3uZshSfDJUAge951OS7J9gwLZGfsBlWRSOYz/TRg==}
     hasBin: true
     dependencies:
       cross-spawn: 7.0.3
@@ -3776,7 +3721,7 @@ packages:
       eslint: '*'
       eslint-plugin-import: '*'
     dependencies:
-      debug: 4.3.4(supports-color@5.5.0)
+      debug: 4.3.4(supports-color@9.3.1)
       enhanced-resolve: 5.13.0
       eslint: 8.38.0
       eslint-module-utils: 2.8.0(@typescript-eslint/parser@5.59.1)(eslint-import-resolver-node@0.3.7)(eslint-import-resolver-typescript@3.5.5)(eslint@8.38.0)
@@ -4011,7 +3956,7 @@ packages:
       ajv: 6.12.6
       chalk: 4.1.2
       cross-spawn: 7.0.3
-      debug: 4.3.4(supports-color@5.5.0)
+      debug: 4.3.4(supports-color@9.3.1)
       doctrine: 3.0.0
       escape-string-regexp: 4.0.0
       eslint-scope: 7.2.0
@@ -4831,7 +4776,7 @@ packages:
     dependencies:
       '@tootallnate/once': 2.0.0
       agent-base: 6.0.2
-      debug: 4.3.4(supports-color@5.5.0)
+      debug: 4.3.4(supports-color@9.3.1)
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -4860,7 +4805,7 @@ packages:
     engines: {node: '>= 6'}
     dependencies:
       agent-base: 6.0.2
-      debug: 4.3.4(supports-color@5.5.0)
+      debug: 4.3.4(supports-color@9.3.1)
     transitivePeerDependencies:
       - supports-color
 
@@ -5786,12 +5731,6 @@ packages:
     resolution: {integrity: sha512-BGcqMMJuToF7i1rt+2PWSNVnWIkGCU78jBG3RxO/bZlnZPK2Cmi2QaffxGO/2RvWi9sL+FAiRiXMgsyxQ1DIDA==}
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
     hasBin: true
-
-  /nanoid@4.0.2:
-    resolution: {integrity: sha512-7ZtY5KTCNheRGfEFxnedV5zFiORN1+Y1N6zvPTnHQd8ENUvfaDBeuJDZb2bN/oXwXxu3qkTXDzy57W5vAmDTBw==}
-    engines: {node: ^14 || ^16 || >=18}
-    hasBin: true
-    dev: false
 
   /napi-build-utils@1.0.2:
     resolution: {integrity: sha512-ONmRUqK7zj7DWX0D9ADe03wbwOBZxNAfF20PlGfCWQcD3+/MakShIHrMqx9YwPTfxDdF1zLeL+RGZiR9kGMLdg==}
@@ -7438,7 +7377,6 @@ packages:
   /supports-color@9.3.1:
     resolution: {integrity: sha512-knBY82pjmnIzK3NifMo3RxEIRD9E0kIzV4BKcyTZ9+9kWgLMxd4PrsTSMoFQUabgRBbF8KOLRDCyKgNV+iK44Q==}
     engines: {node: '>=12'}
-    dev: true
 
   /supports-hyperlinks@2.3.0:
     resolution: {integrity: sha512-RpsAZlpWcDwOPQA22aCH4J0t7L8JmAvsCxfOSEwm7cQs3LshN36QaTkwd70DnBOXDWGssw2eUoc8CaRWT0XunA==}
@@ -7812,6 +7750,7 @@ packages:
     resolution: {integrity: sha512-g/KzbYKbH5C2vPkaXGu8DJlHrGKHLsM25Zg9WuC9pMGfuvT+X25tZQWo5fK1BjBm8+UrVE9LDCvaY0CQk+fXDA==}
     optionalDependencies:
       rxjs: 7.8.1
+    dev: false
 
   /typegraphql-prisma@0.23.2(@prisma/client@4.13.0)(@types/graphql-fields@1.3.5)(@types/node@18.16.3)(graphql-fields@2.0.3)(graphql-scalars@1.21.3)(prisma@4.8.1)(tslib@2.5.0)(type-graphql@2.0.0-beta.1):
     resolution: {integrity: sha512-mD9OIdDAXA2qYt3dAydYI3ZbnHTZPPlyvVAuSNALm1NYcPMtBguYMaFPhuQM6veT1n/1tA/bBeCPtavtDKYYmg==}

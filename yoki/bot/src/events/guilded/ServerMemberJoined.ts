@@ -6,8 +6,8 @@ import { nanoid } from "nanoid";
 
 import type { GEvent } from "../../typings";
 import { generateCaptcha } from "../../utils/antiraid";
-import { suspicious as sus } from "../../utils/util";
 import { trimHoistingSymbols } from "../../utils/moderation";
+import { suspicious as sus } from "../../utils/util";
 
 export default {
     execute: async ([member, ctx]) => {

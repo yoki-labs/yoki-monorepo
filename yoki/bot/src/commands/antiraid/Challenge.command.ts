@@ -26,8 +26,8 @@ const Challenge: Command = {
             name: "challenge",
             type: "string",
             display: "site / captcha / kick / none",
-            optional: true
-        }
+            optional: true,
+        },
     ],
     execute: async (message, args, ctx, commandCtx) => {
         const challenge = (args.challenge as string | null)?.toLowerCase();

@@ -1,6 +1,5 @@
-import { listInlineCode } from "../utils/formatting";
-
 import type { CommandArgValidator } from "../commands/command-typings";
+import { listInlineCode } from "../utils/formatting";
 
 const yesType = ["true", "enable", "yes"];
 const noType = ["disable", "false", "no"];

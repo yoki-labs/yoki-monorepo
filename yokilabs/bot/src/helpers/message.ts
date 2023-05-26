@@ -1,9 +1,5 @@
 import type { Collection } from "@discordjs/collection";
 import type { EmbedField, EmbedPayload, RestBody, RestPath } from "@guildedjs/guilded-api-typings";
-import { inlineCode } from "../utils/formatting";
-import { BotImages, StateImages } from "../utils/images";
-import { cutArray } from "../utils/value";
-import { Colors } from "../utils/color";
 import { stripIndents } from "common-tags";
 import { Embed, Message, MessageContent } from "guilded.js";
 
@@ -11,6 +7,10 @@ import type { AbstractClient } from "../Client";
 import type { ResolvedArgs } from "../commands/arguments";
 import type { BaseCommand, CommandArgType, CommandArgument, CommandArgValidator } from "../commands/command-typings";
 import type { IServer } from "../db-types";
+import { Colors } from "../utils/color";
+import { inlineCode } from "../utils/formatting";
+import { BotImages, StateImages } from "../utils/images";
+import { cutArray } from "../utils/value";
 import { Util } from "./util";
 
 type MessageBody = Omit<RestBody<RestPath<"/channels/{channelId}/messages">["post"]>, "embeds"> & { embeds?: Embed[] };
@@ -19,7 +19,7 @@ const argumentOptionalityBraces = [
     // Mandatory
     ["<", ">"],
     // Optional
-    ["[", "]"]
+    ["[", "]"],
 ];
 
 export class MessageUtil<
@@ -59,7 +59,7 @@ export class MessageUtil<
 
     createCommandUsage(command: TCommand): string {
         // Take each arg, and based on whether it's optional (0 if mandatory, 1 if optional), take an array with braces and join it with argument's name
-        return command.args?.map(x => argumentOptionalityBraces[Number(x.optional ?? false)].join(`${x.type === "rest" ? "..." : ""}${x.display ?? x.name}`))?.join(" ") ?? "";
+        return command.args?.map((x) => argumentOptionalityBraces[Number(x.optional ?? false)].join(`${x.type === "rest" ? "..." : ""}${x.display ?? x.name}`))?.join(" ") ?? "";
     }
 
     createExampleField(command: TCommand, prefix: string, commandPath?: string): EmbedField {

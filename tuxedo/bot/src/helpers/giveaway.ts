@@ -1,20 +1,20 @@
-import { Colors, Util, inlineCode } from "@yokilabs/bot";
-import { TuxedoClient } from "../Client";
 import { Giveaway } from "@prisma/client";
-import { Embed, EmbedField } from "guilded.js";
+import { Colors, inlineCode, shuffleArray, Util } from "@yokilabs/bot";
 import { stripIndents } from "common-tags";
+import { Embed, EmbedField } from "guilded.js";
 import ms from "ms";
 import { nanoid } from "nanoid";
-import { shuffleArray } from "@yokilabs/bot";
+
+import { TuxedoClient } from "../Client";
 
 const tickIntervalMs = 10 * 60 * 1000;
 const updateIntervalMs = 60 * 1000;
 export const defaultGiveawayEmote = 90002569;
 
 export class GiveawayUtil extends Util<TuxedoClient> {
-    longGiveaways: Record<string, { messageId: string, endsAt: number }>;
+    longGiveaways: Record<string, { messageId: string; endsAt: number }>;
     endingGiveawayPool: Giveaway[];
-    participants: Record<string, { giveawayId: string, users: string[] }>;
+    participants: Record<string, { giveawayId: string; users: string[] }>;
 
     // --- Initialization ---
     constructor(client: TuxedoClient) {
@@ -35,24 +35,21 @@ export class GiveawayUtil extends Util<TuxedoClient> {
             id: nanoid(17),
             createdAt: new Date(),
             participants: [],
-            ...data
+            ...data,
         };
 
-        const message = await this.client.messages
-            .send(data.channelId, {
-                embeds: [
-                    this.createGiveawayEmbed(partialData)
-                ]
-            });
-        
+        const message = await this.client.messages.send(data.channelId, {
+            embeds: [this.createGiveawayEmbed(partialData)],
+        });
+
         // Creating giveway stuff
         await Promise.all([
             this.client.reactions.create(message.channelId, message.id, defaultGiveawayEmote),
             this.client.prisma.giveaway
                 .create({
-                    data: { messageId: message.id, ...partialData }
+                    data: { messageId: message.id, ...partialData },
                 })
-                .then(this.addGiveaway.bind(this))
+                .then(this.addGiveaway.bind(this)),
         ]);
     }
 
@@ -70,14 +67,13 @@ export class GiveawayUtil extends Util<TuxedoClient> {
         const activeGiveaways = await this.client.prisma.giveaway.findMany();
 
         console.log("Found giveaways", activeGiveaways);
-        for (const giveaway of activeGiveaways)
-            this.addGiveaway(giveaway);
+        for (const giveaway of activeGiveaways) this.addGiveaway(giveaway);
 
         return this;
     }
 
     // --- Handling ---
-    // Tick giveaways every 20mins and complete the completed ones. If they will end faster than 
+    // Tick giveaways every 20mins and complete the completed ones. If they will end faster than
     tickGiveaways() {
         console.log("Will start ticking giveaways");
         setInterval(async () => await this.handleGiveaways(), tickIntervalMs);
@@ -91,50 +87,48 @@ export class GiveawayUtil extends Util<TuxedoClient> {
 
         console.log("Ticked giveaways", this.longGiveaways);
         // Get ending giveaways to cache and start actively tracking them
-        const newEndingGiveaways = Object.keys(this.longGiveaways).filter(x => this.longGiveaways[x].endsAt <= nextTick);
+        const newEndingGiveaways = Object.keys(this.longGiveaways).filter((x) => this.longGiveaways[x].endsAt <= nextTick);
 
         console.log("Ending giveaways:", newEndingGiveaways);
         if (newEndingGiveaways.length) {
             console.log("Handling ending giveaways");
-            this.endingGiveawayPool.push(...await this.client.prisma.giveaway.findMany({ where: { id: { in: newEndingGiveaways } } }));
+            this.endingGiveawayPool.push(...(await this.client.prisma.giveaway.findMany({ where: { id: { in: newEndingGiveaways } } })));
 
             // Since we pulled, it will be handled separately
-            for (const endingGiveawayId of newEndingGiveaways)
-                delete this.longGiveaways[endingGiveawayId];
+            for (const endingGiveawayId of newEndingGiveaways) delete this.longGiveaways[endingGiveawayId];
         }
 
         await Promise.allSettled(
-            Object
-                .values(this.participants)
-                .map(({ giveawayId, users }) =>
-                    this.client.prisma.giveaway.update({
-                        where: {
-                            id: giveawayId
-                        },
-                        data: {
-                            participants: users
-                        }
-                    })
-                )
+            Object.values(this.participants).map(({ giveawayId, users }) =>
+                this.client.prisma.giveaway.update({
+                    where: {
+                        id: giveawayId,
+                    },
+                    data: {
+                        participants: users,
+                    },
+                })
+            )
         );
     }
 
     async handleEndingGiveaways() {
-        console.log("Ticking ending giveaways")
+        console.log("Ticking ending giveaways");
         const now = Date.now();
 
         console.log("Ending giveaways", this.endingGiveawayPool);
-        for (const giveaway of this.endingGiveawayPool) try {
-            const { channelId, messageId } = giveaway;
+        for (const giveaway of this.endingGiveawayPool)
+            try {
+                const { channelId, messageId } = giveaway;
 
-            // End it
-            console.log("Is giveaway ending:", giveaway.endsAt.getTime() <= now, giveaway);
+                // End it
+                console.log("Is giveaway ending:", giveaway.endsAt.getTime() <= now, giveaway);
 
-            if (giveaway.endsAt.getTime() <= now) await this.concludeGiveaway(giveaway);
-            else await this.client.messages.update(channelId, messageId, this.createGiveawayEmbed(giveaway));
-        } catch(e) {
-            console.error("Error", e);
-        }
+                if (giveaway.endsAt.getTime() <= now) await this.concludeGiveaway(giveaway);
+                else await this.client.messages.update(channelId, messageId, this.createGiveawayEmbed(giveaway));
+            } catch (e) {
+                console.error("Error", e);
+            }
     }
 
     concludeGiveaway(giveaway: Giveaway) {
@@ -146,30 +140,26 @@ export class GiveawayUtil extends Util<TuxedoClient> {
             this.client.messageUtil.sendSuccessBlock(
                 channelId,
                 `Giveaway has concluded!`,
-                winners.length
-                ? `The giveaway has ended and winners have been picked.`
-                : `The giveaway has ended, but it seems that no one has joined the giveaway.`,
+                winners.length ? `The giveaway has ended and winners have been picked.` : `The giveaway has ended, but it seems that no one has joined the giveaway.`,
                 {
-                    fields: winners.length ? [
-                        {
-                            name: "Winners",
-                            value: winners.map(x => `<@${x}>`).join(", ")
-                        },
-                        {
-                            name: "Reward",
-                            value: giveaway.text
-                        }
-                    ] : undefined
+                    fields: winners.length
+                        ? [
+                              {
+                                  name: "Winners",
+                                  value: winners.map((x) => `<@${x}>`).join(", "),
+                              },
+                              {
+                                  name: "Reward",
+                                  value: giveaway.text,
+                              },
+                          ]
+                        : undefined,
                 },
                 {
-                    replyMessageIds: [giveaway.messageId]
+                    replyMessageIds: [giveaway.messageId],
                 }
             ),
-            this.client.prisma.giveaway
-                .delete({ where: { id: giveaway.id } })
-                .then(() =>
-                    this.removeGiveaway(giveaway.id, giveaway.messageId)
-                )
+            this.client.prisma.giveaway.delete({ where: { id: giveaway.id } }).then(() => this.removeGiveaway(giveaway.id, giveaway.messageId)),
         ]);
     }
 
@@ -178,17 +168,12 @@ export class GiveawayUtil extends Util<TuxedoClient> {
 
         return Promise.all([
             this.client.messages.update(channelId, messageId, this.createGiveawayEmbed(giveaway, true, true)),
-            this.client.prisma.giveaway
-                .delete({ where: { id: giveaway.id } })
-                .then(() =>
-                    this.removeGiveaway(giveaway.id, giveaway.messageId)
-                )
+            this.client.prisma.giveaway.delete({ where: { id: giveaway.id } }).then(() => this.removeGiveaway(giveaway.id, giveaway.messageId)),
         ]);
     }
 
     createGiveawayEmbed(giveaway: Omit<Giveaway, "messageId">, ended = false, canceled = false): Embed {
-        const endDateMessage =
-            canceled
+        const endDateMessage = canceled
             ? ":x: **Has been cancelled.**"
             : ended
             ? ":white_check_mark: **Has ended.**"
@@ -207,14 +192,14 @@ export class GiveawayUtil extends Util<TuxedoClient> {
                         **Giveaway ID:** ${inlineCode(giveaway.id)}
                         **Created by:** <@${giveaway.createdBy}>
                     `,
-                    inline: !ended
+                    inline: !ended,
                 },
                 !ended && {
                     name: "How to Join",
                     value: `React with :plus1: to join the giveaway!`,
-                    inline: true
-                }
-            ].filter(Boolean) as EmbedField[]
+                    inline: true,
+                },
+            ].filter(Boolean) as EmbedField[],
         });
     }
 }

@@ -1,8 +1,9 @@
 import { Collection } from "@discordjs/collection";
+
 import { Category, Command } from "../commands";
+import Conclude from "./Conclude.command";
 import Start from "./Start.command";
 import Stop from "./Stop.command";
-import Conclude from "./Conclude.command";
 
 const Giveaway: Command = {
     name: "giveaway",

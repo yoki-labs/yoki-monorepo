@@ -1,4 +1,5 @@
 import { inlineCode } from "@yokilabs/bot";
+
 import { Category, Command } from "../commands";
 
 const Stop: Command = {
@@ -11,8 +12,8 @@ const Stop: Command = {
     args: [
         {
             name: "id",
-            type: "string"
-        }
+            type: "string",
+        },
     ],
     execute: async (message, args, ctx) => {
         const id = args.id as string;
