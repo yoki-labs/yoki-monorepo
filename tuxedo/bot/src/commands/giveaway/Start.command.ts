@@ -24,7 +24,7 @@ const Start: Command = {
             type: "rest",
         },
     ],
-    execute: async (message, _args, ctx) => {
+    execute: (message, _args, ctx) => {
         const duration = _args.duration as number;
         const text = _args.text as string;
         const winnerCount = _args.winners as number;
