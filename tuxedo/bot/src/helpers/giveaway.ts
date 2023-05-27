@@ -20,7 +20,8 @@ export class GiveawayUtil extends Util<TuxedoClient> {
     constructor(client: TuxedoClient) {
         super(client);
 
-        this.longGiveaways = this.participants = {};
+        this.longGiveaways = {};
+        this.participants = {};
         this.endingGiveawayPool = [];
     }
 
@@ -76,8 +77,8 @@ export class GiveawayUtil extends Util<TuxedoClient> {
     // Tick giveaways every 20mins and complete the completed ones. If they will end faster than
     tickGiveaways() {
         console.log("Will start ticking giveaways");
-        setInterval(async () => await this.handleGiveaways(), tickIntervalMs);
-        setInterval(async () => await this.handleEndingGiveaways(), updateIntervalMs);
+        setInterval(this.handleGiveaways.bind(this), tickIntervalMs);
+        setInterval(this.handleEndingGiveaways.bind(this), updateIntervalMs);
 
         return this;
     }

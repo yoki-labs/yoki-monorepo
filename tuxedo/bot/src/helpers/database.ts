@@ -35,18 +35,16 @@ export class DatabaseUtil extends Util<TuxedoClient> {
                 id: nanoid(17),
                 serverId,
                 name,
-                tag
-            }
-        })
+                tag,
+            },
+        });
     }
 
     getCurrencies(serverId: string) {
-        return this.client.prisma.currency.findMany({ where: { serverId }});
+        return this.client.prisma.currency.findMany({ where: { serverId } });
     }
 
     async getCurrency(serverId: string, tag: string) {
-        return (await this.getCurrencies(serverId)).find(x => x.tag === tag);
+        return (await this.getCurrencies(serverId)).find((x) => x.tag === tag);
     }
-
-    
 }
