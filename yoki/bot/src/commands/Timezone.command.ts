@@ -8,7 +8,7 @@ const Timezone: Command = {
     name: "timezone",
     description: "Set or view the timezone of this server.",
     examples: ["America/New_York", ""],
-    category: Category.Settings,
+    category: Category.Custom,
     requiredRole: RoleType.ADMIN,
     args: [
         {

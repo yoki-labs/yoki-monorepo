@@ -25,7 +25,7 @@ const Privacy: Command = {
     description: "Gives the information in a private message about server's privacy on your content.",
     // usage: "",
     aliases: ["pr", "privacyreport"],
-    category: Category.Logs,
+    category: Category.Info,
     execute: async (message, _args, ctx) => {
         await ctx.messages.delete(message.channelId, message.id);
 

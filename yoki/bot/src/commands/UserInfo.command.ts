@@ -3,7 +3,7 @@ import { stripIndents } from "common-tags";
 import { Embed, Member } from "guilded.js";
 
 import { suspicious as sus } from "../utils/util";
-import type { Command } from "./commands";
+import { Category, Command } from "./commands";
 
 const UserInfo: Command = {
     name: "userinfo",
@@ -11,6 +11,7 @@ const UserInfo: Command = {
     // usage: "[id-of-user]",
     examples: ["0mqNyllA"],
     aliases: ["user"],
+    category: Category.Info,
     args: [
         {
             name: "target",

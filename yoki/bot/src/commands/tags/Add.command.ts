@@ -9,7 +9,7 @@ const Add: Command = {
     description: "Add a custom tag.",
     // usage: "<tag-name> <...tag-content>",
     subCommand: true,
-    category: Category.Tags,
+    category: Category.Info,
     requiredRole: RoleType.MOD,
     args: [
         {

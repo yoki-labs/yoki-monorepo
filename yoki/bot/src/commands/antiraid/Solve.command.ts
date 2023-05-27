@@ -7,7 +7,7 @@ const Solve: Command = {
     // usage: "<code>",
     aliases: ["verify"],
     examples: ["djAshAJ"],
-    category: Category.Antiraid,
+    category: Category.Entry,
     hidden: true,
     subCommand: true,
     subName: "solve",

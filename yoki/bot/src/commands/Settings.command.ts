@@ -72,7 +72,7 @@ const Settings: Command = {
     name: "settings",
     description: "View the settings of this server",
     // usage: "",
-    category: Category.Settings,
+    category: Category.Info,
     requiredRole: RoleType.ADMIN,
     execute: (message, _args, ctx, commandCtx) => {
         const embed = new Embed();

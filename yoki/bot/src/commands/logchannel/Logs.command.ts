@@ -12,7 +12,7 @@ const subCommands = new Collection<string, Command>().set("types", Types).set("l
 const LogChannel: Command = {
     name: "logs",
     subName: "logs",
-    category: Category.Logs,
+    category: Category.Settings,
     description: "Manage how logs are posted.",
     aliases: ["logchannel", "log"],
     parentCommand: true,

@@ -15,7 +15,7 @@ const Set: Command = {
     name: "logs-set",
     description: "Subscribe a specified channel to a specified log type.",
     subCommand: true,
-    category: Category.Logs,
+    category: Category.Settings,
     subName: "set",
     requiredRole: RoleType.ADMIN,
     // usage: "<channel> [logTypes]",

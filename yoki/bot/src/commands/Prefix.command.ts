@@ -8,7 +8,7 @@ const Prefix: Command = {
     description: "Set or view the prefix of this server.",
     // usage: "[new prefix]",
     examples: ["y?", ""],
-    category: Category.Settings,
+    category: Category.Custom,
     requiredRole: RoleType.ADMIN,
     args: [{ name: "newPrefix", display: "new prefix", type: "string", optional: true, max: 20 }],
     execute: async (message, args, ctx, commandCtx) => {

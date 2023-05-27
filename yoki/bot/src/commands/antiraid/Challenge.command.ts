@@ -17,7 +17,7 @@ const Challenge: Command = {
     description: "Set or view the response the bot takes when a user fails the age filter.",
     // usage: "[site|captcha|kick|none]",
     examples: ["captcha", "site"],
-    category: Category.Antiraid,
+    category: Category.Entry,
     subCommand: true,
     subName: "challenge",
     requiredRole: RoleType.ADMIN,

@@ -9,7 +9,7 @@ const Age: Command = {
     description: "Set or view the minimum account age requirement for users to be exempt from the antiraid.",
     // usage: "[duration]",
     examples: ["2d"],
-    category: Category.Antiraid,
+    category: Category.Entry,
     subCommand: true,
     subName: "age",
     requiredRole: RoleType.ADMIN,

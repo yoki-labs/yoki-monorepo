@@ -11,7 +11,7 @@ const Role: Command = {
     description: "Manages moderation roles.",
     // usage: "<threshold> <..args>",
     examples: ["mute", "mute 12345678"],
-    aliases: ["levels", "level", "modaction", "sv"],
+    aliases: ["roles", "r"],
     category: Category.Settings,
     requiredRole: RoleType.ADMIN,
     parentCommand: true,

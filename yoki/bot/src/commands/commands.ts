@@ -9,13 +9,13 @@ export type CommandContext = BaseCommandContext<Server>;
 export type Command = BaseCommand<Command, YokiClient, RoleType, Server>;
 
 export enum Category {
-    Settings = "Settings",
+    Custom = "Customization",
+    Settings = "Auto-moderation",
     Moderation = "Moderation",
+    Info = "Information",
+    Entry = "Server Entry",
     Modmail = "Modmail",
-    Tags = "Tags",
     Filter = "Filter",
-    Logs = "Logging",
-    Antiraid = "Antiraid",
-    Appeal = "Appeals",
-    Scan = "Scanning",
+    // Logs = "Logging",
+    // Scan = "Scanning",
 }

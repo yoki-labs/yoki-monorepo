@@ -9,7 +9,7 @@ const Channel: Command = {
     description: "Set or view the channel where appeals are sent.",
     // usage: "[channel-id]",
     examples: ["#appeals-channel"],
-    category: Category.Appeal,
+    category: Category.Entry,
     subCommand: true,
     subName: "channel",
     requiredRole: RoleType.ADMIN,

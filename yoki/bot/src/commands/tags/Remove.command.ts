@@ -9,7 +9,7 @@ const Remove: Command = {
     description: "Remove a custom tag.",
     // usage: "<tag-name>",
     subCommand: true,
-    category: Category.Tags,
+    category: Category.Info,
     requiredRole: RoleType.MOD,
     args: [
         {

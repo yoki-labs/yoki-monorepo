@@ -14,7 +14,7 @@ const List: Command = {
     // usage: "[channel]",
     examples: ["channel_id", ""],
     subCommand: true,
-    category: Category.Logs,
+    category: Category.Settings,
     subName: "list",
     requiredRole: RoleType.ADMIN,
     args: [{ name: "channel", type: "channel", optional: true }],

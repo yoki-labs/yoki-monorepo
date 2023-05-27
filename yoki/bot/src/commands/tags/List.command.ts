@@ -9,7 +9,7 @@ const List: Command = {
     description: "Get all the custom tags.",
     // usage: "",
     subCommand: true,
-    category: Category.Tags,
+    category: Category.Info,
     requiredRole: RoleType.MOD,
     args: [
         {

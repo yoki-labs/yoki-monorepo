@@ -16,7 +16,7 @@ const Remove: Command = {
     description: "Unsubscribe a specified channel from a specified log type.",
     // usage: "<channel> [logTypes]",
     subCommand: true,
-    category: Category.Logs,
+    category: Category.Settings,
     subName: "remove",
     requiredRole: RoleType.ADMIN,
     args: [

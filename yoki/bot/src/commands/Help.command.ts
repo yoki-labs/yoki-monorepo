@@ -45,7 +45,7 @@ const Help: Command = {
             .setFooter(`For additional info on a command, type ${inlineCode(`${commandCtx.server.getPrefix()}help [command]`)}`);
 
         commandCategoryMap.forEach((value, key) => {
-            embed.addField(key in Category ? Category[key] : key, listInlineCode(value.map((x) => x.name))!, value.length < 4);
+            embed.addField(key in Category ? Category[key] : key, listInlineCode(value.map((x) => x.name))!, value.length < 5);
         });
 
         return ctx.messageUtil.reply(message, { embeds: [embed] });

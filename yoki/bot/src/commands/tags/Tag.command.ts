@@ -11,7 +11,7 @@ const Tag: Command = {
     // usage: "<add | list | remove> <..args>",
     examples: ["add tag-1 this is the content for tag 1"],
     aliases: ["snippets", "customcommands", "tags"],
-    category: Category.Tags,
+    category: Category.Info,
     parentCommand: true,
     subCommands: new Collection<string, Command>().set("add", Add).set("remove", Remove).set("list", List),
     execute: () => void 0,
