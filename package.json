@@ -7,6 +7,7 @@
 	"scripts": {
 		"#": "Scripts for building the typescript/prisma code in all the services/packages. They're sectioned by shared local packages and services",
 		"build": "pnpm build:yoki && pnpm build:tuxedo",
+		"build:deps": "turbo run build --filter=@yokilabs/**",
 		"build:yoki": "turbo run generate --filter=@yoki/bot && turbo run build --filter=@yokilabs/** --filter=!@yoki/site --filter=!@yoki/api --filter=@yoki/**",
 		"build:tuxedo": "turbo run generate --filter=@tuxedo/bot && turbo run build --filter=@yokilabs/** --filter=@tuxedo/**",
 		"generate:yoki": "cd yoki/bot && pnpm generate",

@@ -15,7 +15,7 @@ RUN apk update \
 	&& corepack enable && corepack prepare pnpm@7.18.0 --activate
 
 # root /
-COPY tsconfig.json package.json ./
+COPY tsconfig.json package.json turbo.json ./
 COPY ./yokilabs ./yokilabs
 
 RUN pnpm install --silent
