@@ -50,6 +50,7 @@
 		"eslint-plugin-simple-import-sort": "^7.0.0",
 		"eslint-plugin-unused-imports": "^2.0.0",
 		"husky": "7.0.4",
+		"lint-staged": "12.3.7",
 		"prettier": "2.8.7",
 		"prisma": "~4.8.1",
 		"rimraf": "3.0.2",
@@ -65,10 +66,10 @@
 		"yoki/site",
 		"tuxedo/bot"
 	],
-	"prettier": {
-		"endOfLine": "auto",
-		"printWidth": 180,
-		"semi": true,
-		"tabWidth": 4
+	"lint-staged": {
+		"yokilabs/{bot,util}/src/*.{js,ts}": "npx eslint -c .eslintrc.js --fix",
+		"yoki/{bot,nsfw,api}/src/*.{js,ts}": "npx eslint -c .eslintrc.js --fix",
+		"tuxedo/**/*.{js,ts}": "npx eslint -c .eslintrc.js --fix",
+		"yoki/site/src/*.{ts,tsx}": "npx eslint -c .eslintrc.web.js --fix"
 	}
 }
