@@ -8,4 +8,5 @@ export type Command = BaseCommand<Command, TuxedoClient, RoleType, Server>;
 export enum Category {
     Events = "Events",
     Settings = "Settings",
+    Economy = "Economy",
 }

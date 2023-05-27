@@ -1,0 +1,1 @@
+export const TAG_REGEX = /^[A-Za-z0-9_-]$/g;

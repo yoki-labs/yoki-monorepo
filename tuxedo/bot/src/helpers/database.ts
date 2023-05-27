@@ -2,6 +2,7 @@ import { Util } from "@yokilabs/bot";
 
 import type { TuxedoClient } from "../Client";
 import type { Server } from "../typings";
+import { nanoid } from "nanoid";
 
 export class DatabaseUtil extends Util<TuxedoClient> {
     getServer(serverId: string, createIfNotExists?: true): Promise<Server>;
@@ -27,4 +28,25 @@ export class DatabaseUtil extends Util<TuxedoClient> {
             },
         });
     }
+
+    createCurrency(serverId: string, tag: string, name: string) {
+        return this.client.prisma.currency.create({
+            data: {
+                id: nanoid(17),
+                serverId,
+                name,
+                tag
+            }
+        })
+    }
+
+    getCurrencies(serverId: string) {
+        return this.client.prisma.currency.findMany({ where: { serverId }});
+    }
+
+    async getCurrency(serverId: string, tag: string) {
+        return (await this.getCurrencies(serverId)).find(x => x.tag === tag);
+    }
+
+    
 }
