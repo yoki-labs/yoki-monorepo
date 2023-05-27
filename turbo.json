@@ -11,6 +11,22 @@
         "dist"
       ]
     },
+    "@yoki/bot#build": {
+      "dependsOn": [
+        "@yokilabs/bot#build"
+      ],
+      "outputs": [
+        "dist"
+      ]
+    },
+    "@tuxedo/bot#build": {
+      "dependsOn": [
+        "@yokilabs/bot#build"
+      ],
+      "outputs": [
+        "dist"
+      ]
+    },
     "generate": {
       "dependsOn": [
         "^generate"
