@@ -2,8 +2,8 @@ name: CI workflows
 on: [push, pull_request]
 
 jobs:
-    quality:
-        name: Quality Check
+    lint:
+        name: Lint
         runs-on: ubuntu-latest
         env:
             TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
@@ -45,6 +45,47 @@ jobs:
 
             - name: Run linter
               run: pnpm lint
+
+    build:
+        name: Build TypeScript
+        runs-on: ubuntu-latest
+        env:
+            TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+            TURBO_TEAM: ${{ vars.TURBO_TEAM }}
+
+        steps:
+            - name: Clone repo
+              uses: actions/checkout@v3
+
+            - uses: pnpm/action-setup@v2
+              name: Install pnpm
+              id: pnpm-install
+              with:
+                  version: 7
+                  run_install: false
+
+            - name: Get pnpm store directory
+              id: pnpm-cache
+              shell: bash
+              run: |
+                  echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
+
+            - uses: actions/cache@v3
+              name: Setup pnpm cache
+              with:
+                  path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
+                  key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+                  restore-keys: |
+                      ${{ runner.os }}-pnpm-store-
+
+            - name: Set up Node v18
+              uses: actions/setup-node@v3
+              with:
+                  node-version: "18"
+                  cache: "pnpm"
+
+            - name: Install Dependencies
+              run: pnpm -r install
 
             - name: Build Yoki
               run: pnpm build:yoki
