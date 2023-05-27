@@ -10,7 +10,7 @@ export type Command = BaseCommand<Command, YokiClient, RoleType, Server>;
 
 export enum Category {
     Custom = "Customization",
-    Settings = "Auto-moderation",
+    Settings = "Automod",
     Moderation = "Moderation",
     Info = "Information",
     Entry = "Server Entry",
