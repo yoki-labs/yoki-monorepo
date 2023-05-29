@@ -7,6 +7,7 @@ import FeaturePreview from "../components/landing/previews/FeaturePreview";
 import YokiPreview from "../components/landing/previews/YokiPreview";
 import { HomePreview, HomeTextBlurb, HomeWrapper } from "../styles/components/home";
 import { Button } from "../styles/globals";
+import Statistic from "../components/landing/Statistic";
 
 const Home: NextPage = () => {
     const features = [
@@ -68,7 +69,7 @@ const Home: NextPage = () => {
                                     <a href="/support">Get Support</a>
                                 </Button>
                             </div>
-                            <p className="text-white text-gray-50 text-sm">
+                            <p className="text-gray-50 text-sm">
                                 Made by{" "}
                                 <a className="underline underline-offset-4" href="https://github.com/yoki-labs">
                                     Yoki Labs
@@ -79,6 +80,14 @@ const Home: NextPage = () => {
                             <YokiPreview />
                         </div>
                     </HomePreview>
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-8">
+                        <Statistic amount="20,000,000+" subText="Scanned" text="messages" />
+                        <Statistic amount="10,000+" subText="Actioned" text="cases" />
+                        <Statistic amount="1,400+" subText="Serving" text="servers" />
+                        <Statistic amount="90,000+" subText="Watching over" text="members" />
+                        <Statistic amount="9,000+" subText="Stopped" text="bad actors" />
+                        <Statistic amount="6,000+" subText="Served" text="captchas" />
+                    </div>
                     <HomeTextBlurb>
                         <h1>Why Yoki?</h1>
                         <p>Yoki delivers a reliable service from moderation to ...</p>

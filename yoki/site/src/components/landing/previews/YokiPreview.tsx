@@ -14,7 +14,7 @@ export default function YokiPreview() {
                 <p className="pt-4">A mod bot with a powerful set of tools to make your communities safer!</p>
                 <div className="flex space-x-4 pt-4">
                     <StatisticPreview Icon={Activity} text="1400+ Servers" />
-                    <StatisticPreview Icon={Users} text="10,000+ Members" />
+                    <StatisticPreview Icon={Users} text="93,000+ Members" />
                 </div>
             </div>
             <div className="py-4">

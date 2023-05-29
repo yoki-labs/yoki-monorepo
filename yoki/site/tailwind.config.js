@@ -60,6 +60,7 @@ module.exports = withMT({
                 custom: {
                     "dark-gray": "#0e0816",
                     gray: "#15101e",
+                    guildedGray: "#15171d",
                     guilded: "#F5C400",
                     black: "#111820",
                     gilded: "#F5C400",
