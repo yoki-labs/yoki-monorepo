@@ -2,15 +2,15 @@ import { Colors, inlineCode, summarizeRolesOrUsers } from "@yokilabs/bot";
 import { stripIndents } from "common-tags";
 import { Embed, Member } from "guilded.js";
 
-import { suspicious as sus } from "../utils/util";
-import { Category, Command } from "./commands";
+import { suspicious as sus } from "../../utils/util";
+import { Category, Command } from "../commands";
 
 const UserInfo: Command = {
     name: "userinfo",
     description: "View information about a user or yourself.",
     // usage: "[id-of-user]",
     examples: ["0mqNyllA"],
-    aliases: ["user"],
+    aliases: ["user", "ui"],
     category: Category.Info,
     args: [
         {
