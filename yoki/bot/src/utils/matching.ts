@@ -2,7 +2,7 @@
 export const IMAGE_REGEX = /!\[[^\]]*\]\((?<filename>.*?)(?=\"|\))(?<optionalpart>\".*\")?\)/g;
 
 // --- URL matching ---
-const routeSymbol = "[^?#&\\s/]";
+const routeSymbol = "[^?#&\\s/\\]]";
 const domainSymbol = "[^!@#$%^&*()?<>.,~`'\":;\\\\\\/|\\s()\\[\\]]";
 
 // // URL parts
