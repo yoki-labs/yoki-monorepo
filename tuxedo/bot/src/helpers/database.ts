@@ -1,10 +1,10 @@
 import { Util } from "@yokilabs/bot";
 
-import type { TuxedoClient } from "../Client";
+import type { TuxoClient } from "../Client";
 import type { Server } from "../typings";
 import { nanoid } from "nanoid";
 
-export class DatabaseUtil extends Util<TuxedoClient> {
+export class DatabaseUtil extends Util<TuxoClient> {
     getServer(serverId: string, createIfNotExists?: true): Promise<Server>;
     getServer(serverId: string, createIfNotExists: false): Promise<Server | null>;
     getServer(serverId: string, createIfNotExists = true): Promise<Server | null> {

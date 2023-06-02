@@ -3,7 +3,7 @@ import { config } from "dotenv";
 import { WebhookEmbed } from "guilded.js";
 import { join } from "path";
 
-import { TuxedoClient } from "./Client";
+import { TuxoClient } from "./Client";
 
 // Load env variables
 config({ path: join(__dirname, "..", "..", ".env") });
@@ -13,7 +13,7 @@ config({ path: join(__dirname, "..", "..", ".env") });
     if (!process.env[x]) throw new Error(`Missing env var ${x}`);
 });
 
-const client = new TuxedoClient({ token: process.env.GUILDED_TOKEN! }, process.env.DEFAULT_PREFIX!);
+const client = new TuxoClient({ token: process.env.GUILDED_TOKEN! }, process.env.DEFAULT_PREFIX!);
 
 client.ws.emitter.on("error", (err) => {
     console.log(`[WS ERR]: ${err}`);

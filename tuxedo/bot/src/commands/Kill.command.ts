@@ -2,7 +2,7 @@ import type { Command } from "./commands";
 
 const Kill: Command = {
     name: "kill",
-    description: "Terminate Tuxedo's process.",
+    description: "Terminate Tuxo's process.",
     hidden: true,
     // usage: "",
     devOnly: true,

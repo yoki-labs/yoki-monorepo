@@ -2,12 +2,12 @@ import type { Server as DBServer, RoleType } from "@prisma/client";
 import type { BaseCommand, CommandContext as BaseCommandContext, GEvent as AbstractGEvent } from "@yokilabs/bot";
 import type { ClientEvents } from "guilded.js";
 
-import type { TuxedoClient } from "./Client";
+import type { TuxoClient } from "./Client";
 
 export type CommandContext = BaseCommandContext<Server>;
 
-export type Command = BaseCommand<Command, TuxedoClient, RoleType, Server>;
+export type Command = BaseCommand<Command, TuxoClient, RoleType, Server>;
 
 export type Server = DBServer & { getPrefix: () => string };
 
-export type GEvent<T extends keyof ClientEvents> = AbstractGEvent<TuxedoClient, T>;
+export type GEvent<T extends keyof ClientEvents> = AbstractGEvent<TuxoClient, T>;

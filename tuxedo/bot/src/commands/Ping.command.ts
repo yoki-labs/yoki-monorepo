@@ -4,7 +4,7 @@ import type { Command } from "./commands";
 
 const Ping: Command = {
     name: "ping",
-    description: "Check Tuxedo's latency.",
+    description: "Check Tuxo's latency.",
     // usage: "",
     aliases: ["p"],
     execute: (message, _args, ctx) =>

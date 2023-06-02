@@ -8,19 +8,19 @@ import type { Command, Server } from "./typings";
 /**
  * Main class that stores utils, connections to various providers, and ws
  */
-export class TuxedoClient extends AbstractClient<TuxedoClient, Server, Command> {
+export class TuxoClient extends AbstractClient<TuxoClient, Server, Command> {
     // database connection
     readonly prisma = new PrismaClient();
 
     // Util
-    readonly roleUtil: RoleUtil<TuxedoClient> = new RoleUtil<TuxedoClient>(this);
+    readonly roleUtil: RoleUtil<TuxoClient> = new RoleUtil<TuxoClient>(this);
 
-    readonly messageUtil: MessageUtil<TuxedoClient, Server, Command> = new MessageUtil<TuxedoClient, Server, Command>(this);
+    readonly messageUtil: MessageUtil<TuxoClient, Server, Command> = new MessageUtil<TuxoClient, Server, Command>(this);
 
     readonly dbUtil: DatabaseUtil = new DatabaseUtil(this);
 
     readonly giveawayUtil: GiveawayUtil = new GiveawayUtil(this);
 
     // events that this bot handles, directly from the ws manager
-    readonly eventHandler: { [x: string]: (packet: any, ctx: TuxedoClient, server: Server) => Promise<unknown> } = {};
+    readonly eventHandler: { [x: string]: (packet: any, ctx: TuxoClient, server: Server) => Promise<unknown> } = {};
 }

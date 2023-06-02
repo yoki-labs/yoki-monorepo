@@ -5,19 +5,19 @@ import { Embed, EmbedField } from "guilded.js";
 import ms from "ms";
 import { nanoid } from "nanoid";
 
-import { TuxedoClient } from "../Client";
+import { TuxoClient } from "../Client";
 
 const tickIntervalMs = 10 * 60 * 1000;
 const updateIntervalMs = 60 * 1000;
 export const defaultGiveawayEmote = 90002569;
 
-export class GiveawayUtil extends Util<TuxedoClient> {
+export class GiveawayUtil extends Util<TuxoClient> {
     longGiveaways: Record<string, { messageId: string; endsAt: number }>;
     endingGiveawayPool: Giveaway[];
     participants: Record<string, { giveawayId: string; users: string[] }>;
 
     // --- Initialization ---
-    constructor(client: TuxedoClient) {
+    constructor(client: TuxoClient) {
         super(client);
 
         this.longGiveaways = {};

@@ -10,7 +10,7 @@ const Invite: Command = {
             user_id: message.createdById,
             event_properties: { serverId: message.serverId },
         });
-        return ctx.messageUtil.replyWithInfo(message, `Invite the bot`, `[**Click here**]() to invite Tuxedo to your server.`, undefined, {
+        return ctx.messageUtil.replyWithInfo(message, `Invite the bot`, `[**Click here**]() to invite Tuxo to your server.`, undefined, {
             isPrivate: true,
         });
     },

@@ -7,7 +7,7 @@ const categories = Object.values(Category) as string[];
 
 const Help: Command = {
     name: "help",
-    description: "View a list of Tuxedo's commands.",
+    description: "View a list of Tuxo's commands.",
     // usage: "[command path]",
     examples: ["", "ping"],
     aliases: ["commands", "command", "all", "h"],
@@ -35,7 +35,7 @@ const Help: Command = {
         const commandCategoryMap = getAllCommands(ctx.commands, categories);
 
         const embed = new Embed()
-            .setTitle("Tuxedo Command List")
+            .setTitle("Tuxo Command List")
             .setColor(Colors.blockBackground)
             .setDescription(":link: [Join server](https://yoki.gg/support) • [Invite bot](https://yoki.gg/invite)")
             .setFooter(`For additional info on a command, type ${inlineCode(`${commandCtx.server.getPrefix()}help [command]`)}`);
