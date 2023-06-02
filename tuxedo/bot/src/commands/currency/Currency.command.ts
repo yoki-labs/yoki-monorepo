@@ -1,6 +1,9 @@
 import { Collection } from "@discordjs/collection";
 import { Category, Command } from "../commands";
 import Create from "./Create.command";
+import { RoleType } from "@prisma/client";
+import List from "./List.command";
+import Delete from "./Delete.command";
 
 const Currency: Command = {
     name: "currency",
@@ -8,8 +11,8 @@ const Currency: Command = {
     examples: [],
     parentCommand: true,
     category: Category.Economy,
-    // requiredRole: RoleType.ADMIN,
-    subCommands: new Collection<string, Command>().set("create", Create),
+    requiredRole: RoleType.ADMIN,
+    subCommands: new Collection<string, Command>().set("create", Create).set("list", List).set("delete", Delete),
     execute: () => void 0,
 };
 

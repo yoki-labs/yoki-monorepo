@@ -1,6 +1,7 @@
 import { inlineCode } from "@yokilabs/bot";
 import { TAG_REGEX } from "../../util/matching";
 import { Category, Command } from "../commands";
+import { RoleType } from "@prisma/client";
 
 const Create: Command = {
     name: "currency-create",
@@ -8,7 +9,7 @@ const Create: Command = {
     subName: "create",
     subCommand: true,
     category: Category.Economy,
-    // requiredRole: RoleType.MOD,
+    requiredRole: RoleType.ADMIN,
     args: [
         {
             name: "tag",
@@ -22,7 +23,7 @@ const Create: Command = {
         },
     ],
     execute: async (message, args, ctx) => {
-        const tag = args.tag as string;
+        const tag = (args.tag as string).toLowerCase();
         const name = args.name as string;
 
         if (!TAG_REGEX.test(tag))
@@ -33,12 +34,16 @@ const Create: Command = {
             );
 
         // Tags are supposed to be unique
-        if (await ctx.dbUtil.getCurrency(message.serverId!, tag))
+        const currencies = await ctx.dbUtil.getCurrencies(message.serverId!);
+
+        if (currencies.find(x => x.tag === tag))
             return ctx.messageUtil.replyWithError(message, "Already exists", `The currency with tag $${inlineCode(tag)} already exists.`);
+        else if (currencies.length >= 3)
+            return ctx.messageUtil.replyWithError(message, "Too many currencies", `You have created the maximum amount of currencies there can be.`);
 
-        await ctx.dbUtil.createCurrency(message.serverId!, tag, name);
+        await ctx.dbUtil.createCurrency(message.serverId!, tag, name, message.createdById);
 
-        return ctx.messageUtil.replyWithSuccess(message, "Currency created", `Currency $${inlineCode(tag)} has been successfully created.`);
+        return ctx.messageUtil.replyWithSuccess(message, "Currency created", `Currency ${inlineCode(`$${tag}`)} has been successfully created.`);
     },
 };
 

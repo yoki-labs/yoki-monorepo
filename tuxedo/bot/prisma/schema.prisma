@@ -8,13 +8,20 @@ datasource db {
 }
 
 model Server {
-    id          Int          @id @default(autoincrement())
-    serverId    String       @unique @db.VarChar(255)
-    botJoinedAt DateTime?    @default(now())
+    id       Int    @id @default(autoincrement())
+    serverId String @unique @db.VarChar(255)
+
+    // --- Specified by the bot
     premium     PremiumType?
-    locale      String       @default("en-US")
-    prefix      String?
     blacklisted Boolean      @default(false)
+    flags       String[]
+
+    // --- Server preferences
+    prefix   String?
+    locale   String  @default("en-US")
+    timezone String?
+
+    botJoinedAt DateTime? @default(now())
 }
 
 model Giveaway {
@@ -27,21 +34,26 @@ model Giveaway {
     text         String   @db.VarChar(200)
     // Who, when
     participants String[]
+    winners      String[] @default([])
     winnerCount  Int
     endsAt       DateTime
+    hasEnded     Boolean  @default(false)
     createdBy    String   @db.VarChar(255)
     createdAt    DateTime @default(now())
 }
 
 model Currency {
     // Basics
-    id              String @id @db.VarChar(255)
-    serverId        String @db.VarChar(255)
-    name            String @db.VarChar(100)
-    tag             String @db.VarChar(16)
+    id              String   @id @db.VarChar(255)
+    serverId        String   @db.VarChar(255)
+    name            String   @db.VarChar(100)
+    tag             String   @db.VarChar(16)
     // Perks
     startingBalance Int?
     maximumBalance  Int?
+    // Who, when
+    createdBy       String   @db.VarChar(255)
+    createdAt       DateTime @default(now())
 }
 
 model ServerMember {

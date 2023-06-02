@@ -7,7 +7,8 @@ import { RoleType } from "@prisma/client";
 export type Command = BaseCommand<Command, TuxoClient, RoleType, Server>;
 
 export enum Category {
-    Events = "Events",
     Settings = "Settings",
     Economy = "Economy",
+    Events = "Events",
+    Income = "Income",
 }

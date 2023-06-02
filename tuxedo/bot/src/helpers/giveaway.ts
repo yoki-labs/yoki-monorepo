@@ -26,16 +26,21 @@ export class GiveawayUtil extends Util<TuxoClient> {
     }
 
     addGiveaway(giveaway: Giveaway) {
-        this.longGiveaways[giveaway.id] = { messageId: giveaway.messageId, endsAt: giveaway.endsAt.getTime() };
+        // To end it before the next tick if it's ending
+        if ((giveaway.endsAt.getTime() - Date.now()) < tickIntervalMs) this.endingGiveawayPool.push(giveaway);
+        else this.longGiveaways[giveaway.id] = { messageId: giveaway.messageId, endsAt: giveaway.endsAt.getTime() };
+
         this.participants[giveaway.messageId] = { giveawayId: giveaway.id, users: giveaway.participants };
     }
 
-    async createGiveaway(data: Omit<Giveaway, "id" | "messageId" | "createdAt" | "participants">) {
+    async createGiveaway(data: Omit<Giveaway, "id" | "messageId" | "createdAt" | "participants" | "winners" | "hasEnded">) {
         // Data for giveaway creation
         const partialData = {
             id: nanoid(17),
             createdAt: new Date(),
             participants: [],
+            hasEnded: false,
+            winners: [],
             ...data,
         };
 
@@ -58,17 +63,19 @@ export class GiveawayUtil extends Util<TuxoClient> {
         const message = messageId ?? this.longGiveaways[giveawayId].messageId;
 
         delete this.longGiveaways[giveawayId];
-        delete this.endingGiveawayPool[giveawayId];
+        this.endingGiveawayPool.splice(this.endingGiveawayPool.findIndex(x => x.id === giveawayId), 1);
         delete this.participants[message];
 
         return this;
     }
 
     async cacheGiveaways() {
-        const activeGiveaways = await this.client.prisma.giveaway.findMany();
+        // Find non-expired giveaways
+        const activeGiveaways = await this.client.prisma.giveaway.findMany({ where: { hasEnded: false } });
 
         console.log("Found giveaways", activeGiveaways);
-        for (const giveaway of activeGiveaways) this.addGiveaway(giveaway);
+        for (const giveaway of activeGiveaways)
+            this.addGiveaway(giveaway);
 
         return this;
     }
@@ -161,7 +168,7 @@ export class GiveawayUtil extends Util<TuxoClient> {
                     replyMessageIds: [giveaway.messageId],
                 }
             ),
-            this.client.prisma.giveaway.update({ where: { id: giveaway.id }, data: { participants, endsAt: new Date() } }),
+            this.client.prisma.giveaway.update({ where: { id: giveaway.id }, data: { participants, hasEnded: true, winners } }),
             // this.client.prisma.giveaway.delete({ where: { id: giveaway.id } }).then(() => this.removeGiveaway(giveaway.id, giveaway.messageId)),
         ]);
 
@@ -170,10 +177,11 @@ export class GiveawayUtil extends Util<TuxoClient> {
 
     async cancelGiveaway(giveaway: Giveaway) {
         const { channelId, messageId } = giveaway;
+        const participants = this.participants[giveaway.messageId]?.users ?? giveaway.participants;
 
         await Promise.all([
             this.client.messages.update(channelId, messageId, this.createGiveawayEmbed(giveaway, true, true)),
-            this.client.prisma.giveaway.update({ where: { id: giveaway.id }, data: { participants: this.participants[giveaway.messageId].users, endsAt: new Date() } })
+            this.client.prisma.giveaway.update({ where: { id: giveaway.id }, data: { participants, hasEnded: true, winners: [] } })
             //this.client.prisma.giveaway.delete({ where: { id: giveaway.id } }).then(() => this.removeGiveaway(giveaway.id, giveaway.messageId)),
         ]);
 
@@ -184,13 +192,13 @@ export class GiveawayUtil extends Util<TuxoClient> {
         const endDateMessage = canceled
             ? ":x: **Has been cancelled.**"
             : ended
-            ? ":white_check_mark: **Has ended.**"
+            ? ":white_check_mark: **Has concluded the winners.**"
             : `**Ends in:** ${giveaway.endsAt} (${ms(giveaway.endsAt.getTime() - Date.now(), { long: true })} left)`;
 
         return new Embed({
             title: ended ? ":tada: Giveaway has ended!" : ":tada: Giveaway has started!",
             description: giveaway.text,
-            color: Colors.blockBackground,
+            color: canceled ? Colors.red : ended ? Colors.green : Colors.blockBackground,
             fields: [
                 {
                     name: "Information",
