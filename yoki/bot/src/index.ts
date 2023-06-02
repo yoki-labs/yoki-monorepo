@@ -36,7 +36,6 @@ client.ws.emitter.on("error", (err, errInfo, data) => {
     void client.errorHandler.send(`Error in command usage! ${err}`, [errorEmbed(err, data)]);
 });
 
-client.ws.emitter.on("debug", console.log);
 client.ws.emitter.on("exit", (reason) => {
     console.log(reason);
     // console.log("Restarting...");
@@ -44,7 +43,6 @@ client.ws.emitter.on("exit", (reason) => {
 });
 client.rest.emitter.on("error", (req, res) => console.log(`[REST:ERR]: req - ${JSON.stringify(req)}\nRes - ${JSON.stringify(res)}`));
 client.rest.emitter.on("ratelimit", (data) => console.log(`[RATELIMIT]: ${JSON.stringify(data)}`));
-client.rest.emitter.on("request", (req) => console.log(`[REQ]: ${JSON.stringify(req)}`));
 
 // This is for any custom events that we emit
 client.emitter.on("ActionIssued", client.customEventHandler.ActionIssued);
