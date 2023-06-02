@@ -124,9 +124,11 @@ export function createCommandHandler<
                     const subCommandName = command.subCommands.firstKey();
                     const subCommand = command.subCommands.get(subCommandName as string)!;
 
-                    return ctx.messageUtil.replyWithInfo(message, `${inlineCode(command.name.split("-").join(" "))} command`, command.description, {
-                        fields: [...ctx.messageUtil.createSubCommandFields(command.subCommands), ctx.messageUtil.createExampleField(subCommand, prefix)],
-                    });
+                    // Don't show operator commands to non-operators
+                    if ((!command.devOnly || ctx.operators.includes(message.createdById)))
+                        return ctx.messageUtil.replyWithInfo(message, `${inlineCode(command.name.split("-").join(" "))} command`, command.description, {
+                            fields: [...ctx.messageUtil.createSubCommandFields(command.subCommands), ctx.messageUtil.createExampleField(subCommand, prefix)],
+                        });
                 }
                 const subCommand = command.subCommands.get(args[0]);
                 // If not a valid sub command, list all the proper ones
@@ -136,11 +138,14 @@ export function createCommandHandler<
                         user_id: message.createdById,
                         event_properties: { serverId: message.serverId, command: command.name },
                     });
-                    return ctx.messageUtil.replyWithError(message, `No such sub-command`, `The specified sub-command ${inlineQuote(args[0], 100)} could not be found.`, {
-                        fields: [...ctx.messageUtil.createSubCommandFields(command.subCommands), ctx.messageUtil.createExampleField(command, prefix)],
-                    });
+
+                    // Don't show operator commands to non-operators
+                    if ((!command.devOnly || ctx.operators.includes(message.createdById)))
+                        return ctx.messageUtil.replyWithError(message, `No such sub-command`, `The specified sub-command ${inlineQuote(args[0], 100)} could not be found.`, {
+                            fields: [...ctx.messageUtil.createSubCommandFields(command.subCommands), ctx.messageUtil.createExampleField(command, prefix)],
+                        });
                 }
-                command = subCommand;
+                command = subCommand!;
                 // Remove the sub command from the list of args, as that's the command name
                 args = args.slice(1);
             }
