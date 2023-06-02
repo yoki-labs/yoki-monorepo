@@ -1,11 +1,14 @@
 import { createCommandHandler } from "@yokilabs/bot";
 
 import type { TuxedoClient } from "../../Client";
-import type { Command, GEvent, RoleType, Server } from "../../typings";
+import type { Command, GEvent, Server } from "../../typings";
+import { RoleType } from "@prisma/client";
+import { RoleTypeValues } from "../../util/values";
 
-const { fetchPrefix, parseCommand, fetchCommandInfo, resolveArguments, checkUserPermissions, tryExecuteCommand } = createCommandHandler<TuxedoClient, Server, Command, RoleType>({
-    MOD: 0,
-});
+const { fetchPrefix, parseCommand, fetchCommandInfo, resolveArguments, checkUserPermissions, tryExecuteCommand } = createCommandHandler<TuxedoClient, Server, Command, RoleType>(RoleTypeValues);
+
+// Fetches minimod/mod/admin roles
+const fetchServerRoles = (ctx: TuxedoClient, serverId: string) => ctx.prisma.role.findMany({ where: { serverId } });
 
 const fn = fetchPrefix.bind(
     null,
@@ -15,7 +18,7 @@ const fn = fetchPrefix.bind(
 
         // Get the command's sub-commands, args and then execute it
         return fetchCommandInfo(
-            checkUserPermissions.bind(null, resolveArguments.bind(null, tryExecuteCommand), () => Promise.resolve([])),
+            checkUserPermissions.bind(null, resolveArguments.bind(null, tryExecuteCommand), fetchServerRoles),
             context,
             server,
             prefix,

@@ -53,8 +53,25 @@ model ServerMember {
     balance  Json   @db.JsonB
 }
 
+// Copied from Yoki
+model Role {
+    id        Int      @id @default(autoincrement())
+    serverId  String   @db.VarChar(255)
+    roleId    Int      @db.Integer
+    createdAt DateTime @default(now())
+    type      RoleType
+
+    @@unique([serverId, roleId, type])
+}
+
 enum PremiumType {
     Gold
     Silver
     Copper
+}
+
+enum RoleType {
+    MINIMOD
+    MOD
+    ADMIN
 }

@@ -132,11 +132,12 @@ export class GiveawayUtil extends Util<TuxedoClient> {
             }
     }
 
-    concludeGiveaway(giveaway: Giveaway) {
+    async concludeGiveaway(giveaway: Giveaway) {
         const { channelId, messageId } = giveaway;
-        const winners = shuffleArray(this.participants[giveaway.messageId].users).slice(0, giveaway.winnerCount);
+        const participants = this.participants[giveaway.messageId]?.users ?? giveaway.participants;
+        const winners = shuffleArray(participants).slice(0, giveaway.winnerCount);
 
-        return Promise.all([
+        await Promise.all([
             this.client.messages.update(channelId, messageId, this.createGiveawayEmbed(giveaway, true)),
             this.client.messageUtil.sendSuccessBlock(
                 channelId,
@@ -160,17 +161,23 @@ export class GiveawayUtil extends Util<TuxedoClient> {
                     replyMessageIds: [giveaway.messageId],
                 }
             ),
-            this.client.prisma.giveaway.delete({ where: { id: giveaway.id } }).then(() => this.removeGiveaway(giveaway.id, giveaway.messageId)),
+            this.client.prisma.giveaway.update({ where: { id: giveaway.id }, data: { participants, endsAt: new Date() } }),
+            // this.client.prisma.giveaway.delete({ where: { id: giveaway.id } }).then(() => this.removeGiveaway(giveaway.id, giveaway.messageId)),
         ]);
+
+        this.removeGiveaway(giveaway.id, giveaway.messageId);
     }
 
-    cancelGiveaway(giveaway: Giveaway) {
+    async cancelGiveaway(giveaway: Giveaway) {
         const { channelId, messageId } = giveaway;
 
-        return Promise.all([
+        await Promise.all([
             this.client.messages.update(channelId, messageId, this.createGiveawayEmbed(giveaway, true, true)),
-            this.client.prisma.giveaway.delete({ where: { id: giveaway.id } }).then(() => this.removeGiveaway(giveaway.id, giveaway.messageId)),
+            this.client.prisma.giveaway.update({ where: { id: giveaway.id }, data: { participants: this.participants[giveaway.messageId].users, endsAt: new Date() } })
+            //this.client.prisma.giveaway.delete({ where: { id: giveaway.id } }).then(() => this.removeGiveaway(giveaway.id, giveaway.messageId)),
         ]);
+
+        this.removeGiveaway(giveaway.id, giveaway.messageId);
     }
 
     createGiveawayEmbed(giveaway: Omit<Giveaway, "messageId">, ended = false, canceled = false): Embed {
@@ -181,7 +188,7 @@ export class GiveawayUtil extends Util<TuxedoClient> {
             : `**Ends in:** ${giveaway.endsAt} (${ms(giveaway.endsAt.getTime() - Date.now(), { long: true })} left)`;
 
         return new Embed({
-            title: ":tada: Giveaway has been started!",
+            title: ended ? ":tada: Giveaway has ended!" : ":tada: Giveaway has started!",
             description: giveaway.text,
             color: Colors.blockBackground,
             fields: [

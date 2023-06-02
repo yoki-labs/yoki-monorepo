@@ -1,3 +1,4 @@
+import { RoleType } from "@prisma/client";
 import { Category, Command } from "../commands";
 
 const minDuration = 15 * 60 * 1000;
@@ -5,11 +6,11 @@ const maxDuration = 14 * 24 * 60 * 60 * 1000;
 
 const Start: Command = {
     name: "giveaway-start",
-    description: "Creates a new giveaway",
+    description: "Creates a new giveaway that people can join and randomly win.",
     subName: "start",
     subCommand: true,
     category: Category.Events,
-    // requiredRole: RoleType.MOD,
+    requiredRole: RoleType.MINIMOD,
     args: [
         {
             name: "duration",

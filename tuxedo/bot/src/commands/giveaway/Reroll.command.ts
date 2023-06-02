@@ -3,10 +3,10 @@ import { inlineCode } from "@yokilabs/bot";
 import { Category, Command } from "../commands";
 import { RoleType } from "@prisma/client";
 
-const Conclude: Command = {
-    name: "giveaway-conclude",
-    description: "Concludes an on-going giveaway and shows the winners early",
-    subName: "conclude",
+const Reroll: Command = {
+    name: "giveaway-reroll",
+    description: "Rerolls the winners of the giveaway.",
+    subName: "reroll",
     subCommand: true,
     category: Category.Events,
     requiredRole: RoleType.MINIMOD,
@@ -27,4 +27,4 @@ const Conclude: Command = {
     },
 };
 
-export default Conclude;
+export default Reroll;
