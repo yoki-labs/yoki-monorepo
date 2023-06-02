@@ -31,7 +31,7 @@ export interface UrlRegexGroups {
 }
 
 export const URL_REGEX = new RegExp(URL_REGEX_RAW, "gi");
-export const ONLY_URL_REGEX = new RegExp(`^${URL_REGEX_RAW}$`, "i");
+export const ONLY_URL_REGEX = new RegExp(`^${URL_PROTOCOL}?${URL_SUBDOMAIN("subdomain")}?${URL_DOMAIN("domain")}${URL_ROUTE("route")}?$`, "i");
 
 // Domain, route, subdomain, / ? #, https://
 export const MAX_URL_LENGTH = 255 + 200 + 100 + 3 + 8;
