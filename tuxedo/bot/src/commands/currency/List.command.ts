@@ -19,7 +19,7 @@ const List: Command = {
             message,
             "Server's currencies",
             currencies
-                .map(x => `- ${inlineQuote(x.name)} (${inlineCode(x.tag)}) by <@${x.createdBy}>`)
+                .map(x => `- ${inlineQuote(x.name)} (${inlineCode(x.tag)})`)
                 .join("\n")
         );
     },

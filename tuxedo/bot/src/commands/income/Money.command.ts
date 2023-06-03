@@ -6,7 +6,6 @@ import { Category, Command } from "../commands";
 const Money: Command = {
     name: "money",
     description: "View economical information about a user or yourself.",
-    // usage: "[id-of-user]",
     examples: ["0mqNyllA"],
     aliases: ["balance", "m"],
     category: Category.Income,

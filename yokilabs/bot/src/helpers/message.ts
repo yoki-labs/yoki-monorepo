@@ -306,13 +306,12 @@ export class MessageUtil<
         );
     }
 
-    // Special blocks
     replyWithPaginatedContent<T>(info: {
         replyTo: Message;
         title: string;
         items: T[];
         itemsPerPage: number;
-        itemMapping: (item: T) => string | T;
+        itemMapping: (item: T, index: number) => string | T;
         page?: number;
         embed?: EmbedPayload;
         message?: Partial<MessageBody>;

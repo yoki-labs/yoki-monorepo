@@ -1,4 +1,4 @@
-import { inlineCode } from "@yokilabs/bot";
+import { inlineQuote } from "@yokilabs/bot";
 import { TAG_REGEX } from "../../util/matching";
 import { Category, Command } from "../commands";
 import { RoleType } from "@prisma/client";
@@ -31,11 +31,11 @@ const Delete: Command = {
 
         // Currency needs to exist for it to be deleted
         if (!currency)
-            return ctx.messageUtil.replyWithError(message, "Doesn't exist", `The currency with tag $${inlineCode(tag)} does not exist and cannot be deleted.`);
+            return ctx.messageUtil.replyWithError(message, "Doesn't exist", `The currency with tag ${inlineQuote(tag)} does not exist and cannot be deleted.`);
 
         await ctx.dbUtil.deleteCurrency(currency);
 
-        return ctx.messageUtil.replyWithSuccess(message, "Currency deleted", `Currency ${inlineCode(`$${tag}`)} has been successfully deleted.`);
+        return ctx.messageUtil.replyWithSuccess(message, "Currency deleted", `Currency with the tag ${inlineQuote(tag)} has been successfully deleted.`);
     },
 };
 

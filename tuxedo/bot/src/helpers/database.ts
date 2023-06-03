@@ -3,7 +3,7 @@ import { Util } from "@yokilabs/bot";
 import type { TuxoClient } from "../Client";
 import type { Server } from "../typings";
 import { nanoid } from "nanoid";
-import { Currency } from "@prisma/client";
+import { Currency, ServerMember } from "@prisma/client";
 
 export class DatabaseUtil extends Util<TuxoClient> {
     getServer(serverId: string, createIfNotExists?: true): Promise<Server>;
@@ -19,15 +19,29 @@ export class DatabaseUtil extends Util<TuxoClient> {
     }
 
     createFreshServerInDatabase(serverId: string, data?: Record<string, any>) {
-        return this.client.prisma.server.create({
-            data: {
-                serverId,
-                locale: "en-US",
-                premium: null,
-                prefix: null,
-                ...data,
-            },
-        });
+        return Promise.all([
+            this.client.prisma.server.create({
+                data: {
+                    serverId,
+                    locale: "en-US",
+                    premium: null,
+                    prefix: null,
+                    ...data,
+                },
+            }),
+            // Default configuration
+            this.client.prisma.currency.create({
+                data: {
+                    id: nanoid(17),
+                    serverId,
+                    name: "Points",
+                    tag: "point",
+                    createdBy: this.client.user!.id
+                }
+            })
+        ])
+            // Only server is necessary
+            .then(([server]) => server);
     }
     
     getCurrencies(serverId: string) {
@@ -65,7 +79,37 @@ export class DatabaseUtil extends Util<TuxoClient> {
         return this.client.prisma.serverMember.findMany({ where: { serverId } });
     }
 
-    getServerMember(serverId: string, memberId: string) {
-        return this.getServerMembers(serverId).then(x => x.find(x => x.userId === memberId));
+    getServerMember(serverId: string, userId: string) {
+        return this.getServerMembers(serverId).then(x => x.find(x => x.userId === userId));
+    }
+
+    createServerMember(serverId: string, userId: string, balance: Record<string, number>) {
+        return this.client.prisma.serverMember.create({ data: { id: nanoid(17), serverId, userId, balance } })
+    }
+
+    updateServerMember(member: ServerMember, balance: Record<string, number>) {
+        const newBalance = {};
+
+        // Combine gained value and old value
+        for (const currency in balance)
+            newBalance[currency] = member.balance ? member.balance[currency] + (balance[currency] ?? 0) : balance[currency];
+        
+        return this.client.prisma.serverMember.update({
+            where: {
+                id: member.id
+            },
+            data: {
+                balance: newBalance
+            }
+        })
+    }
+
+    async updateServerMemberBalance(serverId: string, userId: string, balanceChanges: Record<string, number>) {
+        const member = await this.getServerMember(serverId, userId);
+
+        if (!member)
+            return this.createServerMember(serverId, userId, balanceChanges);
+        else
+            return this.updateServerMember(member, balanceChanges);
     }
 }

@@ -4,6 +4,7 @@ import Create from "./Create.command";
 import { RoleType } from "@prisma/client";
 import List from "./List.command";
 import Delete from "./Delete.command";
+import Info from "./Info.command";
 
 const Currency: Command = {
     name: "currency",
@@ -12,7 +13,7 @@ const Currency: Command = {
     parentCommand: true,
     category: Category.Economy,
     requiredRole: RoleType.ADMIN,
-    subCommands: new Collection<string, Command>().set("create", Create).set("list", List).set("delete", Delete),
+    subCommands: new Collection<string, Command>().set("create", Create).set("list", List).set("info", Info).set("delete", Delete),
     execute: () => void 0,
 };
 
