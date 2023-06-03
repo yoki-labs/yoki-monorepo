@@ -2,7 +2,6 @@ import { codeBlock, formatDate, inlineCode, inlineQuote, summarizeRolesOrUsers }
 
 import { Category, Command } from "../commands";
 import { RoleType } from "@prisma/client";
-import { EmbedField } from "guilded.js";
 import { stripIndents } from "common-tags";
 
 const Info: Command = {
@@ -27,7 +26,7 @@ const Info: Command = {
 
         return ctx.messageUtil.replyWithInfo(
             message,
-            `${giveaway.hasEnded ? ":red_circle:" : ":large_green_square:"} ${inlineQuote(giveaway.text, 20)} (${inlineCode(id)})`,
+            `${giveaway.hasEnded ? ":red_circle:" : ":large_green_circle:"} ${inlineQuote(giveaway.text, 20)} (${inlineCode(id)})`,
             `A giveaway has been created by <@${giveaway.createdBy}>.`,
             {
                 fields: [
@@ -35,9 +34,17 @@ const Info: Command = {
                         name: "Reward",
                         value: codeBlock(giveaway.text, "md")
                     },
-                    giveaway.hasEnded && {
-                        name: "Winners",
-                        value: giveaway.winners.length ? summarizeRolesOrUsers(giveaway.winners) : "No one participated or the giveaway has been manually cancelled by a staff member.",
+                    {
+                        name: "Participants",
+                        value: stripIndents`
+                            **Max winners:** ${inlineCode(giveaway.winnerCount)}
+                            ${giveaway.hasEnded
+                                ? stripIndents`
+                                    **Participant count:** ${inlineCode(giveaway.participants.length)}
+                                    **Winners:** ${giveaway.winners.length ? summarizeRolesOrUsers(giveaway.winners) : "No one participated or the giveaway has been manually cancelled by a staff member."}
+                                `
+                                : ""}
+                        `,
                     },
                     {
                         name: "Additional Info",
@@ -45,10 +52,10 @@ const Info: Command = {
                             ${giveaway.hasEnded ? ":red_circle: **Has ended.**" : ":large_green_square: **Is on-going.**"}
                             **Giveaway created:** ${formatDate(giveaway.createdAt, timezone)}
                             **End(s/ed) at:** ${formatDate(giveaway.endsAt, timezone)}
-                            **Winner count:** ${inlineCode(giveaway.winnerCount)}
+                            **In channel:** ${inlineCode(giveaway.channelId)}
                         `
                     }
-                ].filter(Boolean) as EmbedField[]
+                ]
             },
             {
                 isSilent: true
