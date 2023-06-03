@@ -12,7 +12,7 @@ export * from "./typings";
 
 // Utils
 export { Colors } from "./utils/color";
-export { summarizeItems, summarizeRolesOrUsers } from "./utils/content";
+export { summarizeItems, summarizeRolesOrUsers, formatDate } from "./utils/content";
 export {
     bold,
     channelName,

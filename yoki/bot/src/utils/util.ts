@@ -7,18 +7,6 @@ export const roleValues: { [staffRole in RoleType]: number } = {
     [RoleType.REACT]: 0,
 };
 
-const DateOptions = {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-} as const;
-
-export function FormatDate(date: Date, timeZone: string) {
-    return date.toLocaleDateString("en-US", { ...DateOptions, timeZone });
-}
-
 export function suspicious(date: Date) {
     return date.getTime() > new Date().getTime() - 8.64e7;
 }

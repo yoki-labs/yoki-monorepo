@@ -8,6 +8,6 @@ export type CommandContext = BaseCommandContext<Server>;
 
 export type Command = BaseCommand<Command, TuxoClient, RoleType, Server>;
 
-export type Server = DBServer & { getPrefix: () => string };
+export type Server = DBServer;
 
 export type GEvent<T extends keyof ClientEvents> = AbstractGEvent<TuxoClient, T>;

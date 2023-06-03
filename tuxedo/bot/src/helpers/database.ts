@@ -1,4 +1,4 @@
-import { Util } from "@yokilabs/bot";
+import { Util, formatDate } from "@yokilabs/bot";
 
 import type { TuxoClient } from "../Client";
 import type { Server } from "../typings";
@@ -15,7 +15,12 @@ export class DatabaseUtil extends Util<TuxoClient> {
                 if (!server && createIfNotExists) return this.createFreshServerInDatabase(serverId);
                 return server ?? null;
             })
-            .then((data) => (data ? { ...data, getPrefix: () => data.prefix ?? this.client.prefix } : null));
+            .then((data) => (data ? {
+                ...data,
+                getPrefix: () => data.prefix ?? this.client.prefix,
+                getTimezone: () => data.timezone ?? "America/New_York",
+                formatDateByTimezone: (date: Date) => formatDate(date, data.timezone ?? "America/New_York")
+            } : null));
     }
 
     createFreshServerInDatabase(serverId: string, data?: Record<string, any>) {

@@ -38,7 +38,7 @@ const Help: Command = {
             .setTitle("Tuxo Command List")
             .setColor(Colors.blockBackground)
             .setDescription(":link: [Join server](https://yoki.gg/support) • [Invite bot](https://yoki.gg/invite)")
-            .setFooter(`For additional info on a command, type ${inlineCode(`${commandCtx.server.getPrefix()}help [command]`)}`);
+            .setFooter(`For additional info on a command, type ${inlineCode(`${commandCtx.server.prefix ?? ctx.prefix}help [command]`)}`);
 
         commandCategoryMap.forEach((value, key) => {
             embed.addField(key in Category ? Category[key] : key, listInlineCode(value.map((x) => x.name))!, value.length < 4);

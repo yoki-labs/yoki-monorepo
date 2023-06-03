@@ -1,11 +1,10 @@
 import type { ContentIgnoreType, FilterMatching, InviteFilter, LogChannel, UrlFilter } from "@prisma/client";
-import { Util } from "@yokilabs/bot";
+import { Util, formatDate } from "@yokilabs/bot";
 import type { ForumTopic, Message } from "guilded.js";
 import { nanoid } from "nanoid";
 
 import type YokiClient from "../Client";
 import { Action, ContentFilter, LogChannelType, Server } from "../typings";
-import { FormatDate } from "../utils/util";
 // import { Util } from "./util";
 
 // test 2
@@ -81,7 +80,7 @@ export class DatabaseUtil extends Util<YokiClient> {
                           ...data,
                           getPrefix: () => data.prefix ?? process.env.DEFAULT_PREFIX,
                           getTimezone: () => data.timezone ?? "America/New_York",
-                          formatTimezone: (date: Date) => FormatDate(date, data.timezone ?? "America/New_York"),
+                          formatTimezone: (date: Date) => formatDate(date, data.timezone ?? "America/New_York"),
                       }
                     : null
             );

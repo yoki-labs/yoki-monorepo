@@ -1,4 +1,4 @@
-import { inlineCode, inlineQuote } from "@yokilabs/bot";
+import { formatDate, inlineCode, inlineQuote } from "@yokilabs/bot";
 import { Category, Command } from "../commands";
 import { RoleType } from "@prisma/client";
 import { TAG_REGEX } from "../../util/matching";
@@ -18,7 +18,7 @@ const Info: Command = {
             max: 16,
         },
     ],
-    execute: async (message, args, ctx) => {
+    execute: async (message, args, ctx, { server: { timezone } }) => {
         const tag = (args.tag as string).toLowerCase();
 
         if (!TAG_REGEX.test(tag))
@@ -49,7 +49,7 @@ const Info: Command = {
                     {
                         name: "Additional Info",
                         value: stripIndents`
-                            **Creation date:** ${currency.createdAt}
+                            **Currency created:** ${formatDate(currency.createdAt, timezone)}
                         `
                     }
                 ]

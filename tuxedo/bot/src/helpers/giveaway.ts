@@ -1,5 +1,5 @@
 import { Giveaway } from "@prisma/client";
-import { Colors, inlineCode, shuffleArray, Util } from "@yokilabs/bot";
+import { Colors, formatDate, inlineCode, shuffleArray, Util } from "@yokilabs/bot";
 import { stripIndents } from "common-tags";
 import { Embed, EmbedField } from "guilded.js";
 import ms from "ms";
@@ -33,7 +33,7 @@ export class GiveawayUtil extends Util<TuxoClient> {
         this.participants[giveaway.messageId] = { giveawayId: giveaway.id, users: giveaway.participants };
     }
 
-    async createGiveaway(data: Omit<Giveaway, "id" | "messageId" | "createdAt" | "participants" | "winners" | "hasEnded">) {
+    async createGiveaway(data: Omit<Giveaway, "id" | "messageId" | "createdAt" | "participants" | "winners" | "hasEnded">, timeZone: string | undefined | null) {
         // Data for giveaway creation
         const partialData = {
             id: nanoid(17),
@@ -45,7 +45,7 @@ export class GiveawayUtil extends Util<TuxoClient> {
         };
 
         const message = await this.client.messages.send(data.channelId, {
-            embeds: [this.createGiveawayEmbed(partialData)],
+            embeds: [this.createGiveawayEmbed(partialData, timeZone)],
         });
 
         // Creating giveway stuff
@@ -139,13 +139,13 @@ export class GiveawayUtil extends Util<TuxoClient> {
             }
     }
 
-    async concludeGiveaway(giveaway: Giveaway) {
+    async concludeGiveaway(giveaway: Giveaway, timeZone?: string | undefined) {
         const { channelId, messageId } = giveaway;
         const participants = this.participants[giveaway.messageId]?.users ?? giveaway.participants;
         const winners = shuffleArray(participants).slice(0, giveaway.winnerCount);
 
         await Promise.all([
-            this.client.messages.update(channelId, messageId, this.createGiveawayEmbed(giveaway, true)),
+            this.client.messages.update(channelId, messageId, this.createGiveawayEmbed(giveaway, timeZone, true)),
             this.client.messageUtil.sendSuccessBlock(
                 channelId,
                 `Giveaway has concluded!`,
@@ -175,12 +175,12 @@ export class GiveawayUtil extends Util<TuxoClient> {
         this.removeGiveaway(giveaway.id, giveaway.messageId);
     }
 
-    async cancelGiveaway(giveaway: Giveaway) {
+    async cancelGiveaway(giveaway: Giveaway, timeZone?: string | null) {
         const { channelId, messageId } = giveaway;
         const participants = this.participants[giveaway.messageId]?.users ?? giveaway.participants;
 
         await Promise.all([
-            this.client.messages.update(channelId, messageId, this.createGiveawayEmbed(giveaway, true, true)),
+            this.client.messages.update(channelId, messageId, this.createGiveawayEmbed(giveaway, timeZone, true, true)),
             this.client.prisma.giveaway.update({ where: { id: giveaway.id }, data: { participants, hasEnded: true, winners: [] } })
             //this.client.prisma.giveaway.delete({ where: { id: giveaway.id } }).then(() => this.removeGiveaway(giveaway.id, giveaway.messageId)),
         ]);
@@ -188,12 +188,12 @@ export class GiveawayUtil extends Util<TuxoClient> {
         this.removeGiveaway(giveaway.id, giveaway.messageId);
     }
 
-    createGiveawayEmbed(giveaway: Omit<Giveaway, "messageId">, ended = false, canceled = false): Embed {
+    createGiveawayEmbed(giveaway: Omit<Giveaway, "messageId">, timeZone?: string | null, ended = false, canceled = false): Embed {
         const endDateMessage = canceled
             ? ":x: **Has been cancelled.**"
             : ended
             ? ":white_check_mark: **Has concluded the winners.**"
-            : `**Ends in:** ${giveaway.endsAt} (${ms(giveaway.endsAt.getTime() - Date.now(), { long: true })} left)`;
+            : `**Ends in:** ${formatDate(giveaway.endsAt, timeZone)} EST (${ms(giveaway.endsAt.getTime() - Date.now(), { long: true })} left)`;
 
         return new Embed({
             title: ended ? ":tada: Giveaway has ended!" : ":tada: Giveaway has started!",
@@ -206,13 +206,12 @@ export class GiveawayUtil extends Util<TuxoClient> {
                         ${endDateMessage}
                         **Possible winner count:** ${inlineCode(giveaway.winnerCount)}
                         **Giveaway ID:** ${inlineCode(giveaway.id)}
-                        **Created by:** <@${giveaway.createdBy}>
                     `,
                     inline: !ended,
                 },
                 !ended && {
                     name: "How to Join",
-                    value: `React with :plus1: to join the giveaway!`,
+                    value: `React with :plus1: to join the giveaway! Removing the reaction will remove you from the giveaway.`,
                     inline: true,
                 },
             ].filter(Boolean) as EmbedField[],

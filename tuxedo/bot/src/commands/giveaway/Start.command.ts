@@ -19,13 +19,15 @@ const Start: Command = {
         {
             name: "winners",
             type: "number",
+            max: 10
         },
         {
             name: "text",
             type: "rest",
+            max: 200
         },
     ],
-    execute: (message, _args, ctx) => {
+    execute: (message, _args, ctx, { server: { timezone } }) => {
         const duration = _args.duration as number;
         const text = _args.text as string;
         const winnerCount = _args.winners as number;
@@ -34,14 +36,17 @@ const Start: Command = {
         else if (duration < minDuration || duration > maxDuration)
             return ctx.messageUtil.replyWithError(message, `Invalid duration`, `Giveaway duration should be between 15 minutes and 2 weeks.`);
 
-        return ctx.giveawayUtil.createGiveaway({
-            serverId: message.serverId!,
-            channelId: message.channelId,
-            createdBy: message.createdById,
-            text,
-            endsAt: new Date(Date.now() + duration),
-            winnerCount,
-        });
+        return ctx.giveawayUtil.createGiveaway(
+            {
+                serverId: message.serverId!,
+                channelId: message.channelId,
+                createdBy: message.createdById,
+                text,
+                endsAt: new Date(Date.now() + duration),
+                winnerCount,
+            },
+            timezone
+        );
     },
 };
 
