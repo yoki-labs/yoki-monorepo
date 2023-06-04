@@ -1,5 +1,5 @@
 import type { ContentIgnoreType, FilterMatching, InviteFilter, LogChannel, UrlFilter } from "@prisma/client";
-import { Util, formatDate } from "@yokilabs/bot";
+import { formatDate, Util } from "@yokilabs/bot";
 import type { ForumTopic, Message } from "guilded.js";
 import { nanoid } from "nanoid";
 

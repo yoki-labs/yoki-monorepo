@@ -52,7 +52,7 @@ const Add: Command = {
         const urlMatch = url.match(ONLY_URL_REGEX);
         if (!urlMatch) return ctx.messageUtil.replyWithError(message, `Bad formatting`, `The provided text is not a URL.`);
 
-        const { domain, subdomain, route } = urlMatch.groups as { domain: string; subdomain?: string; route?: string; };
+        const { domain, subdomain, route } = urlMatch.groups as { domain: string; subdomain?: string; route?: string };
 
         // I don't like this code
         if (domain.length > 255 || (subdomain?.length && subdomain.length > 100) || (route?.length && route.length > 200))

@@ -125,7 +125,7 @@ export function createCommandHandler<
                     const subCommand = command.subCommands.get(subCommandName as string)!;
 
                     // Don't show operator commands to non-operators
-                    if ((!command.devOnly || ctx.operators.includes(message.createdById)))
+                    if (!command.devOnly || ctx.operators.includes(message.createdById))
                         return ctx.messageUtil.replyWithInfo(message, `${inlineCode(command.name.split("-").join(" "))} command`, command.description, {
                             fields: [...ctx.messageUtil.createSubCommandFields(command.subCommands), ctx.messageUtil.createExampleField(subCommand, prefix)],
                         });
@@ -140,7 +140,7 @@ export function createCommandHandler<
                     });
 
                     // Don't show operator commands to non-operators
-                    if ((!command.devOnly || ctx.operators.includes(message.createdById)))
+                    if (!command.devOnly || ctx.operators.includes(message.createdById))
                         return ctx.messageUtil.replyWithError(message, `No such sub-command`, `The specified sub-command ${inlineQuote(args[0], 100)} could not be found.`, {
                             fields: [...ctx.messageUtil.createSubCommandFields(command.subCommands), ctx.messageUtil.createExampleField(command, prefix)],
                         });

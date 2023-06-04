@@ -28,27 +28,23 @@ const RoleInfo: Command = {
     args: [
         {
             name: "role",
-            type: "string"
-        }
+            type: "string",
+        },
     ],
     execute: async (message, args, ctx, { server }) => {
         const roleArg = args.role as string;
 
-        if (
-            (roleArg.startsWith("@") && !message.mentions?.roles?.[0]) ||
-            (!roleArg.startsWith("@") && !parseInt(roleArg))
-        )
+        if ((roleArg.startsWith("@") && !message.mentions?.roles?.[0]) || (!roleArg.startsWith("@") && !parseInt(roleArg)))
             return ctx.messageUtil.replyWithError(message, `Expected role mention or ID`, `In order to get information about a role, provide its mention or ID as an argument.`);
 
         const roleId = (message.mentions?.roles?.[0].id as number) ?? parseInt(roleArg);
 
         // Get all the roles to display neighbouring roles
         const serverRoles = (await ctx.rest.get(`/servers/${message.serverId!}/roles`)).roles as Role[];
-        const currentRoleIndex = serverRoles.findIndex(x => x.id === roleId);
+        const currentRoleIndex = serverRoles.findIndex((x) => x.id === roleId);
 
         // The role with the provided ID might not exist
-        if (currentRoleIndex < 0)
-            return ctx.messageUtil.replyWithError(message, `Role doesn't exist`, `The provided role does not exist.`);
+        if (currentRoleIndex < 0) return ctx.messageUtil.replyWithError(message, `Role doesn't exist`, `The provided role does not exist.`);
 
         const currentRole = serverRoles[currentRoleIndex];
 
@@ -68,10 +64,12 @@ const RoleInfo: Command = {
                                     ${[
                                         displayRoleInList(serverRoles[currentRoleIndex + 1]),
                                         displayRoleInList(currentRole, true),
-                                        displayRoleInList(serverRoles[currentRoleIndex - 1])
-                                    ].filter(Boolean).join("\n")}
+                                        displayRoleInList(serverRoles[currentRoleIndex - 1]),
+                                    ]
+                                        .filter(Boolean)
+                                        .join("\n")}
                                     ...
-                                `
+                                `,
                             },
                             {
                                 name: "Role settings",
@@ -79,11 +77,13 @@ const RoleInfo: Command = {
                                     ${[
                                         currentRole.isMentionable && ":bell: **Is mentionable.**",
                                         currentRole.isDisplayedSeparately && ":pushpin: **Is displayed separately.**",
-                                        currentRole.isSelfAssignable && ":label: **Is self assignable.**"
-                                    ].filter(Boolean).join("\n")}
+                                        currentRole.isSelfAssignable && ":label: **Is self assignable.**",
+                                    ]
+                                        .filter(Boolean)
+                                        .join("\n")}
 
                                     ${displayRoleList(currentRole)}
-                                `
+                                `,
                             },
                             {
                                 name: "Additional Info",
@@ -92,7 +92,7 @@ const RoleInfo: Command = {
                                     ${currentRole.colors ? `**Colors:** ${currentRole.colors.map(hexColor).join(" - ")}` : "**No color.**"}
                                     **Role created:** ${server.formatTimezone(new Date(currentRole.createdAt))} EST
                                     ${currentRole.updatedAt && `**Last updated:** ${server.formatTimezone(new Date(currentRole.updatedAt))} EST`}
-                                `
+                                `,
                             },
                         ].filter(Boolean) as EmbedField[]
                     )
@@ -111,7 +111,7 @@ function displayRoleInList(role?: Role, isCurrent?: boolean) {
 }
 
 const displayRoleList = ({ isMentionable, isDisplayedSeparately, isSelfAssignable, permissions }: Role) =>
-    `${isMentionable || isDisplayedSeparately || isSelfAssignable ? "... And " : ""}**${permissions.length}** permissions.`
+    `${isMentionable || isDisplayedSeparately || isSelfAssignable ? "... And " : ""}**${permissions.length}** permissions.`;
 
 const hexColor = (value: number) => {
     const hex = value.toString(16);
@@ -119,10 +119,9 @@ const hexColor = (value: number) => {
     let deadSpace = "";
     const necessarySpace = 6 - hex.length;
 
-    for (let i = 0; i < necessarySpace; i++)
-        deadSpace += "0";
+    for (let i = 0; i < necessarySpace; i++) deadSpace += "0";
 
     return inlineCode(`#${hex}${deadSpace}`);
-}
+};
 
 export default RoleInfo;
