@@ -30,7 +30,7 @@ const Daily: Command = {
         for (const currency of currencies)
             balanceAdded[currency.id] = reward;
 
-        await ctx.dbUtil.updateServerMemberBalance(message.serverId!, message.createdById, balanceAdded);
+        await ctx.dbUtil.updateServerMemberBalance(message.serverId!, message.createdById, balanceAdded, currencies);
 
         // Reply with success
         return ctx.messageUtil.replyWithSuccess(message, `Daily reward claimed`, `You have found a present, which had ${currencies.map(x => `${reward} ${x.name}`).join(", ")}.`);

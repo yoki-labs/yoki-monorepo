@@ -17,13 +17,18 @@ const List: Command = {
         {
             name: "page",
             type: "number",
-            optional: true
-        }
+            optional: true,
+        },
     ],
     execute: async (message, args, ctx) => {
         const page = args.page ? Math.floor((args.page as number) - 1) : 0;
 
-        const giveaways = await ctx.prisma.giveaway.findMany({ orderBy: { createdAt: "desc" }, where: { serverId: message.serverId! } });
+        const giveaways = await ctx.prisma.giveaway.findMany({
+            orderBy: [{ hasEnded: "asc" }, { createdAt: "desc" }],
+            where: {
+                serverId: message.serverId!,
+            },
+        });
 
         return ctx.messageUtil.replyWithPaginatedContent({
             replyTo: message,

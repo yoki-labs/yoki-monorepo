@@ -21,7 +21,9 @@ model Server {
     locale   String  @default("en-US")
     timezone String?
 
-    botJoinedAt DateTime? @default(now())
+    botJoinedAt   DateTime? @default(now())
+    // --- Economy stuff
+    isBankEnabled Boolean   @default(true)
 }
 
 model Giveaway {
@@ -58,11 +60,12 @@ model Currency {
 
 model ServerMember {
     // Basics
-    id       String @id @db.VarChar(255)
-    serverId String @db.VarChar(255)
-    userId   String @db.VarChar(255)
+    id          String @id @db.VarChar(255)
+    serverId    String @db.VarChar(255)
+    userId      String @db.VarChar(255)
     // Inventory
-    balance  Json   @db.JsonB
+    balance     Json?  @db.JsonB
+    bankBalance Json?  @db.JsonB
 }
 
 // Copied from Yoki

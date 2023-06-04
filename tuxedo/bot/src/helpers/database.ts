@@ -91,14 +91,19 @@ export class DatabaseUtil extends Util<TuxoClient> {
     createServerMember(serverId: string, userId: string, balance: Record<string, number>) {
         return this.client.prisma.serverMember.create({ data: { id: nanoid(17), serverId, userId, balance } })
     }
-
-    updateServerMember(member: ServerMember, balance: Record<string, number>) {
+    
+    // Currencies argument is for self-cleaning deleted currencies
+    updateServerMember(member: ServerMember, balance: Record<string, number>, currencies: Currency[]) {
         const newBalance = {};
 
         // Combine gained value and old value
-        for (const currency in balance)
+        for (const currency in balance) {
+            // Ignore currencies that no longer exist
+            if (!currencies.find(x => x.id === currency)) continue;
+
             newBalance[currency] = member.balance ? member.balance[currency] + (balance[currency] ?? 0) : balance[currency];
-        
+        }
+
         return this.client.prisma.serverMember.update({
             where: {
                 id: member.id
@@ -106,15 +111,43 @@ export class DatabaseUtil extends Util<TuxoClient> {
             data: {
                 balance: newBalance
             }
-        })
+        });
     }
 
-    async updateServerMemberBalance(serverId: string, userId: string, balanceChanges: Record<string, number>) {
+    // Currencies argument is for self-cleaning deleted currencies
+    async updateServerMemberBalance(serverId: string, userId: string, balanceChanges: Record<string, number>, currencies: Currency[]) {
         const member = await this.getServerMember(serverId, userId);
 
         if (!member)
             return this.createServerMember(serverId, userId, balanceChanges);
         else
-            return this.updateServerMember(member, balanceChanges);
+            return this.updateServerMember(member, balanceChanges, currencies);
+    }
+
+    // ! note: This is unchecked. Need to check the balance and membership in a command.
+    // Currencies argument is for self-cleaning deleted currencies
+    async updateServerMemberBankBalance(member: ServerMember, deposit: Record<string, number>, currencies: Currency[]) {
+        const balance = member.balance! as Record<string, number>;
+        const newBalance = {};
+        const newBankBalance = {};
+
+        // Combine gained value and old value
+        for (const currency in balance) {
+            // Ignore currencies that are no longer existing or 0 deposits
+            if (!currencies.find(x => x.id === currency)) continue;
+
+            newBalance[currency] = balance[currency] - (deposit[currency] ?? 0);
+            newBankBalance[currency] = member.bankBalance?.[currency] ? member.bankBalance[currency] + (deposit[currency] ?? 0) : deposit[currency];
+        }
+
+        return this.client.prisma.serverMember.update({
+            where: {
+                id: member.id
+            },
+            data: {
+                balance: newBalance,
+                bankBalance: newBankBalance
+            }
+        });
     }
 }
