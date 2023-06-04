@@ -9,7 +9,6 @@ const View: Command = {
     // usage: "<target> [page number]",
     examples: ["R40Mp0Wd", "R40Mp0Wd 2"],
     subCommand: true,
-    aliases: ["see", "all", "v"],
     requiredRole: RoleType.MINIMOD,
     category: Category.Moderation,
     args: [

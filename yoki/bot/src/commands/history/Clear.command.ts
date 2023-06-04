@@ -10,7 +10,6 @@ const Clear: Command = {
     // usage: "<target>",
     examples: ["R40Mp0Wd"],
     subCommand: true,
-    aliases: ["purge", "c"],
     requiredRole: RoleType.ADMIN,
     category: Category.Moderation,
     args: [

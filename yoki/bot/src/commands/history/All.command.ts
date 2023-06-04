@@ -9,7 +9,6 @@ const All: Command = {
     // usage: "[page]",
     examples: ["", "2"],
     subCommand: true,
-    aliases: ["see", "all", "v"],
     requiredRole: RoleType.MINIMOD,
     category: Category.Moderation,
     args: [
