@@ -22,8 +22,11 @@ const Daily: Command = {
         },
     ],
     execute: async (message, args, ctx) => {
-        const amount = args.amount as number | null;
+        const amount = args.amount ? Math.floor(args.amount as number) : null;
         const tag = (args.tag as string).toLowerCase();
+
+        if (amount && amount < 1)
+            return ctx.messageUtil.replyWithError(message, "Amount must be more than 0", `The deposit amount must be equal to or greater than 1.`);
 
         // To make robbery in the future more balanced (yes, the pun), add cooldowns to the depositing
         const lastUsed = ctx.balanceUtil.getLastCommandUsage(message.serverId!, message.createdById, "deposit");
