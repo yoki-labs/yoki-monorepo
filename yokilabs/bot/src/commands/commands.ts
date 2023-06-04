@@ -18,6 +18,7 @@ import type { IRole, IServer } from "../db-types";
 import { codeBlock, inlineCode, inlineQuote } from "../utils/formatting";
 import type { UsedMentions } from "./arguments";
 import type { BaseCommand, CommandArgType, CommandArgValidator } from "./command-typings";
+import { nanoid } from "nanoid";
 
 export function createCommandHandler<
     TClient extends AbstractClient<TClient, TServer, TCommand>,
@@ -252,7 +253,7 @@ export function createCommandHandler<
                 await command.execute(message, args, ctx, { message, server, member });
             } catch (e) {
                 // ID for error, not persisted in database at all
-                const referenceId = 10; // nanoid();
+                const referenceId = nanoid(17);
                 if (e instanceof Error) {
                     console.error(e);
                     // send the error to the error channel
@@ -274,9 +275,7 @@ export function createCommandHandler<
                 // notify the user that there was an error executing the command
                 return ctx.messageUtil.replyWithUnexpected(
                     message,
-                    `This is potentially an issue on our end, please contact us and forward the following ID and error: ${inlineCode(referenceId)} & ${inlineCode(
-                        (e as any).message
-                    )}`
+                    `This is potentially an issue on our end, please contact us and forward the following ID: ${inlineCode(referenceId)}.`
                 );
             }
             return void 0;
