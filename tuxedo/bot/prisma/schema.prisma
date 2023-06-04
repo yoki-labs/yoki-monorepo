@@ -21,9 +21,7 @@ model Server {
     locale   String  @default("en-US")
     timezone String?
 
-    botJoinedAt   DateTime? @default(now())
-    // --- Economy stuff
-    isBankEnabled Boolean   @default(true)
+    botJoinedAt DateTime? @default(now())
 }
 
 model Giveaway {
