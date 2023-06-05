@@ -1,12 +1,9 @@
 version: "3.7"
 services:
     bot:
-        image: ghcr.io/yoki-labs/tuxedo/bot:latest
+        image: ghcr.io/yoki-labs/bots/tuxedo/bot:latest
         container_name: TUXEDO_BOT
         restart: unless-stopped
-        networks:
-            - main-network
+        env_file:
+            - ../../stack.env
 
-networks:
-    main-network:
-        driver: bridge
