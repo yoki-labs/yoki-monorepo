@@ -1,8 +1,4 @@
-lockfileVersion: '6.1'
-
-settings:
-  autoInstallPeers: true
-  excludeLinksFromLockfile: false
+lockfileVersion: '6.0'
 
 importers:
 
@@ -84,6 +80,9 @@ importers:
       guilded.js:
         specifier: 0.20.8
         version: 0.20.8
+      ms:
+        specifier: ^2.1.3
+        version: 2.1.3
       nanoid:
         specifier: ^3.3.2
         version: 3.3.2
@@ -859,6 +858,11 @@ packages:
     engines: {node: '>=16.9.0'}
     dev: false
 
+  /@discordjs/collection@1.5.1:
+    resolution: {integrity: sha512-aWEc9DCf3TMDe9iaJoOnO2+JVAjeRNuRxPZQA6GVvBf+Z3gqUuWYBy2NWh4+5CLYq5uoc3MOvUQ5H5m8CJBqOA==}
+    engines: {node: '>=16.9.0'}
+    dev: false
+
   /@emotion/is-prop-valid@0.8.8:
     resolution: {integrity: sha512-u5WtneEAr5IDG2Wv65yhunPSMLIpuKsbuOktRojfrEiEvRyC85LgPMZI63cr7NUqT8ZIGdSVg8ZKGxIug4lXcA==}
     requiresBuild: true
@@ -910,7 +914,7 @@ packages:
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
     dependencies:
       ajv: 6.12.6
-      debug: 4.3.4(supports-color@9.3.1)
+      debug: 4.3.4(supports-color@5.5.0)
       espree: 9.5.1
       globals: 13.20.0
       ignore: 5.2.4
@@ -1067,17 +1071,18 @@ packages:
     resolution: {integrity: sha512-mUsQingDz+4pOAh2pbIlsNoz7okTjHPXfxhSfQgtNzwRVTcSkZpuLA0WutWlmLREp37tZIzIeLT57zr7IZLJlA==}
     dependencies:
       node-fetch: 2.6.7
-      qs: 6.11.1
+      qs: 6.11.2
     transitivePeerDependencies:
       - encoding
     dev: false
 
   /@guildedjs/rest@3.1.2:
     resolution: {integrity: sha512-SGBliIxM4d2l9KcwTTNSaOcLRgr32eFynYxTE4PWyIs1iet+0zuqw+9G7iMkvM+lEhL9NpEKur0bjV0GmYmD8Q==}
+    deprecated: Use @guildedjs/api over this package.
     dependencies:
       form-data: 4.0.0
       node-fetch: 2.6.7
-      qs: 6.11.1
+      qs: 6.11.2
       typed-emitter: 2.1.0
     transitivePeerDependencies:
       - encoding
@@ -1093,6 +1098,7 @@ packages:
 
   /@guildedjs/ws@1.7.1:
     resolution: {integrity: sha512-On60vB9Ug/vE9d7eKV9IMTP+LOzooFY4cCBGjYCHxfWcqxbUsEfL6/kHvMhMzC+asoYTt5mcPkFgUdW6scqwrw==}
+    deprecated: Use @guildedjs/api over this package.
     dependencies:
       '@guildedjs/guilded-api-typings': 4.0.0
       '@types/ws': 8.5.4
@@ -1108,7 +1114,7 @@ packages:
     engines: {node: '>=10.10.0'}
     dependencies:
       '@humanwhocodes/object-schema': 1.2.1
-      debug: 4.3.4(supports-color@9.3.1)
+      debug: 4.3.4(supports-color@5.5.0)
       minimatch: 3.1.2
     transitivePeerDependencies:
       - supports-color
@@ -1162,7 +1168,7 @@ packages:
       detect-libc: 2.0.1
       https-proxy-agent: 5.0.1
       make-dir: 3.1.0
-      node-fetch: 2.6.9
+      node-fetch: 2.6.11
       nopt: 5.0.0
       npmlog: 5.0.1
       rimraf: 3.0.2
@@ -1180,7 +1186,7 @@ packages:
       detect-libc: 2.0.1
       https-proxy-agent: 5.0.1
       make-dir: 3.1.0
-      node-fetch: 2.6.9
+      node-fetch: 2.6.11
       nopt: 5.0.0
       npmlog: 5.0.1
       rimraf: 3.0.2
@@ -1428,7 +1434,7 @@ packages:
       '@oclif/errors': 1.3.6
       '@oclif/help': 1.0.5
       '@oclif/parser': 3.8.10
-      debug: 4.3.4(supports-color@9.3.1)
+      debug: 4.3.4(supports-color@5.5.0)
       semver: 7.5.0
     transitivePeerDependencies:
       - supports-color
@@ -1444,7 +1450,7 @@ packages:
       '@oclif/errors': 1.3.6
       '@oclif/help': 1.0.5
       '@oclif/parser': 3.8.10
-      debug: 4.3.4(supports-color@9.3.1)
+      debug: 4.3.4(supports-color@5.5.0)
       semver: 7.5.0
     transitivePeerDependencies:
       - supports-color
@@ -1456,7 +1462,7 @@ packages:
     dependencies:
       '@oclif/errors': 1.3.5
       '@oclif/parser': 3.8.10
-      debug: 4.3.4(supports-color@9.3.1)
+      debug: 4.3.4(supports-color@5.5.0)
       globby: 11.1.0
       is-wsl: 2.2.0
       tslib: 2.5.0
@@ -1470,7 +1476,7 @@ packages:
     dependencies:
       '@oclif/errors': 1.3.6
       '@oclif/parser': 3.8.10
-      debug: 4.3.4(supports-color@9.3.1)
+      debug: 4.3.4(supports-color@5.5.0)
       globby: 11.1.0
       is-wsl: 2.2.0
       tslib: 2.5.0
@@ -1484,7 +1490,7 @@ packages:
     dependencies:
       '@oclif/errors': 1.3.6
       '@oclif/parser': 3.8.10
-      debug: 4.3.4(supports-color@9.3.1)
+      debug: 4.3.4(supports-color@5.5.0)
       globby: 11.1.0
       is-wsl: 2.2.0
       tslib: 2.5.0
@@ -1640,7 +1646,7 @@ packages:
     resolution: {integrity: sha512-BcShw74uZWWuuDPRpvIj8lqF6ywfcaeTqJF6VTiMd3VXxiB+c0F/mCshnYqoURoEaDmwwrBubWjBgmoWBHoPLQ==}
     dependencies:
       '@types/debug': 4.1.7
-      debug: 4.3.4(supports-color@9.3.1)
+      debug: 4.3.4(supports-color@5.5.0)
       strip-ansi: 6.0.1
     transitivePeerDependencies:
       - supports-color
@@ -1968,7 +1974,7 @@ packages:
     resolution: {integrity: sha512-ALYone6pm6QmwZoAgeyNksccT9Q4AWZQ6PvfwR37GT6r6FWUPguq6sUmNGSMV2Wr761oQoBxwGGa6DR5o1DC9g==}
     dependencies:
       '@types/connect': 3.4.35
-      '@types/node': 16.18.25
+      '@types/node': 18.16.3
 
   /@types/common-tags@1.8.1:
     resolution: {integrity: sha512-20R/mDpKSPWdJs5TOpz3e7zqbeCNuMCPhV7Yndk9KU2Rbij2r5W4RzwDPkzC+2lzUqXYu9rFzTktCBnDjHuNQg==}
@@ -1994,7 +2000,7 @@ packages:
   /@types/express-serve-static-core@4.17.34:
     resolution: {integrity: sha512-fvr49XlCGoUj2Pp730AItckfjat4WNb0lb3kfrLWffd+RLeoGAMsq7UOy04PAPtoL01uKwcp6u8nhzpgpDYr3w==}
     dependencies:
-      '@types/node': 16.18.25
+      '@types/node': 18.16.3
       '@types/qs': 6.9.7
       '@types/range-parser': 1.2.4
       '@types/send': 0.17.1
@@ -2153,7 +2159,7 @@ packages:
     resolution: {integrity: sha512-NUo5XNiAdULrJENtJXZZ3fHtfMolzZwczzBbnAeBbqBwG+LaG6YaJtuwzwGSQZ2wsCrxjEhNNjAkKigy3n8teQ==}
     dependencies:
       '@types/mime': 3.0.1
-      '@types/node': 16.18.25
+      '@types/node': 18.16.3
 
   /@types/sharp@0.30.5:
     resolution: {integrity: sha512-EhO29617AIBqxoVtpd1qdBanWpspk/kD2B6qTFRJ31Q23Rdf+DNU1xlHSwtqvwq1vgOqBwq1i38SX+HGCymIQg==}
@@ -2202,7 +2208,7 @@ packages:
       '@typescript-eslint/scope-manager': 5.59.1
       '@typescript-eslint/type-utils': 5.59.1(eslint@8.38.0)(typescript@5.0.4)
       '@typescript-eslint/utils': 5.59.1(eslint@8.38.0)(typescript@5.0.4)
-      debug: 4.3.4(supports-color@9.3.1)
+      debug: 4.3.4(supports-color@5.5.0)
       eslint: 8.38.0
       grapheme-splitter: 1.0.4
       ignore: 5.2.4
@@ -2227,7 +2233,7 @@ packages:
       '@typescript-eslint/scope-manager': 5.59.1
       '@typescript-eslint/types': 5.59.1
       '@typescript-eslint/typescript-estree': 5.59.1(typescript@4.9.5)
-      debug: 4.3.4(supports-color@9.3.1)
+      debug: 4.3.4(supports-color@5.5.0)
       eslint: 8.38.0
       typescript: 4.9.5
     transitivePeerDependencies:
@@ -2254,7 +2260,7 @@ packages:
     dependencies:
       '@typescript-eslint/typescript-estree': 5.59.1(typescript@5.0.4)
       '@typescript-eslint/utils': 5.59.1(eslint@8.38.0)(typescript@5.0.4)
-      debug: 4.3.4(supports-color@9.3.1)
+      debug: 4.3.4(supports-color@5.5.0)
       eslint: 8.38.0
       tsutils: 3.21.0(typescript@5.0.4)
       typescript: 5.0.4
@@ -2278,7 +2284,7 @@ packages:
     dependencies:
       '@typescript-eslint/types': 5.59.1
       '@typescript-eslint/visitor-keys': 5.59.1
-      debug: 4.3.4(supports-color@9.3.1)
+      debug: 4.3.4(supports-color@5.5.0)
       globby: 11.1.0
       is-glob: 4.0.3
       semver: 7.5.0
@@ -2299,7 +2305,7 @@ packages:
     dependencies:
       '@typescript-eslint/types': 5.59.1
       '@typescript-eslint/visitor-keys': 5.59.1
-      debug: 4.3.4(supports-color@9.3.1)
+      debug: 4.3.4(supports-color@5.5.0)
       globby: 11.1.0
       is-glob: 4.0.3
       semver: 7.5.0
@@ -2396,7 +2402,7 @@ packages:
     resolution: {integrity: sha512-RZNwNclF7+MS/8bDg70amg32dyeZGZxiDuQmZxKLAlQjr3jGyLx+4Kkk58UO7D2QdgFIQCovuSuZESne6RG6XQ==}
     engines: {node: '>= 6.0.0'}
     dependencies:
-      debug: 4.3.4(supports-color@9.3.1)
+      debug: 4.3.4(supports-color@5.5.0)
     transitivePeerDependencies:
       - supports-color
 
@@ -3288,7 +3294,6 @@ packages:
     dependencies:
       ms: 2.1.2
       supports-color: 5.5.0
-    dev: false
 
   /debug@4.3.4(supports-color@9.3.1):
     resolution: {integrity: sha512-PRWFHuSU3eDtQJPvnNY7Jcket1j0t5OuOsFzPPzsekD52Zl8qUfFIPEiswXqIvHWGVHOgX+7G/vCNNhehwxfkQ==}
@@ -3301,6 +3306,7 @@ packages:
     dependencies:
       ms: 2.1.2
       supports-color: 9.3.1
+    dev: true
 
   /decompress-response@4.2.1:
     resolution: {integrity: sha512-jOSne2qbyE+/r8G1VU+G/82LBs2Fs4LAsTiLSHOCOMZQl2OKZ6i8i4IyHemTe+/yIXOtTcRQMzPcgyhoFlqPkw==}
@@ -3706,7 +3712,7 @@ packages:
       eslint: '*'
       eslint-plugin-import: '*'
     dependencies:
-      debug: 4.3.4(supports-color@9.3.1)
+      debug: 4.3.4(supports-color@5.5.0)
       enhanced-resolve: 5.13.0
       eslint: 8.38.0
       eslint-module-utils: 2.8.0(@typescript-eslint/parser@5.59.1)(eslint-import-resolver-node@0.3.7)(eslint-import-resolver-typescript@3.5.5)(eslint@8.38.0)
@@ -3941,7 +3947,7 @@ packages:
       ajv: 6.12.6
       chalk: 4.1.2
       cross-spawn: 7.0.3
-      debug: 4.3.4(supports-color@9.3.1)
+      debug: 4.3.4(supports-color@5.5.0)
       doctrine: 3.0.0
       escape-string-regexp: 4.0.0
       eslint-scope: 7.2.0
@@ -4629,7 +4635,7 @@ packages:
   /guilded.js@0.20.8:
     resolution: {integrity: sha512-iEt+BrD4gtb+rW2BwNV+qe0SGX4+IBFFOp3xo9tfEOf5VFeXDa1DGFF/Gbyb++YxyhzYAO88FZrEMHKRTZBrEQ==}
     dependencies:
-      '@discordjs/collection': 1.5.0
+      '@discordjs/collection': 1.5.1
       '@guildedjs/rest': 3.1.2
       '@guildedjs/ws': 1.7.1
       typed-emitter: 2.1.0
@@ -4739,7 +4745,7 @@ packages:
     dependencies:
       '@tootallnate/once': 2.0.0
       agent-base: 6.0.2
-      debug: 4.3.4(supports-color@9.3.1)
+      debug: 4.3.4(supports-color@5.5.0)
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -4768,7 +4774,7 @@ packages:
     engines: {node: '>= 6'}
     dependencies:
       agent-base: 6.0.2
-      debug: 4.3.4(supports-color@9.3.1)
+      debug: 4.3.4(supports-color@5.5.0)
     transitivePeerDependencies:
       - supports-color
 
@@ -5822,6 +5828,18 @@ packages:
     engines: {node: '>=10.5.0'}
     dev: false
 
+  /node-fetch@2.6.11:
+    resolution: {integrity: sha512-4I6pdBY1EthSqDmJkiNk3JIT8cswwR9nfeW/cPdUagJYEQG7R95WRH74wpz7ma8Gh/9dI9FP+OU+0E4FvtA55w==}
+    engines: {node: 4.x || >=6.0.0}
+    peerDependencies:
+      encoding: ^0.1.0
+    peerDependenciesMeta:
+      encoding:
+        optional: true
+    dependencies:
+      whatwg-url: 5.0.0
+    dev: false
+
   /node-fetch@2.6.6:
     resolution: {integrity: sha512-Z8/6vRlTUChSdIgMa51jxQ4lrw/Jy5SOW10ObaA47/RElsAN2c5Pn8bTgFGWn/ibwzXTE8qwr1Yzx28vsecXEA==}
     engines: {node: 4.x || >=6.0.0}
@@ -6496,6 +6514,13 @@ packages:
 
   /qs@6.11.1:
     resolution: {integrity: sha512-0wsrzgTz/kAVIeuxSjnpGC56rzYtr6JT/2BwEvMaPhFIoYa1aGO8LbzuU1R0uUYQkLpWBTOj0l/CLAJB64J6nQ==}
+    engines: {node: '>=0.6'}
+    dependencies:
+      side-channel: 1.0.4
+    dev: false
+
+  /qs@6.11.2:
+    resolution: {integrity: sha512-tDNIz22aBzCDxLtVH++VnTfzxlfeK5CbqohpSqpJgj1Wg/cQbStNAz3NuqCs5vV+pjBsK4x4pN9HlVh7rcYRiA==}
     engines: {node: '>=0.6'}
     dependencies:
       side-channel: 1.0.4
@@ -7305,6 +7330,7 @@ packages:
   /supports-color@9.3.1:
     resolution: {integrity: sha512-knBY82pjmnIzK3NifMo3RxEIRD9E0kIzV4BKcyTZ9+9kWgLMxd4PrsTSMoFQUabgRBbF8KOLRDCyKgNV+iK44Q==}
     engines: {node: '>=12'}
+    dev: true
 
   /supports-hyperlinks@2.3.0:
     resolution: {integrity: sha512-RpsAZlpWcDwOPQA22aCH4J0t7L8JmAvsCxfOSEwm7cQs3LshN36QaTkwd70DnBOXDWGssw2eUoc8CaRWT0XunA==}

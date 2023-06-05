@@ -1,11 +1,10 @@
 import type { EmbedField, Schema } from "@guildedjs/guilded-api-typings";
 import { Action, ContentIgnoreType, Severity } from "@prisma/client";
-import { codeBlock, inlineCode } from "@yokilabs/bot";
+import { codeBlock, inlineCode, formatDate } from "@yokilabs/bot";
 import { stripIndents } from "common-tags";
 
 import type { FilteredContent } from "../modules/content-filter";
 import type { Context, Server } from "../typings";
-import { FormatDate } from "./util";
 
 const numberCharCodeStart = 48;
 const numberCharCodeEnd = 57;
@@ -91,14 +90,14 @@ export async function moderateContent(
 }
 
 export const describeAction = (data: Action): string[] =>
-    ({
-        [Severity.NOTE]: ["Moderation Note Added", "had a moderation note placed on them"],
-        [Severity.WARN]: ["User Warned", "has been warned"],
-        [Severity.MUTE]: ["User Muted", "has been muted"],
-        [Severity.SOFTBAN]: ["User Softbanned", "has been softbanned and their content has been cleared"],
-        [Severity.BAN]: ["User Banned", "has been banned"],
-        [Severity.KICK]: ["User Kicked", "has been kicked"],
-    }[data.type]);
+({
+    [Severity.NOTE]: ["Moderation Note Added", "had a moderation note placed on them"],
+    [Severity.WARN]: ["User Warned", "has been warned"],
+    [Severity.MUTE]: ["User Muted", "has been muted"],
+    [Severity.SOFTBAN]: ["User Softbanned", "has been softbanned and their content has been cleared"],
+    [Severity.BAN]: ["User Banned", "has been banned"],
+    [Severity.KICK]: ["User Kicked", "has been kicked"],
+}[data.type]);
 
 export function getActionInfo(ctx: Context, data: Action & { isAutomod?: boolean }): [string, string] {
     const [title, description] = describeAction(data);
@@ -127,5 +126,5 @@ export const getActionAdditionalInfo = (data: Action, timezone: string): string 
     stripIndents`
         **Infraction points:** ${inlineCode(data.infractionPoints)}
         **Case ID:** ${inlineCode(data.id)}
-        ${data.expiresAt ? `**Expiration:** ${FormatDate(data.expiresAt, timezone)} EST` : ""}
+        ${data.expiresAt ? `**Expiration:** ${formatDate(data.expiresAt, timezone)} EST` : ""}
     `;
