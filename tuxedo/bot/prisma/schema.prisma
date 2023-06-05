@@ -52,7 +52,7 @@ model Currency {
     startingBalance Int?
     maximumBalance  Int?
     // Who, when
-    createdBy       String   @db.VarChar(255)
+    createdBy       String?  @db.VarChar(255)
     createdAt       DateTime @default(now())
 }
 

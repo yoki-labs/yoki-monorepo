@@ -41,7 +41,7 @@ export class DatabaseUtil extends Util<TuxoClient> {
                     serverId,
                     name: "Points",
                     tag: "point",
-                    createdBy: this.client.user!.id
+                    createdBy: null
                 }
             })
         ])
