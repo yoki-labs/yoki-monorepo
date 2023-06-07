@@ -2,19 +2,37 @@
     "$schema": "https://turbo.build/schema.json",
     "pipeline": {
         "build": {
-            "dependsOn": ["^build"],
-            "outputs": [".next/**", "!.next/cache/**", "dist"]
+            "dependsOn": [
+                "^build"
+            ],
+            "outputs": [
+                ".next/**",
+                "!.next/cache/**",
+                "dist"
+            ]
         },
         "@yoki/bot#build": {
-            "dependsOn": ["@yokilabs/bot#build"],
-            "outputs": ["dist"]
+            "dependsOn": [
+                "@yokilabs/bot#build",
+                "@yoki/bot#generate"
+            ],
+            "outputs": [
+                "dist"
+            ]
         },
         "@tuxedo/bot#build": {
-            "dependsOn": ["@yokilabs/bot#build"],
-            "outputs": ["dist"]
+            "dependsOn": [
+                "@yokilabs/bot#build",
+                "@tuxedo/bot#generate"
+            ],
+            "outputs": [
+                "dist"
+            ]
         },
         "generate": {
-            "dependsOn": ["^generate"]
+            "dependsOn": [
+                "^generate"
+            ]
         },
         "lint": {}
     }
