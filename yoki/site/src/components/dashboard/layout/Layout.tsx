@@ -2,10 +2,10 @@
 // import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useAtomValue } from "jotai";
 
-import { LayoutSidebar } from "./LayoutSidebar";
-import { GuildedServer } from "../../lib/@types/guilded/Server";
+import { GuildedServer } from "../../../lib/@types/guilded/Server";
 // import { navbarAtom } from "../../state/navbar";
-import { tempToastAtom } from "../../state/toast";
+import { tempToastAtom } from "../../../state/toast";
+import { LayoutSidebar } from "./LayoutSidebar";
 
 export default function Layout(props: { servers: GuildedServer[]; children: React.ReactNode }) {
     // const [currentModule, setModule] = useAtom(navbarAtom);

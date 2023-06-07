@@ -1,3 +1,3 @@
 import { atom } from "jotai";
 
-export const navbarAtom = atom("main");
+export const navbarAtom = atom("home");

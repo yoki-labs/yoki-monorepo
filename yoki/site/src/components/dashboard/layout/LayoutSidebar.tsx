@@ -1,17 +1,18 @@
-import { faArrowDownZA, faBan, faClipboardUser, faCog, faEnvelope, faHashtag, faPrayingHands, faShieldHalved } from "@fortawesome/free-solid-svg-icons";
+import { faArrowDownZA, faBan, faClipboardUser, faCog, faEnvelope, faHashtag, faHome, faPrayingHands, faShieldHalved } from "@fortawesome/free-solid-svg-icons";
 import { useAtom } from "jotai";
 
+import { GuildedServer } from "../../../lib/@types/guilded/Server";
+import { navbarAtom } from "../../../state/navbar";
 import LayoutSidebarTab from "./LayoutSidebarTab";
-import { GuildedServer } from "../../lib/@types/guilded/Server";
-import { navbarAtom } from "../../state/navbar";
 
 interface Prop {
     servers: GuildedServer[];
 }
 
 const sidebarItems = [
+    { id: "home", name: "Home", icon: faHome },
     { id: "main", name: "Config", icon: faCog },
-    { id: "filter", name: "Filtering", icon: faBan },
+    { id: "automod", name: "Automod", icon: faBan },
     { id: "history", name: "Cases", icon: faClipboardUser },
     { id: "logs", name: "Logging", icon: faHashtag },
     { id: "modmail", name: "Modmail", icon: faEnvelope },
