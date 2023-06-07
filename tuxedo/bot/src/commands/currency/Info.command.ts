@@ -1,8 +1,9 @@
-import { formatDate, inlineCode, inlineQuote } from "@yokilabs/bot";
-import { Category, Command } from "../commands";
 import { RoleType } from "@prisma/client";
-import { TAG_REGEX } from "../../util/matching";
+import { formatDate, inlineCode, inlineQuote } from "@yokilabs/bot";
 import { stripIndents } from "common-tags";
+
+import { TAG_REGEX } from "../../util/matching";
+import { Category, Command } from "../commands";
 
 const Info: Command = {
     name: "currency-info",
@@ -30,8 +31,7 @@ const Info: Command = {
 
         const currency = await ctx.dbUtil.getCurrency(message.serverId!, tag);
 
-        if (!currency)
-            return ctx.messageUtil.replyWithError(message, "No such currency", `There is no currency with tag ${inlineQuote(tag)} in this server.`);
+        if (!currency) return ctx.messageUtil.replyWithError(message, "No such currency", `There is no currency with tag ${inlineQuote(tag)} in this server.`);
 
         return ctx.messageUtil.replyWithInfo(
             message,
@@ -44,18 +44,18 @@ const Info: Command = {
                         value: stripIndents`
                             **Maximum balance:** ${currency.maximumBalance ? `${currency.maximumBalance} ${currency.name}` : "None"}
                             **Starting balance:** ${currency.startingBalance ?? 0} ${currency.name}
-                        `
+                        `,
                     },
                     {
                         name: "Additional Info",
                         value: stripIndents`
                             **Currency created:** ${formatDate(currency.createdAt, timezone)}
-                        `
-                    }
-                ]
+                        `,
+                    },
+                ],
             },
             {
-                isSilent: true
+                isSilent: true,
             }
         );
     },

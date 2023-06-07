@@ -90,14 +90,14 @@ export async function moderateContent(
 }
 
 export const describeAction = (data: Action): string[] =>
-({
-    [Severity.NOTE]: ["Moderation Note Added", "had a moderation note placed on them"],
-    [Severity.WARN]: ["User Warned", "has been warned"],
-    [Severity.MUTE]: ["User Muted", "has been muted"],
-    [Severity.SOFTBAN]: ["User Softbanned", "has been softbanned and their content has been cleared"],
-    [Severity.BAN]: ["User Banned", "has been banned"],
-    [Severity.KICK]: ["User Kicked", "has been kicked"],
-}[data.type]);
+    ({
+        [Severity.NOTE]: ["Moderation Note Added", "had a moderation note placed on them"],
+        [Severity.WARN]: ["User Warned", "has been warned"],
+        [Severity.MUTE]: ["User Muted", "has been muted"],
+        [Severity.SOFTBAN]: ["User Softbanned", "has been softbanned and their content has been cleared"],
+        [Severity.BAN]: ["User Banned", "has been banned"],
+        [Severity.KICK]: ["User Kicked", "has been kicked"],
+    }[data.type]);
 
 export function getActionInfo(ctx: Context, data: Action & { isAutomod?: boolean }): [string, string] {
     const [title, description] = describeAction(data);

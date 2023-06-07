@@ -3,14 +3,14 @@
     "compilerOptions": {
         "outDir": "./dist",
         "sourceMap": true,
-		"inlineSources": true,
-		"sourceRoot": "./dist",
+        "inlineSources": true,
+        "sourceRoot": "./dist",
         "noImplicitAny": false,
         "skipLibCheck": true,
-		"declaration": false,
-		"declarationMap": false,
+        "declaration": false,
+        "declarationMap": false,
         "paths": {
-            "@yokilabs/bot": ["../../yokilabs/bot/src"],
+            "@yokilabs/bot": ["../../yokilabs/bot/src"]
         }
     },
     "include": ["./src/**/*.ts", "./src/**/*.json"],

@@ -1,4 +1,5 @@
 import { RoleType } from "@prisma/client";
+
 import { Category, Command } from "../commands";
 
 const minDuration = 15 * 60 * 1000;
@@ -19,12 +20,12 @@ const Start: Command = {
         {
             name: "winners",
             type: "number",
-            max: 10
+            max: 10,
         },
         {
             name: "text",
             type: "rest",
-            max: 200
+            max: 200,
         },
     ],
     execute: (message, _args, ctx, { server: { timezone } }) => {

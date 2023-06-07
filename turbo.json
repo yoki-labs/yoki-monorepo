@@ -1,37 +1,21 @@
 {
-  "$schema": "https://turbo.build/schema.json",
-  "pipeline": {
-    "build": {
-      "dependsOn": [
-        "^build"
-      ],
-      "outputs": [
-        ".next/**",
-        "!.next/cache/**",
-        "dist"
-      ]
-    },
-    "@yoki/bot#build": {
-      "dependsOn": [
-        "@yokilabs/bot#build"
-      ],
-      "outputs": [
-        "dist"
-      ]
-    },
-    "@tuxedo/bot#build": {
-      "dependsOn": [
-        "@yokilabs/bot#build"
-      ],
-      "outputs": [
-        "dist"
-      ]
-    },
-    "generate": {
-      "dependsOn": [
-        "^generate"
-      ]
-    },
-    "lint": {}
-  }
+    "$schema": "https://turbo.build/schema.json",
+    "pipeline": {
+        "build": {
+            "dependsOn": ["^build"],
+            "outputs": [".next/**", "!.next/cache/**", "dist"]
+        },
+        "@yoki/bot#build": {
+            "dependsOn": ["@yokilabs/bot#build"],
+            "outputs": ["dist"]
+        },
+        "@tuxedo/bot#build": {
+            "dependsOn": ["@yokilabs/bot#build"],
+            "outputs": ["dist"]
+        },
+        "generate": {
+            "dependsOn": ["^generate"]
+        },
+        "lint": {}
+    }
 }

@@ -1,6 +1,7 @@
-import { inlineCode, inlineQuote } from "@yokilabs/bot";
-import { Category, Command } from "../commands";
 import { RoleType } from "@prisma/client";
+import { inlineCode, inlineQuote } from "@yokilabs/bot";
+
+import { Category, Command } from "../commands";
 
 const List: Command = {
     name: "currency-list",
@@ -12,16 +13,9 @@ const List: Command = {
     execute: async (message, _args, ctx) => {
         const currencies = await ctx.dbUtil.getCurrencies(message.serverId!);
 
-        if (!currencies.length)
-            return ctx.messageUtil.replyWithNullState(message, "No currencies", `This server does not have any local currencies.`);
+        if (!currencies.length) return ctx.messageUtil.replyWithNullState(message, "No currencies", `This server does not have any local currencies.`);
 
-        return ctx.messageUtil.replyWithInfo(
-            message,
-            "Server's currencies",
-            currencies
-                .map(x => `- ${inlineQuote(x.name)} (${inlineCode(x.tag)})`)
-                .join("\n")
-        );
+        return ctx.messageUtil.replyWithInfo(message, "Server's currencies", currencies.map((x) => `- ${inlineQuote(x.name)} (${inlineCode(x.tag)})`).join("\n"));
     },
 };
 

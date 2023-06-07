@@ -1,7 +1,8 @@
+import { RoleType } from "@prisma/client";
 import { inlineQuote } from "@yokilabs/bot";
+
 import { TAG_REGEX } from "../../util/matching";
 import { Category, Command } from "../commands";
-import { RoleType } from "@prisma/client";
 
 const Create: Command = {
     name: "currency-create",
@@ -36,10 +37,8 @@ const Create: Command = {
         // Tags are supposed to be unique
         const currencies = await ctx.dbUtil.getCurrencies(message.serverId!);
 
-        if (currencies.find(x => x.tag === tag))
-            return ctx.messageUtil.replyWithError(message, "Already exists", `The currency with tag ${inlineQuote(tag)} already exists.`);
-        else if (currencies.length >= 3)
-            return ctx.messageUtil.replyWithError(message, "Too many currencies", `You have created the maximum amount of currencies there can be.`);
+        if (currencies.find((x) => x.tag === tag)) return ctx.messageUtil.replyWithError(message, "Already exists", `The currency with tag ${inlineQuote(tag)} already exists.`);
+        else if (currencies.length >= 3) return ctx.messageUtil.replyWithError(message, "Too many currencies", `You have created the maximum amount of currencies there can be.`);
 
         await ctx.dbUtil.createCurrency(message.serverId!, tag, name, message.createdById);
 

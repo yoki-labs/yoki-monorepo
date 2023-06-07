@@ -23,8 +23,12 @@ const Balance: Command = {
         const currencies = await ctx.dbUtil.getCurrencies(message.serverId!);
         const userInfo = await ctx.dbUtil.getServerMember(message.serverId!, target.id);
 
-        const currencyLines = userInfo?.balance ? currencies.filter(x => userInfo.balance![x.id]).map(x => `${(userInfo.balance as Record<string, number>)[x.id]} ${x.name}`) : null;
-        const bankCurrencyLines = userInfo?.bankBalance ? currencies.filter(x => userInfo.bankBalance![x.id]).map(x => `${(userInfo.bankBalance as Record<string, number>)[x.id]} ${x.name}`) : null;
+        const currencyLines = userInfo?.balance
+            ? currencies.filter((x) => userInfo.balance![x.id]).map((x) => `${(userInfo.balance as Record<string, number>)[x.id]} ${x.name}`)
+            : null;
+        const bankCurrencyLines = userInfo?.bankBalance
+            ? currencies.filter((x) => userInfo.bankBalance![x.id]).map((x) => `${(userInfo.bankBalance as Record<string, number>)[x.id]} ${x.name}`)
+            : null;
 
         return ctx.messageUtil.replyWithInfo(
             message,
@@ -41,10 +45,10 @@ const Balance: Command = {
                         name: "Bank Balance",
                         value: bankCurrencyLines?.length ? bankCurrencyLines.join("\n") : "User has no server currency in their bank.",
                     },
-                ]
+                ],
             },
             {
-                isSilent: true
+                isSilent: true,
             }
         );
     },

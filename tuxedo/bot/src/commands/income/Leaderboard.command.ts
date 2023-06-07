@@ -35,7 +35,8 @@ const Leaderboard: Command = {
             title: "Server Leaderboard",
             items: members,
             itemsPerPage: 10,
-            itemMapping: (user, i) => `${start + i}. <@${user.userId}> — ${(user.balance?.[mainCurrency.id] ?? 0) + (user.bankBalance?.[mainCurrency.id] ?? 0)} ${mainCurrency.tag}`,
+            itemMapping: (user, i) =>
+                `${start + i}. <@${user.userId}> — ${(user.balance?.[mainCurrency.id] ?? 0) + (user.bankBalance?.[mainCurrency.id] ?? 0)} ${mainCurrency.tag}`,
             page,
             message: {
                 isSilent: true,

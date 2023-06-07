@@ -1,11 +1,13 @@
+import { RoleType } from "@prisma/client";
 import { createCommandHandler } from "@yokilabs/bot";
 
 import type { TuxoClient } from "../../Client";
 import type { Command, GEvent, Server } from "../../typings";
-import { RoleType } from "@prisma/client";
 import { RoleTypeValues } from "../../util/values";
 
-const { fetchPrefix, parseCommand, fetchCommandInfo, resolveArguments, checkUserPermissions, tryExecuteCommand } = createCommandHandler<TuxoClient, Server, Command, RoleType>(RoleTypeValues);
+const { fetchPrefix, parseCommand, fetchCommandInfo, resolveArguments, checkUserPermissions, tryExecuteCommand } = createCommandHandler<TuxoClient, Server, Command, RoleType>(
+    RoleTypeValues
+);
 
 // Fetches minimod/mod/admin roles
 const fetchServerRoles = (ctx: TuxoClient, serverId: string) => ctx.prisma.role.findMany({ where: { serverId } });

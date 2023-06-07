@@ -1,8 +1,8 @@
+import { RoleType } from "@prisma/client";
 import { codeBlock, formatDate, inlineCode, inlineQuote, summarizeRolesOrUsers } from "@yokilabs/bot";
+import { stripIndents } from "common-tags";
 
 import { Category, Command } from "../commands";
-import { RoleType } from "@prisma/client";
-import { stripIndents } from "common-tags";
 
 const Info: Command = {
     name: "giveaway-info",
@@ -32,18 +32,24 @@ const Info: Command = {
                 fields: [
                     {
                         name: "Reward",
-                        value: codeBlock(giveaway.text, "md")
+                        value: codeBlock(giveaway.text, "md"),
                     },
                     {
                         name: "Participants",
                         value: stripIndents`
                             **Max winners:** ${inlineCode(giveaway.winnerCount)}
-                            ${giveaway.hasEnded
-                                ? stripIndents`
+                            ${
+                                giveaway.hasEnded
+                                    ? stripIndents`
                                     **Participant count:** ${inlineCode(giveaway.participants.length)}
-                                    **Winners:** ${giveaway.winners.length ? summarizeRolesOrUsers(giveaway.winners) : "No one participated or the giveaway has been manually cancelled by a staff member."}
+                                    **Winners:** ${
+                                        giveaway.winners.length
+                                            ? summarizeRolesOrUsers(giveaway.winners)
+                                            : "No one participated or the giveaway has been manually cancelled by a staff member."
+                                    }
                                 `
-                                : ""}
+                                    : ""
+                            }
                         `,
                     },
                     {
@@ -53,12 +59,12 @@ const Info: Command = {
                             **Giveaway created:** ${formatDate(giveaway.createdAt, timezone)}
                             **End(s/ed) at:** ${formatDate(giveaway.endsAt, timezone)}
                             **In channel:** ${inlineCode(giveaway.channelId)}
-                        `
-                    }
-                ]
+                        `,
+                    },
+                ],
             },
             {
-                isSilent: true
+                isSilent: true,
             }
         );
     },

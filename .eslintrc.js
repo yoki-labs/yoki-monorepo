@@ -1,9 +1,11 @@
+const { join } = require("path");
+
 module.exports = {
     extends: ["@sapphire", "prettier"],
     parser: "@typescript-eslint/parser",
     parserOptions: {
         ecmaVersion: 2023,
-        project: "../../tsconfig.eslint.json",
+        project: join(__dirname, "tsconfig.eslint.json"),
     },
     plugins: ["simple-import-sort", "unused-imports"],
     root: true,
@@ -26,5 +28,7 @@ module.exports = {
                 argsIgnorePattern: "^_",
             },
         ],
+
+        "prettier/prettier": "off",
     },
 };

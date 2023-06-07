@@ -1,60 +1,60 @@
 name: Crons
 
 on:
-  workflow_dispatch:
-  schedule:
-    - cron: '0 0 * * 5'
+    workflow_dispatch:
+    schedule:
+        - cron: "0 0 * * 5"
 
 jobs:
-  messages:
-    name: Clear old messages
-    runs-on: ubuntu-latest
-    steps:
-      - name: Clone repo
-        uses: actions/checkout@v3
+    messages:
+        name: Clear old messages
+        runs-on: ubuntu-latest
+        steps:
+            - name: Clone repo
+              uses: actions/checkout@v3
 
-      - uses: pnpm/action-setup@v2
-        name: Install pnpm
-        id: pnpm-install
-        with:
-          version: 7
-          run_install: false
+            - uses: pnpm/action-setup@v2
+              name: Install pnpm
+              id: pnpm-install
+              with:
+                  version: 7
+                  run_install: false
 
-      - name: Get pnpm store directory
-        id: pnpm-cache
-        shell: bash
-        run: |
-          echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
+            - name: Get pnpm store directory
+              id: pnpm-cache
+              shell: bash
+              run: |
+                  echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
 
-      - uses: actions/cache@v3
-        name: Setup pnpm cache
-        with:
-          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
-          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-store-
+            - uses: actions/cache@v3
+              name: Setup pnpm cache
+              with:
+                  path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
+                  key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+                  restore-keys: |
+                      ${{ runner.os }}-pnpm-store-
 
-      - name: Set up Node v16
-        uses: actions/setup-node@v3
-        with:
-          node-version: '16'
-          cache: 'pnpm'
+            - name: Set up Node v16
+              uses: actions/setup-node@v3
+              with:
+                  node-version: "16"
+                  cache: "pnpm"
 
-      - name: Install dependencies
-        run: pnpm -r install
+            - name: Install dependencies
+              run: pnpm -r install
 
-      - name: Generate Prisma TypeScript
-        run: pnpm run generate
+            - name: Generate Prisma TypeScript
+              run: pnpm run generate
 
-      - name: Run Message Clearer
-        run: cd yoki/bot && pnpx ts-node scripts/delete-old-messages.ts
-        env:
-          DATABASE_URL: ${{ secrets.DATABASE_MIGRATION_URL }}
+            - name: Run Message Clearer
+              run: cd yoki/bot && pnpx ts-node scripts/delete-old-messages.ts
+              env:
+                  DATABASE_URL: ${{ secrets.DATABASE_MIGRATION_URL }}
 
-      - name: Guilded notification
-        uses: guildedjs/guilded-webhook-action@v1
-        env:
-          WEBHOOK_URL: ${{ secrets.GUILDED_WEBHOOK }}
-        with:
-          title: 'Old Messages Cleared'
-          description: '${{ steps.t.outputs.year }}/${{ steps.t.outputs.month }}/${{ steps.t.outputs.day }}'
+            - name: Guilded notification
+              uses: guildedjs/guilded-webhook-action@v1
+              env:
+                  WEBHOOK_URL: ${{ secrets.GUILDED_WEBHOOK }}
+              with:
+                  title: "Old Messages Cleared"
+                  description: "${{ steps.t.outputs.year }}/${{ steps.t.outputs.month }}/${{ steps.t.outputs.day }}"

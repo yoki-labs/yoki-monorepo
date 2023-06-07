@@ -27,7 +27,7 @@ export class GiveawayUtil extends Util<TuxoClient> {
 
     addGiveaway(giveaway: Giveaway) {
         // To end it before the next tick if it's ending
-        if ((giveaway.endsAt.getTime() - Date.now()) < tickIntervalMs) this.endingGiveawayPool.push(giveaway);
+        if (giveaway.endsAt.getTime() - Date.now() < tickIntervalMs) this.endingGiveawayPool.push(giveaway);
         else this.longGiveaways[giveaway.id] = { messageId: giveaway.messageId, endsAt: giveaway.endsAt.getTime() };
 
         this.participants[giveaway.messageId] = { giveawayId: giveaway.id, users: giveaway.participants };
@@ -63,7 +63,10 @@ export class GiveawayUtil extends Util<TuxoClient> {
         const message = messageId ?? this.longGiveaways[giveawayId].messageId;
 
         delete this.longGiveaways[giveawayId];
-        this.endingGiveawayPool.splice(this.endingGiveawayPool.findIndex(x => x.id === giveawayId), 1);
+        this.endingGiveawayPool.splice(
+            this.endingGiveawayPool.findIndex((x) => x.id === giveawayId),
+            1
+        );
         delete this.participants[message];
 
         return this;
@@ -74,8 +77,7 @@ export class GiveawayUtil extends Util<TuxoClient> {
         const activeGiveaways = await this.client.prisma.giveaway.findMany({ where: { hasEnded: false } });
 
         console.log("Found giveaways", activeGiveaways);
-        for (const giveaway of activeGiveaways)
-            this.addGiveaway(giveaway);
+        for (const giveaway of activeGiveaways) this.addGiveaway(giveaway);
 
         return this;
     }
@@ -181,8 +183,8 @@ export class GiveawayUtil extends Util<TuxoClient> {
 
         await Promise.all([
             this.client.messages.update(channelId, messageId, this.createGiveawayEmbed(giveaway, timeZone, true, true)),
-            this.client.prisma.giveaway.update({ where: { id: giveaway.id }, data: { participants, hasEnded: true, winners: [] } })
-            //this.client.prisma.giveaway.delete({ where: { id: giveaway.id } }).then(() => this.removeGiveaway(giveaway.id, giveaway.messageId)),
+            this.client.prisma.giveaway.update({ where: { id: giveaway.id }, data: { participants, hasEnded: true, winners: [] } }),
+            // this.client.prisma.giveaway.delete({ where: { id: giveaway.id } }).then(() => this.removeGiveaway(giveaway.id, giveaway.messageId)),
         ]);
 
         this.removeGiveaway(giveaway.id, giveaway.messageId);

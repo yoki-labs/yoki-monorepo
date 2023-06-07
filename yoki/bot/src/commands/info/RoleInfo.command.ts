@@ -34,10 +34,10 @@ const RoleInfo: Command = {
     execute: async (message, args, ctx, { server }) => {
         const roleArg = args.role as string;
 
-        if ((roleArg.startsWith("@") && !message.mentions?.roles?.[0]) || (!roleArg.startsWith("@") && !parseInt(roleArg)))
+        if ((roleArg.startsWith("@") && !message.mentions?.roles?.[0]) || (!roleArg.startsWith("@") && !parseInt(roleArg, 10)))
             return ctx.messageUtil.replyWithError(message, `Expected role mention or ID`, `In order to get information about a role, provide its mention or ID as an argument.`);
 
-        const roleId = (message.mentions?.roles?.[0].id as number) ?? parseInt(roleArg);
+        const roleId = (message.mentions?.roles?.[0].id as number) ?? parseInt(roleArg, 10);
 
         // Get all the roles to display neighbouring roles
         const serverRoles = (await ctx.rest.get(`/servers/${message.serverId!}/roles`)).roles as Role[];

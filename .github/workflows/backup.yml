@@ -1,42 +1,42 @@
 name: Backups
 
 on:
-  workflow_dispatch:
-  schedule:
-    - cron: '0 0 * * 6'
+    workflow_dispatch:
+    schedule:
+        - cron: "0 0 * * 6"
 
 jobs:
-  backup:
-    name: Backup database
-    runs-on: ubuntu-latest
-    steps:
-      - name: Get current time
-        uses: josStorer/get-current-time@v2.0.2
-        id: t
-        with:
-          format: YYYYMMDD-HH
-          utcOffset: '-05:00'
+    backup:
+        name: Backup database
+        runs-on: ubuntu-latest
+        steps:
+            - name: Get current time
+              uses: josStorer/get-current-time@v2.0.2
+              id: t
+              with:
+                  format: YYYYMMDD-HH
+                  utcOffset: "-05:00"
 
-      - name: Postgres Dump Backup
-        uses: tj-actions/pg-dump@v2.3
-        with:
-          database_url: ${{ secrets.DATABASE_MIGRATION_URL }}
-          path: 'backups/${{ steps.t.outputs.year }}-${{ steps.t.outputs.month }}-${{ steps.t.outputs.day }}-${{ steps.t.outputs.hour }}-${{ steps.t.outputs.minute }}-${{ steps.t.outputs.second }}.tar'
-          options: '-F t'
+            - name: Postgres Dump Backup
+              uses: tj-actions/pg-dump@v2.3
+              with:
+                  database_url: ${{ secrets.DATABASE_MIGRATION_URL }}
+                  path: "backups/${{ steps.t.outputs.year }}-${{ steps.t.outputs.month }}-${{ steps.t.outputs.day }}-${{ steps.t.outputs.hour }}-${{ steps.t.outputs.minute }}-${{ steps.t.outputs.second }}.tar"
+                  options: "-F t"
 
-      - uses: shallwefootball/s3-upload-action@master
-        id: S3
-        with:
-          aws_key_id: ${{ secrets.S3_ID }}
-          aws_secret_access_key: ${{ secrets.S3_SECRET_KEY }}
-          aws_bucket: 'yoki-backups'
-          source_dir: 'backups'
-          destination_dir: 'backups'
+            - uses: shallwefootball/s3-upload-action@master
+              id: S3
+              with:
+                  aws_key_id: ${{ secrets.S3_ID }}
+                  aws_secret_access_key: ${{ secrets.S3_SECRET_KEY }}
+                  aws_bucket: "yoki-backups"
+                  source_dir: "backups"
+                  destination_dir: "backups"
 
-      - name: Guilded notification
-        uses: guildedjs/guilded-webhook-action@v1
-        env:
-          WEBHOOK_URL: ${{ secrets.GUILDED_WEBHOOK }}
-        with:
-          title: 'New Database Backup'
-          description: 'Located in s3 bucket, backups/${{ steps.t.outputs.year }}-${{ steps.t.outputs.month }}-${{ steps.t.outputs.day }}-${{ steps.t.outputs.hour }}-${{ steps.t.outputs.minute }}-${{ steps.t.outputs.second }}.tar'
+            - name: Guilded notification
+              uses: guildedjs/guilded-webhook-action@v1
+              env:
+                  WEBHOOK_URL: ${{ secrets.GUILDED_WEBHOOK }}
+              with:
+                  title: "New Database Backup"
+                  description: "Located in s3 bucket, backups/${{ steps.t.outputs.year }}-${{ steps.t.outputs.month }}-${{ steps.t.outputs.day }}-${{ steps.t.outputs.hour }}-${{ steps.t.outputs.minute }}-${{ steps.t.outputs.second }}.tar"

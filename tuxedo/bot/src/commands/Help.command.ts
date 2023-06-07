@@ -43,7 +43,10 @@ const Help: Command = {
         commandCategoryMap.forEach((value, key) => {
             embed.addField(key in Category ? Category[key] : key, listInlineCode(value.map((x) => x.name))!, value.length < 4);
         });
-        embed.addField(":exclamation: NOTE!!!", "Tuxo is still in very early access and may contain bugs or will be missing certain features. Be sure to join [Yoki Labs server](https://yoki.gg/support) and report issues or submit feedback related to it. :heart_gil:");
+        embed.addField(
+            ":exclamation: NOTE!!!",
+            "Tuxo is still in very early access and may contain bugs or will be missing certain features. Be sure to join [Yoki Labs server](https://yoki.gg/support) and report issues or submit feedback related to it. :heart_gil:"
+        );
 
         return ctx.messageUtil.reply(message, { embeds: [embed] });
     },

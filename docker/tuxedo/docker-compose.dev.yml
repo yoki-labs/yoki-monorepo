@@ -1,4 +1,4 @@
-version: '3.7'
+version: "3.7"
 services:
     db:
         image: postgres
@@ -17,14 +17,14 @@ services:
             context: ../../
             dockerfile: ./docker/tuxedo/bot/Dockerfile
         env_file: ../../tuxedo/.env
-        command: 'npm run dev'
+        command: "npm run dev"
         depends_on:
             - db
         volumes:
-            - '../../tuxedo/bot/src:/usr/app/tuxedo/bot/src'
-        restart: 'unless-stopped'
+            - "../../tuxedo/bot/src:/usr/app/tuxedo/bot/src"
+        restart: "unless-stopped"
         environment:
-            DATABASE_URL: 'postgresql://tuxedo_user:tuxedo_pass@db:5432/tuxedo?schema=public'
+            DATABASE_URL: "postgresql://tuxedo_user:tuxedo_pass@db:5432/tuxedo?schema=public"
             BUILD_ENV: development
 
 volumes:
