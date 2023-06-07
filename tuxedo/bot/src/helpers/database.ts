@@ -18,11 +18,11 @@ export class DatabaseUtil extends Util<TuxoClient> {
             .then((data) =>
                 data
                     ? {
-                          ...data,
-                          getPrefix: () => data.prefix ?? this.client.prefix,
-                          getTimezone: () => data.timezone ?? "America/New_York",
-                          formatDateByTimezone: (date: Date) => formatDate(date, data.timezone ?? "America/New_York"),
-                      }
+                        ...data,
+                        getPrefix: () => data.prefix ?? this.client.prefix,
+                        getTimezone: () => data.timezone ?? "America/New_York",
+                        formatDateByTimezone: (date: Date) => formatDate(date, data.timezone ?? "America/New_York"),
+                    }
                     : null
             );
     }
@@ -130,7 +130,7 @@ export class DatabaseUtil extends Util<TuxoClient> {
 
     // ! note: This is unchecked. Need to check the balance and membership in a command.
     // Currencies argument is for self-cleaning deleted currencies
-    async updateServerMemberBankBalance(member: ServerMember, deposit: Record<string, number>, currencies: Currency[]) {
+    updateServerMemberBankBalance(member: ServerMember, deposit: Record<string, number>, currencies: Currency[]) {
         const balance = member.balance! as Record<string, number>;
         const newBalance = {};
         const newBankBalance = {};
