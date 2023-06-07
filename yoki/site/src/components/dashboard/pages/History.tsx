@@ -45,7 +45,7 @@ export default function History() {
                         <span className="label-text">Filter by type</span>
                     </label>
 
-                    <div className="place-items-center w-full place-items-start grid grid-cols-3 form-control">
+                    <div className="w-full place-items-start grid grid-cols-3 form-control">
                         {Object.keys(actionTypes).map((action) => {
                             return (
                                 <div key={action} className="flex flex-row space-x-2 mt-1">
@@ -83,9 +83,10 @@ export default function History() {
                                     {showIds ? action.id : "Click to copy"}
                                 </th>
                                 <td>{action.targetId}</td>
-                                <td className="flex flex-row">
-                                    <FontAwesomeIcon className="w-4 mr-2 text-spacelight-300" icon={getActionIcon(action.type)} />
-                                    <span>{action.type}</span>
+                                <td>
+                                    <div className="tooltip" data-tip={action.type}>
+                                        <FontAwesomeIcon className="w-5 mr-2 text-yellow-400" icon={getActionIcon(action.type)} />
+                                    </div>
                                 </td>
                                 <td className="text-spacelight-700">{getReason(action.reason, action.executorId)}</td>
                                 <td>{getExecutor(action.executorId)}</td>
