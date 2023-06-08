@@ -136,7 +136,7 @@ jobs:
             - name: Run database migration if schema changed.
               if: steps.verify-changed-files.outputs.db == 'true'
               run: |
-                  cd yoki/bot
+                  cd tuxedo/bot
                   pnpx prisma migrate deploy
               env:
                   DATABASE_URL: ${{ secrets.TUX_DATABASE_MIGRATION_URL }}

@@ -15,11 +15,7 @@ export function generateIncomeCommand(commandId: string, action: string, cooldow
 
         // Need to wait 24 hours
         if (lastUsed && Date.now() - lastUsed < cooldownInMs)
-            return ctx.messageUtil.replyWithError(
-                message,
-                "Too fast",
-                `You have to wait ${ms(lastUsed + cooldownInMs - Date.now(), { long: true })} ${action} again.`
-            );
+            return ctx.messageUtil.replyWithError(message, "Too fast", `You have to wait ${ms(lastUsed + cooldownInMs - Date.now(), { long: true })} ${action} again.`);
 
         ctx.balanceUtil.updateLastCommandUsage(message.serverId!, message.createdById, commandId);
 
@@ -34,5 +30,5 @@ export function generateIncomeCommand(commandId: string, action: string, cooldow
 
         // Reply with success
         return ctx.messageUtil.replyWithSuccess(message, successTitle, `${successDescription}, which had ${currencies.map((x) => `${reward} ${x.name}`).join(", ")}.`);
-    }
+    };
 }

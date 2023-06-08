@@ -1,4 +1,4 @@
-import type { RoleType,Server as DBServer } from "@prisma/client";
+import type { RoleType, Server as DBServer } from "@prisma/client";
 import type { BaseCommand, CommandContext as BaseCommandContext, GEvent as AbstractGEvent } from "@yokilabs/bot";
 import type { ClientEvents } from "guilded.js";
 
