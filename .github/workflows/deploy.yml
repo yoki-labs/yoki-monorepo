@@ -8,8 +8,7 @@ on:
             - "yoki/**"
             - "!yoki/site/**"
             - "tuxedo/**"
-            - "docker/**"
-            - "yokilabs/**"
+            - "packages/**"
 
 jobs:
     docker:
@@ -29,8 +28,7 @@ jobs:
                   filters: |
                       service:
                         - '${{ matrix.service.bot }}/${{ matrix.service.service }}/**'
-                        - 'docker/${{ matrix.service.bot }}/**'
-                        - 'yokilabs/**'
+                        - 'packages/**'
 
             - name: Set up QEMU
               if: steps.verify-changed-files.outputs.service == 'true'
@@ -55,7 +53,7 @@ jobs:
                   context: .
                   push: true
                   tags: ghcr.io/${{ github.repository }}/${{ matrix.service.bot }}/${{ matrix.service.service }}:latest
-                  file: docker/${{ matrix.service.bot }}/${{ matrix.service.service }}/Dockerfile
+                  file: ${{ matrix.service.bot }}/${{ matrix.service.service }}/Dockerfile
                   cache-from: type=gha
                   cache-to: type=gha,mode=max
     deploy:

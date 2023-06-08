@@ -1,12 +1,12 @@
 {
     "watch": [
         "src",
-        "../../yokilabs"
+        "../../packages"
     ],
     "ext": "ts,json",
     "ignore": [
         "src/**/*.d.ts",
-        "../../yokilabs/**/*.d.ts"
+        "../../packages/**/*.d.ts"
     ],
     "exec": "npx tsc && node --enable-source-maps dist/index.js",
     "legacyWatch": true

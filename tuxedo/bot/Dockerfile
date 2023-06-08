@@ -14,25 +14,25 @@ RUN apk update \
 	&& corepack enable && corepack prepare pnpm@7.18.0 --activate
 
 # root /
-COPY pnpm-workspace.yaml pnpm-lock.yaml tsconfig.json package.json turbo.json ./
-COPY ./yokilabs ./yokilabs
+COPY pnpm-workspace.yaml pnpm-lock.yaml tsconfig.json turbo.json package.json ./
+COPY ./packages ./packages
 
 RUN pnpm install --silent
 RUN pnpm run build:deps
 
-# root /yoki/bot
-WORKDIR /opt/build/yoki/bot
+# root /tuxedo/bot
+WORKDIR /opt/build/tuxedo/bot
 
-COPY ./yoki/bot/package.json ./
+COPY ./tuxedo/bot/package.json ./
 # for workspaces
 RUN pnpm install --silent
 
-# root /yoki/bot/prisma/ for DB stuff
-COPY ./yoki/bot/prisma/. ./prisma/
+# root /tuxedo/bot/prisma/ for DB stuff
+COPY ./tuxedo/bot/prisma/. ./prisma/
 RUN npx prisma generate
 
-COPY ./yoki/bot/tsconfig.json ./yoki/bot/nodemon.json ./
-COPY ./yoki/bot/src/. ./src/
+COPY ./tuxedo/bot/tsconfig.json ./tuxedo/bot/nodemon.json ./
+COPY ./tuxedo/bot/src/. ./src/
 RUN pnpm run build
 
 # RUN if [[ "$BUILD_ENV" = "production" ]]; then pnpm prune --prod; fi
@@ -46,8 +46,8 @@ RUN apk update \
 
 COPY --from=0 ./opt/build/tsconfig.json ./opt/build/package.json ./
 COPY --from=0 ./opt/build/node_modules node_modules
-COPY --from=0 ./opt/build/yokilabs/ yokilabs/
-COPY --from=0 ./opt/build/yoki/bot/ yoki/bot/
+COPY --from=0 ./opt/build/packages/ packages/
+COPY --from=0 ./opt/build/tuxedo/bot/ tuxedo/bot/
 
-WORKDIR /usr/app/yoki/bot
+WORKDIR /usr/app/tuxedo/bot
 CMD ["npm", "run", "start"]

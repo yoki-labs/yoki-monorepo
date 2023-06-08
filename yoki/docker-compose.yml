@@ -6,4 +6,4 @@ services:
         restart: unless-stopped
         network_mode: "host"
         env_file:
-            - ../../stack.env
+            - ./.env.prod
