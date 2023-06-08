@@ -39,17 +39,17 @@ const Daily: Command = {
                 `You have to wait ${ms(lastUsed + depositCooldown - Date.now(), { long: true })} to deposit your currency again.`
             );
 
-        const serverCurrencies = await ctx.dbUtil.getCurrencies(message.serverId!);
-        const depositingCurrencies = tag === "all" ? serverCurrencies : serverCurrencies.filter((x) => x.tag === tag);
-
-        // If there is no such currency and they are not depositing all currency, then error out
-        if (tag !== "all" && !depositingCurrencies.length)
-            return ctx.messageUtil.replyWithError(message, "No such currency", `There is no currency with tag ${inlineQuote(tag)} in this server.`);
-
         // Check existance and balance of members
         const member = await ctx.dbUtil.getServerMember(message.serverId!, message.createdById);
 
         if (!member?.balance) return ctx.messageUtil.replyWithError(message, "No balance", `You do not have any currency in your balance to deposit anything.`);
+
+        const serverCurrencies = await ctx.dbUtil.getCurrencies(message.serverId!);
+        const depositingCurrencies = tag === "all" ? serverCurrencies.filter((x) => x.id in (member.balance as Record<string, number>)) : serverCurrencies.filter((x) => x.tag === tag);
+
+        // If there is no such currency and they are not depositing all currency, then error out
+        if (tag !== "all" && !depositingCurrencies.length)
+            return ctx.messageUtil.replyWithError(message, "No such currency", `There is no currency with tag ${inlineQuote(tag)} in this server.`);
 
         const deposit = {};
 
@@ -72,7 +72,7 @@ const Daily: Command = {
         await ctx.dbUtil.updateServerMemberBankBalance(member, deposit, serverCurrencies);
 
         // Reply with success
-        return ctx.messageUtil.replyWithSuccess(message, `Balance deposited`, `You have successfully deposited all/some of your balance.`);
+        return ctx.messageUtil.replyWithSuccess(message, `Balance deposited`, `You have successfully deposited ${depositingCurrencies.map(x => `${deposit[x.id]} ${x.name}`)}.`);
     },
 };
 

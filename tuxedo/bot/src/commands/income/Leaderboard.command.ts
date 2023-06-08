@@ -32,11 +32,11 @@ const Leaderboard: Command = {
 
         return ctx.messageUtil.replyWithPaginatedContent({
             replyTo: message,
-            title: "Server Leaderboard",
+            title: ":trophy: Server Leaderboard",
             items: members,
             itemsPerPage: 10,
             itemMapping: (user, i) =>
-                `${start + i}. <@${user.userId}> — ${(user.balance?.[mainCurrency.id] ?? 0) + (user.bankBalance?.[mainCurrency.id] ?? 0)} ${mainCurrency.tag}`,
+                `${start + i}. <@${user.userId}> — ${(user.balance?.[mainCurrency.id] ?? 0) + (user.bankBalance?.[mainCurrency.id] ?? 0)} ${mainCurrency.name}`,
             page,
             message: {
                 isSilent: true,
