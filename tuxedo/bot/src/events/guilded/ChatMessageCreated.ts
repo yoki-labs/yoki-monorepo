@@ -37,7 +37,12 @@ export default {
 
         if (message.createdByWebhookId || message.authorId === ctx.user!.id || message.authorId === "Ann6LewA" || !message.serverId) return void 0;
 
-        return fn(args, await args[1].dbUtil.getServer(args[0].serverId!));
+        const server = await args[1].dbUtil.getServer(args[0].serverId!);
+
+        // Early access only
+        if (!server.flags.includes("EARLY_ACCESS")) return void 0;
+
+        return fn(args, server);
     },
     name: "messageCreated",
 } satisfies GEvent<"messageCreated">;
