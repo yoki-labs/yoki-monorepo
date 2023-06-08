@@ -94,7 +94,7 @@ jobs:
                   cd ${{ matrix.service.name }}/bot
                   pnpx prisma migrate deploy
               env:
-                  DATABASE_URL: ${{ format('secrets.{0}', matrix.service.db_url) }}
+                  DATABASE_URL: ${{ format('\$\{\{ secrets.{0} \}\}', matrix.service.db_url) }}
 
             - name: executing remote ssh commands using ssh key
               uses: appleboy/ssh-action@master
