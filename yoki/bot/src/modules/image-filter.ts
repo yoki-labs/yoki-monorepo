@@ -12,7 +12,7 @@ interface ImageScanResult {
 }
 
 export class ImageFilterUtil extends Util<YokiClient> {
-    readonly hostURL = process.env.IMAGE_SCANNER_URL ?? "http://nsfw:4433/nsfw";
+    readonly hostURL = process.env.IMAGE_SCANNER_URL ?? "http://localhost:4433/nsfw";
 
     public async scanImage(imageURL: string) {
         const req: ImageScanResult = await fetch(this.hostURL, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ imageURL }) })

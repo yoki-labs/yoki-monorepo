@@ -36,7 +36,7 @@
         "yk:docker:prod": "cd docker/yoki && docker-compose",
         "yk:start:prod": "pnpm yk:docker:prod up -d --build",
         "yk:down:prod": "pnpm yk:docker:prod down",
-        "yk:logs:prod": "pnpm yk:docker:prod logs -f bot nsfw",
+        "yk:logs:prod": "pnpm yk:docker:prod logs -f bot",
         "yk:migrate:prod": "cd yoki/bot && pnpm migrate:prod"
     },
     "devDependencies": {
@@ -63,13 +63,12 @@
     "workspaces": [
         "yokilabs/bot",
         "yoki/bot",
-        "yoki/nsfw",
         "yoki/site",
         "tuxedo/bot"
     ],
     "lint-staged": {
         "yokilabs/{bot,util}/src/*.{js,ts}": "npx eslint -c .eslintrc.js --fix",
-        "yoki/{bot,nsfw,api}/src/*.{js,ts}": "npx eslint -c .eslintrc.js --fix",
+        "yoki/{bot,api}/src/*.{js,ts}": "npx eslint -c .eslintrc.js --fix",
         "tuxedo/**/*.{js,ts}": "npx eslint -c .eslintrc.js --fix",
         "yoki/site/src/*.{ts,tsx}": "npx eslint -c .eslintrc.web.js --fix"
     }
