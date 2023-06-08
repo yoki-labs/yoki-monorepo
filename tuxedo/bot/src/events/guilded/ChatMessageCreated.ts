@@ -40,7 +40,7 @@ export default {
         const server = await args[1].dbUtil.getServer(args[0].serverId!);
 
         // Early access only
-        if (!server.flags.includes("EARLY_ACCESS")) return void 0;
+        if (!server.flags.includes("EARLY_ACCESS") && server.serverId !== process.env.MAIN_SERVER) return void 0;
 
         return fn(args, server);
     },

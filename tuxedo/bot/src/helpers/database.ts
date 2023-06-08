@@ -18,11 +18,11 @@ export class DatabaseUtil extends Util<TuxoClient> {
             .then((data) =>
                 data
                     ? {
-                          ...data,
-                          getPrefix: () => data.prefix ?? this.client.prefix,
-                          getTimezone: () => data.timezone ?? "America/New_York",
-                          formatDateByTimezone: (date: Date) => formatDate(date, data.timezone ?? "America/New_York"),
-                      }
+                        ...data,
+                        getPrefix: () => data.prefix ?? this.client.prefix,
+                        getTimezone: () => data.timezone ?? "America/New_York",
+                        formatDateByTimezone: (date: Date) => formatDate(date, data.timezone ?? "America/New_York"),
+                    }
                     : null
             );
     }
@@ -35,6 +35,7 @@ export class DatabaseUtil extends Util<TuxoClient> {
                         serverId,
                         locale: "en-US",
                         premium: null,
+                        flags: ["EARLY_ACCESS"],
                         prefix: null,
                         ...data,
                     },
