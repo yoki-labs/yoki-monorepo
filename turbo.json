@@ -13,7 +13,7 @@
         },
         "@yoki/bot#build": {
             "dependsOn": [
-                "@yokilabs/bot#build",
+                "^@yokilabs/bot#build",
                 "@yoki/bot#generate"
             ],
             "outputs": [
@@ -22,7 +22,7 @@
         },
         "@tuxedo/bot#build": {
             "dependsOn": [
-                "@yokilabs/bot#build",
+                "^@yokilabs/bot#build",
                 "@tuxedo/bot#generate"
             ],
             "outputs": [
