@@ -8,14 +8,14 @@
         "#": "Scripts for building the typescript/prisma code in all the services/packages. They're sectioned by shared local packages and services",
         "build": "pnpm build:yoki && pnpm build:tuxedo",
         "build:deps": "turbo run build --filter=@yokilabs/**",
-        "build:yoki": "turbo run generate build --filter=@yokilabs/** --filter=!@yoki/site --filter=!@yoki/api --filter=@yoki/**",
+        "build:yoki": "turbo run generate build --filter=@yokilabs/** --filter=!@yoki/site --filter=@yoki/**",
         "build:tuxedo": "turbo run generate build --filter=@yokilabs/** --filter=@tuxedo/**",
         "generate:yoki": "cd yoki/bot && pnpm generate",
         "generate:tuxedo": "cd tuxedo/bot && pnpm generate",
         "##": "Scripts for code quality and CI",
-        "lint:bots": "turbo run lint --filter=!@yoki/bot --filter=!@yoki/api",
+        "lint:bots": "turbo run lint --filter=!@yoki/bot",
         "lint:web": "turbo run lint --filter=@yoki/site",
-        "lint": "turbo run lint --filter=!@yoki/api",
+        "lint": "turbo run lint",
         "lint:fix": "turbo run lint -- --fix && pnpm prettier",
         "prepare": "husky install",
         "prettier": "prettier --write **/*.{ts,js,tsx,jsx,json,yml,yaml,md}",
@@ -61,7 +61,7 @@
         "typescript": "^4.9.5"
     },
     "workspaces": [
-        "yokilabs/bot",
+        "packages/bot",
         "yoki/bot",
         "yoki/site",
         "tuxedo/bot"
