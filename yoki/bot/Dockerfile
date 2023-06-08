@@ -45,7 +45,9 @@ RUN apk update \
 	&& apk add cairo-dev pango-dev jpeg-dev
 
 COPY --from=0 ./opt/build/tsconfig.json ./opt/build/package.json ./
-COPY --from=0 ./opt/build/node_modules ./opt/build/packages ./opt/build/yoki/bot ./
+COPY --from=0 ./opt/build/node_modules node_modules
+COPY --from=0 ./opt/build/packages/ packages/
+COPY --from=0 ./opt/build/yoki/bot/ yoki/bot/
 
 WORKDIR /usr/app/yoki/bot
 CMD ["npm", "run", "start"]
