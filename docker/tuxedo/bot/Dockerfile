@@ -2,7 +2,6 @@ FROM node:16-alpine
 WORKDIR /opt/build
 ENV BUILD_ENV=production
 
-COPY pnpm-workspace.yaml pnpm-lock.yaml ./
 RUN apk update \
 	&& apk add --no-cache --virtual .build-deps build-base \
 	libpng \
@@ -15,7 +14,7 @@ RUN apk update \
 	&& corepack enable && corepack prepare pnpm@7.18.0 --activate
 
 # root /
-COPY tsconfig.json turbo.json package.json ./
+COPY pnpm-workspace.yaml pnpm-lock.yaml tsconfig.json turbo.json package.json ./
 COPY ./yokilabs ./yokilabs
 
 RUN pnpm install --silent

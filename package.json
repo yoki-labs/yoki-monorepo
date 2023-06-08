@@ -27,7 +27,7 @@
         "tx:migrate": "cd tuxedo/bot && pnpm migrate:dev",
         "tx:migrate:prod": "cd tuxedo/bot && pnpm migrate:prod",
         "tx:docker:prod": "cd docker/tuxedo && docker-compose",
-        "txt:start:prod": "pnpm tx:docker:prod up -d --build",
+        "tx:start:prod": "pnpm tx:docker:prod up -d --build",
         "####": "Scripts for Yoki. Contains some 'prefix' scripts. They're used in other scripts. The purpose of these is to make sure we aren't repeating long commands.",
         "yk:docker": "cd docker/yoki && docker-compose -f docker-compose.dev.yml",
         "yk:db": "pnpm yk:docker up -d --build db",
