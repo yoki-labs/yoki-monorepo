@@ -1,10 +1,11 @@
 import { Collection } from "@discordjs/collection";
+import { RoleType } from "@prisma/client";
+
 import { Category, Command } from "../commands";
 import Create from "./Create.command";
-import { RoleType } from "@prisma/client";
-import List from "./List.command";
 import Delete from "./Delete.command";
 import Info from "./Info.command";
+import List from "./List.command";
 
 const Currency: Command = {
     name: "currency",

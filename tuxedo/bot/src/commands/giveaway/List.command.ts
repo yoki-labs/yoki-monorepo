@@ -1,6 +1,7 @@
-import { inlineCode, inlineQuote } from "@yokilabs/bot";
-import { Category, Command } from "../commands";
 import { RoleType } from "@prisma/client";
+import { inlineCode, inlineQuote } from "@yokilabs/bot";
+
+import { Category, Command } from "../commands";
 
 // 20 -- Emote + 10 -- formatting and all + 17 -- giveaway ID + 50 -- giveaway text
 const giveawayLineLength = 20 + 10 + 17 + 50;

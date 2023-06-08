@@ -1,6 +1,7 @@
-import { inlineQuote } from "@yokilabs/bot";
-import { Category, Command } from "../commands";
 import { RoleType } from "@prisma/client";
+import { inlineQuote } from "@yokilabs/bot";
+
+import { Category, Command } from "../commands";
 
 const Prefix: Command = {
     name: "prefix",

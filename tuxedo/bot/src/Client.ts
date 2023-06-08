@@ -1,10 +1,10 @@
 import { PrismaClient } from "@prisma/client";
 import { AbstractClient, MessageUtil, RoleUtil } from "@yokilabs/bot";
 
+import { BalanceUtil } from "./helpers/balance";
 import { DatabaseUtil } from "./helpers/database";
 import { GiveawayUtil } from "./helpers/giveaway";
 import type { Command, Server } from "./typings";
-import { BalanceUtil } from "./helpers/balance";
 
 /**
  * Main class that stores utils, connections to various providers, and ws

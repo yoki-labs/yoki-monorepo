@@ -1,13 +1,13 @@
 import { Collection } from "@discordjs/collection";
+import { RoleType } from "@prisma/client";
 
 import { Category, Command } from "../commands";
 import Conclude from "./Conclude.command";
+import Info from "./Info.command";
+import List from "./List.command";
+import Reroll from "./Reroll.command";
 import Start from "./Start.command";
 import Stop from "./Stop.command";
-import { RoleType } from "@prisma/client";
-import Reroll from "./Reroll.command";
-import List from "./List.command";
-import Info from "./Info.command";
 
 const Giveaway: Command = {
     name: "giveaway",

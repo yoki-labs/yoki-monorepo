@@ -1,8 +1,9 @@
 import { CommandContext, ResolvedArgs } from "@yokilabs/bot";
 import { Message } from "guilded.js";
+import ms from "ms";
+
 import { TuxoClient } from "../../Client";
 import { Server } from "../../typings";
-import ms from "ms";
 
 export function generateIncomeCommand(commandId: string, action: string, cooldownInMs: number, max: number, min: number, successTitle: string, successDescription: string) {
     return async function execute(message: Message, _args: Record<string, ResolvedArgs>, ctx: TuxoClient, _context: CommandContext<Server>) {

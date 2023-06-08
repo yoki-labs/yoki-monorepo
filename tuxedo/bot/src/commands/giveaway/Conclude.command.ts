@@ -1,7 +1,7 @@
+import { RoleType } from "@prisma/client";
 import { inlineCode } from "@yokilabs/bot";
 
 import { Category, Command } from "../commands";
-import { RoleType } from "@prisma/client";
 
 const Conclude: Command = {
     name: "giveaway-conclude",
