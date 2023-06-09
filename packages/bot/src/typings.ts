@@ -7,6 +7,7 @@ import type { IServer } from "./db-types";
 // context available in every execution of a command
 export interface CommandContext<T extends IServer> {
     message: Message;
+    prefix: string;
     server: T;
     member: CachedMember;
 }
