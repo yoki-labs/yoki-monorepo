@@ -32,7 +32,8 @@
         "generate": {
             "dependsOn": [
                 "^generate"
-            ]
+            ],
+            "cache": false
         },
         "lint": {}
     }
