@@ -19,6 +19,7 @@ const Case: Command = {
         },
         {
             name: "action",
+            display: "remove",
             type: "string",
             optional: true,
         },

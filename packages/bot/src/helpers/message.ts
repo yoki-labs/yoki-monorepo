@@ -242,7 +242,7 @@ export class MessageUtil<
         return this.sendEmbed(
             channelId,
             {
-                title,
+                author: { name: title, icon_url: BotImages.exclamationmark },
                 description,
                 color: Colors.yellow,
                 thumbnail: { url: StateImages.stop },
@@ -300,6 +300,20 @@ export class MessageUtil<
                 author: { name: title, icon_url: BotImages.checkmark },
                 description,
                 color: Colors.green,
+                ...embedPartial,
+            },
+            messagePartial
+        );
+    }
+
+    replyWithWarning(message: Message, title: string, description: string, embedPartial?: EmbedPayload, messagePartial?: Partial<MessageBody>) {
+        return this.replyWithEmbed(
+            message,
+            {
+                author: { name: title, icon_url: BotImages.exclamationmark },
+                description,
+                color: Colors.yellow,
+                thumbnail: { url: StateImages.stop },
                 ...embedPartial,
             },
             messagePartial

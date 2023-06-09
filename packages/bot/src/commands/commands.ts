@@ -196,7 +196,7 @@ export function createCommandHandler<
             return executeCommand(context, server, member, prefix, command, args);
         },
         resolveArguments: async (
-            onNext: (context: [Message, TClient], server: TServer, member: Member, command: TCommand, args: Record<string, any>) => AsyncUnit,
+            onNext: (context: [Message, TClient], server: TServer, member: Member, prefix: string, command: TCommand, args: Record<string, any>) => AsyncUnit,
             context: [Message, TClient],
             server: TServer,
             member: Member,
@@ -242,15 +242,15 @@ export function createCommandHandler<
                 }
             }
 
-            return onNext(context, server, member, command, resolvedArgs);
+            return onNext(context, server, member, prefix, command, resolvedArgs);
         },
-        tryExecuteCommand: async ([message, ctx]: [Message, TClient], server: TServer, member: Member, command: TCommand, args: Record<string, any>) => {
+        tryExecuteCommand: async ([message, ctx]: [Message, TClient], server: TServer, member: Member, prefix: string, command: TCommand, args: Record<string, any>) => {
             try {
                 void ctx.amp.logEvent({ event_type: "COMMAND_RAN", user_id: message.createdById, event_properties: { serverId: message.serverId!, command: command.name } });
 
                 // run the command with the message object, the casted arguments, the global context object (datbase, rest, ws),
                 // and the command context (raw packet, database server entry, member from API or cache)
-                await command.execute(message, args, ctx, { message, server, member });
+                await command.execute(message, args, ctx, { message, server, member, prefix });
             } catch (e) {
                 // ID for error, not persisted in database at all
                 const referenceId = nanoid(17);

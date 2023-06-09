@@ -3,6 +3,7 @@ import { inlineQuote } from "@yokilabs/bot";
 
 import { TAG_REGEX } from "../../util/matching";
 import { Category, Command } from "../commands";
+import { stripIndents } from "common-tags";
 
 const Delete: Command = {
     name: "currency-delete",
@@ -17,9 +18,15 @@ const Delete: Command = {
             type: "string",
             max: 16,
         },
+        {
+            name: "confirmation",
+            type: "string",
+            optional: true
+        }
     ],
-    execute: async (message, args, ctx) => {
+    execute: async (message, args, ctx, { prefix }) => {
         const tag = (args.tag as string).toLowerCase();
+        const confirmed = (args.confirmation as string | undefined)?.toLowerCase() === "confirm";
 
         if (!TAG_REGEX.test(tag))
             return ctx.messageUtil.replyWithError(
@@ -32,6 +39,18 @@ const Delete: Command = {
 
         // Currency needs to exist for it to be deleted
         if (!currency) return ctx.messageUtil.replyWithError(message, "Doesn't exist", `The currency with tag ${inlineQuote(tag)} does not exist and cannot be deleted.`);
+
+        if (!confirmed)
+            return ctx.messageUtil.replyWithWarning(
+                message,
+                "Confirm deletion",
+                stripIndents`
+                    Are you sure you want to delete currency ${inlineQuote(currency.name)}? This will also delete the currency from member's balances. If that is intended, redo the command with \`confirm\` at the end like so:
+                    \`\`\`md
+                    ${prefix}currency delete ${tag} confirm
+                    \`\`\`
+                `
+            );
 
         await ctx.dbUtil.deleteCurrency(currency);
 
