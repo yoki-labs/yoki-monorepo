@@ -84,6 +84,12 @@ export class DatabaseUtil extends Util<TuxoClient> {
                     id: currency.id,
                 },
             }),
+            this.client.prisma.memberBalance.deleteMany({
+                where: {
+                    serverId: currency.serverId,
+                    currencyId: currency.id,
+                },
+            }),
         ]);
     }
 
@@ -143,7 +149,6 @@ export class DatabaseUtil extends Util<TuxoClient> {
         });
     }
 
-    // Currencies argument is for self-cleaning deleted currencies
     async updateServerMemberBalance(serverId: string, userId: string, balanceChanges: Record<string, number>) {
         const member = await this.getServerMember(serverId, userId);
 
@@ -152,7 +157,6 @@ export class DatabaseUtil extends Util<TuxoClient> {
     }
 
     // ! note: This is unchecked. Need to check the balance and membership in a command.
-    // Currencies argument is for self-cleaning deleted currencies
     updateServerMemberBankBalance(member: ServerMember & { balances: MemberBalance[] }, deposit: Record<string, number>) {
         const balanceUpdate =
             member
@@ -181,27 +185,5 @@ export class DatabaseUtil extends Util<TuxoClient> {
                 },
             },
         });
-        // const balance = member.balance! as Record<string, number>;
-        // const newBalance = {};
-        // const newBankBalance = {};
-
-        // // Combine gained value and old value
-        // for (const currency in balance) {
-        //     // Ignore currencies that are no longer existing or 0 deposits
-        //     if (!currencies.find((x) => x.id === currency)) continue;
-
-        //     newBalance[currency] = balance[currency] - (deposit[currency] ?? 0);
-        //     newBankBalance[currency] = member.bankBalance?.[currency] ? member.bankBalance[currency] + (deposit[currency] ?? 0) : deposit[currency];
-        // }
-
-        // return this.client.prisma.serverMember.update({
-        //     where: {
-        //         id: member.id,
-        //     },
-        //     data: {
-        //         balance: newBalance,
-        //         bankBalance: newBankBalance,
-        //     },
-        // });
     }
 }
