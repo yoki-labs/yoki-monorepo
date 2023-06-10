@@ -81,7 +81,7 @@ const Daily: Command = {
             }
 
             // If the amount was not specified, deposit all of what is in the pocket
-            depositMap[depositingBalance.id] = amount ?? depositingBalance.pocket;
+            depositMap[depositingBalance.currencyId] = amount ?? depositingBalance.pocket;
         }
 
         // Deposit into bank
