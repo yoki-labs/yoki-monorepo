@@ -1,4 +1,4 @@
-import { Currency, ServerMember } from "@prisma/client";
+import { Currency, MemberBalance, ServerMember } from "@prisma/client";
 import { formatDate, Util } from "@yokilabs/bot";
 import { nanoid } from "nanoid";
 
@@ -88,7 +88,7 @@ export class DatabaseUtil extends Util<TuxoClient> {
     }
 
     getServerMembers(serverId: string) {
-        return this.client.prisma.serverMember.findMany({ where: { serverId } });
+        return this.client.prisma.serverMember.findMany({ where: { serverId }, include: { balances: true } });
     }
 
     getServerMember(serverId: string, userId: string) {
@@ -96,63 +96,112 @@ export class DatabaseUtil extends Util<TuxoClient> {
     }
 
     createServerMember(serverId: string, userId: string, balance: Record<string, number>) {
-        return this.client.prisma.serverMember.create({ data: { id: nanoid(17), serverId, userId, balance } });
+        return this.client.prisma.serverMember.create({
+            data: {
+                id: nanoid(17),
+                serverId,
+                userId,
+                balances: {
+                    create: Object.keys(balance).map(currencyId => ({
+                        serverId,
+                        currencyId,
+                        pocket: balance[currencyId],
+                        bank: 0
+                    }))
+                }
+            }
+        });
     }
 
     // Currencies argument is for self-cleaning deleted currencies
-    updateServerMember(member: ServerMember, balance: Record<string, number>, currencies: Currency[]) {
-        const newBalance = {};
-
-        // Combine gained value and old value
-        for (const currency in balance) {
-            // Ignore currencies that no longer exist
-            if (!currencies.find((x) => x.id === currency)) continue;
-
-            newBalance[currency] = member.balance ? member.balance[currency] + (balance[currency] ?? 0) : balance[currency];
-        }
+    updateServerMember(member: ServerMember & { balances: MemberBalance[] }, balance: Record<string, number>) {
+        const balanceUpdate =
+            member
+                .balances
+                .map((x) =>
+                    ({
+                        where: {
+                            id: x.id,
+                            memberId: x.memberId,
+                        },
+                        data: {
+                            ...x,
+                            pocket: x.pocket + (balance[x.currencyId] ?? 0),
+                        },
+                    })
+                );
 
         return this.client.prisma.serverMember.update({
             where: {
                 id: member.id,
             },
             data: {
-                balance: newBalance,
+                balances: {
+                    update: balanceUpdate,
+                },
             },
         });
     }
 
     // Currencies argument is for self-cleaning deleted currencies
-    async updateServerMemberBalance(serverId: string, userId: string, balanceChanges: Record<string, number>, currencies: Currency[]) {
+    async updateServerMemberBalance(serverId: string, userId: string, balanceChanges: Record<string, number>) {
         const member = await this.getServerMember(serverId, userId);
 
         if (!member) return this.createServerMember(serverId, userId, balanceChanges);
-        return this.updateServerMember(member, balanceChanges, currencies);
+        return this.updateServerMember(member, balanceChanges);
     }
 
     // ! note: This is unchecked. Need to check the balance and membership in a command.
     // Currencies argument is for self-cleaning deleted currencies
-    updateServerMemberBankBalance(member: ServerMember, deposit: Record<string, number>, currencies: Currency[]) {
-        const balance = member.balance! as Record<string, number>;
-        const newBalance = {};
-        const newBankBalance = {};
-
-        // Combine gained value and old value
-        for (const currency in balance) {
-            // Ignore currencies that are no longer existing or 0 deposits
-            if (!currencies.find((x) => x.id === currency)) continue;
-
-            newBalance[currency] = balance[currency] - (deposit[currency] ?? 0);
-            newBankBalance[currency] = member.bankBalance?.[currency] ? member.bankBalance[currency] + (deposit[currency] ?? 0) : deposit[currency];
-        }
+    updateServerMemberBankBalance(member: ServerMember & { balances: MemberBalance[] }, deposit: Record<string, number>) {
+        const balanceUpdate =
+            member
+                .balances
+                .map((x) =>
+                    ({
+                        where: {
+                            id: x.id,
+                            memberId: x.memberId,
+                        },
+                        data: {
+                            ...x,
+                            pocket: x.pocket - (deposit[x.currencyId] ?? 0),
+                            bank: x.bank + (deposit[x.currencyId] ?? 0),
+                        },
+                    })
+                );
 
         return this.client.prisma.serverMember.update({
             where: {
                 id: member.id,
             },
             data: {
-                balance: newBalance,
-                bankBalance: newBankBalance,
+                balances: {
+                    update: balanceUpdate,
+                },
             },
         });
+        // const balance = member.balance! as Record<string, number>;
+        // const newBalance = {};
+        // const newBankBalance = {};
+
+        // // Combine gained value and old value
+        // for (const currency in balance) {
+        //     // Ignore currencies that are no longer existing or 0 deposits
+        //     if (!currencies.find((x) => x.id === currency)) continue;
+
+        //     newBalance[currency] = balance[currency] - (deposit[currency] ?? 0);
+        //     newBankBalance[currency] = member.bankBalance?.[currency] ? member.bankBalance[currency] + (deposit[currency] ?? 0) : deposit[currency];
+        // }
+
+        // return this.client.prisma.serverMember.update({
+        //     where: {
+        //         id: member.id,
+        //     },
+        //     data: {
+        //         balance: newBalance,
+        //         bankBalance: newBankBalance,
+        //     },
+        // });
     }
 }

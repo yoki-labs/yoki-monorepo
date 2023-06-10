@@ -23,11 +23,12 @@ const Balance: Command = {
         const currencies = await ctx.dbUtil.getCurrencies(message.serverId!);
         const userInfo = await ctx.dbUtil.getServerMember(message.serverId!, target.id);
 
-        const currencyLines = userInfo?.balance
-            ? currencies.filter((x) => userInfo.balance![x.id]).map((x) => `${(userInfo.balance as Record<string, number>)[x.id]} ${x.name}`)
+        const currencyLines = userInfo
+            ? userInfo.balances.filter((x) => x.pocket !== 0).map((x) => `${x.pocket} ${currencies.find(y => y.id === x.currencyId)?.name}`)
             : null;
-        const bankCurrencyLines = userInfo?.bankBalance
-            ? currencies.filter((x) => userInfo.bankBalance![x.id]).map((x) => `${(userInfo.bankBalance as Record<string, number>)[x.id]} ${x.name}`)
+
+        const bankCurrencyLines = userInfo
+            ? userInfo.balances.filter((x) => x.bank !== 0).map((x) => `${x.bank} ${currencies.find(y => y.id === x.currencyId)?.name}`)
             : null;
 
         return ctx.messageUtil.replyWithInfo(
