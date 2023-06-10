@@ -1,5 +1,5 @@
 import { RoleType } from "@prisma/client";
-import { inlineQuote } from "@yokilabs/bot";
+import { inlineCode, inlineQuote } from "@yokilabs/bot";
 
 import { TAG_REGEX } from "../../util/matching";
 import { Category, Command } from "../commands";
@@ -40,12 +40,20 @@ const Delete: Command = {
         // Currency needs to exist for it to be deleted
         if (!currency) return ctx.messageUtil.replyWithError(message, "Doesn't exist", `The currency with tag ${inlineQuote(tag)} does not exist and cannot be deleted.`);
 
-        if (!confirmed)
+        // To show how many people have that currency in their balance
+        const balanceCount = await ctx.prisma.memberBalance.count({
+            where: {
+                serverId: message.serverId!,
+                currencyId: currency.id
+            }
+        });
+
+        if (balanceCount && !confirmed)
             return ctx.messageUtil.replyWithWarning(
                 message,
                 "Confirm deletion",
                 stripIndents`
-                    Are you sure you want to delete currency ${inlineQuote(currency.name)}? This will also delete the currency from member's balances. If that is intended, redo the command with \`confirm\` at the end like so:
+                    Are you sure you want to delete currency ${inlineQuote(currency.name)}? This will also delete the currency from balances of ${inlineCode(balanceCount)} member(s). If that is intended, redo the command with \`confirm\` at the end like so:
                     \`\`\`md
                     ${prefix}currency delete ${tag} confirm
                     \`\`\`

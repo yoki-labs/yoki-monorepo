@@ -353,7 +353,7 @@ export class MessageUtil<
             {
                 ...embedPartial,
                 footer: {
-                    text: `Page ${incrementedPage}/${possiblePages} • ${items.length} total items`,
+                    text: `Page ${incrementedPage}/${possiblePages} • ${items.length} total entries`,
                 },
             },
             messagePartial
