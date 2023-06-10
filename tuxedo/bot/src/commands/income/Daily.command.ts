@@ -9,35 +9,6 @@ const Daily: Command = {
     aliases: ["day", "d"],
     category: Category.Income,
     execute: generateIncomeCommand("daily", "to get daily reward", dailyCooldown, 250, 50, "Daily reward claimed", "You have received a present"),
-    // execute: async (message, _args, ctx) => {
-    //     const currencies = await ctx.dbUtil.getCurrencies(message.serverId!);
-
-    //     if (!currencies.length) return ctx.messageUtil.replyWithError(message, "No currencies", `This server does not have any local currencies to get daily reward.`);
-
-    //     const lastUsed = ctx.balanceUtil.getLastCommandUsage(message.serverId!, message.createdById, "daily");
-
-    //     // Need to wait 24 hours
-    //     if (lastUsed && Date.now() - lastUsed < dailyCooldown)
-    //         return ctx.messageUtil.replyWithError(
-    //             message,
-    //             "Too fast",
-    //             `You have to wait ${ms(lastUsed + dailyCooldown - Date.now(), { long: true })} to get your daily reward again.`
-    //         );
-
-    //     ctx.balanceUtil.updateLastCommandUsage(message.serverId!, message.createdById, "daily");
-
-    //     // FIXME: Temporary solution for no config
-    //     const reward = Math.floor(Math.random() * 250 + 50);
-
-    //     // Add to every currency
-    //     const balanceAdded = {};
-    //     for (const currency of currencies) balanceAdded[currency.id] = reward;
-
-    //     await ctx.dbUtil.updateServerMemberBalance(message.serverId!, message.createdById, balanceAdded, currencies);
-
-    //     // Reply with success
-    //     return ctx.messageUtil.replyWithSuccess(message, `Daily reward claimed`, `You have found a present, which had ${currencies.map((x) => `${reward} ${x.name}`).join(", ")}.`);
-    // },
 };
 
 export default Daily;

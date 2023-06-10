@@ -2,9 +2,9 @@ import { Category, Command } from "../commands";
 import { generateBankCommand } from "./income-util";
 
 const Daily: Command = {
-    name: "deposit",
-    description: "Deposits money to the bank.",
-    aliases: ["dep", "dp"],
+    name: "withdraw",
+    description: "Takes money from the bank.",
+    aliases: ["draw", "take", "wd"],
     category: Category.Income,
     args: [
         {
@@ -18,7 +18,7 @@ const Daily: Command = {
             optional: true,
         },
     ],
-    execute: generateBankCommand("pocket", "deposit", "deposited", 1, (balance) => balance.pocket),
+    execute: generateBankCommand("bank", "withdraw", "withdrew", -1, (balance) => balance.bank),
 };
 
 export default Daily;
