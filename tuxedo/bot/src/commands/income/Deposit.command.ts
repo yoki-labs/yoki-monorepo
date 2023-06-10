@@ -42,38 +42,53 @@ const Daily: Command = {
         // Check existance and balance of members
         const member = await ctx.dbUtil.getServerMember(message.serverId!, message.createdById);
 
-        if (!member?.balance) return ctx.messageUtil.replyWithError(message, "No balance", `You do not have any currency in your balance to deposit anything.`);
+        if (!member?.balances.length) return ctx.messageUtil.replyWithError(message, "No balance", `You do not have any currency in your balance to deposit anything.`);
 
         const serverCurrencies = await ctx.dbUtil.getCurrencies(message.serverId!);
         const depositingCurrencies =
-            tag === "all" ? serverCurrencies.filter((x) => x.id in (member.balance as Record<string, number>)) : serverCurrencies.filter((x) => x.tag === tag);
+            tag === "all"
+            ? serverCurrencies
+            : serverCurrencies.filter((x) => x.tag === tag);
 
         // If there is no such currency and they are not depositing all currency, then error out
-        if (tag !== "all" && !depositingCurrencies.length)
+        // As we check if there is at least 1 item in .balances, tag === "all" will never have this as true
+        if (!depositingCurrencies.length)
             return ctx.messageUtil.replyWithError(message, "No such currency", `There is no currency with tag ${inlineQuote(tag)} in this server.`);
 
-        const deposit = {};
+        const depositingBalances =
+            tag === "all"
+            ? member.balances
+            : member.balances.filter((x) =>
+                depositingCurrencies.find((y) => y.id === x.currencyId)
+            );
+
+        const depositMap = {};
 
         // Fill in the deposit
-        for (const depositingCurrency of depositingCurrencies) {
+        for (const depositingBalance of depositingBalances) {
             // Check if it can be deposited
-            if (amount && member.balance[depositingCurrency.id] < amount)
+            if (amount && depositingBalance.pocket < amount) {
+                // Get the currency to display its name in the error
+                const depositingCurrency = serverCurrencies.find((x) => x.id === depositingBalance.currencyId)!;
+
                 return ctx.messageUtil.replyWithError(
                     message,
                     "Balance currency too low",
-                    `You cannot deposit ${inlineCode(amount)} ${depositingCurrency.name}, as your balance only has ${member.balance[depositingCurrency.id]} ${
+                    `You cannot deposit ${inlineCode(amount)} ${depositingCurrency.name}, as your balance only has ${depositingBalance.pocket} ${
                         depositingCurrency.name
                     }.`
                 );
+            }
 
-            deposit[depositingCurrency.id] = amount ?? member.balance[depositingCurrency.id];
+            // If the amount was not specified, deposit all of what is in the pocket
+            depositMap[depositingBalance.id] = amount ?? depositingBalance.pocket;
         }
 
         // Deposit into bank
-        await ctx.dbUtil.updateServerMemberBankBalance(member, deposit, serverCurrencies);
+        await ctx.dbUtil.updateServerMemberBankBalance(member, depositMap);
 
         // Reply with success
-        return ctx.messageUtil.replyWithSuccess(message, `Balance deposited`, `You have successfully deposited ${depositingCurrencies.map((x) => `${deposit[x.id]} ${x.name}`)}.`);
+        return ctx.messageUtil.replyWithSuccess(message, `Balance deposited`, `You have successfully deposited ${depositingCurrencies.map((x) => `${depositMap[x.id]} ${x.name}`)}.`);
     },
 };
 

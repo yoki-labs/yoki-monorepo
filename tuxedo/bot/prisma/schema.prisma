@@ -58,12 +58,26 @@ model Currency {
 
 model ServerMember {
     // Basics
-    id          String @id @db.VarChar(255)
-    serverId    String @db.VarChar(255)
-    userId      String @db.VarChar(255)
+    id       String          @id @db.VarChar(255)
+    serverId String          @db.VarChar(255)
+    userId   String          @db.VarChar(255)
     // Inventory
-    balance     Json?  @db.JsonB
-    bankBalance Json?  @db.JsonB
+    // balance     Json?           @db.JsonB
+    // bankBalance Json?           @db.JsonB
+    balances MemberBalance[]
+}
+
+model MemberBalance {
+    // Basics
+    id         Int          @id @default(autoincrement())
+    serverId   String       @db.VarChar(255)
+    memberId   String       @db.VarChar(255)
+    currencyId String       @db.VarChar(255)
+    // Relations
+    member     ServerMember @relation(fields: [memberId], references: [id])
+    // Balance
+    pocket     Int          @default(0)
+    bank       Int          @default(0)
 }
 
 // Copied from Yoki

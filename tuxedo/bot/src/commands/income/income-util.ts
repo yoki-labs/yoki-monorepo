@@ -26,7 +26,7 @@ export function generateIncomeCommand(commandId: string, action: string, cooldow
         const balanceAdded = {};
         for (const currency of currencies) balanceAdded[currency.id] = reward;
 
-        await ctx.dbUtil.updateServerMemberBalance(message.serverId!, message.createdById, balanceAdded, currencies);
+        await ctx.dbUtil.updateServerMemberBalance(message.serverId!, message.createdById, balanceAdded);
 
         // Reply with success
         return ctx.messageUtil.replyWithSuccess(message, successTitle, `${successDescription}, which had ${currencies.map((x) => `${reward} ${x.name}`).join(", ")}.`);

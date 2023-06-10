@@ -16,27 +16,35 @@ const Leaderboard: Command = {
         const page = args.page ? Math.floor((args.page as number) - 1) : 0;
 
         const currencies = await ctx.dbUtil.getCurrencies(message.serverId!);
-        const members = await ctx.prisma.serverMember.findMany({
-            orderBy: [{ bankBalance: "desc" }, { balance: "desc" }],
-            where: {
-                serverId: message.serverId!,
-            },
-        });
+
+        if (!currencies.length)
+            return ctx.messageUtil.replyWithError(message, "No currencies", `This server does not have any currencies to show leaderboard of.`);
 
         // Something to display for now
         const mainCurrency = currencies[0];
 
+        const balances = await ctx.prisma.memberBalance.findMany({
+            orderBy: [{ bank: "desc" }, { pocket: "desc" }],
+            include: {
+                member: true
+            },
+            where: {
+                serverId: message.serverId!,
+                currencyId: mainCurrency.id
+            },
+        });
+
         const start = page * 10 + 1;
 
-        console.log("Member count", members.length, "of server", JSON.stringify(message.serverId));
+        console.log("Member count", balances.length, "of server", JSON.stringify(message.serverId));
 
         return ctx.messageUtil.replyWithPaginatedContent({
             replyTo: message,
             title: ":trophy: Server Leaderboard",
-            items: members,
+            items: balances,
             itemsPerPage: 10,
-            itemMapping: (user, i) =>
-                `${start + i}. <@${user.userId}> — ${(user.balance?.[mainCurrency.id] ?? 0) + (user.bankBalance?.[mainCurrency.id] ?? 0)} ${mainCurrency.name}`,
+            itemMapping: (balance, i) =>
+                `${start + i}. <@${balance.member.userId}> — ${balance.pocket + balance.bank} ${mainCurrency.name}`,
             page,
             message: {
                 isSilent: true,
