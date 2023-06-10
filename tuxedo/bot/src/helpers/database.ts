@@ -128,14 +128,25 @@ export class DatabaseUtil extends Util<TuxoClient> {
                     ({
                         where: {
                             id: x.id,
-                            memberId: x.memberId,
                         },
                         data: {
-                            ...x,
                             pocket: x.pocket + (balance[x.currencyId] ?? 0),
                         },
                     })
                 );
+        // Because someone might get currency they never had previously
+        const createBalances =
+            Object
+                .keys(balance)
+                .filter((x) => !member.balances.find((y) => y.currencyId === x))
+                .map((x) =>
+                    ({
+                        serverId: member.serverId,
+                        currencyId: x,
+                        pocket: balance[x],
+                        bank: 0
+                    })
+                ) as Omit<MemberBalance, "id" | "memberId" | "member">[];
 
         return this.client.prisma.serverMember.update({
             where: {
@@ -144,6 +155,7 @@ export class DatabaseUtil extends Util<TuxoClient> {
             data: {
                 balances: {
                     update: balanceUpdate,
+                    createMany: createBalances.length ? { data: createBalances } : undefined
                 },
             },
         });
@@ -165,10 +177,8 @@ export class DatabaseUtil extends Util<TuxoClient> {
                     ({
                         where: {
                             id: x.id,
-                            memberId: x.memberId,
                         },
                         data: {
-                            ...x,
                             pocket: x.pocket - (deposit[x.currencyId] ?? 0),
                             bank: x.bank + (deposit[x.currencyId] ?? 0),
                         },
