@@ -1,5 +1,5 @@
 import { ReactionActionType } from "@prisma/client";
-import { Colors, errorEmbed, inlineCode, summarizeRolesOrUsers } from "@yokilabs/bot";
+import { errorEmbed, inlineCode, summarizeRolesOrUsers } from "@yokilabs/bot";
 import { stripIndents } from "common-tags";
 import { nanoid } from "nanoid";
 
@@ -10,6 +10,9 @@ export default {
         const { serverId, channelId, messageId, emote, createdBy } = reaction;
         const server = await ctx.dbUtil.getServer(serverId, false);
         if (!server) return;
+
+        // Ignore client's own reactions
+        if (createdBy === ctx.user!.id) return;
 
         console.log("Received reaction. Now lookup");
         const lookupReaction = await ctx.prisma.reactionAction.findFirst({
@@ -56,15 +59,13 @@ export default {
                     },
                 });
 
-                const modmailPingRole = server.modmailPingRoleId ? `<@${server.modmailPingRoleId}>` : "";
+                const modmailPingRole = server.modmailPingRoleId ? `<@${server.modmailPingRoleId}> ` : "";
                 const member = await ctx.members.fetch(serverId, createdBy, true);
-                await ctx.messages.send(newChannel.id, {
-                    content: `${modmailPingRole} A new modmail thread has been opened! You can send messages to this user by doing \`${server.prefix}reply content-here\``,
-                });
+
                 await ctx.messageUtil.sendInfoBlock(
                     newChannel.id,
-                    `New modmail thread opened!`,
-                    `A new modmail thread by ID ${inlineCode(newModmailThread.id)} has been opened by <@${member.user!.id}> (${inlineCode(member.user!.id)})`,
+                    `New modmail thread opened`,
+                    `${modmailPingRole}A new modmail thread by ID ${inlineCode(newModmailThread.id)} has been opened by <@${member.user!.id}> (${inlineCode(member.user!.id)}). You can send messages to this user by doing \`${server.prefix ?? ctx.prefix}reply the text contents here\``,
                     {
                         fields: [
                             {
@@ -74,24 +75,23 @@ export default {
                             {
                                 name: `Additional Info`,
                                 value: stripIndents`
-                                **Account Created:** ${server.formatTimezone(member.user!.createdAt!)} EST
-                                **Joined at:** ${server.formatTimezone(member.joinedAt!)} EST
-                            `,
+                                    **Account Created:** ${server.formatTimezone(member.user!.createdAt!)} EST
+                                    **Joined at:** ${server.formatTimezone(member.joinedAt!)} EST
+                                `,
                             },
                         ],
                     }
                 );
 
-                await ctx.messages.send(channelId, {
-                    embeds: [
-                        {
-                            title: "Successfully opened Modmail thread!",
-                            description: `<@${createdBy}>, a moderator will be with you shortly!`,
-                            color: Colors.green,
-                        },
-                    ],
-                    isPrivate: true,
-                });
+                await ctx.messageUtil.sendSuccessBlock(
+                    channelId,
+                    "Successfully opened Modmail thread!",
+                    `<@${createdBy}>, a moderator will be with you shortly!`,
+                    undefined,
+                    {
+                        isPrivate: true,
+                    }
+                );
                 break;
             }
         }

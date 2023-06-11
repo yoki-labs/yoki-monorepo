@@ -9,6 +9,7 @@ import channel from "../args/channel";
 import enumArg from "../args/enum";
 import enumList from "../args/enumList";
 import member from "../args/member";
+import emote from "../args/emote";
 import number from "../args/number";
 import rest from "../args/rest";
 import stringArg from "../args/string";
@@ -37,6 +38,7 @@ export function createCommandHandler<
         rest,
         string: stringArg,
         UUID,
+        emote
     };
 
     type AsyncUnit = Promise<unknown> | undefined;
