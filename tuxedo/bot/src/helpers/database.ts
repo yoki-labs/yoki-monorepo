@@ -112,7 +112,8 @@ export class DatabaseUtil extends Util<TuxoClient> {
                         serverId,
                         currencyId,
                         pocket: balance[currencyId],
-                        bank: 0
+                        bank: 0,
+                        all: balance[currencyId]
                     }))
                 }
             }
@@ -131,6 +132,7 @@ export class DatabaseUtil extends Util<TuxoClient> {
                         },
                         data: {
                             pocket: x.pocket + (balance[x.currencyId] ?? 0),
+                            all: x.bank + x.pocket + (balance[x.currencyId] ?? 0),
                         },
                     })
                 );
@@ -144,7 +146,8 @@ export class DatabaseUtil extends Util<TuxoClient> {
                         serverId: member.serverId,
                         currencyId: x,
                         pocket: balance[x],
-                        bank: 0
+                        bank: 0,
+                        all: balance[x],
                     })
                 ) as Omit<MemberBalance, "id" | "memberId" | "member">[];
 
@@ -179,6 +182,8 @@ export class DatabaseUtil extends Util<TuxoClient> {
                             id: x.id,
                         },
                         data: {
+                            // We do not need to change `all`, because it would stay completely the same.
+                            // We are not removing or giving person currency, we are just moving it elsewhere.
                             pocket: x.pocket - (deposit[x.currencyId] ?? 0),
                             bank: x.bank + (deposit[x.currencyId] ?? 0),
                         },
