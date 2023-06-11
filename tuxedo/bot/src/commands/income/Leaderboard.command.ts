@@ -44,7 +44,7 @@ const Leaderboard: Command = {
             items: balances,
             itemsPerPage: 10,
             itemMapping: (balance, i) =>
-                `${start + i}. <@${balance.member.userId}> — ${balance.pocket + balance.bank} ${mainCurrency.name}`,
+                `${start + i}. <@${balance.member.userId}> — ${balance.all} ${mainCurrency.name}`,
             page,
             message: {
                 isSilent: true,

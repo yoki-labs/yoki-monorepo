@@ -217,9 +217,9 @@ export class DatabaseUtil extends Util<TuxoClient> {
         const newBalance = {};
 
         for (const balance of member.balances) {
-            if (!(balance.id in balanceChanges)) continue;
+            if (!(balance.currencyId in balanceChanges)) continue;
 
-            newBalance[balance.id] = balance.pocket + balanceChanges[balance.id];
+            newBalance[balance.currencyId] = balance.pocket + balanceChanges[balance.currencyId];
         }
 
         return this.updateMemberBalance(member, balanceChanges);
@@ -248,6 +248,7 @@ export class DatabaseUtil extends Util<TuxoClient> {
                             // We are not removing or giving person currency, we are just moving it elsewhere.
                             pocket: x.pocket - (deposit[x.currencyId] ?? 0),
                             bank: x.bank + (deposit[x.currencyId] ?? 0),
+                            all: x.pocket + x.bank,
                         },
                     })
                 );
