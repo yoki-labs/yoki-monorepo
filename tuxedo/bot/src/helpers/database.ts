@@ -101,7 +101,7 @@ export class DatabaseUtil extends Util<TuxoClient> {
         return this.getServerMembers(serverId).then((x) => x.find((x) => x.userId === userId));
     }
 
-    createServerMember(serverId: string, userId: string, balance: Record<string, number>) {
+    createMember(serverId: string, userId: string, balance: Record<string, number>, bankBalance?: Record<string, number>) {
         return this.client.prisma.serverMember.create({
             data: {
                 id: nanoid(17),
@@ -112,16 +112,58 @@ export class DatabaseUtil extends Util<TuxoClient> {
                         serverId,
                         currencyId,
                         pocket: balance[currencyId],
-                        bank: 0,
-                        all: balance[currencyId]
+                        bank: bankBalance?.[currencyId] ?? 0,
+                        all: balance[currencyId] + (bankBalance?.[currencyId] ?? 0),
                     }))
                 }
             }
         });
     }
 
-    // Currencies argument is for self-cleaning deleted currencies
-    updateServerMember(member: ServerMember & { balances: MemberBalance[] }, balance: Record<string, number>) {
+    // giveMemberCurrency(member: ServerMember & { balances: MemberBalance[] }, balance: Record<string, number>) {
+    //     const balanceUpdate =
+    //         member
+    //             .balances
+    //             .map((x) =>
+    //                 ({
+    //                     where: {
+    //                         id: x.id,
+    //                     },
+    //                     data: {
+    //                         pocket: x.pocket + (balance[x.currencyId] ?? 0),
+    //                         all: x.bank + x.pocket + (balance[x.currencyId] ?? 0),
+    //                     },
+    //                 })
+    //             );
+    //     // Because someone might get currency they never had previously
+    //     const createBalances =
+    //         Object
+    //             .keys(balance)
+    //             .filter((x) => !member.balances.find((y) => y.currencyId === x))
+    //             .map((x) =>
+    //                 ({
+    //                     serverId: member.serverId,
+    //                     currencyId: x,
+    //                     pocket: balance[x],
+    //                     bank: 0,
+    //                     all: balance[x],
+    //                 })
+    //             ) as Omit<MemberBalance, "id" | "memberId" | "member">[];
+
+    //     return this.client.prisma.serverMember.update({
+    //         where: {
+    //             id: member.id,
+    //         },
+    //         data: {
+    //             balances: {
+    //                 update: balanceUpdate,
+    //                 createMany: createBalances.length ? { data: createBalances } : undefined
+    //             },
+    //         },
+    //     });
+    // }
+
+    updateMemberBalance(member: ServerMember & { balances: MemberBalance[] }, balance?: Record<string, number>, bankBalance?: Record<string, number>) {
         const balanceUpdate =
             member
                 .balances
@@ -131,23 +173,25 @@ export class DatabaseUtil extends Util<TuxoClient> {
                             id: x.id,
                         },
                         data: {
-                            pocket: x.pocket + (balance[x.currencyId] ?? 0),
-                            all: x.bank + x.pocket + (balance[x.currencyId] ?? 0),
+                            pocket: balance?.[x.currencyId] ?? x.pocket,
+                            bank: bankBalance?.[x.currencyId] ?? x.bank,
+                            all: (balance?.[x.currencyId] ?? x.pocket) + (balance?.[x.currencyId] ?? x.bank),
                         },
                     })
                 );
+        const currencyIds = [...new Set([...Object.keys(balance ?? {}), ...Object.keys(bankBalance ?? {})])];
+
         // Because someone might get currency they never had previously
         const createBalances =
-            Object
-                .keys(balance)
+            currencyIds
                 .filter((x) => !member.balances.find((y) => y.currencyId === x))
                 .map((x) =>
                     ({
                         serverId: member.serverId,
                         currencyId: x,
-                        pocket: balance[x],
-                        bank: 0,
-                        all: balance[x],
+                        pocket: balance?.[x] ?? 0,
+                        bank: bankBalance?.[x] ?? 0,
+                        all: (balance?.[x] ?? 0) + (bankBalance?.[x] ?? 0),
                     })
                 ) as Omit<MemberBalance, "id" | "memberId" | "member">[];
 
@@ -164,15 +208,33 @@ export class DatabaseUtil extends Util<TuxoClient> {
         });
     }
 
-    async updateServerMemberBalance(serverId: string, userId: string, balanceChanges: Record<string, number>) {
+    async addToMemberBalance(serverId: string, userId: string, balanceChanges: Record<string, number>) {
         const member = await this.getServerMember(serverId, userId);
 
-        if (!member) return this.createServerMember(serverId, userId, balanceChanges);
-        return this.updateServerMember(member, balanceChanges);
+        if (!member) return this.createMember(serverId, userId, balanceChanges);
+
+        // Do not change and add to it instead
+        const newBalance = {};
+
+        for (const balance of member.balances) {
+            if (!(balance.id in balanceChanges)) continue;
+
+            newBalance[balance.id] = balance.pocket + balanceChanges[balance.id];
+        }
+
+        return this.updateMemberBalance(member, balanceChanges);
+    }
+
+    async setMemberBalance(serverId: string, userId: string, balance: Record<string, number>, bankBalance?: Record<string, number>) {
+        const member = await this.getServerMember(serverId, userId);
+
+        if (!member) return this.createMember(serverId, userId, balance, bankBalance);
+
+        return this.updateMemberBalance(member, balance, bankBalance);
     }
 
     // ! note: This is unchecked. Need to check the balance and membership in a command.
-    updateServerMemberBankBalance(member: ServerMember & { balances: MemberBalance[] }, deposit: Record<string, number>) {
+    depositMemberBalance(member: ServerMember & { balances: MemberBalance[] }, deposit: Record<string, number>) {
         const balanceUpdate =
             member
                 .balances
