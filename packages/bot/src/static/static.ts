@@ -1,7 +1,7 @@
 import reactionsJson from "./reactions.json";
 import timezonesJson from "./timezones.json";
 
-export type ReactionInfo = { id: number; name: string; symbol?: string; };
+export interface ReactionInfo { id: number; name: string; symbol?: string; }
 
 export const getReactionByName =
     (name: string): ReactionInfo | undefined =>

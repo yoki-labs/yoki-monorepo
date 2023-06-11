@@ -27,7 +27,7 @@ export class MessageUtil<
     TServer extends IServer,
     TCommand extends BaseCommand<TCommand, TClient, string, TServer>
 > extends Util<TClient> {
-    //#region Help and Commands
+    // #region Help and Commands
     createSubCommandFields(subCommands: Collection<string, TCommand>): EmbedField[] {
         const allSubCommands = subCommands.map((x) => `${inlineCode(x.subName!)}\n${x.description}`);
 
@@ -97,9 +97,9 @@ export class MessageUtil<
             }
         );
     }
-    //#endregion
+    // #endregion
 
-    //#region Message basics
+    // #region Message basics
     // Send a message using either string, embed object, or raw object
     send(channelId: string, content: MessageContent) {
         return this.client.messages.send(channelId, content instanceof Embed ? { embeds: [content.toJSON()] } : typeof content === "string" ? { content } : content);
@@ -121,12 +121,12 @@ export class MessageUtil<
     replyWithEmbed(message: Message, embed: EmbedPayload, messagePartial?: Partial<MessageBody>) {
         return this.sendEmbed(message.channelId, embed, { replyMessageIds: [message.id], ...messagePartial });
     }
-    //#endregion
+    // #endregion
 
-    //#region Message content and state messages
-    ///////////////////////////
+    // #region Message content and state messages
+    // /////////////////////////
     //    Content & Info    //
-    //////////////////////////
+    // ////////////////////////
     
     replyWithInfo(message: Message, title: string, description: string, embedPartial?: EmbedPayload, messagePartial?: Partial<MessageBody>) {
         return this.replyWithEmbed(
@@ -261,9 +261,9 @@ export class MessageUtil<
         );
     }
 
-    ///////////////////////////
+    // /////////////////////////
     //  Errors & Unexpected  //
-    ///////////////////////////
+    // /////////////////////////
     replyWithWarning(message: Message, title: string, description: string, embedPartial?: EmbedPayload, messagePartial?: Partial<MessageBody>) {
         return this.replyWithEmbed(
             message,
