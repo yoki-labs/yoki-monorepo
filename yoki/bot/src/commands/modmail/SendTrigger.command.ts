@@ -1,9 +1,9 @@
 import { ReactionActionType } from "@prisma/client";
-import { Channel, Embed } from "guilded.js";
+import { Channel } from "guilded.js";
 
-import reactions from "../../static/reactions.json";
 import { RoleType } from "../../typings";
 import { Category, Command } from "../commands";
+import { ReactionInfo } from "@yokilabs/bot";
 
 const SendTrigger: Command = {
     name: "modmail-sendtrigger",
@@ -23,44 +23,37 @@ const SendTrigger: Command = {
         },
         {
             name: "emoji",
-            type: "string",
+            type: "emote",
         },
     ],
     execute: async (message, args, ctx, commandCtx) => {
         if (!commandCtx.server.modmailGroupId && !commandCtx.server.modmailCategoryId)
             return ctx.messageUtil.replyWithError(message, `No modmail group or category set`, "You can set either by using the `?modmail group` or `?modmail category` command.");
         const targetChannel = args.targetChannel as Channel;
-        const reaction = (args.emoji as string).trim();
+        const reaction = (args.emoji as ReactionInfo);
 
-        if (!reaction.startsWith(":") && reaction.endsWith(":")) return ctx.messageUtil.replyWithError(message, "Invalid emoji", "Could not detect a valid emoji in your message.");
-        const resolvedEmoji = reactions[reaction.slice(1, reaction.length - 1)];
-        if (!resolvedEmoji)
-            return ctx.messageUtil.replyWithError(
-                message,
-                "Could not resolve emoji",
-                "Could not resolve that to a proper emoji. Please ensure that you are passing a unicode emoji."
-            );
-        const sentMessage = await ctx.messageUtil.send(
+        const sentMessage = await ctx.messageUtil.sendInfoBlock(
             targetChannel.id,
-            new Embed().setTitle("React here for help!").setDescription(`React with the :${reaction}: emoji to this message to get in touch with server staff!`).setColor("GREEN")
-        );
+            `React here for help!`,
+            `React with the :${reaction.name}: emoji on this message to create a support ticket and receive help from server staff.`
+        )
         void ctx.amp.logEvent({
             event_type: "MODMAIL_SEND_TRIGGER",
             user_id: message.authorId,
             event_properties: { serverId: message.serverId! },
         });
-        await ctx.reactions.create(targetChannel.id, sentMessage.id, resolvedEmoji);
+        await ctx.reactions.create(targetChannel.id, sentMessage.id, reaction.id);
         await ctx.prisma.reactionAction.create({
             data: {
                 actionType: ReactionActionType.MODMAIL,
                 channelId: targetChannel.id,
-                emoteId: Number.parseInt(resolvedEmoji, 10),
+                emoteId: reaction.id,
                 messageId: sentMessage.id,
                 serverId: message.serverId!,
             },
         });
 
-        return ctx.messageUtil.replyWithSuccess(message, "Success!", `Users will now be able to open a modmail thread by reacting with the :${reaction}: emoji.`);
+        return ctx.messageUtil.replyWithSuccess(message, "Success!", `Users will now be able to open a modmail thread by reacting with the :${reaction.name}: emoji.`);
     },
 };
 

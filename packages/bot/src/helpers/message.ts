@@ -27,6 +27,7 @@ export class MessageUtil<
     TServer extends IServer,
     TCommand extends BaseCommand<TCommand, TClient, string, TServer>
 > extends Util<TClient> {
+    //#region Help and Commands
     createSubCommandFields(subCommands: Collection<string, TCommand>): EmbedField[] {
         const allSubCommands = subCommands.map((x) => `${inlineCode(x.subName!)}\n${x.description}`);
 
@@ -73,17 +74,6 @@ export class MessageUtil<
         };
     }
 
-    // Send a message using either string, embed object, or raw object
-    send(channelId: string, content: MessageContent) {
-        return this.client.messages.send(channelId, content instanceof Embed ? { embeds: [content.toJSON()] } : typeof content === "string" ? { content } : content);
-    }
-
-    // Reply to a message
-    reply(message: Message, content: MessageBody) {
-        const opts: MessageBody = typeof content === "string" ? { replyMessageIds: [message.id], content } : content;
-        return this.client.messages.send(message.channelId, opts);
-    }
-
     handleBadArg(
         message: Message,
         prefix: string,
@@ -107,6 +97,19 @@ export class MessageUtil<
             }
         );
     }
+    //#endregion
+
+    //#region Message basics
+    // Send a message using either string, embed object, or raw object
+    send(channelId: string, content: MessageContent) {
+        return this.client.messages.send(channelId, content instanceof Embed ? { embeds: [content.toJSON()] } : typeof content === "string" ? { content } : content);
+    }
+
+    // Reply to a message
+    reply(message: Message, content: MessageBody) {
+        const opts: MessageBody = typeof content === "string" ? { replyMessageIds: [message.id], content } : content;
+        return this.client.messages.send(message.channelId, opts);
+    }
 
     sendEmbed(channelId: string, embed: EmbedPayload, messagePartial?: Partial<MessageBody>) {
         return this.send(channelId, {
@@ -115,98 +118,16 @@ export class MessageUtil<
         });
     }
 
-    // sendLog({
-    //     where,
-    //     title,
-    //     description,
-    //     color,
-    //     occurred,
-    //     additionalInfo,
-    //     fields,
-    // }: {
-    //     where: string;
-    //     title: string;
-    //     description: string;
-    //     color: number;
-    //     occurred: string;
-    //     additionalInfo?: string;
-    //     fields?: EmbedField[];
-    // }) {
-    //     return this.send(where, {
-    //         embeds: [
-    //             {
-    //                 title,
-    //                 description,
-    //                 color,
-    //                 fields: additionalInfo ? (fields ?? []).concat({ name: "Additional Info", value: additionalInfo }) : fields,
-    //                 timestamp: occurred,
-    //             },
-    //         ],
-    //         isSilent: true,
-    //     });
-    // }
-
     replyWithEmbed(message: Message, embed: EmbedPayload, messagePartial?: Partial<MessageBody>) {
         return this.sendEmbed(message.channelId, embed, { replyMessageIds: [message.id], ...messagePartial });
     }
+    //#endregion
 
-    // State blocks
-    replyWithError(message: Message, title: string, description: string, embedPartial?: EmbedPayload, messagePartial?: Partial<MessageBody>) {
-        return this.replyWithEmbed(
-            message,
-            {
-                author: { name: title, icon_url: BotImages.crossmark },
-                description,
-                color: Colors.red,
-                thumbnail: { url: StateImages.notFound },
-                ...embedPartial,
-            },
-            messagePartial
-        );
-    }
-
-    replyWithUnexpected(message: Message, description: string, embedPartial?: EmbedPayload, messagePartial?: Partial<MessageBody>) {
-        return this.replyWithEmbed(
-            message,
-            {
-                author: { name: `Oh no, something went wrong!`, icon_url: BotImages.crossmark },
-                description,
-                color: Colors.red,
-                thumbnail: { url: StateImages.error },
-                ...embedPartial,
-            },
-            messagePartial
-        );
-    }
-
-    replyWithUnpermitted(message: Message, description: string, embedPartial?: EmbedPayload, messagePartial?: Partial<MessageBody>) {
-        return this.replyWithEmbed(
-            message,
-            {
-                author: { name: `Can't do that!`, icon_url: BotImages.crossmark },
-                description,
-                color: Colors.red,
-                thumbnail: { url: StateImages.stop },
-                ...embedPartial,
-            },
-            messagePartial
-        );
-    }
-
-    replyWithNullState(message: Message, title: string, description: string, embedPartial?: EmbedPayload, messagePartial?: Partial<MessageBody>) {
-        return this.replyWithEmbed(
-            message,
-            {
-                title: `:grey_question: ${title}`,
-                description,
-                color: Colors.blockBackground,
-                thumbnail: { url: StateImages.nothingHere },
-                ...embedPartial,
-            },
-            messagePartial
-        );
-    }
-
+    //#region Message content and state messages
+    ///////////////////////////
+    //    Content & Info    //
+    //////////////////////////
+    
     replyWithInfo(message: Message, title: string, description: string, embedPartial?: EmbedPayload, messagePartial?: Partial<MessageBody>) {
         return this.replyWithEmbed(
             message,
@@ -220,52 +141,6 @@ export class MessageUtil<
         );
     }
 
-    replyWithBotInfo(message: Message, title: string, description: string, embedPartial?: EmbedPayload, messagePartial?: Partial<MessageBody>) {
-        return this.send(message.channelId, {
-            embeds: [
-                {
-                    author: {
-                        name: `Yoki's ${title}`,
-                        icon_url: BotImages.avatar,
-                    },
-                    description,
-                    color: Colors.blockBackground,
-                    ...embedPartial,
-                },
-            ],
-            replyMessageIds: [message.id],
-            ...messagePartial,
-        });
-    }
-
-    sendWarningBlock(channelId: string, title: string, description: string, embedPartial?: EmbedPayload, messagePartial?: Partial<MessageBody>) {
-        return this.sendEmbed(
-            channelId,
-            {
-                author: { name: title, icon_url: BotImages.exclamationmark },
-                description,
-                color: Colors.yellow,
-                thumbnail: { url: StateImages.stop },
-                ...embedPartial,
-            },
-            messagePartial
-        );
-    }
-
-    sendErrorBlock(channelId: string, title: string, description: string, embedPartial?: EmbedPayload, messagePartial?: Partial<MessageBody>) {
-        return this.sendEmbed(
-            channelId,
-            {
-                author: { name: title, icon_url: BotImages.crossmark },
-                description,
-                color: Colors.red,
-                thumbnail: { url: StateImages.notFound },
-                ...embedPartial,
-            },
-            messagePartial
-        );
-    }
-
     sendInfoBlock(channelId: string, title: string, description: string, embedPartial?: EmbedPayload, messagePartial?: Partial<MessageBody>) {
         return this.sendEmbed(
             channelId,
@@ -273,47 +148,6 @@ export class MessageUtil<
                 title,
                 description,
                 color: Colors.blockBackground,
-                ...embedPartial,
-            },
-            messagePartial
-        );
-    }
-
-    // Value blocks
-    sendSuccessBlock(channelId: string, title: string, description: string, embedPartial?: EmbedPayload, messagePartial?: Partial<MessageBody>) {
-        return this.sendEmbed(
-            channelId,
-            {
-                author: { name: title, icon_url: BotImages.checkmark },
-                description,
-                color: Colors.green,
-                ...embedPartial,
-            },
-            messagePartial
-        );
-    }
-
-    replyWithSuccess(message: Message, title: string, description: string, embedPartial?: EmbedPayload, messagePartial?: Partial<MessageBody>) {
-        return this.replyWithEmbed(
-            message,
-            {
-                author: { name: title, icon_url: BotImages.checkmark },
-                description,
-                color: Colors.green,
-                ...embedPartial,
-            },
-            messagePartial
-        );
-    }
-
-    replyWithWarning(message: Message, title: string, description: string, embedPartial?: EmbedPayload, messagePartial?: Partial<MessageBody>) {
-        return this.replyWithEmbed(
-            message,
-            {
-                author: { name: title, icon_url: BotImages.exclamationmark },
-                description,
-                color: Colors.yellow,
-                thumbnail: { url: StateImages.stop },
                 ...embedPartial,
             },
             messagePartial
@@ -384,5 +218,133 @@ export class MessageUtil<
                 },
             ],
         });
+    }
+
+    replyWithSuccess(message: Message, title: string, description: string, embedPartial?: EmbedPayload, messagePartial?: Partial<MessageBody>) {
+        return this.replyWithEmbed(
+            message,
+            {
+                author: { name: title, icon_url: BotImages.checkmark },
+                description,
+                color: Colors.green,
+                ...embedPartial,
+            },
+            messagePartial
+        );
+    }
+
+    // Value blocks
+    sendSuccessBlock(channelId: string, title: string, description: string, embedPartial?: EmbedPayload, messagePartial?: Partial<MessageBody>) {
+        return this.sendEmbed(
+            channelId,
+            {
+                author: { name: title, icon_url: BotImages.checkmark },
+                description,
+                color: Colors.green,
+                ...embedPartial,
+            },
+            messagePartial
+        );
+    }
+
+    replyWithNullState(message: Message, title: string, description: string, embedPartial?: EmbedPayload, messagePartial?: Partial<MessageBody>) {
+        return this.replyWithEmbed(
+            message,
+            {
+                title: `:grey_question: ${title}`,
+                description,
+                color: Colors.blockBackground,
+                thumbnail: { url: StateImages.nothingHere },
+                ...embedPartial,
+            },
+            messagePartial
+        );
+    }
+
+    ///////////////////////////
+    //  Errors & Unexpected  //
+    ///////////////////////////
+    replyWithWarning(message: Message, title: string, description: string, embedPartial?: EmbedPayload, messagePartial?: Partial<MessageBody>) {
+        return this.replyWithEmbed(
+            message,
+            {
+                author: { name: title, icon_url: BotImages.exclamationmark },
+                description,
+                color: Colors.yellow,
+                thumbnail: { url: StateImages.stop },
+                ...embedPartial,
+            },
+            messagePartial
+        );
+    }
+
+    sendWarningBlock(channelId: string, title: string, description: string, embedPartial?: EmbedPayload, messagePartial?: Partial<MessageBody>) {
+        return this.sendEmbed(
+            channelId,
+            {
+                author: { name: title, icon_url: BotImages.exclamationmark },
+                description,
+                color: Colors.yellow,
+                thumbnail: { url: StateImages.stop },
+                ...embedPartial,
+            },
+            messagePartial
+        );
+    }
+
+    replyWithError(message: Message, title: string, description: string, embedPartial?: EmbedPayload, messagePartial?: Partial<MessageBody>) {
+        return this.replyWithEmbed(
+            message,
+            {
+                author: { name: title, icon_url: BotImages.crossmark },
+                description,
+                color: Colors.red,
+                thumbnail: { url: StateImages.notFound },
+                ...embedPartial,
+            },
+            messagePartial
+        );
+    }
+
+    sendErrorBlock(channelId: string, title: string, description: string, embedPartial?: EmbedPayload, messagePartial?: Partial<MessageBody>) {
+        return this.sendEmbed(
+            channelId,
+            {
+                author: { name: title, icon_url: BotImages.crossmark },
+                description,
+                color: Colors.red,
+                thumbnail: { url: StateImages.notFound },
+                ...embedPartial,
+            },
+            messagePartial
+        );
+    }
+
+    replyWithUnexpected(message: Message, description: string, embedPartial?: EmbedPayload, messagePartial?: Partial<MessageBody>) {
+        return this.replyWithEmbed(
+            message,
+            {
+                author: { name: `Oh no, something went wrong!`, icon_url: BotImages.crossmark },
+                description,
+                color: Colors.red,
+                thumbnail: { url: StateImages.error },
+                ...embedPartial,
+            },
+            messagePartial
+        );
+    }
+
+    replyWithUnpermitted(message: Message, description: string, embedPartial?: EmbedPayload, messagePartial?: Partial<MessageBody>) {
+        return this.replyWithEmbed(
+            message,
+            {
+                author: { name: `Can't do that!`, icon_url: BotImages.crossmark },
+                description,
+                color: Colors.red,
+                thumbnail: { url: StateImages.stop },
+                ...embedPartial,
+            },
+            messagePartial
+        );
     }
 }
