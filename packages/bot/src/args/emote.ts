@@ -1,5 +1,5 @@
 import type { CommandArgValidator } from "../commands/command-typings";
-import { ReactionInfo, getReactionById, getReactionByName, getReactionBySymbol } from "../static/static";
+import { getReactionById, getReactionByName, getReactionBySymbol,ReactionInfo } from "../static/static";
 
 export default [
     async (input): Promise<ReactionInfo | null> => {
