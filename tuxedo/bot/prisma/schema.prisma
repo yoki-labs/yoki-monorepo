@@ -78,6 +78,7 @@ model MemberBalance {
     // Balance
     pocket     Int          @default(0)
     bank       Int          @default(0)
+    all        Int          @default(0)
 }
 
 // Copied from Yoki

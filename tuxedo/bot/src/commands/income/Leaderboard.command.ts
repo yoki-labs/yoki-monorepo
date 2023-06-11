@@ -24,7 +24,7 @@ const Leaderboard: Command = {
         const mainCurrency = currencies[0];
 
         const balances = await ctx.prisma.memberBalance.findMany({
-            orderBy: [{ bank: "desc" }, { pocket: "desc" }],
+            orderBy: { all: "desc" },
             include: {
                 member: true
             },
