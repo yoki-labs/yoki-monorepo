@@ -175,7 +175,7 @@ export class DatabaseUtil extends Util<TuxoClient> {
                         data: {
                             pocket: balance?.[x.currencyId] ?? x.pocket,
                             bank: bankBalance?.[x.currencyId] ?? x.bank,
-                            all: (balance?.[x.currencyId] ?? x.pocket) + (balance?.[x.currencyId] ?? x.bank),
+                            all: (balance?.[x.currencyId] ?? x.pocket) + (bankBalance?.[x.currencyId] ?? x.bank),
                         },
                     })
                 );
@@ -222,7 +222,7 @@ export class DatabaseUtil extends Util<TuxoClient> {
             newBalance[balance.currencyId] = balance.pocket + balanceChanges[balance.currencyId];
         }
 
-        return this.updateMemberBalance(member, balanceChanges);
+        return this.updateMemberBalance(member, newBalance);
     }
 
     async setMemberBalance(serverId: string, userId: string, balance: Record<string, number>, bankBalance?: Record<string, number>) {
