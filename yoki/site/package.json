@@ -26,7 +26,7 @@
 		"next": "12.3.4",
 		"next-auth": "^4.12.2",
 		"next-auth-guilded": "^1.0.1",
-		"react": "18.2.0",
+		"react": "^18.2.0",
 		"react-dom": "18.2.0",
 		"react-flatpickr": "^3.10.13",
 		"react-query": "^3.39.3",
