@@ -1,4 +1,5 @@
 import { Colors, createCommandHandler } from "@yokilabs/bot";
+import { stripIndents } from "common-tags";
 import { Embed, UserType } from "guilded.js";
 
 import type YokiClient from "../../Client";
@@ -96,6 +97,23 @@ export default {
                     .setFooter("User's message")
                     .setTimestamp()
             );
+            void ctx.messages.send(isModmailChannel.userFacingChannelId, {
+                embeds: [
+                    new Embed()
+                        .setDescription(
+                            stripIndents`
+                                <@${message.authorId}>, you said:
+
+                                ${message.content}
+                            `
+                        )
+                        .setAuthor("You", member.user!.avatar)
+                        .setColor(Colors.blockBackground)
+                        .setFooter("Your message")
+                        .setTimestamp(),
+                ],
+                isPrivate: true,
+            });
             return ctx.prisma.modmailMessage.create({
                 data: {
                     authorId: message.authorId,
