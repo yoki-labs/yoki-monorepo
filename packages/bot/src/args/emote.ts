@@ -1,8 +1,8 @@
 import type { CommandArgValidator } from "../commands/command-typings";
-import { getReactionById, getReactionByName, getReactionBySymbol,ReactionInfo } from "../static/static";
+import { getReactionById, getReactionByName, getReactionBySymbol, ReactionInfo } from "../static/static";
 
 export default [
-    async (input): Promise<ReactionInfo | null> => {
+    (input): ReactionInfo | null => {
         console.log("Emote input", [input]);
         if (input.startsWith(":") && input.endsWith(":")) {
             const name = input.substring(1, input.length - 1);
