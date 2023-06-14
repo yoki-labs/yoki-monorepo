@@ -35,7 +35,7 @@ export default {
                     .create({
                         serverId,
                         type: "chat",
-                        name: `${member.user!.name.slice(12)}-${createdBy}`,
+                        name: `${member.user!.name.slice(0, 12)}-${createdBy}`,
                         topic: `Modmail thread for ${createdBy}`,
                         groupId: server.modmailGroupId ?? undefined,
                         categoryId: server.modmailCategoryId ?? undefined,

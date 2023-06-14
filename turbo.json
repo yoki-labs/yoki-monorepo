@@ -8,7 +8,7 @@
             "outputs": [
                 ".next/**",
                 "!.next/cache/**",
-                "dist"
+                "dist/**"
             ]
         },
         "@yoki/bot#build": {
@@ -17,7 +17,7 @@
                 "@yoki/bot#generate"
             ],
             "outputs": [
-                "dist"
+                "dist/**"
             ]
         },
         "@tuxedo/bot#build": {
@@ -26,7 +26,7 @@
                 "@tuxedo/bot#generate"
             ],
             "outputs": [
-                "dist"
+                "dist/**"
             ]
         },
         "generate": {
