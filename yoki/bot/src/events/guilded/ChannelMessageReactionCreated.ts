@@ -30,11 +30,12 @@ export default {
                 if (userAlreadyHasChannel) return;
 
                 void ctx.amp.logEvent({ event_type: "MODMAIL_THREAD_CREATE", user_id: createdBy, event_properties: { serverId } });
+                const member = await ctx.members.fetch(serverId, createdBy, true);
                 const newChannel = await ctx.channels
                     .create({
                         serverId,
                         type: "chat",
-                        name: createdBy,
+                        name: `${member.user!.name.slice(12)}-${createdBy}`,
                         topic: `Modmail thread for ${createdBy}`,
                         groupId: server.modmailGroupId ?? undefined,
                         categoryId: server.modmailCategoryId ?? undefined,
@@ -48,6 +49,7 @@ export default {
 
                 if (!newChannel) return;
 
+
                 const newModmailThread = await ctx.prisma.modmailThread.create({
                     data: {
                         id: nanoid(13),
@@ -60,8 +62,6 @@ export default {
                 });
 
                 const modmailPingRole = server.modmailPingRoleId ? `<@${server.modmailPingRoleId}> ` : "";
-                const member = await ctx.members.fetch(serverId, createdBy, true);
-
                 await ctx.messageUtil.sendInfoBlock(
                     newChannel.id,
                     `New modmail thread opened`,
