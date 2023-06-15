@@ -116,7 +116,7 @@ const displayOverride = (incomeOverride: (DefaultIncomeOverride & { rewards: Rew
 
 const displayDefault = (incomeType: DefaultIncomeType, serverCurrencies: Currency[]) =>
     serverCurrencies?.length
-    ? `- ${inlineCode(defaultReceivedCurrency[incomeType][0])} to ${inlineCode(defaultReceivedCurrency[incomeType][1])} ${serverCurrencies[0].name} (default)`
+    ? `- ${inlineCode(defaultReceivedCurrency[incomeType][0])} to ${inlineCode(defaultReceivedCurrency[incomeType][1] + defaultReceivedCurrency[incomeType][0])} ${serverCurrencies[0].name} (default)`
     : `- (There is no currency to give)`;
 
 export default SetCurrency;
