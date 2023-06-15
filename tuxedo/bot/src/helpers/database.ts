@@ -1,4 +1,4 @@
-import { Currency, MemberBalance, ServerMember } from "@prisma/client";
+import { Currency, DefaultIncomeOverride, DefaultIncomeType, MemberBalance, Reward, ServerMember } from "@prisma/client";
 import { formatDate, Util } from "@yokilabs/bot";
 import { nanoid } from "nanoid";
 
@@ -263,5 +263,71 @@ export class DatabaseUtil extends Util<TuxoClient> {
                 },
             },
         });
+    }
+
+    async getIncomeOverride(serverId: string, incomeType: DefaultIncomeType) {
+        return (await this.client.prisma.defaultIncomeOverride.findMany({ where: { serverId }, include: { rewards: true } })).find(x => x.incomeType === incomeType);
+    }
+
+    async createOrUpdateIncomeOverride(serverId: string, incomeType: DefaultIncomeType, override: DefaultIncomeOverride | undefined, cooldownMs: number) {
+        return (
+            override
+            ? this.client.prisma.defaultIncomeOverride.update({
+                where: {
+                    id: override.id,
+                },
+                data: {
+                    cooldownMs,
+                },
+            })
+            : this.client.prisma.defaultIncomeOverride.create({
+                data: {
+                    serverId,
+                    incomeType,
+                    cooldownMs,
+                }
+            })
+        );
+    }
+    
+    createOrUpdateIncomeReward(serverId: string, incomeType: DefaultIncomeType, override: (DefaultIncomeOverride & { rewards: Reward[] }) | undefined, newReward: Omit<Reward, "id" | "incomeOverrideId">) {
+        return (
+            override
+            ? this.updateIncomeRewards(override, newReward)
+            : this.client.prisma.defaultIncomeOverride.create({
+                data: {
+                    serverId,
+                    incomeType,
+                    rewards: {
+                        createMany: {
+                            data: [newReward],
+                        },
+                    },
+                }
+            })
+        );
+    }
+
+    updateIncomeRewards(override: (DefaultIncomeOverride & { rewards: Reward[] }), newReward: Omit<Reward, "id" | "incomeOverrideId">) {
+        const existingReward = override.rewards.find(x => x.currencyId === newReward.currencyId);
+
+        return this.client.prisma.defaultIncomeOverride.update({
+            where: {
+                id: override.id,
+            },
+            data: {
+                rewards: {
+                    [existingReward ? "update" : "create"]:
+                        existingReward
+                        ? {
+                            where: {
+                                id: existingReward.id,
+                            },
+                            data: newReward,
+                        }
+                        : newReward,
+                }
+            },
+        })
     }
 }

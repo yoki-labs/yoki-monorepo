@@ -6,12 +6,12 @@ import { Category, Command } from "../commands";
 import { stripIndents } from "common-tags";
 
 const Purge: Command = {
-    name: "income-purge",
+    name: "members-purge-balances",
     description: "Removes a currency from everyone's balances.",
-    subName: "purge",
+    subName: "purge-balances",
     subCommand: true,
     category: Category.Economy,
-    requiredRole: RoleType.ADMIN,
+    requiredRole: RoleType.MOD,
     args: [
         {
             name: "tag",

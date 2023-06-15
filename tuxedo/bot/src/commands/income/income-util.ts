@@ -4,7 +4,18 @@ import ms from "ms";
 
 import { TuxoClient } from "../../Client";
 import { Server } from "../../typings";
-import { MemberBalance } from "@prisma/client";
+import { DefaultIncomeType, MemberBalance } from "@prisma/client";
+
+export const defaultCooldowns: Record<DefaultIncomeType, number> = {
+    [DefaultIncomeType.DAILY]: 24 * 60 * 60 * 1000,
+    [DefaultIncomeType.WORK]: 8 * 60 * 60 * 100,
+    [DefaultIncomeType.HOBBY]: 2 * 60 * 60 * 1000,
+};
+export const defaultReceivedCurrency: Record<DefaultIncomeType, number[]> = {
+    [DefaultIncomeType.DAILY]: [50, 250],
+    [DefaultIncomeType.WORK]: [25, 75],
+    [DefaultIncomeType.HOBBY]: [10, 40],
+};
 
 const bankCooldown = 5 * 60 * 60 * 1000;
 
@@ -83,30 +94,44 @@ export function generateBankCommand(balanceType: string, action: string, actionD
     }
 }
 
-export function generateIncomeCommand(commandId: string, action: string, cooldownInMs: number, max: number, min: number, successTitle: string, successDescription: string) {
+export function generateIncomeCommand(incomeType: DefaultIncomeType, action: string, successTitle: string, successDescription: string) {
+    const defaultCooldown = defaultCooldowns[incomeType];
+    const [defaultMin, defaultAdditionalMax] = defaultReceivedCurrency[incomeType];
+
     return async function execute(message: Message, _args: Record<string, ResolvedArgs>, ctx: TuxoClient, _context: CommandContext<Server>) {
         const currencies = await ctx.dbUtil.getCurrencies(message.serverId!);
 
         if (!currencies.length) return ctx.messageUtil.replyWithError(message, "No currencies", `This server does not have any local currencies ${action}.`);
 
-        const lastUsed = ctx.balanceUtil.getLastCommandUsage(message.serverId!, message.createdById, commandId);
+        const serverConfig = await ctx.dbUtil.getIncomeOverride(message.serverId!, incomeType);
 
-        // Need to wait 24 hours
-        if (lastUsed && Date.now() - lastUsed < cooldownInMs)
-            return ctx.messageUtil.replyWithError(message, "Too fast", `You have to wait ${ms(lastUsed + cooldownInMs - Date.now(), { long: true })} ${action} again.`);
+        const lastUsed = ctx.balanceUtil.getLastCommandUsage(message.serverId!, message.createdById, incomeType);
 
-        ctx.balanceUtil.updateLastCommandUsage(message.serverId!, message.createdById, commandId);
+        // Need to wait 24 hours or the configured time
+        const localCooldown = serverConfig?.cooldownMs ?? defaultCooldown;
 
-        // FIXME: Temporary solution for no config
-        const reward = Math.floor(Math.random() * max + min);
+        if (lastUsed && Date.now() - lastUsed < localCooldown)
+            return ctx.messageUtil.replyWithError(message, "Too fast", `You have to wait ${ms(lastUsed + localCooldown - Date.now(), { long: true })} ${action} again.`);
 
-        // Add to every currency
+        // For the cooldown
+        ctx.balanceUtil.updateLastCommandUsage(message.serverId!, message.createdById, incomeType);
+
         const balanceAdded = {};
-        for (const currency of currencies) balanceAdded[currency.id] = reward;
+
+        // Add random amounts of rewards that were configured or ones that are default
+        if (serverConfig?.rewards.length) {
+            for (const reward of serverConfig.rewards)
+                addReward(balanceAdded, reward.currencyId, reward.maxAmount - reward.minAmount, reward.minAmount);
+        } else addReward(balanceAdded, currencies[0].id, defaultAdditionalMax, defaultMin);
 
         await ctx.dbUtil.addToMemberBalance(message.serverId!, message.createdById, balanceAdded);
 
         // Reply with success
-        return ctx.messageUtil.replyWithSuccess(message, successTitle, `${successDescription}, which had ${currencies.map((x) => `${reward} ${x.name}`).join(", ")}.`);
+        const addedCurrencies = currencies.filter((x) => x.id in balanceAdded).map((x) => `${balanceAdded[x.id]} ${x.name}`);
+
+        return ctx.messageUtil.replyWithSuccess(message, successTitle, `${successDescription}, which had ${addedCurrencies.join(", ")}.`);
     };
 }
+
+const addReward = (balanceAdded: Record<string, number>, currencyId: string, max: number, min: number) =>
+    balanceAdded[currencyId] = Math.floor(Math.random() * max + min);

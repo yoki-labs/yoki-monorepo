@@ -7,12 +7,12 @@ import { Member } from "guilded.js";
 import { BalanceType } from "./income-management";
 
 const Set: Command = {
-    name: "income-set",
+    name: "members-set-balance",
     description: "Sets member's balance.",
-    subName: "set",
+    subName: "set-balance",
     subCommand: true,
     category: Category.Economy,
-    requiredRole: RoleType.ADMIN,
+    requiredRole: RoleType.MOD,
     args: [
         {
             name: "member",
