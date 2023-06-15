@@ -92,7 +92,7 @@ const SetCurrency: Command = {
 
 async function removeCurrencyReward(ctx: TuxoClient, message: Message, incomeType: DefaultIncomeType, currency: Currency, incomeOverride: (DefaultIncomeOverride & { rewards: Reward[] }) | undefined) {
     if (!incomeOverride || !incomeOverride.rewards.find((x) => x.currencyId === currency.id))
-        return ctx.messageUtil.replyWithWarning(
+        return ctx.messageUtil.replyWithError(
             message,
             "Currency is not rewarded",
             `The currency is either not rewarded or is part of default rewards. If you want to remove default rewards, create a new reward for the income command.`

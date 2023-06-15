@@ -53,7 +53,7 @@ const Delete: Command = {
                 message,
                 "Confirm deletion",
                 stripIndents`
-                    Are you sure you want to delete currency ${inlineQuote(currency.name)}? This will also delete the currency from balances of ${inlineCode(balanceCount)} members. If that is intended, redo the command with \`confirm\` at the end like so:
+                    Are you sure you want to delete currency ${inlineQuote(currency.name)}? This will also delete the currency from balances of ${inlineCode(balanceCount)} members, as well as rewards of this currency in income commands. If that is intended, redo the command with \`confirm\` at the end like so:
                     \`\`\`md
                     ${prefix}currency delete ${tag} confirm
                     \`\`\`
