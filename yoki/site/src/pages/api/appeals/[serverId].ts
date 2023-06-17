@@ -32,17 +32,14 @@ const PostAppealRoute = async (req: NextApiRequest, res: NextApiResponse) => {
         await rest.router.createChannelMessage(server.appealChannelId, {
             embeds: [
                 new Embed()
-                    .setTitle("New Appeal")
+                    .setTitle("User Appealed")
                     .setTimestamp()
-                    .setColor("GREEN")
+                    .setColor(0x8060f6)
+                    .setDescription(`${session.user.name} (\`${session.user.id}\`) has made an appeal for an unban.`)
                     .addFields([
                         {
-                            name: "User",
-                            value: `${session.user.name} (\`${session.user.id}\`)`,
-                        },
-                        {
-                            name: "Content",
-                            value: `\`\`\`${stripIndents(appealContent)}\`\`\``,
+                            name: "Reason",
+                            value: `\`\`\`md\n${stripIndents(appealContent)}\n\`\`\``,
                         },
                     ])
                     .toJSON(),

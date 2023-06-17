@@ -2,6 +2,7 @@ const withMT = require("@material-tailwind/react/utils/withMT");
 const plugin = require("tailwindcss/plugin");
 
 const colors = require("tailwindcss/colors");
+console.log("Colors", colors);
 delete colors["lightBlue"];
 delete colors["warmGray"];
 delete colors["trueGray"];
@@ -15,24 +16,24 @@ module.exports = withMT({
         colors: {
             ...colors,
             spacedark: {
-                950: "#06020a",
-                900: "#0e0816",
-                800: "#15101e",
-                700: "#211c2c",
-                600: "#2c2737",
-                500: "#3d3945",
-                400: "#56525e",
-                300: "#716e76",
+                950: "#0e0a10",
+                900: "#150e1a",
+                800: "#1e1524",
+                700: "#271c2e",
+                600: "#32253a",
+                500: "#3f3148",
+                400: "#53455c",
+                300: "#66576f",
             },
             spacelight: {
-                950: "#f9f5fd",
-                900: "#efe7f9",
-                800: "#e4daf6",
-                700: "#d4c7ef",
-                600: "#bcafd9",
-                500: "#a99cc3",
-                400: "#9084a8",
-                300: "#7c7094",
+                950: "#fcfafd",
+                900: "#e5e0e8",
+                800: "#b5afb9",
+                700: "#938a99",
+                600: "#796d82",
+                500: "#66576f",
+                400: "#53455c",
+                300: "#3f3148",
             },
         },
         extend: {
@@ -70,34 +71,34 @@ module.exports = withMT({
             },
         },
     },
-    plugins: [require("daisyui")],
-    daisyui: {
-        themes: [
-            {
-                light: {
-                    ...require("daisyui/src/colors/themes")["[data-theme=light]"],
-                    primary: "#8147ec",
-                },
-                dark: {
-                    ...require("daisyui/src/colors/themes")["[data-theme=dark]"],
-                    primary: "#8147ec",
-                },
-            },
-            {
-                light: {
-                    "base-100": "#f9f5fd",
-                    neutral: "#efe7f9",
-                    primary: "#8147ec",
-                },
-                dark: {
-                    "base-100": "#06020a",
-                    "base-200": "#0e0816",
-                    "base-300": "#15101e",
-                    neutral: "#0e0816",
-                    "neutral-content": "#bcafd9",
-                    primary: "#8147ec",
-                },
-            },
-        ],
-    },
+    // plugins: [require("daisyui")],
+    // daisyui: {
+    //     themes: [
+    //         {
+    //             light: {
+    //                 ...require("daisyui/src/colors/themes")["[data-theme=light]"],
+    //                 primary: "#8147ec",
+    //             },
+    //             dark: {
+    //                 ...require("daisyui/src/colors/themes")["[data-theme=dark]"],
+    //                 primary: "#8147ec",
+    //             },
+    //         },
+    //         {
+    //             light: {
+    //                 "base-100": "#f9f5fd",
+    //                 neutral: "#efe7f9",
+    //                 primary: "#8147ec",
+    //             },
+    //             dark: {
+    //                 "base-100": "#06020a",
+    //                 "base-200": "#0e0816",
+    //                 "base-300": "#15101e",
+    //                 neutral: "#0e0816",
+    //                 "neutral-content": "#bcafd9",
+    //                 primary: "#8147ec",
+    //             },
+    //         },
+    //     ],
+    // },
 });

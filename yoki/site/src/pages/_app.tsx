@@ -9,6 +9,8 @@ import { QueryClient, QueryClientProvider } from "react-query";
 
 import "../styles/globals.css";
 import "../styles/styles.css";
+import { ThemeProvider } from "@mui/material";
+import { theme } from "../styles/theme";
 
 const ogDescription = "Meet Yoki, your moderation companion. Guilded's first moderation bot.";
 const ogUrl = "https://yoki.gg/";
@@ -59,7 +61,9 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }: AppPropsWith
             <SessionProvider session={session}>
                 <QueryClientProvider client={queryClient}>
                     {/* <gqlClientContext.Provider value={gql}> */}
-                    <Component {...pageProps} />
+                    <ThemeProvider theme={theme}>
+                        <Component {...pageProps} />
+                    </ThemeProvider>
                     {/* </gqlClientContext.Provider> */}
                 </QueryClientProvider>
             </SessionProvider>

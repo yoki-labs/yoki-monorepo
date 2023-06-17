@@ -5,6 +5,8 @@ import { useState } from "react";
 
 import { tempToastAtom } from "../../../state/toast";
 import { actions } from "../../../utils/dummyData";
+import { Table, TableBody, TableCell, TableHead, TableRow } from "@mui/material";
+import LabsOverflowButton from "../../LabsOverflowButton";
 
 const actionTypes = {
     MUTE: faVolumeMute,
@@ -58,61 +60,39 @@ export default function History() {
                 </div>
             </div>
 
-            <div className="overflow-x-auto scrollbar">
-                <table className="table w-full">
-                    {/* head */}
-                    <thead>
-                        <tr>
-                            <th className="flex flex-row">
-                                <p className="mr-2">ID</p>
-                                <input type="checkbox" checked={showIds} onChange={() => setShowIds(!showIds)} className="checkbox checkbox-md md:checkbox-xs" />
-                            </th>
-                            <th>User Actioned</th>
-                            <th>Type</th>
-                            <th>Reason</th>
-                            <th>Executor</th>
-                            <th>Infraction Points</th>
-                            <th>Date Issued</th>
-                            <th>Date Expires</th>
-                        </tr>
-                    </thead>
-                    <tbody className="text-spacelight-400">
-                        {actions.map((action) => (
-                            <tr key={action.id} className="hover">
-                                <th onClick={() => alert(action.id)} className="text-xs hover:cursor-pointer">
-                                    {showIds ? action.id : "Click to copy"}
-                                </th>
-                                <td>{action.targetId}</td>
-                                <td>
-                                    <div className="tooltip" data-tip={action.type}>
-                                        <FontAwesomeIcon className="w-5 mr-2 text-yellow-400" icon={getActionIcon(action.type)} />
-                                    </div>
-                                </td>
-                                <td className="text-spacelight-700">{getReason(action.reason, action.executorId)}</td>
-                                <td>{getExecutor(action.executorId)}</td>
-                                <td>{action.infractionPoints}</td>
-                                <td>{transformToDate(action.createdAt)}</td>
-                                <td>{transformToDate(action.expiresAt)}</td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-            </div>
-
-            <footer className="mt-12 flex flex-col content-center items-center">
-                <div className="btn-group">
-                    <button className="btn inactive">
-                        <FontAwesomeIcon className="w-2" icon={faAngleLeft} />
-                    </button>
-                    <button className="btn active">1</button>
-                    <button className="btn">2</button>
-                    <button className="btn">3</button>
-                    <button className="btn">4</button>
-                    <button className="btn">
-                        <FontAwesomeIcon className="w-2" icon={faAngleRight} />
-                    </button>
-                </div>
-            </footer>
+            <Table>
+                <TableHead>
+                    <TableCell>User</TableCell>
+                    <TableCell>Action</TableCell>
+                    <TableCell>Reason</TableCell>
+                    <TableCell>Moderator</TableCell>
+                    <TableCell>Created At</TableCell>
+                    <TableCell></TableCell>
+                </TableHead>
+                <TableBody>
+                    {actions.map((action) => (
+                        <TableRow data-id={action.id}>
+                            <TableCell className="text-spacelight-700">{action.targetId}</TableCell>
+                            <TableCell className="text-spacelight-500 font-bold">
+                                <FontAwesomeIcon className="w-5 mr-2 text-spacelight-300" icon={getActionIcon(action.type)} />
+                                <span>{action.type}</span>
+                            </TableCell>
+                            <TableCell className="text-spacelight-700">
+                                {getReason(action.reason, action.executorId)}
+                            </TableCell>
+                            <TableCell className="text-spacelight-700">
+                                {action.executorId}
+                            </TableCell>
+                            <TableCell className="text-spacelight-700">
+                                {transformToDate(action.createdAt)}
+                            </TableCell>
+                            <TableCell>
+                                <LabsOverflowButton />
+                            </TableCell>
+                        </TableRow>
+                    ))}
+                </TableBody>
+            </Table>
         </div>
     );
 }

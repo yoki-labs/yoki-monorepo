@@ -6,7 +6,7 @@ import { useSession } from "next-auth/react";
 import { useState } from "react";
 
 import { authOptions } from "../api/auth/[...nextauth]";
-import Button from "../../components/appeals/Button";
+import Button from "../../components/Button";
 import { LandingPage } from "../../components/landing/LandingPage";
 import rest from "../../lib/Guilded";
 import prisma from "../../lib/Prisma";
@@ -116,7 +116,7 @@ const AppealPage: NextPage<Props> = ({ id, enabled, banInfo, tooRecent }) => {
                         </p>
                     </div>
                     <div className="pt-2">
-                        <Button disabled={appealContentLength < 1}>Save</Button>
+                        <Button disabled={appealContentLength < 1}>Send Appeal</Button>
                     </div>
                 </form>
             );
@@ -127,27 +127,27 @@ const AppealPage: NextPage<Props> = ({ id, enabled, banInfo, tooRecent }) => {
     if (!id)
         base = (
             <HalfScreenWidth>
-                <h1 className="text-red-600">That is not a valid server.</h1>
+                <h3 className="text-red-600">That is not a valid server.</h3>
             </HalfScreenWidth>
         );
     else if (!enabled)
         base = (
             <HalfScreenWidth>
-                <h1 className="text-red-600">This server does not accept appeals through Yoki.</h1>
+                <h3 className="text-red-600">This server does not accept appeals through Yoki.</h3>
             </HalfScreenWidth>
         );
     else if (!banInfo)
         base = (
             <HalfScreenWidth>
-                <h1 className="text-yellow-600">You are not banned from this server.</h1>
+                <h3 className="text-yellow-600">You are not banned from this server.</h3>
             </HalfScreenWidth>
         );
     else if (tooRecent)
         base = (
             <HalfScreenWidth>
-                <h1 className="text-yellow-600">
+                <h3 className="text-yellow-600">
                     You have already sent in an appeal recently. <br /> If your appeal goes unanswered, please come back in a week to resend.
-                </h1>
+                </h3>
             </HalfScreenWidth>
         );
 

@@ -1,5 +1,7 @@
 import { withAuth } from "next-auth/middleware";
 
+
+
 export default withAuth({
     pages: {
         signIn: "/auth/signin",
@@ -7,3 +9,4 @@ export default withAuth({
     },
 });
 export const config = { matcher: ["/dashboard/:path*", "/appeals/:path*"] };
+
