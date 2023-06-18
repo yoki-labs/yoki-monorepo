@@ -1,5 +1,6 @@
 import { RoleType } from "@prisma/client";
-import { codeBlock, formatDate, inlineCode, inlineQuote, summarizeRolesOrUsers } from "@yokilabs/bot";
+import { codeBlock, inlineCode, inlineQuote, summarizeRolesOrUsers } from "@yokilabs/bot";
+import { formatDate } from "@yokilabs/utils";
 import { stripIndents } from "common-tags";
 
 import { Category, Command } from "../commands";

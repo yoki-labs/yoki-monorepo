@@ -1,5 +1,6 @@
 import { Giveaway } from "@prisma/client";
-import { Colors, formatDate, inlineCode, shuffleArray, Util } from "@yokilabs/bot";
+import { inlineCode, Util } from "@yokilabs/bot";
+import { Colors, formatDate, shuffleArray } from "@yokilabs/utils";
 import { stripIndents } from "common-tags";
 import { Embed, EmbedField } from "guilded.js";
 import ms from "ms";

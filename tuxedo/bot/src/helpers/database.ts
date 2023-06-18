@@ -1,5 +1,6 @@
 import { Currency, DefaultIncomeOverride, DefaultIncomeType, MemberBalance, Reward, ServerMember } from "@prisma/client";
-import { formatDate, Util } from "@yokilabs/bot";
+import { Util } from "@yokilabs/bot";
+import { formatDate } from "@yokilabs/utils";
 import { nanoid } from "nanoid";
 
 import type { TuxoClient } from "../Client";

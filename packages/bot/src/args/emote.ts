@@ -1,5 +1,6 @@
-import type { CommandArgValidator } from "../commands/command-typings";
 import { getReactionById, getReactionByName, getReactionBySymbol, ReactionInfo } from "@yokilabs/utils";
+
+import type { CommandArgValidator } from "../commands/command-typings";
 
 export default [
     (input): ReactionInfo | null => {

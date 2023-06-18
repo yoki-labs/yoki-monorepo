@@ -1,4 +1,5 @@
-import { Colors, getAllCommands, inlineCode, listInlineCode, replyWithSingleCommand } from "@yokilabs/bot";
+import { getAllCommands, inlineCode, listInlineCode, replyWithSingleCommand } from "@yokilabs/bot";
+import { Colors } from "@yokilabs/utils";
 import { Embed } from "guilded.js";
 
 import { Category, Command } from "./commands";

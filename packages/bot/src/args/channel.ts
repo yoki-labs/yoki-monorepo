@@ -1,4 +1,5 @@
 import { isUUID } from "@yokilabs/utils";
+
 import type { CommandArgValidator } from "../commands/command-typings";
 
 export default [

@@ -1,5 +1,6 @@
 import type { Collection } from "@discordjs/collection";
 import type { EmbedField, EmbedPayload, RestBody, RestPath } from "@guildedjs/guilded-api-typings";
+import { BotImages, Colors, cutArray, cutArrayOddEven, StateImages } from "@yokilabs/utils";
 import { stripIndents } from "common-tags";
 import { Embed, Message, MessageContent } from "guilded.js";
 
@@ -7,10 +8,8 @@ import type { AbstractClient } from "../Client";
 import type { ResolvedArgs } from "../commands/arguments";
 import type { BaseCommand, CommandArgType, CommandArgument, CommandArgValidator } from "../commands/command-typings";
 import type { IServer } from "../db-types";
-import { BotImages, Colors, cutArray, cutArrayOddEven, StateImages } from "@yokilabs/utils";
-import { inlineCode } from "../utils/formatting";
+import { inlineCode, listInlineCode } from "../utils/formatting";
 import { Util } from "./util";
-import { listInlineCode } from "../utils/formatting";
 
 type MessageBody = Omit<RestBody<RestPath<"/channels/{channelId}/messages">["post"]>, "embeds"> & { embeds?: Embed[] };
 

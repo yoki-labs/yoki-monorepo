@@ -1,5 +1,6 @@
 import { RoleType } from "@prisma/client";
-import { formatDate, inlineCode, inlineQuote } from "@yokilabs/bot";
+import { inlineCode, inlineQuote } from "@yokilabs/bot";
+import { formatDate } from "@yokilabs/utils";
 import { stripIndents } from "common-tags";
 
 import { TAG_REGEX } from "../../util/matching";
