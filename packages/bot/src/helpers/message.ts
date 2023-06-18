@@ -7,9 +7,10 @@ import type { AbstractClient } from "../Client";
 import type { ResolvedArgs } from "../commands/arguments";
 import type { BaseCommand, CommandArgType, CommandArgument, CommandArgValidator } from "../commands/command-typings";
 import type { IServer } from "../db-types";
-import { BotImages, Colors, cutArray, StateImages } from "@yokilabs/utils";
+import { BotImages, Colors, cutArray, cutArrayOddEven, StateImages } from "@yokilabs/utils";
 import { inlineCode } from "../utils/formatting";
 import { Util } from "./util";
+import { listInlineCode } from "../utils/formatting";
 
 type MessageBody = Omit<RestBody<RestPath<"/channels/{channelId}/messages">["post"]>, "embeds"> & { embeds?: Embed[] };
 
@@ -29,7 +30,7 @@ export class MessageUtil<
     createSubCommandFields(subCommands: Collection<string, TCommand>): EmbedField[] {
         const allSubCommands = subCommands.map((x) => `${inlineCode(x.subName!)}\n${x.description}`);
 
-        const [half, otherHalf] = cutArray(allSubCommands);
+        const [half, otherHalf] = cutArrayOddEven(allSubCommands);
 
         return [
             {
@@ -152,6 +153,49 @@ export class MessageUtil<
         );
     }
 
+    replyWithList<T>(message: Message, title: string, items: T[] | undefined | null, tip?: string, embedPartial?: EmbedPayload, messagePartial?: Partial<MessageBody>) {
+        return (
+            items?.length
+            ? this.replyWithEmbed(
+                message,
+                {
+                    title,
+                    description: items.join("\n"),
+                    color: Colors.blockBackground,
+                    footer: {
+                        text: `${items.length} total entries`,
+                    },
+                    ...embedPartial,
+                },
+                messagePartial
+            )
+            : this.replyWithNullState(message, `No items here`, `There is nothing here to show.${tip ? `\n\n${tip}` : ""}`, undefined, messagePartial)
+        );
+    }
+
+    replyWithCategorizedList(message: Message, title: string, items: Collection<string, string[]>, footer: string, embedPartial?: EmbedPayload, messagePartial?: Partial<MessageBody>) {
+        return this.replyWithEmbed(
+            message,
+            {
+                title,
+                color: Colors.blockBackground,
+                fields:
+                    items.map((values, key) =>
+                        ({
+                            name: key,
+                            value: listInlineCode(values)!,
+                            inline: true,
+                        })
+                    ),
+                footer: {
+                    text: footer,
+                },
+                ...embedPartial,
+            },
+            messagePartial
+        );
+    }
+
     replyWithPaginatedContent<T>(info: {
         replyTo: Message;
         title: string;
@@ -173,7 +217,7 @@ export class MessageUtil<
 
         // If there is no such page
         if (incrementedPage > possiblePages)
-            return this.replyWithNullState(message, `No items in this page`, `There are no items at page ${inlineCode(incrementedPage)}.`, undefined, messagePartial);
+            return this.replyWithNullState(message, `No items here`, `There are no items at page ${inlineCode(incrementedPage)}.`, undefined, messagePartial);
 
         const startingIndex = itemsPerPage * page;
         const endingIndex = itemsPerPage * incrementedPage;
@@ -183,10 +227,10 @@ export class MessageUtil<
             title,
             items.slice(startingIndex, endingIndex).map(itemMapping).join("\n"),
             {
-                ...embedPartial,
                 footer: {
-                    text: `Page ${incrementedPage}/${possiblePages} • ${items.length} total entries`,
+                    text: `Page ${incrementedPage}/${possiblePages} \u2022 ${items.length} total entries`,
                 },
+                ...embedPartial,
             },
             messagePartial
         );

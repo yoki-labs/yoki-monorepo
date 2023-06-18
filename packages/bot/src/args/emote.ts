@@ -1,9 +1,8 @@
 import type { CommandArgValidator } from "../commands/command-typings";
-import { getReactionById, getReactionByName, getReactionBySymbol, ReactionInfo } from "../../../utils/src/reactions";
+import { getReactionById, getReactionByName, getReactionBySymbol, ReactionInfo } from "@yokilabs/utils";
 
 export default [
     (input): ReactionInfo | null => {
-        console.log("Emote input", [input]);
         if (input.startsWith(":") && input.endsWith(":")) {
             const name = input.substring(1, input.length - 1);
 

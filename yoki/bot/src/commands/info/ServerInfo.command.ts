@@ -27,18 +27,18 @@ const ServerInfo: Command = {
                             {
                                 name: "Basic Configuration",
                                 value: stripIndents`
-                                **Prefix:** ${inlineCode(escapeInlineCodeText(server.getPrefix()))},
-                                **Locale:** ${inlineCode(server.locale)}
-                                **Premium level:** ${server.premium ? inlineCode(server.premium) : "none"}
-                            `,
+                                    **Prefix:** ${inlineCode(escapeInlineCodeText(server.getPrefix()))},
+                                    **Locale:** ${inlineCode(server.locale)}
+                                    **Premium level:** ${server.premium ? inlineCode(server.premium) : "none"}
+                                `,
                                 inline: true,
                             },
                             {
                                 name: "Members",
                                 value: stripIndents`
-                                **Owner:** :crown: <@${guildedServer.ownerId}> (${inlineCode(guildedServer.ownerId)})
-                                **Member count:** ${inlineCode(memberCount)}
-                            `,
+                                    **Owner:** :crown: <@${guildedServer.ownerId}> (${inlineCode(guildedServer.ownerId)})
+                                    **Member count:** ${inlineCode(memberCount)}
+                                `,
                                 inline: true,
                             },
                             guildedServer.description && {
@@ -48,10 +48,10 @@ const ServerInfo: Command = {
                             {
                                 name: "Additional Info",
                                 value: stripIndents`
-                                ${guildedServer.isVerified ? ":white_check_mark: **Is verified.**\n" : ""}**URL:** \`/${guildedServer.shortURL}\`
-                                **Timezone:** ${inlineCode(guildedServer.timezone)}
-                                **Server created:** ${server.formatTimezone(guildedServer.createdAt)} EST
-                            `,
+                                    ${guildedServer.isVerified ? ":white_check_mark: **Is verified.**\n" : ""}**URL:** \`/${guildedServer.shortURL}\`
+                                    **Timezone:** ${inlineCode(guildedServer.timezone)}
+                                    **Server created:** ${server.formatTimezone(guildedServer.createdAt)} EST
+                                `,
                             },
                         ].filter(Boolean) as EmbedField[]
                     )

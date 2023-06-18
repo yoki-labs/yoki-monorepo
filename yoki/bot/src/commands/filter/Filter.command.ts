@@ -18,13 +18,13 @@ const Filter: Command = {
     category: Category.Filter,
     requiredRole: RoleType.MOD,
     subCommands: new Collection<string, Command>()
+        .set("add", Add)
+        .set("list", List)
+        .set("remove", Remove)
         .set("onmods", FilterOnMods)
         .set("spamfrequency", SpamFrequency)
         .set("mentionfrequency", MentionSpamFrequency)
-        .set("spaminfractions", SpamInfractions)
-        .set("add", Add)
-        .set("remove", Remove)
-        .set("list", List),
+        .set("spaminfractions", SpamInfractions),
     execute: () => void 0,
 };
 

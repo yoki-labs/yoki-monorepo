@@ -27,13 +27,6 @@ const Remove: Command = {
         const { id: channelId } = args.channel as Channel;
         let logTypes: LogChannelArgEnum[] = args.logTypes === null ? [] : (args.logTypes as LogChannelArgEnum[]);
 
-        // const channel = await ctx.rest.router.getChannel(channelId).catch(() => null);
-        // if (!channel) return ctx.messageUtil.replyWithAlert(
-        //     message,
-        //     "Sorry! That is not a valid channel!",
-        //     "Please ensure that the provided ID belongs to a channel that I can see! I also require `MANAGE CHANNEL` permissions to be able to grab that channel!"
-        // );
-
         // If there are logTypes, uppercase them all, then filter out duplicates. No idea why this had to specifically be two different lines.
         if (logTypes && logTypes.length > 0) {
             logTypes = logTypes.filter((value, index) => logTypes!.indexOf(value) === index);

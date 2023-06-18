@@ -40,7 +40,7 @@ const Help: Command = {
         const commandCategoryMap = getAllCommands(ctx.commands);
 
         const embed = new Embed()
-            .setTitle("Command List")
+            .setTitle("Command list")
             .setColor(Colors.blockBackground)
             .setDescription(":link: [Join server](https://yoki.gg/support) • [Invite bot](https://yoki.gg/invite)")
             .setFooter(`For additional info on a command, type ${inlineCode(`${commandCtx.server.getPrefix()}help [command]`)}`);

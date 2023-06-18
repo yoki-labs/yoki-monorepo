@@ -3,6 +3,10 @@ export function cutArray<T>(array: T[]): [T[], T[]] {
 
     return [array.slice(0, halfLength), array.slice(halfLength, array.length)];
 }
+export function cutArrayOddEven<T>(array: T[]): [T[], T[]] {
+    return [array.filter((_, i) => !(i % 2)), array.filter((_, i) => i % 2)];
+}
+
 // Stolen from StackOverflow with some changes to not modify original array
 export function shuffleArray<T>(array: T[]) {
     const newArray: T[] = [...array];
