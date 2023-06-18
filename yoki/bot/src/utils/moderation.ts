@@ -1,6 +1,7 @@
 import type { EmbedField, Schema } from "@guildedjs/guilded-api-typings";
 import { Action, ContentIgnoreType, Severity } from "@prisma/client";
-import { codeBlock, formatDate, inlineCode } from "@yokilabs/bot";
+import { codeBlock, inlineCode } from "@yokilabs/bot";
+import { formatDate } from "@yokilabs/utils";
 import { stripIndents } from "common-tags";
 
 import type { FilteredContent } from "../modules/content-filter";

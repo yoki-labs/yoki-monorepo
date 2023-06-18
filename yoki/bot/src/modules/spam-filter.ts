@@ -1,5 +1,5 @@
 import type { Schema } from "@guildedjs/guilded-api-typings";
-import { Colors } from "@yokilabs/bot";
+import { Colors } from "@yokilabs/utils";
 import type { Message } from "guilded.js";
 
 import { Server, Severity } from "../typings";

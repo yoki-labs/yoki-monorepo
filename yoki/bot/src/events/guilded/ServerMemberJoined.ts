@@ -1,5 +1,6 @@
 import { LogChannelType, Severity } from "@prisma/client";
-import { codeBlock, Colors, inlineCode } from "@yokilabs/bot";
+import { codeBlock, inlineCode } from "@yokilabs/bot";
+import { Colors } from "@yokilabs/utils";
 import { stripIndents } from "common-tags";
 import { UserType, WebhookEmbed } from "guilded.js";
 import { nanoid } from "nanoid";

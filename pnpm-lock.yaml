@@ -72,6 +72,9 @@ importers:
       '@types/ms':
         specifier: ^0.7.31
         version: 0.7.31
+      '@yokilabs/utils':
+        specifier: workspace:*
+        version: link:../utils
       common-tags:
         specifier: ^1.8.2
         version: 1.8.2
@@ -110,6 +113,19 @@ importers:
         specifier: ^4.8.4
         version: 4.9.5
 
+  packages/utils:
+    dependencies:
+      tslib:
+        specifier: ^2.4.1
+        version: 2.5.0
+    devDependencies:
+      '@types/node':
+        specifier: ^18.11.9
+        version: 18.11.9
+      typescript:
+        specifier: ^4.8.4
+        version: 4.9.5
+
   tuxedo/bot:
     dependencies:
       '@discordjs/collection':
@@ -121,6 +137,9 @@ importers:
       '@yokilabs/bot':
         specifier: workspace:*
         version: link:../../packages/bot
+      '@yokilabs/utils':
+        specifier: workspace:*
+        version: link:../../packages/utils
       common-tags:
         specifier: ^1.8.2
         version: 1.8.2
@@ -197,6 +216,9 @@ importers:
       '@yokilabs/captcha-generator':
         specifier: 1.1.1
         version: 1.1.1
+      '@yokilabs/utils':
+        specifier: workspace:*
+        version: link:../../packages/utils
       aws-sdk:
         specifier: ^2.1168.0
         version: 2.1368.0
@@ -1400,7 +1422,7 @@ packages:
     resolution: {integrity: sha512-IO+MJPVhoqz+28h1qLAcBEH2+xHMK6MTyHJc7MTnnYb6wsoLR29POVGJ7LycmVXIqyy/4/2ShP5sUwTXuOwb/w==}
     dependencies:
       '@types/minimatch': 5.1.2
-      '@types/node': 18.16.3
+      '@types/node': 18.11.9
     dev: true
 
   /@types/hoist-non-react-statics@3.3.1:
@@ -1428,7 +1450,7 @@ packages:
   /@types/node-fetch@2.5.12:
     resolution: {integrity: sha512-MKgC4dlq4kKNa/mYrwpKfzQMB5X3ee5U6fSprkKpToBqBmX4nFZL9cW5jl6sWn+xpRJ7ypWh2yyqqr8UUCstSw==}
     dependencies:
-      '@types/node': 18.16.3
+      '@types/node': 18.11.9
       form-data: 3.0.1
     dev: true
 
@@ -1444,8 +1466,12 @@ packages:
     resolution: {integrity: sha512-w+tIMs3rq2afQdsPJlODhoUEKzFP1ayaoyl1CcnwtIlsVe7K7bA1NGm4s3PraqTLlXnbIN84zuBlxBWo1u9BLw==}
     dev: true
 
+  /@types/node@18.11.9:
+    resolution: {integrity: sha512-CRpX21/kGdzjOpFsZSkcrXMGIBWMGNIHXXBVFSH+ggkftxg+XYP20TESbh+zFvFj3EQOl5byk0HTRn1IL6hbqg==}
+
   /@types/node@18.16.3:
     resolution: {integrity: sha512-OPs5WnnT1xkCBiuQrZA4+YAV4HEJejmHneyraIaxsbev5yCEr6KMwINNFP9wQeFIw8FWcoTqF3vQsa5CDaI+8Q==}
+    dev: true
 
   /@types/parse-json@4.0.0:
     resolution: {integrity: sha512-//oorEZjL6sbPcKUaCdIGlIUeH26mgzimjBB77G6XRgnDl/L5wOnpyBGRe/Mmf5CVW3PwEBE1NjiMZ/ssFh4wA==}
@@ -1482,14 +1508,14 @@ packages:
   /@types/recursive-readdir@2.2.1:
     resolution: {integrity: sha512-Xd+Ptc4/F2ueInqy5yK2FI5FxtwwbX2+VZpcg+9oYsFJVen8qQKGapCr+Bi5wQtHU1cTXT8s+07lo/nKPgu8Gg==}
     dependencies:
-      '@types/node': 18.16.3
+      '@types/node': 18.11.9
     dev: true
 
   /@types/rimraf@3.0.2:
     resolution: {integrity: sha512-F3OznnSLAUxFrCEu/L5PY8+ny8DtcFRjx7fZZ9bycvXRi3KPTRS9HOitGZwvPg0juRhXFWIeKX58cnX5YqLohQ==}
     dependencies:
       '@types/glob': 8.1.0
-      '@types/node': 18.16.3
+      '@types/node': 18.11.9
     dev: true
 
   /@types/scheduler@0.16.3:
@@ -1510,7 +1536,7 @@ packages:
   /@types/ws@8.5.4:
     resolution: {integrity: sha512-zdQDHKUgcX/zBc4GrwsE/7dVdAD8JR4EuiAXiiUhhfyIJXXb2+PrGshFyeXWQPMmmZ2XxgaqclgpIC7eTXc1mg==}
     dependencies:
-      '@types/node': 18.16.3
+      '@types/node': 18.11.9
     dev: false
 
   /@typescript-eslint/eslint-plugin@5.59.1(@typescript-eslint/parser@5.59.1)(eslint@8.38.0)(typescript@5.0.4):
@@ -2164,7 +2190,7 @@ packages:
     dev: false
 
   /concat-map@0.0.1:
-    resolution: {integrity: sha1-2Klr13/Wjfd5OnMDajug1UBdR3s=}
+    resolution: {integrity: sha512-/Srv4dswyQNBfohGpz9o6Yb3Gz3SrUDqBH5rTuhGR7ahtlbYKnVxw2bCFMRljaA7EXHaXZ8wsHdodFvbkhKmqg==}
 
   /console-control-strings@1.1.0:
     resolution: {integrity: sha512-ty/fTekppD2fIwRvnZAVdeOiGd1c7YXEixbgJTNzqcxJWKQnjJ/V1bNEEE6hygpM3WjwHFUVK6HTjWSzV4a8sQ==}

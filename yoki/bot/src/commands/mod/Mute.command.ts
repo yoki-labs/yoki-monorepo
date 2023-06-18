@@ -1,10 +1,11 @@
 import type { EmbedField } from "@guildedjs/guilded-api-typings";
-import { bold, Colors, inlineCode, listInlineCode } from "@yokilabs/bot";
+import { bold, inlineCode, listInlineCode } from "@yokilabs/bot";
 import { stripIndents } from "common-tags";
 import { UserType } from "guilded.js";
 
 import { CachedMember, RoleType } from "../../typings";
 import { Category, Command } from "../commands";
+import { Colors } from "@yokilabs/utils";
 
 const Mute: Command = {
     name: "mute",

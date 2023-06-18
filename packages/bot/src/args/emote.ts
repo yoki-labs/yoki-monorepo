@@ -1,5 +1,5 @@
 import type { CommandArgValidator } from "../commands/command-typings";
-import { getReactionById, getReactionByName, getReactionBySymbol, ReactionInfo } from "../static/static";
+import { getReactionById, getReactionByName, getReactionBySymbol, ReactionInfo } from "../../../utils/src/reactions";
 
 export default [
     (input): ReactionInfo | null => {

@@ -1,8 +1,9 @@
-import { Colors, inlineCode, inlineQuote } from "@yokilabs/bot";
+import { inlineCode, inlineQuote } from "@yokilabs/bot";
 import { stripIndents } from "common-tags";
 import { Embed, EmbedField } from "guilded.js";
 
 import { Category, Command } from "../commands";
+import { Colors } from "@yokilabs/utils";
 
 export interface Role {
     id: number;

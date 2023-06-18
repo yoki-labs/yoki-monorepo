@@ -1,4 +1,5 @@
-import { inlineQuote, timezones } from "@yokilabs/bot";
+import { inlineQuote } from "@yokilabs/bot";
+import { timezones } from "@yokilabs/utils";
 
 import { RoleType } from "../typings";
 import { Category, Command } from "./commands";

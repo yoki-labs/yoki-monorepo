@@ -1,12 +1,14 @@
 import { LogChannelType } from "@prisma/client";
-import { Colors, inlineCode, quoteMarkdown } from "@yokilabs/bot";
+import { inlineCode, quoteMarkdown } from "@yokilabs/bot";
+import { Colors } from "@yokilabs/utils";
 import { stripIndents } from "common-tags";
-import { UserType, WebhookEmbed } from "guilded.js";
+import { Message, UserType, WebhookEmbed } from "guilded.js";
 import { nanoid } from "nanoid";
 
 import { FilteredContent } from "../../modules/content-filter";
 import type { GEvent } from "../../typings";
 import { moderateContent } from "../../utils/moderation";
+import YokiClient from "../../Client";
 
 export default {
     execute: async ([message, _oldMessage, ctx]) => {
@@ -38,41 +40,7 @@ export default {
         if (!updatedMessageLogChannel) return void 0;
 
         try {
-            let logContent = [
-                {
-                    name: `Old Content`,
-                    value: oldMessage
-                        ? oldMessage.content
-                            ? quoteMarkdown(oldMessage.content, 1012)
-                            : `This message does not contain text content.`
-                        : `Could not find old version of this message.`,
-                },
-                {
-                    name: `New Content`,
-                    value: message.content ? quoteMarkdown(message.content, 1012) : `This message does not contain text content.`,
-                },
-            ];
-            if ((oldMessage?.content.length ?? 0) > 1000 || message.content.length > 1000) {
-                const uploadToBucket = await ctx.s3
-                    .upload({
-                        Bucket: process.env.S3_BUCKET,
-                        Key: `logs/message-update-${message.serverId}-${message.id}.txt`,
-                        Body: Buffer.from(stripIndents`
-						Old: ${oldMessage?.content ?? "None"}
-						------------------------------------
-						New: ${message.content}
-					`),
-                        ContentType: "text/plain",
-                        ACL: "public-read",
-                    })
-                    .promise();
-                logContent = [
-                    {
-                        name: "Message Log",
-                        value: `This log is too big to display in Guilded. You can find the full log [here](${uploadToBucket.Location})`,
-                    },
-                ];
-            }
+            const contentFields = await getDisplayedContent(ctx, _oldMessage, message);
 
             const author = message.createdByWebhookId ? `Webhook (${inlineCode(message.createdByWebhookId)})` : `<@${message.authorId}> (${inlineCode(message.authorId)})`;
             const channel = await ctx.channels.fetch(message.channelId);
@@ -85,15 +53,18 @@ export default {
                 serverId: server.serverId,
                 description: stripIndents`
                 ${author} has edited a message in the channel [#${channel.name}](${channelURL}).
-
-				Message ID: ${inlineCode(message.id)}
-				Channel ID: ${inlineCode(message.channelId)}
-
+                
                 [Jump to the message](${channelURL}?messageId=${message.id})
-            `,
+                `,
                 color: Colors.yellow,
                 occurred: message.updatedAt?.toISOString() ?? new Date().toISOString(),
-                fields: logContent,
+                fields: contentFields.concat({
+                    name: "Additional Info",
+                    value: stripIndents`
+                        **Message ID:** ${inlineCode(message.id)}
+                        **Channel ID:** ${inlineCode(message.channelId)}
+                    `
+                }),
             });
         } catch (e) {
             const referenceId = nanoid();
@@ -120,3 +91,45 @@ export default {
     },
     name: "messageUpdated",
 } satisfies GEvent<"messageUpdated">;
+
+async function getDisplayedContent(ctx: YokiClient, oldMessage: Message | null, newMessage: Message) {
+    // The message is too big to display the content
+    if ((oldMessage?.content.length ?? 0) > 1000 || newMessage.content.length > 1000) {
+        const uploadToBucket = await ctx.s3
+            .upload({
+                Bucket: process.env.S3_BUCKET,
+                Key: `logs/message-update-${newMessage.serverId}-${newMessage.id}.txt`,
+                Body: Buffer.from(stripIndents`
+                Old: ${oldMessage?.content ?? "None"}
+                ------------------------------------
+                New: ${newMessage.content}
+            `),
+                ContentType: "text/plain",
+                ACL: "public-read",
+            })
+            .promise();
+
+        return [
+            {
+                name: "Message Log",
+                value: `This log is too big to display in Guilded. You can find the full log [here](${uploadToBucket.Location})`,
+            },
+        ];
+    }
+
+    // The message is small enough to display the content
+    return [
+        {
+            name: `Old Content`,
+            value: oldMessage
+                ? oldMessage.content
+                    ? quoteMarkdown(oldMessage.content, 1012)
+                    : `This message does not contain text content.`
+                : `Could not find old version of this message.`,
+        },
+        {
+            name: `New Content`,
+            value: newMessage.content ? quoteMarkdown(newMessage.content, 1012) : `This message does not contain text content.`,
+        },
+    ];
+}

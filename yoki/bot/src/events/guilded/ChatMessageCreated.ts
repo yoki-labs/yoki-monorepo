@@ -1,4 +1,5 @@
-import { Colors, createCommandHandler } from "@yokilabs/bot";
+import { createCommandHandler } from "@yokilabs/bot";
+import { Colors } from "@yokilabs/utils";
 import { stripIndents } from "common-tags";
 import { Embed, UserType } from "guilded.js";
 

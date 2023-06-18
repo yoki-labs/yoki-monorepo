@@ -1,5 +1,6 @@
 import { LogChannelType, Prisma } from "@prisma/client";
-import { codeBlock, Colors, inlineCode } from "@yokilabs/bot";
+import { codeBlock, inlineCode } from "@yokilabs/bot";
+import { Colors } from "@yokilabs/utils";
 import { stripIndents } from "common-tags";
 import { UserType, WebhookEmbed } from "guilded.js";
 import { nanoid } from "nanoid";
@@ -35,6 +36,13 @@ export default {
                         ? `_This message contains embeds._`
                         : `Could not find message content. This message may be older than 14 days.`,
                 },
+                {
+                    name: "Additional Info",
+                    value: stripIndents`
+                        **Message ID:** ${inlineCode(message.id)}
+                        **Channel ID:** ${inlineCode(message.channelId)}
+                    `
+                }
             ];
 
             if (deletedMessage && (deletedMessage?.content.length ?? 0) > 1000) {
@@ -60,11 +68,7 @@ export default {
                 where: deletedMessageLogChannel.channelId,
                 serverId: message.serverId!,
                 title: "Message Removed",
-                description: stripIndents`A message from ${author} was deleted in [#${channel.name}](${channelURL})
-			
-					Message ID: ${inlineCode(message.id)}
-					Channel ID: ${inlineCode(message.channelId)}
-				`,
+                description: `A message from ${author} was deleted in [#${channel.name}](${channelURL}).`,
                 color: Colors.red,
                 occurred: message.deletedAt,
                 fields: logContent,

@@ -1,5 +1,4 @@
 import reactionsJson from "./reactions.json";
-import timezonesJson from "./timezones.json";
 
 export interface ReactionInfo { id: number; name: string; symbol?: string; }
 
@@ -14,4 +13,3 @@ export const getReactionBySymbol =
         reactionsJson.find((x) => x.symbol === symbol);
 
 export const reactions = reactionsJson;
-export const timezones = timezonesJson;

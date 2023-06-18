@@ -1,4 +1,4 @@
-import { Colors } from "@yokilabs/bot";
+import { Colors } from "@yokilabs/utils";
 import { stripIndents } from "common-tags";
 import { Embed } from "guilded.js";
 

@@ -2,7 +2,6 @@ export const BotImages = {
     checkmark: "https://img.guildedcdn.com/MediaChannelUpload/04657f95a439b1ce8f3db3dc2456e2a5-Full.png",
     crossmark: "https://img.guildedcdn.com/MediaChannelUpload/ebe00159ad8977bdc6c31381d98ae272-Full.png",
     exclamationmark: "https://img.guildedcdn.com/MediaChannelUpload/02840bc0da23a5ab1683f57ea7f992fa-Full.png",
-    avatar: "https://raw.githubusercontent.com/yoki-labs/bots/main/yoki/site/public/face.png?token=GHSAT0AAAAAAB7B37WFUSGJETCKPRJTY6XIZBZUXBQ",
 };
 // ?w=128&h=128 or ?w=80&h=80
 

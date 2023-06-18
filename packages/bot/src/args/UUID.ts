@@ -1,5 +1,5 @@
+import { isUUID } from "@yokilabs/utils";
 import type { CommandArgValidator } from "../commands/command-typings";
-import { isUUID } from "../utils/value";
 
 export default [
     (input) => (isUUID(input) ? input : null),

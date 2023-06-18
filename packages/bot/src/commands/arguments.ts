@@ -1,6 +1,5 @@
+import { ReactionInfo } from "@yokilabs/utils";
 import type { Channel, Member } from "guilded.js";
-
-import { ReactionInfo } from "../static/static";
 
 // member cached in mem
 export type CachedMember = Member;

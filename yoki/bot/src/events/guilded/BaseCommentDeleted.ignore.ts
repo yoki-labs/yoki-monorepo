@@ -1,4 +1,5 @@
-import { Colors, inlineCode } from "@yokilabs/bot";
+import { inlineCode } from "@yokilabs/bot";
+import { Colors } from "@yokilabs/utils";
 import { UserType } from "guilded.js";
 
 import { Context, LogChannelType } from "../../typings";

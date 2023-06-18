@@ -1,5 +1,5 @@
 import type { ModmailThread } from "@prisma/client";
-import { Colors } from "@yokilabs/bot";
+import { Colors } from "@yokilabs/utils";
 import { stripIndents } from "common-tags";
 
 import type Client from "../../Client";
@@ -71,7 +71,7 @@ export async function closeModmailThread(server: Server, closedBy: string, ctx: 
             serverId: server.serverId,
             title: `Thread Closed`,
             description: `Thread \`#${modmailThread.id}\` created by <@${modmailThread.openerId}> has been ${closedState}.`,
-            color: Colors.blue,
+            color: Colors.green,
             occurred: new Date().toISOString(),
             fields: [
                 {

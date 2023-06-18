@@ -38,19 +38,5 @@ export const listInlineCode = (str: string[] | number[] | undefined) => (typeof 
 export const listInlineQuote = (str: string[] | undefined) => (typeof str === "undefined" ? null : str.map(inlineQuote).join(", "));
 export const codeBlock = (code: any, language?: string) => (language ? `\`\`\`${language}\n${code}\`\`\`` : `\`\`\`${code}\`\`\``);
 export const quoteMarkdown = (code: string, limit: number) => `\`\`\`md\n${code.length > limit ? `${code.substring(0, limit)}...` : code}\n\`\`\``;
-// export const errorEmbed = (err: Error | any, additional_details?: Record<string, string | number | null>) =>
-//     new Embed()
-//         .setDescription(
-//             stripIndents`
-// 				${
-//                     additional_details &&
-//                     Object.keys(additional_details as object)
-//                         .map((key) => `${key}: \`${additional_details[key]}\``)
-//                         .join("\n")
-//                 }
-// 				${err.stack ?? err.message ?? JSON.stringify(err).slice(0, 1350)}
-// 			`
-//         )
-//         .setColor("RED");
 export const channelName = (name: string, serverId: string, groupId: string, channelId: string, type?: string) =>
     `[#${name.length > 50 ? `${name.substring(0, 47)}...` : name}](https://guilded.gg/teams/${serverId}/groups/${groupId}/channels/${channelId}/${type ?? "chat"})`;

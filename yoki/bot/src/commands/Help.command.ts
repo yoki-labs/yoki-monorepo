@@ -1,11 +1,12 @@
 import { Collection } from "@discordjs/collection";
 import type { EmbedField } from "@guildedjs/guilded-api-typings";
-import { Colors, inlineCode, inlineQuote, listInlineCode } from "@yokilabs/bot";
+import { inlineCode, inlineQuote, listInlineCode } from "@yokilabs/bot";
 import { stripIndents } from "common-tags";
 import { Embed, Message } from "guilded.js";
 
 import type Client from "../Client";
 import { Category, Command, CommandContext } from "./commands";
+import { Colors } from "@yokilabs/utils";
 
 const categories = Object.values(Category);
 

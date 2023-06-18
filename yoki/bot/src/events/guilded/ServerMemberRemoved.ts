@@ -1,5 +1,6 @@
 import { LogChannelType } from "@prisma/client";
-import { Colors, inlineCode } from "@yokilabs/bot";
+import { inlineCode } from "@yokilabs/bot";
+import { Colors } from "@yokilabs/utils";
 import { stripIndents } from "common-tags";
 import { WebhookEmbed } from "guilded.js";
 import { nanoid } from "nanoid";

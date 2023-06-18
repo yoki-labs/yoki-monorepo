@@ -13,10 +13,5 @@
         "resolveJsonModule": true
     },
     "include": ["./src/**/*.ts", "./src/**/*.json"],
-    "exclude": ["*.test.ts", "../**/dist/**"],
-    "references": [
-        {
-            "path": "../utils"
-        }
-    ]
+    "exclude": ["*.test.ts", "../**/dist/**"]
 }

@@ -3,7 +3,7 @@ import { Channel } from "guilded.js";
 
 import { RoleType } from "../../typings";
 import { Category, Command } from "../commands";
-import { ReactionInfo } from "@yokilabs/bot";
+import { ReactionInfo } from "@yokilabs/utils";
 
 const SendTrigger: Command = {
     name: "modmail-sendtrigger",

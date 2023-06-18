@@ -1,5 +1,5 @@
 import { Action, LogChannelType, Severity } from "@prisma/client";
-import { Colors } from "@yokilabs/bot";
+import { Colors } from "@yokilabs/utils";
 
 import type Client from "../../Client";
 import type { Server } from "../../typings";
@@ -18,7 +18,7 @@ export default async (data: Action, server: Server, client: Client) => {
         title,
         description,
         occurred: data.createdAt.toISOString(),
-        color: data.type === Severity.NOTE ? Colors.dull : data.type === Severity.KICK ? Colors.yellow : Colors.red,
+        color: data.type === Severity.NOTE ? Colors.blockBackground : data.type === Severity.KICK ? Colors.yellow : Colors.red,
         fields: getActionFields(data),
         additionalInfo: getActionAdditionalInfo(data, server.getTimezone()),
     });

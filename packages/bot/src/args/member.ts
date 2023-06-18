@@ -1,7 +1,7 @@
 import type { Member } from "guilded.js";
 
 import type { CommandArgValidator } from "../commands/command-typings";
-import { isHashId } from "../utils/value";
+import { isHashId } from "@yokilabs/utils";
 
 export default [
     async (input, args, index, message, _, usedMentions): Promise<Member | null> => {

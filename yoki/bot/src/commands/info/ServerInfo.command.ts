@@ -1,8 +1,9 @@
-import { Colors, escapeInlineCodeText, inlineCode } from "@yokilabs/bot";
+import { escapeInlineCodeText, inlineCode } from "@yokilabs/bot";
 import { stripIndents } from "common-tags";
 import { Embed, EmbedField } from "guilded.js";
 
 import { Category, Command } from "../commands";
+import { Colors } from "@yokilabs/utils";
 
 const ServerInfo: Command = {
     name: "serverinfo",
