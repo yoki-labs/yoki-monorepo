@@ -11,7 +11,7 @@ import type { IServer } from "../db-types";
 import { inlineCode, listInlineCode } from "../utils/formatting";
 import { Util } from "./util";
 
-type MessageBody = Omit<RestBody<RestPath<"/channels/{channelId}/messages">["post"]>, "embeds"> & { embeds?: Embed[] };
+type MessageBody = Omit<RestBody<RestPath<"/channels/{channelId}/messages">["post"]>, "embeds" | "content"> & { embeds?: Embed[]; content?: string };
 
 const argumentOptionalityBraces = [
     // Mandatory
@@ -125,7 +125,7 @@ export class MessageUtil<
     // /////////////////////////
     //    Content & Info    //
     // ////////////////////////
-    
+
     replyWithInfo(message: Message, title: string, description: string, embedPartial?: EmbedPayload, messagePartial?: Partial<MessageBody>) {
         return this.replyWithEmbed(
             message,
@@ -155,20 +155,20 @@ export class MessageUtil<
     replyWithList<T>(message: Message, title: string, items: T[] | undefined | null, tip?: string, embedPartial?: EmbedPayload, messagePartial?: Partial<MessageBody>) {
         return (
             items?.length
-            ? this.replyWithEmbed(
-                message,
-                {
-                    title,
-                    description: items.join("\n"),
-                    color: Colors.blockBackground,
-                    footer: {
-                        text: `${items.length} total entries`,
+                ? this.replyWithEmbed(
+                    message,
+                    {
+                        title,
+                        description: items.join("\n"),
+                        color: Colors.blockBackground,
+                        footer: {
+                            text: `${items.length} total entries`,
+                        },
+                        ...embedPartial,
                     },
-                    ...embedPartial,
-                },
-                messagePartial
-            )
-            : this.replyWithNullState(message, `No items here`, `There is nothing here to show.${tip ? `\n\n${tip}` : ""}`, undefined, messagePartial)
+                    messagePartial
+                )
+                : this.replyWithNullState(message, `No items here`, `There is nothing here to show.${tip ? `\n\n${tip}` : ""}`, undefined, messagePartial)
         );
     }
 
@@ -180,11 +180,11 @@ export class MessageUtil<
                 color: Colors.blockBackground,
                 fields:
                     items.map((values, key) =>
-                        ({
-                            name: key,
-                            value: listInlineCode(values)!,
-                            inline: true,
-                        })
+                    ({
+                        name: key,
+                        value: listInlineCode(values)!,
+                        inline: true,
+                    })
                     ),
                 footer: {
                     text: footer,
