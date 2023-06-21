@@ -1,9 +1,9 @@
 import { RoleType } from "@prisma/client";
 import { inlineCode, inlineQuote } from "@yokilabs/bot";
+import { stripIndents } from "common-tags";
 
 import { TAG_REGEX } from "../../util/matching";
 import { Category, Command } from "../commands";
-import { stripIndents } from "common-tags";
 
 const Purge: Command = {
     name: "members-purge-balances",

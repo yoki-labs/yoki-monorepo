@@ -1,12 +1,12 @@
 import { Collection } from "@discordjs/collection";
 import type { EmbedField } from "@guildedjs/guilded-api-typings";
 import { inlineCode, inlineQuote, listInlineCode } from "@yokilabs/bot";
+import { Colors } from "@yokilabs/utils";
 import { stripIndents } from "common-tags";
 import { Embed, Message } from "guilded.js";
 
 import type Client from "../Client";
 import { Category, Command, CommandContext } from "./commands";
-import { Colors } from "@yokilabs/utils";
 
 const categories = Object.values(Category);
 
@@ -90,18 +90,18 @@ function replyWithSingleCommand(ctx: Client, commandCtx: CommandContext, message
                 fields: i
                     ? ctx.messageUtil.createSubCommandFields(subCommandList)
                     : [
-                          {
-                              name: "Commands",
-                              value: getAllCommands(ctx.commands)
-                                  .map(
-                                      (commands, category) => stripIndents`
+                        {
+                            name: "Commands",
+                            value: getAllCommands(ctx.commands)
+                                .map(
+                                    (commands, category) => stripIndents`
                                         **${category}:**
                                         ${listInlineCode(commands.map((x) => x.name))}
                                     `
-                                  )
-                                  .join("\n\n"),
-                          },
-                      ],
+                                )
+                                .join("\n\n"),
+                        },
+                    ],
             });
         }
 

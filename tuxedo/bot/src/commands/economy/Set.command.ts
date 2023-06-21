@@ -1,9 +1,9 @@
 import { RoleType } from "@prisma/client";
 import { inlineCode, inlineQuote } from "@yokilabs/bot";
+import { Member } from "guilded.js";
 
 import { TAG_REGEX } from "../../util/matching";
 import { Category, Command } from "../commands";
-import { Member } from "guilded.js";
 import { BalanceType } from "./income-management";
 
 const Set: Command = {

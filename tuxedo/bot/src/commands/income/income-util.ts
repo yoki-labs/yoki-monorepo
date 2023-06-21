@@ -1,10 +1,10 @@
-import { CommandContext, ResolvedArgs, inlineCode, inlineQuote } from "@yokilabs/bot";
+import { DefaultIncomeType, MemberBalance } from "@prisma/client";
+import { CommandContext, inlineCode, inlineQuote,ResolvedArgs } from "@yokilabs/bot";
 import { Message } from "guilded.js";
 import ms from "ms";
 
 import { TuxoClient } from "../../Client";
 import { Server } from "../../typings";
-import { DefaultIncomeType, MemberBalance } from "@prisma/client";
 
 export const defaultCooldowns: Record<DefaultIncomeType, number> = {
     [DefaultIncomeType.DAILY]: 24 * 60 * 60 * 1000,

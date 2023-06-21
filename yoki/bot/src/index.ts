@@ -4,6 +4,7 @@ import { join } from "path";
 
 import YokiClient from "./Client";
 import unhandledPromiseRejection from "./events/other/unhandledPromiseRejection";
+import { eventErrorLoggerS3 } from "./utils/s3";
 
 // Load env variables
 config({ path: join(__dirname, "..", "..", ".env") });
@@ -54,7 +55,7 @@ void (async (): Promise<void> => {
     // Load all filse & directories in the commands dir recursively
     await setClientCommands(client, join(__dirname, "commands"));
     // Load guilded events
-    await setClientEvents(client, join(__dirname, "events", "guilded"));
+    await setClientEvents(client, join(__dirname, "events", "guilded"), eventErrorLoggerS3(client));
 
     try {
         // check if the main server exists and is in the database, this check is mostly to make sure our prisma migrations are applied

@@ -1,9 +1,9 @@
 import { DefaultIncomeType, RoleType } from "@prisma/client";
+import { inlineCode } from "@yokilabs/bot";
+import ms from "ms";
 
 import { Category, Command } from "../commands";
-import { inlineCode } from "@yokilabs/bot";
 import { defaultCooldowns } from "../income/income-util";
-import ms from "ms";
 
 const SetCooldown: Command = {
     name: "income-cooldown",

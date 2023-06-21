@@ -23,7 +23,7 @@ export async function setClientCommands<TClient extends AbstractClient<TClient, 
         client.commands.set(command.name.toLowerCase(), command);
     }
 }
-export async function setClientEvents<TClient extends AbstractClient<TClient, any, any>>(client: TClient, dir: string) {
+export async function setClientEvents<TClient extends AbstractClient<TClient, any, any>>(client: TClient, dir: string, errorLogger?: (event: string, content: string) => Promise<unknown>) {
     // Load guilded events
     const eventFiles = await recursive(dir);
 
@@ -40,7 +40,12 @@ export async function setClientEvents<TClient extends AbstractClient<TClient, an
                 if (["XjBWymwR", "DlZMvw1R"].includes(args[0]?.serverId)) return;
                 await event.execute([...args, client]);
             } catch (err) {
-                void client.errorHandler.send("Uncaught event error", [errorEmbed((err as Error).stack!)]);
+                const errorContent = JSON.stringify(err);
+                if (!errorLogger) {
+                    void client.errorHandler.send("Uncaught event error", [errorEmbed((err as Error).stack!)]);
+                }
+
+                return errorLogger?.(event.name, errorContent);
             }
         });
     }

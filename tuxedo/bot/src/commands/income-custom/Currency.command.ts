@@ -1,10 +1,10 @@
 import { Currency, DefaultIncomeOverride, DefaultIncomeType, Reward, RoleType } from "@prisma/client";
-
-import { Category, Command } from "../commands";
 import { inlineCode, inlineQuote } from "@yokilabs/bot";
-import { defaultReceivedCurrency } from "../income/income-util";
-import { TuxoClient } from "../../Client";
 import { Message } from "guilded.js";
+
+import { TuxoClient } from "../../Client";
+import { Category, Command } from "../commands";
+import { defaultReceivedCurrency } from "../income/income-util";
 
 const SetCurrency: Command = {
     name: "income-currency",
