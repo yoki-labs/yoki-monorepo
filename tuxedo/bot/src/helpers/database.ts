@@ -252,10 +252,6 @@ export class DatabaseUtil extends Util<TuxoClient> {
             if (!(balance.currencyId in balanceChanges)) continue;
     
             newBalance[balance.currencyId] = balance.pocket + balanceChanges[balance.currencyId];
-    
-            // if (newBalance[balance.currencyId] >== 1) {
-            //     return this.client.messageUtil.replyWithError(message, `You're too rich!`, `Sadly you have x cash, the limit in this server is y.`);
-            // }
         }
     
         return this.updateMemberBalance(member, newBalance);
