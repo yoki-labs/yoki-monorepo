@@ -1,10 +1,10 @@
-import { Currency, DefaultIncomeOverride, DefaultIncomeType, Reward, RoleType } from "@prisma/client";
-import { inlineCode, inlineQuote } from "@yokilabs/bot";
-import { Message } from "guilded.js";
+import { Currency, IncomeCommand, DefaultIncomeType, Reward, RoleType } from "@prisma/client";
 
-import { TuxoClient } from "../../Client";
 import { Category, Command } from "../commands";
-import { defaultReceivedCurrency } from "../income/income-util";
+import { inlineCode, inlineQuote } from "@yokilabs/bot";
+import { TuxoClient } from "../../Client";
+import { Message } from "guilded.js";
+import { DefaultIncomeTypeMap, displayDefaultRewards, displayOverridenRewards } from "./income-util";
 
 const SetCurrency: Command = {
     name: "income-currency",
@@ -16,9 +16,8 @@ const SetCurrency: Command = {
     args: [
         {
             name: "command",
-            display: Object.keys(DefaultIncomeType).map(x => x.toLowerCase()).join(" / "),
-            type: "enum",
-            values: DefaultIncomeType,
+            display: `${Object.keys(DefaultIncomeType).map(x => x.toLowerCase()).join(" / ")} / (custom income command)`,
+            type: "string",
         },
         {
             name: "currency",
@@ -40,19 +39,21 @@ const SetCurrency: Command = {
         },
     ],
     execute: async (message, args, ctx) => {
-        const { resolved: command } = args.command as { resolved: DefaultIncomeType };
+        const command = (args.command as string).toLowerCase();
         const currencyTag = args.currency as string | undefined;
         const minAmount = args.min as number | undefined;
         const maxAmount = args.max as number | undefined;
 
-        const incomeOverride = await ctx.dbUtil.getIncomeOverride(message.serverId!, command);
+        const incomeType = DefaultIncomeTypeMap[command] as DefaultIncomeType | undefined;
+
+        const incomeOverride = await ctx.dbUtil.getIncomeOverride(message.serverId!, incomeType, command);
         const serverCurrencies = await ctx.dbUtil.getCurrencies(message.serverId!);
 
         if (!currencyTag)
             return ctx.messageUtil.replyWithInfo(
                 message,
                 `Rewards for ${command.toLowerCase()}`,
-                incomeOverride?.rewards.length ? displayOverride(incomeOverride, serverCurrencies) : displayDefault(command, serverCurrencies)
+                incomeOverride?.rewards.length ? displayOverridenRewards(incomeOverride, serverCurrencies) : displayDefaultRewards(command, serverCurrencies)
             );
 
         // Rewarded currency
@@ -72,6 +73,8 @@ const SetCurrency: Command = {
 
         await ctx.dbUtil.createOrUpdateIncomeReward(
             message.serverId!,
+            message.createdById,
+            incomeType,
             command,
             incomeOverride,
             {
@@ -90,7 +93,7 @@ const SetCurrency: Command = {
     },
 };
 
-async function removeCurrencyReward(ctx: TuxoClient, message: Message, incomeType: DefaultIncomeType, currency: Currency, incomeOverride: (DefaultIncomeOverride & { rewards: Reward[] }) | undefined) {
+async function removeCurrencyReward(ctx: TuxoClient, message: Message, incomeType: DefaultIncomeType | string, currency: Currency, incomeOverride: (IncomeCommand & { rewards: Reward[] }) | undefined) {
     if (!incomeOverride || !incomeOverride.rewards.find((x) => x.currencyId === currency.id))
         return ctx.messageUtil.replyWithError(
             message,
@@ -98,7 +101,7 @@ async function removeCurrencyReward(ctx: TuxoClient, message: Message, incomeTyp
             `The currency is either not rewarded or is part of default rewards. If you want to remove default rewards, create a new reward for the income command.`
         );
 
-    await ctx.prisma.reward.deleteMany({ where: { currencyId: currency.id, serverId: message.serverId!, incomeOverrideId: incomeOverride.id } });
+    await ctx.prisma.reward.deleteMany({ where: { currencyId: currency.id, serverId: message.serverId!, incomeCommandId: incomeOverride.id } });
 
     return ctx.messageUtil.replyWithSuccess(
         message,
@@ -106,17 +109,5 @@ async function removeCurrencyReward(ctx: TuxoClient, message: Message, incomeTyp
         `The ${incomeType.toLowerCase()} will no longer hand out ${currency.name}.`
     );
 }
-
-const displayOverride = (incomeOverride: (DefaultIncomeOverride & { rewards: Reward[] }), serverCurrencies: Currency[]) =>
-    incomeOverride.rewards.map(x =>
-        `- ${inlineCode(x.minAmount)} to ${inlineCode(x.minAmount + x.minAmount)} ${serverCurrencies.find(y =>
-            x.currencyId === y.id
-        )?.name}`
-    ).join("\n");
-
-const displayDefault = (incomeType: DefaultIncomeType, serverCurrencies: Currency[]) =>
-    serverCurrencies?.length
-    ? `- ${inlineCode(defaultReceivedCurrency[incomeType][0])} to ${inlineCode(defaultReceivedCurrency[incomeType][1] + defaultReceivedCurrency[incomeType][0])} ${serverCurrencies[0].name} (default)`
-    : `- (There is no currency to give)`;
 
 export default SetCurrency;

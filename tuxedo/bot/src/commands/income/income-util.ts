@@ -8,7 +8,7 @@ import { Server } from "../../typings";
 
 export const defaultCooldowns: Record<DefaultIncomeType, number> = {
     [DefaultIncomeType.DAILY]: 24 * 60 * 60 * 1000,
-    [DefaultIncomeType.WORK]: 8 * 60 * 60 * 100,
+    [DefaultIncomeType.WORK]: 8 * 60 * 60 * 1000,
     [DefaultIncomeType.HOBBY]: 2 * 60 * 60 * 1000,
 };
 export const defaultReceivedCurrency: Record<DefaultIncomeType, number[]> = {
@@ -16,6 +16,8 @@ export const defaultReceivedCurrency: Record<DefaultIncomeType, number[]> = {
     [DefaultIncomeType.WORK]: [25, 75],
     [DefaultIncomeType.HOBBY]: [10, 40],
 };
+export const defaultCreatedCooldown = 6 * 60 * 60 * 1000;
+export const defaultCreatedReceivedCurrency = [25, 25];
 
 const bankCooldown = 5 * 60 * 60 * 1000;
 
@@ -103,7 +105,7 @@ export function generateIncomeCommand(incomeType: DefaultIncomeType, action: str
 
         if (!currencies.length) return ctx.messageUtil.replyWithError(message, "No currencies", `This server does not have any local currencies ${action}.`);
 
-        const serverConfig = await ctx.dbUtil.getIncomeOverride(message.serverId!, incomeType);
+        const serverConfig = (await ctx.dbUtil.getIncomeOverrides(message.serverId!)).find((x) => x.incomeType === incomeType);
 
         const lastUsed = ctx.balanceUtil.getLastCommandUsage(message.serverId!, message.createdById, incomeType);
 

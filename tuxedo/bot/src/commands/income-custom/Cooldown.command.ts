@@ -4,6 +4,7 @@ import ms from "ms";
 
 import { Category, Command } from "../commands";
 import { defaultCooldowns } from "../income/income-util";
+import { DefaultIncomeTypeMap } from "./income-util";
 
 const SetCooldown: Command = {
     name: "income-cooldown",
@@ -15,9 +16,9 @@ const SetCooldown: Command = {
     args: [
         {
             name: "command",
-            display: Object.keys(DefaultIncomeType).map(x => x.toLowerCase()).join(" / "),
-            type: "enum",
-            values: DefaultIncomeType,
+            display: `${Object.keys(DefaultIncomeType).map(x => x.toLowerCase()).join(" / ")} / (custom income command)`,
+            type: "string",
+            // values: DefaultIncomeType,
         },
         {
             name: "time",
@@ -28,10 +29,12 @@ const SetCooldown: Command = {
         },
     ],
     execute: async (message, args, ctx) => {
-        const { resolved: command } = args.command as { resolved: DefaultIncomeType };
+        const command = args.command as string;
         const time = args.time as number | undefined;
 
-        const incomeOverride = await ctx.dbUtil.getIncomeOverride(message.serverId!, command);
+        const incomeType = DefaultIncomeTypeMap[command] as DefaultIncomeType;
+
+        const incomeOverride = await ctx.dbUtil.getIncomeOverride(message.serverId!, incomeType, command);
 
         if (!time) {
             const currentCooldown = incomeOverride?.cooldownMs ?? defaultCooldowns[command];
@@ -43,7 +46,7 @@ const SetCooldown: Command = {
             );
         }
 
-        await ctx.dbUtil.createOrUpdateIncomeOverride(message.serverId!, command, incomeOverride, time);
+        await ctx.dbUtil.createOrUpdateIncome(message.serverId!, message.createdById, incomeType, command, incomeOverride, time);
 
         return ctx.messageUtil.replyWithSuccess(message, `Changed ${command.toLowerCase()}'s cooldown`, `The cooldown for ${command.toLowerCase()} has been changed to ${ms(time, { long: true })}.`);
     },
