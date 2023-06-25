@@ -100,6 +100,28 @@ export class DatabaseUtil extends Util<TuxoClient> {
         ]);
     }
 
+    editCurrencyMaximumBalance(currency: Currency, maximumBalance: number) {
+        return this.client.prisma.currency.update({
+            where: {
+                id: currency.id,
+            },
+            data: {
+                maximumBalance,
+            },
+        });
+    }
+
+    editCurrencyStartingBalance(currency: Currency, startingBalance: number) {
+        return this.client.prisma.currency.update({
+            where: {
+                id: currency.id,
+            },
+            data: {
+                startingBalance,
+            },
+        });
+    }
+
     getServerMembers(serverId: string) {
         return this.client.prisma.serverMember.findMany({ where: { serverId }, include: { balances: true } });
     }
@@ -108,22 +130,26 @@ export class DatabaseUtil extends Util<TuxoClient> {
         return this.getServerMembers(serverId).then((x) => x.find((x) => x.userId === userId));
     }
 
-    createMember(serverId: string, userId: string, balance: Record<string, number>, bankBalance?: Record<string, number>) {
+    createMember(serverId: string, userId: string, currencies: Currency[], balance: Record<string, number>, bankBalance?: Record<string, number>) {
         return this.client.prisma.serverMember.create({
             data: {
                 id: nanoid(17),
                 serverId,
                 userId,
                 balances: {
-                    create: Object.keys(balance).map(currencyId => ({
-                        serverId,
-                        currencyId,
-                        pocket: balance[currencyId],
-                        bank: bankBalance?.[currencyId] ?? 0,
-                        all: balance[currencyId] + (bankBalance?.[currencyId] ?? 0),
-                    }))
-                }
-            }
+                    create: Object.keys(balance).map(currencyId => {
+                        const currency = currencies.find(c => c.id === currencyId);
+                        console.log(currency?.name, currency?.startingBalance)
+                        return {
+                            serverId,
+                            currencyId,
+                            pocket: balance[currencyId],
+                            bank: (currency?.startingBalance ?? 0) + (bankBalance?.[currencyId] ?? 0) ?? 0,
+                            all: (currency?.startingBalance ?? 0) + balance[currencyId] + (bankBalance?.[currencyId] ?? 0),
+                        };
+                    }),
+                },
+            },
         });
     }
 
@@ -215,27 +241,30 @@ export class DatabaseUtil extends Util<TuxoClient> {
         });
     }
 
-    async addToMemberBalance(serverId: string, userId: string, balanceChanges: Record<string, number>) {
+    async addToMemberBalance(serverId: string, userId: string, currencies: Currency[], balanceChanges: Record<string, number>) {
         const member = await this.getServerMember(serverId, userId);
-
-        if (!member) return this.createMember(serverId, userId, balanceChanges);
-
-        // Do not change and add to it instead
+    
+        if (!member) return this.createMember(serverId, userId, currencies, balanceChanges);
+    
         const newBalance = {};
-
+    
         for (const balance of member.balances) {
             if (!(balance.currencyId in balanceChanges)) continue;
-
+    
             newBalance[balance.currencyId] = balance.pocket + balanceChanges[balance.currencyId];
+    
+            // if (newBalance[balance.currencyId] >== 1) {
+            //     return this.client.messageUtil.replyWithError(message, `You're too rich!`, `Sadly you have x cash, the limit in this server is y.`);
+            // }
         }
-
+    
         return this.updateMemberBalance(member, newBalance);
-    }
+    }    
 
-    async setMemberBalance(serverId: string, userId: string, balance: Record<string, number>, bankBalance?: Record<string, number>) {
+    async setMemberBalance(serverId: string, userId: string, currencies: Currency[], balance: Record<string, number>, bankBalance?: Record<string, number>) {
         const member = await this.getServerMember(serverId, userId);
 
-        if (!member) return this.createMember(serverId, userId, balance, bankBalance);
+        if (!member) return this.createMember(serverId, userId, currencies, balance, bankBalance);
 
         return this.updateMemberBalance(member, balance, bankBalance);
     }

@@ -56,7 +56,7 @@ const Set: Command = {
         const pocketBalance = balanceType?.resolved !== BalanceType.BANK ? { [currency.id]: amount } : {}; 
         const bankBalance = !balanceType || balanceType?.resolved === BalanceType.POCKET ? {} : { [currency.id]: amount };
 
-        await ctx.dbUtil.setMemberBalance(message.serverId!, member.id, pocketBalance, bankBalance);
+        await ctx.dbUtil.setMemberBalance(message.serverId!, member.id, [currency], pocketBalance, bankBalance);
 
         const balanceTypeDisplay = balanceType?.resolved === BalanceType.ALL ? "entire" : balanceType?.resolved.toLowerCase() ?? "pocket";
 

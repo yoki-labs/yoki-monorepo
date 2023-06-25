@@ -6,6 +6,8 @@ import Create from "./Create.command";
 import Delete from "./Delete.command";
 import Info from "./Info.command";
 import List from "./List.command";
+import Maximum from "./Max.command";
+import Starting from "./Starting.command";
 
 const Currency: Command = {
     name: "currency",
@@ -14,7 +16,7 @@ const Currency: Command = {
     parentCommand: true,
     category: Category.Economy,
     requiredRole: RoleType.ADMIN,
-    subCommands: new Collection<string, Command>().set("create", Create).set("list", List).set("info", Info).set("delete", Delete),
+    subCommands: new Collection<string, Command>().set("create", Create).set("list", List).set("info", Info).set("delete", Delete).set("maximum", Maximum).set("starting", Starting),
     execute: () => void 0,
 };
 
