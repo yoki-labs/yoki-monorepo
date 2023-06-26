@@ -1,20 +1,27 @@
-import { DefaultIncomeType, MemberBalance } from "@prisma/client";
 import { CommandContext, inlineCode, inlineQuote,ResolvedArgs } from "@yokilabs/bot";
 import { Message } from "guilded.js";
 import ms from "ms";
 
 import { TuxoClient } from "../../Client";
 import { Server } from "../../typings";
+import { Currency, DefaultIncomeType, IncomeCommand, MemberBalance, Reward } from "@prisma/client";
 
-export const defaultCooldowns: Record<DefaultIncomeType, number> = {
-    [DefaultIncomeType.DAILY]: 24 * 60 * 60 * 1000,
-    [DefaultIncomeType.WORK]: 8 * 60 * 60 * 1000,
-    [DefaultIncomeType.HOBBY]: 2 * 60 * 60 * 1000,
-};
-export const defaultReceivedCurrency: Record<DefaultIncomeType, number[]> = {
-    [DefaultIncomeType.DAILY]: [50, 250],
-    [DefaultIncomeType.WORK]: [25, 75],
-    [DefaultIncomeType.HOBBY]: [10, 40],
+export const defaultIncomes: Record<DefaultIncomeType, { reward: number[], cooldown: number, action: string }> = {
+    [DefaultIncomeType.DAILY]: {
+        reward: [50, 250],
+        cooldown: 24 * 60 * 60 * 1000,
+        action: "Claimed a daily reward",
+    },
+    [DefaultIncomeType.WORK]: {
+        reward: [25, 75],
+        cooldown: 8 * 60 * 60 * 1000,
+        action: "Claimed your wage",
+    },
+    [DefaultIncomeType.HOBBY]: {
+        reward: [10, 40],
+        cooldown: 2 * 60 * 60 * 1000,
+        action: "Received some hobby donations",
+    },
 };
 export const defaultCreatedCooldown = 6 * 60 * 60 * 1000;
 export const defaultCreatedReceivedCurrency = [25, 25];
@@ -96,9 +103,8 @@ export function generateBankCommand(balanceType: string, action: string, actionD
     }
 }
 
-export function generateIncomeCommand(incomeType: DefaultIncomeType, action: string, successTitle: string, successDescription: string) {
-    const defaultCooldown = defaultCooldowns[incomeType];
-    const [defaultMin, defaultAdditionalMax] = defaultReceivedCurrency[incomeType];
+export function generateIncomeCommand(incomeType: DefaultIncomeType) {
+    const { cooldown, action, reward: [defaultMin, defaultAdditionalMax] } = defaultIncomes[incomeType];
 
     return async function execute(message: Message, _args: Record<string, ResolvedArgs>, ctx: TuxoClient, _context: CommandContext<Server>) {
         const currencies = await ctx.dbUtil.getCurrencies(message.serverId!);
@@ -107,32 +113,69 @@ export function generateIncomeCommand(incomeType: DefaultIncomeType, action: str
 
         const serverConfig = (await ctx.dbUtil.getIncomeOverrides(message.serverId!)).find((x) => x.incomeType === incomeType);
 
-        const lastUsed = ctx.balanceUtil.getLastCommandUsage(message.serverId!, message.createdById, incomeType);
+        // const lastUsed = ctx.balanceUtil.getLastCommandUsage(message.serverId!, message.createdById, incomeType);
 
-        // Need to wait 24 hours or the configured time
-        const localCooldown = serverConfig?.cooldownMs ?? defaultCooldown;
+        // // Need to wait 24 hours or the configured time
+        // const localCooldown = serverConfig?.cooldownMs ?? defaultCooldown;
 
-        if (lastUsed && Date.now() - lastUsed < localCooldown)
-            return ctx.messageUtil.replyWithError(message, "Too fast", `You have to wait ${ms(lastUsed + localCooldown - Date.now(), { long: true })} ${action} again.`);
+        // if (lastUsed && Date.now() - lastUsed < localCooldown)
+        //     return ctx.messageUtil.replyWithError(message, "Too fast", `You have to wait ${ms(lastUsed + localCooldown - Date.now(), { long: true })} ${action} again.`);
 
-        // For the cooldown
-        ctx.balanceUtil.updateLastCommandUsage(message.serverId!, message.createdById, incomeType);
+        // // For the cooldown
+        // ctx.balanceUtil.updateLastCommandUsage(message.serverId!, message.createdById, incomeType);
 
-        const balanceAdded = {};
+        // const balanceAdded = {};
 
-        // Add random amounts of rewards that were configured or ones that are default
-        if (serverConfig?.rewards.length) {
-            for (const reward of serverConfig.rewards)
-                addReward(balanceAdded, reward.currencyId, reward.maxAmount - reward.minAmount, reward.minAmount);
-        } else addReward(balanceAdded, currencies[0].id, defaultAdditionalMax, defaultMin);
+        // // Add random amounts of rewards that were configured or ones that are default
+        // if (serverConfig?.rewards.length) {
+        //     for (const reward of serverConfig.rewards)
+        //         addReward(balanceAdded, reward.currencyId, reward.maxAmount - reward.minAmount, reward.minAmount);
+        // } else addReward(balanceAdded, currencies[0].id, defaultAdditionalMax, defaultMin);
 
-        await ctx.dbUtil.addToMemberBalance(message.serverId!, message.createdById, balanceAdded);
+        // await ctx.dbUtil.addToMemberBalance(message.serverId!, message.createdById, balanceAdded);
 
-        // Reply with success
-        const addedCurrencies = currencies.filter((x) => x.id in balanceAdded).map((x) => `${balanceAdded[x.id]} ${x.name}`);
+        // // Reply with success
+        // const addedCurrencies = currencies.filter((x) => x.id in balanceAdded).map((x) => `${balanceAdded[x.id]} ${x.name}`);
 
-        return ctx.messageUtil.replyWithSuccess(message, successTitle, `${successDescription}, which had ${addedCurrencies.join(", ")}.`);
+        // return ctx.messageUtil.replyWithSuccess(message, successTitle, `${successDescription}, which had ${addedCurrencies.join(", ")}.`);
+        return useIncomeCommand(incomeType, action, cooldown, defaultAdditionalMax, defaultMin, serverConfig, currencies, ctx, message);
     };
+}
+
+export async function useCustomIncomeCommand(ctx: TuxoClient, message: Message, income: IncomeCommand & { rewards: Reward[] }) {
+    const currencies = await ctx.dbUtil.getCurrencies(message.serverId!);
+
+    if (!currencies.length) return ctx.messageUtil.replyWithError(message, "No currencies", `This server does not have any local currencies to use ${inlineQuote(income.name)} income command.`);
+    
+    return useIncomeCommand(income.name!, `Used ${income.name}`, defaultCreatedCooldown, defaultCreatedReceivedCurrency[0], defaultCreatedReceivedCurrency[1], income, currencies, ctx, message);
+}
+
+async function useIncomeCommand(commandName: string, defaultAction: string, defaultCooldown: number, defaultAdditionalMax: number, defaultMin: number, income: (IncomeCommand & { rewards: Reward[] }) | undefined, currencies: Currency[], ctx: TuxoClient, message: Message) {
+    const lastUsed = ctx.balanceUtil.getLastCommandUsage(message.serverId!, message.createdById, commandName);
+
+    // Need to wait 24 hours or the configured time
+    const localCooldown = income?.cooldownMs ?? defaultCooldown;
+
+    if (lastUsed && Date.now() - lastUsed < localCooldown)
+        return ctx.messageUtil.replyWithError(message, "Too fast", `You have to wait ${ms(lastUsed + localCooldown - Date.now(), { long: true })} to use ${commandName} again.`);
+
+    // For the cooldown
+    ctx.balanceUtil.updateLastCommandUsage(message.serverId!, message.createdById, commandName);
+
+    const balanceAdded = {};
+
+    // Add random amounts of rewards that were configured or ones that are default
+    if (income?.rewards.length) {
+        for (const reward of income.rewards)
+            addReward(balanceAdded, reward.currencyId, reward.maxAmount - reward.minAmount, reward.minAmount);
+    } else addReward(balanceAdded, currencies[0].id, defaultAdditionalMax, defaultMin);
+
+    await ctx.dbUtil.addToMemberBalance(message.serverId!, message.createdById, balanceAdded);
+
+    // Reply with success
+    const addedCurrencies = currencies.filter((x) => x.id in balanceAdded).map((x) => `${balanceAdded[x.id]} ${x.name}`);
+
+    return ctx.messageUtil.replyWithSuccess(message, income?.action ?? defaultAction, `You have ${(income?.action ?? defaultAction).toLowerCase()}, which had ${addedCurrencies.join(", ")}.`);
 }
 
 const addReward = (balanceAdded: Record<string, number>, currencyId: string, max: number, min: number) =>

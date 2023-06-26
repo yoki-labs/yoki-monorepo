@@ -7,7 +7,7 @@ const Work: Command = {
     description: "Allows you to work with 8 hour cooldown.",
     aliases: ["job", "w"],
     category: Category.Income,
-    execute: generateIncomeCommand(DefaultIncomeType.WORK, "to work", "Wage claimed", "After working long hours, you received your wage"),
+    execute: generateIncomeCommand(DefaultIncomeType.WORK),
 };
 
 export default Work;

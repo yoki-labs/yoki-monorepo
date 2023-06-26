@@ -5,7 +5,7 @@ import { Command } from "../commands";
 import Hobby from "../income/Hobby.command";
 import Work from "../income/Work.command";
 import { inlineCode } from "@yokilabs/bot";
-import { defaultCreatedReceivedCurrency, defaultReceivedCurrency } from "../income/income-util";
+import { defaultCreatedReceivedCurrency, defaultIncomes } from "../income/income-util";
 
 export const DefaultIncomeTypeMap: Record<string, string> =
     Object.assign(
@@ -42,7 +42,6 @@ export const getUnavailableIncomeNames = (client: TuxoClient) =>
         )
         .flatMap((x) => x);
 
-
 export const displayOverridenRewards = (incomeOverride: (IncomeCommand & { rewards: Reward[] }), serverCurrencies: Currency[]) =>
     incomeOverride.rewards.map(x =>
         `\u2022 ${inlineCode(x.minAmount)} to ${inlineCode(x.minAmount + x.minAmount)} ${serverCurrencies.find(y =>
@@ -54,7 +53,7 @@ export function displayDefaultRewards(incomeType: DefaultIncomeType | string, se
     if (!serverCurrencies?.length)
         return `\u2022 (There is no currency to give)`;
 
-    const receivedCurrency = defaultReceivedCurrency[incomeType] ?? defaultCreatedReceivedCurrency;
+    const receivedCurrency = defaultIncomes[incomeType]?.rewards ?? defaultCreatedReceivedCurrency;
 
     return `\u2022 ${inlineCode(receivedCurrency[0])} to ${inlineCode(receivedCurrency[1] + receivedCurrency[0])} ${serverCurrencies[0].name} (default)`;
 }

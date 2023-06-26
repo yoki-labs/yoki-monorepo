@@ -6,6 +6,8 @@ import SetCooldown from "./Cooldown.command";
 import SetCurrency from "./Currency.command";
 import Create from "./Create.command";
 import Info from "./Info.command";
+import List from "./List.command";
+import SetMessage from "./Message.command";
 
 const Income: Command = {
     name: "income",
@@ -14,7 +16,13 @@ const Income: Command = {
     parentCommand: true,
     category: Category.Economy,
     requiredRole: RoleType.MOD,
-    subCommands: new Collection<string, Command>().set("create", Create).set("info", Info).set("cooldown", SetCooldown).set("currency", SetCurrency),
+    subCommands: new Collection<string, Command>()
+        .set("create", Create)
+        .set("list", List)
+        .set("info", Info)
+        .set("cooldown", SetCooldown)
+        .set("message", SetMessage)
+        .set("currency", SetCurrency),
     execute: () => void 0,
 };
 

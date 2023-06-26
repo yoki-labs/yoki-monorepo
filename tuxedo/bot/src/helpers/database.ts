@@ -276,35 +276,25 @@ export class DatabaseUtil extends Util<TuxoClient> {
         return this.client.prisma.incomeCommand.findMany({ where: { serverId }, include: { rewards: true } });
     }
 
-    async getIncomeOverrideByName(serverId: string, name: string) {
-        return (await this.getIncomeOverrides(serverId)).find((x) => x.name === name);
-    }
-
-    async getIncomeOverrideByType(serverId: string, incomeType: DefaultIncomeType) {
-        return (await this.getIncomeOverrides(serverId)).find((x) => x.name === incomeType);
-    }
-
     async getIncomeOverride(serverId: string, incomeType: DefaultIncomeType | undefined, name: string) {
         return (await this.getIncomeOverrides(serverId)).find(incomeType ? (x) => x.incomeType === incomeType : (x) => x.name === name);
     }
 
-    createOrUpdateIncome(serverId: string, createdBy: string, incomeType: DefaultIncomeType | undefined, name: string, override: IncomeCommand | undefined, cooldownMs: number) {
+    createOrUpdateIncome(serverId: string, createdBy: string, incomeType: DefaultIncomeType | undefined, name: string, override: IncomeCommand | undefined, changes: { cooldownMs?: number, action?: string }) {
         return (
             override
             ? this.client.prisma.incomeCommand.update({
                 where: {
                     id: override.id,
                 },
-                data: {
-                    cooldownMs,
-                },
+                data: changes
             })
             : this.client.prisma.incomeCommand.create({
                 data: {
+                    ...changes,
                     serverId,
                     incomeType,
                     name: incomeType ? undefined : name,
-                    cooldownMs,
                     createdBy,
                 }
             })
