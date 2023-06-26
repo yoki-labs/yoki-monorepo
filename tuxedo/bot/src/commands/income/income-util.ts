@@ -129,18 +129,34 @@ export function generateIncomeCommand(incomeType: DefaultIncomeType, action: str
 
             const userInfo = await ctx.dbUtil.getServerMember(message.serverId!, message.createdById);
             const balanceOfCurrency = userInfo?.balances.find((x) => x.currencyId === currency.id)?.all ?? 0;
+
             if (currency.maximumBalance) {
-                if (balanceOfCurrency + balanceAdded[currency.id] > currency.maximumBalance) {
+                if (balanceOfCurrency === currency.maximumBalance) {
                     return ctx.messageUtil.replyWithError(
                         message,
+                        "You're already at the limit!",
+                        `Sorry, you cannot claim additional ${action} as you have already reached the maximum limit for ${currency.name} (${currency.maximumBalance}). Spend some more and then try again.`
+                    );
+                }
+
+                if (balanceOfCurrency + balanceAdded[currency.id] > currency.maximumBalance) {
+                    // Adjust the balanceAdded to not exceed the maximum limit
+                    const amountToAdd = currency.maximumBalance - balanceOfCurrency;
+                    balanceAdded[currency.id] = amountToAdd;
+
+                    // Add the adjusted amount to the user's balance
+                    await ctx.dbUtil.addToMemberBalance(message.serverId!, message.createdById, currencies, balanceAdded);
+
+                    return ctx.messageUtil.replyWithWarning(
+                        message,
                         "You're too rich!",
-                        `Woah there cowboy, you have too much money!\n\nIf you were to claim this ${action} you would have ${balanceOfCurrency + balanceAdded[currency.id]} and the server's limit for this currency is ${currency.maximumBalance}.\nSpend some more and then try to ${action} again.`
+                        `Woah there cowboy, you have too much money!\n\nThe total amount of money in this gift exceeds the ${currency.name}'s maximum limit of ${currency.maximumBalance}. We have added the difference of ${amountToAdd} to your balance.`
                     );
                 }
             }
-        }
-
+        // Add the full amount to the user's balance
         await ctx.dbUtil.addToMemberBalance(message.serverId!, message.createdById, currencies, balanceAdded);
+        }
 
         // Reply with success
         const addedCurrencies = currencies.filter((x) => x.id in balanceAdded).map((x) => `${balanceAdded[x.id]} ${x.name}`);
@@ -151,3 +167,5 @@ export function generateIncomeCommand(incomeType: DefaultIncomeType, action: str
 
 const addReward = (balanceAdded: Record<string, number>, currencyId: string, max: number, min: number) =>
     balanceAdded[currencyId] = Math.floor(Math.random() * max + min);
+
+
