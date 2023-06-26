@@ -124,7 +124,23 @@ export function generateIncomeCommand(incomeType: DefaultIncomeType, action: str
                 addReward(balanceAdded, reward.currencyId, reward.maxAmount - reward.minAmount, reward.minAmount);
         } else addReward(balanceAdded, currencies[0].id, defaultAdditionalMax, defaultMin);
 
-        await ctx.dbUtil.addToMemberBalance(message.serverId!, message.createdById, balanceAdded);
+        for (const currency of currencies) {
+            balanceAdded[currency.id] = balanceAdded[currency.id] ?? 0;
+
+            const userInfo = await ctx.dbUtil.getServerMember(message.serverId!, message.createdById);
+            const balanceOfCurrency = userInfo?.balances.find((x) => x.currencyId === currency.id)?.all ?? 0;
+            if (currency.maximumBalance) {
+                if (balanceOfCurrency + balanceAdded[currency.id] > currency.maximumBalance) {
+                    return ctx.messageUtil.replyWithError(
+                        message,
+                        "You're too rich!",
+                        `Woah there cowboy, you have too much money!\n\nIf you were to claim this ${action} you would have ${balanceOfCurrency + balanceAdded[currency.id]} and the server's limit for this currency is ${currency.maximumBalance}.\nSpend some more and then try to ${action} again.`
+                    );
+                }
+            }
+        }
+
+        await ctx.dbUtil.addToMemberBalance(message.serverId!, message.createdById, currencies, balanceAdded);
 
         // Reply with success
         const addedCurrencies = currencies.filter((x) => x.id in balanceAdded).map((x) => `${balanceAdded[x.id]} ${x.name}`);
