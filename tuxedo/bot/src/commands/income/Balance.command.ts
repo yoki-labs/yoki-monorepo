@@ -1,8 +1,8 @@
+import { Currency, MemberBalance } from "@prisma/client";
 import { inlineCode } from "@yokilabs/bot";
 import { Member } from "guilded.js";
 
 import { Category, Command } from "../commands";
-import { Currency, MemberBalance } from "@prisma/client";
 
 const Balance: Command = {
     name: "balance",
@@ -25,29 +25,16 @@ const Balance: Command = {
         const userInfo = await ctx.dbUtil.getServerMember(message.serverId!, target.id);
 
         // Map currencies to user's balances to not need to get balance every time
-        const currencyBalanceMap =
-            currencies
-            .map((currency) => [
-                currency,
-                userInfo?.balances.find((y) => y.currencyId === currency.id)
-            ]) as Array<[Currency, MemberBalance]>;
+        const currencyBalanceMap = currencies.map((currency) => [currency, userInfo?.balances.find((y) => y.currencyId === currency.id)]) as Array<[Currency, MemberBalance]>;
 
-        const pocketLines =
-            currencyBalanceMap
-            .filter(([_, balance]) =>
-                balance?.pocket
-            ).map(([currency, balance]) =>
-                `${balance?.pocket ?? currency.startingBalance} ${currency.name}`
-            );
+        const pocketLines = currencyBalanceMap
+            .filter(([_, balance]) => balance?.pocket)
+            .map(([currency, balance]) => `${balance?.pocket ?? currency.startingBalance} ${currency.name}`);
 
         // balance?.bank || currency.startingBalance is because startingBalance is added to the bank specifically
-        const bankLines =
-            currencyBalanceMap
-            .filter(([currency, balance]) =>
-                balance?.bank || currency.startingBalance
-            ).map(([currency, balance]) =>
-                `${balance?.bank ?? currency.startingBalance} ${currency.name}`
-            );
+        const bankLines = currencyBalanceMap
+            .filter(([currency, balance]) => balance?.bank || currency.startingBalance)
+            .map(([currency, balance]) => `${balance?.bank ?? currency.startingBalance} ${currency.name}`);
 
         return ctx.messageUtil.replyWithInfo(
             message,
