@@ -100,25 +100,12 @@ export class DatabaseUtil extends Util<TuxoClient> {
         ]);
     }
 
-    editCurrencyMaximumBalance(currency: Currency, maximumBalance: number) {
+    updateCurrency(currency: Currency, data: Partial<Omit<Currency, "id" | "serverId" | "createdAt" | "createdBy">>) {
         return this.client.prisma.currency.update({
             where: {
                 id: currency.id,
             },
-            data: {
-                maximumBalance,
-            },
-        });
-    }
-
-    editCurrencyStartingBalance(currency: Currency, startingBalance: number) {
-        return this.client.prisma.currency.update({
-            where: {
-                id: currency.id,
-            },
-            data: {
-                startingBalance,
-            },
+            data,
         });
     }
 
@@ -130,24 +117,20 @@ export class DatabaseUtil extends Util<TuxoClient> {
         return this.getServerMembers(serverId).then((x) => x.find((x) => x.userId === userId));
     }
 
-    createMember(serverId: string, userId: string, currencies: Currency[], balance: Record<string, number>, bankBalance?: Record<string, number>) {
+    private createMember(serverId: string, userId: string, balances: Pick<MemberBalance, "currencyId" | "pocket" | "bank">[]) {
         return this.client.prisma.serverMember.create({
             data: {
                 id: nanoid(17),
                 serverId,
                 userId,
                 balances: {
-                    create: Object.keys(balance).map(currencyId => {
-                        const currency = currencies.find(c => c.id === currencyId);
-                        console.log(currency?.name, currency?.startingBalance)
-                        return {
-                            serverId,
-                            currencyId,
-                            pocket: balance[currencyId],
-                            bank: (currency?.startingBalance ?? 0) + (bankBalance?.[currencyId] ?? 0) ?? 0,
-                            all: (currency?.startingBalance ?? 0) + balance[currencyId] + (bankBalance?.[currencyId] ?? 0),
-                        };
-                    }),
+                    create: balances.map(({ currencyId, pocket, bank }) => ({
+                        serverId,
+                        currencyId,
+                        pocket,
+                        bank,
+                        all: pocket + bank,
+                    })),
                 },
             },
         });
@@ -196,35 +179,36 @@ export class DatabaseUtil extends Util<TuxoClient> {
     //     });
     // }
 
-    updateMemberBalance(member: ServerMember & { balances: MemberBalance[] }, balance?: Record<string, number>, bankBalance?: Record<string, number>) {
+    private _updateMemberBalance(member: ServerMember & { balances: MemberBalance[] }, balances: Pick<MemberBalance, "currencyId" | "pocket" | "bank">[]) {
         const balanceUpdate =
             member
                 .balances
-                .map((x) =>
-                    ({
+                .map((x) => {
+                    const updated = balances.find((y) => y.currencyId === x.currencyId);
+
+                    return {
                         where: {
                             id: x.id,
                         },
                         data: {
-                            pocket: balance?.[x.currencyId] ?? x.pocket,
-                            bank: bankBalance?.[x.currencyId] ?? x.bank,
-                            all: (balance?.[x.currencyId] ?? x.pocket) + (bankBalance?.[x.currencyId] ?? x.bank),
+                            pocket: updated?.pocket ?? x.pocket,
+                            bank: updated?.bank ?? x.bank,
+                            all: (updated?.pocket ?? x.pocket) + (updated?.bank ?? x.bank),
                         },
-                    })
-                );
-        const currencyIds = [...new Set([...Object.keys(balance ?? {}), ...Object.keys(bankBalance ?? {})])];
+                    }
+                });
 
         // Because someone might get currency they never had previously
         const createBalances =
-            currencyIds
-                .filter((x) => !member.balances.find((y) => y.currencyId === x))
-                .map((x) =>
+            balances
+                .filter((x) => !member.balances.find((y) => y.currencyId === x.currencyId))
+                .map(({ currencyId, pocket, bank }) =>
                     ({
                         serverId: member.serverId,
-                        currencyId: x,
-                        pocket: balance?.[x] ?? 0,
-                        bank: bankBalance?.[x] ?? 0,
-                        all: (balance?.[x] ?? 0) + (bankBalance?.[x] ?? 0),
+                        currencyId,
+                        pocket,
+                        bank,
+                        all: pocket + bank,
                     })
                 ) as Omit<MemberBalance, "id" | "memberId" | "member">[];
 
@@ -241,29 +225,34 @@ export class DatabaseUtil extends Util<TuxoClient> {
         });
     }
 
-    async addToMemberBalance(serverId: string, userId: string, currencies: Currency[], balanceChanges: Record<string, number>) {
-        const member = await this.getServerMember(serverId, userId);
-    
-        if (!member) return this.createMember(serverId, userId, currencies, balanceChanges);
-    
-        const newBalance = {};
-    
-        for (const balance of member.balances) {
-            if (!(balance.currencyId in balanceChanges)) continue;
-    
-            newBalance[balance.currencyId] = balance.pocket + balanceChanges[balance.currencyId];
-        }
-    
-        return this.updateMemberBalance(member, newBalance);
-    }    
-
-    async setMemberBalance(serverId: string, userId: string, currencies: Currency[], balance: Record<string, number>, bankBalance?: Record<string, number>) {
-        const member = await this.getServerMember(serverId, userId);
-
-        if (!member) return this.createMember(serverId, userId, currencies, balance, bankBalance);
-
-        return this.updateMemberBalance(member, balance, bankBalance);
+    async updateMemberBalance(serverId: string, userId: string, member: (ServerMember & { balances: MemberBalance[] }) | undefined, balanceChanges: Pick<MemberBalance, "currencyId" | "pocket" | "bank">[]) {
+        if (!member) return this.createMember(serverId, userId, balanceChanges);
+        return this._updateMemberBalance(member, balanceChanges);
     }
+
+    // async addToMemberBalance(serverId: string, userId: string, currencies: Currency[], balanceChanges: Record<string, number>) {
+    //     const member = await this.getServerMember(serverId, userId);
+    
+    //     if (!member) return this.createMember(serverId, userId, currencies, balanceChanges);
+    
+    //     const newBalance = {};
+    
+    //     for (const balance of member.balances) {
+    //         if (!(balance.currencyId in balanceChanges)) continue;
+    
+    //         newBalance[balance.currencyId] = balance.pocket + balanceChanges[balance.currencyId];
+    //     }
+    
+    //     return this.updateMemberBalance(member, newBalance);
+    // }    
+
+    // async setMemberBalance(serverId: string, userId: string, currencies: Currency[], balance: Record<string, number>, bankBalance?: Record<string, number>) {
+    //     const member = await this.getServerMember(serverId, userId);
+
+    //     if (!member) return this.createMember(serverId, userId, currencies, balance, bankBalance);
+
+    //     return this.updateMemberBalance(member, balance, bankBalance);
+    // }
 
     // ! note: This is unchecked. Need to check the balance and membership in a command.
     depositMemberBalance(member: ServerMember & { balances: MemberBalance[] }, deposit: Record<string, number>) {

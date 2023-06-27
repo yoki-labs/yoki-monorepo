@@ -1,4 +1,4 @@
-import { DefaultIncomeType, MemberBalance } from "@prisma/client";
+import { Currency, DefaultIncomeType, MemberBalance, Reward } from "@prisma/client";
 import { CommandContext, inlineCode, inlineQuote,ResolvedArgs } from "@yokilabs/bot";
 import { Message } from "guilded.js";
 import ms from "ms";
@@ -94,6 +94,8 @@ export function generateBankCommand(balanceType: string, action: string, actionD
     }
 }
 
+type BalanceChange = Pick<MemberBalance, "currencyId" | "pocket" | "bank"> & { currency: Currency, added: number, lost?: number };
+
 export function generateIncomeCommand(incomeType: DefaultIncomeType, action: string, successTitle: string, successDescription: string) {
     const defaultCooldown = defaultCooldowns[incomeType];
     const [defaultMin, defaultAdditionalMax] = defaultReceivedCurrency[incomeType];
@@ -116,56 +118,61 @@ export function generateIncomeCommand(incomeType: DefaultIncomeType, action: str
         // For the cooldown
         ctx.balanceUtil.updateLastCommandUsage(message.serverId!, message.createdById, incomeType);
 
-        const balanceAdded = {};
-
         // Add random amounts of rewards that were configured or ones that are default
-        if (serverConfig?.rewards.length) {
-            for (const reward of serverConfig.rewards)
-                addReward(balanceAdded, reward.currencyId, reward.maxAmount - reward.minAmount, reward.minAmount);
-        } else addReward(balanceAdded, currencies[0].id, defaultAdditionalMax, defaultMin);
+        const rewards: Pick<Reward, "currencyId" | "minAmount" | "maxAmount">[] = serverConfig?.rewards.length
+            ? serverConfig.rewards
+            : [{ currencyId: currencies[0].id, maxAmount: defaultAdditionalMax + defaultMin, minAmount: defaultMin }];
 
-        for (const currency of currencies) {
-            balanceAdded[currency.id] = balanceAdded[currency.id] ?? 0;
+        const userInfo = await ctx.dbUtil.getServerMember(message.serverId!, message.createdById);
 
-            const userInfo = await ctx.dbUtil.getServerMember(message.serverId!, message.createdById);
-            const balanceOfCurrency = userInfo?.balances.find((x) => x.currencyId === currency.id)?.all ?? 0;
+        const newBalance: BalanceChange[] = [];
 
-            if (currency.maximumBalance) {
-                if (balanceOfCurrency === currency.maximumBalance) {
-                    return ctx.messageUtil.replyWithError(
-                        message,
-                        "You're already at the limit!",
-                        `Sorry, you cannot claim additional ${action} as you have already reached the maximum limit for ${currency.name} (${currency.maximumBalance}). Spend some more and then try again.`
-                    );
-                }
+        for (const reward of rewards) {
+            // The opposite could be done, but this means adding additional `continue` if reward for that currency
+            // doesn't exist, yada yada
+            const currency = currencies.find((x) => x.id === reward.currencyId)!;
+            const existingBalance = userInfo?.balances.find((x) => x.currencyId === reward.currencyId);
 
-                if (balanceOfCurrency + balanceAdded[currency.id] > currency.maximumBalance) {
-                    // Adjust the balanceAdded to not exceed the maximum limit
-                    const amountToAdd = currency.maximumBalance - balanceOfCurrency;
-                    balanceAdded[currency.id] = amountToAdd;
+            // Balance changes
+            const randomReward = Math.floor((Math.random() * (reward.maxAmount - reward.minAmount)) + reward.minAmount);
+            const totalBalance = (existingBalance?.all ?? 0) + randomReward;
 
-                    // Add the adjusted amount to the user's balance
-                    await ctx.dbUtil.addToMemberBalance(message.serverId!, message.createdById, currencies, balanceAdded);
+            // Check if any of the rewards went over the maximum balance
+            if (currency?.maximumBalance && totalBalance > currency.maximumBalance) {
+                const lost = totalBalance - currency.maximumBalance;
+                const added = randomReward - lost;
 
-                    return ctx.messageUtil.replyWithWarning(
-                        message,
-                        "You're too rich!",
-                        `Woah there cowboy, you have too much money!\n\nThe total amount of money in this gift exceeds the ${currency.name}'s maximum limit of ${currency.maximumBalance}. We have added the difference of ${amountToAdd} to your balance.`
-                    );
-                }
+                newBalance.push({
+                    currency,
+                    currencyId: reward.currencyId,
+                    pocket: (existingBalance?.pocket ?? 0) + added,
+                    bank: existingBalance?.bank ?? 0,
+                    added,
+                    lost,
+                });
             }
-        // Add the full amount to the user's balance
-        await ctx.dbUtil.addToMemberBalance(message.serverId!, message.createdById, currencies, balanceAdded);
+            else newBalance.push({
+                currency,
+                currencyId: reward.currencyId,
+                pocket: (existingBalance?.pocket ?? 0) + randomReward,
+                bank: existingBalance?.bank ?? 0,
+                added: randomReward,
+            });
         }
 
-        // Reply with success
-        const addedCurrencies = currencies.filter((x) => x.id in balanceAdded).map((x) => `${balanceAdded[x.id]} ${x.name}`);
+        await ctx.dbUtil.updateMemberBalance(message.serverId!, message.createdById, userInfo, newBalance);
 
-        return ctx.messageUtil.replyWithSuccess(message, successTitle, `${successDescription}, which had ${addedCurrencies.join(", ")}.`);
+        const addedCurrencies = newBalance.filter((x) => x.added).map((x) => `${x.added} ${x.currency.name}`);
+        const lostCurrencies = newBalance.filter((x) => x.lost).map((x) => `${x.lost} ${x.currency.name}`);
+
+        return (
+            lostCurrencies.length
+            ? ctx.messageUtil.replyWithWarning(
+                message,
+                successTitle,
+                `${successDescription}, which had ${addedCurrencies.join(", ")}. However, some of the rewards went over the maximum currency limit, so you lost additional ${lostCurrencies.join(", ")}`
+            )
+            : ctx.messageUtil.replyWithSuccess(message, successTitle, `${successDescription}, which had ${addedCurrencies.join(", ")}.`)
+        );
     };
 }
-
-const addReward = (balanceAdded: Record<string, number>, currencyId: string, max: number, min: number) =>
-    balanceAdded[currencyId] = Math.floor(Math.random() * max + min);
-
-
