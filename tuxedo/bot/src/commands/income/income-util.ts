@@ -171,7 +171,7 @@ async function useIncomeCommand(
 
         // Balance changes
         const randomReward = Math.floor(Math.random() * (reward.maxAmount - reward.minAmount) + reward.minAmount);
-        const totalBalance = (existingBalance?.all ?? 0) + randomReward;
+        const totalBalance = (existingBalance?.all ?? currency.startingBalance ?? 0) + randomReward;
 
         // Check if any of the rewards went over the maximum balance
         if (currency?.maximumBalance && totalBalance > currency.maximumBalance) {
@@ -182,7 +182,7 @@ async function useIncomeCommand(
                 currency,
                 currencyId: reward.currencyId,
                 pocket: (existingBalance?.pocket ?? 0) + added,
-                bank: existingBalance?.bank ?? 0,
+                bank: existingBalance?.bank ?? currency.startingBalance ?? 0,
                 added,
                 lost,
             });
