@@ -107,31 +107,6 @@ export function generateIncomeCommand(incomeType: DefaultIncomeType) {
 
         const serverConfig = (await ctx.dbUtil.getIncomeOverrides(message.serverId!)).find((x) => x.incomeType === incomeType);
 
-        // const lastUsed = ctx.balanceUtil.getLastCommandUsage(message.serverId!, message.createdById, incomeType);
-
-        // // Need to wait 24 hours or the configured time
-        // const localCooldown = serverConfig?.cooldownMs ?? defaultCooldown;
-
-        // if (lastUsed && Date.now() - lastUsed < localCooldown)
-        //     return ctx.messageUtil.replyWithError(message, "Too fast", `You have to wait ${ms(lastUsed + localCooldown - Date.now(), { long: true })} ${action} again.`);
-
-        // // For the cooldown
-        // ctx.balanceUtil.updateLastCommandUsage(message.serverId!, message.createdById, incomeType);
-
-        // const balanceAdded = {};
-
-        // // Add random amounts of rewards that were configured or ones that are default
-        // if (serverConfig?.rewards.length) {
-        //     for (const reward of serverConfig.rewards)
-        //         addReward(balanceAdded, reward.currencyId, reward.maxAmount - reward.minAmount, reward.minAmount);
-        // } else addReward(balanceAdded, currencies[0].id, defaultAdditionalMax, defaultMin);
-
-        // await ctx.dbUtil.addToMemberBalance(message.serverId!, message.createdById, balanceAdded);
-
-        // // Reply with success
-        // const addedCurrencies = currencies.filter((x) => x.id in balanceAdded).map((x) => `${balanceAdded[x.id]} ${x.name}`);
-
-        // return ctx.messageUtil.replyWithSuccess(message, successTitle, `${successDescription}, which had ${addedCurrencies.join(", ")}.`);
         return useIncomeCommand(incomeType, action, cooldown, defaultAdditionalMax, defaultMin, serverConfig, currencies, ctx, message);
     };
 }

@@ -273,7 +273,7 @@ export class DatabaseUtil extends Util<TuxoClient> {
         incomeType: DefaultIncomeType | undefined,
         name: string,
         override: IncomeCommand | undefined,
-        changes: { cooldownMs?: number; action?: string }
+        changes: Partial<Omit<IncomeCommand, "id" | "serverId" | "incomeType" | "name" | "createdBy" | "createdAt">>,
     ) {
         return override
             ? this.client.prisma.incomeCommand.update({
