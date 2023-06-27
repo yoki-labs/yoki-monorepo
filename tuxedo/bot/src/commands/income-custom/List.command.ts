@@ -2,6 +2,8 @@ import { RoleType } from "@prisma/client";
 
 import { Category, Command } from "../commands";
 import { inlineQuote } from "@yokilabs/bot";
+import ms from "ms";
+import { defaultCreatedCooldown } from "../income/income-util";
 
 const List: Command = {
     name: "income-list",
@@ -18,7 +20,7 @@ const List: Command = {
             "Custom incomes",
             incomes
                 .filter((income) => income.name)
-                .map((income) => `\u2022 ${inlineQuote(income.name)}`),
+                .map((income) => `\u2022 ${inlineQuote(income.name)} — ${ms(income.cooldownMs ?? defaultCreatedCooldown, { long: true })}`),
         )
     },
 };
