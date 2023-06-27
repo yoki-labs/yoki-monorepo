@@ -100,6 +100,15 @@ export class DatabaseUtil extends Util<TuxoClient> {
         ]);
     }
 
+    updateCurrency(currency: Currency, data: Partial<Omit<Currency, "id" | "serverId" | "createdAt" | "createdBy">>) {
+        return this.client.prisma.currency.update({
+            where: {
+                id: currency.id,
+            },
+            data,
+        });
+    }
+
     getServerMembers(serverId: string) {
         return this.client.prisma.serverMember.findMany({ where: { serverId }, include: { balances: true } });
     }
@@ -108,129 +117,39 @@ export class DatabaseUtil extends Util<TuxoClient> {
         return this.getServerMembers(serverId).then((x) => x.find((x) => x.userId === userId));
     }
 
-    createMember(serverId: string, userId: string, balance: Record<string, number>, bankBalance?: Record<string, number>) {
-        return this.client.prisma.serverMember.create({
-            data: {
-                id: nanoid(17),
-                serverId,
-                userId,
-                balances: {
-                    create: Object.keys(balance).map((currencyId) => ({
-                        serverId,
-                        currencyId,
-                        pocket: balance[currencyId],
-                        bank: bankBalance?.[currencyId] ?? 0,
-                        all: balance[currencyId] + (bankBalance?.[currencyId] ?? 0),
-                    })),
-                },
-            },
-        });
+    updateMemberBalance(
+        serverId: string,
+        userId: string,
+        member: (ServerMember & { balances: MemberBalance[] }) | undefined,
+        balanceChanges: Pick<MemberBalance, "currencyId" | "pocket" | "bank">[]
+    ) {
+        if (!member) return this.createMember(serverId, userId, balanceChanges);
+        return this._updateMemberBalance(member, balanceChanges);
     }
 
-    // giveMemberCurrency(member: ServerMember & { balances: MemberBalance[] }, balance: Record<string, number>) {
-    //     const balanceUpdate =
-    //         member
-    //             .balances
-    //             .map((x) =>
-    //                 ({
-    //                     where: {
-    //                         id: x.id,
-    //                     },
-    //                     data: {
-    //                         pocket: x.pocket + (balance[x.currencyId] ?? 0),
-    //                         all: x.bank + x.pocket + (balance[x.currencyId] ?? 0),
-    //                     },
-    //                 })
-    //             );
-    //     // Because someone might get currency they never had previously
-    //     const createBalances =
-    //         Object
-    //             .keys(balance)
-    //             .filter((x) => !member.balances.find((y) => y.currencyId === x))
-    //             .map((x) =>
-    //                 ({
-    //                     serverId: member.serverId,
-    //                     currencyId: x,
-    //                     pocket: balance[x],
-    //                     bank: 0,
-    //                     all: balance[x],
-    //                 })
-    //             ) as Omit<MemberBalance, "id" | "memberId" | "member">[];
+    // async addToMemberBalance(serverId: string, userId: string, currencies: Currency[], balanceChanges: Record<string, number>) {
+    //     const member = await this.getServerMember(serverId, userId);
 
-    //     return this.client.prisma.serverMember.update({
-    //         where: {
-    //             id: member.id,
-    //         },
-    //         data: {
-    //             balances: {
-    //                 update: balanceUpdate,
-    //                 createMany: createBalances.length ? { data: createBalances } : undefined
-    //             },
-    //         },
-    //     });
+    //     if (!member) return this.createMember(serverId, userId, currencies, balanceChanges);
+
+    //     const newBalance = {};
+
+    //     for (const balance of member.balances) {
+    //         if (!(balance.currencyId in balanceChanges)) continue;
+
+    //         newBalance[balance.currencyId] = balance.pocket + balanceChanges[balance.currencyId];
+    //     }
+
+    //     return this.updateMemberBalance(member, newBalance);
     // }
 
-    updateMemberBalance(member: ServerMember & { balances: MemberBalance[] }, balance?: Record<string, number>, bankBalance?: Record<string, number>) {
-        const balanceUpdate = member.balances.map((x) => ({
-            where: {
-                id: x.id,
-            },
-            data: {
-                pocket: balance?.[x.currencyId] ?? x.pocket,
-                bank: bankBalance?.[x.currencyId] ?? x.bank,
-                all: (balance?.[x.currencyId] ?? x.pocket) + (bankBalance?.[x.currencyId] ?? x.bank),
-            },
-        }));
-        const currencyIds = [...new Set([...Object.keys(balance ?? {}), ...Object.keys(bankBalance ?? {})])];
+    // async setMemberBalance(serverId: string, userId: string, currencies: Currency[], balance: Record<string, number>, bankBalance?: Record<string, number>) {
+    //     const member = await this.getServerMember(serverId, userId);
 
-        // Because someone might get currency they never had previously
-        const createBalances = currencyIds
-            .filter((x) => !member.balances.find((y) => y.currencyId === x))
-            .map((x) => ({
-                serverId: member.serverId,
-                currencyId: x,
-                pocket: balance?.[x] ?? 0,
-                bank: bankBalance?.[x] ?? 0,
-                all: (balance?.[x] ?? 0) + (bankBalance?.[x] ?? 0),
-            })) as Omit<MemberBalance, "id" | "memberId" | "member">[];
+    //     if (!member) return this.createMember(serverId, userId, currencies, balance, bankBalance);
 
-        return this.client.prisma.serverMember.update({
-            where: {
-                id: member.id,
-            },
-            data: {
-                balances: {
-                    update: balanceUpdate,
-                    createMany: createBalances.length ? { data: createBalances } : undefined,
-                },
-            },
-        });
-    }
-
-    async addToMemberBalance(serverId: string, userId: string, balanceChanges: Record<string, number>) {
-        const member = await this.getServerMember(serverId, userId);
-
-        if (!member) return this.createMember(serverId, userId, balanceChanges);
-
-        // Do not change and add to it instead
-        const newBalance = {};
-
-        for (const balance of member.balances) {
-            if (!(balance.currencyId in balanceChanges)) continue;
-
-            newBalance[balance.currencyId] = balance.pocket + balanceChanges[balance.currencyId];
-        }
-
-        return this.updateMemberBalance(member, newBalance);
-    }
-
-    async setMemberBalance(serverId: string, userId: string, balance: Record<string, number>, bankBalance?: Record<string, number>) {
-        const member = await this.getServerMember(serverId, userId);
-
-        if (!member) return this.createMember(serverId, userId, balance, bankBalance);
-
-        return this.updateMemberBalance(member, balance, bankBalance);
-    }
+    //     return this.updateMemberBalance(member, balance, bankBalance);
+    // }
 
     // ! note: This is unchecked. Need to check the balance and membership in a command.
     depositMemberBalance(member: ServerMember & { balances: MemberBalance[] }, deposit: Record<string, number>) {
@@ -273,7 +192,7 @@ export class DatabaseUtil extends Util<TuxoClient> {
         incomeType: DefaultIncomeType | undefined,
         name: string,
         override: IncomeCommand | undefined,
-        changes: Partial<Omit<IncomeCommand, "id" | "serverId" | "incomeType" | "name" | "createdBy" | "createdAt">>,
+        changes: Partial<Omit<IncomeCommand, "id" | "serverId" | "incomeType" | "name" | "createdBy" | "createdAt">>
     ) {
         return override
             ? this.client.prisma.incomeCommand.update({
@@ -335,6 +254,65 @@ export class DatabaseUtil extends Util<TuxoClient> {
                               data: newReward,
                           }
                         : newReward,
+                },
+            },
+        });
+    }
+
+    private createMember(serverId: string, userId: string, balances: Pick<MemberBalance, "currencyId" | "pocket" | "bank">[]) {
+        return this.client.prisma.serverMember.create({
+            data: {
+                id: nanoid(17),
+                serverId,
+                userId,
+                balances: {
+                    create: balances.map(({ currencyId, pocket, bank }) => ({
+                        serverId,
+                        currencyId,
+                        pocket,
+                        bank,
+                        all: pocket + bank,
+                    })),
+                },
+            },
+        });
+    }
+
+    private _updateMemberBalance(member: ServerMember & { balances: MemberBalance[] }, balances: Pick<MemberBalance, "currencyId" | "pocket" | "bank">[]) {
+        const balanceUpdate = member.balances.map((x) => {
+            const updated = balances.find((y) => y.currencyId === x.currencyId);
+
+            return {
+                where: {
+                    id: x.id,
+                },
+                data: {
+                    pocket: updated?.pocket ?? x.pocket,
+                    bank: updated?.bank ?? x.bank,
+                    all: (updated?.pocket ?? x.pocket) + (updated?.bank ?? x.bank),
+                },
+            };
+        });
+
+        // Because someone might get currency they never had previously
+        const createBalances = balances
+            .filter((x) => !member.balances.find((y) => y.currencyId === x.currencyId))
+            .map(({ currencyId, pocket, bank }) => ({
+                serverId: member.serverId,
+                currencyId,
+                pocket,
+                bank,
+                all: pocket + bank,
+            })) as Omit<MemberBalance, "id" | "memberId" | "member">[];
+
+        return this.client.prisma.serverMember.update({
+            where: {
+                id: member.id,
+            },
+            data: {
+                balances: {
+                    update: balanceUpdate,
+                    createMany: createBalances.length ? { data: createBalances } : undefined,
                 },
             },
         });

@@ -16,6 +16,7 @@
         "dev": "npx nodemon",
         "migrate:dev": "pnpx dotenv-cli -e ../.env -- npx prisma migrate dev --name init",
         "migrate:prod": "pnpx dotenv-cli -e ../.env.prod -- npx prisma migrate deploy",
+        "migrate:reset": "pnpx dotenv-cli -e ../.env -- npx prisma migrate reset --force",
         "migrate:prod:ci": "prisma migrate deploy",
         "generate": "prisma generate",
         "commands": "ts-node scripts/gen-cmds-list.ts"

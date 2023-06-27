@@ -93,6 +93,8 @@ export function generateBankCommand(balanceType: string, action: string, actionD
     };
 }
 
+type BalanceChange = Pick<MemberBalance, "currencyId" | "pocket" | "bank"> & { currency: Currency; added: number; lost?: number };
+
 export function generateIncomeCommand(incomeType: DefaultIncomeType) {
     const {
         cooldown,
@@ -152,23 +154,62 @@ async function useIncomeCommand(
     // For the cooldown
     ctx.balanceUtil.updateLastCommandUsage(message.serverId!, message.createdById, commandName);
 
-    const balanceAdded = {};
-
     // Add random amounts of rewards that were configured or ones that are default
-    if (income?.rewards.length) {
-        for (const reward of income.rewards) addReward(balanceAdded, reward.currencyId, reward.maxAmount - reward.minAmount, reward.minAmount);
-    } else addReward(balanceAdded, currencies[0].id, defaultAdditionalMax, defaultMin);
+    const rewards: Pick<Reward, "currencyId" | "minAmount" | "maxAmount">[] = income?.rewards.length
+        ? income.rewards
+        : [{ currencyId: currencies[0].id, maxAmount: defaultAdditionalMax + defaultMin, minAmount: defaultMin }];
 
-    await ctx.dbUtil.addToMemberBalance(message.serverId!, message.createdById, balanceAdded);
+    const userInfo = await ctx.dbUtil.getServerMember(message.serverId!, message.createdById);
 
-    // Reply with success
-    const addedCurrencies = currencies.filter((x) => x.id in balanceAdded).map((x) => `${balanceAdded[x.id]} ${x.name}`);
+    const newBalance: BalanceChange[] = [];
 
-    return ctx.messageUtil.replyWithSuccess(
-        message,
-        income?.action ?? defaultAction,
-        `You have ${(income?.action ?? defaultAction).toLowerCase()}, which had ${addedCurrencies.join(", ")}.`
-    );
+    for (const reward of rewards) {
+        // The opposite could be done, but this means adding additional `continue` if reward for that currency
+        // doesn't exist, yada yada
+        const currency = currencies.find((x) => x.id === reward.currencyId)!;
+        const existingBalance = userInfo?.balances.find((x) => x.currencyId === reward.currencyId);
+
+        // Balance changes
+        const randomReward = Math.floor(Math.random() * (reward.maxAmount - reward.minAmount) + reward.minAmount);
+        const totalBalance = (existingBalance?.all ?? currency.startingBalance ?? 0) + randomReward;
+
+        // Check if any of the rewards went over the maximum balance
+        if (currency?.maximumBalance && totalBalance > currency.maximumBalance) {
+            const lost = totalBalance - currency.maximumBalance;
+            const added = randomReward - lost;
+
+            newBalance.push({
+                currency,
+                currencyId: reward.currencyId,
+                pocket: (existingBalance?.pocket ?? 0) + added,
+                bank: existingBalance?.bank ?? currency.startingBalance ?? 0,
+                added,
+                lost,
+            });
+        } else
+            newBalance.push({
+                currency,
+                currencyId: reward.currencyId,
+                pocket: (existingBalance?.pocket ?? 0) + randomReward,
+                bank: existingBalance?.bank ?? currency.startingBalance ?? 0,
+                added: randomReward,
+            });
+    }
+
+    await ctx.dbUtil.updateMemberBalance(message.serverId!, message.createdById, userInfo, newBalance);
+
+    const addedCurrencies = newBalance.filter((x) => x.added).map((x) => `${x.added} ${x.currency.name}`);
+    const lostCurrencies = newBalance.filter((x) => x.lost).map((x) => `${x.lost} ${x.currency.name}`);
+
+    const actionDescription = (income?.action ?? defaultAction).toLowerCase();
+
+    return lostCurrencies.length
+        ? ctx.messageUtil.replyWithWarning(
+              message,
+              income?.action ?? defaultAction,
+              `You have ${actionDescription}, which had ${addedCurrencies.join(
+                  ", "
+              )}. However, some of the rewards went over the maximum currency limit, so you lost additional ${lostCurrencies.join(", ")}`
+          )
+        : ctx.messageUtil.replyWithSuccess(message, income?.action ?? defaultAction, `You have ${actionDescription}, which had ${addedCurrencies.join(", ")}.`);
 }
-
-const addReward = (balanceAdded: Record<string, number>, currencyId: string, max: number, min: number) => (balanceAdded[currencyId] = Math.floor(Math.random() * max + min));
