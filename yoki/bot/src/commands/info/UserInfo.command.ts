@@ -1,10 +1,10 @@
 import { inlineCode, summarizeRolesOrUsers } from "@yokilabs/bot";
+import { Colors } from "@yokilabs/utils";
 import { stripIndents } from "common-tags";
 import { Embed, Member } from "guilded.js";
 
 import { suspicious as sus } from "../../utils/util";
 import { Category, Command } from "../commands";
-import { Colors } from "@yokilabs/utils";
 
 const UserInfo: Command = {
     name: "userinfo",

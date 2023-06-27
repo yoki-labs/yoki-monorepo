@@ -6,6 +6,6 @@ export const theme = createTheme({
         text: {
             primary: "#b5afb9",
             secondary: "#796d82",
-        }
-    }
+        },
+    },
 });

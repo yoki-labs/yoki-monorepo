@@ -1,8 +1,9 @@
 import { ContentIgnoreType } from "@prisma/client";
+import { Channel } from "guilded.js";
+
+import YokiClient from "../../Client";
 import { FilteredContent } from "../../modules/content-filter";
 import { moderateContent } from "../../utils/moderation";
-import { Channel } from "guilded.js";
-import YokiClient from "../../Client";
 
 export default async function ServerChannelEvent(ctx: YokiClient, channel: Channel) {
     const { serverId } = channel;
@@ -11,7 +12,7 @@ export default async function ServerChannelEvent(ctx: YokiClient, channel: Chann
     if (!server) return;
 
     // Only if it's a thread; parentId instead of messageId, because it can filter list threads too
-    if (!(channel.raw as { id: string; parentId: string; }).parentId) return;
+    if (!(channel.raw as { id: string; parentId: string }).parentId) return;
 
     // Scanning
     await moderateContent(

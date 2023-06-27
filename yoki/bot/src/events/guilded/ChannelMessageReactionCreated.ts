@@ -49,7 +49,6 @@ export default {
 
                 if (!newChannel) return;
 
-
                 const newModmailThread = await ctx.prisma.modmailThread.create({
                     data: {
                         id: nanoid(13),
@@ -65,7 +64,9 @@ export default {
                 await ctx.messageUtil.sendInfoBlock(
                     newChannel.id,
                     `New modmail thread opened`,
-                    `${modmailPingRole}A new modmail thread by ID ${inlineCode(newModmailThread.id)} has been opened by <@${member.user!.id}> (${inlineCode(member.user!.id)}). You can send messages to this user by doing \`${server.prefix ?? ctx.prefix}reply the text contents here\``,
+                    `${modmailPingRole}A new modmail thread by ID ${inlineCode(newModmailThread.id)} has been opened by <@${member.user!.id}> (${inlineCode(
+                        member.user!.id
+                    )}). You can send messages to this user by doing \`${server.prefix ?? ctx.prefix}reply the text contents here\``,
                     {
                         fields: [
                             {
@@ -83,15 +84,9 @@ export default {
                     }
                 );
 
-                await ctx.messageUtil.sendSuccessBlock(
-                    channelId,
-                    "Successfully opened Modmail thread!",
-                    `<@${createdBy}>, a moderator will be with you shortly!`,
-                    undefined,
-                    {
-                        isPrivate: true,
-                    }
-                );
+                await ctx.messageUtil.sendSuccessBlock(channelId, "Successfully opened Modmail thread!", `<@${createdBy}>, a moderator will be with you shortly!`, undefined, {
+                    isPrivate: true,
+                });
                 break;
             }
         }

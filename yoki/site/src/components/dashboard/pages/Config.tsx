@@ -55,17 +55,17 @@ export default function Config() {
                                 {
                                     name: "Lithuanian",
                                     value: "lt_LT",
-                                }
-                            ]
+                                },
+                            ],
                         },
                         {
                             prop: "timezone",
                             name: "Timezone",
                             type: LabsFormFieldType.Text,
                             description: "Change the timezone Yoki uses to display times in",
-                        }
-                    ]
-                }
+                        },
+                    ],
+                },
             ]}
             onSubmit={({ values }) => console.log("New config values", values)}
         />

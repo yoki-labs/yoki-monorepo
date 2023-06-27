@@ -41,8 +41,8 @@ export default {
                     value: stripIndents`
                         **Message ID:** ${inlineCode(message.id)}
                         **Channel ID:** ${inlineCode(message.channelId)}
-                    `
-                }
+                    `,
+                },
             ];
 
             if (deletedMessage && (deletedMessage?.content.length ?? 0) > 1000) {

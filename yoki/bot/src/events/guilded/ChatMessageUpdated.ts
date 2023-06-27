@@ -5,10 +5,10 @@ import { stripIndents } from "common-tags";
 import { Message, UserType, WebhookEmbed } from "guilded.js";
 import { nanoid } from "nanoid";
 
+import YokiClient from "../../Client";
 import { FilteredContent } from "../../modules/content-filter";
 import type { GEvent } from "../../typings";
 import { moderateContent } from "../../utils/moderation";
-import YokiClient from "../../Client";
 
 export default {
     execute: async ([message, _oldMessage, ctx]) => {
@@ -63,7 +63,7 @@ export default {
                     value: stripIndents`
                         **Message ID:** ${inlineCode(message.id)}
                         **Channel ID:** ${inlineCode(message.channelId)}
-                    `
+                    `,
                 }),
             });
         } catch (e) {

@@ -1,4 +1,5 @@
 import { DefaultIncomeType } from "@prisma/client";
+
 import { Category, Command } from "../commands";
 import { generateIncomeCommand } from "./income-util";
 
@@ -7,7 +8,7 @@ const Hobby: Command = {
     description: "Do activity you like and receive small donations.",
     aliases: ["hob", "h"],
     category: Category.Income,
-    execute: generateIncomeCommand(DefaultIncomeType.HOBBY, "to do your hobbies", "Hobby donations received", "You have received some donations"),
+    execute: generateIncomeCommand(DefaultIncomeType.HOBBY),
 };
 
 export default Hobby;

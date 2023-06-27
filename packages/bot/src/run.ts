@@ -23,7 +23,11 @@ export async function setClientCommands<TClient extends AbstractClient<TClient, 
         client.commands.set(command.name.toLowerCase(), command);
     }
 }
-export async function setClientEvents<TClient extends AbstractClient<TClient, any, any>>(client: TClient, dir: string, errorLogger?: (event: string, content: string) => Promise<unknown>) {
+export async function setClientEvents<TClient extends AbstractClient<TClient, any, any>>(
+    client: TClient,
+    dir: string,
+    errorLogger?: (event: string, content: string) => Promise<unknown>
+) {
     // Load guilded events
     const eventFiles = await recursive(dir);
 

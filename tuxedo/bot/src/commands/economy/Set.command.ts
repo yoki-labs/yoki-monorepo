@@ -34,7 +34,7 @@ const Set: Command = {
             type: "enum",
             values: BalanceType,
             optional: true,
-        }
+        },
     ],
     execute: async (message, args, ctx) => {
         const member = args.member as Member;
@@ -76,8 +76,10 @@ const Set: Command = {
         return ctx.messageUtil.replyWithSuccess(
             message,
             "Balance set",
-            `<@${member.id}> (${inlineCode(member.id)}) had ${currency.name} in their ${balanceTypeDisplay} balance successsfully changed to ${inlineCode(amount)} ${currency.name}.`
-        )
+            `<@${member.id}> (${inlineCode(member.id)}) had ${currency.name} in their ${balanceTypeDisplay} balance successsfully changed to ${inlineCode(amount)} ${
+                currency.name
+            }.`
+        );
     },
 };
 

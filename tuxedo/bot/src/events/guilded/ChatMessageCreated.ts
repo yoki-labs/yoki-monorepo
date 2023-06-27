@@ -2,6 +2,7 @@ import { RoleType } from "@prisma/client";
 import { createCommandHandler } from "@yokilabs/bot";
 
 import type { TuxoClient } from "../../Client";
+import { useCustomIncomeCommand } from "../../commands/income/income-util";
 import type { Command, GEvent, Server } from "../../typings";
 import { RoleTypeValues } from "../../util/values";
 
@@ -14,9 +15,17 @@ const fetchServerRoles = (ctx: TuxoClient, serverId: string) => ctx.prisma.role.
 
 const fn = fetchPrefix.bind(
     null,
-    parseCommand.bind(null, (context, server, prefix, command, commandName, args) => {
-        // Ignore non-existant commands
-        if (typeof command === "undefined") return void 0;
+    parseCommand.bind(null, async (context, server, prefix, command, commandName, args) => {
+        // Get all the server's custom incomes and check if any of them match the command name or ignore it
+        if (typeof command === "undefined") {
+            const [message, client] = context;
+            const incomeByName = await client.dbUtil.getIncomeOverride(message.serverId!, void 0, commandName);
+
+            // There is no income by that name, nor a command
+            if (!incomeByName) return;
+
+            return useCustomIncomeCommand(client, message, incomeByName);
+        }
 
         // Get the command's sub-commands, args and then execute it
         return fetchCommandInfo(

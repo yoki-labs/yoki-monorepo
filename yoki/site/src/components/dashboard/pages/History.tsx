@@ -77,15 +77,9 @@ export default function History() {
                                 <FontAwesomeIcon className="w-5 mr-2 text-spacelight-300" icon={getActionIcon(action.type)} />
                                 <span>{action.type}</span>
                             </TableCell>
-                            <TableCell className="text-spacelight-700">
-                                {getReason(action.reason, action.executorId)}
-                            </TableCell>
-                            <TableCell className="text-spacelight-700">
-                                {action.executorId}
-                            </TableCell>
-                            <TableCell className="text-spacelight-700">
-                                {transformToDate(action.createdAt)}
-                            </TableCell>
+                            <TableCell className="text-spacelight-700">{getReason(action.reason, action.executorId)}</TableCell>
+                            <TableCell className="text-spacelight-700">{action.executorId}</TableCell>
+                            <TableCell className="text-spacelight-700">{transformToDate(action.createdAt)}</TableCell>
                             <TableCell>
                                 <LabsOverflowButton />
                             </TableCell>

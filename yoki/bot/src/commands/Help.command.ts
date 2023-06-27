@@ -90,18 +90,18 @@ function replyWithSingleCommand(ctx: Client, commandCtx: CommandContext, message
                 fields: i
                     ? ctx.messageUtil.createSubCommandFields(subCommandList)
                     : [
-                        {
-                            name: "Commands",
-                            value: getAllCommands(ctx.commands)
-                                .map(
-                                    (commands, category) => stripIndents`
+                          {
+                              name: "Commands",
+                              value: getAllCommands(ctx.commands)
+                                  .map(
+                                      (commands, category) => stripIndents`
                                         **${category}:**
                                         ${listInlineCode(commands.map((x) => x.name))}
                                     `
-                                )
-                                .join("\n\n"),
-                        },
-                    ],
+                                  )
+                                  .join("\n\n"),
+                          },
+                      ],
             });
         }
 

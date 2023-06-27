@@ -22,9 +22,27 @@ export default function Home() {
             <div>
                 <h2 className="text-3xl font-medium mb-4">Modules</h2>
                 <div className="grid md:grid-cols-3 gap-4">
-                    <Module name="Automod" description="Configure how Yoki scans content in your server." icon={faBan} activeClassName="from-red-500 to-pink-500" isActive={false} />
-                    <Module name="Antiraid" description="Customize how the bot detects and handles suspicious accounts." icon={faShieldHalved} activeClassName="from-green-500 to-blue-500" isActive={true} />
-                    <Module name="Modmail" description="Customize how your users interact with your moderators." icon={faEnvelope} activeClassName="from-purple-500 to-blue-500" isActive={false} />
+                    <Module
+                        name="Automod"
+                        description="Configure how Yoki scans content in your server."
+                        icon={faBan}
+                        activeClassName="from-red-500 to-pink-500"
+                        isActive={false}
+                    />
+                    <Module
+                        name="Antiraid"
+                        description="Customize how the bot detects and handles suspicious accounts."
+                        icon={faShieldHalved}
+                        activeClassName="from-green-500 to-blue-500"
+                        isActive={true}
+                    />
+                    <Module
+                        name="Modmail"
+                        description="Customize how your users interact with your moderators."
+                        icon={faEnvelope}
+                        activeClassName="from-purple-500 to-blue-500"
+                        isActive={false}
+                    />
                 </div>
             </div>
         </div>

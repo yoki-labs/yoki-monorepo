@@ -46,7 +46,7 @@ export class GiveawayUtil extends Util<TuxoClient> {
         };
 
         const message = await this.client.messages.send(data.channelId, {
-            embeds: [this.createGiveawayEmbed(partialData, timeZone)],
+            embeds: [this.createGiveawayEmbed(partialData, timeZone).toJSON()],
         });
 
         // Creating giveway stuff

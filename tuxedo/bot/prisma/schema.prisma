@@ -56,27 +56,47 @@ model Currency {
     createdAt       DateTime @default(now())
 }
 
-model DefaultIncomeOverride {
+model IncomeCommand {
     // Basics
-    id         Int               @id @default(autoincrement())
-    serverId   String            @db.VarChar(255)
-    incomeType DefaultIncomeType
+    id              Int                @id @default(autoincrement())
+    serverId        String             @db.VarChar(255)
+    incomeType      DefaultIncomeType?
+    name            String?            @db.VarChar(64)
     // Overrides
-    cooldownMs Int?
-    rewards    Reward[]
+    action          String?            @db.VarChar(50)
+    cooldownMs      Int?
+    rewards         Reward[]
+    failChance      Int?
+    failSubtractCut Int?
+    // Who, when
+    createdBy       String             @default("Ann6LewA") @db.VarChar(255)
+    createdAt       DateTime           @default(now())
 }
+
+// model IncomeCommand {
+//     // Basics
+//     id         Int      @id @default(autoincrement())
+//     serverId   String   @db.VarChar(255)
+//     name       String   @db.VarChar(50)
+//     // Income
+//     cooldownMs Int
+//     rewards    Reward[]
+// }
 
 model Reward {
     // Basics
-    id               Int                   @id @default(autoincrement())
-    serverId         String                @db.VarChar(255)
+    id              Int           @id @default(autoincrement())
+    serverId        String        @db.VarChar(255)
     // Relations
-    incomeOverrideId Int
-    incomeOverride   DefaultIncomeOverride @relation(fields: [incomeOverrideId], references: [id])
+    incomeCommandId Int
+    incomeCommand   IncomeCommand @relation(fields: [incomeCommandId], references: [id])
+
+    // incomeCommandId Int?
+    // incomeCommand   IncomeCommand? @relation(fields: [incomeCommandId], references: [id])
     // Reward
-    currencyId       String                @db.VarChar(255)
-    minAmount        Int
-    maxAmount        Int
+    currencyId String @db.VarChar(255)
+    minAmount  Int
+    maxAmount  Int
 }
 
 model ServerMember {

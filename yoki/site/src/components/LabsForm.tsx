@@ -15,14 +15,14 @@ export type LabsFormSection = {
     description?: string;
     row?: boolean;
     fields: LabsFormField[];
-}
+};
 
 export interface LabsFormField {
     // Functionality
     prop: string;
     type: LabsFormFieldType;
     value?: string;
-    values?: Array<{ name: string; value: string; }>;
+    values?: Array<{ name: string; value: string }>;
     // Display
     name: string;
     description?: string;
@@ -47,12 +47,7 @@ export default class LabsForm extends React.Component<LabsFormProps, LabsFormSta
         const fields = this.props.sections.flatMap((section) => section.fields);
         this.state = {
             changed: false,
-            values:
-                fields
-                    .reduce<Record<string, string | undefined>>((mapped, field) =>
-                        (mapped[field.prop] = field.value, mapped),
-                        {}
-                    )
+            values: fields.reduce<Record<string, string | undefined>>((mapped, field) => ((mapped[field.prop] = field.value), mapped), {}),
         };
 
         this.formId = Math.floor(Math.random() * 75 + 25);
@@ -68,9 +63,7 @@ export default class LabsForm extends React.Component<LabsFormProps, LabsFormSta
     }
 
     setValue(field: LabsFormField, value: string) {
-        this.setState(({ values }) =>
-            ({ changed: true, values: Object.assign({}, values, { [field.prop]: value }) })
-        );
+        this.setState(({ values }) => ({ changed: true, values: Object.assign({}, values, { [field.prop]: value }) }));
     }
 
     render(): React.ReactNode {
@@ -80,15 +73,15 @@ export default class LabsForm extends React.Component<LabsFormProps, LabsFormSta
 
         return (
             <form id={`form-${this.formId}`} autoComplete="off" onSubmit={onSubmit}>
-                { children }
-                { sections.map((section) =>
-                    <FormGroup row={section.row}>
-                        { section.fields.map(this.generateField.bind(this)) }
-                    </FormGroup>
-                ) }
-                <LabsButton disabled={!changed} variant="contained" color="primary" type="submit">Save</LabsButton>
+                {children}
+                {sections.map((section) => (
+                    <FormGroup row={section.row}>{section.fields.map(this.generateField.bind(this))}</FormGroup>
+                ))}
+                <LabsButton disabled={!changed} variant="contained" color="primary" type="submit">
+                    Save
+                </LabsButton>
             </form>
-        )
+        );
     }
 
     generateField(field: LabsFormField) {
@@ -96,31 +89,24 @@ export default class LabsForm extends React.Component<LabsFormProps, LabsFormSta
 
         return (
             <FormControl fullWidth>
-                {
-                    field.type === LabsFormFieldType.Select
-                    ? <>
+                {field.type === LabsFormFieldType.Select ? (
+                    <>
                         <Select
                             id={fieldId}
                             value={this.state.values[field.prop] ?? field.values?.[0]?.value}
                             label={field.name}
                             onChange={({ target: { value } }) => this.setValue(field, value)}
                         >
-                            {
-                                field.values?.map((value) =>
-                                    <MenuItem value={value.value}>{value.name}</MenuItem>
-                                )
-                            }
+                            {field.values?.map((value) => (
+                                <MenuItem value={value.value}>{value.name}</MenuItem>
+                            ))}
                         </Select>
-                      </>
-                    : <TextField
-                          id={fieldId}
-                          label={field.name}
-                          onChange={({ target: { value } }) => this.setValue(field, value)}
-                          variant="outlined"
-                      />
-                }
-                { field.description && <FormHelperText>{ field.description }</FormHelperText> }
+                    </>
+                ) : (
+                    <TextField id={fieldId} label={field.name} onChange={({ target: { value } }) => this.setValue(field, value)} variant="outlined" />
+                )}
+                {field.description && <FormHelperText>{field.description}</FormHelperText>}
             </FormControl>
-        )
+        );
     }
 }
