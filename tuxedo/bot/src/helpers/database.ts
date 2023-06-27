@@ -1,4 +1,4 @@
-import { Currency, IncomeCommand, DefaultIncomeType, MemberBalance, Reward, ServerMember } from "@prisma/client";
+import { Currency, DefaultIncomeType, IncomeCommand, MemberBalance, Reward, ServerMember } from "@prisma/client";
 import { Util } from "@yokilabs/bot";
 import { formatDate } from "@yokilabs/utils";
 import { nanoid } from "nanoid";
@@ -96,7 +96,7 @@ export class DatabaseUtil extends Util<TuxoClient> {
                     serverId: currency.serverId,
                     currencyId: currency.id,
                 },
-            })
+            }),
         ]);
     }
 
@@ -115,15 +115,15 @@ export class DatabaseUtil extends Util<TuxoClient> {
                 serverId,
                 userId,
                 balances: {
-                    create: Object.keys(balance).map(currencyId => ({
+                    create: Object.keys(balance).map((currencyId) => ({
                         serverId,
                         currencyId,
                         pocket: balance[currencyId],
                         bank: bankBalance?.[currencyId] ?? 0,
                         all: balance[currencyId] + (bankBalance?.[currencyId] ?? 0),
-                    }))
-                }
-            }
+                    })),
+                },
+            },
         });
     }
 
@@ -171,36 +171,28 @@ export class DatabaseUtil extends Util<TuxoClient> {
     // }
 
     updateMemberBalance(member: ServerMember & { balances: MemberBalance[] }, balance?: Record<string, number>, bankBalance?: Record<string, number>) {
-        const balanceUpdate =
-            member
-                .balances
-                .map((x) =>
-                    ({
-                        where: {
-                            id: x.id,
-                        },
-                        data: {
-                            pocket: balance?.[x.currencyId] ?? x.pocket,
-                            bank: bankBalance?.[x.currencyId] ?? x.bank,
-                            all: (balance?.[x.currencyId] ?? x.pocket) + (bankBalance?.[x.currencyId] ?? x.bank),
-                        },
-                    })
-                );
+        const balanceUpdate = member.balances.map((x) => ({
+            where: {
+                id: x.id,
+            },
+            data: {
+                pocket: balance?.[x.currencyId] ?? x.pocket,
+                bank: bankBalance?.[x.currencyId] ?? x.bank,
+                all: (balance?.[x.currencyId] ?? x.pocket) + (bankBalance?.[x.currencyId] ?? x.bank),
+            },
+        }));
         const currencyIds = [...new Set([...Object.keys(balance ?? {}), ...Object.keys(bankBalance ?? {})])];
 
         // Because someone might get currency they never had previously
-        const createBalances =
-            currencyIds
-                .filter((x) => !member.balances.find((y) => y.currencyId === x))
-                .map((x) =>
-                    ({
-                        serverId: member.serverId,
-                        currencyId: x,
-                        pocket: balance?.[x] ?? 0,
-                        bank: bankBalance?.[x] ?? 0,
-                        all: (balance?.[x] ?? 0) + (bankBalance?.[x] ?? 0),
-                    })
-                ) as Omit<MemberBalance, "id" | "memberId" | "member">[];
+        const createBalances = currencyIds
+            .filter((x) => !member.balances.find((y) => y.currencyId === x))
+            .map((x) => ({
+                serverId: member.serverId,
+                currencyId: x,
+                pocket: balance?.[x] ?? 0,
+                bank: bankBalance?.[x] ?? 0,
+                all: (balance?.[x] ?? 0) + (bankBalance?.[x] ?? 0),
+            })) as Omit<MemberBalance, "id" | "memberId" | "member">[];
 
         return this.client.prisma.serverMember.update({
             where: {
@@ -209,7 +201,7 @@ export class DatabaseUtil extends Util<TuxoClient> {
             data: {
                 balances: {
                     update: balanceUpdate,
-                    createMany: createBalances.length ? { data: createBalances } : undefined
+                    createMany: createBalances.length ? { data: createBalances } : undefined,
                 },
             },
         });
@@ -242,23 +234,18 @@ export class DatabaseUtil extends Util<TuxoClient> {
 
     // ! note: This is unchecked. Need to check the balance and membership in a command.
     depositMemberBalance(member: ServerMember & { balances: MemberBalance[] }, deposit: Record<string, number>) {
-        const balanceUpdate =
-            member
-                .balances
-                .map((x) =>
-                    ({
-                        where: {
-                            id: x.id,
-                        },
-                        data: {
-                            // We do not need to change `all`, because it would stay completely the same.
-                            // We are not removing or giving person currency, we are just moving it elsewhere.
-                            pocket: x.pocket - (deposit[x.currencyId] ?? 0),
-                            bank: x.bank + (deposit[x.currencyId] ?? 0),
-                            all: x.pocket + x.bank,
-                        },
-                    })
-                );
+        const balanceUpdate = member.balances.map((x) => ({
+            where: {
+                id: x.id,
+            },
+            data: {
+                // We do not need to change `all`, because it would stay completely the same.
+                // We are not removing or giving person currency, we are just moving it elsewhere.
+                pocket: x.pocket - (deposit[x.currencyId] ?? 0),
+                bank: x.bank + (deposit[x.currencyId] ?? 0),
+                all: x.pocket + x.bank,
+            },
+        }));
 
         return this.client.prisma.serverMember.update({
             where: {
@@ -280,49 +267,59 @@ export class DatabaseUtil extends Util<TuxoClient> {
         return (await this.getIncomeOverrides(serverId)).find(incomeType ? (x) => x.incomeType === incomeType : (x) => x.name === name);
     }
 
-    createOrUpdateIncome(serverId: string, createdBy: string, incomeType: DefaultIncomeType | undefined, name: string, override: IncomeCommand | undefined, changes: { cooldownMs?: number, action?: string }) {
-        return (
-            override
+    createOrUpdateIncome(
+        serverId: string,
+        createdBy: string,
+        incomeType: DefaultIncomeType | undefined,
+        name: string,
+        override: IncomeCommand | undefined,
+        changes: { cooldownMs?: number; action?: string }
+    ) {
+        return override
             ? this.client.prisma.incomeCommand.update({
-                where: {
-                    id: override.id,
-                },
-                data: changes
-            })
+                  where: {
+                      id: override.id,
+                  },
+                  data: changes,
+              })
             : this.client.prisma.incomeCommand.create({
-                data: {
-                    ...changes,
-                    serverId,
-                    incomeType,
-                    name: incomeType ? undefined : name,
-                    createdBy,
-                }
-            })
-        );
-    }
-    
-    createOrUpdateIncomeReward(serverId: string, createdBy: string, incomeType: DefaultIncomeType | undefined, name: string, override: (IncomeCommand & { rewards: Reward[] }) | undefined, newReward: Omit<Reward, "id" | "incomeCommandId">) {
-        return (
-            override
-            ? this.updateIncomeRewards(override, newReward)
-            : this.client.prisma.incomeCommand.create({
-                data: {
-                    serverId,
-                    incomeType,
-                    name: incomeType ? undefined : name,
-                    createdBy,
-                    rewards: {
-                        createMany: {
-                            data: [newReward],
-                        },
-                    },
-                }
-            })
-        );
+                  data: {
+                      ...changes,
+                      serverId,
+                      incomeType,
+                      name: incomeType ? undefined : name,
+                      createdBy,
+                  },
+              });
     }
 
-    updateIncomeRewards(override: (IncomeCommand & { rewards: Reward[] }), newReward: Omit<Reward, "id" | "incomeCommandId">) {
-        const existingReward = override.rewards.find(x => x.currencyId === newReward.currencyId);
+    createOrUpdateIncomeReward(
+        serverId: string,
+        createdBy: string,
+        incomeType: DefaultIncomeType | undefined,
+        name: string,
+        override: (IncomeCommand & { rewards: Reward[] }) | undefined,
+        newReward: Omit<Reward, "id" | "incomeCommandId">
+    ) {
+        return override
+            ? this.updateIncomeRewards(override, newReward)
+            : this.client.prisma.incomeCommand.create({
+                  data: {
+                      serverId,
+                      incomeType,
+                      name: incomeType ? undefined : name,
+                      createdBy,
+                      rewards: {
+                          createMany: {
+                              data: [newReward],
+                          },
+                      },
+                  },
+              });
+    }
+
+    updateIncomeRewards(override: IncomeCommand & { rewards: Reward[] }, newReward: Omit<Reward, "id" | "incomeCommandId">) {
+        const existingReward = override.rewards.find((x) => x.currencyId === newReward.currencyId);
 
         return this.client.prisma.incomeCommand.update({
             where: {
@@ -330,17 +327,16 @@ export class DatabaseUtil extends Util<TuxoClient> {
             },
             data: {
                 rewards: {
-                    [existingReward ? "update" : "create"]:
-                        existingReward
+                    [existingReward ? "update" : "create"]: existingReward
                         ? {
-                            where: {
-                                id: existingReward.id,
-                            },
-                            data: newReward,
-                        }
+                              where: {
+                                  id: existingReward.id,
+                              },
+                              data: newReward,
+                          }
                         : newReward,
-                }
+                },
             },
-        })
+        });
     }
 }

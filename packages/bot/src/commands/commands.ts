@@ -38,7 +38,7 @@ export function createCommandHandler<
         rest,
         string: stringArg,
         UUID,
-        emote
+        emote,
     };
 
     type AsyncUnit = Promise<unknown> | undefined;

@@ -2,9 +2,9 @@ import { RoleType } from "@prisma/client";
 import { createCommandHandler } from "@yokilabs/bot";
 
 import type { TuxoClient } from "../../Client";
+import { useCustomIncomeCommand } from "../../commands/income/income-util";
 import type { Command, GEvent, Server } from "../../typings";
 import { RoleTypeValues } from "../../util/values";
-import { useCustomIncomeCommand } from "../../commands/income/income-util";
 
 const { fetchPrefix, parseCommand, fetchCommandInfo, resolveArguments, checkUserPermissions, tryExecuteCommand } = createCommandHandler<TuxoClient, Server, Command, RoleType>(
     RoleTypeValues

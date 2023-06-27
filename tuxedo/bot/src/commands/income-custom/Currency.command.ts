@@ -1,9 +1,9 @@
-import { Currency, IncomeCommand, DefaultIncomeType, Reward, RoleType } from "@prisma/client";
-
-import { Category, Command } from "../commands";
+import { Currency, DefaultIncomeType, IncomeCommand, Reward, RoleType } from "@prisma/client";
 import { inlineCode, inlineQuote } from "@yokilabs/bot";
-import { TuxoClient } from "../../Client";
 import { Message } from "guilded.js";
+
+import { TuxoClient } from "../../Client";
+import { Category, Command } from "../commands";
 import { DefaultIncomeTypeMap, displayDefaultRewards, displayOverridenRewards } from "./income-util";
 
 const SetCurrency: Command = {
@@ -16,7 +16,9 @@ const SetCurrency: Command = {
     args: [
         {
             name: "command",
-            display: `${Object.keys(DefaultIncomeType).map(x => x.toLowerCase()).join(" / ")} / (custom income command)`,
+            display: `${Object.keys(DefaultIncomeType)
+                .map((x) => x.toLowerCase())
+                .join(" / ")} / (custom income command)`,
             type: "string",
         },
         {
@@ -57,7 +59,7 @@ const SetCurrency: Command = {
             );
 
         // Rewarded currency
-        const currency = serverCurrencies.find(x => x.tag === currencyTag);
+        const currency = serverCurrencies.find((x) => x.tag === currencyTag);
 
         if (!currency) return ctx.messageUtil.replyWithError(message, "No such currency", `There is no currency with tag ${inlineQuote(currencyTag)} in this server.`);
 
@@ -68,22 +70,14 @@ const SetCurrency: Command = {
                 `Please provide minimum and maximum amounts of ${currency.name} user should received from ${command.toLowerCase()}.`
             );
 
-        if (minAmount === 0 && maxAmount === 0)
-            return removeCurrencyReward(ctx, message, command, currency, incomeOverride);
+        if (minAmount === 0 && maxAmount === 0) return removeCurrencyReward(ctx, message, command, currency, incomeOverride);
 
-        await ctx.dbUtil.createOrUpdateIncomeReward(
-            message.serverId!,
-            message.createdById,
-            incomeType,
-            command,
-            incomeOverride,
-            {
-                serverId: message.serverId!,
-                currencyId: currency.id,
-                minAmount,
-                maxAmount,
-            }
-        );
+        await ctx.dbUtil.createOrUpdateIncomeReward(message.serverId!, message.createdById, incomeType, command, incomeOverride, {
+            serverId: message.serverId!,
+            currencyId: currency.id,
+            minAmount,
+            maxAmount,
+        });
 
         return ctx.messageUtil.replyWithSuccess(
             message,
@@ -93,7 +87,13 @@ const SetCurrency: Command = {
     },
 };
 
-async function removeCurrencyReward(ctx: TuxoClient, message: Message, incomeType: DefaultIncomeType | string, currency: Currency, incomeOverride: (IncomeCommand & { rewards: Reward[] }) | undefined) {
+async function removeCurrencyReward(
+    ctx: TuxoClient,
+    message: Message,
+    incomeType: DefaultIncomeType | string,
+    currency: Currency,
+    incomeOverride: (IncomeCommand & { rewards: Reward[] }) | undefined
+) {
     if (!incomeOverride || !incomeOverride.rewards.find((x) => x.currencyId === currency.id))
         return ctx.messageUtil.replyWithError(
             message,
@@ -103,11 +103,7 @@ async function removeCurrencyReward(ctx: TuxoClient, message: Message, incomeTyp
 
     await ctx.prisma.reward.deleteMany({ where: { currencyId: currency.id, serverId: message.serverId!, incomeCommandId: incomeOverride.id } });
 
-    return ctx.messageUtil.replyWithSuccess(
-        message,
-        "Rewarded currency removed",
-        `The ${incomeType.toLowerCase()} will no longer hand out ${currency.name}.`
-    );
+    return ctx.messageUtil.replyWithSuccess(message, "Rewarded currency removed", `The ${incomeType.toLowerCase()} will no longer hand out ${currency.name}.`);
 }
 
 export default SetCurrency;

@@ -11,7 +11,7 @@ export default [
         }
         const id = Number(input);
 
-        // Don't have floating/decimal numbers or numbers that are not emote IDs 
+        // Don't have floating/decimal numbers or numbers that are not emote IDs
         // 90000000-9009999 might only work for default emotes
         if (id && id >= 90000000 && id <= 90009999 && !(id % 1)) return getReactionById(id) ?? null;
         // It would be rare for it to be more than 5 symbols

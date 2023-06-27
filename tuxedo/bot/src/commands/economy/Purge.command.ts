@@ -23,7 +23,7 @@ const Purge: Command = {
             name: "confirmation",
             type: "string",
             optional: true,
-        }
+        },
     ],
     execute: async (message, args, ctx, { prefix }) => {
         const tag = (args.tag as string).toLowerCase();
@@ -44,21 +44,18 @@ const Purge: Command = {
             where: {
                 currencyId: currency.id,
                 serverId: message.serverId!,
-            }
+            },
         });
 
-        if (!count)
-            return ctx.messageUtil.replyWithError(
-                message,
-                "No balances to purge",
-                `This currency does not exist in any of the member's balances and cannot be purged.`
-            );
+        if (!count) return ctx.messageUtil.replyWithError(message, "No balances to purge", `This currency does not exist in any of the member's balances and cannot be purged.`);
         else if (!confirmed)
             return ctx.messageUtil.replyWithWarning(
                 message,
                 "Confirm purge",
                 stripIndents`
-                    Are you sure you want to delete currency ${inlineQuote(currency.tag)} from member's balances? ${inlineCode(count)} members hold this currency in their bank or pocket balances. If that is intended, redo the command with \`confirm\` at the end like so:
+                    Are you sure you want to delete currency ${inlineQuote(currency.tag)} from member's balances? ${inlineCode(
+                    count
+                )} members hold this currency in their bank or pocket balances. If that is intended, redo the command with \`confirm\` at the end like so:
                     \`\`\`md
                     ${prefix}income purge ${tag} confirm
                     \`\`\`
@@ -69,10 +66,14 @@ const Purge: Command = {
             where: {
                 serverId: message.serverId!,
                 currencyId: currency.id,
-            }
+            },
         });
 
-        return ctx.messageUtil.replyWithSuccess(message, "Currency from balances purged", `Currency ${inlineQuote(currency.tag)} was successfully purged from everyone's balances.`)
+        return ctx.messageUtil.replyWithSuccess(
+            message,
+            "Currency from balances purged",
+            `Currency ${inlineQuote(currency.tag)} was successfully purged from everyone's balances.`
+        );
     },
 };
 

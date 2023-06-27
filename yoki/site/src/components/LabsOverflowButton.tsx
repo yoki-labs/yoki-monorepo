@@ -7,5 +7,5 @@ export default function LabsOverflowButton() {
         <IconButton aria-label="Overflow icon">
             <FontAwesomeIcon icon={faEllipsisV} />
         </IconButton>
-    )
+    );
 }

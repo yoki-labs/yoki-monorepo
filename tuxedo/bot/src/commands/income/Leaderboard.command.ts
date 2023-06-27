@@ -17,8 +17,7 @@ const Leaderboard: Command = {
 
         const currencies = await ctx.dbUtil.getCurrencies(message.serverId!);
 
-        if (!currencies.length)
-            return ctx.messageUtil.replyWithError(message, "No currencies", `This server does not have any currencies to show leaderboard of.`);
+        if (!currencies.length) return ctx.messageUtil.replyWithError(message, "No currencies", `This server does not have any currencies to show leaderboard of.`);
 
         // Something to display for now
         const mainCurrency = currencies[0];
@@ -26,11 +25,11 @@ const Leaderboard: Command = {
         const balances = await ctx.prisma.memberBalance.findMany({
             orderBy: { all: "desc" },
             include: {
-                member: true
+                member: true,
             },
             where: {
                 serverId: message.serverId!,
-                currencyId: mainCurrency.id
+                currencyId: mainCurrency.id,
             },
         });
 
@@ -43,8 +42,7 @@ const Leaderboard: Command = {
             title: ":trophy: Server Leaderboard",
             items: balances,
             itemsPerPage: 10,
-            itemMapping: (balance, i) =>
-                `${start + i}. <@${balance.member.userId}> — ${balance.all} ${mainCurrency.name}`,
+            itemMapping: (balance, i) => `${start + i}. <@${balance.member.userId}> — ${balance.all} ${mainCurrency.name}`,
             page,
             message: {
                 isSilent: true,

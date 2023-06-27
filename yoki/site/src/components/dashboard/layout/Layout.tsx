@@ -12,7 +12,7 @@ import React from "react";
 type LayoutProps = {
     servers: GuildedServer[];
     children: React.ReactNode;
-}
+};
 
 export default class Layout extends React.Component<LayoutProps> {
     constructor(props: LayoutProps) {

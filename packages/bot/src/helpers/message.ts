@@ -153,39 +153,41 @@ export class MessageUtil<
     }
 
     replyWithList<T>(message: Message, title: string, items: T[] | undefined | null, tip?: string, embedPartial?: EmbedPayload, messagePartial?: Partial<MessageBody>) {
-        return (
-            items?.length
-                ? this.replyWithEmbed(
-                    message,
-                    {
-                        title,
-                        description: items.join("\n"),
-                        color: Colors.blockBackground,
-                        footer: {
-                            text: `${items.length} total entries`,
-                        },
-                        ...embedPartial,
-                    },
-                    messagePartial
-                )
-                : this.replyWithNullState(message, `No items here`, `There is nothing here to show.${tip ? `\n\n${tip}` : ""}`, undefined, messagePartial)
-        );
+        return items?.length
+            ? this.replyWithEmbed(
+                  message,
+                  {
+                      title,
+                      description: items.join("\n"),
+                      color: Colors.blockBackground,
+                      footer: {
+                          text: `${items.length} total entries`,
+                      },
+                      ...embedPartial,
+                  },
+                  messagePartial
+              )
+            : this.replyWithNullState(message, `No items here`, `There is nothing here to show.${tip ? `\n\n${tip}` : ""}`, undefined, messagePartial);
     }
 
-    replyWithCategorizedList(message: Message, title: string, items: Collection<string, string[]>, footer: string, embedPartial?: EmbedPayload, messagePartial?: Partial<MessageBody>) {
+    replyWithCategorizedList(
+        message: Message,
+        title: string,
+        items: Collection<string, string[]>,
+        footer: string,
+        embedPartial?: EmbedPayload,
+        messagePartial?: Partial<MessageBody>
+    ) {
         return this.replyWithEmbed(
             message,
             {
                 title,
                 color: Colors.blockBackground,
-                fields:
-                    items.map((values, key) =>
-                    ({
-                        name: key,
-                        value: listInlineCode(values)!,
-                        inline: true,
-                    })
-                    ),
+                fields: items.map((values, key) => ({
+                    name: key,
+                    value: listInlineCode(values)!,
+                    inline: true,
+                })),
                 footer: {
                     text: footer,
                 },

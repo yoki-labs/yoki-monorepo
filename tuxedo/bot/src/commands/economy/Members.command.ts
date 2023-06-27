@@ -2,8 +2,8 @@ import { Collection } from "@discordjs/collection";
 import { RoleType } from "@prisma/client";
 
 import { Category, Command } from "../commands";
-import Set from "./Set.command";
 import Purge from "./Purge.command";
+import Set from "./Set.command";
 
 const Members: Command = {
     name: "members",

@@ -1,9 +1,9 @@
 import { DefaultIncomeType, RoleType } from "@prisma/client";
 import { inlineCode } from "@yokilabs/bot";
+import ms from "ms";
 
 import { Category, Command } from "../commands";
 import { defaultCreatedCooldown, defaultIncomes } from "../income/income-util";
-import ms from "ms";
 import { DefaultIncomeTypeMap } from "./income-util";
 
 const SetCooldown: Command = {
@@ -16,7 +16,9 @@ const SetCooldown: Command = {
     args: [
         {
             name: "command",
-            display: `${Object.keys(DefaultIncomeType).map(x => x.toLowerCase()).join(" / ")} / (custom income command)`,
+            display: `${Object.keys(DefaultIncomeType)
+                .map((x) => x.toLowerCase())
+                .join(" / ")} / (custom income command)`,
             type: "string",
             // values: DefaultIncomeType,
         },
@@ -25,7 +27,7 @@ const SetCooldown: Command = {
             display: "cooldown time",
             type: "time",
             optional: true,
-            min: 1000
+            min: 1000,
         },
     ],
     execute: async (message, args, ctx) => {
@@ -48,7 +50,11 @@ const SetCooldown: Command = {
 
         await ctx.dbUtil.createOrUpdateIncome(message.serverId!, message.createdById, incomeType, command, incomeOverride, { cooldownMs: time });
 
-        return ctx.messageUtil.replyWithSuccess(message, `Changed ${command.toLowerCase()}'s cooldown`, `The cooldown for ${command.toLowerCase()} has been changed to ${ms(time, { long: true })}.`);
+        return ctx.messageUtil.replyWithSuccess(
+            message,
+            `Changed ${command.toLowerCase()}'s cooldown`,
+            `The cooldown for ${command.toLowerCase()} has been changed to ${ms(time, { long: true })}.`
+        );
     },
 };
 

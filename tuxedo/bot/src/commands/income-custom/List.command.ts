@@ -1,8 +1,8 @@
 import { RoleType } from "@prisma/client";
-
-import { Category, Command } from "../commands";
 import { inlineQuote } from "@yokilabs/bot";
 import ms from "ms";
+
+import { Category, Command } from "../commands";
 import { defaultCreatedCooldown } from "../income/income-util";
 
 const List: Command = {
@@ -18,10 +18,8 @@ const List: Command = {
         return ctx.messageUtil.replyWithList(
             message,
             "Custom incomes",
-            incomes
-                .filter((income) => income.name)
-                .map((income) => `\u2022 ${inlineQuote(income.name)} — ${ms(income.cooldownMs ?? defaultCreatedCooldown, { long: true })}`),
-        )
+            incomes.filter((income) => income.name).map((income) => `\u2022 ${inlineQuote(income.name)} — ${ms(income.cooldownMs ?? defaultCreatedCooldown, { long: true })}`)
+        );
     },
 };
 

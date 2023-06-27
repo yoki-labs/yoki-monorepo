@@ -19,10 +19,12 @@ export default async (err: Error, client: YokiClient) => {
     const errorContent = JSON.stringify(err);
     if (errorContent.length) {
         const uploaded = await uploadS3(client, `error/${client.user!.name}/unhandled-${Date.now()}.txt`, errorContent);
-        void client.errorHandler.send(`Unhandled error! Current burst ${errorCounter}/${15}`, [errorEmbed(stripIndents`
+        void client.errorHandler.send(`Unhandled error! Current burst ${errorCounter}/${15}`, [
+            errorEmbed(stripIndents`
             ${codeBlock((err as Error).message)}
             This error was too long to send to Guilded. [View on S3](${uploaded.Location})
-        `)]);
+        `),
+        ]);
         return;
     }
 

@@ -37,8 +37,7 @@ const SelectTrigger: Command = {
         if (!targetChannel) return ctx.messageUtil.replyWithError(message, `Invalid channel`, `That is not a valid channel mention or ID!`);
 
         const sentMessageId = args.sentMessageId as string;
-        const sentMessage = await ctx.messages.fetch(targetChannel.id, sentMessageId)
-            .catch(() => null);
+        const sentMessage = await ctx.messages.fetch(targetChannel.id, sentMessageId).catch(() => null);
         if (!sentMessage) return ctx.messageUtil.replyWithError(message, `Invalid message`, `That is not a valid message!`);
 
         const emoteId = args.emoteId as number;

@@ -34,7 +34,7 @@ const Set: Command = {
             type: "enum",
             values: BalanceType,
             optional: true,
-        }
+        },
     ],
     execute: async (message, args, ctx) => {
         const member = args.member as Member;
@@ -53,7 +53,7 @@ const Set: Command = {
 
         if (!currency) return ctx.messageUtil.replyWithError(message, "No such currency", `There is no currency with tag ${inlineQuote(tag)} in this server.`);
 
-        const pocketBalance = balanceType?.resolved !== BalanceType.BANK ? { [currency.id]: amount } : {}; 
+        const pocketBalance = balanceType?.resolved !== BalanceType.BANK ? { [currency.id]: amount } : {};
         const bankBalance = !balanceType || balanceType?.resolved === BalanceType.POCKET ? {} : { [currency.id]: amount };
 
         await ctx.dbUtil.setMemberBalance(message.serverId!, member.id, pocketBalance, bankBalance);
@@ -63,8 +63,10 @@ const Set: Command = {
         return ctx.messageUtil.replyWithSuccess(
             message,
             "Balance set",
-            `<@${member.id}> (${inlineCode(member.id)}) had ${currency.name} in their ${balanceTypeDisplay} balance successsfully changed to ${inlineCode(amount)} ${currency.name}.`
-        )
+            `<@${member.id}> (${inlineCode(member.id)}) had ${currency.name} in their ${balanceTypeDisplay} balance successsfully changed to ${inlineCode(amount)} ${
+                currency.name
+            }.`
+        );
     },
 };
 

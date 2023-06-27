@@ -1,9 +1,9 @@
 import { ReactionActionType } from "@prisma/client";
+import { ReactionInfo } from "@yokilabs/utils";
 import { Channel } from "guilded.js";
 
 import { RoleType } from "../../typings";
 import { Category, Command } from "../commands";
-import { ReactionInfo } from "@yokilabs/utils";
 
 const SendTrigger: Command = {
     name: "modmail-sendtrigger",
@@ -30,13 +30,13 @@ const SendTrigger: Command = {
         if (!commandCtx.server.modmailGroupId && !commandCtx.server.modmailCategoryId)
             return ctx.messageUtil.replyWithError(message, `No modmail group or category set`, "You can set either by using the `?modmail group` or `?modmail category` command.");
         const targetChannel = args.targetChannel as Channel;
-        const reaction = (args.emoji as ReactionInfo);
+        const reaction = args.emoji as ReactionInfo;
 
         const sentMessage = await ctx.messageUtil.sendInfoBlock(
             targetChannel.id,
             `React here for help!`,
             `React with the :${reaction.name}: emoji on this message to create a support ticket and receive help from server staff.`
-        )
+        );
         void ctx.amp.logEvent({
             event_type: "MODMAIL_SEND_TRIGGER",
             user_id: message.authorId,

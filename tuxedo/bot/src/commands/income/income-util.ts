@@ -1,12 +1,12 @@
-import { CommandContext, inlineCode, inlineQuote,ResolvedArgs } from "@yokilabs/bot";
+import { Currency, DefaultIncomeType, IncomeCommand, MemberBalance, Reward } from "@prisma/client";
+import { CommandContext, inlineCode, inlineQuote, ResolvedArgs } from "@yokilabs/bot";
 import { Message } from "guilded.js";
 import ms from "ms";
 
 import { TuxoClient } from "../../Client";
 import { Server } from "../../typings";
-import { Currency, DefaultIncomeType, IncomeCommand, MemberBalance, Reward } from "@prisma/client";
 
-export const defaultIncomes: Record<DefaultIncomeType, { reward: number[], cooldown: number, action: string }> = {
+export const defaultIncomes: Record<DefaultIncomeType, { reward: number[]; cooldown: number; action: string }> = {
     [DefaultIncomeType.DAILY]: {
         reward: [50, 250],
         cooldown: 24 * 60 * 60 * 1000,
@@ -40,34 +40,22 @@ export function generateBankCommand(balanceType: string, action: string, actionD
 
         // Need to wait 5 hours
         if (lastUsed && Date.now() - lastUsed < bankCooldown)
-            return ctx.messageUtil.replyWithError(
-                message,
-                "Too fast",
-                `You have to wait ${ms(lastUsed + bankCooldown - Date.now(), { long: true })} to use bank again.`
-            );
+            return ctx.messageUtil.replyWithError(message, "Too fast", `You have to wait ${ms(lastUsed + bankCooldown - Date.now(), { long: true })} to use bank again.`);
 
         // Check existance and balance of members
         const member = await ctx.dbUtil.getServerMember(message.serverId!, message.createdById);
 
-        if (!member?.balances.length) return ctx.messageUtil.replyWithError(message, "No balance", `You do not have any currency in your ${balanceType} balance to ${action} anything.`);
+        if (!member?.balances.length)
+            return ctx.messageUtil.replyWithError(message, "No balance", `You do not have any currency in your ${balanceType} balance to ${action} anything.`);
 
         const serverCurrencies = await ctx.dbUtil.getCurrencies(message.serverId!);
-        const depositingCurrencies =
-            tag === "all"
-            ? serverCurrencies
-            : serverCurrencies.filter((x) => x.tag === tag);
+        const depositingCurrencies = tag === "all" ? serverCurrencies : serverCurrencies.filter((x) => x.tag === tag);
 
         // If there is no such currency and they are not depositing all currency, then error out
         // As we check if there is at least 1 item in .balances, tag === "all" will never have this as true
-        if (!depositingCurrencies.length)
-            return ctx.messageUtil.replyWithError(message, "No such currency", `There is no currency with tag ${inlineQuote(tag)} in this server.`);
+        if (!depositingCurrencies.length) return ctx.messageUtil.replyWithError(message, "No such currency", `There is no currency with tag ${inlineQuote(tag)} in this server.`);
 
-        const depositingBalances =
-            tag === "all"
-            ? member.balances
-            : member.balances.filter((x) =>
-                depositingCurrencies.find((y) => y.id === x.currencyId)
-            );
+        const depositingBalances = tag === "all" ? member.balances : member.balances.filter((x) => depositingCurrencies.find((y) => y.id === x.currencyId));
 
         const depositMap = {};
 
@@ -83,9 +71,7 @@ export function generateBankCommand(balanceType: string, action: string, actionD
                 return ctx.messageUtil.replyWithError(
                     message,
                     "Balance currency too low",
-                    `You cannot ${action} ${inlineCode(amount)} ${depositingCurrency.name}, as your ${balanceType} balance only has ${balanceAmount} ${
-                        depositingCurrency.name
-                    }.`
+                    `You cannot ${action} ${inlineCode(amount)} ${depositingCurrency.name}, as your ${balanceType} balance only has ${balanceAmount} ${depositingCurrency.name}.`
                 );
             }
 
@@ -99,12 +85,20 @@ export function generateBankCommand(balanceType: string, action: string, actionD
         await ctx.dbUtil.depositMemberBalance(member, depositMap);
 
         // Reply with success
-        return ctx.messageUtil.replyWithSuccess(message, `Balance ${actionDone}`, `You have successfully ${actionDone} ${depositingCurrencies.map((x) => `${depositMap[x.id] / depositMultiplier} ${x.name}`).join(", ")}.`);
-    }
+        return ctx.messageUtil.replyWithSuccess(
+            message,
+            `Balance ${actionDone}`,
+            `You have successfully ${actionDone} ${depositingCurrencies.map((x) => `${depositMap[x.id] / depositMultiplier} ${x.name}`).join(", ")}.`
+        );
+    };
 }
 
 export function generateIncomeCommand(incomeType: DefaultIncomeType) {
-    const { cooldown, action, reward: [defaultMin, defaultAdditionalMax] } = defaultIncomes[incomeType];
+    const {
+        cooldown,
+        action,
+        reward: [defaultMin, defaultAdditionalMax],
+    } = defaultIncomes[incomeType];
 
     return async function execute(message: Message, _args: Record<string, ResolvedArgs>, ctx: TuxoClient, _context: CommandContext<Server>) {
         const currencies = await ctx.dbUtil.getCurrencies(message.serverId!);
@@ -145,12 +139,33 @@ export function generateIncomeCommand(incomeType: DefaultIncomeType) {
 export async function useCustomIncomeCommand(ctx: TuxoClient, message: Message, income: IncomeCommand & { rewards: Reward[] }) {
     const currencies = await ctx.dbUtil.getCurrencies(message.serverId!);
 
-    if (!currencies.length) return ctx.messageUtil.replyWithError(message, "No currencies", `This server does not have any local currencies to use ${inlineQuote(income.name)} income command.`);
-    
-    return useIncomeCommand(income.name!, `Used ${income.name}`, defaultCreatedCooldown, defaultCreatedReceivedCurrency[0], defaultCreatedReceivedCurrency[1], income, currencies, ctx, message);
+    if (!currencies.length)
+        return ctx.messageUtil.replyWithError(message, "No currencies", `This server does not have any local currencies to use ${inlineQuote(income.name)} income command.`);
+
+    return useIncomeCommand(
+        income.name!,
+        `Used ${income.name}`,
+        defaultCreatedCooldown,
+        defaultCreatedReceivedCurrency[0],
+        defaultCreatedReceivedCurrency[1],
+        income,
+        currencies,
+        ctx,
+        message
+    );
 }
 
-async function useIncomeCommand(commandName: string, defaultAction: string, defaultCooldown: number, defaultAdditionalMax: number, defaultMin: number, income: (IncomeCommand & { rewards: Reward[] }) | undefined, currencies: Currency[], ctx: TuxoClient, message: Message) {
+async function useIncomeCommand(
+    commandName: string,
+    defaultAction: string,
+    defaultCooldown: number,
+    defaultAdditionalMax: number,
+    defaultMin: number,
+    income: (IncomeCommand & { rewards: Reward[] }) | undefined,
+    currencies: Currency[],
+    ctx: TuxoClient,
+    message: Message
+) {
     const lastUsed = ctx.balanceUtil.getLastCommandUsage(message.serverId!, message.createdById, commandName);
 
     // Need to wait 24 hours or the configured time
@@ -166,8 +181,7 @@ async function useIncomeCommand(commandName: string, defaultAction: string, defa
 
     // Add random amounts of rewards that were configured or ones that are default
     if (income?.rewards.length) {
-        for (const reward of income.rewards)
-            addReward(balanceAdded, reward.currencyId, reward.maxAmount - reward.minAmount, reward.minAmount);
+        for (const reward of income.rewards) addReward(balanceAdded, reward.currencyId, reward.maxAmount - reward.minAmount, reward.minAmount);
     } else addReward(balanceAdded, currencies[0].id, defaultAdditionalMax, defaultMin);
 
     await ctx.dbUtil.addToMemberBalance(message.serverId!, message.createdById, balanceAdded);
@@ -175,8 +189,11 @@ async function useIncomeCommand(commandName: string, defaultAction: string, defa
     // Reply with success
     const addedCurrencies = currencies.filter((x) => x.id in balanceAdded).map((x) => `${balanceAdded[x.id]} ${x.name}`);
 
-    return ctx.messageUtil.replyWithSuccess(message, income?.action ?? defaultAction, `You have ${(income?.action ?? defaultAction).toLowerCase()}, which had ${addedCurrencies.join(", ")}.`);
+    return ctx.messageUtil.replyWithSuccess(
+        message,
+        income?.action ?? defaultAction,
+        `You have ${(income?.action ?? defaultAction).toLowerCase()}, which had ${addedCurrencies.join(", ")}.`
+    );
 }
 
-const addReward = (balanceAdded: Record<string, number>, currencyId: string, max: number, min: number) =>
-    balanceAdded[currencyId] = Math.floor(Math.random() * max + min);
+const addReward = (balanceAdded: Record<string, number>, currencyId: string, max: number, min: number) => (balanceAdded[currencyId] = Math.floor(Math.random() * max + min));

@@ -3,8 +3,8 @@ import { RoleType } from "@prisma/client";
 
 import { Category, Command } from "../commands";
 import SetCooldown from "./Cooldown.command";
-import SetCurrency from "./Currency.command";
 import Create from "./Create.command";
+import SetCurrency from "./Currency.command";
 import Info from "./Info.command";
 import List from "./List.command";
 import SetMessage from "./Message.command";

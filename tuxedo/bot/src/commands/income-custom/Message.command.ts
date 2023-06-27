@@ -1,7 +1,7 @@
 import { DefaultIncomeType, RoleType } from "@prisma/client";
+import { inlineCode, inlineQuote } from "@yokilabs/bot";
 
 import { Category, Command } from "../commands";
-import { inlineCode, inlineQuote } from "@yokilabs/bot";
 import { defaultIncomes } from "../income/income-util";
 import { DefaultIncomeTypeMap } from "./income-util";
 
@@ -15,7 +15,9 @@ const SetMessage: Command = {
     args: [
         {
             name: "command",
-            display: `${Object.keys(DefaultIncomeType).map(x => x.toLowerCase()).join(" / ")} / (custom income command)`,
+            display: `${Object.keys(DefaultIncomeType)
+                .map((x) => x.toLowerCase())
+                .join(" / ")} / (custom income command)`,
             type: "string",
             // values: DefaultIncomeType,
         },
@@ -46,7 +48,11 @@ const SetMessage: Command = {
 
         await ctx.dbUtil.createOrUpdateIncome(message.serverId!, message.createdById, incomeType, command, incomeOverride, { action });
 
-        return ctx.messageUtil.replyWithSuccess(message, `Changed ${command.toLowerCase()}'s action message`, `The action message for ${command.toLowerCase()} has been changed to ${inlineQuote(action)}.`);
+        return ctx.messageUtil.replyWithSuccess(
+            message,
+            `Changed ${command.toLowerCase()}'s action message`,
+            `The action message for ${command.toLowerCase()} has been changed to ${inlineQuote(action)}.`
+        );
     },
 };
 
