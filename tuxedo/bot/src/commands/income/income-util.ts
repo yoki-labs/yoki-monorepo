@@ -191,7 +191,7 @@ async function useIncomeCommand(
                 currency,
                 currencyId: reward.currencyId,
                 pocket: (existingBalance?.pocket ?? 0) + randomReward,
-                bank: existingBalance?.bank ?? 0,
+                bank: existingBalance?.bank ?? currency.startingBalance ?? 0,
                 added: randomReward,
             });
     }
