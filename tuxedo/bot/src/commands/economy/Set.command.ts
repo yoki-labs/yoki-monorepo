@@ -58,18 +58,13 @@ const Set: Command = {
         const memberInfo = await ctx.dbUtil.getServerMember(message.serverId!, message.createdById);
         const currentBalance = memberInfo?.balances.find((x) => x.currencyId === currency.id);
 
-        await ctx.dbUtil.updateMemberBalance(
-            message.serverId!,
-            member.id,
-            memberInfo,
-            [
-                {
-                    currencyId: currency.id,
-                    pocket: balanceType?.resolved !== BalanceType.BANK ? amount : currentBalance?.pocket ?? 0,
-                    bank: balanceType?.resolved !== BalanceType.POCKET ? amount : currentBalance?.bank ?? 0,
-                }
-            ]
-        );
+        await ctx.dbUtil.updateMemberBalance(message.serverId!, member.id, memberInfo, [
+            {
+                currencyId: currency.id,
+                pocket: balanceType?.resolved !== BalanceType.BANK ? amount : currentBalance?.pocket ?? 0,
+                bank: balanceType && balanceType?.resolved !== BalanceType.POCKET ? amount : currentBalance?.bank ?? 0,
+            },
+        ]);
 
         const balanceTypeDisplay = balanceType?.resolved === BalanceType.ALL ? "entire" : balanceType?.resolved.toLowerCase() ?? "pocket";
 

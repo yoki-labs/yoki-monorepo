@@ -20,7 +20,7 @@ const Max: Command = {
         {
             name: "value",
             type: "number",
-        }
+        },
     ],
     execute: async (message, args, ctx) => {
         const tag = (args.tag as string).toLowerCase();
@@ -38,9 +38,19 @@ const Max: Command = {
         // Currency needs to exist for it to be edited
         if (!currency) return ctx.messageUtil.replyWithError(message, "Doesn't exist", `The currency with tag ${inlineQuote(tag)} does not exist and cannot be edited.`);
         // No reason to do changes in the database
-        else if (currency.maximumBalance === value) return ctx.messageUtil.replyWithError(message, "Already set", `The maximum balance for the currency with tag ${inlineQuote(tag)} is already set to ${inlineCode(value.toString())}.`);
+        else if (currency.maximumBalance === value)
+            return ctx.messageUtil.replyWithError(
+                message,
+                "Already set",
+                `The maximum balance for the currency with tag ${inlineQuote(tag)} is already set to ${inlineCode(value.toString())}.`
+            );
         // Doesn't make sense if we start already above the max value
-        else if ((currency.startingBalance) && (currency.startingBalance >= value)) return ctx.messageUtil.replyWithError(message, "Invalid value", `The maximum balance for the currency with tag ${inlineQuote(tag)} cannot be equal to or less than the starting balance, which is ${currency.startingBalance}.`);
+        else if (currency.startingBalance && currency.startingBalance >= value)
+            return ctx.messageUtil.replyWithError(
+                message,
+                "Invalid value",
+                `The maximum balance for the currency with tag ${inlineQuote(tag)} cannot be equal to or less than the starting balance, which is ${currency.startingBalance}.`
+            );
 
         await ctx.dbUtil.updateCurrency(currency, { maximumBalance: value });
 

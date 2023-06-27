@@ -1,6 +1,5 @@
 import { Currency, DefaultIncomeType, IncomeCommand, MemberBalance, Reward } from "@prisma/client";
 import { CommandContext, inlineCode, inlineQuote, ResolvedArgs } from "@yokilabs/bot";
-
 import { Message } from "guilded.js";
 import ms from "ms";
 
@@ -94,7 +93,7 @@ export function generateBankCommand(balanceType: string, action: string, actionD
     };
 }
 
-type BalanceChange = Pick<MemberBalance, "currencyId" | "pocket" | "bank"> & { currency: Currency, added: number, lost?: number };
+type BalanceChange = Pick<MemberBalance, "currencyId" | "pocket" | "bank"> & { currency: Currency; added: number; lost?: number };
 
 export function generateIncomeCommand(incomeType: DefaultIncomeType) {
     const {
@@ -156,8 +155,8 @@ async function useIncomeCommand(
     ctx.balanceUtil.updateLastCommandUsage(message.serverId!, message.createdById, commandName);
 
     // Add random amounts of rewards that were configured or ones that are default
-    const rewards: Pick<Reward, "currencyId" | "minAmount" | "maxAmount">[] = serverConfig?.rewards.length
-        ? serverConfig.rewards
+    const rewards: Pick<Reward, "currencyId" | "minAmount" | "maxAmount">[] = income?.rewards.length
+        ? income.rewards
         : [{ currencyId: currencies[0].id, maxAmount: defaultAdditionalMax + defaultMin, minAmount: defaultMin }];
 
     const userInfo = await ctx.dbUtil.getServerMember(message.serverId!, message.createdById);
@@ -171,7 +170,7 @@ async function useIncomeCommand(
         const existingBalance = userInfo?.balances.find((x) => x.currencyId === reward.currencyId);
 
         // Balance changes
-        const randomReward = Math.floor((Math.random() * (reward.maxAmount - reward.minAmount)) + reward.minAmount);
+        const randomReward = Math.floor(Math.random() * (reward.maxAmount - reward.minAmount) + reward.minAmount);
         const totalBalance = (existingBalance?.all ?? 0) + randomReward;
 
         // Check if any of the rewards went over the maximum balance
@@ -187,14 +186,14 @@ async function useIncomeCommand(
                 added,
                 lost,
             });
-        }
-        else newBalance.push({
-            currency,
-            currencyId: reward.currencyId,
-            pocket: (existingBalance?.pocket ?? 0) + randomReward,
-            bank: existingBalance?.bank ?? 0,
-            added: randomReward,
-        });
+        } else
+            newBalance.push({
+                currency,
+                currencyId: reward.currencyId,
+                pocket: (existingBalance?.pocket ?? 0) + randomReward,
+                bank: existingBalance?.bank ?? 0,
+                added: randomReward,
+            });
     }
 
     await ctx.dbUtil.updateMemberBalance(message.serverId!, message.createdById, userInfo, newBalance);
@@ -204,13 +203,13 @@ async function useIncomeCommand(
 
     const actionDescription = (income?.action ?? defaultAction).toLowerCase();
 
-    return (
-        lostCurrencies.length
+    return lostCurrencies.length
         ? ctx.messageUtil.replyWithWarning(
-            message,
-                income?.action ?? defaultAction,
-                `You have ${actionDescription}, which had ${addedCurrencies.join(", ")}. However, some of the rewards went over the maximum currency limit, so you lost additional ${lostCurrencies.join(", ")}`
-            )
-            : ctx.messageUtil.replyWithSuccess(message, income?.action ?? defaultAction, `You have ${actionDescription}, which had ${addedCurrencies.join(", ")}.`)
-    );
+              message,
+              income?.action ?? defaultAction,
+              `You have ${actionDescription}, which had ${addedCurrencies.join(
+                  ", "
+              )}. However, some of the rewards went over the maximum currency limit, so you lost additional ${lostCurrencies.join(", ")}`
+          )
+        : ctx.messageUtil.replyWithSuccess(message, income?.action ?? defaultAction, `You have ${actionDescription}, which had ${addedCurrencies.join(", ")}.`);
 }

@@ -16,7 +16,13 @@ const Currency: Command = {
     parentCommand: true,
     category: Category.Economy,
     requiredRole: RoleType.ADMIN,
-    subCommands: new Collection<string, Command>().set("create", Create).set("list", List).set("info", Info).set("delete", Delete).set("maximum", Maximum).set("starting", Starting),
+    subCommands: new Collection<string, Command>()
+        .set("create", Create)
+        .set("list", List)
+        .set("info", Info)
+        .set("delete", Delete)
+        .set("maximum", Maximum)
+        .set("starting", Starting),
     execute: () => void 0,
 };
 
