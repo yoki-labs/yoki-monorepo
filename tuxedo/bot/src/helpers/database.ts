@@ -117,7 +117,7 @@ export class DatabaseUtil extends Util<TuxoClient> {
         return this.getServerMembers(serverId).then((x) => x.find((x) => x.userId === userId));
     }
 
-    async updateMemberBalance(
+    updateMemberBalance(
         serverId: string,
         userId: string,
         member: (ServerMember & { balances: MemberBalance[] }) | undefined,
