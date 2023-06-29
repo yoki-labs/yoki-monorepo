@@ -1,27 +1,21 @@
-import { faBan, faEnvelope, faRadiation, faShieldHalved } from "@fortawesome/free-solid-svg-icons";
+import { faBan, faEnvelope, faExclamationTriangle, faRadiation, faShieldHalved } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import Module from "../Module";
-import { Box } from "@mui/material";
+import { Alert, Typography } from "@mui/joy";
 
 export default function Home() {
     return (
         <div className="flex flex-col gap-16">
-            <Box className="bg-yellow-500">
-                <FontAwesomeIcon className="stroke-current shrink-0 h-6 w-6" icon={faRadiation} />
-                <div>
-                    <p>
-                        This dashboard is in-progress and may have some bugs. If you run into any issues, report it in{" "}
-                        <a href="https://www.guilded.gg/yoki" className="font-bold hover:underline">
-                            our Guilded server
-                        </a>
-                    </p>
-                </div>
-            </Box>
-
-            <div>
-                <h2 className="text-3xl font-medium mb-4">Modules</h2>
-                <div className="grid md:grid-cols-3 gap-4">
+            <Alert variant="solid" color="warning" startDecorator={<FontAwesomeIcon icon={faExclamationTriangle} />} >
+                This dashboard is in-progress and may have some bugs. If you run into any issues, report it in{" "}
+                <a href="https://www.guilded.gg/yoki" className="font-bold hover:underline">
+                    our Guilded server
+                </a>
+            </Alert>
+            <section>
+                <Typography level="h3" gutterBottom>Modules</Typography>
+                <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     <Module
                         name="Automod"
                         description="Configure how Yoki scans content in your server."
@@ -44,7 +38,7 @@ export default function Home() {
                         isActive={false}
                     />
                 </div>
-            </div>
+            </section>
         </div>
     );
 }

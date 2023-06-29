@@ -1,10 +1,14 @@
 import { faEllipsisV } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { IconButton } from "@mui/material";
+import { IconButton } from "@mui/joy";
 
-export default function LabsOverflowButton() {
+type Props = {
+    disabled?: boolean;
+};
+
+export default function LabsOverflowButton({ disabled }: Props) {
     return (
-        <IconButton aria-label="Overflow icon">
+        <IconButton disabled={disabled} color="neutral" aria-label="Overflow icon">
             <FontAwesomeIcon icon={faEllipsisV} />
         </IconButton>
     );

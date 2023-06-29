@@ -15,6 +15,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx): Promise<GetSe
 
     const servers = await methods(session.user.access_token).get<GuildedServer[]>("https://authlink.guildedapi.com/api/v1/users/@me/servers");
     if (!servers?.length) return { redirect: { destination: "/auth/signin", permanent: false } };
+
     return { props: { servers } };
 };
 

@@ -2,7 +2,6 @@ const withMT = require("@material-tailwind/react/utils/withMT");
 const plugin = require("tailwindcss/plugin");
 
 const colors = require("tailwindcss/colors");
-console.log("Colors", colors);
 delete colors["lightBlue"];
 delete colors["warmGray"];
 delete colors["trueGray"];
