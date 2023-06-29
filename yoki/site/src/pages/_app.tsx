@@ -9,7 +9,7 @@ import { QueryClient, QueryClientProvider } from "react-query";
 
 import "../styles/globals.css";
 import "../styles/styles.css";
-import { ThemeProvider } from "@mui/material";
+import { CssVarsProvider, ThemeProvider } from "@mui/joy";
 import { theme } from "../styles/theme";
 
 const ogDescription = "Meet Yoki, your moderation companion. Guilded's first moderation bot.";
@@ -57,13 +57,17 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }: AppPropsWith
                 <link rel="preload" href="/fonts/inter/Inter-Medium.ttf" as="font/ttf" crossOrigin="anonymous" />
                 <link rel="preload" href="/fonts/inter/Inter-Regular.ttf" as="font/ttf" crossOrigin="anonymous" />
                 <link rel="preload" href="/fonts/inter/Inter-SemiBold.ttf" as="font/ttf" crossOrigin="anonymous" />
+
+                <style>
+                    body, html, #__next {`{ width: 100%; height: 100%; }`}
+                </style>
             </Head>
             <SessionProvider session={session}>
                 <QueryClientProvider client={queryClient}>
                     {/* <gqlClientContext.Provider value={gql}> */}
-                    <ThemeProvider theme={theme}>
+                    <CssVarsProvider theme={theme}>
                         <Component {...pageProps} />
-                    </ThemeProvider>
+                    </CssVarsProvider>
                     {/* </gqlClientContext.Provider> */}
                 </QueryClientProvider>
             </SessionProvider>

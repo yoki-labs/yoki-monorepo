@@ -1,12 +1,10 @@
-import { faAngleLeft, faAngleRight, faBroom, faCircleExclamation, faHammer, faShoePrints, faVolumeMute } from "@fortawesome/free-solid-svg-icons";
+import { faBroom, faChevronDown, faChevronRight, faCircleExclamation, faHammer, faMagnifyingGlass, faShoePrints, faVolumeMute } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useSetAtom } from "jotai";
-import { useState } from "react";
+import React, { useState } from "react";
 
-import { tempToastAtom } from "../../../state/toast";
 import { actions } from "../../../utils/dummyData";
-import { Table, TableBody, TableCell, TableHead, TableRow } from "@mui/material";
-import LabsOverflowButton from "../../LabsOverflowButton";
+import { Table, Sheet, Typography, IconButton, Input } from "@mui/joy";
+import type { Action } from "@prisma/client";
 
 const actionTypes = {
     MUTE: faVolumeMute,
@@ -18,84 +16,146 @@ const actionTypes = {
 
 const botId = "mGMEZ8r4";
 
-export default function History() {
-    const writeToast = useSetAtom(tempToastAtom);
-    const [showIds, setShowIds] = useState(false);
+type Props = {};
+type State = {
+    expandedRows: string[];
+};
 
-    const alert = (actionId: string) => {
-        navigator.clipboard.writeText(actionId);
-        writeToast("Copied.");
-    };
+export default class History extends React.Component<Props, State> {
+    constructor(props: Props) {
+        super(props);
 
-    return (
-        <div>
-            <div className="flex flex-col space-y-2 md:space-y-0 mb-6 md:mb-4 md:flex-row md:space-x-2">
-                <div className="form-control w-full max-w-xs">
-                    <label className="label">
-                        <span className="label-text">Filter by target users</span>
-                    </label>
-                    <input type="text" placeholder="Example: pmbOB8VA" className="input input-bordered w-60 input-sm" />
-                </div>
-                <div className="form-control w-full max-w-xs">
-                    <label className="label">
-                        <span className="label-text">Filter by executing users</span>
-                    </label>
-                    <input type="text" placeholder="Example: pmbOB8VA" className="input input-bordered w-60 input-sm" />
-                </div>
-                <div className="form-control w-full max-w-xs">
-                    <label className="label">
-                        <span className="label-text">Filter by type</span>
-                    </label>
+        this.state = { expandedRows: [] };
+    }
 
-                    <div className="w-full place-items-start grid grid-cols-3 form-control">
-                        {Object.keys(actionTypes).map((action) => {
-                            return (
-                                <div key={action} className="flex flex-row space-x-2 mt-1">
-                                    <span>{action.toLowerCase()}</span>
-                                    <input type="checkbox" value={action} className="checkbox" />
-                                </div>
-                            );
-                        })}
+    toggleRowExpansion(actionId: string) {
+        const { expandedRows } = this.state;
+
+        const index = this.state.expandedRows.indexOf(actionId);
+
+        // It doesn't exist, so add it
+        if (index < 0)
+            return this.setState({ expandedRows: expandedRows.concat(actionId) });
+
+        // To not mess with the state
+        const clone = [...expandedRows];
+
+        clone.splice(index, 1);
+
+        this.setState({ expandedRows: clone });
+    }
+
+    renderRow(action: Action) {
+        const isExpanded = this.state.expandedRows.includes(action.id);
+
+        return (
+            <>
+                <tr data-id={action.id}>
+                    <td>
+                        <IconButton onClick={this.toggleRowExpansion.bind(this, action.id)} color="neutral" aria-label="More button">
+                            <FontAwesomeIcon icon={isExpanded ? faChevronDown : faChevronRight} />
+                        </IconButton>
+                    </td>
+                    <td className="text-spacelight-600 font-bold">
+                        <Typography startDecorator={<FontAwesomeIcon icon={getActionIcon(action.type)} />} fontWeight="lg" textColor="text.secondary">
+                            {action.type}
+                        </Typography>
+                    </td>
+                    <td>
+                        <Typography level="body2">
+                            {getReason(action.reason, action.executorId)}
+                        </Typography>
+                    </td>
+                    <td>{action.targetId}</td>
+                    <td>{action.executorId}</td>
+                    <td>
+                        <Typography level="body2">
+                            {transformToDate(action.createdAt)}
+                        </Typography>
+                    </td>
+                </tr>
+                {/* isExpanded is modified by arrow button. This is for showing IDs and whatnot */}
+                {isExpanded && this.renderRowInfo(action)}
+            </>
+        );
+    }
+
+    renderRowInfo(action: Action) {
+        return (
+            <tr data-id={action.id}>
+                <td style={{ height: 0, padding: 0 }} colSpan={6}>
+                    <Sheet variant="soft" sx={{ p: 1, pl: 6, pr: 6 }}>
+                        <Typography level="body2">ID: {action.id}</Typography>
+                    </Sheet>
+                </td>
+            </tr>
+        );
+    }
+
+    render() {
+        return (
+            <div>
+                {/* <div className="flex flex-col space-y-2 md:space-y-0 mb-6 md:mb-4 md:flex-row md:space-x-2">
+                    <div className="form-control w-full max-w-xs">
+                        <label className="label">
+                            <span className="label-text">Filter by target users</span>
+                        </label>
+                        <input type="text" placeholder="Example: pmbOB8VA" className="input input-bordered w-60 input-sm" />
                     </div>
-                </div>
-            </div>
+                    <div className="form-control w-full max-w-xs">
+                        <label className="label">
+                            <span className="label-text">Filter by executing users</span>
+                        </label>
+                        <input type="text" placeholder="Example: pmbOB8VA" className="input input-bordered w-60 input-sm" />
+                    </div>
+                    <div className="form-control w-full max-w-xs">
+                        <label className="label">
+                            <span className="label-text">Filter by type</span>
+                        </label>
 
-            <Table>
-                <TableHead>
-                    <TableCell>User</TableCell>
-                    <TableCell>Action</TableCell>
-                    <TableCell>Reason</TableCell>
-                    <TableCell>Moderator</TableCell>
-                    <TableCell>Created At</TableCell>
-                    <TableCell></TableCell>
-                </TableHead>
-                <TableBody>
-                    {actions.map((action) => (
-                        <TableRow data-id={action.id}>
-                            <TableCell className="text-spacelight-700">{action.targetId}</TableCell>
-                            <TableCell className="text-spacelight-500 font-bold">
-                                <FontAwesomeIcon className="w-5 mr-2 text-spacelight-300" icon={getActionIcon(action.type)} />
-                                <span>{action.type}</span>
-                            </TableCell>
-                            <TableCell className="text-spacelight-700">{getReason(action.reason, action.executorId)}</TableCell>
-                            <TableCell className="text-spacelight-700">{action.executorId}</TableCell>
-                            <TableCell className="text-spacelight-700">{transformToDate(action.createdAt)}</TableCell>
-                            <TableCell>
-                                <LabsOverflowButton />
-                            </TableCell>
-                        </TableRow>
-                    ))}
-                </TableBody>
-            </Table>
-        </div>
-    );
+                        <div className="w-full place-items-start grid grid-cols-3 form-control">
+                            {Object.keys(actionTypes).map((action) => {
+                                return (
+                                    <div key={action} className="flex flex-row space-x-2 mt-1">
+                                        <span>{action.toLowerCase()}</span>
+                                        <input type="checkbox" value={action} className="checkbox" />
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    </div>
+                </div> */}
+                <header>
+                    <Input placeholder="Search cases" startDecorator={
+                        <FontAwesomeIcon icon={faMagnifyingGlass} />
+                    } />
+                </header>
+
+                <Table size="lg" variant="plain" sx={{ borderRadius: 8, overflow: "hidden", "--Table-headerUnderlineThickness": 0 }}>
+                    <thead>
+                        <tr>
+                            <th style={{ width: 60 }}></th>
+                            <th>Action</th>
+                            <th>Reason</th>
+                            <th>User</th>
+                            <th>Moderator</th>
+                            <th>CreatedAt</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {actions.map(this.renderRow.bind(this))}
+                    </tbody>
+                </Table>
+            </div>
+        );
+    }
 }
 
 const getActionIcon = (action: string) => {
     return actionTypes[action as keyof typeof actionTypes];
 };
 
-const getReason = (reason: string, executorId: string) => (executorId === botId && reason.startsWith("[AUTOMOD]") ? reason.substring(10) : reason);
+const getReason = (reason: string | null, executorId: string) => (executorId === botId && reason?.startsWith("[AUTOMOD]") ? reason.substring(10) : reason);
 // {
 //     if (reason.startsWith("[AUTOMOD]")) return <span className="py-1 px-2 rounded-lg text-spacelight-800">User violated automod rules</span>;
 //     if (reason.length > 40) return `${reason.substring(0, 40)}...`;
@@ -106,6 +166,6 @@ const getExecutor = (executorId: string) => {
     return executorId === botId ? <span className="badge badge-md text-primary font-semibold">Automod</span> : executorId;
 };
 
-const transformToDate = (date: string | null) => {
-    return date?.substring(0, 10) ?? "never";
+const transformToDate = (date: Date | null) => {
+    return date?.toString().substring(0, 10) ?? "never";
 };

@@ -69,24 +69,5 @@ export default function Config() {
             ]}
             onSubmit={({ values }) => console.log("New config values", values)}
         />
-        // <>
-        //     {Object.keys(questions).map((qKey) => {
-        //         const questionInfo = questions[qKey as keyof typeof questions];
-
-        //         return (
-        //             <div key={qKey} className="flex flex-row">
-        //                 <div className="w-3/5">
-        //                     <label className="label">
-        //                         <span className="label-text font-bold text-2xl">{questionInfo.label}</span>
-        //                     </label>
-        //                     <p className="text-md ml-1 mr-4">{questionInfo.description}</p>
-        //                 </div>
-        //                 <input type="text" placeholder="Type here" className="input input-bordered w-2/5 my-auto" />
-        //             </div>
-        //         );
-        //     })}
-
-        //     <button className="btn btn-primary text-black text-xl">Submit</button>
-        // </>
     );
 }

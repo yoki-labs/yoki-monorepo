@@ -1,5 +1,5 @@
 import { FormControl } from "@mui/base";
-import { FormGroup, FormHelperText, FormLabel, InputLabel, MenuItem, Select, TextField } from "@mui/material";
+import { FormHelperText, Input, Option, Select } from "@mui/joy";
 import React from "react";
 import { FormEvent } from "react";
 import LabsButton from "./LabsButton";
@@ -75,9 +75,9 @@ export default class LabsForm extends React.Component<LabsFormProps, LabsFormSta
             <form id={`form-${this.formId}`} autoComplete="off" onSubmit={onSubmit}>
                 {children}
                 {sections.map((section) => (
-                    <FormGroup row={section.row}>{section.fields.map(this.generateField.bind(this))}</FormGroup>
+                    <section>{section.fields.map(this.generateField.bind(this))}</section>
                 ))}
-                <LabsButton disabled={!changed} variant="contained" color="primary" type="submit">
+                <LabsButton disabled={!changed} variant="solid" color="primary" type="submit">
                     Save
                 </LabsButton>
             </form>
@@ -88,22 +88,22 @@ export default class LabsForm extends React.Component<LabsFormProps, LabsFormSta
         const fieldId = `formfield-${this.formId}-${field.prop}`;
 
         return (
-            <FormControl fullWidth>
+            <FormControl>
                 {field.type === LabsFormFieldType.Select ? (
                     <>
                         <Select
                             id={fieldId}
-                            value={this.state.values[field.prop] ?? field.values?.[0]?.value}
-                            label={field.name}
-                            onChange={({ target: { value } }) => this.setValue(field, value)}
+                            defaultValue={this.state.values[field.prop] ?? field.values?.[0]?.value}
+                            placeholder={field.name}
+                            onChange={(_, value) => value && this.setValue(field, value)}
                         >
                             {field.values?.map((value) => (
-                                <MenuItem value={value.value}>{value.name}</MenuItem>
+                                <Option value={value.value}>{value.name}</Option>
                             ))}
                         </Select>
                     </>
                 ) : (
-                    <TextField id={fieldId} label={field.name} onChange={({ target: { value } }) => this.setValue(field, value)} variant="outlined" />
+                    <Input id={fieldId} placeholder={field.name} onChange={({ target }) => this.setValue(field, target.value)} variant="outlined" />
                 )}
                 {field.description && <FormHelperText>{field.description}</FormHelperText>}
             </FormControl>
