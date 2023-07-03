@@ -16,7 +16,7 @@ const actionTypes = {
 
 const botId = "mGMEZ8r4";
 
-interface Props { }
+interface Props {}
 interface State {
     expandedRows: string[];
 }
