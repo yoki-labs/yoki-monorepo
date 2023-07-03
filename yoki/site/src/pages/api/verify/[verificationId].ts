@@ -33,6 +33,7 @@ const PostVerifyRoute = async (req: NextApiRequest, res: NextApiResponse) => {
     formData.append("secret", process.env.CLOUDFLARE_TURNSTILE_KEY!);
     formData.append("response", token);
     formData.append("remoteip", ip);
+    console.log("making request to cloudflare");
 
     try {
         const req = await fetch("https://challenges.cloudflare.com/turnstile/v0/siteverify", {
@@ -43,12 +44,17 @@ const PostVerifyRoute = async (req: NextApiRequest, res: NextApiResponse) => {
         const json = await req.json();
 
         if (json.success) {
+            console.log("updating captcha marked as true");
             await prisma.captcha.update({ where: { id: captcha.id }, data: { solved: true, hashedIp } });
+            console.log("Removing muted role from user if still exists");
             if (server.muteRoleId) await rest.router.removeRoleFromMember(captcha.serverId, captcha.triggeringUser, server.muteRoleId);
+            console.log("Adding member role to user if exists");
             if (server.memberRoleId) await rest.router.assignRoleToMember(captcha.serverId, captcha.triggeringUser, server.memberRoleId);
             return res.status(200).json({ error: false });
         }
-        return res.status(200).json({ error: true, message: "There was an issue validating your captcha request." });
+
+        console.log(json);
+        return res.status(500).json({ error: true, message: "There was an issue validating your captcha request." });
     } catch (e) {
         void errorHandler.send("Issue with site captcha verify", [errorEmbed(e as Error)]);
         console.error(e);
