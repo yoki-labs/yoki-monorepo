@@ -1,5 +1,4 @@
 import { createHmac } from "crypto";
-import FormData from "form-data";
 import type { NextApiRequest, NextApiResponse } from "next";
 
 import errorHandler, { errorEmbed } from "../../../lib/ErrorHandler";
@@ -29,19 +28,16 @@ const PostVerifyRoute = async (req: NextApiRequest, res: NextApiResponse) => {
     const ban = await prisma.action.findFirst({ where: { serverId: captcha.serverId, targetId: { in: allPossiblePastAccounts }, expired: false, type: "BAN" } });
     if (ban) return res.status(403).json({ error: true, message: "You have been banned from this server." });
 
-    const formData = new FormData();
-    formData.append("secret", process.env.CLOUDFLARE_TURNSTILE_KEY!);
-    formData.append("response", token);
-    formData.append("remoteip", ip);
+    const params = new URLSearchParams();
+    params.append("secret", process.env.CLOUDFLARE_TURNSTILE_KEY!);
+    params.append("response", token);
+    params.append("remoteip", ip);
     console.log("making request to cloudflare");
 
     try {
         const req = await fetch("https://challenges.cloudflare.com/turnstile/v0/siteverify", {
             // @ts-ignore Formdata IS valid here
-            body: formData,
-            headers: {
-                ...formData.getHeaders(),
-            },
+            body: params,
             method: "POST",
         });
         const json = await req.json();
