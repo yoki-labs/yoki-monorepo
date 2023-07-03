@@ -1,10 +1,10 @@
 import { faBroom, faChevronDown, faChevronRight, faCircleExclamation, faHammer, faMagnifyingGlass, faShoePrints, faVolumeMute } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React, { useState } from "react";
+import { IconButton, Input, Sheet, Table, Typography } from "@mui/joy";
+import type { Action } from "@prisma/client";
+import React from "react";
 
 import { actions } from "../../../utils/dummyData";
-import { Table, Sheet, Typography, IconButton, Input } from "@mui/joy";
-import type { Action } from "@prisma/client";
 
 const actionTypes = {
     MUTE: faVolumeMute,
@@ -16,10 +16,10 @@ const actionTypes = {
 
 const botId = "mGMEZ8r4";
 
-type Props = {};
-type State = {
+interface Props { }
+interface State {
     expandedRows: string[];
-};
+}
 
 export default class History extends React.Component<Props, State> {
     constructor(props: Props) {
@@ -34,8 +34,7 @@ export default class History extends React.Component<Props, State> {
         const index = this.state.expandedRows.indexOf(actionId);
 
         // It doesn't exist, so add it
-        if (index < 0)
-            return this.setState({ expandedRows: expandedRows.concat(actionId) });
+        if (index < 0) return this.setState({ expandedRows: expandedRows.concat(actionId) });
 
         // To not mess with the state
         const clone = [...expandedRows];
@@ -62,16 +61,12 @@ export default class History extends React.Component<Props, State> {
                         </Typography>
                     </td>
                     <td>
-                        <Typography level="body2">
-                            {getReason(action.reason, action.executorId)}
-                        </Typography>
+                        <Typography level="body2">{getReason(action.reason, action.executorId)}</Typography>
                     </td>
                     <td>{action.targetId}</td>
                     <td>{action.executorId}</td>
                     <td>
-                        <Typography level="body2">
-                            {transformToDate(action.createdAt)}
-                        </Typography>
+                        <Typography level="body2">{transformToDate(action.createdAt)}</Typography>
                     </td>
                 </tr>
                 {/* isExpanded is modified by arrow button. This is for showing IDs and whatnot */}
@@ -126,9 +121,7 @@ export default class History extends React.Component<Props, State> {
                     </div>
                 </div> */}
                 <header>
-                    <Input placeholder="Search cases" startDecorator={
-                        <FontAwesomeIcon icon={faMagnifyingGlass} />
-                    } />
+                    <Input placeholder="Search cases" startDecorator={<FontAwesomeIcon icon={faMagnifyingGlass} />} />
                 </header>
 
                 <Table size="lg" variant="plain" sx={{ borderRadius: 8, overflow: "hidden", "--Table-headerUnderlineThickness": 0 }}>
@@ -142,9 +135,7 @@ export default class History extends React.Component<Props, State> {
                             <th>CreatedAt</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        {actions.map(this.renderRow.bind(this))}
-                    </tbody>
+                    <tbody>{actions.map((action) => this.renderRow(action))}</tbody>
                 </Table>
             </div>
         );

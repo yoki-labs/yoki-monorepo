@@ -23,7 +23,11 @@ export default function DashForm() {
                 <Typography level="h3">{currentPage[0].toUpperCase() + currentPage.substring(1)}</Typography>
             </div>
 
-            {pages[currentPage as keyof typeof pages] ?? <Alert startDecorator={<FontAwesomeIcon icon={faExclamationTriangle} />} variant="solid" color="warning">Work in progress. Come back later!</Alert>}
+            {pages[currentPage as keyof typeof pages] ?? (
+                <Alert startDecorator={<FontAwesomeIcon icon={faExclamationTriangle} />} variant="solid" color="warning">
+                    Work in progress. Come back later!
+                </Alert>
+            )}
         </div>
     );
 }

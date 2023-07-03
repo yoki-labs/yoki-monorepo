@@ -33,8 +33,8 @@ export const theme = extendTheme({
                     backdrop: labsTheme.spacedark[900],
                     popup: "#000",
                     tooltip: "#000",
-                }
-            }
+                },
+            },
         },
     },
     components: {
@@ -43,19 +43,18 @@ export const theme = extendTheme({
                 input: {
                     outline: "none",
                     ":focus": {
-                        outline: "none"
+                        outline: "none",
                     },
-                }
-            }
+                },
+            },
         },
         JoySelect: {
-            defaultProps: {
-            },
+            defaultProps: {},
         },
         // JoySwitch: {
         //     defaultProps: {
         //         size: "sm",
-                
+
         //     }
         // },
         // JoyChip: {
@@ -68,5 +67,5 @@ export const theme = extendTheme({
         //     },
         //   },
         // },
-    }
+    },
 });

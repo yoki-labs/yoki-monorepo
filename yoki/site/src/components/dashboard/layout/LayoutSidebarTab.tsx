@@ -26,7 +26,7 @@ export default function LayoutSidebarTab({ item, isActive, onClick }: Prop) {
             <ListItemDecorator>
                 <FontAwesomeIcon icon={item.icon} className={`${isActive ? "text-spacelight-400" : "text-spacelight-300"}`} />
             </ListItemDecorator>
-            <span className={textClass}>{ item.name }</span>
+            <span className={textClass}>{item.name}</span>
         </ListItemButton>
     );
 }

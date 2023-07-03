@@ -29,7 +29,9 @@ export default class Module extends React.Component<Props, { isActive: boolean }
                 </CardOverflow>
                 <CardContent>
                     <div className="flex gap-4">
-                        <Typography fontWeight="md" level="body1">{name}</Typography>
+                        <Typography fontWeight="md" level="body1">
+                            {name}
+                        </Typography>
                         <LabsSwitch className="toggle justify-end" defaultChecked={this.props.isActive} onChange={({ target }) => this.setState({ isActive: target.checked })} />
                     </div>
                     <Typography level="body2">{description}</Typography>

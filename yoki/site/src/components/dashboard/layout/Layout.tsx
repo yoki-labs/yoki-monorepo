@@ -30,13 +30,25 @@ export default class Layout extends React.Component<LayoutProps> {
             <>
                 <div className="flex flex-col h-full w-full bg-spacedark-950">
                     <Box sx={{ display: "flex", flexDirection: "row", p: 3 }}>
-                        <Breadcrumbs sx={{ p: 0, "--Breadcrumbs-gap": "20px" }} separator={<Typography level="h6" textColor="text.secondary">/</Typography>}>
+                        <Breadcrumbs
+                            sx={{ p: 0, "--Breadcrumbs-gap": "20px" }}
+                            separator={
+                                <Typography level="h6" textColor="text.secondary">
+                                    /
+                                </Typography>
+                            }
+                        >
                             <Box sx={{ display: "flex", gap: 1 }}>
-                                <Typography startDecorator={<YokiIcon className="fill-spacelight-600" width="32px" height="32px" />} level="h6" textColor="text.secondary" component="div">
+                                <Typography
+                                    startDecorator={<YokiIcon className="fill-spacelight-600" width="32px" height="32px" />}
+                                    level="h6"
+                                    textColor="text.secondary"
+                                    component="div"
+                                >
                                     Yoki
                                 </Typography>
                             </Box>
-                            <ServerSelector servers={servers}/>
+                            <ServerSelector servers={servers} />
                         </Breadcrumbs>
                     </Box>
                     <main className="flex flex-row">

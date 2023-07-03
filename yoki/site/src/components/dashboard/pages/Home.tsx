@@ -7,14 +7,16 @@ import { Alert, Typography } from "@mui/joy";
 export default function Home() {
     return (
         <div className="flex flex-col gap-16">
-            <Alert variant="solid" color="warning" startDecorator={<FontAwesomeIcon icon={faExclamationTriangle} />} >
+            <Alert variant="solid" color="warning" startDecorator={<FontAwesomeIcon icon={faExclamationTriangle} />}>
                 This dashboard is in-progress and may have some bugs. If you run into any issues, report it in{" "}
                 <a href="https://www.guilded.gg/yoki" className="font-bold hover:underline">
                     our Guilded server
                 </a>
             </Alert>
             <section>
-                <Typography level="h3" gutterBottom>Modules</Typography>
+                <Typography level="h3" gutterBottom>
+                    Modules
+                </Typography>
                 <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     <Module
                         name="Automod"

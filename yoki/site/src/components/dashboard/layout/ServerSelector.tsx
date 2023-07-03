@@ -1,5 +1,5 @@
 import React from "react";
-import { GuildedServer } from "../../../lib/@types/guilded/Server"
+import { GuildedServer } from "../../../lib/@types/guilded/Server";
 import { Avatar, FormControl, ListItemDecorator, Option, Select, SelectOption } from "@mui/joy";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronDown } from "@fortawesome/free-solid-svg-icons";
@@ -35,10 +35,7 @@ export class ServerSelector extends React.Component<Props> {
         const { servers } = this.props;
 
         return (
-            <LabsDropdown
-                placeholder="Select server"
-                renderValue={this.renderValue.bind(this)}
-            >
+            <LabsDropdown placeholder="Select server" renderValue={this.renderValue.bind(this)}>
                 {servers.map((server) => (
                     <Option value={server.id} label={server.name}>
                         {this.renderOption(server)}
