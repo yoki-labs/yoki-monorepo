@@ -39,6 +39,9 @@ const PostVerifyRoute = async (req: NextApiRequest, res: NextApiResponse) => {
         const req = await fetch("https://challenges.cloudflare.com/turnstile/v0/siteverify", {
             // @ts-ignore Formdata IS valid here
             body: formData,
+            headers: {
+                ...formData.getHeaders(),
+            },
             method: "POST",
         });
         const json = await req.json();
