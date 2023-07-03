@@ -70,34 +70,34 @@ module.exports = withMT({
             },
         },
     },
-    // plugins: [require("daisyui")],
-    // daisyui: {
-    //     themes: [
-    //         {
-    //             light: {
-    //                 ...require("daisyui/src/colors/themes")["[data-theme=light]"],
-    //                 primary: "#8147ec",
-    //             },
-    //             dark: {
-    //                 ...require("daisyui/src/colors/themes")["[data-theme=dark]"],
-    //                 primary: "#8147ec",
-    //             },
-    //         },
-    //         {
-    //             light: {
-    //                 "base-100": "#f9f5fd",
-    //                 neutral: "#efe7f9",
-    //                 primary: "#8147ec",
-    //             },
-    //             dark: {
-    //                 "base-100": "#06020a",
-    //                 "base-200": "#0e0816",
-    //                 "base-300": "#15101e",
-    //                 neutral: "#0e0816",
-    //                 "neutral-content": "#bcafd9",
-    //                 primary: "#8147ec",
-    //             },
-    //         },
-    //     ],
-    // },
+    plugins: [require("daisyui")],
+    daisyui: {
+        themes: [
+            {
+                light: {
+                    ...require("daisyui/src/theming/themes")["[data-theme=light]"],
+                    primary: "#8147ec",
+                },
+                dark: {
+                    ...require("daisyui/src/theming/themes")["[data-theme=dark]"],
+                    primary: "#8147ec",
+                },
+            },
+            {
+                light: {
+                    "base-100": "#f9f5fd",
+                    neutral: "#efe7f9",
+                    primary: "#8147ec",
+                },
+                dark: {
+                    "base-100": "#06020a",
+                    "base-200": "#0e0816",
+                    "base-300": "#15101e",
+                    neutral: "#0e0816",
+                    "neutral-content": "#bcafd9",
+                    primary: "#8147ec",
+                },
+            },
+        ],
+    },
 });

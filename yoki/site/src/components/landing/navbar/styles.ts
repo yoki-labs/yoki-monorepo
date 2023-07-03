@@ -3,7 +3,6 @@ import styled from "styled-components";
 export const NavbarWrapper = styled.div`
     z-index: 999;
     width: 100%;
-    height: 100%;
 
     top: 0;
     position: sticky;
