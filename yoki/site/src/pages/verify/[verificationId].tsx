@@ -19,12 +19,9 @@ const VerificationPage: NextPage<Props> = ({ id }) => {
 
     const captchaReq = async (token: string) => {
         const req = await fetch(`/api/verify/${id}`, { method: "POST", body: JSON.stringify({ token }), headers: { "content-type": "application/json" } });
-        const body = await req.json();
         if (req.ok) setStatus("SUCCESS");
-        else if (req.status === 500) setStatus("FAILED");
-        else if (body.error) {
-            if (req.status === 403) setStatus("BANNED");
-        }
+        else if (req.status === 403) setStatus("BANNED");
+        else setStatus("FAILED");
     };
 
     let response;

@@ -1,4 +1,4 @@
-lockfileVersion: '6.1'
+lockfileVersion: '6.0'
 
 settings:
   autoInstallPeers: true
@@ -304,12 +304,9 @@ importers:
       '@fortawesome/react-fontawesome':
         specifier: ^0.2.0
         version: 0.2.0(@fortawesome/fontawesome-svg-core@6.4.0)(react@18.2.0)
-      '@guildedjs/rest':
-        specifier: ^2.9.1
-        version: 2.10.0
-      '@guildedjs/webhook-client':
-        specifier: ^0.3.7
-        version: 0.3.13
+      '@guildedjs/api':
+        specifier: ^0.3.1
+        version: 0.3.1
       '@mui/base':
         specifier: 5.0.0-beta.4
         version: 5.0.0-beta.4(@types/react@18.0.11)(react-dom@18.2.0)(react@18.2.0)
@@ -325,6 +322,9 @@ importers:
       '@vercel/analytics':
         specifier: ^1.0.1
         version: 1.0.1
+      '@yokilabs/utils':
+        specifier: workspace:*
+        version: link:../../packages/utils
       common-tags:
         specifier: ^1.8.2
         version: 1.8.2
@@ -389,9 +389,6 @@ importers:
       '@types/styled-components':
         specifier: ^5.1.25
         version: 5.1.26
-      '@yokilabs/utils':
-        specifier: workspace:*
-        version: link:../../packages/utils
       autoprefixer:
         specifier: ^10.4.7
         version: 10.4.14(postcss@8.4.23)
@@ -888,33 +885,6 @@ packages:
     resolution: {integrity: sha512-HYYY8//cXVy6KXwoCSLp3s1hxdWMp3Ib+cEoMuR4Z4EBZ5CMRClHUmTvE+zO0vQYDKriF0ZdmKGWP9tbUJp3fQ==}
     deprecated: Use @guildedjs/api over this package.
     dev: true
-
-  /@guildedjs/rest@2.10.0:
-    resolution: {integrity: sha512-Eq/UPvkPvbHrIkDyeDfsbDsBoGYQdodg5VSuHLAGGZTsi+5j63mmgNa19uAQRx+42j0hoiN8yx3W/c2uezJHrw==}
-    dependencies:
-      form-data: 4.0.0
-      node-fetch: 2.6.7
-      qs: 6.11.1
-    transitivePeerDependencies:
-      - encoding
-    dev: false
-
-  /@guildedjs/rest@2.8.7:
-    resolution: {integrity: sha512-mUsQingDz+4pOAh2pbIlsNoz7okTjHPXfxhSfQgtNzwRVTcSkZpuLA0WutWlmLREp37tZIzIeLT57zr7IZLJlA==}
-    dependencies:
-      node-fetch: 2.6.7
-      qs: 6.11.2
-    transitivePeerDependencies:
-      - encoding
-    dev: false
-
-  /@guildedjs/webhook-client@0.3.13:
-    resolution: {integrity: sha512-Ajy/enriTWyBw5S3Ppcj7H2lazSrz01lNdBAw+U2R4Sjt+orpqnRddTpTp4E81HouyRmyWCMPyeQ5XP6ayb2ew==}
-    dependencies:
-      '@guildedjs/rest': 2.8.7
-    transitivePeerDependencies:
-      - encoding
-    dev: false
 
   /@humanwhocodes/config-array@0.11.8:
     resolution: {integrity: sha512-UybHIJzJnR5Qc/MsD9Kr+RpO2h+/P1GhOwdiLPXK5TWk5sgTdu88bTD9UP+CKbPPh5Rni1u0GjAdYQLemG8g+g==}
@@ -1529,7 +1499,7 @@ packages:
     resolution: {integrity: sha512-IO+MJPVhoqz+28h1qLAcBEH2+xHMK6MTyHJc7MTnnYb6wsoLR29POVGJ7LycmVXIqyy/4/2ShP5sUwTXuOwb/w==}
     dependencies:
       '@types/minimatch': 5.1.2
-      '@types/node': 18.16.3
+      '@types/node': 18.16.18
     dev: true
 
   /@types/hoist-non-react-statics@3.3.1:
@@ -1579,10 +1549,6 @@ packages:
 
   /@types/node@18.16.18:
     resolution: {integrity: sha512-/aNaQZD0+iSBAGnvvN2Cx92HqE5sZCPZtx2TsK+4nvV23fFe09jVDvpArXr2j9DnYlzuU9WuoykDDc6wqvpNcw==}
-    dev: true
-
-  /@types/node@18.16.3:
-    resolution: {integrity: sha512-OPs5WnnT1xkCBiuQrZA4+YAV4HEJejmHneyraIaxsbev5yCEr6KMwINNFP9wQeFIw8FWcoTqF3vQsa5CDaI+8Q==}
 
   /@types/parse-json@4.0.0:
     resolution: {integrity: sha512-//oorEZjL6sbPcKUaCdIGlIUeH26mgzimjBB77G6XRgnDl/L5wOnpyBGRe/Mmf5CVW3PwEBE1NjiMZ/ssFh4wA==}
@@ -1647,7 +1613,7 @@ packages:
   /@types/ws@8.5.4:
     resolution: {integrity: sha512-zdQDHKUgcX/zBc4GrwsE/7dVdAD8JR4EuiAXiiUhhfyIJXXb2+PrGshFyeXWQPMmmZ2XxgaqclgpIC7eTXc1mg==}
     dependencies:
-      '@types/node': 18.16.3
+      '@types/node': 18.16.18
     dev: false
 
   /@typescript-eslint/eslint-plugin@5.59.1(@typescript-eslint/parser@5.59.1)(eslint@8.38.0)(typescript@5.0.4):
@@ -4573,13 +4539,6 @@ packages:
     resolution: {integrity: sha512-rRV+zQD8tVFys26lAGR9WUuS4iUAngJScM+ZRSKtvl5tKeZ2t5bvdNFdNHBW9FWR4guGHlgmsZ1G7BSm2wTbuA==}
     engines: {node: '>=6'}
     dev: true
-
-  /qs@6.11.1:
-    resolution: {integrity: sha512-0wsrzgTz/kAVIeuxSjnpGC56rzYtr6JT/2BwEvMaPhFIoYa1aGO8LbzuU1R0uUYQkLpWBTOj0l/CLAJB64J6nQ==}
-    engines: {node: '>=0.6'}
-    dependencies:
-      side-channel: 1.0.4
-    dev: false
 
   /qs@6.11.2:
     resolution: {integrity: sha512-tDNIz22aBzCDxLtVH++VnTfzxlfeK5CbqohpSqpJgj1Wg/cQbStNAz3NuqCs5vV+pjBsK4x4pN9HlVh7rcYRiA==}

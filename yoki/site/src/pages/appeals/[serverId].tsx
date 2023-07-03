@@ -5,11 +5,11 @@ import { unstable_getServerSession } from "next-auth";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
 
-import { authOptions } from "../api/auth/[...nextauth]";
 import Button from "../../components/Button";
 import { LandingPage } from "../../components/landing/LandingPage";
 import rest from "../../lib/Guilded";
 import prisma from "../../lib/Prisma";
+import { authOptions } from "../api/auth/[...nextauth]";
 
 export interface Props {
     id: string | null;
@@ -26,7 +26,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async (ctx) => {
     if (!server.appealsEnabled || !server.appealChannelId) return { props: { id: server.serverId, enabled: false, banInfo: null, tooRecent: false } };
     if (!session?.user.id) return { redirect: { destination: "/auth/signin", permanent: false } };
     const ban = await rest.router
-        .getMemberBan(serverId, session.user.id)
+        .memberBans.serverMemberBanRead({ serverId, userId: session.user.id })
         .then((x) => x.serverMemberBan)
         .catch(() => null);
 
@@ -108,9 +108,8 @@ const AppealPage: NextPage<Props> = ({ id, enabled, banInfo, tooRecent }) => {
                             className="w-full px-3 pt-3 pb-40 rounded-lg border-custom-black bg-custom-black resize-none font-normal"
                         />
                         <p
-                            className={`ml-auto text-lg ${appealContentLength === 1000 ? "font-bold" : ""} ${
-                                appealContentLength >= 200 ? "text-red-400/70" : appealContentLength >= 100 ? "text-guilded-gilded/70" : "text-guilded-white/70"
-                            }`}
+                            className={`ml-auto text-lg ${appealContentLength === 1000 ? "font-bold" : ""} ${appealContentLength >= 200 ? "text-red-400/70" : appealContentLength >= 100 ? "text-guilded-gilded/70" : "text-guilded-white/70"
+                                }`}
                         >
                             {appealContent === null ? 0 : appealContentLength}/1000
                         </p>

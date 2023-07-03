@@ -28,18 +28,17 @@ export const channelName = (name: string, serverId: string, groupId: string, cha
     `[#${name.length > 50 ? `${name.substring(0, 47)}...` : name}](https://guilded.gg/teams/${serverId}/groups/${groupId}/channels/${channelId}/${type ?? "chat"})`;
 
 export const errorEmbed = (err: string, additional_details?: Record<string, string | number | null>) => {
+    const details = additional_details
+        ? Object.keys(additional_details)
+              .map((key) => `${key}: \`${additional_details[key]}\``)
+              .join("\n")
+        : "";
     return new WebhookEmbed()
         .setDescription(
             stripIndents`
-				${
-                    additional_details &&
-                    Object.keys(additional_details as object)
-                        .map((key) => `${key}: \`${additional_details[key]}\``)
-                        .join("\n")
-                }
+				${details}
 				${err.slice(0, 1350)}
-}
-`
+            `
         )
         .setColor("RED");
 };

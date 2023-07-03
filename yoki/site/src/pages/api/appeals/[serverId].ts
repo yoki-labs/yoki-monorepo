@@ -1,12 +1,12 @@
-import { Embed } from "@guildedjs/webhook-client";
+import { WebhookEmbed } from "@guildedjs/api";
 import { stripIndents } from "common-tags";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { unstable_getServerSession } from "next-auth";
 
-import { authOptions } from "../auth/[...nextauth]";
 import errorHandler, { errorEmbed } from "../../../lib/ErrorHandler";
 import rest from "../../../lib/Guilded";
 import prisma from "../../../lib/Prisma";
+import { authOptions } from "../auth/[...nextauth]";
 
 const PostAppealRoute = async (req: NextApiRequest, res: NextApiResponse) => {
     if (req.method !== "POST") return res.status(405).send("");
@@ -22,32 +22,34 @@ const PostAppealRoute = async (req: NextApiRequest, res: NextApiResponse) => {
     if (!server.appealChannelId) return res.status(404).json({ error: true, code: "NOT_ENABLED", message: "Server does not have appeals enabled." });
 
     const existingBan = await rest.router
-        .getMemberBan(server.serverId, session.user.id)
+        .memberBans.serverMemberBanRead({ serverId: server.serverId, userId: session.user.id })
         .then((x) => x.serverMemberBan)
         .catch(() => null);
     if (!existingBan) return res.status(404).json({ error: true, code: "NOT_BANNED", message: "User is not banned." });
 
     try {
         await prisma.appeal.create({ data: { content: appealContent, serverId: server.serverId, creatorId: session.user.id } });
-        await rest.router.createChannelMessage(server.appealChannelId, {
-            embeds: [
-                new Embed()
-                    .setTitle("User Appealed")
-                    .setTimestamp()
-                    .setColor(0x8060f6)
-                    .setDescription(`${session.user.name} (\`${session.user.id}\`) has made an appeal for an unban.`)
-                    .addFields([
-                        {
-                            name: "Reason",
-                            value: `\`\`\`md\n${stripIndents(appealContent)}\n\`\`\``,
-                        },
-                    ])
-                    .toJSON(),
-            ],
+        await rest.router.chat.channelMessageCreate({
+            channelId: server.appealChannelId, requestBody: {
+                embeds: [
+                    new WebhookEmbed()
+                        .setTitle("User Appealed")
+                        .setTimestamp()
+                        .setColor(0x8060f6)
+                        .setDescription(`${session.user.name} (\`${session.user.id}\`) has made an appeal for an unban.`)
+                        .addFields([
+                            {
+                                name: "Reason",
+                                value: `\`\`\`md\n${stripIndents(appealContent)}\n\`\`\``,
+                            },
+                        ])
+                        .toJSON(),
+                ],
+            }
         });
         return res.status(200).json({ error: false });
     } catch (e) {
-        void errorHandler.send("Issue with site appeal", [errorEmbed(e as Error)]);
+        void errorHandler.send("Issue with site appeal", [errorEmbed((e as Error).message)]);
         console.error(e);
         return res.status(500).json({ error: true, message: "Internal Error." });
     }

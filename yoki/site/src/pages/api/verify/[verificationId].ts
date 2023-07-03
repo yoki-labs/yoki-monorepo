@@ -45,17 +45,18 @@ const PostVerifyRoute = async (req: NextApiRequest, res: NextApiResponse) => {
         if (json.success) {
             console.log("updating captcha marked as true");
             await prisma.captcha.update({ where: { id: captcha.id }, data: { solved: true, hashedIp } });
-            console.log("Removing muted role from user if still exists");
-            if (server.muteRoleId) await rest.router.removeRoleFromMember(captcha.serverId, captcha.triggeringUser, server.muteRoleId);
-            console.log("Adding member role to user if exists");
-            if (server.memberRoleId) await rest.router.assignRoleToMember(captcha.serverId, captcha.triggeringUser, server.memberRoleId);
+            console.log("Removing muted role from user if still exists - ", server.muteRoleId);
+            if (server.muteRoleId) await rest.router.roleMembership.roleMembershipDelete({ serverId: captcha.serverId, userId: captcha.triggeringUser, roleId: server.muteRoleId });
+            console.log("Adding member role to user if exists - ", server.memberRoleId);
+            if (server.memberRoleId) await rest.router.roleMembership.roleMembershipCreate({ serverId: captcha.serverId, userId: captcha.triggeringUser, roleId: server.memberRoleId });
+            console.log("All done");
             return res.status(200).json({ error: false });
         }
 
         console.log(json);
         return res.status(500).json({ error: true, message: "There was an issue validating your captcha request." });
     } catch (e) {
-        void errorHandler.send("Issue with site captcha verify", [errorEmbed(e as Error)]);
+        void errorHandler.send("Issue with site captcha verify", [errorEmbed((e as Error).message)]);
         console.error(e);
         return res.status(500).json({ error: true, message: "Internal Error." });
     }
