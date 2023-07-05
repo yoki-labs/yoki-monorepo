@@ -2,8 +2,8 @@ import { DefaultIncomeType, RoleType } from "@prisma/client";
 import { inlineCode, inlineQuote } from "@yokilabs/bot";
 
 import { Category, Command } from "../commands";
-import { defaultIncomes } from "../income/income-util";
 import { DefaultIncomeTypeMap } from "./income-util";
+import { defaultIncomes } from "../income/income-defaults";
 
 const SetMessage: Command = {
     name: "income-message",

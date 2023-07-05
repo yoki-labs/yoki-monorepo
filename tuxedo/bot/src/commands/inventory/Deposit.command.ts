@@ -1,5 +1,5 @@
 import { Category, Command } from "../commands";
-import { generateBankCommand } from "./income-util";
+import { generateBankCommand } from "./bank-commands";
 
 const Daily: Command = {
     name: "deposit",

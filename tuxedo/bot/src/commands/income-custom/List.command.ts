@@ -3,7 +3,7 @@ import { inlineQuote } from "@yokilabs/bot";
 import ms from "ms";
 
 import { Category, Command } from "../commands";
-import { defaultCreatedCooldown } from "../income/income-util";
+import { defaultCreatedCooldown } from "../income/income-defaults";
 
 const List: Command = {
     name: "income-list",

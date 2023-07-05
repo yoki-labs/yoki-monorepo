@@ -55,7 +55,7 @@ const Set: Command = {
 
         // To not accidentally try creating new member info or remove everything they had in the bank,
         // despite only setting pocket
-        const memberInfo = await ctx.dbUtil.getServerMember(message.serverId!, message.createdById);
+        const memberInfo = await ctx.dbUtil.getServerMember(message.serverId!, member.id);
         const currentBalance = memberInfo?.balances.find((x) => x.currencyId === currency.id);
 
         await ctx.dbUtil.updateMemberBalance(message.serverId!, member.id, memberInfo, [

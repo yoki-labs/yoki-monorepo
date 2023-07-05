@@ -317,4 +317,32 @@ export class DatabaseUtil extends Util<TuxoClient> {
             },
         });
     }
+
+    updateMemberBalanceOnly(member: ServerMember & { balances: MemberBalance[] }, balances: Pick<MemberBalance, "currencyId" | "pocket" | "bank">[]) {
+        const balanceUpdate = member.balances.map((x) => {
+            const updated = balances.find((y) => y.currencyId === x.currencyId);
+
+            return {
+                where: {
+                    id: x.id,
+                },
+                data: {
+                    pocket: updated?.pocket ?? x.pocket,
+                    bank: updated?.bank ?? x.bank,
+                    all: (updated?.pocket ?? x.pocket) + (updated?.bank ?? x.bank),
+                },
+            };
+        });
+
+        return this.client.prisma.serverMember.update({
+            where: {
+                id: member.id,
+            },
+            data: {
+                balances: {
+                    update: balanceUpdate,
+                },
+            },
+        });
+    }
 }

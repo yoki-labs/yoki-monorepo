@@ -2,7 +2,7 @@ import { RoleType } from "@prisma/client";
 import { createCommandHandler } from "@yokilabs/bot";
 
 import type { TuxoClient } from "../../Client";
-import { useCustomIncomeCommand } from "../../commands/income/income-util";
+import { useCustomIncomeCommand } from "../../commands/income/normal-incomes";
 import type { Command, GEvent, Server } from "../../typings";
 import { RoleTypeValues } from "../../util/values";
 

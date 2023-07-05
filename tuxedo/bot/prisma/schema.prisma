@@ -51,6 +51,8 @@ model Currency {
     // Perks
     startingBalance Int?
     maximumBalance  Int?
+    bankEnabled     Boolean  @default(true)
+    canLose         Boolean  @default(true)
     // Who, when
     createdBy       String?  @db.VarChar(255)
     createdAt       DateTime @default(now())
@@ -139,6 +141,7 @@ enum DefaultIncomeType {
     DAILY
     WORK
     HOBBY
+    ROB
 }
 
 enum PremiumType {

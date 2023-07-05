@@ -1,7 +1,7 @@
 import { DefaultIncomeType } from "@prisma/client";
 
 import { Category, Command } from "../commands";
-import { generateIncomeCommand } from "./income-util";
+import { generateIncomeCommand } from "./normal-incomes";
 
 const Hobby: Command = {
     name: "hobby",

@@ -3,8 +3,8 @@ import { inlineCode } from "@yokilabs/bot";
 import ms from "ms";
 
 import { Category, Command } from "../commands";
-import { defaultCreatedCooldown, defaultIncomes } from "../income/income-util";
 import { DefaultIncomeTypeMap } from "./income-util";
+import { defaultCreatedCooldown, defaultIncomes } from "../income/income-defaults";
 
 const SetCooldown: Command = {
     name: "income-cooldown",

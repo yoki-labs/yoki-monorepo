@@ -5,8 +5,8 @@ import { TuxoClient } from "../../Client";
 import { Command } from "../commands";
 import Daily from "../income/Daily.command";
 import Hobby from "../income/Hobby.command";
-import { defaultCreatedReceivedCurrency, defaultIncomes } from "../income/income-util";
 import Work from "../income/Work.command";
+import { defaultCreatedReceivedCurrency, defaultIncomes } from "../income/income-defaults";
 
 export const DefaultIncomeTypeMap: Record<string, string> = Object.assign(
     {},

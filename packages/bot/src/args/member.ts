@@ -11,6 +11,7 @@ export default [
             if (!mention) return null;
 
             const member = await message.client.members.fetch(message.serverId!, mention.id).catch(() => null);
+
             if (!member) return null;
 
             const name = member.nickname ?? member.user!.name;
