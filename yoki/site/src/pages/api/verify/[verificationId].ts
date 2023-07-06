@@ -48,7 +48,8 @@ const PostVerifyRoute = async (req: NextApiRequest, res: NextApiResponse) => {
             console.log("Removing muted role from user if still exists - ", server.muteRoleId);
             if (server.muteRoleId) await rest.router.roleMembership.roleMembershipDelete({ serverId: captcha.serverId, userId: captcha.triggeringUser, roleId: server.muteRoleId });
             console.log("Adding member role to user if exists - ", server.memberRoleId);
-            if (server.memberRoleId) await rest.router.roleMembership.roleMembershipCreate({ serverId: captcha.serverId, userId: captcha.triggeringUser, roleId: server.memberRoleId });
+            if (server.memberRoleId)
+                await rest.router.roleMembership.roleMembershipCreate({ serverId: captcha.serverId, userId: captcha.triggeringUser, roleId: server.memberRoleId });
             console.log("All done");
             return res.status(200).json({ error: false });
         }

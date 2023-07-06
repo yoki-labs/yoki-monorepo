@@ -3,10 +3,10 @@ import { stripIndents } from "common-tags";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { unstable_getServerSession } from "next-auth";
 
+import { authOptions } from "../auth/[...nextauth]";
 import errorHandler, { errorEmbed } from "../../../lib/ErrorHandler";
 import rest from "../../../lib/Guilded";
 import prisma from "../../../lib/Prisma";
-import { authOptions } from "../auth/[...nextauth]";
 
 const PostAppealRoute = async (req: NextApiRequest, res: NextApiResponse) => {
     if (req.method !== "POST") return res.status(405).send("");
@@ -21,8 +21,8 @@ const PostAppealRoute = async (req: NextApiRequest, res: NextApiResponse) => {
     if (!server) return res.status(404).json({ error: true, message: "Invalid server ID." });
     if (!server.appealChannelId) return res.status(404).json({ error: true, code: "NOT_ENABLED", message: "Server does not have appeals enabled." });
 
-    const existingBan = await rest.router
-        .memberBans.serverMemberBanRead({ serverId: server.serverId, userId: session.user.id })
+    const existingBan = await rest.router.memberBans
+        .serverMemberBanRead({ serverId: server.serverId, userId: session.user.id })
         .then((x) => x.serverMemberBan)
         .catch(() => null);
     if (!existingBan) return res.status(404).json({ error: true, code: "NOT_BANNED", message: "User is not banned." });
@@ -30,7 +30,8 @@ const PostAppealRoute = async (req: NextApiRequest, res: NextApiResponse) => {
     try {
         await prisma.appeal.create({ data: { content: appealContent, serverId: server.serverId, creatorId: session.user.id } });
         await rest.router.chat.channelMessageCreate({
-            channelId: server.appealChannelId, requestBody: {
+            channelId: server.appealChannelId,
+            requestBody: {
                 embeds: [
                     new WebhookEmbed()
                         .setTitle("User Appealed")
@@ -45,7 +46,7 @@ const PostAppealRoute = async (req: NextApiRequest, res: NextApiResponse) => {
                         ])
                         .toJSON(),
                 ],
-            }
+            },
         });
         return res.status(200).json({ error: false });
     } catch (e) {

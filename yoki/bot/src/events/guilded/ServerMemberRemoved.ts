@@ -1,9 +1,6 @@
 import { LogChannelType } from "@prisma/client";
 import { inlineCode } from "@yokilabs/bot";
 import { Colors } from "@yokilabs/utils";
-import { stripIndents } from "common-tags";
-import { WebhookEmbed } from "guilded.js";
-import { nanoid } from "nanoid";
 
 import { closeModmailThread } from "../../commands/modmail/Close.command";
 import type { GEvent } from "../../typings";
@@ -24,38 +21,15 @@ export default {
             if (memberLeaveLogChannel) {
                 const action = isKick ? "been kicked out from" : "left";
 
-                try {
-                    // send the log channel message with the content/data of the deleted message
-                    await ctx.messageUtil.sendLog({
-                        where: memberLeaveLogChannel.channelId,
-                        title: `User Left`,
-                        serverId,
-                        description: `<@${userId}> (${inlineCode(userId)}) has ${action} the server.`,
-                        color: Colors.red,
-                        occurred: new Date().toISOString(),
-                    });
-                } catch (e) {
-                    // generate ID for this error, not persisted in database
-                    const referenceId = nanoid();
-                    // send error to the error webhook
-                    if (e instanceof Error) {
-                        console.error(e);
-                        void ctx.errorHandler.send("Error in logging member leave event!", [
-                            new WebhookEmbed()
-                                .setDescription(
-                                    stripIndents`
-								Reference ID: ${inlineCode(referenceId)}
-								Server: ${inlineCode(serverId)}
-								User: ${inlineCode(userId)}
-								Error: \`\`\`
-								${e.stack ?? e.message}
-								\`\`\`
-							`
-                                )
-                                .setColor("RED"),
-                        ]);
-                    }
-                }
+                // send the log channel message with the content/data of the deleted message
+                await ctx.messageUtil.sendLog({
+                    where: memberLeaveLogChannel.channelId,
+                    title: `User Left`,
+                    serverId,
+                    description: `<@${userId}> (${inlineCode(userId)}) has ${action} the server.`,
+                    color: Colors.red,
+                    occurred: new Date().toISOString(),
+                });
             }
         }
 

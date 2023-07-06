@@ -1,8 +1,5 @@
 import { inlineCode, inlineQuote } from "@yokilabs/bot";
 import { Colors } from "@yokilabs/utils";
-import { stripIndents } from "common-tags";
-import { WebhookEmbed } from "guilded.js";
-import { nanoid } from "nanoid";
 
 import { FilteredContent } from "../../modules/content-filter";
 import { GEvent, LogChannelType } from "../../typings";
@@ -17,46 +14,23 @@ export default {
         // check if there's a log channel channel for message deletions
         const memberUpdateLogChannel = await ctx.dbUtil.getLogChannel(serverId, LogChannelType.member_updates);
         if (memberUpdateLogChannel) {
-            try {
-                // send the log channel message with the content/data of the deleted message
-                await ctx.messageUtil.sendLog({
-                    where: memberUpdateLogChannel.channelId,
-                    title: `Member Nickname Changed`,
-                    serverId,
-                    description: `<@${userId}> (${inlineCode(userId)}) had their nickname changed in the server.`,
-                    color: Colors.blue,
-                    fields: [
-                        {
-                            name: "Nickname Changes",
-                            value: `${oldMember ? (oldMember.nickname ? inlineQuote(oldMember.nickname) : "No nickname") : "Unknown nickname"} -> ${
-                                nickname ? inlineQuote(nickname) : "No nickname"
-                            }`,
-                        },
-                    ],
-                    occurred: new Date().toISOString(),
-                });
-            } catch (e) {
-                // generate ID for this error, not persisted in database
-                const referenceId = nanoid();
-                // send error to the error webhook
-                if (e instanceof Error) {
-                    console.error(e);
-                    void ctx.errorHandler.send("Error in logging member leave event!", [
-                        new WebhookEmbed()
-                            .setDescription(
-                                stripIndents`
-                                    Reference ID: ${inlineCode(referenceId)}
-                                    Server: ${inlineCode(serverId)}
-                                    User: ${inlineCode(userId)}
-                                    Error: \`\`\`
-                                    ${e.stack ?? e.message}
-                                    \`\`\`
-                                `
-                            )
-                            .setColor("RED"),
-                    ]);
-                }
-            }
+            // send the log channel message with the content/data of the deleted message
+            await ctx.messageUtil.sendLog({
+                where: memberUpdateLogChannel.channelId,
+                title: `Member Nickname Changed`,
+                serverId,
+                description: `<@${userId}> (${inlineCode(userId)}) had their nickname changed in the server.`,
+                color: Colors.blue,
+                fields: [
+                    {
+                        name: "Nickname Changes",
+                        value: `${oldMember ? (oldMember.nickname ? inlineQuote(oldMember.nickname) : "No nickname") : "Unknown nickname"} -> ${
+                            nickname ? inlineQuote(nickname) : "No nickname"
+                        }`,
+                    },
+                ],
+                occurred: new Date().toISOString(),
+            });
         }
 
         // If the member's nickname is updated, scan it for any harmful content

@@ -1,6 +1,9 @@
-import { errorEmbed, setClientCommands, setClientEvents } from "@yokilabs/bot";
+import { errorEmbed, GEvent, setClientCommands } from "@yokilabs/bot";
 import { config } from "dotenv";
+import { ClientEvents } from "guilded.js";
+import stringify from "json-stringify-safe";
 import { join } from "path";
+import recursive from "recursive-readdir";
 
 import YokiClient from "./Client";
 import unhandledPromiseRejection from "./events/other/unhandledPromiseRejection";
@@ -55,8 +58,36 @@ void (async (): Promise<void> => {
     // Load all filse & directories in the commands dir recursively
     await setClientCommands(client, join(__dirname, "commands"));
     // Load guilded events
-    await setClientEvents(client, join(__dirname, "events", "guilded"), eventErrorLoggerS3(client));
+    // Load guilded events
+    const eventFiles = await recursive(join(__dirname, "events"));
 
+    for (const eventFile of eventFiles.filter((x) => !x.endsWith(".ignore.js") && !x.endsWith(".map"))) {
+        const event = (await import(eventFile)).default as GEvent<YokiClient, any>;
+        if (!event.name) {
+            console.log(`ERROR loading event ${eventFile}`);
+            continue;
+        }
+        console.log(`Loading event ${event.name}`);
+        client.on(event.name, async (...args: Parameters<ClientEvents[keyof ClientEvents]>) => {
+            try {
+                // @ts-ignore this is valid
+                if (["XjBWymwR", "DlZMvw1R"].includes(args[0]?.serverId)) return;
+                await event.execute([...args, client]);
+            } catch (err) {
+                const errorContent = JSON.stringify(err);
+                const safeStringifyCtx = stringify(args);
+                void eventErrorLoggerS3(
+                    client,
+                    event.name,
+                    `Error: 
+                    ${errorContent}
+
+                    Ctx:
+                    ${safeStringifyCtx}`
+                );
+            }
+        });
+    }
     try {
         // check if the main server exists and is in the database, this check is mostly to make sure our prisma migrations are applied
         const existingMainServer = await client.prisma.server.findMany({ where: { serverId: process.env.MAIN_SERVER } });

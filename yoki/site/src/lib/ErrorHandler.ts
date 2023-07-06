@@ -8,8 +8,8 @@ export default errorHandler;
 export const errorEmbed = (err: string, additional_details?: Record<string, string | number | null>) => {
     const details = additional_details
         ? Object.keys(additional_details)
-            .map((key) => `${key}: \`${additional_details[key]}\``)
-            .join("\n")
+              .map((key) => `${key}: \`${additional_details[key]}\``)
+              .join("\n")
         : "";
     return new WebhookEmbed()
         .setDescription(

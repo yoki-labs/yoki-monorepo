@@ -1,4 +1,5 @@
 import { extendTheme } from "@mui/joy";
+
 import labsTheme from "./theme.json";
 
 export const theme = extendTheme({

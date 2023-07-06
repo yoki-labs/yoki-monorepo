@@ -1,8 +1,8 @@
 import { LogChannelType } from "@prisma/client";
-import { inlineCode, quoteMarkdown } from "@yokilabs/bot";
+import { errorEmbed, inlineCode, quoteMarkdown } from "@yokilabs/bot";
 import { Colors } from "@yokilabs/utils";
 import { stripIndents } from "common-tags";
-import { Message, UserType, WebhookEmbed } from "guilded.js";
+import { Message, UserType } from "guilded.js";
 import { nanoid } from "nanoid";
 
 import YokiClient from "../../Client";
@@ -71,19 +71,7 @@ export default {
             if (e instanceof Error) {
                 console.error(e);
                 void ctx.errorHandler.send("Error in logging message update!", [
-                    new WebhookEmbed()
-                        .setDescription(
-                            stripIndents`
-						Reference ID: ${inlineCode(referenceId)}
-						Server: ${inlineCode(message.serverId)}
-						Channel: ${inlineCode(message.channelId)}
-						User: ${inlineCode(message.authorId)}
-						Error: \`\`\`
-						${e.stack ?? e.message}
-						\`\`\`
-					`
-                        )
-                        .setColor("RED"),
+                    errorEmbed(e.stack ?? e.message, { referenceId, serverId: message.serverId, channelId: message.channelId, userId: message.authorId }),
                 ]);
             }
         }

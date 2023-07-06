@@ -61,7 +61,7 @@ const Set: Command = {
         await ctx.dbUtil.updateMemberBalance(message.serverId!, member.id, memberInfo, [
             {
                 currencyId: currency.id,
-                pocket: balanceType?.resolved !== BalanceType.BANK ? amount : currentBalance?.pocket ?? 0,
+                pocket: balanceType?.resolved === BalanceType.BANK ? currentBalance?.pocket ?? 0 : amount,
                 bank: balanceType && balanceType?.resolved !== BalanceType.POCKET ? amount : currentBalance?.bank ?? 0,
             },
         ]);

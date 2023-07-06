@@ -1,8 +1,8 @@
 import { LogChannelType, Prisma } from "@prisma/client";
-import { codeBlock, inlineCode } from "@yokilabs/bot";
+import { codeBlock, errorEmbed, inlineCode } from "@yokilabs/bot";
 import { Colors } from "@yokilabs/utils";
 import { stripIndents } from "common-tags";
-import { UserType, WebhookEmbed } from "guilded.js";
+import { UserType } from "guilded.js";
 import { nanoid } from "nanoid";
 
 import type { GEvent } from "../../typings";
@@ -80,19 +80,7 @@ export default {
             if (e instanceof Error) {
                 console.error(e);
                 void ctx.errorHandler.send("Error in logging message deletion!", [
-                    new WebhookEmbed()
-                        .setDescription(
-                            stripIndents`
-						Reference ID: ${inlineCode(referenceId)}
-						Server: ${inlineCode(deletedMessage?.serverId ?? "not cached")}
-						Channel: ${inlineCode(message.channelId)}
-						User: ${inlineCode(deletedMessage?.authorId ?? "not cached")}
-						Error: \`\`\`
-						${e.stack ?? e.message}
-						\`\`\`
-					`
-                        )
-                        .setColor("RED"),
+                    errorEmbed(e.stack ?? e.message, { referenceId, serverId: message.serverId!, channelId: message.channelId, userId: deletedMessage?.authorId ?? "not cached" }),
                 ]);
             }
         }

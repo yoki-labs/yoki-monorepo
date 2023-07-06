@@ -1,7 +1,7 @@
 import { ContentFilter, FilterMatching, Preset } from "@prisma/client";
+import { errorEmbed } from "@yokilabs/bot";
 import { Colors } from "@yokilabs/utils";
-import { stripIndents } from "common-tags";
-import { Message, UserType, WebhookEmbed } from "guilded.js";
+import { Message, UserType } from "guilded.js";
 
 import { ContentFilterScan, Server, Severity } from "../typings";
 import { IMAGE_REGEX } from "../utils/matching";
@@ -173,8 +173,7 @@ export class ContentFilterUtil extends BaseFilterUtil {
             // Perform resulting action, for message filtering it's deleting the original message
             await resultingAction();
         } catch (err: any) {
-            if (err instanceof Error)
-                await this.client.errorHandler.send("Error in filtering callback", [new WebhookEmbed().setDescription(stripIndents`${err.stack}`).setColor("RED")]);
+            if (err instanceof Error) await this.client.errorHandler.send("Error in filtering callback", [errorEmbed(err.stack ?? err.message, { userId, serverId })]);
         }
 
         // Execute the punishing action. If this is a threshold exceeding, execute the punishment associated with the exceeded threshold
