@@ -6,8 +6,8 @@ import { EmbedField } from "guilded.js";
 import ms from "ms";
 
 import { Category, Command } from "../commands";
-import { DefaultIncomeTypeMap, displayDefaultRewards, displayOverridenRewards } from "./income-util";
 import { defaultCreatedCooldown, defaultIncomes } from "../income/income-defaults";
+import { DefaultIncomeTypeMap, displayDefaultRewards, displayOverridenRewards } from "./income-util";
 
 const Info: Command = {
     name: "income-info",

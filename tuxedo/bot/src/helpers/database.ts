@@ -259,6 +259,34 @@ export class DatabaseUtil extends Util<TuxoClient> {
         });
     }
 
+    updateMemberBalanceOnly(member: ServerMember & { balances: MemberBalance[] }, balances: Pick<MemberBalance, "currencyId" | "pocket" | "bank">[]) {
+        const balanceUpdate = member.balances.map((x) => {
+            const updated = balances.find((y) => y.currencyId === x.currencyId);
+
+            return {
+                where: {
+                    id: x.id,
+                },
+                data: {
+                    pocket: updated?.pocket ?? x.pocket,
+                    bank: updated?.bank ?? x.bank,
+                    all: (updated?.pocket ?? x.pocket) + (updated?.bank ?? x.bank),
+                },
+            };
+        });
+
+        return this.client.prisma.serverMember.update({
+            where: {
+                id: member.id,
+            },
+            data: {
+                balances: {
+                    update: balanceUpdate,
+                },
+            },
+        });
+    }
+
     private createMember(serverId: string, userId: string, balances: Pick<MemberBalance, "currencyId" | "pocket" | "bank">[]) {
         return this.client.prisma.serverMember.create({
             data: {
@@ -313,34 +341,6 @@ export class DatabaseUtil extends Util<TuxoClient> {
                 balances: {
                     update: balanceUpdate,
                     createMany: createBalances.length ? { data: createBalances } : undefined,
-                },
-            },
-        });
-    }
-
-    updateMemberBalanceOnly(member: ServerMember & { balances: MemberBalance[] }, balances: Pick<MemberBalance, "currencyId" | "pocket" | "bank">[]) {
-        const balanceUpdate = member.balances.map((x) => {
-            const updated = balances.find((y) => y.currencyId === x.currencyId);
-
-            return {
-                where: {
-                    id: x.id,
-                },
-                data: {
-                    pocket: updated?.pocket ?? x.pocket,
-                    bank: updated?.bank ?? x.bank,
-                    all: (updated?.pocket ?? x.pocket) + (updated?.bank ?? x.bank),
-                },
-            };
-        });
-
-        return this.client.prisma.serverMember.update({
-            where: {
-                id: member.id,
-            },
-            data: {
-                balances: {
-                    update: balanceUpdate,
                 },
             },
         });
