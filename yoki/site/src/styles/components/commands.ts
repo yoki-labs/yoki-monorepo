@@ -6,8 +6,8 @@ export const CommandNavigation = styled.div`
     gap: 10px;
     min-width: 250px;
 
-    position: sticky;
-    top: 8rem;
+    position: static;
+    top: 2rem;
 
     height: fit-content;
     color: white;
