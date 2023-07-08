@@ -1,11 +1,12 @@
 import { errorEmbed } from "@yokilabs/bot";
 import { stripIndents } from "common-tags";
+import { inspect } from "node:util";
 
 import YokiClient from "../Client";
 
-export const errorLoggerS3 = async (ctx: YokiClient, event: string, err: Error, _context?: any) => {
+export const errorLoggerS3 = async (ctx: YokiClient, event: string, err: Error, context?: any) => {
     const errorContent = JSON.stringify(err);
-    const safeStringifyCtx = ""; // context && stringify(context);
+    const safeStringifyCtx = context && inspect(context, { depth: 1 });
     const upload = await uploadS3(
         ctx,
         `error/${ctx.user!.name}/${event}-${Date.now()}.txt`,

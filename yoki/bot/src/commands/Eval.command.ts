@@ -1,8 +1,8 @@
 import { inlineCode } from "@yokilabs/bot";
 import { stripIndents } from "common-tags";
 import { inspect } from "node:util";
-import fetch from "node-fetch";
 
+import { uploadS3 } from "../utils/s3";
 import type { Command } from "./commands";
 
 const _clean = async (text: any) => {
@@ -14,8 +14,6 @@ const _clean = async (text: any) => {
         .replace(/@/g, `@${String.fromCharCode(8203)}`)
         .replace(process.env.GUILDED_TOKEN!, "this is supposed to be the bot's token");
 };
-
-const _tooLong = (body: string): Promise<string> => fetch("https://paste.discord.land/documents", { method: "POST", body }).then((d) => d.json().then((v) => v.key));
 
 const format = (first: string, second: string) => stripIndents`
 	📥 **Input**
@@ -54,8 +52,12 @@ const Eval: Command = {
         const final = format(code, clean);
 
         if (final.length > 2048) {
-            const key = await _tooLong(clean);
-            return ctx.messageUtil.replyWithInfo(message, `Output over the limit`, `Output exceeded 2048 characters (${final.length}). https://paste.discord.land/${key}.js`);
+            const key = await uploadS3(ctx, `eval/${Date.now()}.js`, final);
+            return ctx.messageUtil.replyWithInfo(
+                message,
+                `Output over the limit`,
+                `Output exceeded 2048 characters (${final.length}). [Here](${key.Location}) is the full output.`
+            );
         }
 
         return ctx.messageUtil.replyWithInfo(message, `Eval results`, final);
