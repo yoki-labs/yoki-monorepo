@@ -14,7 +14,7 @@ RUN apk update \
 	&& corepack enable && corepack prepare pnpm@7.18.0 --activate
 
 # root /
-COPY pnpm-workspace.yaml pnpm-lock.yaml tsconfig.json turbo.json package.json ./
+COPY pnpm-workspace.yaml pnpm-lock.yaml tsconfig.json turbo.json .swcrc package.json ./
 COPY ./packages ./packages
 
 RUN pnpm install --silent

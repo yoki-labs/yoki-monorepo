@@ -31,6 +31,34 @@
                 "dist/**"
             ]
         },
+        "build:ci": {
+            "dependsOn": [
+                "^build:ci"
+            ],
+            "outputs": [
+                "dist/**"
+            ]
+        },
+        "@yoki/bot#build:ci": {
+            "dependsOn": [
+                "^@yokilabs/bot#build:ci",
+                "^@yokilabs/utils#build:ci",
+                "@yoki/bot#generate"
+            ],
+            "outputs": [
+                "dist/**"
+            ]
+        },
+        "@tuxedo/bot#build:ci": {
+            "dependsOn": [
+                "^@yokilabs/bot#build:ci",
+                "^@yokilabs/utils#build:ci",
+                "@tuxedo/bot#generate"
+            ],
+            "outputs": [
+                "dist/**"
+            ]
+        },
         "generate": {
             "dependsOn": [
                 "^generate"

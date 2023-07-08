@@ -86,7 +86,7 @@ jobs:
               run: pnpm -r install
 
             - name: Build Yoki
-              run: pnpm build:yoki
+              run: pnpm build:ci:yoki
 
             - name: Build Tuxedo
-              run: pnpm build:tuxedo
+              run: pnpm build:ci:tuxedo
