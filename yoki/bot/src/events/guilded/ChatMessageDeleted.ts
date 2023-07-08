@@ -1,9 +1,8 @@
 import { LogChannelType, Prisma } from "@prisma/client";
-import { codeBlock, errorEmbed, inlineCode } from "@yokilabs/bot";
+import { codeBlock, inlineCode } from "@yokilabs/bot";
 import { Colors } from "@yokilabs/utils";
 import { stripIndents } from "common-tags";
 import { UserType } from "guilded.js";
-import { nanoid } from "nanoid";
 
 import type { GEvent } from "../../typings";
 
@@ -26,64 +25,52 @@ export default {
         if (oldMember?.user?.type === UserType.Bot) return;
         const channel = await ctx.channels.fetch(message.channelId).catch();
 
-        try {
-            const logContent = [
-                {
-                    name: "Content",
-                    value: deletedMessage?.content
-                        ? codeBlock(deletedMessage.content.length > 1012 ? `${deletedMessage.content.slice(0, 1012)}...` : deletedMessage.content)
-                        : (deletedMessage?.embeds as Prisma.JsonArray)?.length
-                        ? `_This message contains embeds._`
-                        : `Could not find message content. This message may be older than 14 days.`,
-                },
-                {
-                    name: "Additional Info",
-                    value: stripIndents`
+        const logContent = [
+            {
+                name: "Content",
+                value: deletedMessage?.content
+                    ? codeBlock(deletedMessage.content.length > 1012 ? `${deletedMessage.content.slice(0, 1012)}...` : deletedMessage.content)
+                    : (deletedMessage?.embeds as Prisma.JsonArray)?.length
+                    ? `_This message contains embeds._`
+                    : `Could not find message content. This message may be older than 14 days.`,
+            },
+            {
+                name: "Additional Info",
+                value: stripIndents`
                         **Message ID:** ${inlineCode(message.id)}
                         **Channel ID:** ${inlineCode(message.channelId)}
                     `,
-                },
-            ];
+            },
+        ];
 
-            if (deletedMessage && (deletedMessage?.content.length ?? 0) > 1000) {
-                const uploadToBucket = await ctx.s3
-                    .upload({
-                        Bucket: process.env.S3_BUCKET,
-                        Key: `logs/message-delete-${message.serverId}-${message.id}.txt`,
-                        Body: Buffer.from(stripIndents`
+        if (deletedMessage && (deletedMessage?.content.length ?? 0) > 1000) {
+            const uploadToBucket = await ctx.s3
+                .upload({
+                    Bucket: process.env.S3_BUCKET,
+                    Key: `logs/message-delete-${message.serverId}-${message.id}.txt`,
+                    Body: Buffer.from(stripIndents`
 						Content: ${deletedMessage.content}
 						------------------------------------
 					`),
-                        ContentType: "text/plain",
-                        ACL: "public-read",
-                    })
-                    .promise();
-                logContent[0].value = `This log is too big to display in Guilded. You can find the full log [here](${uploadToBucket.Location})`;
-            }
-
-            const author = deletedMessage && oldMember ? `<@${oldMember.user!.id}> (${inlineCode(oldMember.user!.id)})` : "Unknown author";
-            const channelURL = `https://guilded.gg/teams/${message.serverId}/channels/${message.channelId}/chat`;
-            // send the log channel message with the content/data of the deleted message
-            await ctx.messageUtil.sendLog({
-                where: deletedMessageLogChannel.channelId,
-                serverId: message.serverId!,
-                title: "Message Removed",
-                description: `A message from ${author} was deleted in [#${channel.name}](${channelURL}).`,
-                color: Colors.red,
-                occurred: message.deletedAt,
-                fields: logContent,
-            });
-        } catch (e) {
-            // generate ID for this error, not persisted in database
-            const referenceId = nanoid();
-            // send error to the error webhook
-            if (e instanceof Error) {
-                console.error(e);
-                void ctx.errorHandler.send("Error in logging message deletion!", [
-                    errorEmbed(e.stack ?? e.message, { referenceId, serverId: message.serverId!, channelId: message.channelId, userId: deletedMessage?.authorId ?? "not cached" }),
-                ]);
-            }
+                    ContentType: "text/plain",
+                    ACL: "public-read",
+                })
+                .promise();
+            logContent[0].value = `This log is too big to display in Guilded. You can find the full log [here](${uploadToBucket.Location})`;
         }
+
+        const author = deletedMessage && oldMember ? `<@${oldMember.user!.id}> (${inlineCode(oldMember.user!.id)})` : "Unknown author";
+        const channelURL = `https://guilded.gg/teams/${message.serverId}/channels/${message.channelId}/chat`;
+        // send the log channel message with the content/data of the deleted message
+        await ctx.messageUtil.sendLog({
+            where: deletedMessageLogChannel.channelId,
+            serverId: message.serverId!,
+            title: "Message Removed",
+            description: `A message from ${author} was deleted in [#${channel.name}](${channelURL}).`,
+            color: Colors.red,
+            occurred: message.deletedAt,
+            fields: logContent,
+        });
         return void 0;
     },
     name: "messageDeleted",

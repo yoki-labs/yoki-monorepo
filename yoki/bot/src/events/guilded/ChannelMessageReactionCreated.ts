@@ -1,9 +1,10 @@
 import { ReactionActionType } from "@prisma/client";
-import { errorEmbed, inlineCode, summarizeRolesOrUsers } from "@yokilabs/bot";
+import { inlineCode, summarizeRolesOrUsers } from "@yokilabs/bot";
 import { stripIndents } from "common-tags";
 import { nanoid } from "nanoid";
 
 import type { GEvent } from "../../typings";
+import { errorLoggerS3 } from "../../utils/s3";
 
 export default {
     execute: async ([reaction, ctx]) => {
@@ -41,9 +42,7 @@ export default {
                         categoryId: server.modmailCategoryId ?? undefined,
                     })
                     .catch((err) => {
-                        void ctx.errorHandler.send("Modmail thread creation error", [
-                            errorEmbed(err, { groupId: server.modmailGroupId, categoryId: server.modmailCategoryId, serverId: server.serverId }),
-                        ]);
+                        void errorLoggerS3(ctx, "MODMAIL_THREAD_CREATE", err as Error, { serverId, createdBy });
                         return null;
                     });
 

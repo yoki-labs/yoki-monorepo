@@ -1,11 +1,11 @@
 import { ContentFilter, FilterMatching, Preset } from "@prisma/client";
-import { errorEmbed } from "@yokilabs/bot";
 import { Colors } from "@yokilabs/utils";
 import { Message, UserType } from "guilded.js";
 
 import { ContentFilterScan, Server, Severity } from "../typings";
 import { IMAGE_REGEX } from "../utils/matching";
 import { wordPresets } from "../utils/presets";
+import { errorLoggerS3 } from "../utils/s3";
 import BaseFilterUtil from "./base-filter";
 import { ImageFilterUtil } from "./image-filter";
 
@@ -173,7 +173,7 @@ export class ContentFilterUtil extends BaseFilterUtil {
             // Perform resulting action, for message filtering it's deleting the original message
             await resultingAction();
         } catch (err: any) {
-            if (err instanceof Error) await this.client.errorHandler.send("Error in filtering callback", [errorEmbed(err.stack ?? err.message, { userId, serverId })]);
+            if (err instanceof Error) await errorLoggerS3(this.client, "AUTOMOD_ACTION", err, { serverId, userId, channelId });
         }
 
         // Execute the punishing action. If this is a threshold exceeding, execute the punishment associated with the exceeded threshold

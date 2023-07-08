@@ -1,9 +1,8 @@
 import { LogChannelType } from "@prisma/client";
-import { errorEmbed, inlineCode, quoteMarkdown } from "@yokilabs/bot";
+import { inlineCode, quoteMarkdown } from "@yokilabs/bot";
 import { Colors } from "@yokilabs/utils";
 import { stripIndents } from "common-tags";
 import { Message, UserType } from "guilded.js";
-import { nanoid } from "nanoid";
 
 import YokiClient from "../../Client";
 import { FilteredContent } from "../../modules/content-filter";
@@ -39,42 +38,32 @@ export default {
         // if there is no log channel for message updates, then ignore
         if (!updatedMessageLogChannel) return void 0;
 
-        try {
-            const contentFields = await getDisplayedContent(ctx, _oldMessage, message);
+        const contentFields = await getDisplayedContent(ctx, _oldMessage, message);
 
-            const author = message.createdByWebhookId ? `Webhook (${inlineCode(message.createdByWebhookId)})` : `<@${message.authorId}> (${inlineCode(message.authorId)})`;
-            const channel = await ctx.channels.fetch(message.channelId);
+        const author = message.createdByWebhookId ? `Webhook (${inlineCode(message.createdByWebhookId)})` : `<@${message.authorId}> (${inlineCode(message.authorId)})`;
+        const channel = await ctx.channels.fetch(message.channelId);
 
-            const channelURL = `https://guilded.gg/teams/${message.serverId}/channels/${message.channelId}/chat`;
-            // send embed in log channel
-            await ctx.messageUtil.sendLog({
-                where: updatedMessageLogChannel.channelId,
-                title: `Message Edited`,
-                serverId: server.serverId,
-                description: stripIndents`
+        const channelURL = `https://guilded.gg/teams/${message.serverId}/channels/${message.channelId}/chat`;
+        // send embed in log channel
+        await ctx.messageUtil.sendLog({
+            where: updatedMessageLogChannel.channelId,
+            title: `Message Edited`,
+            serverId: server.serverId,
+            description: stripIndents`
                 ${author} has edited a message in the channel [#${channel.name}](${channelURL}).
                 
                 [Jump to the message](${channelURL}?messageId=${message.id})
                 `,
-                color: Colors.yellow,
-                occurred: message.updatedAt?.toISOString() ?? new Date().toISOString(),
-                fields: contentFields.concat({
-                    name: "Additional Info",
-                    value: stripIndents`
+            color: Colors.yellow,
+            occurred: message.updatedAt?.toISOString() ?? new Date().toISOString(),
+            fields: contentFields.concat({
+                name: "Additional Info",
+                value: stripIndents`
                         **Message ID:** ${inlineCode(message.id)}
                         **Channel ID:** ${inlineCode(message.channelId)}
                     `,
-                }),
-            });
-        } catch (e) {
-            const referenceId = nanoid();
-            if (e instanceof Error) {
-                console.error(e);
-                void ctx.errorHandler.send("Error in logging message update!", [
-                    errorEmbed(e.stack ?? e.message, { referenceId, serverId: message.serverId, channelId: message.channelId, userId: message.authorId }),
-                ]);
-            }
-        }
+            }),
+        });
         return void 0;
     },
     name: "messageUpdated",

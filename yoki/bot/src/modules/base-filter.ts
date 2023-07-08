@@ -1,9 +1,10 @@
 import { Action, Severity } from "@prisma/client";
-import { errorEmbed, Util } from "@yokilabs/bot";
+import { Util } from "@yokilabs/bot";
 import { UserType } from "guilded.js";
 
 import type YokiClient from "../Client";
 import type { Server } from "../typings";
+import { errorLoggerS3 } from "../utils/s3";
 import type { FilteredContent } from "./content-filter";
 
 export default abstract class BaseFilterUtil<TFilterType = null> extends Util<YokiClient> {
@@ -47,7 +48,18 @@ export default abstract class BaseFilterUtil<TFilterType = null> extends Util<Yo
             await resultingAction();
         } catch (err: any) {
             if (err instanceof Error)
-                await this.client.errorHandler.send("Error in base filter filtering callback", [errorEmbed(err.stack ?? err.message, { userId, serverId: server.serverId })]);
+                await errorLoggerS3(this.client, "FILTER_RESULTING_ACTION", err, {
+                    userId,
+                    serverId: server.serverId,
+                    channelId,
+                    filteredContent,
+                    resultingAction,
+                    reason,
+                    infractionPoints,
+                    fallbackSeverity,
+                    triggerContent,
+                    filterType,
+                });
         }
 
         const memberExceeds = await this.getMemberExceedsThreshold(server, userId, server.spamInfractionPoints);

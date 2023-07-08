@@ -8,10 +8,12 @@ import type { Command } from "../../commands/commands";
 import { FilteredContent } from "../../modules/content-filter";
 import type { GEvent, RoleType, Server } from "../../typings";
 import { moderateContent } from "../../utils/moderation";
+import { errorLoggerS3 } from "../../utils/s3";
 import { roleValues } from "../../utils/util";
 
 const { fetchPrefix, parseCommand, fetchCommandInfo, resolveArguments, checkUserPermissions, tryExecuteCommand } = createCommandHandler<YokiClient, Server, Command, RoleType>(
-    roleValues
+    roleValues,
+    errorLoggerS3
 );
 
 // Fetches minimod/mod/admin roles

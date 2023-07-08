@@ -1,17 +1,21 @@
 import { Currency, DefaultIncomeType, MemberBalance, Reward, ServerMember } from "@prisma/client";
-import { Category, Command } from "../commands";
+import { inlineCode } from "@yokilabs/bot";
 import { Member, Message } from "guilded.js";
 import ms from "ms";
-import { defaultIncomes } from "./income-defaults";
+
 import { TuxoClient } from "../../Client";
-import { inlineCode } from "@yokilabs/bot";
+import { Category, Command } from "../commands";
+import { defaultIncomes } from "./income-defaults";
 
 const defaultConfig = defaultIncomes[DefaultIncomeType.ROB];
 const [defaultAdditionalMax, defaultMin] = defaultConfig.reward;
 const defaultFailChance = 0.5;
 const defaultFailCut = 1;
 
-export type BalanceChange = { currency: Currency, change: number };
+export interface BalanceChange {
+    currency: Currency;
+    change: number;
+}
 
 const Rob: Command = {
     name: "rob",
@@ -29,15 +33,15 @@ const Rob: Command = {
         const target = args.target as Member;
 
         // Makes no sense to rob yourself
-        if (target.id === message.createdById)
-            return ctx.messageUtil.replyWithError(message, "Cannot rob yourself", `You cannot rob yourself as you own your own balance.`);
+        if (target.id === message.createdById) return ctx.messageUtil.replyWithError(message, "Cannot rob yourself", `You cannot rob yourself as you own your own balance.`);
 
         const serverConfig = (await ctx.dbUtil.getIncomeOverrides(message.serverId!)).find((x) => x.incomeType === DefaultIncomeType.ROB);
 
         // Can't rob if it doesn't exist
         const currencies = await ctx.dbUtil.getCurrencies(message.serverId!);
 
-        if (!currencies.length) return ctx.messageUtil.replyWithError(message, "No currencies", `This server does not have any local currencies ${serverConfig?.action ?? defaultConfig.action}.`);
+        if (!currencies.length)
+            return ctx.messageUtil.replyWithError(message, "No currencies", `This server does not have any local currencies ${serverConfig?.action ?? defaultConfig.action}.`);
 
         const lastUsed = ctx.balanceUtil.getLastCommandUsage(message.serverId!, message.createdById, DefaultIncomeType.ROB);
 
@@ -51,11 +55,11 @@ const Rob: Command = {
         ctx.balanceUtil.updateLastCommandUsage(message.serverId!, message.createdById, DefaultIncomeType.ROB);
 
         const executorInfo = await ctx.dbUtil.getServerMember(message.serverId!, message.createdById);
-        
+
         // To make it balanced and require you to sacrifice your balance too
         if (!executorInfo?.balances.length)
             return ctx.messageUtil.replyWithError(message, `No balance to use`, `To make your robbery attempt successful, you need to have to have a balance.`);
-        
+
         // Add random amounts of rewards that were configured or ones that are default
         const rewards: Pick<Reward, "currencyId" | "minAmount" | "maxAmount">[] = serverConfig?.rewards.length
             ? serverConfig.rewards
@@ -69,7 +73,7 @@ const Rob: Command = {
         if (!(targetInfo?.balances.length && targetInfo.balances.some((x) => x.pocket)))
             return ctx.messageUtil.replyWithError(message, "Nothing to steal", `The member either has no balance at all or their entire balance is in the bank.`);
 
-        // Loop for checking whether executor has enough balance and adding rewards; does it all        
+        // Loop for checking whether executor has enough balance and adding rewards; does it all
         for (const reward of rewards) {
             // The opposite could be done, but this means adding additional `continue` if reward for that currency
             // doesn't exist, yada yada
@@ -87,8 +91,7 @@ const Rob: Command = {
             const targetBalance = targetInfo?.balances.find((x) => x.pocket)?.pocket;
 
             // No point in calculating the stuff
-            if (!targetBalance)
-                continue;
+            if (!targetBalance) continue;
 
             const randomReward = Math.floor(Math.random() * (reward.maxAmount - reward.minAmount) + reward.minAmount);
 
@@ -100,8 +103,7 @@ const Rob: Command = {
         }
 
         // If it has failed
-        if (defaultFailChance > Math.random())
-            return handleFailState(ctx, message, executorInfo, newBalance);
+        if (defaultFailChance > Math.random()) return handleFailState(ctx, message, executorInfo, newBalance);
 
         return handleSuccessState(ctx, message, targetInfo!, executorInfo, newBalance);
     },
@@ -112,55 +114,61 @@ async function handleFailState(ctx: TuxoClient, message: Message, executorInfo: 
         message.serverId!,
         message.createdById,
         executorInfo,
-        newBalance
-            .map((x) => {
-                const current = executorInfo.balances.find((y) => y.currencyId === x.currency.id);
+        newBalance.map((x) => {
+            const current = executorInfo.balances.find((y) => y.currencyId === x.currency.id);
 
-                return {
-                    currencyId: x.currency.id,
-                    pocket: current?.pocket ?? 0,
-                    bank: (current?.bank ?? x.currency.startingBalance ?? 0) - x.change,
-                };
-            })
+            return {
+                currencyId: x.currency.id,
+                pocket: current?.pocket ?? 0,
+                bank: (current?.bank ?? x.currency.startingBalance ?? 0) - x.change,
+            };
+        })
     );
 
     return ctx.messageUtil.replyWithWarning(message, "Robbery failed", `You were caught and you were fined ${createChangeList(newBalance)}.`);
 }
 
-async function handleSuccessState(ctx: TuxoClient, message: Message, targetInfo: ServerMember & { balances: MemberBalance[] }, executorInfo: ServerMember & { balances: MemberBalance[] }, newBalance: BalanceChange[]) {
+async function handleSuccessState(
+    ctx: TuxoClient,
+    message: Message,
+    targetInfo: ServerMember & { balances: MemberBalance[] },
+    executorInfo: ServerMember & { balances: MemberBalance[] },
+    newBalance: BalanceChange[]
+) {
     await Promise.all([
         ctx.dbUtil.updateMemberBalance(
             message.serverId!,
             message.createdById,
             executorInfo,
-            newBalance
-                .map((x) => {
-                    const current = executorInfo?.balances.find((y) => y.currencyId === x.currency.id);
-                    
-                    return {
-                        currencyId: x.currency.id,
-                        pocket: (current?.pocket ?? 0) + x.change,
-                        bank: current?.bank ?? x.currency.startingBalance ?? 0,
-                    };
-                })
+            newBalance.map((x) => {
+                const current = executorInfo?.balances.find((y) => y.currencyId === x.currency.id);
+
+                return {
+                    currencyId: x.currency.id,
+                    pocket: (current?.pocket ?? 0) + x.change,
+                    bank: current?.bank ?? x.currency.startingBalance ?? 0,
+                };
+            })
         ),
         ctx.dbUtil.updateMemberBalanceOnly(
             targetInfo,
-            newBalance
-                .map((x) => {
-                    const current = targetInfo.balances.find((y) => y.currencyId === x.currency.id)!;
+            newBalance.map((x) => {
+                const current = targetInfo.balances.find((y) => y.currencyId === x.currency.id)!;
 
-                    return {
-                        currencyId: x.currency.id,
-                        pocket: (current.pocket ?? 0) - x.change,
-                        bank: current?.bank
-                    };
-                })
-        )
+                return {
+                    currencyId: x.currency.id,
+                    pocket: (current.pocket ?? 0) - x.change,
+                    bank: current?.bank,
+                };
+            })
+        ),
     ]);
 
-
-    return ctx.messageUtil.replyWithSuccess(message, "Robbery was successful", `You stole ${createChangeList(newBalance)} from <@${targetInfo.userId}> (${inlineCode(targetInfo.userId)}).`);
+    return ctx.messageUtil.replyWithSuccess(
+        message,
+        "Robbery was successful",
+        `You stole ${createChangeList(newBalance)} from <@${targetInfo.userId}> (${inlineCode(targetInfo.userId)}).`
+    );
 }
 
 // For messages

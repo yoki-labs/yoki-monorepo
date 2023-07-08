@@ -1,13 +1,12 @@
-import { errorEmbed, GEvent, setClientCommands } from "@yokilabs/bot";
+import { GEvent, setClientCommands } from "@yokilabs/bot";
 import { config } from "dotenv";
 import { ClientEvents } from "guilded.js";
-import stringify from "json-stringify-safe";
 import { join } from "path";
 import recursive from "recursive-readdir";
 
 import YokiClient from "./Client";
 import unhandledPromiseRejection from "./events/other/unhandledPromiseRejection";
-import { eventErrorLoggerS3 } from "./utils/s3";
+import { errorLoggerS3 } from "./utils/s3";
 
 // Load env variables
 config({ path: join(__dirname, "..", "..", ".env") });
@@ -30,14 +29,12 @@ client.ws.emitter.on("gatewayEvent", async (event, data) => {
     if (!client.eventHandler[event]) return;
     const serverFromDb = await client.dbUtil.getServer(serverId).catch((err) => unhandledPromiseRejection(err as Error, client));
     if (!serverFromDb || serverFromDb?.blacklisted) return void 0;
-    return client.eventHandler[event]?.(data, client, serverFromDb).catch((err) =>
-        client.errorHandler.send("Uncaught event error", [errorEmbed(err, { server: serverId, event })])
-    );
+    return client.eventHandler[event]?.(data, client, serverFromDb).catch((err) => errorLoggerS3(client, event, err, { server: serverId, event }));
 });
 
 client.ws.emitter.on("error", (err, errInfo, data) => {
     console.log(`[WS ERR]: ${err}\n  ${errInfo?.message}\n  [WS ERR STACK]:${errInfo?.stack}`);
-    void client.errorHandler.send(`Error in command usage! ${err}`, [errorEmbed(err, data)]);
+    void errorLoggerS3(client, "WS_ERROR", new Error(err), { errInfo, data });
 });
 
 client.ws.emitter.on("exit", (reason) => {
@@ -74,17 +71,7 @@ void (async (): Promise<void> => {
                 if (["XjBWymwR", "DlZMvw1R"].includes(args[0]?.serverId)) return;
                 await event.execute([...args, client]);
             } catch (err) {
-                const errorContent = JSON.stringify(err);
-                const safeStringifyCtx = stringify(args);
-                void eventErrorLoggerS3(
-                    client,
-                    event.name,
-                    `Error: 
-                    ${errorContent}
-
-                    Ctx:
-                    ${safeStringifyCtx}`
-                );
+                void errorLoggerS3(client, event.name, err as Error, args);
             }
         });
     }

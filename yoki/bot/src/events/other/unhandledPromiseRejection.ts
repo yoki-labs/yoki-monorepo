@@ -2,7 +2,7 @@ import { codeBlock, errorEmbed } from "@yokilabs/bot";
 import { stripIndents } from "common-tags";
 
 import type YokiClient from "../../Client";
-import { uploadS3 } from "../../utils/s3";
+import { errorLoggerS3, uploadS3 } from "../../utils/s3";
 
 let errorCounter = 0;
 setInterval(() => (errorCounter = 0), 600000);
@@ -28,5 +28,5 @@ export default async (err: Error, client: YokiClient) => {
         return;
     }
 
-    void client.errorHandler.send(`Unhandled error! Current burst ${errorCounter} / ${15}`, [errorEmbed((err as Error).stack ?? (err as Error).message)]);
+    void errorLoggerS3(client, "UNHANDLED", err, { errorCounter: `Unhandled error! Current burst ${errorCounter} / ${15}` });
 };

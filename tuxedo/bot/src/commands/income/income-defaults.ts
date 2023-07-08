@@ -23,7 +23,7 @@ export const defaultIncomes: Record<DefaultIncomeType, { reward: number[]; coold
         reward: [500, 2500],
         cooldown: 16 * 60 * 60 * 1000,
         action: "Robbed",
-    }
+    },
 };
 export const defaultCreatedCooldown = 6 * 60 * 60 * 1000;
 export const defaultCreatedReceivedCurrency = [25, 175];

@@ -26,7 +26,7 @@ export function createCommandHandler<
     TServer extends IServer,
     TCommand extends BaseCommand<TCommand, TClient, TRoleType, TServer>,
     TRoleType extends string
->(roleValues: Record<TRoleType, number>) {
+>(roleValues: Record<TRoleType, number>, errorLogger?: (ctx: TClient, event: string, err: Error, context?: any) => void) {
     const argumentConverters: Record<CommandArgType, CommandArgValidator> = {
         boolean: booleanArg,
         channel,
@@ -259,20 +259,23 @@ export function createCommandHandler<
                 if (e instanceof Error) {
                     console.error(e);
                     // send the error to the error channel
-                    void ctx.errorHandler.send("Error in command usage!", [
-                        new WebhookEmbed()
-                            .setDescription(
-                                stripIndents`
+                    void errorLogger?.(ctx, "COMMAND_ERROR", e, { referenceId, server: message.serverId, command: command.name, args, message });
+
+                    if (!errorLogger)
+                        void ctx.errorHandler.send("Error in command usage!", [
+                            new WebhookEmbed()
+                                .setDescription(
+                                    stripIndents`
                                 Reference ID: ${inlineCode(referenceId)}
                                 Server: ${inlineCode(message.serverId)}
                                 Channel: ${inlineCode(message.channelId)}
                                 User: ${inlineCode(message.createdById)} (${inlineCode(member?.user?.name)})
                                 Error: \`\`\`${e.stack ?? e.message}\`\`\`
                             `
-                            )
-                            .addField(`Content`, codeBlock(message.content?.length > 1018 ? `${message.content.substring(0, 1018)}...` : message.content))
-                            .setColor("RED"),
-                    ]);
+                                )
+                                .addField(`Content`, codeBlock(message.content?.length > 1018 ? `${message.content.substring(0, 1018)}...` : message.content))
+                                .setColor("RED"),
+                        ]);
                 }
                 // notify the user that there was an error executing the command
                 return ctx.messageUtil.replyWithUnexpected(

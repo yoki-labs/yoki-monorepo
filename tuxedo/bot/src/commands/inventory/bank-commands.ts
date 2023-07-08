@@ -1,10 +1,11 @@
-import { ResolvedArgs, inlineCode, inlineQuote } from "@yokilabs/bot";
+import { MemberBalance } from "@prisma/client";
+import { inlineCode, inlineQuote, ResolvedArgs } from "@yokilabs/bot";
 import { Message } from "guilded.js";
+import ms from "ms";
+
 import { TuxoClient } from "../../Client";
 import { CommandContext } from "../../typings";
 import { bankCooldown } from "../income/income-defaults";
-import ms from "ms";
-import { MemberBalance } from "@prisma/client";
 
 export function generateBankCommand(balanceType: string, action: string, actionDone: string, depositMultiplier: number, getBalanceAmount: (balance: MemberBalance) => number) {
     return async (message: Message, args: Record<string, ResolvedArgs>, ctx: TuxoClient, _context: CommandContext) => {
