@@ -8,6 +8,7 @@ export const errorLoggerS3 = async (ctx: YokiClient, event: string, err: Error, 
     const errorContent = JSON.stringify(err);
     const safeStringifyCtx = context && stringify(context);
 
+    console.log("Error uploading to S3", errorContent, safeStringifyCtx);
     const upload = await ctx.s3
         .upload({
             Bucket: process.env.S3_BUCKET,

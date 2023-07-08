@@ -71,7 +71,7 @@ void (async (): Promise<void> => {
                 if (["XjBWymwR", "DlZMvw1R"].includes(args[0]?.serverId)) return;
                 await event.execute([...args, client]);
             } catch (err) {
-                void errorLoggerS3(client, event.name, err as Error, args);
+                await errorLoggerS3(client, event.name, err as Error, args);
             }
         });
     }
