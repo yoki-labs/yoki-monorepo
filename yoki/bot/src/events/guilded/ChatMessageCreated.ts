@@ -109,7 +109,6 @@ export default {
 
         const perms = await checkUserPermissions(fetchServerRoles, [message, ctx], command);
         if (!perms?.member) return;
-
         const subCommand = await fetchCommandInfo([message, ctx], prefix, command, parsedArgs);
 
         if (subCommand) {

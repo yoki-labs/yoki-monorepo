@@ -1,38 +1,27 @@
 import { errorEmbed } from "@yokilabs/bot";
 import { stripIndents } from "common-tags";
-import stringify from "json-stringify-safe";
 
 import YokiClient from "../Client";
 
-export const errorLoggerS3 = async (ctx: YokiClient, event: string, err: Error, context?: any) => {
+export const errorLoggerS3 = async (ctx: YokiClient, event: string, err: Error, _context?: any) => {
     const errorContent = JSON.stringify(err);
-    const safeStringifyCtx = context && stringify(context);
+    const safeStringifyCtx = ""; // context && stringify(context);
+    const upload = await uploadS3(
+        ctx,
+        `error/${ctx.user!.name}/${event}-${Date.now()}.txt`,
+        `Error: 
+        ${errorContent}
 
-    console.log("Error uploading to S3", errorContent, safeStringifyCtx);
-    const upload = await ctx.s3
-        .upload({
-            Bucket: process.env.S3_BUCKET,
-            Key: `error/${ctx.user!.name}/${event}-${Date.now()}.txt`,
-            Body: Buffer.from(
-                stripIndents(`Error: 
-            ${errorContent}
-
-            Ctx:
-            ${safeStringifyCtx ?? "No ctx"}`)
-            ),
-            ContentType: "text/plain",
-            ACL: "public-read",
-        })
-        .promise();
+        Ctx:
+        ${safeStringifyCtx ?? "No ctx"}`
+    );
 
     return ctx.errorHandler.send(`Error in ${event}`, [
         errorEmbed(`
         Error: 
-        \`\`\`
-        ${err.message}
-        \`\`\`
+        \`\`\`${err.message}\`\`\`
 
-        Full stack & context: ${upload.Location}
+        Full log: [here](${upload.Location})
     `),
     ]);
 };

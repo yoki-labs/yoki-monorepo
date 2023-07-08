@@ -4,6 +4,7 @@ import { stripIndents } from "common-tags";
 
 import type Client from "../../Client";
 import { LogChannelType, RoleType, Server } from "../../typings";
+import { uploadS3 } from "../../utils/s3";
 import { Category, Command } from "../commands";
 
 const Close: Command = {
@@ -47,24 +48,19 @@ export async function closeModmailThread(server: Server, closedBy: string, ctx: 
 
     if (modmailLogChannel) {
         const formattedMessages = modmailMessages.map((x) => `[${x.authorId}][${server.formatTimezone(x.createdAt)}] ${x.content}`);
-        const uploadedLog = await ctx.s3
-            .upload({
-                Bucket: process.env.S3_BUCKET,
-                Key: `modmail/logs/${modmailThread.serverId}-${modmailThread.id}.txt`,
-                Body: Buffer.from(stripIndents`
-						-------------
-						Opener: ${modmailThread.openerId}
-						Server: ${modmailThread.serverId}
-						Created At: ${server.formatTimezone(modmailThread.createdAt)}
-						-------------
+        const uploadedLog = await uploadS3(
+            ctx,
+            `modmail/logs/${modmailThread.serverId}-${modmailThread.id}.txt`,
+            `
+                -------------
+                Opener: ${modmailThread.openerId}
+                Server: ${modmailThread.serverId}
+                Created At: ${server.formatTimezone(modmailThread.createdAt)}
+                -------------
 
-						${formattedMessages.join("\n")}
-					`),
-                ContentType: "text/plain",
-                ACL: "public-read",
-            })
-            .promise()
-            .catch((e) => (console.error("Error while uploading log:\n", e), { Location: "https://guilded.gg/" }));
+                ${formattedMessages.join("\n")}
+            `
+        ).catch((e) => (console.error("Error while uploading log:\n", e), { Location: "https://guilded.gg/" }));
 
         await ctx.messageUtil.sendLog({
             where: modmailLogChannel.channelId,

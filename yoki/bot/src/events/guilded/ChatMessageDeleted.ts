@@ -5,6 +5,7 @@ import { stripIndents } from "common-tags";
 import { UserType } from "guilded.js";
 
 import type { GEvent } from "../../typings";
+import { uploadS3 } from "../../utils/s3";
 
 export default {
     execute: async ([message, ctx]) => {
@@ -44,18 +45,14 @@ export default {
         ];
 
         if (deletedMessage && (deletedMessage?.content.length ?? 0) > 1000) {
-            const uploadToBucket = await ctx.s3
-                .upload({
-                    Bucket: process.env.S3_BUCKET,
-                    Key: `logs/message-delete-${message.serverId}-${message.id}.txt`,
-                    Body: Buffer.from(stripIndents`
-						Content: ${deletedMessage.content}
-						------------------------------------
-					`),
-                    ContentType: "text/plain",
-                    ACL: "public-read",
-                })
-                .promise();
+            const uploadToBucket = await uploadS3(
+                ctx,
+                `logs/message-delete-${message.serverId}-${message.id}.txt`,
+                `
+                Content: ${deletedMessage.content}
+                ------------------------------------
+                `
+            );
             logContent[0].value = `This log is too big to display in Guilded. You can find the full log [here](${uploadToBucket.Location})`;
         }
 

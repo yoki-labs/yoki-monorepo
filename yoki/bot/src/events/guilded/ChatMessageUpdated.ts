@@ -8,6 +8,7 @@ import YokiClient from "../../Client";
 import { FilteredContent } from "../../modules/content-filter";
 import type { GEvent } from "../../typings";
 import { moderateContent } from "../../utils/moderation";
+import { uploadS3 } from "../../utils/s3";
 
 export default {
     execute: async ([message, _oldMessage, ctx]) => {
@@ -72,19 +73,15 @@ export default {
 async function getDisplayedContent(ctx: YokiClient, oldMessage: Message | null, newMessage: Message) {
     // The message is too big to display the content
     if ((oldMessage?.content.length ?? 0) > 1000 || newMessage.content.length > 1000) {
-        const uploadToBucket = await ctx.s3
-            .upload({
-                Bucket: process.env.S3_BUCKET,
-                Key: `logs/message-update-${newMessage.serverId}-${newMessage.id}.txt`,
-                Body: Buffer.from(stripIndents`
-                Old: ${oldMessage?.content ?? "None"}
-                ------------------------------------
-                New: ${newMessage.content}
-            `),
-                ContentType: "text/plain",
-                ACL: "public-read",
-            })
-            .promise();
+        const uploadToBucket = await uploadS3(
+            ctx,
+            `logs/message-update-${newMessage.serverId}-${newMessage.id}.txt`,
+            `
+            Old: ${oldMessage?.content ?? "None"}
+            ------------------------------------
+            New: ${newMessage.content}
+            `
+        );
 
         return [
             {

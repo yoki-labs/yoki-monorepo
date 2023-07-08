@@ -208,15 +208,17 @@ export function createCommandHandler<
                 // run the command with the message object, the casted arguments, the global context object (datbase, rest, ws),
                 // and the command context (raw packet, database server entry, member from API or cache)
                 await command.execute(message, args, ctx, { message, server, member, prefix });
+                return;
             } catch (e) {
                 // ID for error, not persisted in database at all
                 const referenceId = nanoid(17);
                 if (e instanceof Error) {
-                    console.error(e);
-                    // send the error to the error channel
-                    void errorLogger?.(ctx, "COMMAND_ERROR", e, { referenceId, server: message.serverId, command: command.name, args, message });
+                    console.log("cmd err", e);
 
-                    if (!errorLogger)
+                    // send the error to the error channel
+                    if (errorLogger) {
+                        errorLogger?.(ctx, "COMMAND_ERROR", e, { referenceId, server: message.serverId, command: command.name, args, message });
+                    } else {
                         void ctx.errorHandler.send("Error in command usage!", [
                             new WebhookEmbed()
                                 .setDescription(
@@ -231,6 +233,7 @@ export function createCommandHandler<
                                 .addField(`Content`, codeBlock(message.content?.length > 1018 ? `${message.content.substring(0, 1018)}...` : message.content))
                                 .setColor("RED"),
                         ]);
+                    }
                 }
                 // notify the user that there was an error executing the command
                 return ctx.messageUtil.replyWithUnexpected(
@@ -238,7 +241,6 @@ export function createCommandHandler<
                     `This is potentially an issue on our end, please contact us and forward the following ID: ${inlineCode(referenceId)}.`
                 );
             }
-            return void 0;
         },
     };
 }
