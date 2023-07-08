@@ -13,45 +13,49 @@ const { fetchPrefix, parseCommand, fetchCommandInfo, resolveArguments, checkUser
 // Fetches minimod/mod/admin roles
 const fetchServerRoles = (ctx: TuxoClient, serverId: string) => ctx.prisma.role.findMany({ where: { serverId } });
 
-const fn = fetchPrefix.bind(
-    null,
-    parseCommand.bind(null, async (context, server, prefix, command, commandName, args) => {
-        // Get all the server's custom incomes and check if any of them match the command name or ignore it
-        if (typeof command === "undefined") {
-            const [message, client] = context;
-            const incomeByName = await client.dbUtil.getIncomeOverride(message.serverId!, void 0, commandName);
-
-            // There is no income by that name, nor a command
-            if (!incomeByName) return;
-
-            return useCustomIncomeCommand(client, message, incomeByName);
-        }
-
-        // Get the command's sub-commands, args and then execute it
-        return fetchCommandInfo(
-            checkUserPermissions.bind(null, resolveArguments.bind(null, tryExecuteCommand), fetchServerRoles),
-            context,
-            server,
-            prefix,
-            command,
-            commandName,
-            args
-        );
-    })
-);
-
 export default {
     execute: async (args) => {
         const [message, ctx] = args;
 
         if (message.createdByWebhookId || message.authorId === ctx.user!.id || message.authorId === "Ann6LewA" || !message.serverId) return void 0;
 
-        const server = await args[1].dbUtil.getServer(args[0].serverId!);
+        const server = await ctx.dbUtil.getServer(message.serverId!);
 
         // Early access only
         if (!server.flags.includes("EARLY_ACCESS") && server.serverId !== process.env.MAIN_SERVER) return void 0;
 
-        return fn(args, server);
+        const prefix = fetchPrefix(server);
+
+        const parsed = await parseCommand([message, ctx], prefix);
+        if (!parsed) return;
+        let { command, commandName, args: parsedArgs } = parsed;
+
+        if (!command) {
+            const incomeByName = await ctx.dbUtil.getIncomeOverride(message.serverId!, void 0, commandName);
+
+            // There is no income by that name, nor a command
+            if (!incomeByName) return;
+
+            return useCustomIncomeCommand(ctx, message, incomeByName);
+        }
+
+        const perms = await checkUserPermissions(fetchServerRoles, [message, ctx], command);
+        if (!perms?.member) return;
+
+        const subCommand = await fetchCommandInfo([message, ctx], prefix, command, parsedArgs);
+
+        if (subCommand) {
+            const subPerm = await checkUserPermissions(fetchServerRoles, [message, ctx], command);
+            if (!subPerm?.member) return;
+
+            command = subCommand.command;
+        }
+
+        const resolved = await resolveArguments([message, ctx], prefix, command, parsedArgs);
+        if (!resolved) return;
+
+        // If user is capable of executing the command, it will start parsing arguments
+        return tryExecuteCommand([message, ctx], server, perms.member, prefix, command, resolved.resolvedArgs);
     },
     name: "messageCreated",
 } satisfies GEvent<"messageCreated">;

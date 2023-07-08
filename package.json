@@ -20,7 +20,7 @@
         "prepare": "husky install",
         "prettier": "prettier --write **/*.{ts,js,tsx,jsx,json,yml,yaml,md}",
         "###": "Scripts for tuxedo",
-        "tx:docker": "cd tuxedo && docker-compose -f docker-compose.yml -f docker-compose.dev.yml",
+        "tx:docker": "cd tuxedo && docker-compose -f docker-compose.dev.yml",
         "tx:docker:prod": "cd tuxedo && docker-compose",
         "tx:db": "pnpm tx:docker up -d --build db",
         "tx:start": "pnpm tx:docker up -d --build && pnpm tx:docker logs --follow bot",

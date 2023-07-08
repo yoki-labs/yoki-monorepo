@@ -41,32 +41,13 @@ export function createCommandHandler<
         emote,
     };
 
-    type AsyncUnit = Promise<unknown> | undefined;
-
     // Lambda incase JS detects there is no context in lambdas from the object and garbage collects the object
     return {
-        fetchPrefix: async (
-            onNext: (context: [Message, TClient], server: TServer, prefix: string) => Promise<unknown> | undefined,
-            context: [Message, TClient],
-            server: TServer
-        ) => {
+        fetchPrefix: (server: TServer) => {
             const prefix = server.prefix ?? process.env.DEFAULT_PREFIX!;
-
-            return onNext(context, server, prefix);
+            return prefix;
         },
-        parseCommand: async (
-            executeCommand: (
-                context: [Message, TClient],
-                server: TServer,
-                prefix: string,
-                command: TCommand | undefined,
-                commandName: string,
-                args: string[]
-            ) => Promise<unknown> | undefined,
-            context: [Message, TClient],
-            server: TServer,
-            prefix: string
-        ) => {
+        parseCommand: (context: [Message, TClient], prefix: string) => {
             const [message, ctx] = context;
 
             const lexer = new lexure.Lexer(message.content).setQuotes([
@@ -93,27 +74,12 @@ export function createCommandHandler<
                 if (!res) return;
                 const [_, getRest] = res;
 
-                return executeCommand(
-                    context,
-                    server,
-                    prefix,
-                    command,
-                    commandName,
-                    getRest().map((x) => x.value)
-                );
+                return { command, commandName, args: getRest().map((x) => x.value) };
             }
 
-            return executeCommand(context, server, prefix, command, commandName, args);
+            return { command, commandName, args };
         },
-        fetchCommandInfo: async (
-            onNext: (context: [Message, TClient], server: TServer, prefix: string, command: TCommand, args: string[]) => AsyncUnit,
-            context: [Message, TClient],
-            server: TServer,
-            prefix: string,
-            command: TCommand,
-            _commandName: string,
-            args: string[]
-        ) => {
+        fetchCommandInfo: async (context: [Message, TClient], prefix: string, command: TCommand, args: string[]) => {
             const [message, ctx] = context;
 
             while (command.parentCommand && command.subCommands?.size) {
@@ -128,10 +94,12 @@ export function createCommandHandler<
                     const subCommand = command.subCommands.get(subCommandName as string)!;
 
                     // Don't show operator commands to non-operators
-                    if (!command.devOnly || ctx.operators.includes(message.createdById))
-                        return ctx.messageUtil.replyWithInfo(message, `${inlineCode(command.name.split("-").join(" "))} command`, command.description, {
+                    if (!command.devOnly || ctx.operators.includes(message.createdById)) {
+                        await ctx.messageUtil.replyWithInfo(message, `${inlineCode(command.name.split("-").join(" "))} command`, command.description, {
                             fields: [...ctx.messageUtil.createSubCommandFields(command.subCommands), ctx.messageUtil.createExampleField(subCommand, prefix)],
                         });
+                        return;
+                    }
                 }
                 const subCommand = command.subCommands.get(args[0]);
                 // If not a valid sub command, list all the proper ones
@@ -143,27 +111,21 @@ export function createCommandHandler<
                     });
 
                     // Don't show operator commands to non-operators
-                    if (!command.devOnly || ctx.operators.includes(message.createdById))
-                        return ctx.messageUtil.replyWithError(message, `No such sub-command`, `The specified sub-command ${inlineQuote(args[0], 100)} could not be found.`, {
+                    if (!command.devOnly || ctx.operators.includes(message.createdById)) {
+                        await ctx.messageUtil.replyWithError(message, `No such sub-command`, `The specified sub-command ${inlineQuote(args[0], 100)} could not be found.`, {
                             fields: [...ctx.messageUtil.createSubCommandFields(command.subCommands), ctx.messageUtil.createExampleField(command, prefix)],
                         });
+                        return;
+                    }
                 }
                 command = subCommand!;
                 // Remove the sub command from the list of args, as that's the command name
                 args = args.slice(1);
             }
 
-            return onNext(context, server, prefix, command, args);
+            return { command };
         },
-        checkUserPermissions: async (
-            executeCommand: (context: [Message, TClient], server: TServer, member: Member, prefix: string, command: TCommand, args: string[]) => AsyncUnit,
-            getRoles: (ctx: TClient, serverId: string) => Promise<IRole<TRoleType>[]>,
-            context: [Message, TClient],
-            server: TServer,
-            prefix: string,
-            command: TCommand,
-            args: string[]
-        ) => {
+        checkUserPermissions: async (getRoles: (ctx: TClient, serverId: string) => Promise<IRole<TRoleType>[]>, context: [Message, TClient], command: TCommand) => {
             const [message, ctx] = context;
             const { serverId } = message;
 
@@ -195,17 +157,9 @@ export function createCommandHandler<
                 } else if (command.devOnly) return void 0;
             }
 
-            return executeCommand(context, server, member, prefix, command, args);
+            return { member };
         },
-        resolveArguments: async (
-            onNext: (context: [Message, TClient], server: TServer, member: Member, prefix: string, command: TCommand, args: Record<string, any>) => AsyncUnit,
-            context: [Message, TClient],
-            server: TServer,
-            member: Member,
-            prefix: string,
-            command: TCommand,
-            args: string[]
-        ) => {
+        resolveArguments: async (context: [Message, TClient], prefix: string, command: TCommand, args: string[]) => {
             const [message, ctx] = context;
 
             // The object of casted args casted to their proper types
@@ -236,7 +190,8 @@ export function createCommandHandler<
                             user_id: message.createdById,
                             event_properties: { serverId: message.serverId, command: command.name, trippedArg: commandArg },
                         });
-                        return ctx.messageUtil.handleBadArg(message, prefix, commandArg, command, argumentConverters, castArg);
+                        await ctx.messageUtil.handleBadArg(message, prefix, commandArg, command, argumentConverters, castArg);
+                        return;
                     }
 
                     // Resolve correctly converted argument
@@ -244,7 +199,7 @@ export function createCommandHandler<
                 }
             }
 
-            return onNext(context, server, member, prefix, command, resolvedArgs);
+            return { resolvedArgs };
         },
         tryExecuteCommand: async ([message, ctx]: [Message, TClient], server: TServer, member: Member, prefix: string, command: TCommand, args: Record<string, any>) => {
             try {

@@ -8,6 +8,6 @@
         "src/**/*.d.ts",
         "../../packages/**/*.d.ts"
     ],
-    "exec": "npx tsc && node --enable-source-maps dist/index.js",
+    "exec": "tsc && node --enable-source-maps dist/index.js",
     "legacyWatch": false
 }

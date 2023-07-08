@@ -19,60 +19,6 @@ const { fetchPrefix, parseCommand, fetchCommandInfo, resolveArguments, checkUser
 // Fetches minimod/mod/admin roles
 const fetchServerRoles = (ctx: YokiClient, serverId: string) => ctx.prisma.role.findMany({ where: { serverId } });
 
-const fn = fetchPrefix.bind(null, async (context, server, prefix) => {
-    const [message, ctx] = context;
-
-    // if the message does not start with the prefix
-    if (!message.content.startsWith(prefix)) {
-        const member = await ctx.members.fetch(message.serverId!, message.authorId).catch(() => null);
-        if (member?.user?.type === UserType.Bot) return;
-
-        // store the message in the database
-        await ctx.dbUtil.storeMessage(message).catch(console.log);
-
-        await moderateContent(ctx, server, message.channelId, "MESSAGE", FilteredContent.Message, message.authorId, message.content, message.mentions, () =>
-            ctx.messages.delete(message.channelId, message.id)
-        );
-
-        if (server.scanNSFW) {
-            await ctx.contentFilterUtil.scanMessageMedia(message);
-        }
-        return;
-    }
-
-    await parseCommand(
-        async (context, server, prefix, command, commandName, args) => {
-            // if not a valid command, try doing a custom command instead
-            if (!command) {
-                const customCommand = await ctx.prisma.customTag.findFirst({ where: { serverId: message.serverId!, name: commandName } });
-                if (!customCommand) return ctx.amp.logEvent({ event_type: "INVALID_COMMAND", user_id: message.authorId, event_properties: { serverId: message.serverId! } });
-                void ctx.amp.logEvent({ event_type: "TAG_RAN", user_id: message.authorId, event_properties: { serverId: message.serverId! } });
-                return ctx.messageUtil.send(message.channelId, customCommand.content);
-            }
-
-            // Get the command's sub-commands, args and then execute it
-            return fetchCommandInfo(
-                checkUserPermissions.bind(
-                    null,
-                    // If user is capable of executing the command, it will start parsing arguments
-                    resolveArguments.bind(null, tryExecuteCommand),
-                    // Get server roles and their types
-                    fetchServerRoles.bind(null, context[1], server.serverId)
-                ),
-                context,
-                server,
-                prefix,
-                command,
-                commandName,
-                args
-            );
-        },
-        context,
-        server,
-        prefix
-    );
-});
-
 export default {
     execute: async (args) => {
         const [message, ctx] = args;
@@ -129,7 +75,55 @@ export default {
             });
         }
 
-        return fn(args, await args[1].dbUtil.getServer(args[0].serverId!));
+        const server = await ctx.dbUtil.getServer(message.serverId!);
+        const prefix = fetchPrefix(server);
+
+        // if the message does not start with the prefix
+        if (!message.content.startsWith(prefix)) {
+            const member = await ctx.members.fetch(message.serverId!, message.authorId).catch(() => null);
+            if (member?.user?.type === UserType.Bot) return;
+
+            // store the message in the database
+            await ctx.dbUtil.storeMessage(message).catch(console.log);
+
+            await moderateContent(ctx, server, message.channelId, "MESSAGE", FilteredContent.Message, message.authorId, message.content, message.mentions, () =>
+                ctx.messages.delete(message.channelId, message.id)
+            );
+
+            if (server.scanNSFW) {
+                await ctx.contentFilterUtil.scanMessageMedia(message);
+            }
+            return;
+        }
+
+        const parsed = await parseCommand([message, ctx], prefix);
+        if (!parsed) return;
+        let { command, commandName, args: parsedArgs } = parsed;
+
+        if (!command) {
+            const customCommand = await ctx.prisma.customTag.findFirst({ where: { serverId: message.serverId!, name: commandName } });
+            if (!customCommand) return ctx.amp.logEvent({ event_type: "INVALID_COMMAND", user_id: message.authorId, event_properties: { serverId: message.serverId! } });
+            void ctx.amp.logEvent({ event_type: "TAG_RAN", user_id: message.authorId, event_properties: { serverId: message.serverId! } });
+            return ctx.messageUtil.send(message.channelId, customCommand.content);
+        }
+
+        const perms = await checkUserPermissions(fetchServerRoles, [message, ctx], command);
+        if (!perms?.member) return;
+
+        const subCommand = await fetchCommandInfo([message, ctx], prefix, command, parsedArgs);
+
+        if (subCommand) {
+            const subPerm = await checkUserPermissions(fetchServerRoles, [message, ctx], command);
+            if (!subPerm?.member) return;
+
+            command = subCommand.command;
+        }
+
+        const resolved = await resolveArguments([message, ctx], prefix, command, parsedArgs);
+        if (!resolved) return;
+
+        // If user is capable of executing the command, it will start parsing arguments
+        return tryExecuteCommand([message, ctx], server, perms.member, prefix, command, resolved.resolvedArgs);
     },
     name: "messageCreated",
 } satisfies GEvent<"messageCreated">;

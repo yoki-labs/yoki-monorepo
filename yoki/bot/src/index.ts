@@ -55,8 +55,7 @@ void (async (): Promise<void> => {
     // Load all filse & directories in the commands dir recursively
     await setClientCommands(client, join(__dirname, "commands"));
     // Load guilded events
-    // Load guilded events
-    const eventFiles = await recursive(join(__dirname, "events"));
+    const eventFiles = await recursive(join(__dirname, "events", "guilded"));
 
     for (const eventFile of eventFiles.filter((x) => !x.endsWith(".ignore.js") && !x.endsWith(".map"))) {
         const event = (await import(eventFile)).default as GEvent<YokiClient, any>;
