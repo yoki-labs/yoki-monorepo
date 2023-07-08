@@ -10,10 +10,10 @@
 		"dist"
 	],
 	"scripts": {
-		"build": "tsc && tsc-alias",
+		"build": "tsc",
 		"lint": "eslint -c ../../.eslintrc.js src scripts --ext .ts",
 		"start": "node dist/index.js",
-		"dev": "npx nodemon",
+		"dev": "nodemon",
 		"migrate:dev": "pnpx dotenv-cli -e ../.env -- npx prisma migrate dev --name init",
 		"migrate:prod": "pnpx dotenv-cli -e ../.env.prod -- npx prisma migrate deploy",
 		"migrate:prod:ci": "prisma migrate deploy",
@@ -32,7 +32,6 @@
 		"@types/recursive-readdir": "^2.2.0",
 		"dotenv-cli": "^5.1.0",
 		"prisma": "~4.8.0",
-		"tsc-alias": "^1.6.5",
 		"typescript": "^4.9.5"
 	},
 	"dependencies": {

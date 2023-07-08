@@ -123,7 +123,7 @@ export function createCommandHandler<
                 args = args.slice(1);
             }
 
-            return { command };
+            return { command, args };
         },
         checkUserPermissions: async (getRoles: (ctx: TClient, serverId: string) => Promise<IRole<TRoleType>[]>, context: [Message, TClient], command: TCommand) => {
             const [message, ctx] = context;

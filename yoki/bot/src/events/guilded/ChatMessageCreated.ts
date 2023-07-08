@@ -116,6 +116,7 @@ export default {
             if (!subPerm?.member) return;
 
             command = subCommand.command;
+            parsedArgs = subCommand.args;
         }
 
         const resolved = await resolveArguments([message, ctx], prefix, command, parsedArgs);

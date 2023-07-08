@@ -1,13 +1,13 @@
 {
     "watch": [
         "src",
-        "../../packages"
+        "../../packages/src"
     ],
     "ext": "ts,json",
     "ignore": [
         "src/**/*.d.ts",
         "../../packages/**/*.d.ts"
     ],
-    "exec": "npx tsc && node --enable-source-maps dist/index.js",
+    "exec": "pnpm run -w build:yoki && node --enable-source-maps dist/index.js",
     "legacyWatch": true
 }
