@@ -30,7 +30,6 @@ const Staff: Command = {
                 return ctx.messageUtil.replyWithError(message, `Not a staff role`, `The given role is not a mod/admin role or does not exist.`);
 
             await ctx.prisma.role.deleteMany({ where: { roleId: modroleId, serverId: message.serverId! } });
-
             return ctx.messageUtil.replyWithSuccess(message, `Removed staff role`, `<@${modroleId}> is no longer a staff role.`, undefined, { isSilent: true });
         }
 
@@ -54,6 +53,11 @@ const Staff: Command = {
                   )
                 : ctx.messageUtil.replyWithNullState(message, `No staff roles`, `There are no staff roles set for this server yet.`);
         }
+
+        const roles = await ctx.roles.fetchMany(message.serverId!);
+        const defaultRole = roles.find((x) => x.isBase);
+        if (modroleId === defaultRole?.id) return ctx.messageUtil.replyWithError(message, `Cannot set member as staff role`, `You cannot set the member role as a staff role.`);
+
         const existing = await ctx.prisma.role.findMany({ where: { serverId: message.serverId!, roleId: modroleId, type: staffLevel } });
         if (existing.find((x) => x.roleId === modroleId))
             return ctx.messageUtil.replyWithError(message, `Already a staff role`, `This role has already been set as ${staffLevel}.`);
@@ -66,6 +70,7 @@ const Staff: Command = {
             },
         });
 
+        await ctx.errorHandler.send(`Server ${message.serverId} has added a ${staffLevel} role. Added <@${modroleId}> as a ${staffLevel} role`);
         return ctx.messageUtil.replyWithSuccess(message, `Staff role added`, `Successfully added <@${modroleId}> as a ${staffLevel} role`);
     },
 };
