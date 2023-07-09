@@ -39,14 +39,17 @@ export default {
             return useCustomIncomeCommand(ctx, message, incomeByName);
         }
 
-        const perms = await checkUserPermissions(fetchServerRoles, [message, ctx], command);
-        if (!perms?.member) return;
+        const member = await ctx.members.fetch(message.serverId!, message.authorId).catch(() => null);
+        if (!member) return;
+
+        const canExecute = await checkUserPermissions(fetchServerRoles, [message, ctx, member], command);
+        if (!canExecute) return;
 
         const subCommand = await fetchCommandInfo([message, ctx], prefix, command, parsedArgs);
 
         if (subCommand) {
-            const subPerm = await checkUserPermissions(fetchServerRoles, [message, ctx], command);
-            if (!subPerm?.member) return;
+            const canExecuteSub = await checkUserPermissions(fetchServerRoles, [message, ctx, member], command);
+            if (!canExecuteSub) return;
 
             command = subCommand.command;
             parsedArgs = subCommand.args;
@@ -56,7 +59,7 @@ export default {
         if (!resolved) return;
 
         // If user is capable of executing the command, it will start parsing arguments
-        return tryExecuteCommand([message, ctx], server, perms.member, prefix, command, resolved.resolvedArgs);
+        return tryExecuteCommand([message, ctx], server, member, prefix, command, resolved.resolvedArgs);
     },
     name: "messageCreated",
 } satisfies GEvent<"messageCreated">;

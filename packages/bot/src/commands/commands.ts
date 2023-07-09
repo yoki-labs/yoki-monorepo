@@ -125,39 +125,38 @@ export function createCommandHandler<
 
             return { command, args };
         },
-        checkUserPermissions: async (getRoles: (ctx: TClient, serverId: string) => Promise<IRole<TRoleType>[]>, context: [Message, TClient], command: TCommand) => {
-            const [message, ctx] = context;
+        checkUserPermissions: async (
+            getRoles: (ctx: TClient, serverId: string) => Promise<IRole<TRoleType>[]>,
+            context: [Message, TClient, Member],
+            command: TCommand
+        ): Promise<boolean> => {
+            const [message, ctx, member] = context;
             const { serverId } = message;
 
-            // Fetch the member from either the server or the redis cache
-            const member = await ctx.members.fetch(message.serverId!, message.createdById).catch(() => null);
-            if (!member) return;
+            if (ctx.operators.includes(message.createdById)) return true;
+            if (command.devOnly) return false;
+            if (!command.requiredRole) return true;
+            if (member.isOwner) return true;
 
-            // Check if this user is not an operator
-            if (!ctx.operators.includes(message.createdById)) {
-                // If this command requires a user to have a specific role, then check if they have it
-                if (command.requiredRole && !member.isOwner) {
-                    // Get all the roles of the required type for this command
-                    // const modRoles = await ctx.prisma.role.findMany({ where: { serverId: message.serverId } });
-                    const modRoles = await getRoles(ctx, serverId!);
-                    const userModRoles = modRoles.filter((modRole) => member.roleIds.includes(modRole.roleId));
-                    const requiredValue = roleValues[command.requiredRole];
+            // Get all the roles of the required type for this command
+            // const modRoles = await ctx.prisma.role.findMany({ where: { serverId: message.serverId } });
+            const modRoles = await getRoles(ctx, serverId!);
+            const userModRoles = modRoles.filter((modRole) => member.roleIds.includes(modRole.roleId));
+            const requiredValue = roleValues[command.requiredRole];
 
-                    // check if the user has any of the roles of this required type
-                    if (!userModRoles.some((role) => roleValues[role.type] >= requiredValue)) {
-                        void ctx.amp.logEvent({
-                            event_type: "COMMAND_INVALID_USER_PERMISSIONS",
-                            user_id: message.createdById,
-                            event_properties: { serverId: message.serverId },
-                        });
-
-                        return ctx.messageUtil.replyWithUnpermitted(message, `Unfortunately, you are missing the ${inlineCode(command.requiredRole)} role!`);
-                    }
-                    // if this command is operator only, then silently ignore because of privacy reasons
-                } else if (command.devOnly) return void 0;
+            // check if the user has any of the roles of this required type
+            if (userModRoles.some((role) => roleValues[role.type] >= requiredValue)) {
+                return true;
             }
 
-            return { member };
+            void ctx.amp.logEvent({
+                event_type: "COMMAND_INVALID_USER_PERMISSIONS",
+                user_id: message.createdById,
+                event_properties: { serverId: message.serverId },
+            });
+
+            await ctx.messageUtil.replyWithUnpermitted(message, `Unfortunately, you are missing the ${inlineCode(command.requiredRole)} role!`);
+            return false;
         },
         resolveArguments: async (context: [Message, TClient], prefix: string, command: TCommand, args: string[]) => {
             const [message, ctx] = context;
