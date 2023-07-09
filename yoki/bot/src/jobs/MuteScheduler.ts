@@ -9,7 +9,7 @@ export class MuteScheduler extends Scheduler<Action> {
     public async sweep(action: Action): Promise<void> {
         // get the server in the database
         const guild = await this.client.dbUtil.getServer(action.serverId, false);
-        if (!guild) return void 0;
+        if (!guild) return;
         const member = await this.client.members.fetch(action.serverId, action.targetId).catch(() => null);
         if (!member) return;
         if (guild.muteRoleId) {

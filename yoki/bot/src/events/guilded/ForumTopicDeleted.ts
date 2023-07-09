@@ -12,7 +12,7 @@ export default {
 
         // check if there's a log channel channel for message deletions
         const deletedTopicLogChannel = await ctx.dbUtil.getLogChannel(serverId, LogChannelType.topic_deletions);
-        if (!deletedTopicLogChannel) return void 0;
+        if (!deletedTopicLogChannel) return;
 
         const channel = await ctx.channels.fetch(forumTopic.channelId).catch();
 
@@ -39,8 +39,6 @@ export default {
                 },
             ],
         });
-
-        return void 0;
     },
     name: "forumTopicDeleted",
 } satisfies GEvent<"forumTopicDeleted">;

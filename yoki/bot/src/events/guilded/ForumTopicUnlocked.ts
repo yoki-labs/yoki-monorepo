@@ -9,7 +9,7 @@ export default {
 
         // check if there's a log channel channel for message deletions
         const lockedTopicLogChannel = await ctx.dbUtil.getLogChannel(serverId, LogChannelType.topic_locks);
-        if (!lockedTopicLogChannel) return void 0;
+        if (!lockedTopicLogChannel) return;
 
         const channel = await ctx.channels.fetch(forumTopic.channelId).catch();
 
@@ -30,8 +30,6 @@ export default {
             color: Colors.green,
             occurred: new Date().toISOString(),
         });
-
-        return void 0;
     },
     name: "forumTopicUnlocked",
 } satisfies GEvent<"forumTopicUnlocked">;

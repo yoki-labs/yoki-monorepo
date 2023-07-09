@@ -39,7 +39,6 @@ export default {
         await Promise.all(
             modmailThreads.map((x) => closeModmailThread(server, ctx.user?.id || "Ann6LewA", ctx, x, "automatically closed, because member has left the server"))
         ).catch((x) => console.error("Error while automatically closing modmail threads:\n", x));
-        return void 0;
     },
     name: "memberRemoved",
 } satisfies GEvent<"memberRemoved">;

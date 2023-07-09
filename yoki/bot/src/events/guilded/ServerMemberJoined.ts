@@ -144,7 +144,7 @@ export default {
 
         // check if there's a log channel channel for member joins
         const memberJoinLogChannel = await ctx.dbUtil.getLogChannel(serverId!, LogChannelType.member_joins);
-        if (!memberJoinLogChannel) return void 0;
+        if (!memberJoinLogChannel) return;
         const creationDate = new Date(member.user!.createdAt!);
         const suspicious = sus(creationDate);
 
@@ -161,7 +161,6 @@ export default {
                                 **Joined at:** ${server.formatTimezone(member.joinedAt!)} EST
                             `,
         });
-        return void 0;
     },
     name: "memberJoined",
 } satisfies GEvent<"memberJoined">;

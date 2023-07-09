@@ -12,7 +12,7 @@ export default async (serverId: string, parentId: number, comment: CommentPayloa
 
     // check if there's a log channel channel for message deletions
     const deletedCommentLogChannel = await ctx.dbUtil.getLogChannel(serverId, LogChannelType.comment_deletions);
-    if (!deletedCommentLogChannel) return void 0;
+    if (!deletedCommentLogChannel) return;
 
     const channel = await ctx.channels.fetch(comment.channelId).catch();
 
@@ -38,6 +38,4 @@ export default async (serverId: string, parentId: number, comment: CommentPayloa
             },
         ],
     });
-
-    return void 0;
 };

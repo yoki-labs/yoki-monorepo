@@ -17,12 +17,12 @@ export default {
     execute: async (args) => {
         const [message, ctx] = args;
 
-        if (message.createdByWebhookId || message.authorId === ctx.user!.id || message.authorId === "Ann6LewA" || !message.serverId) return void 0;
+        if (message.createdByWebhookId || message.authorId === ctx.user!.id || message.authorId === "Ann6LewA" || !message.serverId) return;
 
         const server = await ctx.dbUtil.getServer(message.serverId!);
 
         // Early access only
-        if (!server.flags.includes("EARLY_ACCESS") && server.serverId !== process.env.MAIN_SERVER) return void 0;
+        if (!server.flags.includes("EARLY_ACCESS") && server.serverId !== process.env.MAIN_SERVER) return;
 
         const prefix = fetchPrefix(server);
 

@@ -57,7 +57,7 @@ export function createCommandHandler<
             ]);
             const res = lexer.lexCommand((lexS) => (lexS.startsWith(prefix) ? prefix.length : null));
 
-            if (!res) return void 0;
+            if (!res) return;
 
             const [lexCommand, getRest] = res;
 

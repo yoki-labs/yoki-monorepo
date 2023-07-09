@@ -30,7 +30,6 @@ export default {
                 occurred: new Date().toISOString(),
             });
         }
-        return void 0;
     },
     name: "memberUnbanned",
 } satisfies GEvent<"memberUnbanned">;

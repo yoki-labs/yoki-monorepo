@@ -32,7 +32,6 @@ export default {
                 occurred: createdAt,
             });
         }
-        return void 0;
     },
     name: "memberBanned",
 } satisfies GEvent<"memberBanned">;

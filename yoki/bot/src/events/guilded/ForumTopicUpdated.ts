@@ -38,7 +38,7 @@ export default {
 
         // check if there's a log channel channel for message deletions
         const editedTopicLogChannel = await ctx.dbUtil.getLogChannel(serverId, LogChannelType.topic_edits);
-        if (!editedTopicLogChannel) return void 0;
+        if (!editedTopicLogChannel) return;
 
         const channel = await ctx.channels.fetch(forumTopic.channelId).catch();
 
@@ -75,8 +75,6 @@ export default {
                 },
             ].filter(Boolean) as EmbedField[],
         });
-
-        return void 0;
     },
     name: "forumTopicUpdated",
 } satisfies GEvent<"forumTopicUpdated">;

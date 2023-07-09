@@ -74,7 +74,7 @@ export class ContentFilterUtil extends BaseFilterUtil {
         resultingAction: () => unknown;
     }) {
         // If the bot is the one who did this action, ignore.
-        if (userId === this.client.user!.id) return void 0;
+        if (userId === this.client.user!.id) return;
         const { serverId } = server;
 
         // Get all the banned words in this server
@@ -118,7 +118,7 @@ export class ContentFilterUtil extends BaseFilterUtil {
         const triggeredWord = (ifTriggersCustom ?? ifTriggersPreset) as ContentFilterScan | undefined;
 
         // If the content does not violate any filters or presets, ignore
-        if (!triggeredWord) return void 0;
+        if (!triggeredWord) return;
 
         // By now, we assume the member has violated a filter or preset
         // Get the member from cache or API

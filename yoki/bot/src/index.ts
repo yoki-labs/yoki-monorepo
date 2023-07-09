@@ -28,7 +28,7 @@ client.ws.emitter.on("gatewayEvent", async (event, data) => {
 
     if (!client.eventHandler[event]) return;
     const serverFromDb = await client.dbUtil.getServer(serverId).catch((err) => unhandledPromiseRejection(err as Error, client));
-    if (!serverFromDb || serverFromDb?.blacklisted) return void 0;
+    if (!serverFromDb || serverFromDb?.blacklisted) return;
     return client.eventHandler[event]?.(data, client, serverFromDb).catch((err) => errorLoggerS3(client, event, err, { server: serverId, event }));
 });
 

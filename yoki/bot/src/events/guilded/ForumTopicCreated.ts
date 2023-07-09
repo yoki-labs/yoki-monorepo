@@ -35,8 +35,6 @@ export default {
             forumTopic.mentions,
             deletion
         );
-
-        return void 0;
     },
     name: "forumTopicCreated",
 } satisfies GEvent<"forumTopicCreated">;

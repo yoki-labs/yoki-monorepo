@@ -11,7 +11,7 @@ export default {
     execute: async ([message, ctx]) => {
         // check if there's a log channel channel for message deletions
         const deletedMessageLogChannel = await ctx.dbUtil.getLogChannel(message.serverId!, LogChannelType.message_deletions);
-        if (!deletedMessageLogChannel) return void 0;
+        if (!deletedMessageLogChannel) return;
 
         // get the database entry for the deleted message
         const deletedMessage = await ctx.dbUtil.getMessage(message.channelId, message.id);
@@ -68,7 +68,6 @@ export default {
             occurred: message.deletedAt,
             fields: logContent,
         });
-        return void 0;
     },
     name: "messageDeleted",
 } satisfies GEvent<"messageDeleted">;
