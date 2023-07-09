@@ -21,9 +21,9 @@ const { fetchPrefix, parseCommand, fetchCommandInfo, resolveArguments, checkUser
 const fetchServerRoles = (ctx: YokiClient, serverId: string) => ctx.prisma.role.findMany({ where: { serverId } });
 const logCommands = async (message: Message, command: Command, args: Record<string, any>) => {
     const stringifiedArgs = inspect(args, { depth: 1 });
-    await (message.client as YokiClient).commandLogHandler.send(
-        `[\`${message.serverId}\`] \`${message.createdById}\` has ran \`${command.name}\` with args \`${stringifiedArgs.slice(0, 1000)}\``
-    );
+    await (message.client as YokiClient).commandLogHandler
+        .send(`[\`${message.serverId}\`] ${message.createdById} has ran **${command.name}** with args \`${stringifiedArgs.slice(0, 1000)}\``)
+        .catch(() => null);
 };
 
 export default {
