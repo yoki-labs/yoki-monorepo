@@ -1,5 +1,5 @@
 import { stripIndents } from "common-tags";
-import { Member, Message, WebhookEmbed } from "guilded.js";
+import { Member, Message, PermissionsError, WebhookEmbed } from "guilded.js";
 import * as lexure from "lexure";
 import { nanoid } from "nanoid";
 
@@ -20,7 +20,6 @@ import type { IRole, IServer } from "../db-types";
 import { codeBlock, inlineCode, inlineQuote } from "../utils/formatting";
 import type { UsedMentions } from "./arguments";
 import type { BaseCommand, CommandArgType, CommandArgValidator } from "./command-typings";
-import { PermissionsError } from "guilded.js";
 
 export function createCommandHandler<
     TClient extends AbstractClient<TClient, TServer, TCommand>,
@@ -238,7 +237,7 @@ export function createCommandHandler<
                 }
                 if (e instanceof PermissionsError) {
                     if (typeof e.response.body === "object" && e.response.body.meta) {
-                        const missingPermissions = e.response.body.meta.missingPermissions;
+                        const { missingPermissions } = e.response.body.meta;
                         return ctx.messageUtil.replyWithUnpermitted(
                             message,
                             `It seems like I don't have the permissions to do that! I'm missing the following permissions: \`${missingPermissions?.join(", ")}\``
