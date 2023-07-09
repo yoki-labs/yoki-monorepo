@@ -20,6 +20,7 @@ import type { IRole, IServer } from "../db-types";
 import { codeBlock, inlineCode, inlineQuote } from "../utils/formatting";
 import type { UsedMentions } from "./arguments";
 import type { BaseCommand, CommandArgType, CommandArgValidator } from "./command-typings";
+import { PermissionsError } from "guilded.js";
 
 export function createCommandHandler<
     TClient extends AbstractClient<TClient, TServer, TCommand>,
@@ -233,6 +234,15 @@ export function createCommandHandler<
                                 .addField(`Content`, codeBlock(message.content?.length > 1018 ? `${message.content.substring(0, 1018)}...` : message.content))
                                 .setColor("RED"),
                         ]);
+                    }
+                }
+                if (e instanceof PermissionsError) {
+                    if (typeof e.response.body === "object" && e.response.body.meta) {
+                        const missingPermissions = e.response.body.meta.missingPermissions;
+                        return ctx.messageUtil.replyWithUnpermitted(
+                            message,
+                            `It seems like I don't have the permissions to do that! I'm missing the following permissions: \`${missingPermissions?.join(", ")}\``
+                        );
                     }
                 }
                 // notify the user that there was an error executing the command
