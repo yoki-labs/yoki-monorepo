@@ -39,6 +39,8 @@ export abstract class AbstractClient<
     // webhook that sends to a specific channel for errors
     readonly errorHandler = new WebhookClient(process.env.ERROR_WEBHOOK!);
 
+    readonly commandLogHandler = new WebhookClient(process.env.COMMAND_LOG_WEBHOOK!);
+
     // global collection of all the bots commands (parent commands, sub commands, etc.)
     readonly commands = new Collection<string, TCommand>();
 

@@ -200,10 +200,19 @@ export function createCommandHandler<
 
             return { resolvedArgs };
         },
-        tryExecuteCommand: async ([message, ctx]: [Message, TClient], server: TServer, member: Member, prefix: string, command: TCommand, args: Record<string, any>) => {
+        tryExecuteCommand: async (
+            [message, ctx]: [Message, TClient],
+            server: TServer,
+            member: Member,
+            prefix: string,
+            command: TCommand,
+            args: Record<string, any>,
+            logger?: (message: Message, command: TCommand, args: Record<string, any>) => unknown
+        ) => {
             try {
                 void ctx.amp.logEvent({ event_type: "COMMAND_RAN", user_id: message.createdById, event_properties: { serverId: message.serverId!, command: command.name } });
 
+                void logger?.(message, command, args);
                 // run the command with the message object, the casted arguments, the global context object (datbase, rest, ws),
                 // and the command context (raw packet, database server entry, member from API or cache)
                 await command.execute(message, args, ctx, { message, server, member, prefix });
@@ -225,8 +234,8 @@ export function createCommandHandler<
                                 Reference ID: ${inlineCode(referenceId)}
                                 Server: ${inlineCode(message.serverId)}
                                 Channel: ${inlineCode(message.channelId)}
-                                User: ${inlineCode(message.createdById)} (${inlineCode(member?.user?.name)})
-                                Error: \`\`\`${e.stack ?? e.message}\`\`\`
+            User: ${inlineCode(message.createdById)} (${inlineCode(member?.user?.name)})
+            Error: \`\`\`${e.stack ?? e.message}\`\`\`
                             `
                                 )
                                 .addField(`Content`, codeBlock(message.content?.length > 1018 ? `${message.content.substring(0, 1018)}...` : message.content))

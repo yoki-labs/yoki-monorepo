@@ -1,7 +1,8 @@
 import { createCommandHandler } from "@yokilabs/bot";
 import { Colors } from "@yokilabs/utils";
 import { stripIndents } from "common-tags";
-import { Embed, UserType } from "guilded.js";
+import { Embed, Message, UserType } from "guilded.js";
+import { inspect } from "util";
 
 import type YokiClient from "../../Client";
 import type { Command } from "../../commands/commands";
@@ -18,6 +19,12 @@ const { fetchPrefix, parseCommand, fetchCommandInfo, resolveArguments, checkUser
 
 // Fetches minimod/mod/admin roles
 const fetchServerRoles = (ctx: YokiClient, serverId: string) => ctx.prisma.role.findMany({ where: { serverId } });
+const logCommands = async (message: Message, command: Command, args: Record<string, any>) => {
+    const stringifiedArgs = inspect(args, { depth: 1 });
+    await (message.client as YokiClient).commandLogHandler.send(
+        `[\`${message.serverId}\`] \`${message.createdById}\` has ran \`${command.name}\` with args \`${stringifiedArgs.slice(0, 1000)}\``
+    );
+};
 
 export default {
     execute: async (args) => {
@@ -128,7 +135,7 @@ export default {
         if (!resolved) return;
 
         // If user is capable of executing the command, it will start parsing arguments
-        return tryExecuteCommand([message, ctx], server, member, prefix, command, resolved.resolvedArgs);
+        return tryExecuteCommand([message, ctx], server, member, prefix, command, resolved.resolvedArgs, logCommands);
     },
     name: "messageCreated",
 } satisfies GEvent<"messageCreated">;
