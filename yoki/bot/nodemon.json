@@ -1,7 +1,7 @@
 {
     "watch": [
         "src",
-        "../../packages/src"
+        "../../packages/bot/src"
     ],
     "ext": "ts,json",
     "ignore": [

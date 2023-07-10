@@ -1,20 +1,19 @@
-import { isHashId } from "@yokilabs/utils";
-import type { Member } from "guilded.js";
+import type { Role } from "guilded.js";
 
 import type { CommandArgValidator } from "../commands/command-typings";
 
 export default [
-    async (input, args, index, message, _, usedMentions): Promise<Member | null> => {
+    async (input, args, index, message, _, usedMentions): Promise<Role | null> => {
         if (input.startsWith("@")) {
             // Get the mentioned user and increment used mentions
-            const mention = message.mentions?.users?.[usedMentions.user++];
+            const mention = message.mentions?.roles?.[usedMentions.user++];
             if (!mention) return null;
 
-            const member = await message.client.members.fetch(message.serverId!, mention.id).catch(() => null);
+            const role = await message.client.roles.fetch(message.serverId!, mention.id).catch(() => null);
 
-            if (!member) return null;
+            if (!role) return null;
 
-            const name = member.nickname ?? member.user!.name;
+            const { name } = role;
             const spaceCount = name.split(" ").length;
 
             // If we have `@nico's alt`, remove ` alt` part and modify `@nico's` to be `@nico's alt`
@@ -22,19 +21,19 @@ export default [
 
             args[index] = name;
 
-            return member;
+            return role;
         }
 
-        if (isHashId(input)) {
-            return message.client.members.fetch(message.serverId!, input).catch(() => null);
+        const parsed = Number(input);
+        if (!Number.isNaN(parsed)) {
+            return message.client.roles.fetch(message.serverId!, Number(input)).catch(() => null);
         }
 
         return null;
     },
     (_arg) => `
-		I was expecting a mention or ID of a user. 
+		I was expecting the mention or ID of a role in this server. It may look something like this: \`@role\` or \`28086957\`
 		
-		This user **must** currently be in the server.
 		Don't know how to get IDs? Refer to this [Guilded Post](https://support.guilded.gg/hc/en-us/articles/6183962129303-Developer-mode#:~:text=Once%20you've%20enabled%20Developer,by%20right%2Dclicking%20on%20it.).
 	`,
 ] satisfies CommandArgValidator;

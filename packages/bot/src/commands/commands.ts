@@ -12,6 +12,7 @@ import enumList from "../args/enumList";
 import member from "../args/member";
 import number from "../args/number";
 import rest from "../args/rest";
+import role from "../args/role";
 import stringArg from "../args/string";
 import time from "../args/time";
 import UUID from "../args/UUID";
@@ -39,6 +40,7 @@ export function createCommandHandler<
         string: stringArg,
         UUID,
         emote,
+        role,
     };
 
     // Lambda incase JS detects there is no context in lambdas from the object and garbage collects the object

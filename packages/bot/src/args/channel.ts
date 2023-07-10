@@ -35,5 +35,7 @@ export default [
 	**The bot must have read, send, & manage permission on the channel**
 	
 	Ensure **none** of the bot's roles deny these permissions.
+    
+    Don't know how to get IDs? Refer to this [Guilded Post](https://support.guilded.gg/hc/en-us/articles/6183962129303-Developer-mode#:~:text=Once%20you've%20enabled%20Developer,by%20right%2Dclicking%20on%20it.).
 `,
 ] satisfies CommandArgValidator;

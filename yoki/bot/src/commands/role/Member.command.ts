@@ -1,4 +1,5 @@
 import { stripIndents } from "common-tags";
+import { Role } from "guilded.js";
 
 import { RoleType } from "../../typings";
 import { addOrRemoveMemberRoleMessage } from "../../utils/util";
@@ -13,9 +14,13 @@ const Member: Command = {
     subCommand: true,
     subName: "member",
     requiredRole: RoleType.ADMIN,
-    args: [{ name: "role", display: "role mention or ID / remove", optional: true, type: "string" }],
+    args: [
+        { name: "role", type: "role", optional: true },
+        { name: "remove", type: "string", optional: true },
+    ],
     execute: async (message, args, ctx, commandCtx) => {
-        const role = args.role as string | undefined;
+        const role = args.role as Role | undefined;
+        const remove = args.remove as string | undefined;
 
         // Just display if it's unspecified
         if (!role) {
@@ -35,7 +40,8 @@ const Member: Command = {
                   )
                 : ctx.messageUtil.replyWithNullState(message, `No member role`, `There is no member role set.`);
         }
-        if (role.toUpperCase() === "REMOVE") {
+
+        if (remove?.toUpperCase() === "REMOVE") {
             // The ability to delete member roles
             await ctx.prisma.server.updateMany({ data: { memberRoleId: null }, where: { serverId: message.serverId! } });
 
@@ -44,19 +50,17 @@ const Member: Command = {
             });
         }
 
-        const roleId = role ? Number(role as string) : null;
-
         // This could be merged back with `if (!role)`, but I am too lazy to handle it well with
         // `REMOVE` + it is better to tell someone they are wrong than just make them confused
-        if (Number.isNaN(roleId))
+        if (Number.isNaN(role.id))
             return ctx.messageUtil.replyWithError(
                 message,
                 `Provide role`,
                 `Provide a valid ID or mention of the role you want to set as a member role or pass \`remove\` to remove it.`
             );
 
-        await ctx.prisma.server.updateMany({ data: { memberRoleId: roleId }, where: { serverId: message.serverId! } });
-        return ctx.messageUtil.replyWithSuccess(message, `Member role set`, `Successfully set <@${roleId}> as the member role`, undefined, { isSilent: true });
+        await ctx.prisma.server.updateMany({ data: { memberRoleId: role.id }, where: { serverId: message.serverId! } });
+        return ctx.messageUtil.replyWithSuccess(message, `Member role set`, `Successfully set <@${role.id}> as the member role`, undefined, { isSilent: true });
     },
 };
 
