@@ -125,7 +125,7 @@ export default {
         const moduleEnabledStatus = isCommandModule && server[`${command.module}Enabled`];
         const commandModuleMessage =
             isCommandModule &&
-            `${!moduleEnabledStatus && "⚠️"} The \`${command.module}\` module is ${
+            `${moduleEnabledStatus ? "" : "⚠️"} The \`${command.module}\` module is ${
                 moduleEnabledStatus ? "enabled" : `disabled. To enable it, run \`${server.getPrefix()}module enable ${command.module}\``
             }.`;
         const subCommand = await fetchCommandInfo([message, ctx], prefix, command, parsedArgs, commandModuleMessage || undefined);
