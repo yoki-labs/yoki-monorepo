@@ -3,7 +3,7 @@ import { inlineCode, inlineQuote } from "@yokilabs/bot";
 
 import { Category, Command } from "../commands";
 import { defaultIncomes } from "../income/income-defaults";
-import { DefaultIncomeTypeMap } from "./income-util";
+import { DefaultIncomeTypeMap, defaultOrCustomIncomeDisplay } from "./income-util";
 
 const SetMessage: Command = {
     name: "income-message",
@@ -15,9 +15,7 @@ const SetMessage: Command = {
     args: [
         {
             name: "command",
-            display: `${Object.keys(DefaultIncomeType)
-                .map((x) => x.toLowerCase())
-                .join(" / ")} / (custom income command)`,
+            display: defaultOrCustomIncomeDisplay,
             type: "string",
             // values: DefaultIncomeType,
         },

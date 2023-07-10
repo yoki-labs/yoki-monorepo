@@ -4,7 +4,7 @@ import ms from "ms";
 
 import { Category, Command } from "../commands";
 import { defaultCreatedCooldown, defaultIncomes } from "../income/income-defaults";
-import { DefaultIncomeTypeMap } from "./income-util";
+import { DefaultIncomeTypeMap, defaultOrCustomIncomeDisplay } from "./income-util";
 
 const SetCooldown: Command = {
     name: "income-cooldown",
@@ -16,9 +16,7 @@ const SetCooldown: Command = {
     args: [
         {
             name: "command",
-            display: `${Object.keys(DefaultIncomeType)
-                .map((x) => x.toLowerCase())
-                .join(" / ")} / (custom income command)`,
+            display: defaultOrCustomIncomeDisplay,
             type: "string",
             // values: DefaultIncomeType,
         },

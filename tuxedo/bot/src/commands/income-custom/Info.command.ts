@@ -7,7 +7,7 @@ import ms from "ms";
 
 import { Category, Command } from "../commands";
 import { defaultCreatedCooldown, defaultIncomes } from "../income/income-defaults";
-import { DefaultIncomeTypeMap, displayDefaultRewards, displayOverridenRewards } from "./income-util";
+import { DefaultIncomeTypeMap, defaultOrCustomIncomeDisplay, displayDefaultRewards, displayOverridenRewards } from "./income-util";
 
 const Info: Command = {
     name: "income-info",
@@ -19,13 +19,11 @@ const Info: Command = {
     args: [
         {
             name: "command",
-            display: `${Object.keys(DefaultIncomeType)
-                .map((x) => x.toLowerCase())
-                .join(" / ")} / (custom income command)`,
+            display: defaultOrCustomIncomeDisplay,
             type: "string",
         },
     ],
-    execute: async (message, args, ctx, { server: { timezone } }) => {
+    execute: async (message, args, ctx, { server: { timezone, disableDefaultIncomes } }) => {
         const command = (args.command as string).toLowerCase();
 
         const incomeType = DefaultIncomeTypeMap[command] as DefaultIncomeType | undefined;
@@ -41,9 +39,11 @@ const Info: Command = {
 
         const defaultIncomeInfo = incomeType ? defaultIncomes[incomeType] : null;
 
+        const incomeBadge = incomeType && disableDefaultIncomes.includes(incomeType) ? ":red_circle: " : "";
+
         return ctx.messageUtil.replyWithInfo(
             message,
-            `Income ${inlineQuote(displayName)}`,
+            `${incomeBadge}Income ${inlineQuote(displayName)}`,
             `Info about ${incomeType ? "server's local income" : "default income"} with the name ${inlineQuote(displayName)}.`,
             {
                 fields: [

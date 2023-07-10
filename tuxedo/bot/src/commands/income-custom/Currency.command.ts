@@ -16,7 +16,10 @@ const SetCurrency: Command = {
     args: [
         {
             name: "command",
-            display: `${Object.keys(DefaultIncomeType)
+            display: `${Object
+                .keys(DefaultIncomeType)
+                .slice(0, 3)
+                .concat("...")
                 .map((x) => x.toLowerCase())
                 .join(" / ")} / (custom income command)`,
             type: "string",
