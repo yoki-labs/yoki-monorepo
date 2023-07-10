@@ -2,6 +2,7 @@ import { inlineCode } from "@yokilabs/bot";
 import { stripIndents } from "common-tags";
 
 import { RoleType } from "../../typings";
+import { errorLoggerS3 } from "../../utils/s3";
 import { Category, Command } from "../commands";
 
 const Unban: Command = {
@@ -24,7 +25,7 @@ const Unban: Command = {
         try {
             await ctx.bans.unban(message.serverId!, target);
         } catch (e) {
-            console.log(e);
+            await errorLoggerS3(ctx, "unban", e as Error, { target, serverId: message.serverId });
             return ctx.messageUtil.replyWithUnexpected(
                 message,
                 stripIndents`
