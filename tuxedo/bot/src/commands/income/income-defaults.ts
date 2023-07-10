@@ -38,13 +38,13 @@ export const defaultIncomes: Record<DefaultIncomeType, { reward: [number, number
         action: "Robbed",
     },
     [DefaultIncomeType.BLACKJACK]: {
-        // 10'000-1'000'000, it doesn't add 10'000 to the max
-        reward: [10000, 1000000],
+        // 1'000-1'000'000, it doesn't add 1'000 to the max
+        reward: [1000, 1000000],
         cooldown: 60 * 1000,
         action: "Played blackjack",
     },
 };
-export const defaultCreatedCooldown = 6 * 60 * 60 * 1000;
+export const defaultCreatedCooldown = 4 * 60 * 60 * 1000;
 export const defaultCreatedReceivedCurrency = [1000, 2000];
 
 export const bankCooldown = 2 * 60 * 60 * 1000;
