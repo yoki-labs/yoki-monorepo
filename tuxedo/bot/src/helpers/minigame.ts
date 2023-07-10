@@ -36,7 +36,7 @@ export class MinigameUtil extends TickedUtil {
         return this._blackJackInstances.findIndex((x) => x.serverId === serverId && x.messageId === messageId);
     }
 
-    async addBlackjackHit(serverId: string, messageId: string) {
+    async addBlackjackHit(serverId: string, messageId: string, createdBy: string) {
         const instanceIndex = this.getBlackjackInstanceIndex(serverId, messageId);
 
         // Ignore it automatically; probably a random reaction
@@ -44,7 +44,11 @@ export class MinigameUtil extends TickedUtil {
             return;
 
         const instance = this._blackJackInstances[instanceIndex];
-        
+
+        // Can't play for others
+        if (instance.createdBy !== createdBy)
+            return;
+
         // It's a hit, so another card should get added
         const newCard = this.getCard();
         // To add a reaction if necessary
@@ -72,7 +76,7 @@ export class MinigameUtil extends TickedUtil {
         return this.updateBlackjackMessage(instance, currentDeckValue, condition);
     }
         
-    async addBlackjackStand(serverId: string, messageId: string, acesAre11: boolean) {
+    async addBlackjackStand(serverId: string, messageId: string, createdBy: string, acesAre11: boolean) {
         const instanceIndex = this.getBlackjackInstanceIndex(serverId, messageId);
     
         // Ignore it automatically; probably a random reaction
@@ -80,6 +84,10 @@ export class MinigameUtil extends TickedUtil {
             return;
     
         const instance = this._blackJackInstances[instanceIndex];
+
+        // Can't play for others
+        if (instance.createdBy !== createdBy)
+            return;
 
         // User chose how much aces are
         const userAceCount = instance.deck.filter((card) => card === SpecialBlackjackVariant.Ace).length;

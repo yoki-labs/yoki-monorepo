@@ -12,9 +12,9 @@ export default {
         if (emote.id === defaultGiveawayEmote)
             return ctx.giveawayUtil.addGiveawayParticipant(messageId, createdBy);
         else if (emote.id === blackjackReactionHit)
-            return ctx.minigameUtil.addBlackjackHit(serverId, messageId);
+            return ctx.minigameUtil.addBlackjackHit(serverId, messageId, createdBy);
         else if (emote.id === blackjackReactionStand || emote.id === blackjackReactionStandAce1)
-            return ctx.minigameUtil.addBlackjackStand(serverId, messageId, emote.id === blackjackReactionStand);
+            return ctx.minigameUtil.addBlackjackStand(serverId, messageId, createdBy, emote.id === blackjackReactionStand);
 
         return;
     },
