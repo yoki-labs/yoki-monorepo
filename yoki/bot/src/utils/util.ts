@@ -39,7 +39,7 @@ export const antiRaidResponseMap = {
 export const antiRaidResponseTransformer = (str: string) => antiRaidResponseMap[str];
 export const typeToDBPropMap = {
     modmail: "modmailEnabled",
-    automod: "filterEnabled",
+    filter: "filterEnabled",
     antiraid: "antiRaidEnabled",
     antihoist: "antiHoistEnabled",
     nsfwscan: "scanNSFW",

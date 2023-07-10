@@ -60,7 +60,10 @@ const Add: Command = {
         return ctx.messageUtil.replyWithSuccess(
             message,
             `New phrase added`,
-            `Successfully added ${inlineQuote(phrase)} with the severity ${inlineCode(severity.toLowerCase())} to the automod list!`
+            `Successfully added ${inlineQuote(phrase)} with the severity ${inlineCode(severity.toLowerCase())} to the automod list!
+            
+            ${server.filterEnabled ? "" : `Note that the filter is currently disabled. To enable it, use the \`${server.getPrefix()}module enable automod\` command.`}
+            `
         );
     },
 };

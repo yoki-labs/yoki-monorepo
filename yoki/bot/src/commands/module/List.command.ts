@@ -5,7 +5,7 @@ import { Category, Command } from "../commands";
 const descriptions: Record<string, string> = {
     modmail: "Allows people to send a message to server staff.",
     antihoist: "Forces people to only have letters and numbers at the start of their names.",
-    automod: "Filters out people's messages and posts.",
+    filter: "Filters out people's messages and posts.",
     antiraid: "Forces new people to use captcha and deals with raids.",
     nsfwscan: "Filters out NSFW/NSFL images from chat.",
     invitescan: "Filters out server invites and links that aren't of this server or aren't whitelisted.",

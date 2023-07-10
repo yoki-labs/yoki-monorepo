@@ -119,9 +119,16 @@ export default {
         if (!member) return;
 
         const canExecute = await checkUserPermissions(fetchServerRoles, [message, ctx, member], command);
-        console.log(canExecute);
         if (!canExecute) return;
-        const subCommand = await fetchCommandInfo([message, ctx], prefix, command, parsedArgs);
+
+        const isCommandModule = `${command.module}Enabled` in server;
+        const moduleEnabledStatus = isCommandModule && server[`${command.module}Enabled`];
+        const commandModuleMessage =
+            isCommandModule &&
+            `${!moduleEnabledStatus && "⚠️"} The \`${command.module}\` module is ${
+                moduleEnabledStatus ? "enabled" : `disabled. To enable it, run \`${server.getPrefix()}module enable ${command.module}\``
+            }.`;
+        const subCommand = await fetchCommandInfo([message, ctx], prefix, command, parsedArgs, commandModuleMessage || undefined);
 
         if (subCommand) {
             const canExecuteSub = await checkUserPermissions(fetchServerRoles, [message, ctx, member], subCommand.command);

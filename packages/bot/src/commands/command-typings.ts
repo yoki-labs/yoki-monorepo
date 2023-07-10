@@ -21,6 +21,7 @@ export interface BaseCommand<
     category?: string;
     examples?: string[];
     aliases?: string[];
+    module?: string;
     parentCommand?: boolean;
     subCommand?: boolean;
     subCommands?: Collection<string, TCommand>;

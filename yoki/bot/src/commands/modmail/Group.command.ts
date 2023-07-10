@@ -65,6 +65,12 @@ const ModmailGroup: Command = {
             `Modmail group set`,
             stripIndents`
 			Successfully ${endValue ? `set the modmail group to ${inlineCode(newGroup)}` : "cleared the modmail group"}.${endValue ? `\n\n${unsetGroupMessage}` : ""}
+
+            ${
+                commandCtx.server.modmailEnabled
+                    ? ""
+                    : `Note that modmail is currently disabled. To enable it, use the \`${commandCtx.server.getPrefix()}module enable modmail\` command.`
+            }
 		`
         );
     },

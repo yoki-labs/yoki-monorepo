@@ -67,7 +67,14 @@ const ModmailCategory: Command = {
             `Modmail category set`,
             stripIndents`
 				Successfully ${endValue ? `set the modmail category to ${inlineCode(newCategory)}` : "cleared the modmail category"}.${endValue ? `\n\n${unsetCategoryMessage}` : ""}
-		`
+
+                ${
+                    commandCtx.server.modmailEnabled
+                        ? ""
+                        : `Note that modmail is currently disabled. To enable it, use the \`${commandCtx.server.getPrefix()}module enable modmail\` command.`
+                }
+                ${commandCtx.server.modmailGroupId ? "" : removeGroupMessage(commandCtx.server.getPrefix())}
+            `
         );
     },
 };

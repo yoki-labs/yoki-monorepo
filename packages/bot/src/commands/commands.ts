@@ -81,7 +81,7 @@ export function createCommandHandler<
 
             return { command, commandName, args };
         },
-        fetchCommandInfo: async (context: [Message, TClient], prefix: string, command: TCommand, args: string[]) => {
+        fetchCommandInfo: async (context: [Message, TClient], prefix: string, command: TCommand, args: string[], module_info?: string) => {
             const [message, ctx] = context;
 
             while (command.parentCommand && command.subCommands?.size) {
@@ -97,8 +97,11 @@ export function createCommandHandler<
 
                     // Don't show operator commands to non-operators
                     if (!command.devOnly || ctx.operators.includes(message.createdById)) {
+                        const fields = [...ctx.messageUtil.createSubCommandFields(command.subCommands), ctx.messageUtil.createExampleField(subCommand, prefix)];
+                        if (module_info) fields.unshift({ name: "Module Status", value: module_info });
+
                         await ctx.messageUtil.replyWithInfo(message, `${inlineCode(command.name.split("-").join(" "))} command`, command.description, {
-                            fields: [...ctx.messageUtil.createSubCommandFields(command.subCommands), ctx.messageUtil.createExampleField(subCommand, prefix)],
+                            fields,
                         });
                         return;
                     }

@@ -37,7 +37,14 @@ const Channel: Command = {
             "Appeal channel successfully set",
             `You have now set the appeal channel to \`${
                 channel.name
-            }\`. Users will be able to appeal bans to your server through [this](https://yoki.gg/appeals/${message.serverId!}) url.`
+            }\`. Users will be able to appeal bans to your server through [this](https://yoki.gg/appeals/${message.serverId!}) url.
+            
+            ${
+                commandCtx.server.appealsEnabled
+                    ? ""
+                    : `Note that appeals are currently disabled. To enable them, use the \`${commandCtx.server.getPrefix()}module enable appeals\` command.`
+            }
+            `
         );
     },
 };

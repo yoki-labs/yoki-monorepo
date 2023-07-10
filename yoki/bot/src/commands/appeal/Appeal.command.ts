@@ -9,6 +9,7 @@ const Appeal: Command = {
     aliases: ["appeals"],
     description: "Configures appeal accepting.",
     parentCommand: true,
+    module: "appeals",
     category: Category.Entry,
     requiredRole: RoleType.ADMIN,
     subCommands: new Collection<string, Command>().set("channel", Channel),

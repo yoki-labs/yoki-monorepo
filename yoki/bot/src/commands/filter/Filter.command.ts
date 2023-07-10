@@ -14,6 +14,8 @@ const Filter: Command = {
     name: "filter",
     description: "Configures content filtering.",
     examples: ["add test-word warn", "add another-test-word ban"],
+    aliases: ["automod"],
+    module: "filter",
     parentCommand: true,
     category: Category.Filter,
     requiredRole: RoleType.MOD,
