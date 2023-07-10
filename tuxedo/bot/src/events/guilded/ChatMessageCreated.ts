@@ -18,15 +18,16 @@ export default {
         const [message, ctx] = args;
 
         if (message.createdByWebhookId || message.authorId === ctx.user!.id || message.authorId === "Ann6LewA" || !message.serverId) return;
-
+        
         const server = await ctx.dbUtil.getServer(message.serverId!);
-
+        
         // Early access only
         if (!server.flags.includes("EARLY_ACCESS") && server.serverId !== process.env.MAIN_SERVER) return;
-
+        
         const prefix = fetchPrefix(server);
-
+        
         const parsed = await parseCommand([message, ctx], prefix);
+
         if (!parsed) return;
         let { command, commandName, args: parsedArgs } = parsed;
 

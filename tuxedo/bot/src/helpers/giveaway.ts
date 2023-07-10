@@ -1,5 +1,5 @@
 import { Giveaway } from "@prisma/client";
-import { inlineCode, Util } from "@yokilabs/bot";
+import { inlineCode } from "@yokilabs/bot";
 import { Colors, formatDate, shuffleArray } from "@yokilabs/utils";
 import { stripIndents } from "common-tags";
 import { Embed, EmbedField } from "guilded.js";
@@ -7,12 +7,13 @@ import ms from "ms";
 import { nanoid } from "nanoid";
 
 import { TuxoClient } from "../Client";
+import { TickedUtil } from "./ticked";
 
 const tickIntervalMs = 10 * 60 * 1000;
 const updateIntervalMs = 60 * 1000;
 export const defaultGiveawayEmote = 90002569;
 
-export class GiveawayUtil extends Util<TuxoClient> {
+export class GiveawayUtil extends TickedUtil {
     private _longGiveaways: Record<string, { messageId: string; endsAt: number }>;
     private _endingGiveawayPool: Giveaway[];
     private _participants: Record<string, { giveawayId: string; users: string[] }>;
@@ -104,10 +105,10 @@ export class GiveawayUtil extends Util<TuxoClient> {
 
     // --- Handling ---
     // Tick giveaways every 20mins and complete the completed ones. If they will end faster than
-    tickGiveaways() {
+    tick() {
         console.log("Will start ticking giveaways");
-        setInterval(this.handleGiveaways.bind(this), tickIntervalMs);
-        setInterval(this.handleEndingGiveaways.bind(this), updateIntervalMs);
+        this.addTicked(this.handleGiveaways.bind(this), tickIntervalMs);
+        this.addTicked(this.handleEndingGiveaways.bind(this), updateIntervalMs);
 
         return this;
     }

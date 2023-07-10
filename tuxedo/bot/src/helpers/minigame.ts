@@ -1,13 +1,13 @@
 import { Currency } from "@prisma/client";
-import { Util } from "@yokilabs/bot";
 import { stripIndents } from "common-tags";
 import { EmbedField, EmbedPayload, Message } from "guilded.js";
 
-import { TuxoClient } from "../Client";
 import { Colors } from "@yokilabs/utils";
 import { BlackjackCondition, BlackjackDeck, SpecialBlackjackVariant, randomBlackjackNumToCard, stringifyBlackjackDeck, stringifyCard } from "../util/blackjack";
+import { TickedUtil } from "./ticked";
 
-// const tickIntervalMs = 10 * 60 * 1000;
+const evaporateInstancesIn = 20 * 60 * 1000;
+const instanceLifetimeTick = evaporateInstancesIn;
 
 type BlackjackInstance = {
     serverId: string;
@@ -29,11 +29,11 @@ export const blackjackReactionStand = 90002171;
 // :ballot_box_with_check:
 export const blackjackReactionStandAce1 = 90002172;
 
-export class MinigameUtil extends Util<TuxoClient> {
-    private _blackJackInstance: BlackjackInstance[] = [];
+export class MinigameUtil extends TickedUtil {
+    private _blackJackInstances: BlackjackInstance[] = [];
 
     getBlackjackInstanceIndex(serverId: string, messageId: string) {
-        return this._blackJackInstance.findIndex((x) => x.serverId === serverId && x.messageId === messageId);
+        return this._blackJackInstances.findIndex((x) => x.serverId === serverId && x.messageId === messageId);
     }
 
     async addBlackjackHit(serverId: string, messageId: string) {
@@ -43,7 +43,7 @@ export class MinigameUtil extends Util<TuxoClient> {
         if (instanceIndex < 0)
             return;
 
-        const instance = this._blackJackInstance[instanceIndex];
+        const instance = this._blackJackInstances[instanceIndex];
         
         // It's a hit, so another card should get added
         const newCard = this.getCard();
@@ -60,7 +60,7 @@ export class MinigameUtil extends Util<TuxoClient> {
         if (currentDeckValue > 21) {
             condition = BlackjackCondition.Lost
             // It's done
-            this._blackJackInstance.splice(instanceIndex, 1);
+            this._blackJackInstances.splice(instanceIndex, 1);
 
             // Remove balance
             await this.updateBlackjackPlayer(instance, -1);
@@ -79,7 +79,7 @@ export class MinigameUtil extends Util<TuxoClient> {
         if (instanceIndex < 0)
             return;
     
-        const instance = this._blackJackInstance[instanceIndex];
+        const instance = this._blackJackInstances[instanceIndex];
 
         // User chose how much aces are
         const userAceCount = instance.deck.filter((card) => card === SpecialBlackjackVariant.Ace).length;
@@ -106,7 +106,7 @@ export class MinigameUtil extends Util<TuxoClient> {
         const dealerDeckValueAce11 = this.getDeckValue(instance.dealerDeck) + (dealerAceCount * 10);
         const dealerDeckValue = dealerDeckValueAce11 ? dealerDeckValueAce1 : dealerDeckValueAce1;
 
-        this._blackJackInstance.splice(instanceIndex, 1);
+        this._blackJackInstances.splice(instanceIndex, 1);
 
         // After standing, dealer has 2 cards and draws until they hit 17 or more;
         // we have already done it at the start and now need to see if they bust
@@ -185,11 +185,11 @@ export class MinigameUtil extends Util<TuxoClient> {
         ]);
 
         // Add to the registry to handle it with reactions
-        this._blackJackInstance.push({
+        this._blackJackInstances.push({
             serverId: message.serverId!,
             channelId: message.channelId,
             messageId: messageCreated.id,
-            createdAt: message.createdAt.getTime(),
+            createdAt: Date.now(),
             createdBy: message.createdById,
             amount,
             currencyId: currency.id,
@@ -271,6 +271,27 @@ export class MinigameUtil extends Util<TuxoClient> {
             ]
         };
     }
+
+    tick() {
+        console.log("Will start ticking minigames");
+        this.addTicked(this.handleInstanceLifetimes.bind(this), instanceLifetimeTick);
+
+        return this;
+    }
+
+    handleInstanceLifetimes() {
+        const currentTime = Date.now();
+
+        // To have index saved and all
+        for (let i = 0; i < this._blackJackInstances.length; i++) {
+            const blackjackInstance = this._blackJackInstances[i];
+            console.log({ blackjackInstance, i, evaporateInstancesIn, currentTime, maxLifetime: blackjackInstance.createdAt + evaporateInstancesIn });
+
+            // It's time to make it evaporate
+            if (currentTime > (blackjackInstance.createdAt + evaporateInstancesIn))
+                this._blackJackInstances.splice(i, 1);
+        }
+    }
 }
 
 const asAce11 = (value: number, aceCount: number) => value + (10 * aceCount);
@@ -292,5 +313,5 @@ const getStatusField = (allowAce1: boolean, condition: BlackjackCondition): Embe
             ? "You won."
             : condition === BlackjackCondition.Lost
             ? "You lost."
-            : "It's a neutral push."
+            : "It's a draw/neutral push."
     };

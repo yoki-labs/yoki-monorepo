@@ -22,6 +22,7 @@ client.ws.emitter.on("error", (err) => {
 
 client.ws.emitter.on("gatewayEvent", async (event, data) => {
     const { serverId } = data.d as { serverId?: string | null };
+
     if (!serverId) return;
 
     const serverFromDb = await client.dbUtil
@@ -54,7 +55,8 @@ void (async (): Promise<void> => {
         await client.init();
 
         await client.giveawayUtil.cacheGiveaways();
-        client.giveawayUtil.tickGiveaways();
+        client.giveawayUtil.tick();
+        client.minigameUtil.tick();
     } catch (e) {
         console.error(e);
         return process.exit(1);
