@@ -8,6 +8,8 @@ import SetCurrency from "./Currency.command";
 import Info from "./Info.command";
 import List from "./List.command";
 import SetMessage from "./Message.command";
+import Remove from "./Remove.command";
+import Enable from "./Enable.command";
 
 const Income: Command = {
     name: "income",
@@ -22,7 +24,9 @@ const Income: Command = {
         .set("info", Info)
         .set("cooldown", SetCooldown)
         .set("message", SetMessage)
-        .set("currency", SetCurrency),
+        .set("currency", SetCurrency)
+        .set("enable", Enable)
+        .set("remove", Remove),
     execute: () => void 0,
 };
 

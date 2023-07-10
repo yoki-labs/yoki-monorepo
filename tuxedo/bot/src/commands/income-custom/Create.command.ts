@@ -36,7 +36,7 @@ const Create: Command = {
 
         // To check if it exists already
         if (incomeCommands.find((x) => x.name === name))
-            return ctx.messageUtil.replyWithError(message, "Already exists", `Income by the name of ${inlineQuote(name)} already exists.`);
+            return ctx.messageUtil.replyWithError(message, "Already exists", `The income by the name of ${inlineQuote(name)} already exists.`);
         // Or if the count is too high
         else if (incomeCommands.length > MAX_CUSTOM_INCOMES)
             return ctx.messageUtil.replyWithError(message, "Too many incomes", `You cannot create more than ${MAX_CUSTOM_INCOMES} income commands.`);
@@ -49,7 +49,7 @@ const Create: Command = {
             },
         });
 
-        return ctx.messageUtil.replyWithSuccess(message, "Income created", `Income command ${inlineQuote(name)} has been successfully created.`);
+        return ctx.messageUtil.replyWithSuccess(message, "Income created", `The income command ${inlineQuote(name)} has been successfully created.`);
     },
 };
 

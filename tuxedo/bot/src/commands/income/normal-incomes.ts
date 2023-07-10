@@ -16,7 +16,10 @@ export function generateIncomeCommand(incomeType: DefaultIncomeType) {
         reward: [defaultMin, defaultAdditionalMax],
     } = defaultIncomes[incomeType];
 
-    return async function execute(message: Message, _args: Record<string, ResolvedArgs>, ctx: TuxoClient, _context: CommandContext<Server>) {
+    return async function execute(message: Message, _args: Record<string, ResolvedArgs>, ctx: TuxoClient, { server, prefix }: CommandContext<Server>) {
+        if (server.disableDefaultIncomes.includes(incomeType))
+            return ctx.messageUtil.replyWithError(message, "Command disabled", `This income command has been disabled!\n\nIt can be re-enable by using \`${prefix}income enable ${incomeType}\`.`);
+
         const currencies = await ctx.dbUtil.getCurrencies(message.serverId!);
 
         if (!currencies.length) return ctx.messageUtil.replyWithError(message, "No currencies", `This server does not have any local currencies ${action}.`);
