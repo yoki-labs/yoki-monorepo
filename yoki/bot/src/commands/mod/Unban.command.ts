@@ -22,6 +22,16 @@ const Unban: Command = {
     execute: async (message, args, ctx) => {
         const target = args.targetId as string;
 
+        const existingBan = await ctx.bans.fetch(message.serverId!, target, true).catch(() => null);
+        if (!existingBan)
+            return ctx.messageUtil.replyWithError(
+                message,
+                `This user is not banned.`,
+                "Yoki could not find a ban associated with this user, or the user you've provided doesn't actually exist. Keep in mind, you should be providing the user's ID.",
+                undefined,
+                { isPrivate: true }
+            );
+
         try {
             await ctx.bans.unban(message.serverId!, target);
         } catch (e) {
