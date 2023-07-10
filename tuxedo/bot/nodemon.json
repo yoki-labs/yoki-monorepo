@@ -8,6 +8,6 @@
         "src/**/*.d.ts",
         "../../packages/**/*.d.ts"
     ],
-    "exec": "tsc && node --enable-source-maps dist/index.js",
+    "exec": "pnpm run -w build:tuxedo && node --enable-source-maps dist/index.js",
     "legacyWatch": false
 }
