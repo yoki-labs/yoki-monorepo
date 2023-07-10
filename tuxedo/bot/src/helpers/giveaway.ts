@@ -13,25 +13,44 @@ const updateIntervalMs = 60 * 1000;
 export const defaultGiveawayEmote = 90002569;
 
 export class GiveawayUtil extends Util<TuxoClient> {
-    longGiveaways: Record<string, { messageId: string; endsAt: number }>;
-    endingGiveawayPool: Giveaway[];
-    participants: Record<string, { giveawayId: string; users: string[] }>;
+    private _longGiveaways: Record<string, { messageId: string; endsAt: number }>;
+    private _endingGiveawayPool: Giveaway[];
+    private _participants: Record<string, { giveawayId: string; users: string[] }>;
 
     // --- Initialization ---
     constructor(client: TuxoClient) {
         super(client);
 
-        this.longGiveaways = {};
-        this.participants = {};
-        this.endingGiveawayPool = [];
+        this._longGiveaways = {};
+        this._participants = {};
+        this._endingGiveawayPool = [];
+    }
+
+    addGiveawayParticipant(messageId: string, userId: string) {
+        const participantInfo = this._participants[messageId];
+
+        // Ignore it if it doesn't exist; probably a random reaction
+        if (!participantInfo) return;
+
+        return participantInfo.users.push(userId);
+    }
+
+    removeGiveawayParticipant(messageId: string, userId: string) {
+        const participantInfo = this._participants[messageId];
+
+        // Ignore it; probably random reaction removed
+        if (!participantInfo) return;
+
+        // Remove the user from participating
+        return participantInfo.users.splice(participantInfo.users.indexOf(userId), 1);
     }
 
     addGiveaway(giveaway: Giveaway) {
         // To end it before the next tick if it's ending
-        if (giveaway.endsAt.getTime() - Date.now() < tickIntervalMs) this.endingGiveawayPool.push(giveaway);
-        else this.longGiveaways[giveaway.id] = { messageId: giveaway.messageId, endsAt: giveaway.endsAt.getTime() };
+        if (giveaway.endsAt.getTime() - Date.now() < tickIntervalMs) this._endingGiveawayPool.push(giveaway);
+        else this._longGiveaways[giveaway.id] = { messageId: giveaway.messageId, endsAt: giveaway.endsAt.getTime() };
 
-        this.participants[giveaway.messageId] = { giveawayId: giveaway.id, users: giveaway.participants };
+        this._participants[giveaway.messageId] = { giveawayId: giveaway.id, users: giveaway.participants };
     }
 
     async createGiveaway(data: Omit<Giveaway, "id" | "messageId" | "createdAt" | "participants" | "winners" | "hasEnded">, timeZone: string | undefined | null) {
@@ -61,14 +80,14 @@ export class GiveawayUtil extends Util<TuxoClient> {
     }
 
     removeGiveaway(giveawayId: string, messageId?: string) {
-        const message = messageId ?? this.longGiveaways[giveawayId].messageId;
+        const message = messageId ?? this._longGiveaways[giveawayId].messageId;
 
-        delete this.longGiveaways[giveawayId];
-        this.endingGiveawayPool.splice(
-            this.endingGiveawayPool.findIndex((x) => x.id === giveawayId),
+        delete this._longGiveaways[giveawayId];
+        this._endingGiveawayPool.splice(
+            this._endingGiveawayPool.findIndex((x) => x.id === giveawayId),
             1
         );
-        delete this.participants[message];
+        delete this._participants[message];
 
         return this;
     }
@@ -96,21 +115,21 @@ export class GiveawayUtil extends Util<TuxoClient> {
     async handleGiveaways() {
         const nextTick = Date.now() + tickIntervalMs;
 
-        console.log("Ticked giveaways", this.longGiveaways);
+        console.log("Ticked giveaways", this._longGiveaways);
         // Get ending giveaways to cache and start actively tracking them
-        const newEndingGiveaways = Object.keys(this.longGiveaways).filter((x) => this.longGiveaways[x].endsAt <= nextTick);
+        const newEndingGiveaways = Object.keys(this._longGiveaways).filter((x) => this._longGiveaways[x].endsAt <= nextTick);
 
         console.log("Ending giveaways:", newEndingGiveaways);
         if (newEndingGiveaways.length) {
             console.log("Handling ending giveaways");
-            this.endingGiveawayPool.push(...(await this.client.prisma.giveaway.findMany({ where: { id: { in: newEndingGiveaways } } })));
+            this._endingGiveawayPool.push(...(await this.client.prisma.giveaway.findMany({ where: { id: { in: newEndingGiveaways } } })));
 
             // Since we pulled, it will be handled separately
-            for (const endingGiveawayId of newEndingGiveaways) delete this.longGiveaways[endingGiveawayId];
+            for (const endingGiveawayId of newEndingGiveaways) delete this._longGiveaways[endingGiveawayId];
         }
 
         await Promise.allSettled(
-            Object.values(this.participants).map(({ giveawayId, users }) =>
+            Object.values(this._participants).map(({ giveawayId, users }) =>
                 this.client.prisma.giveaway.update({
                     where: {
                         id: giveawayId,
@@ -127,8 +146,8 @@ export class GiveawayUtil extends Util<TuxoClient> {
         console.log("Ticking ending giveaways");
         const now = Date.now();
 
-        console.log("Ending giveaways", this.endingGiveawayPool);
-        for (const giveaway of this.endingGiveawayPool)
+        console.log("Ending giveaways", this._endingGiveawayPool);
+        for (const giveaway of this._endingGiveawayPool)
             try {
                 const { channelId, messageId } = giveaway;
 
@@ -144,7 +163,7 @@ export class GiveawayUtil extends Util<TuxoClient> {
 
     async concludeGiveaway(giveaway: Giveaway, timeZone?: string | undefined) {
         const { channelId, messageId } = giveaway;
-        const participants = this.participants[giveaway.messageId]?.users ?? giveaway.participants;
+        const participants = this._participants[giveaway.messageId]?.users ?? giveaway.participants;
         const winners = shuffleArray(participants).slice(0, giveaway.winnerCount);
 
         await Promise.all([
@@ -180,7 +199,7 @@ export class GiveawayUtil extends Util<TuxoClient> {
 
     async cancelGiveaway(giveaway: Giveaway, timeZone?: string | null) {
         const { channelId, messageId } = giveaway;
-        const participants = this.participants[giveaway.messageId]?.users ?? giveaway.participants;
+        const participants = this._participants[giveaway.messageId]?.users ?? giveaway.participants;
 
         await Promise.all([
             this.client.messages.update(channelId, messageId, this.createGiveawayEmbed(giveaway, timeZone, true, true)),

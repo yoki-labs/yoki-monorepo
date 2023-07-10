@@ -63,7 +63,7 @@ async function useIncomeCommand(
     const localCooldown = income?.cooldownMs ?? defaultCooldown;
 
     if (lastUsed && Date.now() - lastUsed < localCooldown)
-        return ctx.messageUtil.replyWithError(message, "Too fast", `You have to wait ${ms(lastUsed + localCooldown - Date.now(), { long: true })} to use ${commandName} again.`);
+        return ctx.messageUtil.replyWithError(message, "Too fast", `You have to wait ${ms(lastUsed + localCooldown - Date.now(), { long: true })} to use ${commandName.toLowerCase()} again.`);
 
     // For the cooldown
     ctx.balanceUtil.updateLastCommandUsage(message.serverId!, message.createdById, commandName);
@@ -121,7 +121,7 @@ async function useIncomeCommand(
         ? ctx.messageUtil.replyWithWarning(
               message,
               income?.action ?? defaultAction,
-              `You have ${actionDescription}, which had ${addedCurrencies.join(
+              `You have ${actionDescription}, which gave you ${addedCurrencies.join(
                   ", "
               )}. However, some of the rewards went over the maximum currency limit, so you lost additional ${lostCurrencies.join(", ")}`
           )

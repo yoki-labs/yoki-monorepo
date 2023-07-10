@@ -6,11 +6,11 @@ import { TAG_REGEX } from "../../util/matching";
 import { Category, Command } from "../commands";
 
 const Purge: Command = {
-    name: "members-purge-balances",
+    name: "members-purgebalances",
     description: "Removes a currency from everyone's balances.",
-    subName: "purge-balances",
+    subName: "purgebalances",
     subCommand: true,
-    category: Category.Economy,
+    category: Category.Income,
     requiredRole: RoleType.MOD,
     args: [
         {

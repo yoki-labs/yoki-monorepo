@@ -8,7 +8,7 @@ import { Category, Command } from "../commands";
 import { defaultIncomes } from "./income-defaults";
 
 const defaultConfig = defaultIncomes[DefaultIncomeType.ROB];
-const [defaultAdditionalMax, defaultMin] = defaultConfig.reward;
+const [defaultMin, defaultAdditionalMax] = defaultConfig.reward;
 const defaultFailChance = 0.5;
 const defaultFailCut = 1;
 

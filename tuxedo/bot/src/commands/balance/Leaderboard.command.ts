@@ -4,7 +4,7 @@ const Leaderboard: Command = {
     name: "leaderboard",
     description: "Shows the top locally richest people in the server.",
     aliases: ["leader", "lb"],
-    category: Category.Income,
+    category: Category.Balance,
     args: [
         {
             name: "page",

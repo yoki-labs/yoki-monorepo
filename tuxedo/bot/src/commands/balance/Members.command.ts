@@ -10,9 +10,9 @@ const Members: Command = {
     description: "Allows you to manage members' balances and inventories.",
     examples: [],
     parentCommand: true,
-    category: Category.Economy,
+    category: Category.Balance,
     requiredRole: RoleType.MOD,
-    subCommands: new Collection<string, Command>().set("set-balance", Set).set("purge-balances", Purge),
+    subCommands: new Collection<string, Command>().set("setbalance", Set).set("purgebalances", Purge),
     execute: () => void 0,
 };
 

@@ -1,11 +1,11 @@
 import { Category, Command } from "../commands";
 import { generateBankCommand } from "./bank-commands";
 
-const Daily: Command = {
+const Withdraw: Command = {
     name: "withdraw",
     description: "Takes money from the bank.",
     aliases: ["draw", "take", "wd"],
-    category: Category.Income,
+    category: Category.Balance,
     args: [
         {
             name: "tag",
@@ -21,4 +21,4 @@ const Daily: Command = {
     execute: generateBankCommand("bank", "withdraw", "withdrew", -1, (balance) => balance.bank),
 };
 
-export default Daily;
+export default Withdraw;

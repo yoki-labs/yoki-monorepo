@@ -21,6 +21,9 @@ model Server {
     locale   String  @default("en-US")
     timezone String?
 
+    // --- Incomes
+    disableDefaultIncomes DefaultIncomeType[]
+
     botJoinedAt DateTime? @default(now())
 }
 
@@ -141,7 +144,10 @@ enum DefaultIncomeType {
     DAILY
     WORK
     HOBBY
+    CHORE
+    COMMUNITY
     ROB
+    BLACKJACK
 }
 
 enum PremiumType {

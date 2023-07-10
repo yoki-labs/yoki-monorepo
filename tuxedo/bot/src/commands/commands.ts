@@ -11,5 +11,6 @@ export enum Category {
     Settings = "Settings",
     Economy = "Economy",
     Events = "Events",
+    Balance = "Balance",
     Income = "Income",
 }

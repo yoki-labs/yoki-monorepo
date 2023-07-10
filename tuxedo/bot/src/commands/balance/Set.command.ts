@@ -7,11 +7,11 @@ import { Category, Command } from "../commands";
 import { BalanceType } from "./income-management";
 
 const Set: Command = {
-    name: "members-set-balance",
+    name: "members-setbalance",
     description: "Sets member's balance.",
-    subName: "set-balance",
+    subName: "setbalance",
     subCommand: true,
-    category: Category.Economy,
+    category: Category.Income,
     requiredRole: RoleType.MOD,
     args: [
         {

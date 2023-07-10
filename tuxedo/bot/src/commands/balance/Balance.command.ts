@@ -9,7 +9,7 @@ const Balance: Command = {
     description: "View economical information about a user or yourself.",
     examples: ["0mqNyllA"],
     aliases: ["money", "bal", "m"],
-    category: Category.Income,
+    category: Category.Balance,
     args: [
         {
             name: "target",
