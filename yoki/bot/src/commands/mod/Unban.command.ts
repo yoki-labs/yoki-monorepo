@@ -24,6 +24,7 @@ const Unban: Command = {
         try {
             await ctx.bans.unban(message.serverId!, target);
         } catch (e) {
+            console.log(e);
             return ctx.messageUtil.replyWithUnexpected(
                 message,
                 stripIndents`
@@ -34,6 +35,7 @@ const Unban: Command = {
             );
         }
 
+        await ctx.prisma.action.updateMany({ where: { serverId: message.serverId!, targetId: target, type: "BAN" }, data: { expired: true, expiresAt: new Date() } });
         await ctx.messageUtil.sendSuccessBlock(message.channelId, `User unbanned`, `<@${message.authorId}>, you have successfully unbanned ${inlineCode(target)}.`, undefined, {
             isPrivate: true,
         });
