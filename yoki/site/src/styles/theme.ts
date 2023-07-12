@@ -61,12 +61,13 @@ export const theme = extendTheme({
         JoySelect: {
             defaultProps: {},
         },
-        // JoySwitch: {
-        //     defaultProps: {
-        //         size: "sm",
-
-        //     }
-        // },
+        JoySwitch: {
+            styleOverrides: {
+                thumb: {
+                    background: labsTheme.spacedark[950],
+                },
+            },
+        },
         // JoyChip: {
         //   defaultProps: {
         //     size: 'sm',

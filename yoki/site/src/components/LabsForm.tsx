@@ -31,6 +31,7 @@ export interface LabsFormField {
 export enum LabsFormFieldType {
     Text,
     Select,
+    Toggle,
 }
 
 export type LabsFormState = {

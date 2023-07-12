@@ -52,10 +52,6 @@ export default function Config() {
                                     name: "English (US)",
                                     value: "en_US",
                                 },
-                                {
-                                    name: "Lithuanian",
-                                    value: "lt_LT",
-                                },
                             ],
                         },
                         {

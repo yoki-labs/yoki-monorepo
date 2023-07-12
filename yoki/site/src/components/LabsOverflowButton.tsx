@@ -8,7 +8,7 @@ type Props = {
 
 export default function LabsOverflowButton({ disabled }: Props) {
     return (
-        <IconButton disabled={disabled} color="neutral" aria-label="Overflow icon">
+        <IconButton disabled={disabled} color="neutral" variant="outlined" aria-label="Overflow icon">
             <FontAwesomeIcon icon={faEllipsisV} />
         </IconButton>
     );

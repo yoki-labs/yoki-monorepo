@@ -7,10 +7,12 @@ import Overview from "./pages/Overview";
 import { Alert, Box, Typography } from "@mui/joy";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faExclamationTriangle } from "@fortawesome/free-solid-svg-icons";
+import Automod from "./pages/Automod";
 
 const pages = {
     overview: <Overview />,
     main: <Config />,
+    automod: <Automod />,
     history: <History />,
 };
 

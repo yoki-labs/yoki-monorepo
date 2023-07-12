@@ -2,9 +2,16 @@ import { IconDefinition } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import LabsSwitch from "../LabsSwitch";
 import React from "react";
-import { AspectRatio, Card, CardContent, CardOverflow, Typography } from "@mui/joy";
+import { AspectRatio, Box, Card, CardContent, CardOverflow, Chip, Typography } from "@mui/joy";
 
-export type Props = { name: string; icon: IconDefinition; description: string; activeClassName: string; isActive: boolean };
+export type Props = {
+    name: string;
+    icon: IconDefinition;
+    description: string;
+    activeClassName: string;
+    isActive: boolean;
+    requiresPremium?: boolean;
+};
 
 export default class Module extends React.Component<Props, { isActive: boolean }> {
     constructor(props: Props) {
@@ -13,7 +20,7 @@ export default class Module extends React.Component<Props, { isActive: boolean }
     }
 
     render() {
-        const { name, description, icon, activeClassName } = this.props;
+        const { name, description, icon, activeClassName, requiresPremium } = this.props;
         const { isActive } = this.state;
 
         return (
@@ -27,14 +34,19 @@ export default class Module extends React.Component<Props, { isActive: boolean }
                         </aside>
                     </AspectRatio>
                 </CardOverflow>
-                <CardContent>
-                    <div className="flex gap-4">
-                        <Typography fontWeight="md" level="body1">
-                            {name}
-                        </Typography>
-                        <LabsSwitch className="toggle justify-end" defaultChecked={this.props.isActive} onChange={({ target }) => this.setState({ isActive: target.checked })} />
-                    </div>
-                    <Typography level="body2">{description}</Typography>
+                <CardContent className="flex flex-col">
+                    <Box className="grow">
+                        <div className="flex gap-4">
+                            <Typography className="grow" fontWeight="md" level="body1">
+                                {name}
+                            </Typography>
+                            <LabsSwitch className="toggle justify-end" defaultChecked={this.props.isActive} onChange={({ target }) => this.setState({ isActive: target.checked })} />
+                        </div>
+                        <Typography level="body2">{description}</Typography>
+                    </Box>
+                    <Box mt={2}>
+                        <Chip variant="outlined" color={requiresPremium ? "primary" : "neutral"}>{ requiresPremium ? "Premium" : "Free" }</Chip>
+                    </Box>
                 </CardContent>
             </Card>
         );
