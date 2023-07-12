@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Module from "../Module";
 import { Alert, Typography } from "@mui/joy";
 
-export default function Home() {
+export default function Overview() {
     return (
         <div className="flex flex-col gap-16">
             <Alert variant="solid" color="warning" startDecorator={<FontAwesomeIcon icon={faExclamationTriangle} />}>

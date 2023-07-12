@@ -1,6 +1,6 @@
 import { faBroom, faChevronDown, faChevronRight, faCircleExclamation, faHammer, faMagnifyingGlass, faShoePrints, faVolumeMute } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { IconButton, Input, Sheet, Table, Typography } from "@mui/joy";
+import { Box, IconButton, Input, Sheet, Table, Typography } from "@mui/joy";
 import type { Action } from "@prisma/client";
 import React from "react";
 
@@ -90,39 +90,9 @@ export default class History extends React.Component<Props, State> {
     render() {
         return (
             <div>
-                {/* <div className="flex flex-col space-y-2 md:space-y-0 mb-6 md:mb-4 md:flex-row md:space-x-2">
-                    <div className="form-control w-full max-w-xs">
-                        <label className="label">
-                            <span className="label-text">Filter by target users</span>
-                        </label>
-                        <input type="text" placeholder="Example: pmbOB8VA" className="input input-bordered w-60 input-sm" />
-                    </div>
-                    <div className="form-control w-full max-w-xs">
-                        <label className="label">
-                            <span className="label-text">Filter by executing users</span>
-                        </label>
-                        <input type="text" placeholder="Example: pmbOB8VA" className="input input-bordered w-60 input-sm" />
-                    </div>
-                    <div className="form-control w-full max-w-xs">
-                        <label className="label">
-                            <span className="label-text">Filter by type</span>
-                        </label>
-
-                        <div className="w-full place-items-start grid grid-cols-3 form-control">
-                            {Object.keys(actionTypes).map((action) => {
-                                return (
-                                    <div key={action} className="flex flex-row space-x-2 mt-1">
-                                        <span>{action.toLowerCase()}</span>
-                                        <input type="checkbox" value={action} className="checkbox" />
-                                    </div>
-                                );
-                            })}
-                        </div>
-                    </div>
-                </div> */}
-                <header>
+                <Box className="mb-4">
                     <Input placeholder="Search cases" startDecorator={<FontAwesomeIcon icon={faMagnifyingGlass} />} />
-                </header>
+                </Box>
 
                 <Table size="lg" variant="plain" sx={{ borderRadius: 8, overflow: "hidden", "--Table-headerUnderlineThickness": 0 }}>
                     <thead>

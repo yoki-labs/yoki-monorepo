@@ -88,7 +88,7 @@ export default class LabsForm extends React.Component<LabsFormProps, LabsFormSta
         const fieldId = `formfield-${this.formId}-${field.prop}`;
 
         return (
-            <FormControl>
+            <FormControl className="mb-6">
                 {field.type === LabsFormFieldType.Select ? (
                     <>
                         <Select

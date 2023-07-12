@@ -1,12 +1,12 @@
-import { faArrowDownZA, faBan, faClipboardUser, faCog, faEnvelope, faHashtag, faHome, faPrayingHands, faShieldHalved } from "@fortawesome/free-solid-svg-icons";
+import { faArrowDownZA, faBan, faClipboardUser, faCog, faEnvelope, faHashtag, faHome, faLayerGroup, faPrayingHands, faShieldHalved } from "@fortawesome/free-solid-svg-icons";
 import { useAtom } from "jotai";
 
 import { navbarAtom } from "../../../state/navbar";
 import LayoutSidebarTab from "./LayoutSidebarTab";
-import { List } from "@mui/joy";
+import { Box, List } from "@mui/joy";
 
 const sidebarItems = [
-    { id: "home", name: "Home", icon: faHome },
+    { id: "overview", name: "Overview", icon: faLayerGroup },
     { id: "main", name: "Config", icon: faCog },
     { id: "automod", name: "Automod", icon: faBan },
     { id: "history", name: "Cases", icon: faClipboardUser },
@@ -17,18 +17,23 @@ const sidebarItems = [
     { id: "appeals", name: "Appeals", icon: faPrayingHands },
 ];
 
-export function LayoutSidebar() {
+type Props = {
+    menuToggled: boolean;
+};
+
+export function LayoutSidebar({ menuToggled }: Props) {
     const [currentPage, setModule] = useAtom(navbarAtom);
+    const showStateClass = menuToggled ? "" : "md:block hidden";
 
     return (
-        <div className="drawer-side">
-            <ul className="menu p-6 w-72 text-base-content flex flex-col">
+        <Box className={showStateClass}>
+            <ul className="menu p-6 w-64 text-base-content flex flex-col">
                 <List variant="plain" size="sm" sx={{ maxWidth: 320, fontSize: 14 }}>
                     {sidebarItems.map((item) => (
                         <LayoutSidebarTab key={item.id} item={item} isActive={currentPage === item.id} onClick={() => setModule(item.id)} />
                     ))}
                 </List>
             </ul>
-        </div>
+        </Box>
     );
 }

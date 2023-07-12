@@ -58,7 +58,7 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }: AppPropsWith
                 <link rel="preload" href="/fonts/inter/Inter-Regular.ttf" as="font/ttf" crossOrigin="anonymous" />
                 <link rel="preload" href="/fonts/inter/Inter-SemiBold.ttf" as="font/ttf" crossOrigin="anonymous" />
 
-                <style>body, html, #__next {`{ width: 100%; height: 100%; }`}</style>
+                <style>html, body, #__next {`{ width: 100%; height: 100%; }`}</style>
             </Head>
             <SessionProvider session={session}>
                 <QueryClientProvider client={queryClient}>

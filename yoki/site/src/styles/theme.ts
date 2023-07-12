@@ -4,8 +4,13 @@ import labsTheme from "./theme.json";
 
 export const theme = extendTheme({
     cssVarPrefix: "labs",
+    shadow: {
+        md: ``
+    },
     colorSchemes: {
         light: {
+            shadowRing: "#000",
+            shadowChannel: "#000",
             palette: {
                 neutral: {
                     50: labsTheme.spacedark[950],
@@ -18,6 +23,10 @@ export const theme = extendTheme({
                     700: labsTheme.spacedark[300],
                     800: labsTheme.spacedark[300],
                     900: labsTheme.spacedark[300],
+                },
+                primary: {
+                    // Since this is a dark theme, 90 is the darkest and 900 is the lightest
+                    500: "#8a6fef"
                 },
                 text: {
                     primary: labsTheme.spacelight[900],

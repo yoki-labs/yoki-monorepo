@@ -1,6 +1,6 @@
 import { IconDefinition } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { ListItemButton, ListItemDecorator } from "@mui/joy";
+import { ListItemButton, ListItemDecorator, Typography } from "@mui/joy";
 
 export interface LayoutModule {
     name: string;
@@ -19,14 +19,16 @@ interface Prop {
  * @returns {Element} Rendered component
  */
 export default function LayoutSidebarTab({ item, isActive, onClick }: Prop) {
-    const textClass = `${isActive ? "text-spacelight-600" : "text-spacelight-400"}`;
+    const textColor = isActive ? "text.secondary" : "text.tertiary";
 
     return (
         <ListItemButton selected={isActive} onClick={onClick}>
             <ListItemDecorator>
-                <FontAwesomeIcon icon={item.icon} className={`${isActive ? "text-spacelight-400" : "text-spacelight-300"}`} />
+                <FontAwesomeIcon icon={item.icon} className={`${isActive ? "text-spacelight-500" : "text-spacelight-400"}`} />
             </ListItemDecorator>
-            <span className={textClass}>{item.name}</span>
+            <Typography component="span" textColor={textColor}>
+                {item.name}
+            </Typography>
         </ListItemButton>
     );
 }

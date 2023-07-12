@@ -1,5 +1,6 @@
 const withMT = require("@material-tailwind/react/utils/withMT");
 const plugin = require("tailwindcss/plugin");
+const { spacelight, spacedark } = require("./src/styles/theme.json");
 
 const colors = require("tailwindcss/colors");
 delete colors["lightBlue"];
@@ -14,26 +15,8 @@ module.exports = withMT({
     theme: {
         colors: {
             ...colors,
-            spacedark: {
-                950: "#0e0a10",
-                900: "#150e1a",
-                800: "#1e1524",
-                700: "#271c2e",
-                600: "#32253a",
-                500: "#3f3148",
-                400: "#53455c",
-                300: "#66576f",
-            },
-            spacelight: {
-                950: "#fcfafd",
-                900: "#e5e0e8",
-                800: "#b5afb9",
-                700: "#938a99",
-                600: "#796d82",
-                500: "#66576f",
-                400: "#53455c",
-                300: "#3f3148",
-            },
+            spacedark,
+            spacelight,
         },
         extend: {
             boxShadow: {
