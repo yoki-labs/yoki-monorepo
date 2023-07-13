@@ -1,16 +1,8 @@
-import { faBroom, faCircleExclamation, faHammer, faImage, faLink, faShoePrints, faTextSlash, faVolumeMute } from "@fortawesome/free-solid-svg-icons";
-import { Box, Typography } from "@mui/joy";
+import { faImage, faLink, faTextSlash } from "@fortawesome/free-solid-svg-icons";
+import { Box } from "@mui/joy";
 import type { ContentFilter } from "@prisma/client";
 import React from "react";
 import Module from "../Module";
-import { PhraseCard } from "../PhraseCard";
-const actionTypes = {
-    MUTE: faVolumeMute,
-    BAN: faHammer,
-    KICK: faShoePrints,
-    WARN: faCircleExclamation,
-    SOFTBAN: faBroom,
-};
 
 interface Props {}
 interface State {
@@ -61,24 +53,7 @@ export default class Automod extends React.Component<Props, State> {
                         isActive={true}
                     />
                 </Box>
-                <Box>
-                    <Typography level="h4">Blacklisted Phrases</Typography>
-                    {dummyPhrases.map(phrase =>
-                        <PhraseCard {...phrase} />
-                    )}
-                </Box>
-                <Box>
-                    <Typography level="h4">Links</Typography>
-                </Box>
             </>
         );
     }
 }
-
-const getActionIcon = (action: string) => {
-    return actionTypes[action as keyof typeof actionTypes];
-};
-
-const transformToDate = (date: Date | null) => {
-    return date?.toString().substring(0, 10) ?? "never";
-};

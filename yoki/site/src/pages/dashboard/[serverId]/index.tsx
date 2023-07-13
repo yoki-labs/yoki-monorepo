@@ -2,12 +2,16 @@ import { GetServerSideProps, GetServerSidePropsResult } from "next";
 import { getServerSession } from "next-auth";
 import React from "react";
 
-import { GuildedServer } from "../../lib/@types/guilded/Server";
-import { methods } from "../../lib/Fetcher";
+import DashForm from "../../../components/dashboard/DashForm";
+import Layout from "../../../components/dashboard/layout/Layout";
+import { GuildedServer } from "../../../lib/@types/guilded/Server";
+import { methods } from "../../../lib/Fetcher";
 // import WelcomeBanner from "../../partials/WelcomeBanner";
-import { authOptions } from "../api/auth/[...nextauth]";
-import LayoutWrapper from "../../components/dashboard/layout/LayoutWrapper";
-import ServerSelectionPage from "../../components/dashboard/pages/ServerSelectionPage";
+import { authOptions } from "../../api/auth/[...nextauth]";
+import { useRouter } from "next/router";
+import { redirect } from "next/dist/server/api-utils";
+import LayoutWrapper from "../../../components/dashboard/layout/LayoutWrapper";
+import { Typography } from "@mui/joy";
 
 type SessionProps = {
     servers: GuildedServer[];
@@ -26,15 +30,22 @@ export const getServerSideProps: GetServerSideProps = async (ctx): Promise<GetSe
     const servers = await methods(session.user.access_token).get<GuildedServer[]>("https://authlink.guildedapi.com/api/v1/users/@me/servers");
     if (!servers?.length) return { redirect: { destination: "/auth/signin", permanent: false } };
 
-    const user = { name: session.user.name, avatar: session.user.avatar };
+    // /dashboard/:serverId
+    const { serverId } = ctx.query;
 
-    return { props: { servers, user } };
+    // If this user isn't in that server, redirect them back to dashboard server selection
+    const destination = servers.find((x) => x.id === serverId) ? `/dashboard/${serverId}/overview` : `/dashboard`
+
+    return { redirect: { destination, permanent: false } };
 };
 
 export default function Dashboard(props: SessionProps) {
+
+    // router.push("./overview")
+
     return (
         <LayoutWrapper {...props}>
-            <ServerSelectionPage servers={props.servers} />
+            <Typography level="h6">Redirecting.</Typography>
         </LayoutWrapper>
     );
 }

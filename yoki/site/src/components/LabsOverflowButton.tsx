@@ -1,15 +1,41 @@
 import { faEllipsisV } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { IconButton } from "@mui/joy";
+import { IconButton, Menu } from "@mui/joy";
+import React, { ReactElement } from "react";
 
 type Props = {
+    id: string;
     disabled?: boolean;
+    children: ReactElement | ReactElement[];
 };
 
-export default function LabsOverflowButton({ disabled }: Props) {
+export default function LabsOverflowButton({ id, children, disabled }: Props) {
+    const overflowRef = React.useRef(null);
+    const [menuOpen, setMenuOpen] = React.useState(false);
+
     return (
-        <IconButton disabled={disabled} color="neutral" variant="outlined" aria-label="Overflow icon">
-            <FontAwesomeIcon icon={faEllipsisV} />
-        </IconButton>
+        <>
+            <IconButton
+                id={`${id}-button`}
+                ref={overflowRef}
+                aria-haspopup={true}
+                aria-expanded={menuOpen || void 0}
+                disabled={disabled}
+                color="neutral"
+                variant="outlined"
+                aria-label="Overflow icon"
+            >
+                <FontAwesomeIcon icon={faEllipsisV} />
+            </IconButton>
+            <Menu
+                id={`${id}-menu`}
+                anchorEl={overflowRef.current}
+                open={menuOpen}
+                onClose={setMenuOpen.bind(null, false)}
+                placement="bottom"
+            >
+                {children}
+            </Menu>
+        </>
     );
 }

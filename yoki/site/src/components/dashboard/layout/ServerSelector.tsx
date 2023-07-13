@@ -1,12 +1,13 @@
 import React from "react";
 import { GuildedServer } from "../../../lib/@types/guilded/Server";
-import { Avatar, FormControl, ListItemDecorator, Option, Select, SelectOption } from "@mui/joy";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faChevronDown } from "@fortawesome/free-solid-svg-icons";
+import { Avatar, ListItemDecorator, Option, SelectOption } from "@mui/joy";
 import LabsDropdown from "../../LabsDropdown";
+import { useRouter } from "next/router";
 
 type Props = {
     servers: GuildedServer[];
+    defaultValue?: GuildedServer;
+    onChange: (serverId: string) => unknown | Promise<unknown>;
 };
 
 export class ServerSelector extends React.Component<Props> {
@@ -32,10 +33,15 @@ export class ServerSelector extends React.Component<Props> {
     }
 
     render() {
-        const { servers } = this.props;
+        const { servers, defaultValue } = this.props;
 
         return (
-            <LabsDropdown placeholder="Select server" renderValue={this.renderValue.bind(this)}>
+            <LabsDropdown
+                placeholder="Select server"
+                defaultValue={defaultValue?.id}
+                renderValue={this.renderValue.bind(this)}
+                onChange={async (_, serverId) => serverId && await this.props.onChange(serverId)}
+            >
                 {servers.map((server) => (
                     <Option value={server.id} label={server.name}>
                         {this.renderOption(server)}

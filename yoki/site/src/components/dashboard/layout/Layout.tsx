@@ -5,12 +5,16 @@ import { useAtomValue } from "jotai";
 import { GuildedServer } from "../../../lib/@types/guilded/Server";
 // import { navbarAtom } from "../../state/navbar";
 import { LayoutSidebar } from "./LayoutSidebar";
-import { Box } from "@mui/joy";
+import { Box, IconButton } from "@mui/joy";
 import React from "react";
 import { LayoutTopbar } from "./LayoutTopbar";
+import LayoutWrapper from "./LayoutWrapper";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faBars } from "@fortawesome/free-solid-svg-icons";
 
 type LayoutProps = {
     servers: GuildedServer[];
+    currentServer?: GuildedServer;
     user: Partial<{
         name: string | null;
         avatar: string | null;
@@ -34,20 +38,24 @@ export default class Layout extends React.Component<LayoutProps, LayoutState> {
     }
 
     render() {
-        const { children, servers, user } = this.props;
+        const { children, currentServer, servers, user } = this.props;
 
         return (
-            <>
-                <div className="flex flex-col h-full w-full bg-spacedark-950">
-                    <LayoutTopbar servers={servers} user={user} onMenuToggle={this.toggleMenu.bind(this)} />
-                    <Box className="flex flex-row overflow-hidden">
-                        <LayoutSidebar menuToggled={this.state.menuEnabled} />
-                        <Box className={`overflow-hidden grow basis-0 shrink-0 flex h-full ${this.state.menuEnabled ? "md:block hidden" : ""}`}>
-                            {children}
-                        </Box>
-                    </Box>
-                </div>
-            </>
+            <LayoutWrapper
+                servers={servers}
+                user={user}
+                currentServer={currentServer}
+                topbarPrefix={
+                    <IconButton className="md:hidden block" onClick={this.toggleMenu.bind(this)} color="neutral">
+                        <FontAwesomeIcon icon={faBars}/>
+                    </IconButton>
+                }
+            >
+                <LayoutSidebar menuToggled={this.state.menuEnabled} />
+                <Box className={`overflow-hidden grow basis-0 shrink-0 flex h-full ${this.state.menuEnabled ? "md:block hidden" : ""}`}>
+                    {children}
+                </Box>
+            </LayoutWrapper>
         );
     }
 }

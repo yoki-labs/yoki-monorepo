@@ -5,14 +5,8 @@ import type { Action } from "@prisma/client";
 import React from "react";
 
 import { actions } from "../../../utils/dummyData";
-
-const actionTypes = {
-    MUTE: faVolumeMute,
-    BAN: faHammer,
-    KICK: faShoePrints,
-    WARN: faCircleExclamation,
-    SOFTBAN: faBroom,
-};
+import { severityToIcon } from "../../../utils/actionUtil";
+import { formatDate } from "@yokilabs/utils";
 
 const botId = "mGMEZ8r4";
 
@@ -55,8 +49,8 @@ export default class History extends React.Component<Props, State> {
                             <FontAwesomeIcon icon={isExpanded ? faChevronDown : faChevronRight} />
                         </IconButton>
                     </td>
-                    <td className="text-spacelight-600 font-bold">
-                        <Typography startDecorator={<FontAwesomeIcon icon={getActionIcon(action.type)} />} fontWeight="lg" textColor="text.secondary">
+                    <td>
+                        <Typography startDecorator={<FontAwesomeIcon icon={severityToIcon[action.type]} />} fontWeight="lg" textColor="text.secondary">
                             {action.type}
                         </Typography>
                     </td>
@@ -66,7 +60,7 @@ export default class History extends React.Component<Props, State> {
                     <td>{action.targetId}</td>
                     <td>{action.executorId}</td>
                     <td>
-                        <Typography level="body2">{transformToDate(action.createdAt)}</Typography>
+                        <Typography level="body2">{formatDate(action.createdAt)}</Typography>
                     </td>
                 </tr>
                 {/* isExpanded is modified by arrow button. This is for showing IDs and whatnot */}
@@ -112,10 +106,6 @@ export default class History extends React.Component<Props, State> {
     }
 }
 
-const getActionIcon = (action: string) => {
-    return actionTypes[action as keyof typeof actionTypes];
-};
-
 const getReason = (reason: string | null, executorId: string) => (executorId === botId && reason?.startsWith("[AUTOMOD]") ? reason.substring(10) : reason);
 // {
 //     if (reason.startsWith("[AUTOMOD]")) return <span className="py-1 px-2 rounded-lg text-spacelight-800">User violated automod rules</span>;
@@ -125,8 +115,4 @@ const getReason = (reason: string | null, executorId: string) => (executorId ===
 
 const getExecutor = (executorId: string) => {
     return executorId === botId ? <span className="badge badge-md text-primary font-semibold">Automod</span> : executorId;
-};
-
-const transformToDate = (date: Date | null) => {
-    return date?.toString().substring(0, 10) ?? "never";
 };

@@ -8,19 +8,19 @@ import UserManager from "./UserManager";
 
 type Props = {
     servers: GuildedServer[];
+    currentServer?: GuildedServer;
+    onServerChange: (serverId: string) => unknown | Promise<unknown>;
     user: Partial<{
         name: string | null;
         avatar: string | null;
     }>;
-    onMenuToggle: () => unknown;
+    children?: React.ReactNode | React.ReactNode[];
 };
 
-export function LayoutTopbar({ servers, user, onMenuToggle }: Props) {
+export function LayoutTopbar({ children, onServerChange, currentServer, servers, user }: Props) {
     return (
         <Box sx={{ display: "flex", flexDirection: "row", p: 3, gap: 2 }}>
-            <IconButton className="md:hidden block" onClick={onMenuToggle} color="neutral">
-                <FontAwesomeIcon icon={faBars}/>
-            </IconButton>
+            { children }
             <Breadcrumbs
                 sx={{ p: 0, "--Breadcrumbs-gap": "20px" }}
                 className="grow"
@@ -40,7 +40,7 @@ export function LayoutTopbar({ servers, user, onMenuToggle }: Props) {
                         Yoki
                     </Typography>
                 </Box>
-                <ServerSelector servers={servers} />
+                <ServerSelector onChange={onServerChange} defaultValue={currentServer} servers={servers} />
             </Breadcrumbs>
             <UserManager user={user} />
         </Box>
