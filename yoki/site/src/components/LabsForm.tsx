@@ -1,8 +1,12 @@
 import { FormControl } from "@mui/base";
-import { FormHelperText, Input, Option, Select } from "@mui/joy";
+import { FormHelperText, Input, Option, Select, Stack, Typography } from "@mui/joy";
 import React from "react";
 import { FormEvent } from "react";
 import LabsButton from "./LabsButton";
+import { LabsFormField, LabsFormFieldByType, LabsFormFieldType, LabsFormSection } from "./form";
+import LabsSwitch from "./LabsSwitch";
+
+type LabsFormFieldValue = string | boolean | undefined | null;
 
 export type LabsFormProps = {
     sections: LabsFormSection[];
@@ -10,33 +14,9 @@ export type LabsFormProps = {
     onSubmit: (state: LabsFormState) => unknown;
 };
 
-export type LabsFormSection = {
-    name?: string;
-    description?: string;
-    row?: boolean;
-    fields: LabsFormField[];
-};
-
-export interface LabsFormField {
-    // Functionality
-    prop: string;
-    type: LabsFormFieldType;
-    value?: string | null;
-    values?: Array<{ name: string; value: string }>;
-    // Display
-    name: string;
-    description?: string;
-}
-
-export enum LabsFormFieldType {
-    Text,
-    Select,
-    Toggle,
-}
-
 export type LabsFormState = {
     changed: boolean;
-    values: Record<string, string | undefined>;
+    values: Record<string, LabsFormFieldValue>;
 };
 
 export default class LabsForm extends React.Component<LabsFormProps, LabsFormState> {
@@ -48,7 +28,7 @@ export default class LabsForm extends React.Component<LabsFormProps, LabsFormSta
         const fields = this.props.sections.flatMap((section) => section.fields);
         this.state = {
             changed: false,
-            values: fields.reduce<Record<string, string | undefined>>((mapped, field) => ((mapped[field.prop] = field.value), mapped), {}),
+            values: fields.reduce<Record<string, LabsFormFieldValue>>((mapped, field) => ((mapped[field.prop] = field.defaultValue), mapped), {}),
         };
 
         this.formId = Math.floor(Math.random() * 75 + 25);
@@ -63,7 +43,7 @@ export default class LabsForm extends React.Component<LabsFormProps, LabsFormSta
         return this.props.onSubmit(this.state);
     }
 
-    setValue(field: LabsFormField, value: string) {
+    setValue<T>(field: LabsFormField, value: T) {
         this.setState(({ values }) => ({ changed: true, values: Object.assign({}, values, { [field.prop]: value }) }));
     }
 
@@ -90,24 +70,42 @@ export default class LabsForm extends React.Component<LabsFormProps, LabsFormSta
 
         return (
             <FormControl className="mb-6">
-                {field.type === LabsFormFieldType.Select ? (
-                    <>
-                        <Select
-                            id={fieldId}
-                            defaultValue={this.state.values[field.prop] ?? field.values?.[0]?.value}
-                            placeholder={field.name}
-                            onChange={(_, value) => value && this.setValue(field, value)}
-                        >
-                            {field.values?.map((value) => (
-                                <Option value={value.value}>{value.name}</Option>
-                            ))}
-                        </Select>
-                    </>
-                ) : (
-                    <Input id={fieldId} placeholder={field.name} defaultValue={field.value ?? void 0} onChange={({ target }) => this.setValue(field, target.value)} variant="outlined" />
-                )}
+                {fieldRenderers[field.type](this, fieldId, field as never)}
                 {field.description && <FormHelperText>{field.description}</FormHelperText>}
             </FormControl>
         );
     }
 }
+
+type FieldRendererRecord = {
+    [T in LabsFormFieldType]: (form: LabsForm, id: string, field: LabsFormFieldByType<T>) => React.ReactElement;
+}
+
+export const fieldRenderers: FieldRendererRecord = {
+    [LabsFormFieldType.Text]: (form, id, field) =>
+        <Input id={id} placeholder={field.name} defaultValue={field.defaultValue ?? void 0} disabled={field.disabled} onChange={({ target }) => form.setValue(field, target.value)} variant="outlined" />,
+    [LabsFormFieldType.Select]: (form, id, field) =>
+        <>
+            <Select
+                id={id}
+                defaultValue={form.state.values[field.prop] ?? field.selectableValues?.[0]?.value}
+                placeholder={field.name}
+                disabled={field.disabled}
+                onChange={(_, value) => value && form.setValue(field, value)}
+            >
+                {field.selectableValues?.map((value) => (
+                    <Option value={value.value}>{value.name}</Option>
+                ))}
+            </Select>
+        </>,
+    [LabsFormFieldType.Toggle]: (form, id, field) =>
+        <Stack spacing={2} direction="row">
+            <Typography level="body1" fontWeight="bolder">{field.name}</Typography>
+            <LabsSwitch
+                id={id}
+                defaultChecked={field.defaultValue ?? void 0}
+                disabled={field.disabled}
+                onChange={({ target }) => form.setValue(field, target.checked)}
+                />
+        </Stack>
+};

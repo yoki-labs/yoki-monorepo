@@ -26,7 +26,7 @@
 		"@vercel/analytics": "^1.0.1",
 		"@yokilabs/utils": "workspace:*",
 		"common-tags": "^1.8.2",
-		"daisyui": "^3.1.7",
+		"daisyui": "^3.2.1",
 		"form-data": "^4.0.0",
 		"graphql-request": "^5.2.0",
 		"jotai": "^2.0.4",

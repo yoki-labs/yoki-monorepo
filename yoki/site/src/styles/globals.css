@@ -3,11 +3,11 @@
 @tailwind utilities;
 
 /* Additional styles */
-@import 'additional-styles/utility-patterns.css';
+/* @import 'additional-styles/utility-patterns.css';
 @import 'additional-styles/range-slider.css';
 @import 'additional-styles/toggle-switch.css';
 @import 'additional-styles/flatpickr.css';
-@import 'additional-styles/theme.css';
+@import 'additional-styles/theme.css'; */
 
 :root {
   --primary: #191B1F;
@@ -35,14 +35,14 @@ a {
 
 
 /* For Firefox Browser */
-.scrollbar {
+/* .scrollbar {
   scrollbar-width: thin;
   scrollbar-color: var(--guilded-yellow) var(--grey-bg);
-}
+} */
 
 
 /* For Chrome, EDGE, Opera, Others */
-.scrollbar::-webkit-scrollbar {
+/* .scrollbar::-webkit-scrollbar {
   width: 20px;
 }
 
@@ -74,4 +74,4 @@ a {
   .scrollbar::-webkit-scrollbar-thumb:hover {
     background: var(--guilded-yellow);
   }
-}
+} */

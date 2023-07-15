@@ -1,9 +1,9 @@
 import { timezones } from "@yokilabs/utils";
-import LabsForm, { LabsFormFieldType } from "../../LabsForm";
+import LabsForm from "../../LabsForm";
 import { DashboardPageProps } from "./page";
+import { LabsFormFieldType } from "../../form";
 
 export default function Config(props: DashboardPageProps) {
-    console.log("Prefix", [props.serverConfig.prefix, "?"]);
     return (
         <LabsForm
             sections={[
@@ -12,7 +12,7 @@ export default function Config(props: DashboardPageProps) {
                         {
                             prop: "prefix",
                             name: "Prefix",
-                            value: props.serverConfig.prefix ?? "?",
+                            defaultValue: props.serverConfig.prefix ?? "?",
                             type: LabsFormFieldType.Text,
                             description: "Change the prefix Yoki uses to recognize commands for your server.",
                         },
@@ -21,8 +21,9 @@ export default function Config(props: DashboardPageProps) {
                             name: "Language",
                             description: "Change the language Yoki uses to respond to respond in (WIP)",
                             type: LabsFormFieldType.Select,
-                            value: props.serverConfig.locale,
-                            values: [
+                            defaultValue: props.serverConfig.locale,
+                            disabled: true,
+                            selectableValues: [
                                 {
                                     name: "English (US)",
                                     value: "en-US",
@@ -33,8 +34,8 @@ export default function Config(props: DashboardPageProps) {
                             prop: "timezone",
                             name: "Timezone",
                             type: LabsFormFieldType.Select,
-                            value: props.serverConfig.timezone,
-                            values: timezones.map((timezone) => ({ name: timezone, value: timezone })),
+                            defaultValue: props.serverConfig.timezone,
+                            selectableValues: timezones.map((timezone) => ({ name: timezone, value: timezone })),
                             description: "Change the timezone Yoki uses to display times in",
                         },
                     ],
