@@ -7,8 +7,8 @@ import { useState } from "react";
 
 import Button from "../../components/Button";
 import { LandingPage } from "../../components/landing/LandingPage";
-import rest from "../../lib/Guilded";
-import prisma from "../../lib/Prisma";
+import rest from "../../guilded";
+import prisma from "../../Prisma";
 import { authOptions } from "../api/auth/[...nextauth]";
 
 export interface Props {

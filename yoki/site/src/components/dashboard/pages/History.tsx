@@ -1,4 +1,4 @@
-import { faBroom, faChevronDown, faChevronRight, faCircleExclamation, faHammer, faMagnifyingGlass, faShoePrints, faVolumeMute } from "@fortawesome/free-solid-svg-icons";
+import { faChevronDown, faChevronRight, faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Box, IconButton, Input, Sheet, Table, Typography } from "@mui/joy";
 import type { Action } from "@prisma/client";
@@ -7,16 +7,16 @@ import React from "react";
 import { actions } from "../../../utils/dummyData";
 import { severityToIcon } from "../../../utils/actionUtil";
 import { formatDate } from "@yokilabs/utils";
+import { DashboardPageProps } from "./page";
 
 const botId = "mGMEZ8r4";
 
-interface Props {}
 interface State {
     expandedRows: string[];
 }
 
-export default class History extends React.Component<Props, State> {
-    constructor(props: Props) {
+export default class History extends React.Component<DashboardPageProps, State> {
+    constructor(props: DashboardPageProps) {
         super(props);
 
         this.state = { expandedRows: [] };

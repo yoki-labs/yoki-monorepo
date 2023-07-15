@@ -21,7 +21,7 @@ export interface LabsFormField {
     // Functionality
     prop: string;
     type: LabsFormFieldType;
-    value?: string;
+    value?: string | null;
     values?: Array<{ name: string; value: string }>;
     // Display
     name: string;
@@ -104,7 +104,7 @@ export default class LabsForm extends React.Component<LabsFormProps, LabsFormSta
                         </Select>
                     </>
                 ) : (
-                    <Input id={fieldId} placeholder={field.name} onChange={({ target }) => this.setValue(field, target.value)} variant="outlined" />
+                    <Input id={fieldId} placeholder={field.name} defaultValue={field.value ?? void 0} onChange={({ target }) => this.setValue(field, target.value)} variant="outlined" />
                 )}
                 {field.description && <FormHelperText>{field.description}</FormHelperText>}
             </FormControl>

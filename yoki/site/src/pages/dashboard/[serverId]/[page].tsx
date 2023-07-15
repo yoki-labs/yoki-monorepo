@@ -3,20 +3,25 @@ import { getServerSession } from "next-auth";
 import React from "react";
 
 import DashForm from "../../../components/dashboard/DashForm";
-import Layout from "../../../components/dashboard/layout/Layout";
-import { GuildedServer } from "../../../lib/@types/guilded/Server";
+import { GuildedServer } from "../../../lib/@types/guilded";
 import { methods } from "../../../lib/Fetcher";
 // import WelcomeBanner from "../../partials/WelcomeBanner";
 import { authOptions } from "../../api/auth/[...nextauth]";
-import { useRouter } from "next/router";
+import prisma, { sanitizeServer } from "../../../prisma";
+import NoServerPage from "../../../components/dashboard/pages/NoServerPage";
+import LayoutWrapper from "../../../components/dashboard/layout/LayoutWrapper";
+import { SanitizedServer } from "../../../lib/@types/db";
+import Layout from "../../../components/dashboard/layout/Layout";
 
 type SessionProps = {
     servers: GuildedServer[];
     currentServer: GuildedServer;
+    serverConfig: SanitizedServer | null;
     user: Partial<{
         name: string | null;
         avatar: string | null;
     }>
+    page: string;
 };
 
 export const getServerSideProps: GetServerSideProps = async (ctx): Promise<GetServerSidePropsResult<SessionProps>> => {
@@ -28,8 +33,8 @@ export const getServerSideProps: GetServerSideProps = async (ctx): Promise<GetSe
     const servers = await methods(session.user.access_token).get<GuildedServer[]>("https://authlink.guildedapi.com/api/v1/users/@me/servers");
     if (!servers?.length) return { redirect: { destination: "/auth/signin", permanent: false } };
 
-    // /dashboard/:serverId
-    const { serverId } = ctx.query;
+    // /dashboard/:serverId/:page
+    const { serverId, page } = ctx.query;
 
     const referencedServer = servers.find((x) => x.id === serverId);
 
@@ -37,18 +42,35 @@ export const getServerSideProps: GetServerSideProps = async (ctx): Promise<GetSe
     if (!referencedServer)
         return { redirect: { destination: `/dashboard`, permanent: false } };
 
+    const serverInDb = (await prisma.server.findMany({
+        where: {
+            serverId: referencedServer.id,
+        }
+    }))[0];
+
     const user = { name: session.user.name, avatar: session.user.avatar };
 
-    return { props: { servers, user, currentServer: referencedServer } };
+    console.log("Server in DB", serverInDb);
+
+    return {
+        props: {
+            servers,
+            user,
+            currentServer: referencedServer,
+            serverConfig: serverInDb ? sanitizeServer(serverInDb) : null,
+            page: page as string,
+        }
+    };
 };
 
 export default function Dashboard(props: SessionProps) {
-    const router = useRouter();
-
     return (
-        <Layout {...props}>
-            {/* <WelcomeBanner /> */}
-            <DashForm />
+        props.serverConfig
+        ? <Layout {...props}>
+            <DashForm serverConfig={props.serverConfig} page={props.page} />
         </Layout>
+        : <LayoutWrapper {...props}>
+            <NoServerPage currentServer={props.currentServer} />
+        </LayoutWrapper>
     );
 }

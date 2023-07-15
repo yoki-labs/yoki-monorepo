@@ -3,8 +3,8 @@ import { Box } from "@mui/joy";
 import type { ContentFilter } from "@prisma/client";
 import React from "react";
 import Module from "../Module";
+import { DashboardPageProps } from "./page";
 
-interface Props {}
 interface State {
 }
 
@@ -21,12 +21,14 @@ const dummyPhrases: ContentFilter[] = [
     },
 ];
 
-export default class Automod extends React.Component<Props, State> {
-    constructor(props: Props) {
+export default class Automod extends React.Component<DashboardPageProps, State> {
+    constructor(props: DashboardPageProps) {
         super(props);
     }
 
     render() {
+        const { serverConfig } = this.props;
+
         return (
             <>
                 <Box className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -35,22 +37,25 @@ export default class Automod extends React.Component<Props, State> {
                         description="Removes any potentially NSFW images from chat and media."
                         icon={faImage}
                         activeClassName="from-pink-500 to-purple-500"
-                        isActive={true}
+                        isActive={serverConfig.scanNSFW}
                         requiresPremium
+                        onToggle={(value) => console.log("Automod toggle NSFW Image scan", value)}
                     />
                     <Module
                         name="Phrase Filter"
                         description="Blocks certain phrases or words in the server."
                         icon={faTextSlash}
                         activeClassName="from-red-500 to-pink-500"
-                        isActive={true}
+                        isActive={serverConfig.filterEnabled}
+                        onToggle={(value) => console.log("Automod toggle NSFW Image scan", value)}
                     />
                     <Module
                         name="Invite Filter"
                         description="Filters out invites in chat."
                         icon={faLink}
                         activeClassName="from-red-500 to-orange-500"
-                        isActive={true}
+                        isActive={serverConfig.filterInvites}
+                        onToggle={(value) => console.log("Automod toggle NSFW Image scan", value)}
                     />
                 </Box>
             </>

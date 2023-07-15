@@ -4,7 +4,7 @@ import React from "react";
 
 import DashForm from "../../../components/dashboard/DashForm";
 import Layout from "../../../components/dashboard/layout/Layout";
-import { GuildedServer } from "../../../lib/@types/guilded/Server";
+import { GuildedServer } from "../../../lib/@types/guilded";
 import { methods } from "../../../lib/Fetcher";
 // import WelcomeBanner from "../../partials/WelcomeBanner";
 import { authOptions } from "../../api/auth/[...nextauth]";

@@ -10,6 +10,7 @@ export type Props = {
     description: string;
     activeClassName: string;
     isActive: boolean;
+    onToggle: (value: boolean) => unknown;
     requiresPremium?: boolean;
 };
 
@@ -17,6 +18,12 @@ export default class Module extends React.Component<Props, { isActive: boolean }
     constructor(props: Props) {
         super(props);
         this.state = { isActive: props.isActive };
+    }
+
+    onToggle(value: boolean) {
+        this.setState({ isActive: value });
+
+        this.props.onToggle(value);
     }
 
     render() {
@@ -40,7 +47,7 @@ export default class Module extends React.Component<Props, { isActive: boolean }
                             <Typography className="grow" fontWeight="md" level="body1">
                                 {name}
                             </Typography>
-                            <LabsSwitch className="toggle justify-end" defaultChecked={this.props.isActive} onChange={({ target }) => this.setState({ isActive: target.checked })} />
+                            <LabsSwitch className="toggle justify-end" defaultChecked={this.props.isActive} onChange={({ target }) => this.onToggle(target.checked)} />
                         </div>
                         <Typography level="body2">{description}</Typography>
                     </Box>

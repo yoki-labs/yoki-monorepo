@@ -2,7 +2,7 @@ import { GetServerSideProps, GetServerSidePropsResult } from "next";
 import { getServerSession } from "next-auth";
 import React from "react";
 
-import { GuildedServer } from "../../lib/@types/guilded/Server";
+import { GuildedServer } from "../../lib/@types/guilded";
 import { methods } from "../../lib/Fetcher";
 // import WelcomeBanner from "../../partials/WelcomeBanner";
 import { authOptions } from "../api/auth/[...nextauth]";

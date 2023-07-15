@@ -1,4 +1,4 @@
-import { GuildedServer } from "../../../lib/@types/guilded/Server";
+import { GuildedServer } from "../../../lib/@types/guilded";
 import { Box } from "@mui/joy";
 import React from "react";
 import { LayoutTopbar } from "./LayoutTopbar";
