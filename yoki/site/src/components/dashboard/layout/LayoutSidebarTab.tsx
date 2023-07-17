@@ -1,14 +1,9 @@
-import { IconDefinition } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ListItemButton, ListItemDecorator, Typography } from "@mui/joy";
-
-export interface LayoutModule {
-    name: string;
-    icon: IconDefinition;
-}
+import { DashboardPageItem } from "../pages";
 
 interface Prop {
-    item: LayoutModule;
+    item: DashboardPageItem;
     isActive: boolean;
     onClick: () => unknown;
 }

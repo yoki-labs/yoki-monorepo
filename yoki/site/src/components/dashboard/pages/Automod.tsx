@@ -1,9 +1,10 @@
-import { faImage, faLink, faTextSlash } from "@fortawesome/free-solid-svg-icons";
+import { faAnglesDown, faImage, faLink, faTextSlash } from "@fortawesome/free-solid-svg-icons";
 import { Box } from "@mui/joy";
 import type { ContentFilter } from "@prisma/client";
 import React from "react";
 import Module from "../Module";
 import { DashboardPageProps } from "./page";
+import PagePlaceholder, { PagePlaceholderIcon } from "../../PagePlaceholder";
 
 interface State {
 }
@@ -21,7 +22,7 @@ const dummyPhrases: ContentFilter[] = [
     },
 ];
 
-export default class Automod extends React.Component<DashboardPageProps, State> {
+export default class AutomodPage extends React.Component<DashboardPageProps, State> {
     constructor(props: DashboardPageProps) {
         super(props);
     }
@@ -31,7 +32,7 @@ export default class Automod extends React.Component<DashboardPageProps, State> 
 
         return (
             <>
-                <Box className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <Box className="grid sm:grid-cols-1 md:grid-cols-2 xlg:grid-cols-3 gap-4">
                     <Module
                         name="NSFW Image Scan"
                         description="Removes any potentially NSFW images from chat and media."
@@ -57,7 +58,16 @@ export default class Automod extends React.Component<DashboardPageProps, State> 
                         isActive={serverConfig.filterInvites}
                         onToggle={(value) => console.log("Automod toggle NSFW Image scan", value)}
                     />
+                    <Module
+                        name="Anti-hoist"
+                        description="Stops people from putting symbols at the start of their name to put them above everyone else."
+                        icon={faAnglesDown}
+                        activeClassName="from-green-500 to-yellow-500"
+                        isActive={serverConfig.antiHoistEnabled}
+                        onToggle={(value) => console.log("Anti-hoist toggle", value)}
+                    />
                 </Box>
+                <PagePlaceholder icon={PagePlaceholderIcon.Wip} title="Work in progress" description="This section has not been done yet. Come back later!" />
             </>
         );
     }

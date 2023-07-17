@@ -15,7 +15,7 @@ interface State {
     expandedRows: string[];
 }
 
-export default class History extends React.Component<DashboardPageProps, State> {
+export default class HistoryPage extends React.Component<DashboardPageProps, State> {
     constructor(props: DashboardPageProps) {
         super(props);
 

@@ -3,7 +3,7 @@ import LabsForm from "../../LabsForm";
 import { DashboardPageProps } from "./page";
 import { LabsFormFieldType } from "../../form";
 
-export default function Config(props: DashboardPageProps) {
+export default function ConfigPage(props: DashboardPageProps) {
     return (
         <LabsForm
             sections={[

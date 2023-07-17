@@ -8,9 +8,13 @@ export type Props = {
     name: string;
     icon: IconDefinition;
     description: string;
+
     activeClassName: string;
     isActive: boolean;
     onToggle: (value: boolean) => unknown;
+    
+    iconAspectRatio?: number;
+    hideBadges?: boolean;
     requiresPremium?: boolean;
 };
 
@@ -27,13 +31,13 @@ export default class Module extends React.Component<Props, { isActive: boolean }
     }
 
     render() {
-        const { name, description, icon, activeClassName, requiresPremium } = this.props;
+        const { name, description, icon, activeClassName, requiresPremium, hideBadges, iconAspectRatio } = this.props;
         const { isActive } = this.state;
 
         return (
             <Card orientation="horizontal" variant="plain">
                 <CardOverflow>
-                    <AspectRatio ratio="0.5" sx={{ width: 80 }}>
+                    <AspectRatio ratio={iconAspectRatio ?? 0.5} sx={{ width: 80}}>
                         <aside className={`flex items-center col-span-1 transition-all ease-in duration-300 bg-gradient-to-br bg-spacedark-800 ${isActive ? activeClassName : ""}`}>
                             <div className="flex grow flex-col items-center items-center">
                                 <FontAwesomeIcon className={`margin-auto w-9 h-9 text-white`} icon={icon} />
@@ -51,9 +55,12 @@ export default class Module extends React.Component<Props, { isActive: boolean }
                         </div>
                         <Typography level="body2">{description}</Typography>
                     </Box>
-                    <Box mt={2}>
-                        <Chip variant="outlined" color={requiresPremium ? "primary" : "neutral"}>{ requiresPremium ? "Premium" : "Free" }</Chip>
-                    </Box>
+                    {
+                        !hideBadges &&
+                        <Box mt={2}>
+                            <Chip variant="outlined" color={requiresPremium ? "primary" : "neutral"}>{ requiresPremium ? "Premium" : "Free" }</Chip>
+                        </Box>
+                    }
                 </CardContent>
             </Card>
         );

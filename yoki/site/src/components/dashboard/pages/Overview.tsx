@@ -5,7 +5,7 @@ import Module from "../Module";
 import { Alert, Typography } from "@mui/joy";
 import { DashboardPageProps } from "./page";
 
-export default function Overview(props: DashboardPageProps) {
+export default function OverviewPage(props: DashboardPageProps) {
     const { serverConfig } = props;
 
     return (
@@ -20,7 +20,7 @@ export default function Overview(props: DashboardPageProps) {
                 <Typography level="h3" gutterBottom>
                     Modules
                 </Typography>
-                <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div className="grid sm:grid-cols-1 md:grid-cols-2 xlg:grid-cols-3 gap-5">
                     <Module
                         name="Modmail"
                         description="Customize how your users interact with your moderators."
