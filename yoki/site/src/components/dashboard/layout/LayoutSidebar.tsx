@@ -1,26 +1,47 @@
-import { faBan, faClipboardUser, faCog, faEnvelope, faHashtag, faLayerGroup, faPrayingHands, faShieldHalved } from "@fortawesome/free-solid-svg-icons";
+import { faBan, faClipboardUser, faCog, faDoorOpen, faEnvelope, faHashtag, faLayerGroup, faPrayingHands, faShieldHalved } from "@fortawesome/free-solid-svg-icons";
 import { useAtom } from "jotai";
 
 import { navbarAtom } from "../../../state/navbar";
 import LayoutSidebarTab from "./LayoutSidebarTab";
-import { Box, List } from "@mui/joy";
-import { dashboardPageList } from "../pages";
+import { Box, List, ListItem, ListItemButton, ListItemDecorator, Typography } from "@mui/joy";
+import { DashboardPageCategory, DashboardPageItem, dashboardPageList } from "../pages";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 type Props = {
     menuToggled: boolean;
+};
+
+const categoryNames: Record<DashboardPageCategory, string> = {
+    [DashboardPageCategory.Bot]: "Yoki",
+    [DashboardPageCategory.Automod]: "Automod",
+    [DashboardPageCategory.Entry]: "Server entry & support",
 };
 
 export function LayoutSidebar({ menuToggled }: Props) {
     const [currentPage, setModule] = useAtom(navbarAtom);
     const showStateClass = menuToggled ? "" : " md:block hidden";
 
+    const categorizedPages =
+        Object
+            .values(DashboardPageCategory)
+            .filter((category) => typeof category === "number")
+            .map((category) => ({
+                category: category as DashboardPageCategory,
+                items: dashboardPageList.filter((page) => page.category === category)
+            }));
+
     return (
-        <Box sx={{ px: 4.3, py: 0 }} className={`h-full overflow-y-auto overflow-x-hidden ${showStateClass}`}>
-            <List className="w-64" variant="plain" size="sm" sx={{ maxWidth: 320, fontSize: 14 }}>
-                {dashboardPageList.map((item) => (
-                    <LayoutSidebarTab key={item.id} item={item} isActive={currentPage === item.id} onClick={() => setModule(item.id)} />
-                ))}
-            </List>
+        <Box sx={{ width: 300, maxWidth: 300, fontSize: 14, px: 4.3, pt: 0, pb: 5 }} className={`h-full overflow-y-auto overflow-x-hidden ${showStateClass}`}>
+            { categorizedPages.map(({ category, items }) =>
+                <section className="pb-5">
+                    <Typography level="h1" textColor="text.tertiary" fontSize="sm">{categoryNames[category]}</Typography>
+                    <List variant="plain" size="sm">
+                        {items.map((item) => (
+                            <LayoutSidebarTab key={item.id} item={item} isActive={currentPage === item.id} onClick={() => setModule(item.id)} />
+                        ))}
+                    </List>
+                </section>
+            )}
         </Box>
     );
 }

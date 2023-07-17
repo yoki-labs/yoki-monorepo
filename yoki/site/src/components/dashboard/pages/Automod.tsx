@@ -1,8 +1,8 @@
-import { faAnglesDown, faImage, faLink, faTextSlash } from "@fortawesome/free-solid-svg-icons";
+import { faAnglesDown, faBan, faImage, faLink } from "@fortawesome/free-solid-svg-icons";
 import { Box } from "@mui/joy";
 import type { ContentFilter } from "@prisma/client";
 import React from "react";
-import Module from "../Module";
+import DashboardModule from "../DashboardModule";
 import { DashboardPageProps } from "./page";
 import PagePlaceholder, { PagePlaceholderIcon } from "../../PagePlaceholder";
 
@@ -33,7 +33,7 @@ export default class AutomodPage extends React.Component<DashboardPageProps, Sta
         return (
             <>
                 <Box className="grid sm:grid-cols-1 md:grid-cols-2 xlg:grid-cols-3 gap-4">
-                    <Module
+                    <DashboardModule
                         name="NSFW Image Scan"
                         description="Removes any potentially NSFW images from chat and media."
                         icon={faImage}
@@ -42,15 +42,15 @@ export default class AutomodPage extends React.Component<DashboardPageProps, Sta
                         requiresPremium
                         onToggle={(value) => console.log("Automod toggle NSFW Image scan", value)}
                     />
-                    <Module
-                        name="Phrase Filter"
-                        description="Blocks certain phrases or words in the server."
-                        icon={faTextSlash}
+                    <DashboardModule
+                        name="Auto-mod"
+                        description="Filters out spam and blacklisted phrases, words or links."
+                        icon={faBan}
                         activeClassName="from-red-500 to-pink-500"
                         isActive={serverConfig.filterEnabled}
                         onToggle={(value) => console.log("Automod toggle NSFW Image scan", value)}
                     />
-                    <Module
+                    <DashboardModule
                         name="Invite Filter"
                         description="Filters out invites in chat."
                         icon={faLink}
@@ -58,7 +58,7 @@ export default class AutomodPage extends React.Component<DashboardPageProps, Sta
                         isActive={serverConfig.filterInvites}
                         onToggle={(value) => console.log("Automod toggle NSFW Image scan", value)}
                     />
-                    <Module
+                    <DashboardModule
                         name="Anti-hoist"
                         description="Stops people from putting symbols at the start of their name to put them above everyone else."
                         icon={faAnglesDown}

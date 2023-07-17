@@ -1,9 +1,10 @@
-import { faAnglesDown, faBan, faEnvelope, faExclamationTriangle, faImage, faImagePortrait, faLink, faPrayingHands, faShieldHalved } from "@fortawesome/free-solid-svg-icons";
+import { faAnglesDown, faBan, faEnvelope, faExclamationTriangle, faHeart, faImage, faLink, faPrayingHands, faShieldHalved } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import Module from "../Module";
-import { Alert, Typography } from "@mui/joy";
+import DashboardModule from "../DashboardModule";
+import { Alert, Stack, Typography } from "@mui/joy";
 import { DashboardPageProps } from "./page";
+import LabsIconCard from "../../LabsIconCard";
 
 export default function OverviewPage(props: DashboardPageProps) {
     const { serverConfig } = props;
@@ -16,12 +17,17 @@ export default function OverviewPage(props: DashboardPageProps) {
                     our Guilded server
                 </a>
             </Alert>
+            {/* Maybe do vertical icon cards with 4 tiers in premium tab? */}
+            <LabsIconCard icon={faHeart} iconAspectRatio={0.8}>
+                <Typography level="body1" fontWeight="md">Free</Typography>
+                <Typography level="body2">Yoki is currently in free tier.</Typography>
+            </LabsIconCard>
             <section>
                 <Typography level="h3" gutterBottom>
                     Modules
                 </Typography>
                 <div className="grid sm:grid-cols-1 md:grid-cols-2 xlg:grid-cols-3 gap-5">
-                    <Module
+                    <DashboardModule
                         name="Modmail"
                         description="Customize how your users interact with your moderators."
                         icon={faEnvelope}
@@ -29,7 +35,7 @@ export default function OverviewPage(props: DashboardPageProps) {
                         isActive={serverConfig.modmailEnabled}
                         onToggle={(value) => console.log("Modmail toggle", value)}
                         />
-                    <Module
+                    <DashboardModule
                         name="NSFW Image Scan"
                         description="Removes any potentially NSFW images from chat and media."
                         icon={faImage}
@@ -38,7 +44,7 @@ export default function OverviewPage(props: DashboardPageProps) {
                         requiresPremium
                         onToggle={(value) => console.log("NSFW Image Scan toggle", value)}
                         />
-                    <Module
+                    <DashboardModule
                         name="Anti-raid"
                         description="Customize how the bot detects and handles suspicious accounts."
                         icon={faShieldHalved}
@@ -46,7 +52,7 @@ export default function OverviewPage(props: DashboardPageProps) {
                         isActive={serverConfig.antiRaidEnabled}
                         onToggle={(value) => console.log("Anti-raid toggle", value)}
                         />
-                    <Module
+                    <DashboardModule
                         name="Appeals"
                         description="Allows people to apply for an unban in your server."
                         icon={faPrayingHands}
@@ -54,15 +60,15 @@ export default function OverviewPage(props: DashboardPageProps) {
                         isActive={serverConfig.appealsEnabled}
                         onToggle={(value) => console.log("Appeals toggle", value)}
                         />
-                    <Module
+                    <DashboardModule
                         name="Auto-mod"
-                        description="Filters out spam and blacklisted phrases or words."
+                        description="Filters out spam and blacklisted phrases or links."
                         icon={faBan}
                         activeClassName="from-red-500 to-pink-500"
                         isActive={serverConfig.filterEnabled}
                         onToggle={(value) => console.log("Auto-mod toggle", value)}
                         />
-                    <Module
+                    <DashboardModule
                         name="Invite Filter"
                         description="Filters out invites in chat."
                         icon={faLink}
@@ -70,7 +76,7 @@ export default function OverviewPage(props: DashboardPageProps) {
                         isActive={serverConfig.filterInvites}
                         onToggle={(value) => console.log("Invite Filter toggle", value)}
                         />
-                    <Module
+                    <DashboardModule
                         name="Anti-hoist"
                         description="Stops people from putting symbols at the start of their name to put them above everyone else."
                         icon={faAnglesDown}
