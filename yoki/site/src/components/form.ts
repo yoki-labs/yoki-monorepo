@@ -1,3 +1,5 @@
+import { DefaultColorPalette } from "@mui/joy/styles/types";
+
 export interface LabsFormSection {
     name?: string;
     description?: string;
@@ -5,7 +7,7 @@ export interface LabsFormSection {
     fields: LabsFormField[];
 };
 
-interface BaseLabsFormField<TType extends LabsFormFieldType, TValue> {
+export interface BaseLabsFormField<TType extends LabsFormFieldType, TValue> {
     // Functionality
     prop: string;
     type: TType;
@@ -13,8 +15,12 @@ interface BaseLabsFormField<TType extends LabsFormFieldType, TValue> {
     // Display
     name: string;
     description?: string;
+    badge?: { text: string, color: DefaultColorPalette };
     // Config
     disabled?: boolean;
+}
+interface LabsFormFieldText<TType extends LabsFormFieldType> extends BaseLabsFormField<TType, string> {
+    placeholder: string;
 }
 interface LabsFormFieldSelectable<TType extends LabsFormFieldType> extends BaseLabsFormField<TType, string> {
     selectableValues?: Array<{ name: string; value: string }>;
@@ -25,7 +31,7 @@ export type LabsFormFieldByType<T extends LabsFormFieldType> =
     ? BaseLabsFormField<LabsFormFieldType.Toggle, boolean>
     : T extends LabsFormFieldType.Select
     ? LabsFormFieldSelectable<LabsFormFieldType.Select>
-    : BaseLabsFormField<LabsFormFieldType, string>;
+    : LabsFormFieldText<LabsFormFieldType>;
 
 export type LabsFormField =
     LabsFormFieldByType<LabsFormFieldType.Text> |

@@ -1,9 +1,9 @@
 import { FormControl } from "@mui/base";
-import { FormHelperText, Input, Option, Select, Stack, Typography } from "@mui/joy";
+import { Chip, FormHelperText, FormLabel, Input, Option, Select, Stack, Typography } from "@mui/joy";
 import React from "react";
 import { FormEvent } from "react";
 import LabsButton from "./LabsButton";
-import { LabsFormField, LabsFormFieldByType, LabsFormFieldType, LabsFormSection } from "./form";
+import { BaseLabsFormField, LabsFormField, LabsFormFieldByType, LabsFormFieldType, LabsFormSection } from "./form";
 import LabsSwitch from "./LabsSwitch";
 
 type LabsFormFieldValue = string | boolean | undefined | null;
@@ -83,13 +83,17 @@ type FieldRendererRecord = {
 
 export const fieldRenderers: FieldRendererRecord = {
     [LabsFormFieldType.Text]: (form, id, field) =>
-        <Input id={id} placeholder={field.name} defaultValue={field.defaultValue ?? void 0} disabled={field.disabled} onChange={({ target }) => form.setValue(field, target.value)} variant="outlined" />,
+        <>
+            <LabsFormFieldHeader field={field} />
+            <Input id={id} placeholder={field.placeholder} defaultValue={field.defaultValue ?? void 0} disabled={field.disabled} onChange={({ target }) => form.setValue(field, target.value)} variant="outlined" />
+        </>,
     [LabsFormFieldType.Select]: (form, id, field) =>
         <>
+            <LabsFormFieldHeader field={field} />
             <Select
                 id={id}
                 defaultValue={form.state.values[field.prop] ?? field.selectableValues?.[0]?.value}
-                placeholder={field.name}
+                placeholder={`Select ${field.name.toLowerCase()}`}
                 disabled={field.disabled}
                 onChange={(_, value) => value && form.setValue(field, value)}
             >
@@ -100,6 +104,7 @@ export const fieldRenderers: FieldRendererRecord = {
         </>,
     [LabsFormFieldType.Toggle]: (form, id, field) =>
         <Stack spacing={2} direction="row">
+            <LabsFormFieldHeader field={field} />
             <Typography level="body1" fontWeight="bolder">{field.name}</Typography>
             <LabsSwitch
                 id={id}
@@ -109,3 +114,12 @@ export const fieldRenderers: FieldRendererRecord = {
                 />
         </Stack>
 };
+
+function LabsFormFieldHeader({ field }: { field: BaseLabsFormField<LabsFormFieldType, any> }) {
+    return (
+        <Stack spacing={1} direction="row">
+            <FormLabel>{ field.name }</FormLabel>
+            { field.badge && <Chip size="sm" variant="outlined" color={field.badge.color}>{ field.badge.text }</Chip> }
+        </Stack>
+    );
+}

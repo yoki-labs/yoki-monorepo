@@ -63,7 +63,7 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }: AppPropsWith
             <SessionProvider session={session}>
                 <QueryClientProvider client={queryClient}>
                     {/* <gqlClientContext.Provider value={gql}> */}
-                    <CssVarsProvider theme={theme}>
+                    <CssVarsProvider defaultMode="dark" theme={theme}>
                         <Component {...pageProps} />
                     </CssVarsProvider>
                     {/* </gqlClientContext.Provider> */}
