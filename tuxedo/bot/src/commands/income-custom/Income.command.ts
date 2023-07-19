@@ -5,11 +5,11 @@ import { Category, Command } from "../commands";
 import SetCooldown from "./Cooldown.command";
 import Create from "./Create.command";
 import SetCurrency from "./Currency.command";
+import Enable from "./Enable.command";
 import Info from "./Info.command";
 import List from "./List.command";
 import SetMessage from "./Message.command";
 import Remove from "./Remove.command";
-import Enable from "./Enable.command";
 
 const Income: Command = {
     name: "income",

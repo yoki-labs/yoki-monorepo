@@ -1,5 +1,5 @@
 import { DefaultIncomeType, RoleType } from "@prisma/client";
-import { ResolvedEnum, inlineQuote } from "@yokilabs/bot";
+import { inlineQuote, ResolvedEnum } from "@yokilabs/bot";
 
 import { Category, Command } from "../commands";
 
@@ -13,8 +13,7 @@ const Enable: Command = {
     args: [
         {
             name: "incomeType",
-            display: Object
-                .keys(DefaultIncomeType)
+            display: Object.keys(DefaultIncomeType)
                 .slice(0, 3)
                 .concat("...")
                 .map((x) => x.toLowerCase())
@@ -33,14 +32,18 @@ const Enable: Command = {
 
         await ctx.prisma.server.update({
             where: {
-                id: server.id
+                id: server.id,
             },
             data: {
-                disableDefaultIncomes: disableDefaultIncomes.filter((x) => x !== incomeType)
-            }
+                disableDefaultIncomes: disableDefaultIncomes.filter((x) => x !== incomeType),
+            },
         });
 
-        return ctx.messageUtil.replyWithSuccess(message, "Income enabled", `The income ${inlineQuote(incomeType.toLowerCase())} has been successfully re-enabled and can be used again.`);
+        return ctx.messageUtil.replyWithSuccess(
+            message,
+            "Income enabled",
+            `The income ${inlineQuote(incomeType.toLowerCase())} has been successfully re-enabled and can be used again.`
+        );
     },
 };
 

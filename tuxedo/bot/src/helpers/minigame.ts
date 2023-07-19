@@ -1,15 +1,15 @@
 import { Currency } from "@prisma/client";
+import { Colors } from "@yokilabs/utils";
 import { stripIndents } from "common-tags";
 import { EmbedField, EmbedPayload, Message } from "guilded.js";
 
-import { Colors } from "@yokilabs/utils";
-import { BlackjackCondition, BlackjackDeck, SpecialBlackjackVariant, randomBlackjackNumToCard, stringifyBlackjackDeck, stringifyCard } from "../util/blackjack";
+import { BlackjackCondition, BlackjackDeck, randomBlackjackNumToCard, SpecialBlackjackVariant, stringifyBlackjackDeck, stringifyCard } from "../util/blackjack";
 import { TickedUtil } from "./ticked";
 
 const evaporateInstancesIn = 20 * 60 * 1000;
 const instanceLifetimeTick = evaporateInstancesIn;
 
-type BlackjackInstance = {
+interface BlackjackInstance {
     serverId: string;
     channelId: string;
     messageId: string;
@@ -20,7 +20,7 @@ type BlackjackInstance = {
     currencyStartingBalance: number | null;
     deck: BlackjackDeck;
     dealerDeck: BlackjackDeck;
-};
+}
 
 // :point_down:
 export const blackjackReactionHit = 90001110;
@@ -40,14 +40,12 @@ export class MinigameUtil extends TickedUtil {
         const instanceIndex = this.getBlackjackInstanceIndex(serverId, messageId);
 
         // Ignore it automatically; probably a random reaction
-        if (instanceIndex < 0)
-            return;
+        if (instanceIndex < 0) return;
 
         const instance = this._blackJackInstances[instanceIndex];
 
         // Can't play for others
-        if (instance.createdBy !== createdBy)
-            return;
+        if (instance.createdBy !== createdBy) return;
 
         // It's a hit, so another card should get added
         const newCard = this.getCard();
@@ -62,7 +60,7 @@ export class MinigameUtil extends TickedUtil {
 
         // Deck is a bust; the max is 21 as your num and even with aces being 1 it's over 21
         if (currentDeckValue > 21) {
-            condition = BlackjackCondition.Lost
+            condition = BlackjackCondition.Lost;
             // It's done
             this._blackJackInstances.splice(instanceIndex, 1);
 
@@ -75,19 +73,17 @@ export class MinigameUtil extends TickedUtil {
 
         return this.updateBlackjackMessage(instance, currentDeckValue, condition);
     }
-        
+
     async addBlackjackStand(serverId: string, messageId: string, createdBy: string, acesAre11: boolean) {
         const instanceIndex = this.getBlackjackInstanceIndex(serverId, messageId);
-    
+
         // Ignore it automatically; probably a random reaction
-        if (instanceIndex < 0)
-            return;
-    
+        if (instanceIndex < 0) return;
+
         const instance = this._blackJackInstances[instanceIndex];
 
         // Can't play for others
-        if (instance.createdBy !== createdBy)
-            return;
+        if (instance.createdBy !== createdBy) return;
 
         // User chose how much aces are
         const userAceCount = instance.deck.filter((card) => card === SpecialBlackjackVariant.Ace).length;
@@ -99,7 +95,7 @@ export class MinigameUtil extends TickedUtil {
         //     return;
 
         const userDeckValue1 = this.getDeckValue(instance.deck);
-        const userDeckValue11 = userDeckValue1 + (userAceCount * 10);
+        const userDeckValue11 = userDeckValue1 + userAceCount * 10;
 
         // // While they are using a button for aces to be 1 and it would be below 21,
         // // just use the normal stand reaction
@@ -111,7 +107,7 @@ export class MinigameUtil extends TickedUtil {
         const dealerAceCount = instance.dealerDeck.filter((card) => card === SpecialBlackjackVariant.Ace).length;
         // Have to remember which value aces are (1 or 11)
         const dealerDeckValueAce1 = this.getDeckValue(instance.dealerDeck);
-        const dealerDeckValueAce11 = this.getDeckValue(instance.dealerDeck) + (dealerAceCount * 10);
+        const dealerDeckValueAce11 = this.getDeckValue(instance.dealerDeck) + dealerAceCount * 10;
         const dealerDeckValue = dealerDeckValueAce11 ? dealerDeckValueAce1 : dealerDeckValueAce1;
 
         this._blackJackInstances.splice(instanceIndex, 1);
@@ -119,53 +115,29 @@ export class MinigameUtil extends TickedUtil {
         // After standing, dealer has 2 cards and draws until they hit 17 or more;
         // we have already done it at the start and now need to see if they bust
         if (dealerDeckValue > 21 || userDeckValue > dealerDeckValue)
-            return Promise.all([
-                this.updateBlackjackMessage(instance, userDeckValue, BlackjackCondition.Won),
-                this.updateBlackjackPlayer(instance, 1),
-            ]);
+            return Promise.all([this.updateBlackjackMessage(instance, userDeckValue, BlackjackCondition.Won), this.updateBlackjackPlayer(instance, 1)]);
         else if (userDeckValue < dealerDeckValue)
-            return Promise.all([
-                this.updateBlackjackMessage(instance, userDeckValue, BlackjackCondition.Lost),
-                this.updateBlackjackPlayer(instance, -1),
-            ]);
-        else
-            return this.updateBlackjackMessage(instance, userDeckValue, BlackjackCondition.NeutralPush);
+            return Promise.all([this.updateBlackjackMessage(instance, userDeckValue, BlackjackCondition.Lost), this.updateBlackjackPlayer(instance, -1)]);
+        return this.updateBlackjackMessage(instance, userDeckValue, BlackjackCondition.NeutralPush);
     }
-    
+
     async updateBlackjackPlayer(instance: BlackjackInstance, receivedAmountMultiplier: number) {
         const memberBalance = await this.client.dbUtil.getServerMember(instance.serverId, instance.createdBy);
         const currentBalance = memberBalance?.balances.find((x) => x.currencyId === instance.currencyId);
 
-        return this.client.dbUtil.updateMemberBalance(
-            instance.serverId,
-            instance.createdBy,
-            memberBalance,
-            [
-                {
-                    currencyId: instance.currencyId,
-                    pocket: (currentBalance?.pocket ?? 0) + receivedAmountMultiplier * instance.amount,
-                    bank: currentBalance?.bank ?? instance.currencyStartingBalance ?? 0,
-                }
-            ]
-        );
+        return this.client.dbUtil.updateMemberBalance(instance.serverId, instance.createdBy, memberBalance, [
+            {
+                currencyId: instance.currencyId,
+                pocket: (currentBalance?.pocket ?? 0) + receivedAmountMultiplier * instance.amount,
+                bank: currentBalance?.bank ?? instance.currencyStartingBalance ?? 0,
+            },
+        ]);
     }
 
     updateBlackjackMessage(instance: BlackjackInstance, deckValue: number, condition: BlackjackCondition) {
-        return this.client.messages.update(
-            instance.channelId,
-            instance.messageId,
-            {
-                embeds: [
-                    this.createBlackjackEmbed(
-                        instance.createdBy,
-                        instance.deck,
-                        instance.dealerDeck,
-                        deckValue,
-                        condition
-                    )
-                ]
-            },
-        );
+        return this.client.messages.update(instance.channelId, instance.messageId, {
+            embeds: [this.createBlackjackEmbed(instance.createdBy, instance.deck, instance.dealerDeck, deckValue, condition)],
+        });
     }
 
     async initBlackJackInstance(message: Message, currency: Currency, amount: number) {
@@ -176,13 +148,7 @@ export class MinigameUtil extends TickedUtil {
 
         const messageCreated = await this.client.messageUtil.replyWithEmbed(
             message,
-            this.createBlackjackEmbed(
-                message.createdById,
-                startingDeck,
-                dealerDeck,
-                this.getDeckValue(startingDeck),
-                BlackjackCondition.Playing
-            ),
+            this.createBlackjackEmbed(message.createdById, startingDeck, dealerDeck, this.getDeckValue(startingDeck), BlackjackCondition.Playing)
         );
 
         // Add reactions for easier interactions
@@ -208,7 +174,7 @@ export class MinigameUtil extends TickedUtil {
     }
 
     getCard(): number | SpecialBlackjackVariant {
-        // Num cards 2-10 + face cards (3) + aces + 1 (since it doesn't reach 12 ever) 
+        // Num cards 2-10 + face cards (3) + aces + 1 (since it doesn't reach 12 ever)
         const num = Math.floor(Math.random() * 13);
 
         return num < 9 ? 2 + num : randomBlackjackNumToCard[num];
@@ -237,8 +203,7 @@ export class MinigameUtil extends TickedUtil {
             dealerDeck.push(newCard);
             deckValue += cardValue;
 
-            if (newCard === SpecialBlackjackVariant.Ace)
-                aceCount++;
+            if (newCard === SpecialBlackjackVariant.Ace) aceCount++;
         }
 
         return dealerDeck;
@@ -246,7 +211,7 @@ export class MinigameUtil extends TickedUtil {
 
     createBlackjackEmbed(memberId: string, deck: BlackjackDeck, dealerDeck: BlackjackDeck, deckValue: number, condition: BlackjackCondition): EmbedPayload {
         const aceCount = deck.filter((x) => x === SpecialBlackjackVariant.Ace).length;
-        const acesCanBe11 = (aceCount as unknown as boolean) && (deckValue + (aceCount * 10)) < 22;
+        const acesCanBe11 = (aceCount as unknown as boolean) && deckValue + aceCount * 10 < 22;
 
         return {
             title: ":diamonds: Blackjack",
@@ -255,28 +220,28 @@ export class MinigameUtil extends TickedUtil {
             `,
             color:
                 condition === BlackjackCondition.Playing
-                ? Colors.blockBackground
-                : condition === BlackjackCondition.Won
-                ? Colors.green
-                : condition === BlackjackCondition.Lost
-                ? Colors.red
-                : Colors.yellow,
+                    ? Colors.blockBackground
+                    : condition === BlackjackCondition.Won
+                    ? Colors.green
+                    : condition === BlackjackCondition.Lost
+                    ? Colors.red
+                    : Colors.yellow,
             fields: [
                 {
                     name: "Your Deck",
-                    value: `[ ${stringifyBlackjackDeck(deck)} ] = ${deckValue}${acesCanBe11 ? ` or ${deckValue + (aceCount * 10)}` : ""}`,
+                    value: `[ ${stringifyBlackjackDeck(deck)} ] = ${deckValue}${acesCanBe11 ? ` or ${deckValue + aceCount * 10}` : ""}`,
                     inline: true,
                 },
                 {
                     name: "Dealer's Deck",
                     value:
                         condition === BlackjackCondition.Playing
-                        ? `[ ${stringifyCard(dealerDeck[0])}, Card ]`
-                        : `[ ${stringifyBlackjackDeck(dealerDeck)} ] = ${this.getDeckValue(dealerDeck)}`,
+                            ? `[ ${stringifyCard(dealerDeck[0])}, Card ]`
+                            : `[ ${stringifyBlackjackDeck(dealerDeck)} ] = ${this.getDeckValue(dealerDeck)}`,
                     inline: true,
                 },
                 getStatusField(acesCanBe11, condition),
-            ]
+            ],
         };
     }
 
@@ -296,30 +261,24 @@ export class MinigameUtil extends TickedUtil {
             console.log({ blackjackInstance, i, evaporateInstancesIn, currentTime, maxLifetime: blackjackInstance.createdAt + evaporateInstancesIn });
 
             // It's time to make it evaporate
-            if (currentTime > (blackjackInstance.createdAt + evaporateInstancesIn))
-                this._blackJackInstances.splice(i, 1);
+            if (currentTime > blackjackInstance.createdAt + evaporateInstancesIn) this._blackJackInstances.splice(i, 1);
         }
     }
 }
 
-const asAce11 = (value: number, aceCount: number) => value + (10 * aceCount);
+const asAce11 = (value: number, aceCount: number) => value + 10 * aceCount;
 
 const getStatusField = (allowAce1: boolean, condition: BlackjackCondition): EmbedField =>
     condition === BlackjackCondition.Playing
-    ? {
-        name: "Actions",
-        value: stripIndents`
+        ? {
+              name: "Actions",
+              value: stripIndents`
             \u2022 :point_down: \u2014 Hit
             \u2022 :white_check_mark: \u2014 Stand${allowAce1 ? " (Aces as 11)\n\u2022 :ballot_box_with_check: \u2014 Stand (Aces as 1)" : ""}
             (Double down and split not available)
-        `
-    }
-    : {
-        name: "Game concluded",
-        value:
-            condition === BlackjackCondition.Won
-            ? "You won."
-            : condition === BlackjackCondition.Lost
-            ? "You lost."
-            : "It's a draw/neutral push."
-    };
+        `,
+          }
+        : {
+              name: "Game concluded",
+              value: condition === BlackjackCondition.Won ? "You won." : condition === BlackjackCondition.Lost ? "You lost." : "It's a draw/neutral push.",
+          };
