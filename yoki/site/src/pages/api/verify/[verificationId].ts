@@ -1,9 +1,9 @@
 import { createHmac } from "crypto";
 import type { NextApiRequest, NextApiResponse } from "next";
 
-import errorHandler, { errorEmbed } from "../../../lib/ErrorHandler";
 import rest from "../../../guilded";
-import prisma from "../../../Prisma";
+import errorHandler, { errorEmbed } from "../../../lib/ErrorHandler";
+import prisma from "../../../prisma";
 
 const PostVerifyRoute = async (req: NextApiRequest, res: NextApiResponse) => {
     if (req.method !== "POST") return res.status(405).send("");

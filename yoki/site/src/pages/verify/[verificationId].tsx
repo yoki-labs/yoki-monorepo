@@ -3,7 +3,7 @@ import { useState } from "react";
 import Turnstile from "react-turnstile";
 
 import { LandingPage } from "../../components/landing/LandingPage";
-import prisma from "../../Prisma";
+import prisma from "../../prisma";
 
 export interface Props {
     id: string | null;

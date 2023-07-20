@@ -3,10 +3,10 @@ import { stripIndents } from "common-tags";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { unstable_getServerSession } from "next-auth";
 
-import { authOptions } from "../auth/[...nextauth]";
-import errorHandler, { errorEmbed } from "../../../lib/ErrorHandler";
 import rest from "../../../guilded";
-import prisma from "../../../Prisma";
+import errorHandler, { errorEmbed } from "../../../lib/ErrorHandler";
+import prisma from "../../../prisma";
+import { authOptions } from "../auth/[...nextauth]";
 
 const PostAppealRoute = async (req: NextApiRequest, res: NextApiResponse) => {
     if (req.method !== "POST") return res.status(405).send("");
