@@ -85,7 +85,15 @@ export const fieldRenderers: FieldRendererRecord = {
     [LabsFormFieldType.Text]: (form, id, field) =>
         <>
             <LabsFormFieldHeader field={field} />
-            <Input id={id} placeholder={field.placeholder} defaultValue={field.defaultValue ?? void 0} disabled={field.disabled} onChange={({ target }) => form.setValue(field, target.value)} variant="outlined" />
+            <Input
+                id={id}
+                placeholder={field.placeholder}
+                defaultValue={field.defaultValue ?? void 0}
+                size={field.size}
+                disabled={field.disabled}
+                onChange={({ target }) => form.setValue(field, target.value)}
+                variant={field.variant ?? "outlined"}
+                />
         </>,
     [LabsFormFieldType.Select]: (form, id, field) =>
         <>

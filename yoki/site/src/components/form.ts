@@ -1,4 +1,4 @@
-import { DefaultColorPalette } from "@mui/joy/styles/types";
+import { DefaultColorPalette, VariantProp } from "@mui/joy/styles/types";
 
 export interface LabsFormSection {
     name?: string;
@@ -19,7 +19,11 @@ export interface BaseLabsFormField<TType extends LabsFormFieldType, TValue> {
     // Config
     disabled?: boolean;
 }
-interface LabsFormFieldText<TType extends LabsFormFieldType> extends BaseLabsFormField<TType, string> {
+interface StyledLabsFormField {
+    size?: "sm" | "md" | "lg";
+    variant?: VariantProp;
+}
+interface LabsFormFieldText<TType extends LabsFormFieldType> extends BaseLabsFormField<TType, string>, StyledLabsFormField {
     placeholder: string;
 }
 interface LabsFormFieldSelectable<TType extends LabsFormFieldType> extends BaseLabsFormField<TType, string> {

@@ -1,6 +1,6 @@
 import { atom, useAtomValue } from "jotai";
 
-import Config from "./pages/Config";
+import Config from "./pages/Premium";
 import History from "./pages/History";
 import Overview from "./pages/Overview";
 import { Alert, Box, Typography } from "@mui/joy";
@@ -24,7 +24,7 @@ export default function DashForm(props: Props) {
     const PageComponent = pageInfo?.component;
 
     return (
-        <Box sx={{ pt: 1, pb: 6, pl: 0, pr: 5.6 }} className="w-full h-full overflow-y-auto flex flex-col space-y-8 h-fit scrollbar">
+        <Box sx={{ pt: 1, pb: 6, pl: 5.6, pr: 5.6 }} className="w-full h-full overflow-y-auto flex flex-col space-y-8 scrollbar">
             {/* <div>
                 <Typography level="h3">{currentPage[0].toUpperCase() + currentPage.substring(1)}</Typography>
             </div> */}

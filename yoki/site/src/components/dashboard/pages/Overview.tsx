@@ -1,17 +1,17 @@
 import { faAnglesDown, faBan, faEnvelope, faExclamationTriangle, faHeart, faImage, faLink, faPrayingHands, faShieldHalved } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Alert, Box, Typography } from "@mui/joy";
 
-import LabsIconCard from "../../LabsIconCard";
 import DashboardModule from "../DashboardModule";
+import { Alert, Box, Stack, Typography } from "@mui/joy";
 import { DashboardPageProps } from "./page";
+import DashboardProfileCard from "../DashboardProfileCard";
 
 export default function OverviewPage(props: DashboardPageProps) {
     const { serverConfig } = props;
 
     return (
-        <div className="flex flex-col gap-16">
-            <Alert variant="solid" color="warning" startDecorator={<FontAwesomeIcon icon={faExclamationTriangle} />}>
+        <Stack direction="column" gap={4}>
+            <Alert color="warning" variant="soft" startDecorator={<FontAwesomeIcon icon={faExclamationTriangle} />}>
                 <Box sx={{ alignItems: "baseline" }}>
                     This dashboard is in-progress and may have some bugs. If you run into any issues, report it in{" "}
                     <a href="https://www.guilded.gg/yoki" className="font-bold hover:underline">
@@ -20,17 +20,12 @@ export default function OverviewPage(props: DashboardPageProps) {
                 </Box>
             </Alert>
             {/* Maybe do vertical icon cards with 4 tiers in premium tab? */}
-            <LabsIconCard icon={faHeart} iconAspectRatio={0.8}>
-                <Typography level="body1" fontWeight="md">
-                    Free
-                </Typography>
-                <Typography level="body2">Yoki is currently in free tier.</Typography>
-            </LabsIconCard>
+            <DashboardProfileCard serverConfig={serverConfig} />
             <section>
                 <Typography level="h3" gutterBottom>
                     Modules
                 </Typography>
-                <div className="grid sm:grid-cols-1 md:grid-cols-2 xlg:grid-cols-3 gap-5">
+                <Box className="grid sm:grid-cols-1 md:grid-cols-2 xlg:grid-cols-3 gap-5">
                     <DashboardModule
                         name="Modmail"
                         description="Customize how your users interact with your moderators."
@@ -88,8 +83,8 @@ export default function OverviewPage(props: DashboardPageProps) {
                         isActive={serverConfig.antiHoistEnabled}
                         onToggle={(value) => console.log("Anti-hoist toggle", value)}
                     />
-                </div>
+                </Box>
             </section>
-        </div>
+        </Stack>
     );
 }

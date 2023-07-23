@@ -7,19 +7,6 @@ const mostPrimary = "#8a6fef";
 const mostDark = labsTheme.spacedark[950];
 const mostLight = labsTheme.spacelight[950];
 
-// Since this is a dark theme, 90 is the darkest and 900 is the lightest
-const primary = {
-    100: mixHexColours(mostPrimary, mostDark, 0.8),
-    200: mixHexColours(mostPrimary, mostDark, 0.6),
-    300: mixHexColours(mostPrimary, mostDark, 0.4),
-    400: mixHexColours(mostPrimary, mostDark, 0.2),
-    500: mostPrimary,
-    600: mixHexColours(mostPrimary, mostLight, 0.2),
-    700: mixHexColours(mostPrimary, mostLight, 0.4),
-    800: mixHexColours(mostPrimary, mostLight, 0.6),
-    900: mixHexColours(mostPrimary, mostLight, 0.8),
-};
-
 export const labsSecondaryColour: [string, string] = ["#f87edd", "#715be9"];
 export const labsSecondaryColourHover: [string, string] = [mixHexColours(labsSecondaryColour[0], mostLight, 0.5), mixHexColours(labsSecondaryColour[1], mostLight, 0.5)];
 
@@ -44,23 +31,39 @@ export const theme = extendTheme({
         md: ``
     },
     colorSchemes: {
-        light: {
+        dark: {
             shadowRing: "#000",
             shadowChannel: "#000",
             palette: {
                 neutral: {
-                    50: labsTheme.spacedark[950],
-                    100: labsTheme.spacedark[900],
-                    200: labsTheme.spacedark[800],
-                    300: labsTheme.spacedark[700],
-                    400: labsTheme.spacedark[600],
-                    500: labsTheme.spacedark[500],
-                    600: labsTheme.spacedark[400],
-                    700: labsTheme.spacedark[300],
-                    800: labsTheme.spacedark[300],
-                    900: labsTheme.spacedark[300],
+                    900: labsTheme.spacedark[950],
+                    800: labsTheme.spacedark[900],
+                    700: labsTheme.spacedark[800],
+                    600: labsTheme.spacedark[700],
+                    500: labsTheme.spacedark[600],
+                    400: labsTheme.spacedark[500],
+                    300: labsTheme.spacedark[400],
+                    200: labsTheme.spacedark[300],
+                    100: labsTheme.spacedark[300],
+                    50: labsTheme.spacedark[300],
+                    solidBg: labsTheme.spacedark[600],
+                    solidHoverBg: labsTheme.spacedark[500],
+                    outlinedBorder: labsTheme.spacedark[700],
                 },
-                primary,
+                primary: {
+                    900: mixHexColours(mostPrimary, mostDark, 0.8),
+                    800: mixHexColours(mostPrimary, mostDark, 0.6),
+                    700: mixHexColours(mostPrimary, mostDark, 0.4),
+                    600: mixHexColours(mostPrimary, mostDark, 0.2),
+                    500: mostPrimary,
+                    400: mixHexColours(mostPrimary, mostLight, 0.2),
+                    300: mixHexColours(mostPrimary, mostLight, 0.4),
+                    200: mixHexColours(mostPrimary, mostLight, 0.6),
+                    100: mixHexColours(mostPrimary, mostLight, 0.8),
+                    solidBg: mostPrimary,
+                    plainHoverBg: mixHexColours(mostPrimary, mostDark, 0.9),
+                    solidHoverBg: mixHexColours(mostPrimary, mostLight, 0.2),
+                },
                 text: {
                     primary: labsTheme.spacelight[900],
                     secondary: labsTheme.spacelight[700],
@@ -99,6 +102,9 @@ export const theme = extendTheme({
                 thumb: {
                     background: labsTheme.spacedark[950],
                 },
+                // track: ({ ownerState, theme }) => ({
+                //     background: ownerState.checked ? "#FF0000" : labsTheme.spacedark[600],
+                // })
             },
         },
         // JoyChip: {

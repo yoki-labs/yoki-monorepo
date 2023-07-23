@@ -14,14 +14,12 @@ interface Prop {
  * @returns {Element} Rendered component
  */
 export default function LayoutSidebarTab({ item, isActive, onClick }: Prop) {
-    const textColor = isActive ? "text.secondary" : "text.tertiary";
-
     return (
-        <ListItemButton selected={isActive} onClick={onClick}>
+        <ListItemButton color={item.color} selected={isActive} onClick={onClick}>
             <ListItemDecorator>
-                <FontAwesomeIcon icon={item.icon} className={`${isActive ? "text-spacelight-500" : "text-spacelight-400"}`} />
+                <FontAwesomeIcon icon={item.icon} />
             </ListItemDecorator>
-            <Typography component="span" textColor={textColor}>
+            <Typography sx={{ color: "inherit" }} component="span">
                 {item.name}
             </Typography>
         </ListItemButton>
