@@ -31,7 +31,7 @@ export default class DashboardProfileCard extends React.Component<Props> {
         return (
             <Card>
                 <CardOverflow>
-                    <AspectRatio ratio="4">
+                    <AspectRatio ratio="6">
                         <img src="/banner.png" alt="Yoki's Banner" />
                     </AspectRatio>
                     <Avatar sx={{ "--Avatar-size": "80px", position: "absolute", left: 20, bottom: 0, transform: "translateY(60%)" }} size="lg" src="/icon.png" />

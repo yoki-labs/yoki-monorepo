@@ -8,6 +8,8 @@ import { actions } from "../../../utils/dummyData";
 import { severityToIcon } from "../../../utils/actionUtil";
 import { formatDate } from "@yokilabs/utils";
 import { DashboardPageProps } from "./page";
+import { LabsCopyInput } from "../../LabsCopyInput";
+import { CSSProperties } from "styled-components";
 
 const botId = "mGMEZ8r4";
 
@@ -43,7 +45,7 @@ export default class HistoryPage extends React.Component<DashboardPageProps, Sta
 
         return (
             <>
-                <tr data-id={action.id}>
+                <tr data-id={action.id} style={{ "--TableCell-borderColor": isExpanded ? "transparent" : undefined } as unknown as CSSProperties}>
                     <td>
                         <IconButton onClick={this.toggleRowExpansion.bind(this, action.id)} color="neutral" aria-label="More button">
                             <FontAwesomeIcon icon={isExpanded ? faChevronDown : faChevronRight} />
@@ -73,8 +75,9 @@ export default class HistoryPage extends React.Component<DashboardPageProps, Sta
         return (
             <tr data-id={action.id}>
                 <td style={{ height: 0, padding: 0 }} colSpan={6}>
-                    <Sheet variant="soft" sx={{ p: 1, pl: 6, pr: 6 }}>
-                        <Typography level="body2">ID: {action.id}</Typography>
+                    <Sheet variant="soft" sx={{ m: 1, borderRadius: 4, p: 1, pl: 6, pr: 6 }}>
+                        <Typography level="h3" fontSize="sm" gutterBottom>Identifier</Typography>
+                        <LabsCopyInput text={action.id} />
                     </Sheet>
                 </td>
             </tr>
