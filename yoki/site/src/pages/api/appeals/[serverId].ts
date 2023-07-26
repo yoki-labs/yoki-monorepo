@@ -9,23 +9,34 @@ import prisma from "../../../prisma";
 import { authOptions } from "../auth/[...nextauth]";
 
 const PostAppealRoute = async (req: NextApiRequest, res: NextApiResponse) => {
-    if (req.method !== "POST") return res.status(405).send("");
-    const session = await unstable_getServerSession(req, res, authOptions);
+    // Has to be POST; this is the only method available
+    if (req.method !== "POST")
+        return res.status(405).send("");
     const serverId = req.query.serverId as string;
     const appealContent = req.body.appealContent as string;
 
-    if (!session?.user.id) return res.status(400).json({ error: true, message: "Must be logged in to send appeal." });
-    if (!appealContent) return res.status(400).json({ error: true, message: "Must provide appeal content." });
+    if (!appealContent)
+        return res.status(400).json({ error: true, message: "Must provide appeal content." });
 
+    // Don't know who is appealing (need a Guilded login)
+    const session = await unstable_getServerSession(req, res, authOptions);
+    if (!session?.user.id)
+        return res.status(401).json({ error: true, message: "Must be logged in to send appeal." });
+
+    // Server needs to exist and have appeals enabled
     const server = await prisma.server.findFirst({ where: { serverId } });
-    if (!server) return res.status(404).json({ error: true, message: "Invalid server ID." });
-    if (!server.appealChannelId) return res.status(404).json({ error: true, code: "NOT_ENABLED", message: "Server does not have appeals enabled." });
+    if (!server)
+        return res.status(404).json({ error: true, message: "Invalid server ID." });
+    else if (!server.appealChannelId)
+        return res.status(404).json({ error: true, code: "NOT_ENABLED", message: "Server does not have appeals enabled." });
 
+    // If they aren't banned, they can't appeal
     const existingBan = await rest.router.memberBans
         .serverMemberBanRead({ serverId: server.serverId, userId: session.user.id })
         .then((x) => x.serverMemberBan)
         .catch(() => null);
-    if (!existingBan) return res.status(404).json({ error: true, code: "NOT_BANNED", message: "User is not banned." });
+    if (!existingBan)
+        return res.status(404).json({ error: true, code: "NOT_BANNED", message: "User is not banned." });
 
     try {
         await prisma.appeal.create({ data: { content: appealContent, serverId: server.serverId, creatorId: session.user.id } });

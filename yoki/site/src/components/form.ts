@@ -1,3 +1,4 @@
+import { IconDefinition } from "@fortawesome/free-solid-svg-icons";
 import { DefaultColorPalette, VariantProp } from "@mui/joy/styles/types";
 
 export interface LabsFormSection {
@@ -13,7 +14,7 @@ export interface BaseLabsFormField<TType extends LabsFormFieldType, TValue> {
     type: TType;
     defaultValue?: TValue | undefined | null;
     // Display
-    name: string;
+    name?: string;
     description?: string;
     badge?: { text: string, color: DefaultColorPalette };
     // Config
@@ -27,7 +28,8 @@ interface LabsFormFieldText<TType extends LabsFormFieldType> extends BaseLabsFor
     placeholder: string;
 }
 interface LabsFormFieldSelectable<TType extends LabsFormFieldType> extends BaseLabsFormField<TType, string> {
-    selectableValues?: Array<{ name: string; value: string }>;
+    selectableValues?: Array<{ name: string; value: string; icon?: IconDefinition; }>;
+    prefixIcon?: IconDefinition;
 }
 
 export type LabsFormFieldByType<T extends LabsFormFieldType> =

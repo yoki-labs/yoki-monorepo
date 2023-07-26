@@ -24,7 +24,7 @@ export default class ServerSelectionPage extends React.Component<Props, State> {
     }
 
     renderServers() {
-        const { servers } = this.props;
+        const servers = this.props.servers.sort((a, b) => a.name > b.name ? 1 : a.name < b.name ? -1 : 0);
 
         return (
             <>

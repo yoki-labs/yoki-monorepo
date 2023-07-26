@@ -21,7 +21,6 @@ export default function ServerDisplay({ server, onClick, sx }: Props) {
                 <Typography component="span" level="h6">{server.name}</Typography>
                 <Stack sx={{ alignItems: "start", flexGrow: "1" }} spacing={2} direction="row">
                     <Typography level="body2">/{server.subdomain}</Typography>
-                    <Typography level="body3" color="neutral" variant="solid">{server.id}</Typography>
                 </Stack>
             </CardContent>
         </Card>

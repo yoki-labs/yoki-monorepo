@@ -24,6 +24,7 @@ export default function LabsOverflowButton({ id, children, disabled }: Props) {
                 color="neutral"
                 variant="outlined"
                 aria-label="Overflow icon"
+                onClick={() => setMenuOpen(!menuOpen)}
             >
                 <FontAwesomeIcon icon={faEllipsisV} />
             </IconButton>
