@@ -1,6 +1,7 @@
 import { IconDefinition } from "@fortawesome/free-solid-svg-icons";
 import { DefaultColorPalette, VariantProp } from "@mui/joy/styles/types";
 
+//#region Interfaces Form basic info structure
 export interface LabsFormSection {
     name?: string;
     description?: string;
@@ -20,32 +21,68 @@ export interface BaseLabsFormField<TType extends LabsFormFieldType, TValue> {
     // Config
     disabled?: boolean;
 }
+//#endregion
+
+//#region Interfaces Labs field common stuff
 interface StyledLabsFormField {
+    prefixIcon?: IconDefinition;
     size?: "sm" | "md" | "lg";
     variant?: VariantProp;
 }
-interface LabsFormFieldText<TType extends LabsFormFieldType> extends BaseLabsFormField<TType, string>, StyledLabsFormField {
-    placeholder: string;
-}
-interface LabsFormFieldSelectable<TType extends LabsFormFieldType> extends BaseLabsFormField<TType, string> {
-    selectableValues?: Array<{ name: string; value: string; icon?: IconDefinition; }>;
-    prefixIcon?: IconDefinition;
+
+interface OptionedLabsFormField<
+    TType extends LabsFormFieldType,
+    TValue,
+    TOptionValue = TValue
+> extends BaseLabsFormField<TType, TValue> {
+    selectableValues?: Array<{ name: string; value: TOptionValue; icon?: IconDefinition; }>;
 }
 
+interface PlaceholdableLabsFormField {
+    placeholder?: string;
+}
+//#endregion
+
+interface LabsFormFieldText<TType extends LabsFormFieldType> extends
+    BaseLabsFormField<TType, string>,
+    StyledLabsFormField,
+    PlaceholdableLabsFormField
+{}
+interface LabsFormFieldSelectable<TType extends LabsFormFieldType> extends
+    BaseLabsFormField<TType, string>,
+    OptionedLabsFormField<TType, string, string>,
+    StyledLabsFormField,
+    PlaceholdableLabsFormField
+{}
+
+interface LabsFormFieldMultiSelection<TType extends LabsFormFieldType> extends
+    BaseLabsFormField<TType, string[]>,
+    OptionedLabsFormField<TType, string[], string>,
+    StyledLabsFormField,
+    PlaceholdableLabsFormField
+{}
+
 export type LabsFormFieldByType<T extends LabsFormFieldType> =
-    T extends LabsFormFieldType.Toggle
-    ? BaseLabsFormField<LabsFormFieldType.Toggle, boolean>
+    T extends LabsFormFieldType.Text
+    ? LabsFormFieldText<LabsFormFieldType>
     : T extends LabsFormFieldType.Select
     ? LabsFormFieldSelectable<LabsFormFieldType.Select>
-    : LabsFormFieldText<LabsFormFieldType>;
+    : T extends LabsFormFieldType.Toggle
+    ? BaseLabsFormField<LabsFormFieldType.Toggle, boolean>
+    : T extends LabsFormFieldType.MultiSelect
+    ? LabsFormFieldMultiSelection<LabsFormFieldType.MultiSelect>
+    : never;
 
 export type LabsFormField =
     LabsFormFieldByType<LabsFormFieldType.Text> |
     LabsFormFieldByType<LabsFormFieldType.Select> |
-    LabsFormFieldByType<LabsFormFieldType.Toggle>;
+    LabsFormFieldByType<LabsFormFieldType.Toggle> |
+    LabsFormFieldByType<LabsFormFieldType.MultiSelect>
+    ;
 
 export enum LabsFormFieldType {
     Text,
     Select,
     Toggle,
+    MultiSelect,
 }

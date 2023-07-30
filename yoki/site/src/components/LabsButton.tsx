@@ -20,7 +20,7 @@ const LabsButton = styled(
         transitionProperty: "opacity, filter",
         padding: "4px 24px",
         position: "relative",
-        borderRadius: 12,
+        borderRadius: theme.vars.radius.sm,
         "::after": disabled ? undefined : {
             content: `""`,
             position: "absolute",

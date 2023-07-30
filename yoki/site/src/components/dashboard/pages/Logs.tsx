@@ -3,6 +3,7 @@ import { DashboardPageProps } from "./page";
 import { SanitizedLogChannel } from "../../../lib/@types/db";
 import { CircularProgress } from "@mui/joy";
 import DashboardLogChannel from "../DashboardLog";
+import { toLookup } from "@yokilabs/utils";
 
 type State = {
     isLoaded: boolean;
@@ -39,11 +40,23 @@ export default class LogsPage extends React.Component<DashboardPageProps, State>
         if (!isLoaded)
             return <CircularProgress />;
 
+        const channelLookup = toLookup(logs, (log) => log.channelId);
+
         return (
             <>
-                {logs.map((log) => (
-                    <DashboardLogChannel {...log} types={[log.type]} timezone={serverConfig.timezone} />
-                ))}
+                {Object.keys(channelLookup).map((channelId) => {
+                    const channelTypeInfos = channelLookup[channelId]!;
+
+                    return (
+                        <DashboardLogChannel
+                            serverId={serverConfig.serverId}
+                            channelId={channelId}
+                            createdAt={channelTypeInfos[0].createdAt}
+                            types={channelTypeInfos.map((x) => x.type)}
+                            timezone={serverConfig.timezone}
+                            />
+                    );
+                })}
             </>
         );
     }

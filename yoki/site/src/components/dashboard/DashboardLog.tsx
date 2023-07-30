@@ -125,9 +125,11 @@ export default class DashboardLogChannel extends React.Component<Props, State> {
                                 ]
                             },
                             {
-                                type: LabsFormFieldType.Select,
+                                type: LabsFormFieldType.MultiSelect,
                                 prop: "type",
                                 selectableValues: typeOptions,
+                                defaultValue: types,
+                                placeholder: "Select log types"
                             }
                         ],
                     },

@@ -6,8 +6,9 @@ import LabsButton from "./LabsButton";
 import { BaseLabsFormField, LabsFormField, LabsFormFieldByType, LabsFormFieldType, LabsFormSection } from "./form";
 import LabsSwitch from "./LabsSwitch";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import LabsMultiSelector from "./LabsMultiSelector";
 
-type LabsFormFieldValue = string | boolean | undefined | null;
+type LabsFormFieldValue = string | string[] | boolean | undefined | null;
 
 export type LabsFormProps = {
     sections: LabsFormSection[];
@@ -148,10 +149,16 @@ export const fieldRenderers: FieldRendererRecord = {
                 disabled={field.disabled}
                 onChange={({ target }) => form.setValue(field, target.checked)}
                 />
-        </Stack>
+        </Stack>,
+    [LabsFormFieldType.MultiSelect]: (form, id, field) =>
+        <LabsMultiSelector
+            id={id}
+            form={form}
+            field={field}
+        />,
 };
 
-function LabsFormFieldHeader({ field }: { field: BaseLabsFormField<LabsFormFieldType, any> }) {
+export function LabsFormFieldHeader({ field }: { field: BaseLabsFormField<LabsFormFieldType, any> }) {
     return (
         field.name
             ? <Stack spacing={1} direction="row">
