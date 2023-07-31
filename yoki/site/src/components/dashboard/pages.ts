@@ -1,4 +1,4 @@
-import { IconDefinition, faBan, faClipboardUser, faCog, faEnvelope, faHashtag, faHeart, faLayerGroup, faLinkSlash, faPrayingHands, faShieldHalved, faTextSlash } from "@fortawesome/free-solid-svg-icons";
+import { IconDefinition, faBan, faClipboardUser, faCog, faCrown, faEnvelope, faHashtag, faHeart, faLayerGroup, faLinkSlash, faPrayingHands, faShieldHalved, faTextSlash } from "@fortawesome/free-solid-svg-icons";
 import OverviewPage from "./overview/Overview";
 import ConfigPage from "./overview/Premium";
 import AutomodPage from "./automod/Automod";
@@ -12,6 +12,7 @@ import LinksPage from "./automod/Links";
 import PhrasesPage from "./automod/Phrases";
 import { ColorPaletteProp } from "@mui/joy";
 import { SanitizedServer } from "../../lib/@types/db";
+import RolesPage from "./overview/Roles";
 
 export interface DashboardPageItem {
     id: string;
@@ -30,6 +31,7 @@ export enum DashboardPageCategory {
 
 export const dashboardPageList: DashboardPageItem[] = [
     { id: "overview", name: "Overview", icon: faLayerGroup, component: OverviewPage, category: DashboardPageCategory.Bot },
+    { id: "roles", name: "Roles", icon: faCrown, component: RolesPage, category: DashboardPageCategory.Bot },
     { id: "premium", name: "Premium", icon: faHeart, color: "warning", component: ConfigPage, category: DashboardPageCategory.Bot },
     { id: "automod", name: "Automod", icon: faBan, component: AutomodPage, category: DashboardPageCategory.Automod },
     { id: "logs", name: "Logging", icon: faHashtag, component: LogsPage, category: DashboardPageCategory.Automod },

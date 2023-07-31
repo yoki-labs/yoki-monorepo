@@ -1,51 +1,32 @@
 import { Box, Card, CardContent, Chip, ListItemDecorator, MenuItem, Stack, Typography } from "@mui/joy";
-import { SanitizedLogChannel } from "../../../lib/@types/db";
+import { SanitizedRole } from "../../../lib/@types/db";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHashtag, faPen, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faHashtag, faPen, faShieldHalved, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { formatDate } from "@yokilabs/utils";
 import LabsIconWrapper from "../../LabsIconWrapper";
-import { LogChannelType } from "@prisma/client";
 import LabsOverflowButton from "../../LabsOverflowButton";
 import React from "react";
 import LabsForm, { LabsFormState } from "../../LabsForm";
 import { LabsFormFieldType } from "../../form";
+import { RolePayload } from "@guildedjs/api";
+import { RoleType } from "@prisma/client";
 
 type Props = {
     serverId: string;
-    channelId: string;
-    serverChannels: string[];
-    createdAt: string;
-    types: LogChannelType[];
+    serverRoles: RolePayload[];
+    role: SanitizedRole;
     timezone: string | null;
 };
 // Edit mode exists instead of putting you right away there because there may be too many Select form fields
-// With too many channels and too many types at a time and it can be pretty laggy, especially on lower-end
-// Devices. Guilded allows too many channels.
+// With too many roles and too many types at a time and it can be pretty laggy, especially on lower-end
+// Devices. Guilded allows too many roles.
 type State = {
     inEditMode: boolean;
 };
 
-const typeDisplayNames: Record<LogChannelType, string> = {
-    [LogChannelType.all]: "All/The rest",
-    [LogChannelType.notifications]: "Yoki notifications",
-    [LogChannelType.mod_actions]: "Yoki mod logs",
-    [LogChannelType.modmail_logs]: "Yoki Modmail logs",
-    [LogChannelType.member_joins]: "Member joins",
-    [LogChannelType.member_updates]: "Member nickname changes",
-    [LogChannelType.member_roles_updates]: "Member's role changes",
-    [LogChannelType.member_leaves]: "Member leaves",
-    [LogChannelType.member_bans]: "Member bans",
-    [LogChannelType.message_edits]: "Message edits",
-    [LogChannelType.message_deletions]: "Message deletions",
-    [LogChannelType.topic_edits]: "Forum topic edits",
-    [LogChannelType.topic_deletions]: "Forum topic deletions",
-    [LogChannelType.topic_locks]: "Forum topic locks/unlocks",
-    [LogChannelType.comment_deletions]: "Content comment deletions",
-};
+const staffRoleTypes = [RoleType.ADMIN, RoleType.MOD, RoleType.MINIMOD];
 
-const typeOptions = Object.values(LogChannelType).map((type) => ({ value: type, name: typeDisplayNames[type] }));
-
-export default class DashboardLogChannel extends React.Component<Props, State> {
+export default class DashboardRole extends React.Component<Props, State> {
     constructor(props: Props) {
         super(props);
 
@@ -55,36 +36,43 @@ export default class DashboardLogChannel extends React.Component<Props, State> {
     toggleEditMode(inEditMode: boolean) {
         this.setState({ inEditMode });
     }
+
+    get currentServerRole() {
+        const { serverRoles, role } = this.props;
+
+        return serverRoles.find((serverRole) => serverRole.id === role.roleId);
+    }
     
-    LogChannelStaticMode() {
-        const { serverId, channelId, types, createdAt, timezone } = this.props;
+    RoleItemStaticMode() {
+        const { serverId, serverRoles, role, timezone } = this.props;
+        const serverRole = this.currentServerRole;
         
         return (
             <>
                 {/* The hashtag icon (kind of useless, but there should be indication that it is a channel), channel ID */}
                 <Stack component="header" gap={2} direction="row" alignItems="center">
                     <LabsIconWrapper>
-                        <FontAwesomeIcon style={{ width: "100%", height: "100%" }} icon={faHashtag} />
+                        <FontAwesomeIcon style={{ width: "100%", height: "100%" }} icon={faShieldHalved} />
                     </LabsIconWrapper>
                     {/* TODO: Replace it with proper channel name */}
                     <Typography level="h1" fontSize="md" fontWeight="bolder">
-                        {channelId}
+                        {serverRole?.name ?? role.roleId}
                     </Typography>
                     <Stack sx={{ flex: "1" }} direction="row" gap={1} alignItems="center">
-                        {types.map((type) => <Chip variant="outlined">{typeDisplayNames[type]}</Chip>)}
+                        <Chip variant="outlined" sx={{ flex: "1" }}>{role.type}</Chip>
                     </Stack>
-                    <LabsOverflowButton id={`logs-${serverId}-${channelId}`}>
+                    <LabsOverflowButton id={`logs-${serverId}-${role.roleId}`}>
                         <MenuItem onClick={() => this.toggleEditMode(true)}>
                             <ListItemDecorator>
                                 <FontAwesomeIcon icon={faPen} />
                             </ListItemDecorator>
-                            Edit log channel
+                            Edit role
                         </MenuItem>
                         <MenuItem color="danger">
                             <ListItemDecorator>
                                 <FontAwesomeIcon icon={faTrash} />
                             </ListItemDecorator>
-                            Delete log channel
+                            Delete role
                         </MenuItem>
                     </LabsOverflowButton>
                 </Stack>
@@ -92,7 +80,7 @@ export default class DashboardLogChannel extends React.Component<Props, State> {
                     <Box sx={{ mt: 0.5 }}>
                         {/* Additional info, such as its creation date */}
                         <Typography level="body2">
-                            {formatDate(new Date(createdAt), timezone)}
+                            {formatDate(new Date(role.createdAt), timezone)}
                         </Typography>
                     </Box>
                 </CardContent>
@@ -100,9 +88,9 @@ export default class DashboardLogChannel extends React.Component<Props, State> {
         );
     }
 
-    LogChannelEditMode() {
-        const { serverChannels, channelId, types, createdAt, timezone } = this.props;
-        const onSubmit = this.onLogChannelEdit.bind(this);
+    RoleItemEditMode() {
+        const { serverRoles, role, timezone } = this.props;
+        const onSubmit = this.onRoleItemEdit.bind(this);
 
         return (
             <LabsForm
@@ -111,31 +99,34 @@ export default class DashboardLogChannel extends React.Component<Props, State> {
                         row: true,
                         start: (
                             <LabsIconWrapper>
-                                <FontAwesomeIcon style={{ width: "100%", height: "100%" }} icon={faHashtag} />
+                                <FontAwesomeIcon style={{ width: "100%", height: "100%" }} icon={faShieldHalved} />
                             </LabsIconWrapper>
                         ),
                         fields: [
                             {
                                 type: LabsFormFieldType.Select,
-                                prop: "channelId",
-                                defaultValue: channelId,
-                                selectableValues: serverChannels.map((chatChannelId) => ({
-                                    name: chatChannelId,
-                                    value: chatChannelId,
-                                    icon: faHashtag,
+                                prop: "roleId",
+                                defaultValue: role.roleId,
+                                selectableValues: serverRoles.sort((a, b) => b.position - a.position).map((serverRole) => ({
+                                    name: serverRole.name,
+                                    value: serverRole.id,
+                                    avatarIcon: serverRole.icon,
                                 }))
                             },
                             {
-                                type: LabsFormFieldType.MultiSelect,
+                                type: LabsFormFieldType.Select,
                                 prop: "type",
-                                selectableValues: typeOptions,
-                                defaultValue: types,
-                                placeholder: "Select log types"
+                                selectableValues: staffRoleTypes.map((roleType) => ({
+                                    name: roleType[0] + roleType.toLowerCase().slice(1),
+                                    value: roleType,
+                                })),
+                                defaultValue: role.type,
+                                placeholder: "Select role level"
                             }
                         ],
                     },
                     {
-                        description: formatDate(new Date(createdAt), timezone),
+                        description: formatDate(new Date(role.createdAt), timezone),
                         fields: []
                     }
                 ]}
@@ -146,18 +137,18 @@ export default class DashboardLogChannel extends React.Component<Props, State> {
         );
     }
 
-    onLogChannelEdit(state: LabsFormState) {
+    onRoleItemEdit(state: LabsFormState) {
         this.toggleEditMode(false);
     }
 
     render() {
         const { inEditMode } = this.state;
-        const LogChannelStaticMode = this.LogChannelStaticMode.bind(this);
-        const LogChannelEditMode = this.LogChannelEditMode.bind(this);
+        const RoleItemStaticMode = this.RoleItemStaticMode.bind(this);
+        const RoleItemEditMode = this.RoleItemEditMode.bind(this);
 
         return (
             <Card>
-                { inEditMode ? <LogChannelEditMode /> : <LogChannelStaticMode /> }
+                { inEditMode ? <RoleItemEditMode /> : <RoleItemStaticMode /> }
             </Card>
         )
     }

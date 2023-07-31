@@ -37,7 +37,7 @@ interface OptionedLabsFormField<
     TValue,
     TOptionValue = TValue
 > extends BaseLabsFormField<TType, TValue> {
-    selectableValues?: Array<{ name: string; value: TOptionValue; icon?: IconDefinition; }>;
+    selectableValues?: Array<{ name: string; value: TOptionValue; icon?: IconDefinition; avatarIcon?: string; }>;
 }
 
 interface PlaceholdableLabsFormField {
@@ -51,8 +51,8 @@ interface LabsFormFieldText<TType extends LabsFormFieldType> extends
     PlaceholdableLabsFormField
 {}
 interface LabsFormFieldSelectable<TType extends LabsFormFieldType> extends
-    BaseLabsFormField<TType, string>,
-    OptionedLabsFormField<TType, string, string>,
+    BaseLabsFormField<TType, string | number>,
+    OptionedLabsFormField<TType, string | number, string | number>,
     StyledLabsFormField,
     PlaceholdableLabsFormField
 {}

@@ -1,5 +1,5 @@
 import { FormControl } from "@mui/base";
-import { Box, Button, Chip, FormHelperText, FormLabel, Input, ListItemDecorator, Option, Select, Stack, Typography } from "@mui/joy";
+import { Avatar, Box, Button, Chip, FormHelperText, FormLabel, Input, ListItemDecorator, Option, Select, Stack, Typography } from "@mui/joy";
 import React from "react";
 import { FormEvent } from "react";
 import LabsButton from "./LabsButton";
@@ -8,7 +8,7 @@ import LabsSwitch from "./LabsSwitch";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import LabsMultiSelector from "./LabsMultiSelector";
 
-type LabsFormFieldValue = string | string[] | boolean | undefined | null;
+type LabsFormFieldValue = string | string[] | number | boolean | undefined | null;
 
 export type LabsFormProps = {
     sections: LabsFormSection[];
@@ -135,7 +135,10 @@ export const fieldRenderers: FieldRendererRecord = {
             >
                 {field.selectableValues?.map((value) => (
                     <Option value={value.value}>
-                        {value.icon && <ListItemDecorator><FontAwesomeIcon icon={value.icon} /></ListItemDecorator>}
+                        {(value.icon || value.avatarIcon) && <ListItemDecorator>
+                            {value.icon && <FontAwesomeIcon icon={value.icon} />}
+                            {value.avatarIcon && <Avatar size="sm" src={value.avatarIcon} />}
+                        </ListItemDecorator>}
                         {value.name}
                     </Option>
                 ))}

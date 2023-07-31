@@ -14,8 +14,8 @@ const LabsButton = styled(
 )(({ theme, color, disabled }) => {
     return {
         backgroundImage: `linear-gradient(to bottom right, ${(color ? buttonColours[color] : buttonColours.primary)?.join(",")}) !important`,
-        opacity: disabled ? 0.4 : 1,
-        filter: disabled ? "grayscale(65%)" : undefined,
+        opacity: disabled ? 0.5 : 1,
+        filter: disabled ? "grayscale(70%)" : undefined,
         transition: "0.2s ease-out",
         transitionProperty: "opacity, filter",
         padding: "4px 24px",

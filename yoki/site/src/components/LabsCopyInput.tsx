@@ -1,9 +1,9 @@
 import { faClipboard } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Button, Chip, IconButton, Input, Stack, Typography } from "@mui/joy";
+import { Button, Chip, IconButton, Input, InputProps, Stack, Typography } from "@mui/joy";
 import React from "react";
 
-type Props = {
+type Props = InputProps & {
     text: string;
 };
 type State = {
@@ -51,7 +51,6 @@ export class LabsCopyInput extends React.Component<Props, State> {
                         gap: 2,
                     },
                 }}
-                sx={{ width: "min-content" }}
                 endDecorator={
                     <Button
                         variant="plain"
@@ -68,6 +67,7 @@ export class LabsCopyInput extends React.Component<Props, State> {
                         }
                     >Copy</Button>
                 }
+                {...this.props}
             />
         );
     }
