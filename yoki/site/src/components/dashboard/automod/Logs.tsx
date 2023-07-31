@@ -1,9 +1,11 @@
 import React from "react";
-import { DashboardPageProps } from "./page";
 import { SanitizedLogChannel } from "../../../lib/@types/db";
-import { CircularProgress } from "@mui/joy";
-import DashboardLogChannel from "../DashboardLog";
+import { Alert, CircularProgress } from "@mui/joy";
+import DashboardLogChannel from "./LogItem";
 import { toLookup } from "@yokilabs/utils";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faExclamationTriangle } from "@fortawesome/free-solid-svg-icons";
+import { DashboardPageProps } from "../pages";
 
 type State = {
     isLoaded: boolean;
@@ -41,9 +43,14 @@ export default class LogsPage extends React.Component<DashboardPageProps, State>
             return <CircularProgress />;
 
         const channelLookup = toLookup(logs, (log) => log.channelId);
+        // There is no fetch many channels route on Guilded
+        const possibleChannels = Object.keys(channelLookup);
 
         return (
             <>
+                <Alert color="warning" variant="soft" startDecorator={<FontAwesomeIcon icon={faExclamationTriangle}/>}>
+                    As of now, fetching all server channels is not possible using Guilded API. As such, creating new log channels or changing channels of log types is not possible.
+                </Alert>
                 {Object.keys(channelLookup).map((channelId) => {
                     const channelTypeInfos = channelLookup[channelId]!;
 
@@ -51,6 +58,7 @@ export default class LogsPage extends React.Component<DashboardPageProps, State>
                         <DashboardLogChannel
                             serverId={serverConfig.serverId}
                             channelId={channelId}
+                            serverChannels={possibleChannels}
                             createdAt={channelTypeInfos[0].createdAt}
                             types={channelTypeInfos.map((x) => x.type)}
                             timezone={serverConfig.timezone}

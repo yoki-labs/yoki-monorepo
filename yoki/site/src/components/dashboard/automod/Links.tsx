@@ -1,7 +1,7 @@
 import { Box } from "@mui/joy";
 import React from "react";
 import DashboardModule from "../DashboardModule";
-import { DashboardPageProps } from "./page";
+import { DashboardPageProps } from "../pages";
 import { faBan, faLinkSlash } from "@fortawesome/free-solid-svg-icons";
 import PagePlaceholder, { PagePlaceholderIcon } from "../../PagePlaceholder";
 

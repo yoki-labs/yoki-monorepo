@@ -1,11 +1,13 @@
 import { IconDefinition } from "@fortawesome/free-solid-svg-icons";
 import { DefaultColorPalette, VariantProp } from "@mui/joy/styles/types";
+import { ReactNode } from "react";
 
 //#region Interfaces Form basic info structure
 export interface LabsFormSection {
     name?: string;
     description?: string;
     row?: boolean;
+    start?: ReactNode;
     fields: LabsFormField[];
 };
 

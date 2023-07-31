@@ -1,18 +1,19 @@
 import { Box, Card, CardContent, ListItemDecorator, MenuItem, Stack, Typography } from "@mui/joy";
-import { SanitizedLogChannel } from "../../lib/@types/db";
+import { SanitizedLogChannel } from "../../../lib/@types/db";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHashtag, faPen, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { formatDate } from "@yokilabs/utils";
-import LabsIconWrapper from "../LabsIconWrapper";
+import LabsIconWrapper from "../../LabsIconWrapper";
 import { LogChannelType } from "@prisma/client";
-import LabsOverflowButton from "../LabsOverflowButton";
+import LabsOverflowButton from "../../LabsOverflowButton";
 import React from "react";
-import LabsForm, { LabsFormState } from "../LabsForm";
-import { LabsFormFieldType } from "../form";
+import LabsForm, { LabsFormState } from "../../LabsForm";
+import { LabsFormFieldType } from "../../form";
 
 type Props = {
     serverId: string;
     channelId: string;
+    serverChannels: string[];
     createdAt: string;
     types: LogChannelType[];
     timezone: string | null;
@@ -62,8 +63,6 @@ export default class DashboardLogChannel extends React.Component<Props, State> {
             <>
                 {/* The hashtag icon (kind of useless, but there should be indication that it is a channel), channel ID */}
                 <Stack component="header" gap={2} direction="row" alignItems="center">
-                    {/* <Avatar sx={(theme) => ({ backgroundColor: theme.vars.palette.neutral[600] })}>
-                    </Avatar> */}
                     <LabsIconWrapper>
                         <FontAwesomeIcon style={{ width: "100%", height: "100%" }} icon={faHashtag} />
                     </LabsIconWrapper>
@@ -90,7 +89,7 @@ export default class DashboardLogChannel extends React.Component<Props, State> {
                     </LabsOverflowButton>
                 </Stack>
                 <CardContent>
-                    <Box sx={{ mt: 1 }}>
+                    <Box sx={{ mt: 0.5 }}>
                         {/* Additional info, such as its creation date */}
                         <Typography level="body2">
                             {formatDate(new Date(createdAt), timezone)}
@@ -102,7 +101,7 @@ export default class DashboardLogChannel extends React.Component<Props, State> {
     }
 
     LogChannelEditMode() {
-        const { serverId, channelId, types, createdAt, timezone } = this.props;
+        const { serverChannels, channelId, types, createdAt, timezone } = this.props;
         const onSubmit = this.onLogChannelEdit.bind(this);
 
         return (
@@ -110,19 +109,21 @@ export default class DashboardLogChannel extends React.Component<Props, State> {
                 sections={[
                     {
                         row: true,
+                        start: (
+                            <LabsIconWrapper>
+                                <FontAwesomeIcon style={{ width: "100%", height: "100%" }} icon={faHashtag} />
+                            </LabsIconWrapper>
+                        ),
                         fields: [
                             {
                                 type: LabsFormFieldType.Select,
                                 prop: "channel",
                                 defaultValue: channelId,
-                                prefixIcon: faHashtag,
-                                selectableValues: [
-                                    {
-                                        name: channelId,
-                                        value: channelId,
-                                        icon: faHashtag,
-                                    }
-                                ]
+                                selectableValues: serverChannels.map((chatChannelId) => ({
+                                    name: chatChannelId,
+                                    value: chatChannelId,
+                                    icon: faHashtag,
+                                }))
                             },
                             {
                                 type: LabsFormFieldType.MultiSelect,

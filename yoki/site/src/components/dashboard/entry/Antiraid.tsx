@@ -1,11 +1,11 @@
 import { Box } from "@mui/joy";
 import React from "react";
 import DashboardModule from "../DashboardModule";
-import { DashboardPageProps } from "./page";
-import { faPrayingHands } from "@fortawesome/free-solid-svg-icons";
+import { DashboardPageProps } from "../pages";
+import { faShieldHalved } from "@fortawesome/free-solid-svg-icons";
 import PagePlaceholder, { PagePlaceholderIcon } from "../../PagePlaceholder";
 
-export default class AppealsPage extends React.Component<DashboardPageProps> {
+export default class AntiraidPage extends React.Component<DashboardPageProps> {
     constructor(props: DashboardPageProps) {
         super(props);
     }
@@ -17,12 +17,12 @@ export default class AppealsPage extends React.Component<DashboardPageProps> {
             <>
                 <Box className="grid gap-4">
                     <DashboardModule
-                        name="Appeals"
-                        description="Allows people to apply for an unban in your server."
-                        icon={faPrayingHands}
-                        activeClassName="from-violet-500 to-cyan-500"
-                        isActive={serverConfig.appealsEnabled}
-                        onToggle={(value) => console.log("Appeals toggle", value)}
+                        name="Anti-raid"
+                        description="Customize how the bot detects and handles suspicious accounts."
+                        icon={faShieldHalved}
+                        activeClassName="from-green-500 to-blue-500"
+                        isActive={serverConfig.antiRaidEnabled}
+                        onToggle={(value) => console.log("Anti-raid toggle", value)}
                         iconAspectRatio={1}
                         hideBadges
                         largeHeader

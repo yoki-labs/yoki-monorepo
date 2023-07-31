@@ -3,8 +3,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import DashboardModule from "../DashboardModule";
 import { Alert, Box, Stack, Typography } from "@mui/joy";
-import { DashboardPageProps } from "./page";
-import DashboardProfileCard from "../DashboardProfileCard";
+import { DashboardPageProps } from "../pages";
+import DashboardProfileCard from "./ProfileCard";
 
 export default function OverviewPage(props: DashboardPageProps) {
     const { serverConfig } = props;

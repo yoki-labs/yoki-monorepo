@@ -1,6 +1,6 @@
 import React from "react";
 import { GuildedServer } from "../../../lib/@types/guilded";
-import { Avatar, Box, Card, CardContent, CardOverflow, CircularProgress, Stack, Typography } from "@mui/joy";
+import { Box, CircularProgress, Stack, Typography } from "@mui/joy";
 import Link from "next/link";
 import ServerDisplay from "../ServerDisplay";
 

@@ -2,7 +2,7 @@ import { faEnvelope } from "@fortawesome/free-solid-svg-icons";
 import { Box } from "@mui/joy";
 import React from "react";
 import DashboardModule from "../DashboardModule";
-import { DashboardPageProps } from "./page";
+import { DashboardPageProps } from "../pages";
 import PagePlaceholder, { PagePlaceholderIcon } from "../../PagePlaceholder";
 
 export default class ModmailPage extends React.Component<DashboardPageProps> {

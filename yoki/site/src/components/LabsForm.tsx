@@ -72,6 +72,7 @@ export default class LabsForm extends React.Component<LabsFormProps, LabsFormSta
                             {section.name && <Typography level="h2" fontSize="md">{section.name}</Typography>}
                             {section.description && <Typography level="body2">{section.description}</Typography>}
                             <Stack direction={section.row ? "row" : "column"} gap={2}>
+                                {section.start}
                                 {section.fields.map(this.generateField.bind(this))}
                             </Stack>
                         </Box>
@@ -82,7 +83,7 @@ export default class LabsForm extends React.Component<LabsFormProps, LabsFormSta
                         Save
                     </LabsButton>
                     { canCancel &&
-                        <Button variant="outlined" onClick={onCancel} color="danger" type="submit">
+                        <Button variant="outlined" onClick={onCancel} color="neutral" type="submit">
                             Cancel
                         </Button> }
                 </Stack>
@@ -130,6 +131,7 @@ export const fieldRenderers: FieldRendererRecord = {
                 disabled={field.disabled}
                 onChange={(_, value) => value && form.setValue(field, value)}
                 startDecorator={field.prefixIcon && <FontAwesomeIcon icon={field.prefixIcon} />}
+                size={field.size ?? "md"}
             >
                 {field.selectableValues?.map((value) => (
                     <Option value={value.value}>

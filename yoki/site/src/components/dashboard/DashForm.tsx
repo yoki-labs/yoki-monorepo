@@ -1,16 +1,16 @@
 import { atom, useAtomValue } from "jotai";
 
-import Config from "./pages/Premium";
-import History from "./pages/History";
-import Overview from "./pages/Overview";
+import Config from "./overview/Premium";
+import History from "./automod/History";
+import Overview from "./overview/Overview";
 import { Alert, Box, Typography } from "@mui/joy";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faExclamationTriangle } from "@fortawesome/free-solid-svg-icons";
-import Automod from "./pages/Automod";
+import Automod from "./automod/Automod";
 import { navbarAtom } from "../../state/navbar";
 import { SanitizedServer } from "../../lib/@types/db";
-import Modmail from "./pages/Modmail";
-import Antiraid from "./pages/Antiraid";
+import Modmail from "./entry/Modmail";
+import Antiraid from "./entry/Antiraid";
 import { dashboardPageList } from "./pages";
 
 type Props = {

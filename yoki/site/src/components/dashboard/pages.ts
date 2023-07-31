@@ -1,16 +1,17 @@
 import { IconDefinition, faBan, faClipboardUser, faCog, faEnvelope, faHashtag, faHeart, faLayerGroup, faLinkSlash, faPrayingHands, faShieldHalved, faTextSlash } from "@fortawesome/free-solid-svg-icons";
-import OverviewPage from "./pages/Overview";
-import ConfigPage from "./pages/Premium";
-import AutomodPage from "./pages/Automod";
-import HistoryPage from "./pages/History";
-import ModmailPage from "./pages/Modmail";
+import OverviewPage from "./overview/Overview";
+import ConfigPage from "./overview/Premium";
+import AutomodPage from "./automod/Automod";
+import HistoryPage from "./automod/History";
+import ModmailPage from "./entry/Modmail";
 import React from "react";
-import AntiraidPage from "./pages/Antiraid";
-import AppealsPage from "./pages/Appeals";
-import LogsPage from "./pages/Logs";
-import LinksPage from "./pages/Links";
-import PhrasesPage from "./pages/Phrases";
+import AntiraidPage from "./entry/Antiraid";
+import AppealsPage from "./entry/Appeals";
+import LogsPage from "./automod/Logs";
+import LinksPage from "./automod/Links";
+import PhrasesPage from "./automod/Phrases";
 import { ColorPaletteProp } from "@mui/joy";
+import { SanitizedServer } from "../../lib/@types/db";
 
 export interface DashboardPageItem {
     id: string;
@@ -39,3 +40,7 @@ export const dashboardPageList: DashboardPageItem[] = [
     { id: "antiraid", name: "Antiraid", icon: faShieldHalved, component: AntiraidPage, category: DashboardPageCategory.Entry },
     { id: "appeals", name: "Appeals", icon: faPrayingHands, component: AppealsPage, category: DashboardPageCategory.Entry },
 ];
+
+export type DashboardPageProps = {
+    serverConfig: SanitizedServer;
+};

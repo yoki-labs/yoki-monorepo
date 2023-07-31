@@ -1,8 +1,8 @@
 import React from "react";
-import { SanitizedServer } from "../../lib/@types/db";
+import { SanitizedServer } from "../../../lib/@types/db";
 import { AspectRatio, Avatar, Box, Card, CardContent, CardOverflow, Stack, Typography } from "@mui/joy";
-import LabsForm, { LabsFormState } from "../LabsForm";
-import { LabsFormFieldType } from "../form";
+import LabsForm, { LabsFormState } from "../../LabsForm";
+import { LabsFormFieldType } from "../../form";
 import { timezones } from "@yokilabs/utils";
 
 export type Props = {

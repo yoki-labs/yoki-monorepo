@@ -3,7 +3,7 @@ import { Box } from "@mui/joy";
 import type { ContentFilter } from "@prisma/client";
 import React from "react";
 import DashboardModule from "../DashboardModule";
-import { DashboardPageProps } from "./page";
+import { DashboardPageProps } from "../pages";
 import PagePlaceholder, { PagePlaceholderIcon } from "../../PagePlaceholder";
 
 interface State {

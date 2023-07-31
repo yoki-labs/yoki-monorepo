@@ -99,6 +99,7 @@ export default class LabsMultiSelector extends React.Component<Props> {
                     disabled={field.disabled}
                     startDecorator={field.prefixIcon && <FontAwesomeIcon icon={field.prefixIcon} />}
                     placeholder={field.placeholder ?? `Select ${field.name?.toLowerCase() ?? "items"}`}
+                    size={field.size ?? "md"}
                     valueDecorator={
                         <Stack direction="row" gap={1} alignItems="center">
                             {selectedValueInfos?.slice(0, 2).map(({ name }) => <Chip variant="outlined" color="primary">{name}</Chip>)}
