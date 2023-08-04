@@ -59,6 +59,7 @@ function DashboardProfileCardForm(props: { onSubmit: (state: LabsFormState) => u
         <Box sx={{ mt: 2 }}>
             <LabsForm
                 onSubmit={onSubmit}
+                alwaysDisplayActions
                 sections={[
                     {
                         fields: [
