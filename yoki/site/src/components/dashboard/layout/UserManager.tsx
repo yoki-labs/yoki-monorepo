@@ -43,7 +43,7 @@ export default function UserManager({ user }: Props) {
                 onClose={setMenuOpen.bind(null, false)}
                 placement="bottom"
             >
-                <MenuItem onClick={() => console.log("Log out clicked")}>
+                <MenuItem color="danger" onClick={() => console.log("Log out clicked")}>
                     <ListItemDecorator>
                         <FontAwesomeIcon icon={faRightFromBracket} />
                     </ListItemDecorator>

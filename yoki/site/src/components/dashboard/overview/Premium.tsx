@@ -1,4 +1,4 @@
-import { Box, Chip, List, ListItem, ListItemDecorator, Stack, Typography } from "@mui/joy";
+import { Box, Button, Chip, List, ListItem, ListItemDecorator, Stack, Typography } from "@mui/joy";
 import { DashboardPageProps } from "../pages";
 import React from "react";
 import LabsIconCard from "../../LabsIconCard";
@@ -32,31 +32,34 @@ export default class PremiumPage extends React.Component<DashboardPageProps> {
         const { serverConfig } = this.props;
 
         return (
-            <Box className="grid sm:grid-cols-1 md:grid-cols-3 xlg:grid-cols-3 gap-7">
-                <PremiumTier
-                    subscribedIconClassName="from-rose-500 to-orange-500"
-                    subscribed={true}
-                    tier={"Copper"}
-                    price={5}
-                    perks={tierPerks.Copper}
-                    />
-                <PremiumTier
-                    subscribedIconClassName="from-cyan-500 to-purple-400"
-                    subscribed={true}
-                    tier={PremiumType.Silver}
-                    price={10}
-                    // perks={tierPerks.Copper.concat(...tierPerks.Silver)}
-                    perks={tierPerks.Silver}
-                    />
-                <PremiumTier
-                    subscribedIconClassName="from-red-400 to-yellow-500"
-                    subscribed={true}
-                    tier={PremiumType.Gold}
-                    price={20}
-                    // perks={tierPerks.Copper.concat(...tierPerks.Silver).concat(...tierPerks.Gold)}
-                    perks={tierPerks.Gold}
-                    />
-            </Box>
+            <>
+                { !serverConfig.premium && <Typography level="body2">You have not subscribed yet.</Typography> }
+                <Box className="grid sm:grid-cols-1 md:grid-cols-3 xlg:grid-cols-3 gap-7">
+                    <PremiumTier
+                        subscribedIconClassName="from-rose-500 to-orange-500"
+                        subscribed={serverConfig.premium !== null}
+                        tier={"Copper"}
+                        price={5}
+                        perks={tierPerks.Copper}
+                        />
+                    <PremiumTier
+                        subscribedIconClassName="from-cyan-500 to-purple-400"
+                        subscribed={serverConfig.premium !== null}
+                        tier={PremiumType.Silver}
+                        price={10}
+                        // perks={tierPerks.Copper.concat(...tierPerks.Silver)}
+                        perks={tierPerks.Silver}
+                        />
+                    <PremiumTier
+                        subscribedIconClassName="from-red-400 to-yellow-500"
+                        subscribed={serverConfig.premium === PremiumType.Gold}
+                        tier={PremiumType.Gold}
+                        price={20}
+                        // perks={tierPerks.Copper.concat(...tierPerks.Silver).concat(...tierPerks.Gold)}
+                        perks={tierPerks.Gold}
+                        />
+                </Box>
+            </>
         );
     }
 }
@@ -95,7 +98,7 @@ export function PremiumTier(props: PremiumTierProps) {
                 </List>
             </Box>
             <Box sx={{ mt: 3, width: "100%" }}>
-                <LabsButton disabled={subscribed} sx={{ width: "100%" }}>Subscribe</LabsButton>
+                <Button variant="outlined" disabled={subscribed} sx={{ width: "100%" }}>Subscribe</Button>
             </Box>
         </LabsIconCard>
     );

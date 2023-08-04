@@ -141,7 +141,6 @@ export default class DashboardLogChannel extends React.Component<Props, State> {
                 ]}
                 onSubmit={onSubmit}
                 onCancel={() => this.toggleEditMode(false)}
-                canCancel
             />
         );
     }

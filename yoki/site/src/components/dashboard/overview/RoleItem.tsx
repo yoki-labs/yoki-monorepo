@@ -1,13 +1,13 @@
 import { Box, Card, CardContent, Chip, ListItemDecorator, MenuItem, Stack, Typography } from "@mui/joy";
 import { SanitizedRole } from "../../../lib/@types/db";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHashtag, faPen, faShieldHalved, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { IconDefinition, faPen, faShieldHalved, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { formatDate } from "@yokilabs/utils";
 import LabsIconWrapper from "../../LabsIconWrapper";
 import LabsOverflowButton from "../../LabsOverflowButton";
 import React from "react";
 import LabsForm, { LabsFormState } from "../../LabsForm";
-import { LabsFormFieldType } from "../../form";
+import { LabsFormFieldOption, LabsFormFieldType, LabsFormSection } from "../../form";
 import { RolePayload } from "@guildedjs/api";
 import { RoleType } from "@prisma/client";
 
@@ -93,48 +93,61 @@ export default class DashboardRole extends React.Component<Props, State> {
         const onSubmit = this.onRoleItemEdit.bind(this);
 
         return (
-            <LabsForm
-                sections={[
-                    {
-                        row: true,
-                        start: (
-                            <LabsIconWrapper>
-                                <FontAwesomeIcon style={{ width: "100%", height: "100%" }} icon={faShieldHalved} />
-                            </LabsIconWrapper>
-                        ),
-                        fields: [
-                            {
-                                type: LabsFormFieldType.Select,
-                                prop: "roleId",
-                                defaultValue: role.roleId,
-                                selectableValues: serverRoles.sort((a, b) => b.position - a.position).map((serverRole) => ({
-                                    name: serverRole.name,
-                                    value: serverRole.id,
-                                    avatarIcon: serverRole.icon,
-                                }))
-                            },
-                            {
-                                type: LabsFormFieldType.Select,
-                                prop: "type",
-                                selectableValues: staffRoleTypes.map((roleType) => ({
-                                    name: roleType[0] + roleType.toLowerCase().slice(1),
-                                    value: roleType,
-                                })),
-                                defaultValue: role.type,
-                                placeholder: "Select role level"
-                            }
-                        ],
-                    },
-                    {
-                        description: formatDate(new Date(role.createdAt), timezone),
-                        fields: []
-                    }
-                ]}
+            <RoleItemEditor
+                icon={faShieldHalved}
+                type={role.type}
+                roleId={role.roleId}
+                createdAt={role.createdAt}
+                serverRoles={serverRoles}
+                timezone={timezone}
                 onSubmit={onSubmit}
                 onCancel={() => this.toggleEditMode(false)}
-                canCancel
-            />
+                />
         );
+
+        // return (
+        //     <LabsForm
+        //         sections={[
+        //             {
+        //                 row: true,
+        //                 start: (
+        //                     <LabsIconWrapper>
+        //                         <FontAwesomeIcon style={{ width: "100%", height: "100%" }} icon={faShieldHalved} />
+        //                     </LabsIconWrapper>
+        //                 ),
+        //                 fields: [
+        //                     {
+        //                         type: LabsFormFieldType.Select,
+        //                         prop: "roleId",
+        //                         defaultValue: role.roleId,
+        //                         selectableValues: serverRoles.sort((a, b) => b.position - a.position).map((serverRole) => ({
+        //                             name: serverRole.name,
+        //                             value: serverRole.id,
+        //                             avatarIcon: serverRole.icon,
+        //                         }))
+        //                     },
+        //                     {
+        //                         type: LabsFormFieldType.Select,
+        //                         prop: "type",
+        //                         selectableValues: staffRoleTypes.map((roleType) => ({
+        //                             name: roleType[0] + roleType.toLowerCase().slice(1),
+        //                             value: roleType,
+        //                         })),
+        //                         defaultValue: role.type,
+        //                         placeholder: "Select role level"
+        //                     }
+        //                 ],
+        //             },
+        //             {
+        //                 description: formatDate(new Date(role.createdAt), timezone),
+        //                 fields: []
+        //             }
+        //         ]}
+        //         onSubmit={onSubmit}
+        //         onCancel={() => this.toggleEditMode(false)}
+        //         canCancel
+        //     />
+        // );
     }
 
     onRoleItemEdit(state: LabsFormState) {
@@ -152,4 +165,68 @@ export default class DashboardRole extends React.Component<Props, State> {
             </Card>
         )
     }
+}
+
+type EditorProps = {
+    serverRoles: RolePayload[];
+    submitText?: string;
+    icon: IconDefinition;
+    onSubmit: (state: LabsFormState) => unknown;
+    onCancel?: () => unknown;
+    type?: RoleType;
+    roleId?: number;
+    createdAt?: string;
+    timezone?: string | null;
+};
+
+export function RoleItemEditor({ type, roleId, createdAt, serverRoles, timezone, onSubmit, onCancel, submitText, icon }: EditorProps) {
+    const sortedServerRoles: LabsFormFieldOption<number>[] =
+        serverRoles
+            .sort((a, b) => b.position - a.position)
+            .map((serverRole) => ({
+                name: serverRole.name,
+                value: serverRole.id,
+                avatarIcon: serverRole.icon,
+            }));
+    console.log("Role id", [roleId]);
+
+    return (
+        <LabsForm
+            sections={[
+                {
+                    row: true,
+                    start: (
+                        <LabsIconWrapper>
+                            <FontAwesomeIcon style={{ width: "100%", height: "100%" }} icon={icon} />
+                        </LabsIconWrapper>
+                    ),
+                    fields: [
+                        {
+                            type: LabsFormFieldType.Select,
+                            prop: "roleId",
+                            defaultValue: roleId,
+                            selectableValues: sortedServerRoles,
+                        },
+                        {
+                            type: LabsFormFieldType.Select,
+                            prop: "type",
+                            selectableValues: staffRoleTypes.map((roleType) => ({
+                                name: roleType[0] + roleType.toLowerCase().slice(1),
+                                value: roleType,
+                            })),
+                            defaultValue: type,
+                            placeholder: "Select role level"
+                        }
+                    ],
+                },
+                createdAt && {
+                    description: formatDate(new Date(createdAt), timezone),
+                    fields: []
+                }
+            ].filter(Boolean) as LabsFormSection[]}
+            onSubmit={onSubmit}
+            submitText={submitText}
+            onCancel={onCancel}
+        />
+    );
 }

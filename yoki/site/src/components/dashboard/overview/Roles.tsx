@@ -1,9 +1,11 @@
 import React from "react";
 import { SanitizedRole } from "../../../lib/@types/db";
-import { CircularProgress } from "@mui/joy";
+import { Card, CircularProgress, Stack, Typography } from "@mui/joy";
 import { DashboardPageProps } from "../pages";
 import { RolePayload } from "@guildedjs/api";
-import DashboardRole from "./RoleItem";
+import DashboardRole, { RoleItemEditor } from "./RoleItem";
+import { RoleType } from "@prisma/client";
+import { faPlus } from "@fortawesome/free-solid-svg-icons";
 
 type State = {
     isLoaded: boolean;
@@ -43,14 +45,26 @@ export default class RolesPage extends React.Component<DashboardPageProps, State
 
         return (
             <>
-                {roles.map((role) => 
-                    <DashboardRole
-                        serverId={serverConfig.serverId}
-                        role={role}
+                <Typography level="h2">Staff roles</Typography>
+                <Card>
+                    <RoleItemEditor
+                        icon={faPlus}
+                        submitText="Create"
+                        type={RoleType.MOD}
                         serverRoles={serverRoles}
-                        timezone={serverConfig.timezone}
+                        onSubmit={(state) => console.log("Create role", state)}
                         />
-                )}
+                </Card>
+                <Stack direction="column" gap={2}>
+                    {roles.map((role) => 
+                        <DashboardRole
+                            serverId={serverConfig.serverId}
+                            role={role}
+                            serverRoles={serverRoles}
+                            timezone={serverConfig.timezone}
+                            />
+                    )}
+                </Stack>
             </>
         );
     }

@@ -2,7 +2,6 @@ import React from "react";
 import { GuildedServer } from "../../../lib/@types/guilded";
 import { Avatar, ListItemDecorator, Option, SelectOption } from "@mui/joy";
 import LabsDropdown from "../../LabsDropdown";
-import { useRouter } from "next/router";
 
 type Props = {
     servers: GuildedServer[];

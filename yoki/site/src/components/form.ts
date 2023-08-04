@@ -22,6 +22,7 @@ export interface BaseLabsFormField<TType extends LabsFormFieldType, TValue> {
     badge?: { text: string, color: DefaultColorPalette };
     // Config
     disabled?: boolean;
+    optional?: boolean;
 }
 //#endregion
 
@@ -32,12 +33,20 @@ interface StyledLabsFormField {
     variant?: VariantProp;
 }
 
+export interface LabsFormFieldOption<T> {
+    name: string;
+    value: T;
+    icon?: IconDefinition;
+    avatarIcon?: string;
+    disabled?: boolean;
+}
+
 interface OptionedLabsFormField<
     TType extends LabsFormFieldType,
     TValue,
     TOptionValue = TValue
 > extends BaseLabsFormField<TType, TValue> {
-    selectableValues?: Array<{ name: string; value: TOptionValue; icon?: IconDefinition; avatarIcon?: string; }>;
+    selectableValues?: Array<LabsFormFieldOption<TOptionValue>>;
 }
 
 interface PlaceholdableLabsFormField {
@@ -45,8 +54,8 @@ interface PlaceholdableLabsFormField {
 }
 //#endregion
 
-interface LabsFormFieldText<TType extends LabsFormFieldType> extends
-    BaseLabsFormField<TType, string>,
+interface LabsFormFieldInput<TType extends LabsFormFieldType, TValue> extends
+    BaseLabsFormField<TType, TValue>,
     StyledLabsFormField,
     PlaceholdableLabsFormField
 {}
@@ -55,7 +64,7 @@ interface LabsFormFieldSelectable<TType extends LabsFormFieldType> extends
     OptionedLabsFormField<TType, string | number, string | number>,
     StyledLabsFormField,
     PlaceholdableLabsFormField
-{}
+{ }
 
 interface LabsFormFieldMultiSelection<TType extends LabsFormFieldType> extends
     BaseLabsFormField<TType, string[]>,
@@ -66,7 +75,9 @@ interface LabsFormFieldMultiSelection<TType extends LabsFormFieldType> extends
 
 export type LabsFormFieldByType<T extends LabsFormFieldType> =
     T extends LabsFormFieldType.Text
-    ? LabsFormFieldText<LabsFormFieldType>
+    ? LabsFormFieldInput<LabsFormFieldType.Text, string>
+    : T extends LabsFormFieldType.Number
+    ? LabsFormFieldInput<LabsFormFieldType.Number, number>
     : T extends LabsFormFieldType.Select
     ? LabsFormFieldSelectable<LabsFormFieldType.Select>
     : T extends LabsFormFieldType.Toggle
@@ -77,6 +88,7 @@ export type LabsFormFieldByType<T extends LabsFormFieldType> =
 
 export type LabsFormField =
     LabsFormFieldByType<LabsFormFieldType.Text> |
+    LabsFormFieldByType<LabsFormFieldType.Number> |
     LabsFormFieldByType<LabsFormFieldType.Select> |
     LabsFormFieldByType<LabsFormFieldType.Toggle> |
     LabsFormFieldByType<LabsFormFieldType.MultiSelect>
@@ -84,6 +96,7 @@ export type LabsFormField =
 
 export enum LabsFormFieldType {
     Text,
+    Number,
     Select,
     Toggle,
     MultiSelect,

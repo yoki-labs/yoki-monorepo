@@ -3,7 +3,7 @@ import prisma from "../../../../prisma";
 import createServerRoute from "../../../../utils/route";
 import rest from "../../../../guilded";
 
-const serverCasesRoute = createServerRoute({
+const serverRolesRoute = createServerRoute({
     async GET(_req, res, _session, { serverId }, _member) {
         const roles: Role[] = await prisma.role
             .findMany({
@@ -21,4 +21,4 @@ const serverCasesRoute = createServerRoute({
     }
 });
 
-export default serverCasesRoute;
+export default serverRolesRoute;

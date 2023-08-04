@@ -2,20 +2,25 @@ import { FormControl } from "@mui/base";
 import { Avatar, Box, Button, Chip, FormHelperText, FormLabel, Input, ListItemDecorator, Option, Select, Stack, Typography } from "@mui/joy";
 import React from "react";
 import { FormEvent } from "react";
-import LabsButton from "./LabsButton";
 import { BaseLabsFormField, LabsFormField, LabsFormFieldByType, LabsFormFieldType, LabsFormSection } from "./form";
 import LabsSwitch from "./LabsSwitch";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import LabsMultiSelector from "./LabsMultiSelector";
+import LabsSelector from "./LabsSelector";
 
 type LabsFormFieldValue = string | string[] | number | boolean | undefined | null;
 
 export type LabsFormProps = {
     sections: LabsFormSection[];
     children?: React.ReactElement | React.ReactElement[];
+
+    // Actions
+    alwaysDisplayActions?: boolean;
+
     onSubmit: (state: LabsFormState) => unknown;
+    submitText?: string;
+
     onCancel?: (state: LabsFormState) => unknown;
-    canCancel?: boolean;
 };
 
 export type LabsFormState = {
@@ -32,7 +37,7 @@ export default class LabsForm extends React.Component<LabsFormProps, LabsFormSta
         const fields = this.props.sections.flatMap((section) => section.fields);
         this.state = {
             changed: false,
-            values: fields.reduce<Record<string, LabsFormFieldValue>>((mapped, field) => ((mapped[field.prop] = field.defaultValue), mapped), {}),
+            values: fields.reduce<Record<string, LabsFormFieldValue>>((mapped, field) => ((mapped[field.prop] = field.defaultValue ?? null), mapped), {}),
         };
 
         this.formId = Math.floor(Math.random() * 75 + 25);
@@ -59,8 +64,7 @@ export default class LabsForm extends React.Component<LabsFormProps, LabsFormSta
 
     render(): React.ReactNode {
         const onSubmit = this.onSubmit.bind(this);
-        const onCancel = this.onCancel.bind(this);
-        const { sections, children, canCancel } = this.props;
+        const { sections, children, submitText, alwaysDisplayActions, onCancel } = this.props;
         const { changed } = this.state;
 
         return (
@@ -78,15 +82,15 @@ export default class LabsForm extends React.Component<LabsFormProps, LabsFormSta
                         </Box>
                     ))}
                 </Stack>
-                <Stack sx={{ mt: 2 }} direction="row" gap={1}>
-                    <LabsButton disabled={!changed} variant="solid" color="primary" type="submit">
-                        Save
-                    </LabsButton>
-                    { canCancel &&
-                        <Button variant="outlined" onClick={onCancel} color="neutral" type="submit">
+                {(alwaysDisplayActions || changed) && <Stack sx={{ mt: 2 }} direction="row" gap={1}>
+                    <Button disabled={!changed} variant="outlined" color="primary" type="submit">
+                        {submitText ?? "Save"}
+                    </Button>
+                    { onCancel &&
+                        <Button variant="outlined" onClick={this.onCancel.bind(this)} color="neutral" type="submit">
                             Cancel
                         </Button> }
-                </Stack>
+                </Stack>}
             </form>
         );
     }
@@ -121,29 +125,26 @@ export const fieldRenderers: FieldRendererRecord = {
                 variant={field.variant ?? "outlined"}
                 />
         </>,
-    [LabsFormFieldType.Select]: (form, id, field) =>
+    [LabsFormFieldType.Number]: (form, id, field) =>
         <>
             <LabsFormFieldHeader field={field} />
-            <Select
+            <Input
                 id={id}
-                defaultValue={form.state.values[field.prop] ?? field.selectableValues?.[0]?.value}
-                placeholder={`Select ${field.name?.toLowerCase() ?? "items"}`}
+                type="number"
+                placeholder={field.placeholder}
+                defaultValue={field.defaultValue ?? void 0}
+                size={field.size}
                 disabled={field.disabled}
-                onChange={(_, value) => value && form.setValue(field, value)}
-                startDecorator={field.prefixIcon && <FontAwesomeIcon icon={field.prefixIcon} />}
-                size={field.size ?? "md"}
-            >
-                {field.selectableValues?.map((value) => (
-                    <Option value={value.value}>
-                        {(value.icon || value.avatarIcon) && <ListItemDecorator>
-                            {value.icon && <FontAwesomeIcon icon={value.icon} />}
-                            {value.avatarIcon && <Avatar size="sm" src={value.avatarIcon} />}
-                        </ListItemDecorator>}
-                        {value.name}
-                    </Option>
-                ))}
-            </Select>
+                onChange={({ target }) => form.setValue(field, target.value)}
+                variant={field.variant ?? "outlined"}
+                />
         </>,
+    [LabsFormFieldType.Select]: (form, id, field) =>
+        <LabsSelector
+            id={id}
+            form={form}
+            field={field}
+            />,
     [LabsFormFieldType.Toggle]: (form, id, field) =>
         <Stack spacing={2} direction="row">
             <LabsFormFieldHeader field={field} />
