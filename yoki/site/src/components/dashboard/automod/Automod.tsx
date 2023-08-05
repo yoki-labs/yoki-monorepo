@@ -70,7 +70,7 @@ export default class AutomodPage extends React.Component<DashboardPageProps, Sta
                         name="Anti-hoist"
                         description="Stops people from putting symbols at the start of their name to put them above everyone else."
                         icon={faAnglesDown}
-                        activeClassName="from-green-500 to-yellow-500"
+                        activeClassName="from-orange-500 to-yellow-500"
                         isActive={serverConfig.antiHoistEnabled}
                         onToggle={(value) => console.log("Anti-hoist toggle", value)}
                     />

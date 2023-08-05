@@ -50,7 +50,7 @@ export default class DashboardModule extends React.Component<Props, { isActive: 
                 {
                     !hideBadges &&
                     <Box mt={2}>
-                        <Chip variant="outlined" color={requiresPremium ? "primary" : "neutral"}>{ requiresPremium ? "Premium" : "Free" }</Chip>
+                        <Chip color={requiresPremium ? "warning" : "neutral"}>{ requiresPremium ? "Premium" : "Free" }</Chip>
                     </Box>
                 }
             </LabsIconCard>

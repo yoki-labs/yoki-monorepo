@@ -16,7 +16,7 @@ interface Prop {
 export default function LayoutSidebarTab({ item, isActive, onClick }: Prop) {
     return (
         <ListItemButton sx={{ borderRadius: 6 }} color={item.color} selected={isActive} onClick={onClick}>
-            <ListItemDecorator sx={{ color: "inherit" }}>
+            <ListItemDecorator>
                 <FontAwesomeIcon icon={item.icon} />
             </ListItemDecorator>
             <Typography sx={{ color: "inherit" }} component="span">

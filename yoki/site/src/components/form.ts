@@ -37,6 +37,7 @@ export interface LabsFormFieldOption<T> {
     name: string;
     value: T;
     icon?: IconDefinition;
+    color?: number;
     avatarIcon?: string;
     disabled?: boolean;
 }

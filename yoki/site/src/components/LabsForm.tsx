@@ -1,10 +1,8 @@
-import { FormControl } from "@mui/base";
-import { Avatar, Box, Button, Chip, FormHelperText, FormLabel, Input, ListItemDecorator, Option, Select, Stack, Typography } from "@mui/joy";
+import { Box, Button, Chip, FormControl, FormHelperText, FormLabel, Input, Stack, Typography } from "@mui/joy";
 import React from "react";
 import { FormEvent } from "react";
 import { BaseLabsFormField, LabsFormField, LabsFormFieldByType, LabsFormFieldType, LabsFormSection } from "./form";
 import LabsSwitch from "./LabsSwitch";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import LabsMultiSelector from "./LabsMultiSelector";
 import LabsSelector from "./LabsSelector";
 
@@ -83,7 +81,7 @@ export default class LabsForm extends React.Component<LabsFormProps, LabsFormSta
                     ))}
                 </Stack>
                 {(alwaysDisplayActions || changed) && <Stack sx={{ mt: 2 }} direction="row" gap={1}>
-                    <Button disabled={!changed} variant="outlined" color="primary" type="submit">
+                    <Button disabled={!changed} variant="outlined" color="success" type="submit">
                         {submitText ?? "Save"}
                     </Button>
                     { onCancel &&
@@ -99,7 +97,7 @@ export default class LabsForm extends React.Component<LabsFormProps, LabsFormSta
         const fieldId = `formfield-${this.formId}-${field.prop}`;
 
         return (
-            <FormControl>
+            <FormControl sx={{ opacity: field.disabled ? 0.4 : 1 }}>
                 {fieldRenderers[field.type](this, fieldId, field as never)}
                 {field.description && <FormHelperText>{field.description}</FormHelperText>}
             </FormControl>

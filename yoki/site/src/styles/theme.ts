@@ -3,7 +3,6 @@ import { extendTheme } from "@mui/joy";
 import labsTheme from "./theme.json";
 import { mixHexColours } from "../utils/colorUtil";
 
-const mostPrimary = "#8a6fef";
 const mostDark = labsTheme.spacedark[950];
 const mostLight = labsTheme.spacelight[950];
 
@@ -18,6 +17,21 @@ const bodyFont = {
     ].join(", "),
 };
 
+const generateColourScheme = (typicalColour: string) => ({
+        900: mixHexColours(typicalColour, mostDark, 0.8),
+        800: mixHexColours(typicalColour, mostDark, 0.6),
+        700: mixHexColours(typicalColour, mostDark, 0.4),
+        600: mixHexColours(typicalColour, mostDark, 0.2),
+        500: typicalColour,
+        400: mixHexColours(typicalColour, mostLight, 0.2),
+        300: mixHexColours(typicalColour, mostLight, 0.4),
+        200: mixHexColours(typicalColour, mostLight, 0.6),
+        100: mixHexColours(typicalColour, mostLight, 0.8),
+        solidBg: typicalColour,
+        plainHoverBg: mixHexColours(typicalColour, mostDark, 0.9),
+        solidHoverBg: mixHexColours(typicalColour, mostLight, 0.2),
+});
+
 export const theme = extendTheme({
     typography: {
         body1: bodyFont,
@@ -29,6 +43,9 @@ export const theme = extendTheme({
     cssVarPrefix: "labs",
     shadow: {
         md: ``
+    },
+    focus: {
+        thickness: "1px",
     },
     colorSchemes: {
         dark: {
@@ -46,24 +63,23 @@ export const theme = extendTheme({
                     200: labsTheme.spacedark[300],
                     100: labsTheme.spacedark[300],
                     50: labsTheme.spacedark[300],
+                    // Solid components
                     solidBg: labsTheme.spacedark[600],
                     solidHoverBg: labsTheme.spacedark[500],
+                    // Outlined components
                     outlinedBorder: labsTheme.spacedark[700],
+                    outlinedColor: labsTheme.spacelight[600],
+
+                    outlinedHoverBorder: labsTheme.spacedark[600],
+                    outlinedHoverColor: labsTheme.spacelight[700],
+
+                    outlinedDisabledBorder: labsTheme.spacedark[600],
+                    outlinedDisabledColor: labsTheme.spacelight[500],
                 },
-                primary: {
-                    900: mixHexColours(mostPrimary, mostDark, 0.8),
-                    800: mixHexColours(mostPrimary, mostDark, 0.6),
-                    700: mixHexColours(mostPrimary, mostDark, 0.4),
-                    600: mixHexColours(mostPrimary, mostDark, 0.2),
-                    500: mostPrimary,
-                    400: mixHexColours(mostPrimary, mostLight, 0.2),
-                    300: mixHexColours(mostPrimary, mostLight, 0.4),
-                    200: mixHexColours(mostPrimary, mostLight, 0.6),
-                    100: mixHexColours(mostPrimary, mostLight, 0.8),
-                    solidBg: mostPrimary,
-                    plainHoverBg: mixHexColours(mostPrimary, mostDark, 0.9),
-                    solidHoverBg: mixHexColours(mostPrimary, mostLight, 0.2),
-                },
+                primary: generateColourScheme(labsTheme.primary),
+                danger: generateColourScheme(labsTheme.danger),
+                warning: generateColourScheme(labsTheme.warning),
+                success: generateColourScheme(labsTheme.success),
                 text: {
                     primary: labsTheme.spacelight[900],
                     secondary: labsTheme.spacelight[700],
@@ -95,7 +111,9 @@ export const theme = extendTheme({
             },
         },
         JoySelect: {
-            defaultProps: {},
+            defaultProps: {
+                variant: "outlined",
+            },
         },
         JoySwitch: {
             styleOverrides: {
@@ -107,15 +125,17 @@ export const theme = extendTheme({
                 // })
             },
         },
-        // JoyChip: {
-        //   defaultProps: {
-        //     size: 'sm',
-        //   },
-        //   styleOverrides: {
-        //     root: {
-        //       borderRadius: '4px',
-        //     },
-        //   },
-        // },
+        JoyListItemDecorator: {
+            styleOverrides: {
+                root: {
+                    color: "inherit",
+                },
+            },
+        },
+        JoyChip: {
+            defaultProps: {
+                variant: "outlined",
+            },
+        },
     },
 });

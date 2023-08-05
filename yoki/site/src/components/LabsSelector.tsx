@@ -1,9 +1,8 @@
 import React from "react";
 import LabsForm, { LabsFormFieldHeader } from "./LabsForm";
-import { Avatar, ListItemDecorator, Option, Select, SelectOption } from "@mui/joy";
+import { Avatar, ListItemDecorator, Option, Select, SelectOption, Typography } from "@mui/joy";
 import { LabsFormFieldByType, LabsFormFieldOption, LabsFormFieldType } from "./form";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { SelectValue } from "@mui/base";
 
 type Props = {
     field: LabsFormFieldByType<LabsFormFieldType.Select>;
@@ -30,7 +29,9 @@ export default class LabsSelector extends React.Component<Props> {
                     {value.icon && <FontAwesomeIcon icon={value.icon} />}
                     {value.avatarIcon && <Avatar size="sm" src={value.avatarIcon} />}
                 </ListItemDecorator>)}
-                {value.name}  
+                <Typography sx={{ color: value.color ? `#${value.color.toString(16)}` : "inherit" }}>
+                    {value.name}  
+                </Typography>
             </>
         );
     }

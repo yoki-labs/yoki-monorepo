@@ -14,17 +14,26 @@ type Props = {
     presetName: string;
 };
 
-export default class AutomodPreset extends React.Component<Props> {
+type State = {
+    isEnabled: boolean;
+};
+
+export default class AutomodPreset extends React.Component<Props, State> {
     constructor(props: Props) {
         super(props);
+
+        this.state = { isEnabled: !!props.preset };
     }
 
-    onToggle(value: boolean) {
-        console.log("Preset value changed", [value]);
+    onToggle(isEnabled: boolean) {
+        console.log("Preset value changed", [isEnabled]);
+
+        this.setState({ isEnabled });
     }
 
     render() {
         const { title, description, preset } = this.props;
+        const { isEnabled } = this.state;
 
         return (
             <Card>
@@ -40,6 +49,7 @@ export default class AutomodPreset extends React.Component<Props> {
                                         prop: "severity",
                                         selectableValues: severityOptions,
                                         defaultValue: preset?.severity ?? Severity.WARN,
+                                        disabled: !isEnabled,
                                     },
                                     {
                                         type: LabsFormFieldType.Number,
@@ -47,6 +57,7 @@ export default class AutomodPreset extends React.Component<Props> {
                                         prop: "infractions",
                                         placeholder: "A whole number",
                                         defaultValue: preset?.infractionPoints ?? 5,
+                                        disabled: !isEnabled,
                                     }
                                 ]
                             }

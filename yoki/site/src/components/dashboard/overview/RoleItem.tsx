@@ -187,6 +187,7 @@ export function RoleItemEditor({ type, roleId, createdAt, serverRoles, timezone,
                 name: serverRole.name,
                 value: serverRole.id,
                 avatarIcon: serverRole.icon,
+                color: serverRole.colors?.[0],
             }));
     console.log("Role id", [roleId]);
 

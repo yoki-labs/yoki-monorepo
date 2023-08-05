@@ -21,5 +21,25 @@ export const severityOptions: LabsFormFieldOption<Severity>[] = [
         name: "Warning",
         value: Severity.WARN,
         icon: severityToIcon[Severity.WARN],
-    }
+    },
+    {
+        name: "Mute",
+        value: Severity.MUTE,
+        icon: severityToIcon[Severity.MUTE],
+    },
+    {
+        name: "Kick",
+        value: Severity.KICK,
+        icon: severityToIcon[Severity.KICK],
+    },
+    {
+        name: "Flush/Soft-ban",
+        value: Severity.SOFTBAN,
+        icon: severityToIcon[Severity.SOFTBAN],
+    },
+    {
+        name: "Ban",
+        value: Severity.BAN,
+        icon: severityToIcon[Severity.BAN],
+    },
 ];
