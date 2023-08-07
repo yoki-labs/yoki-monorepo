@@ -4,6 +4,10 @@ import { inlineCode, inlineQuote } from "@yokilabs/bot";
 import { ResolvedEnum, RoleType } from "../../typings";
 import { getFilterFromSyntax } from "../../utils/util";
 import { Category, Command } from "../commands";
+import { wordPresets } from "../../utils/presets";
+import { ONLY_URL_REGEX } from "../../utils/matching";
+
+const maxPhrases = 50;
 
 const Add: Command = {
     name: "filter-add",
@@ -31,24 +35,31 @@ const Add: Command = {
             display: "infraction points = 5",
             type: "number",
             optional: true,
+            min: 0,
+            max: 100,
         },
     ],
-    execute: async (message, args, ctx, { server }) => {
-        if (!server.filterEnabled)
-            return ctx.messageUtil.replyWithError(message, `Enable filtering`, `Automod filter is disabled! Please enable using \`${server.getPrefix()}module enable automod\``);
+    execute: async (message, args, ctx, { server, prefix }) => {
         const phrase = (args.phrase as string).toLowerCase();
         const severity = ((args.severity as ResolvedEnum)?.resolved ?? Severity.WARN) as Severity;
         const infractionPoints = (args.infraction_points as number | null) ?? 5;
 
-        if (!severity) return ctx.messageUtil.replyWithError(message, `No such severity level`, `Sorry, but that is not a valid severity level!`);
-        if (infractionPoints < 0 || infractionPoints > 100)
-            return ctx.messageUtil.replyWithError(message, `Points over the limit`, `Sorry, but the infraction points must be between \`0\` and \`100\`.`);
-
+        // Since it's going to be something like *a*, *a, a*, a with wildcards as *
         const [content, matching] = getFilterFromSyntax(phrase);
 
-        const doesExistAlready = await ctx.prisma.contentFilter.findFirst({ where: { serverId: message.serverId!, content, matching } });
-        if (doesExistAlready) return ctx.messageUtil.replyWithError(message, `Already added`, `This word is already in your server's filter!`);
+        // To see count of them
+        const allBannedWords = await ctx.dbUtil.getBannedWords(message.serverId!);
 
+        // To not have DB blow up
+        if (allBannedWords.length >= maxPhrases)
+            return ctx.messageUtil.replyWithError(message, "Too many words", `For technical reasons, you cannot have more than ${maxPhrases} words added to the filter. You can join the [Yoki Labs server](https://guilded.gg/yoki) to suggest new presets or enable any of the existing ones by using ${inlineQuote(`${prefix}preset`)}.`);
+        // Can't add something that already exists
+        else if (allBannedWords.find((x) => x.content === content && x.matching === matching))
+            return ctx.messageUtil.replyWithError(message, `Already added`, `This word is already in your server's filter!`);
+
+        // Suggest using preset instead
+        const inPreset = Object.keys(wordPresets).find((x) => wordPresets[x].test(content));
+        
         await ctx.dbUtil.addWordToFilter({
             content,
             creatorId: message.authorId,
@@ -57,13 +68,17 @@ const Add: Command = {
             severity,
             infractionPoints,
         });
+
+        const additionalMessages = [
+            inPreset && `\u2022 **NOTE:** This phrase is already in a preset ${inlineCode(inPreset)}. You can enable presets by typing ${inlineQuote(`${prefix}preset enable ${inPreset}`)}`,
+            ONLY_URL_REGEX.test(content) && `\u2022 **NOTE:** This phrase seems to be a link. Yoki has better link matching when it's added in the link or invite filter. Use ${inlineQuote(`${prefix}link url add`)} to add links to the filter.`,
+            !server.filterEnabled && `\u2022 **WARNING:** The filter is currently disabled. To enable it, use the ${inlineQuote(`${prefix}module enable filter`)} command.`,
+        ].filter(Boolean);
+
         return ctx.messageUtil.replyWithSuccess(
             message,
             `New phrase added`,
-            `Successfully added ${inlineQuote(phrase)} with the severity ${inlineCode(severity.toLowerCase())} to the automod list!
-            
-            ${server.filterEnabled ? "" : `Note that the filter is currently disabled. To enable it, use the \`${server.getPrefix()}module enable automod\` command.`}
-            `
+            `Successfully added ${inlineQuote(phrase)} with the severity ${inlineCode(severity.toLowerCase())} to the automod list!${additionalMessages.length ? `\n\n${additionalMessages.join("\n\n")}` : ""}`
         );
     },
 };

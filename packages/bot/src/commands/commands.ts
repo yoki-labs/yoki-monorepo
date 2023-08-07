@@ -19,8 +19,8 @@ import UUID from "../args/UUID";
 import type { AbstractClient } from "../Client";
 import type { IRole, IServer } from "../db-types";
 import { codeBlock, inlineCode, inlineQuote } from "../utils/formatting";
-import type { UsedMentions } from "./arguments";
-import type { BaseCommand, CommandArgType, CommandArgValidator } from "./command-typings";
+import type { ResolvedArgs, UsedMentions } from "./arguments";
+import type { BaseCommand, CommandArgType, CommandArgument, CommandArgValidator } from "./command-typings";
 
 export function createCommandHandler<
     TClient extends AbstractClient<TClient, TServer, TCommand>,
@@ -182,19 +182,27 @@ export function createCommandHandler<
                         continue;
                     }
 
-                    const [argValidator] = argumentConverters[commandArg.type];
+                    const [argValidator, invalidStringGenerator] = argumentConverters[commandArg.type];
 
                     // run the caster and see if the arg is valid
                     const castArg = args[i] ? await argValidator(args[i], args, i, message, commandArg, usedMentions) : null;
 
                     // If the arg is not valid, inform the user
-                    if (castArg === null || (commandArg.max && ((castArg as any).length ?? castArg) > commandArg.max)) {
+                    if (castArg === null) {
                         void ctx.amp.logEvent({
                             event_type: "COMMAND_BAD_ARGS",
                             user_id: message.createdById,
                             event_properties: { serverId: message.serverId, command: command.name, trippedArg: commandArg },
                         });
-                        await ctx.messageUtil.handleBadArg(message, prefix, commandArg, command, argumentConverters, castArg);
+                        await ctx.messageUtil.handleBadArg(message, prefix, commandArg, command, stripIndents(invalidStringGenerator(commandArg)));
+                        return;
+                    } else if (isArgumentValueInvalid(commandArg, castArg)) {
+                        void ctx.amp.logEvent({
+                            event_type: "COMMAND_BAD_ARGS",
+                            user_id: message.createdById,
+                            event_properties: { serverId: message.serverId, command: command.name, trippedArg: commandArg },
+                        });
+                        await ctx.messageUtil.handleBadArg(message, prefix, commandArg, command, renderExpectedArgumentValue(commandArg));
                         return;
                     }
 
@@ -265,4 +273,29 @@ export function createCommandHandler<
             }
         },
     };
+}
+
+function isArgumentValueInvalid(arg: CommandArgument, value: ResolvedArgs) {
+    const hasMax = typeof arg.max !== "undefined";
+    const hasMin = typeof arg.min !== "undefined";
+
+    return (
+        (hasMax && ((value! as string | string[]).length ?? value) > arg.max!) ||
+        (hasMin && ((value! as string | string[]).length ?? value) < arg.min!)
+    );
+}
+
+function renderExpectedArgumentValue(arg: CommandArgument) {
+    const hasMax = typeof arg.max !== "undefined";
+    const hasMin = typeof arg.min !== "undefined";
+
+    return (
+        hasMax && hasMin
+        ? ` between ${arg.min} and ${arg.max}`
+        : hasMax
+        ? ` with max ${arg.max}`
+        : hasMin
+        ? ` with min ${arg.min}`
+        : ""
+    );
 }

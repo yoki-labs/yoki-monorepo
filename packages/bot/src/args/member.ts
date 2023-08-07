@@ -5,6 +5,7 @@ import type { CommandArgValidator } from "../commands/command-typings";
 
 export default [
     async (input, args, index, message, _, usedMentions): Promise<Member | null> => {
+        // The mention was provided
         if (input.startsWith("@")) {
             // Get the mentioned user and increment used mentions
             const mention = message.mentions?.users?.[usedMentions.user++];
@@ -24,8 +25,8 @@ export default [
 
             return member;
         }
-
-        if (isHashId(input)) {
+        // At least the ID was provided
+        else if (isHashId(input)) {
             return message.client.members.fetch(message.serverId!, input).catch(() => null);
         }
 

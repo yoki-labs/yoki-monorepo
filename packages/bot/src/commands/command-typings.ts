@@ -54,5 +54,5 @@ export interface CommandArgument {
 export type CommandArgType = "string" | "UUID" | "member" | "number" | "boolean" | "enum" | "time" | "rest" | "enumList" | "channel" | "emote" | "role";
 export type CommandArgValidator = [
     (input: string, rawArgs: string[], index: number, message: Message, argument: CommandArgument, usedMentions: UsedMentions) => ResolvedArgs | Promise<ResolvedArgs>,
-    (arg: CommandArgument, received?: string) => string
+    (arg: CommandArgument) => string
 ];
