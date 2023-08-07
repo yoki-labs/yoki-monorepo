@@ -3,18 +3,26 @@
     {
         "type": "PREFIX",
         "_": [
+            "sh[i1]+t+",
+            "b[i1]+[t7]ch",
             "f[uv#*]*[c#*]*k+([e3]r)?"
         ]
     },
     {
         "type": "POSTFIX",
         "_": [
+            "sh[i1]+t+",
+            "b[i1]+[t7]ch",
             "f[uv#*]*[c#*]*k+([e3]r)?"
         ]
     },
     {
         "type": "WORD",
         "_": [
+            "a[s$]{2,}",
+            "mofo",
+            "a[s$]{2,}h[o0]l[e3]",
+            "b[i1]g[o0]t",
             "kys",
             "fc[uv]k",
             "f[uv]cc",

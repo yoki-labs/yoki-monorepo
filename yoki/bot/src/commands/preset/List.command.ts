@@ -5,7 +5,6 @@ const descriptions: Record<string, string> = {
     sexual: "Words for sexual objects or actions",
     slurs: "Words that are derogatory towards specific groups",
     profanity: "Day-to-day casual swear words",
-    "mild-profanity": "Profanity that is not as harsh such as synonym for 'crap'",
     "sexual-links": "Links that are of sexual nature",
 };
 
