@@ -115,8 +115,8 @@ async function useIncomeCommand(
 
     await ctx.dbUtil.updateMemberBalance(message.serverId!, message.createdById, userInfo, newBalance);
 
-    const addedCurrencies = newBalance.filter((x) => x.added).map((x) => `${x.added} ${x.currency.name}`);
-    const lostCurrencies = newBalance.filter((x) => x.lost).map((x) => `${x.lost} ${x.currency.name}`);
+    const addedCurrencies = newBalance.filter((x) => x.added).map((x) => `:${x.currency.emote}: ${x.added} ${x.currency.name}`);
+    const lostCurrencies = newBalance.filter((x) => x.lost).map((x) => `:${x.currency.emote}: ${x.lost} ${x.currency.name}`);
 
     const actionDescription = (income?.action ?? defaultAction).toLowerCase();
 

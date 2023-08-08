@@ -51,6 +51,7 @@ model Currency {
     serverId        String   @db.VarChar(255)
     name            String   @db.VarChar(100)
     tag             String   @db.VarChar(16)
+    emote           String   @db.VarChar(32) @default("small_orange_diamond")
     // Perks
     startingBalance Int?
     maximumBalance  Int?

@@ -8,6 +8,7 @@ import Info from "./Info.command";
 import List from "./List.command";
 import Maximum from "./Max.command";
 import Starting from "./Starting.command";
+import Emote from "./Emote.command";
 
 const Currency: Command = {
     name: "currency",
@@ -22,7 +23,8 @@ const Currency: Command = {
         .set("info", Info)
         .set("delete", Delete)
         .set("maximum", Maximum)
-        .set("starting", Starting),
+        .set("starting", Starting)
+        .set("emote", Emote),
     execute: () => void 0,
 };
 

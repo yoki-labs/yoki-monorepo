@@ -65,12 +65,13 @@ export class DatabaseUtil extends Util<TuxoClient> {
         return (await this.getCurrencies(serverId)).find((x) => x.tag === tag);
     }
 
-    createCurrency(serverId: string, tag: string, name: string, createdBy: string) {
+    createCurrency(serverId: string, tag: string, emote: string, name: string, createdBy: string) {
         return this.client.prisma.currency.create({
             data: {
                 id: nanoid(17),
                 serverId,
                 name,
+                emote,
                 tag,
                 createdBy,
                 createdAt: new Date(),

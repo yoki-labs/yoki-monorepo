@@ -3,6 +3,7 @@ import { inlineQuote } from "@yokilabs/bot";
 
 import { TAG_REGEX } from "../../util/matching";
 import { Category, Command } from "../commands";
+import { ReactionInfo } from "@yokilabs/utils";
 
 const Create: Command = {
     name: "currency-create",
@@ -18,6 +19,12 @@ const Create: Command = {
             max: 16,
         },
         {
+            name: "emote",
+            display: "emote icon",
+            type: "emote",
+            max: 100,
+        },
+        {
             name: "name",
             type: "rest",
             max: 100,
@@ -26,6 +33,7 @@ const Create: Command = {
     execute: async (message, args, ctx) => {
         const tag = (args.tag as string).toLowerCase();
         const name = args.name as string;
+        const emote = args.emote as ReactionInfo;
 
         if (!TAG_REGEX.test(tag))
             return ctx.messageUtil.replyWithError(
@@ -40,7 +48,7 @@ const Create: Command = {
         if (currencies.find((x) => x.tag === tag)) return ctx.messageUtil.replyWithError(message, "Already exists", `The currency with tag ${inlineQuote(tag)} already exists.`);
         else if (currencies.length >= 3) return ctx.messageUtil.replyWithError(message, "Too many currencies", `You have created the maximum amount of currencies there can be.`);
 
-        await ctx.dbUtil.createCurrency(message.serverId!, tag, name, message.createdById);
+        await ctx.dbUtil.createCurrency(message.serverId!, tag, emote.name, name, message.createdById);
 
         return ctx.messageUtil.replyWithSuccess(message, "Currency created", `Currency with tag ${inlineQuote(tag)} has been successfully created.`);
     },

@@ -67,7 +67,7 @@ export function generateBankCommand(balanceType: string, action: string, actionD
         return ctx.messageUtil.replyWithSuccess(
             message,
             `Balance ${actionDone}`,
-            `You have successfully ${actionDone} ${depositingCurrencies.map((x) => `${depositMap[x.id] / depositMultiplier} ${x.name}`).join(", ")}.`
+            `You have successfully ${actionDone} ${depositingCurrencies.map((x) => `:${x.emote}: ${depositMap[x.id] / depositMultiplier} ${x.name}`).join(", ")}.`
         );
     };
 }

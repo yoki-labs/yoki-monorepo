@@ -29,12 +29,12 @@ const Balance: Command = {
 
         const pocketLines = currencyBalanceMap
             .filter(([_, balance]) => balance?.pocket)
-            .map(([currency, balance]) => `${balance?.pocket ?? currency.startingBalance} ${currency.name}`);
+            .map(([currency, balance]) => `:${currency.emote}: ${balance?.pocket ?? currency.startingBalance} ${currency.name}`);
 
         // balance?.bank || currency.startingBalance is because startingBalance is added to the bank specifically
         const bankLines = currencyBalanceMap
             .filter(([currency, balance]) => balance?.bank || currency.startingBalance)
-            .map(([currency, balance]) => `${balance?.bank ?? currency.startingBalance} ${currency.name}`);
+            .map(([currency, balance]) => `:${currency.emote}: ${balance?.bank ?? currency.startingBalance} ${currency.name}`);
 
         return ctx.messageUtil.replyWithInfo(
             message,

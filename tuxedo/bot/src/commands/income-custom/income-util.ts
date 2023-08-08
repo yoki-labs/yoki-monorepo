@@ -43,13 +43,18 @@ export const getUnavailableIncomeNames = (client: TuxoClient) => client.commands
 
 export const displayOverridenRewards = (incomeOverride: IncomeCommand & { rewards: Reward[] }, serverCurrencies: Currency[]) =>
     incomeOverride.rewards
-        .map((x) => `\u2022 ${inlineCode(x.minAmount)} to ${inlineCode(x.minAmount + x.minAmount)} ${serverCurrencies.find((y) => x.currencyId === y.id)?.name}`)
+        .map((x) => {
+            const currency = serverCurrencies.find((y) => x.currencyId === y.id);
+
+            return `:${currency?.emote}: ${inlineCode(x.minAmount)} to ${inlineCode(x.minAmount + x.minAmount)} ${currency?.name}`;
+        })
         .join("\n");
 
 export function displayDefaultRewards(incomeType: DefaultIncomeType | string, serverCurrencies: Currency[]) {
-    if (!serverCurrencies?.length) return `\u2022 (There is no currency to give)`;
+    if (!serverCurrencies?.length) return `(There is no currency to give)`;
 
     const receivedCurrency = defaultIncomes[incomeType]?.rewards ?? defaultCreatedReceivedCurrency;
+    const firstCurrency = serverCurrencies[0];
 
-    return `\u2022 ${inlineCode(receivedCurrency[0])} to ${inlineCode(receivedCurrency[1] + receivedCurrency[0])} ${serverCurrencies[0].name} (default)`;
+    return `:${firstCurrency.emote}: ${inlineCode(receivedCurrency[0])} to ${inlineCode(receivedCurrency[1] + receivedCurrency[0])} ${firstCurrency.name} (default)`;
 }

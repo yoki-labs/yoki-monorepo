@@ -42,7 +42,7 @@ const Leaderboard: Command = {
             title: ":trophy: Server Leaderboard",
             items: balances,
             itemsPerPage: 10,
-            itemMapping: (balance, i) => `${start + i}. <@${balance.member.userId}> — ${balance.all} ${mainCurrency.name}`,
+            itemMapping: (balance, i) => `${start + i}. <@${balance.member.userId}> — :${mainCurrency.emote}: ${balance.all} ${mainCurrency.name}`,
             page,
             message: {
                 isSilent: true,

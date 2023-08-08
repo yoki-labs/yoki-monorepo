@@ -36,7 +36,7 @@ const Info: Command = {
 
         return ctx.messageUtil.replyWithInfo(
             message,
-            `${currency.name} (${inlineCode(tag)})`,
+            `:${currency.emote}: ${currency.name} (${inlineCode(tag)})`,
             `Info about server's local currency with the tag ${inlineCode(tag)} ${currency.createdBy ? `created by <@${currency.createdBy}>` : "that has been auto-generated"}.`,
             {
                 fields: [
