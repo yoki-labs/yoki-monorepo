@@ -43,6 +43,18 @@ const Rob: Command = {
         if (!currencies.length)
             return ctx.messageUtil.replyWithError(message, "No currencies", `This server does not have any local currencies ${serverConfig?.action ?? defaultConfig.action}.`);
 
+        const executorInfo = await ctx.dbUtil.getServerMember(message.serverId!, message.createdById);
+
+        // To make it balanced and require you to sacrifice your balance too
+        if (!executorInfo?.balances.length)
+            return ctx.messageUtil.replyWithError(message, `No balance to use`, `To make your robbery attempt successful, you need to have to have a balance.`);
+
+        const targetInfo = await ctx.dbUtil.getServerMember(message.serverId!, target.id);
+
+        // Starting balance only exists in banks, so you can't rob anything
+        if (!(targetInfo?.balances.length && targetInfo.balances.some((x) => x.pocket)))
+            return ctx.messageUtil.replyWithError(message, "Nothing to steal", `The member either has no balance at all or their entire balance is in the bank.`);
+
         const lastUsed = ctx.balanceUtil.getLastCommandUsage(message.serverId!, message.createdById, DefaultIncomeType.ROB);
 
         // Need to wait 24 hours or the configured time
@@ -54,24 +66,12 @@ const Rob: Command = {
         // For the cooldown
         ctx.balanceUtil.updateLastCommandUsage(message.serverId!, message.createdById, DefaultIncomeType.ROB);
 
-        const executorInfo = await ctx.dbUtil.getServerMember(message.serverId!, message.createdById);
-
-        // To make it balanced and require you to sacrifice your balance too
-        if (!executorInfo?.balances.length)
-            return ctx.messageUtil.replyWithError(message, `No balance to use`, `To make your robbery attempt successful, you need to have to have a balance.`);
-
         // Add random amounts of rewards that were configured or ones that are default
         const rewards: Pick<Reward, "currencyId" | "minAmount" | "maxAmount">[] = serverConfig?.rewards.length
             ? serverConfig.rewards
             : [{ currencyId: currencies[0].id, maxAmount: defaultAdditionalMax + defaultMin, minAmount: defaultMin }];
 
         const newBalance: BalanceChange[] = [];
-
-        const targetInfo = await ctx.dbUtil.getServerMember(message.serverId!, target.id);
-
-        // Starting balance only exists in banks, so you can't rob anything
-        if (!(targetInfo?.balances.length && targetInfo.balances.some((x) => x.pocket)))
-            return ctx.messageUtil.replyWithError(message, "Nothing to steal", `The member either has no balance at all or their entire balance is in the bank.`);
 
         // Loop for checking whether executor has enough balance and adding rewards; does it all
         for (const reward of rewards) {

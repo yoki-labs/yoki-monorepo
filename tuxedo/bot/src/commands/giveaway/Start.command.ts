@@ -4,6 +4,7 @@ import { Category, Command } from "../commands";
 
 const minDuration = 15 * 60 * 1000;
 const maxDuration = 14 * 24 * 60 * 60 * 1000;
+const MAX_GIVEAWAYS = 100;
 
 const Start: Command = {
     name: "giveaway-start",
@@ -28,7 +29,7 @@ const Start: Command = {
             max: 200,
         },
     ],
-    execute: (message, _args, ctx, { server: { timezone } }) => {
+    execute: async (message, _args, ctx, { server: { timezone } }) => {
         const duration = _args.duration as number;
         const text = _args.text as string;
         const winnerCount = _args.winners as number;
@@ -37,17 +38,35 @@ const Start: Command = {
         else if (duration < minDuration || duration > maxDuration)
             return ctx.messageUtil.replyWithError(message, `Invalid duration`, `Giveaway duration should be between 15 minutes and 2 weeks.`);
 
-        return ctx.giveawayUtil.createGiveaway(
-            {
+        // Currencies
+        const giveaways = await ctx.prisma.giveaway.findMany({
+            orderBy: [{ hasEnded: "asc" }, { createdAt: "desc" }],
+            where: {
                 serverId: message.serverId!,
-                channelId: message.channelId,
-                createdBy: message.createdById,
-                text,
-                endsAt: new Date(Date.now() + duration),
-                winnerCount,
             },
-            timezone
-        );
+        });
+
+        return Promise.all([
+            // Too many giveaways, delete the oldest
+            // (likely closed, but may be open (it's ordered by whether it's closed)) giveaway
+            giveaways.length >= MAX_GIVEAWAYS && ctx.prisma.giveaway.delete({
+                where: {
+                    id: giveaways[giveaways.length - 1].id,
+                },
+            }),
+            // Actual giveaway fruit stuff
+            ctx.giveawayUtil.createGiveaway(
+                {
+                    serverId: message.serverId!,
+                    channelId: message.channelId,
+                    createdBy: message.createdById,
+                    text,
+                    endsAt: new Date(Date.now() + duration),
+                    winnerCount,
+                },
+                timezone
+            )
+        ]);
     },
 };
 

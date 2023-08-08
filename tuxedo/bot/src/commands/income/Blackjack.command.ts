@@ -16,14 +16,15 @@ const Blackjack: Command = {
     category: Category.Income,
     args: [
         {
-            name: "currency",
-            display: "currency to bet",
-            type: "string",
-        },
-        {
             name: "amount",
             display: "amount to bet",
             type: "number",
+        },
+        {
+            name: "currency",
+            display: "currency to bet",
+            type: "string",
+            optional: true,
         },
     ],
     execute: async (message, args, ctx) => {
@@ -34,7 +35,11 @@ const Blackjack: Command = {
             return ctx.messageUtil.replyWithError(message, "Can only bet at least 1", "Your betting amount should be at least 1 or more.");
 
         const currencies = await ctx.dbUtil.getCurrencies(message.serverId!);
-        const selectedCurrency = currencies.find((x) => x.tag === tag);
+
+        if (!currencies.length)
+            return ctx.messageUtil.replyWithError(message, "No currencies", `This server does not have any local currencies to play blackjack.`);
+
+        const selectedCurrency = tag ? currencies.find((x) => x.tag === tag) : currencies[0];
 
         // Can't do blackjack if such currency doesn't exist
         if (!selectedCurrency)
