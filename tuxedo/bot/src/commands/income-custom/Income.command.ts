@@ -10,6 +10,8 @@ import List from "./List.command";
 import SetMessage from "./Message.command";
 import Remove from "./Remove.command";
 import Enable from "./Enable.command";
+import SetFailChance from "./FailChance.command";
+import SetFailCut from "./FailCut.command";
 
 const Income: Command = {
     name: "income",
@@ -25,6 +27,8 @@ const Income: Command = {
         .set("cooldown", SetCooldown)
         .set("message", SetMessage)
         .set("currency", SetCurrency)
+        .set("failchance", SetFailChance)
+        .set("failcut", SetFailCut)
         .set("enable", Enable)
         .set("remove", Remove),
     execute: () => void 0,

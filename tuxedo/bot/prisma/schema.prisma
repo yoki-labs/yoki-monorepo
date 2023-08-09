@@ -72,8 +72,8 @@ model IncomeCommand {
     action          String?            @db.VarChar(50)
     cooldownMs      Int?
     rewards         Reward[]
-    failChance      Int?
-    failSubtractCut Int?
+    failChance      Float?
+    failSubtractCut Float?
     // Who, when
     createdBy       String             @default("Ann6LewA") @db.VarChar(255)
     createdAt       DateTime           @default(now())

@@ -48,6 +48,7 @@ export interface CommandArgument {
     separator?: string;
     max?: number;
     min?: number;
+    allowDecimal?: boolean;
     values?: any;
     resolver?: (...content: any[]) => any;
 }

@@ -57,7 +57,7 @@ const SetCurrency: Command = {
         if (!currencyTag)
             return ctx.messageUtil.replyWithInfo(
                 message,
-                `Rewards for ${command.toLowerCase()}`,
+                `Rewards for ${command}`,
                 incomeOverride?.rewards.length ? displayOverridenRewards(incomeOverride, serverCurrencies) : displayDefaultRewards(command, serverCurrencies)
             );
 
@@ -70,7 +70,7 @@ const SetCurrency: Command = {
             return ctx.messageUtil.replyWithError(
                 message,
                 `Expected minimum and maximum amount`,
-                `Please provide minimum and maximum amounts of ${currency.name} user should received from ${command.toLowerCase()}.`
+                `Please provide minimum and maximum amounts of ${currency.name} user should received from ${command}.`
             );
 
         if (minAmount === 0 && maxAmount === 0) return removeCurrencyReward(ctx, message, command, currency, incomeOverride);
@@ -84,8 +84,8 @@ const SetCurrency: Command = {
 
         return ctx.messageUtil.replyWithSuccess(
             message,
-            `Changed rewards for ${command.toLowerCase()}`,
-            `Users will now be able to receive from ${inlineCode(minAmount)} to ${inlineCode(maxAmount)} of ${currency.name} while using ${command.toLowerCase()} command.`
+            `Changed rewards for ${command}`,
+            `Users will now be able to receive from ${inlineCode(minAmount)} to ${inlineCode(maxAmount)} of ${currency.name} while using ${command} command.`
         );
     },
 };

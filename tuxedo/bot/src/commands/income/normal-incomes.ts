@@ -1,4 +1,4 @@
-import { Currency, DefaultIncomeType, IncomeCommand, MemberBalance, Reward } from "@prisma/client";
+import { Currency, DefaultIncomeType, IncomeCommand, MemberBalance, Reward, ServerMember } from "@prisma/client";
 import { CommandContext, inlineQuote, ResolvedArgs } from "@yokilabs/bot";
 import { Message } from "guilded.js";
 import ms from "ms";
@@ -8,6 +8,7 @@ import { Server } from "../../typings";
 import { defaultCreatedCooldown, defaultCreatedReceivedCurrency, defaultIncomes } from "./income-defaults";
 
 type BalanceChange = Pick<MemberBalance, "currencyId" | "pocket" | "bank"> & { currency: Currency; added: number; lost?: number };
+type FailedBalanceChange = Pick<MemberBalance, "currencyId" | "pocket" | "bank"> & { currency: Currency; change: number };
 
 export function generateIncomeCommand(incomeType: DefaultIncomeType) {
     const {
@@ -80,16 +81,22 @@ async function useIncomeCommand(
 
     const newBalance: BalanceChange[] = [];
 
+    // Since it can fail too; the loop below is a little different and does additional calculations
+    // that are unnecessary
+    if (income?.failChance && income.failChance > Math.random())
+        return onIncomeFail(commandName, income!, rewards, userInfo, currencies, ctx, message);
+
     for (const reward of rewards) {
         // The opposite could be done, but this means adding additional `continue` if reward for that currency
         // doesn't exist, yada yada
         const currency = currencies.find((x) => x.id === reward.currencyId)!;
         const existingBalance = userInfo?.balances.find((x) => x.currencyId === reward.currencyId);
+        const existingBalanceCount = existingBalance?.all ?? currency.startingBalance ?? 0;
 
         // Balance changes
         const randomReward = Math.floor(Math.random() * (reward.maxAmount - reward.minAmount) + reward.minAmount);
-        const totalBalance = (existingBalance?.all ?? currency.startingBalance ?? 0) + randomReward;
-
+        const totalBalance = existingBalanceCount + randomReward;
+            
         // Check if any of the rewards went over the maximum balance
         if (currency?.maximumBalance && totalBalance > currency.maximumBalance) {
             const lost = totalBalance - currency.maximumBalance;
@@ -129,4 +136,56 @@ async function useIncomeCommand(
               )}. However, some of the rewards went over the maximum currency limit, so you lost additional ${lostCurrencies.join(", ")}`
           )
         : ctx.messageUtil.replyWithSuccess(message, income?.action ?? defaultAction, `You have ${actionDescription}, which had ${addedCurrencies.join(", ")}.`);
+}
+
+async function onIncomeFail(
+    commandName: string,
+    income: (IncomeCommand & { rewards: Reward[] }),
+    rewards: Pick<Reward, "currencyId" | "minAmount" | "maxAmount">[],
+    userInfo: (ServerMember & { balances: MemberBalance[] }) | undefined,
+    currencies: Currency[],
+    ctx: TuxoClient,
+    message: Message
+) {
+    const newBalance: FailedBalanceChange[] = [];
+
+    const failCut = income.failSubtractCut ?? 0;
+
+    // There is no point in doing anything, nor displaying the fail chance
+    if (!failCut)
+        return ctx.messageUtil.replyWithWarning(message, `${commandName} failed`, `You failed while doing ${commandName}.`);
+
+    // Loop for checking whether executor has enough balance and adding rewards; does it all
+    for (const reward of rewards) {
+        // The opposite could be done, but this means adding additional `continue` if reward for that currency
+        // doesn't exist, yada yada
+        const currency = currencies.find((x) => x.id === reward.currencyId)!;
+        const existingBalance = userInfo?.balances.find((x) => x.currencyId === reward.currencyId);
+
+        const randomReward = Math.floor(Math.random() * (reward.maxAmount - reward.minAmount) + reward.minAmount);
+        const lostWithCut = Math.floor(randomReward * failCut);
+
+        newBalance.push({
+            currencyId: reward.currencyId,
+            pocket: existingBalance?.pocket ?? 0,
+            bank: (existingBalance?.bank ?? currency.startingBalance ?? 0) - lostWithCut,
+            currency,
+            change: lostWithCut
+        });
+    }
+
+    await ctx.dbUtil.updateMemberBalance(
+        message.serverId!,
+        message.createdById,
+        userInfo,
+        newBalance
+    );
+
+    const failedCurrencies = newBalance.map((x) => `:${x.currency.emote}: ${x.change} ${x.currency.name}`);
+
+    return ctx.messageUtil.replyWithWarning(
+        message,
+        `${commandName} failed`,
+        `You failed while doing ${commandName} and lost ${failedCurrencies.join(", ")}.`
+    );
 }

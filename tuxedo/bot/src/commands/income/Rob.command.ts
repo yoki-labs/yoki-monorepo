@@ -9,8 +9,6 @@ import { defaultIncomes } from "./income-defaults";
 
 const defaultConfig = defaultIncomes[DefaultIncomeType.ROB];
 const [defaultMin, defaultAdditionalMax] = defaultConfig.reward;
-const defaultFailChance = 0.5;
-const defaultFailCut = 1;
 
 export interface BalanceChange {
     currency: Currency;
@@ -34,8 +32,15 @@ const Rob: Command = {
 
         // Makes no sense to rob yourself
         if (target.id === message.createdById) return ctx.messageUtil.replyWithError(message, "Cannot rob yourself", `You cannot rob yourself as you own your own balance.`);
-
+        
         const serverConfig = (await ctx.dbUtil.getIncomeOverrides(message.serverId!)).find((x) => x.incomeType === DefaultIncomeType.ROB);
+
+        const lastUsed = ctx.balanceUtil.getLastCommandUsage(message.serverId!, message.createdById, DefaultIncomeType.ROB);
+        // Need to wait 24 hours or the configured time
+        const localCooldown = serverConfig?.cooldownMs ?? defaultConfig.cooldown;
+
+        if (lastUsed && Date.now() - lastUsed < localCooldown)
+            return ctx.messageUtil.replyWithError(message, "Too fast", `You have to wait ${ms(lastUsed + localCooldown - Date.now(), { long: true })} to use rob again.`);
 
         // Can't rob if it doesn't exist
         const currencies = await ctx.dbUtil.getCurrencies(message.serverId!);
@@ -54,14 +59,6 @@ const Rob: Command = {
         // Starting balance only exists in banks, so you can't rob anything
         if (!(targetInfo?.balances.length && targetInfo.balances.some((x) => x.pocket)))
             return ctx.messageUtil.replyWithError(message, "Nothing to steal", `The member either has no balance at all or their entire balance is in the bank.`);
-
-        const lastUsed = ctx.balanceUtil.getLastCommandUsage(message.serverId!, message.createdById, DefaultIncomeType.ROB);
-
-        // Need to wait 24 hours or the configured time
-        const localCooldown = serverConfig?.cooldownMs ?? defaultConfig.cooldown;
-
-        if (lastUsed && Date.now() - lastUsed < localCooldown)
-            return ctx.messageUtil.replyWithError(message, "Too fast", `You have to wait ${ms(lastUsed + localCooldown - Date.now(), { long: true })} to use rob again.`);
 
         // For the cooldown
         ctx.balanceUtil.updateLastCommandUsage(message.serverId!, message.createdById, DefaultIncomeType.ROB);
@@ -82,7 +79,7 @@ const Rob: Command = {
 
             // Balance changes
             const currentBalance = existingBalance?.all ?? currency.startingBalance ?? 0;
-            const requiredBalance = reward.maxAmount * defaultFailCut;
+            const requiredBalance = reward.maxAmount * (serverConfig?.failSubtractCut ?? defaultConfig.failCut!);
 
             // To have a proper losing condition
             if (currentBalance < requiredBalance)
@@ -103,13 +100,14 @@ const Rob: Command = {
         }
 
         // If it has failed
-        if (defaultFailChance > Math.random()) return handleFailState(ctx, message, executorInfo, newBalance);
+        if ((serverConfig?.failChance ?? defaultConfig.failChance!) > Math.random())
+            return handleFailState(ctx, message, executorInfo, serverConfig?.failSubtractCut ?? defaultConfig.failCut!, newBalance);
 
         return handleSuccessState(ctx, message, targetInfo!, executorInfo, newBalance);
     },
 };
 
-async function handleFailState(ctx: TuxoClient, message: Message, executorInfo: ServerMember & { balances: MemberBalance[] }, newBalance: BalanceChange[]) {
+async function handleFailState(ctx: TuxoClient, message: Message, executorInfo: ServerMember & { balances: MemberBalance[] }, failCut: number, newBalance: BalanceChange[]) {
     await ctx.dbUtil.updateMemberBalance(
         message.serverId!,
         message.createdById,
@@ -120,12 +118,12 @@ async function handleFailState(ctx: TuxoClient, message: Message, executorInfo: 
             return {
                 currencyId: x.currency.id,
                 pocket: current?.pocket ?? 0,
-                bank: (current?.bank ?? x.currency.startingBalance ?? 0) - x.change,
+                bank: (current?.bank ?? x.currency.startingBalance ?? 0) - Math.floor(x.change * failCut),
             };
         })
     );
 
-    return ctx.messageUtil.replyWithWarning(message, "Robbery failed", `You were caught and you were fined ${createChangeList(newBalance)}.`);
+    return ctx.messageUtil.replyWithWarning(message, "Robbery failed", `You were caught and you were fined ${newBalance.map((x) => `:${x.currency.emote}: ${Math.floor(x.change * failCut)} ${x.currency.name}`).join(", ")}.`);
 }
 
 async function handleSuccessState(
@@ -167,11 +165,8 @@ async function handleSuccessState(
     return ctx.messageUtil.replyWithSuccess(
         message,
         "Robbery was successful",
-        `You stole ${createChangeList(newBalance)} from <@${targetInfo.userId}> (${inlineCode(targetInfo.userId)}).`
+        `You stole ${newBalance.map((x) => `:${x.currency.emote}: ${x.change} ${x.currency.name}`).join(", ")} from <@${targetInfo.userId}> (${inlineCode(targetInfo.userId)}).`
     );
 }
-
-// For messages
-const createChangeList = (changes: BalanceChange[]) => changes.map((x) => `${x.change} ${x.currency.name}`).join(", ");
 
 export default Rob;
