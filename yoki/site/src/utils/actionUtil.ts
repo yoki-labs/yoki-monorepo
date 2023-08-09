@@ -1,4 +1,4 @@
-import { IconDefinition, faBroom, faCircleExclamation, faHammer, faNoteSticky, faShoePrints, faVolumeMute } from "@fortawesome/free-solid-svg-icons";
+import { faBroom, faCircleExclamation, faHammer, faNoteSticky, faShoePrints, faVolumeMute,IconDefinition } from "@fortawesome/free-solid-svg-icons";
 import { Severity } from "@prisma/client";
 
 export const severityToIcon: Record<Severity, IconDefinition> = {
