@@ -43,6 +43,7 @@ const Info: Command = {
                     {
                         name: "Balance Config",
                         value: stripIndents`
+                            ${currency.bankEnabled ? "" : ":dollar: **Bank disabled for this currency.**"}
                             **Maximum balance:** ${currency.maximumBalance ? `${currency.maximumBalance} ${currency.name}` : "None"}
                             **Starting balance:** ${currency.startingBalance ?? 0} ${currency.name}
                         `,
