@@ -82,11 +82,11 @@ const Home: NextPage = () => {
                     </HomePreview>
                     <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-8">
                         <Statistic amount="20,000,000+" subText="Scanned" text="messages" />
-                        <Statistic amount="10,000+" subText="Actioned" text="cases" />
+                        <Statistic amount="12,000+" subText="Actioned" text="cases" />
                         <Statistic amount="2,400+" subText="Serving" text="servers" />
-                        <Statistic amount="90,000+" subText="Watching over" text="members" />
+                        <Statistic amount="100,000+" subText="Watching over" text="members" />
                         <Statistic amount="9,000+" subText="Stopped" text="bad actors" />
-                        <Statistic amount="6,000+" subText="Served" text="captchas" />
+                        <Statistic amount="6,600+" subText="Served" text="captchas" />
                     </div>
                     <HomeTextBlurb>
                         <h1>Why Yoki?</h1>
