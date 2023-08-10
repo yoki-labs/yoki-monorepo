@@ -4,6 +4,7 @@ import { Colors } from "@yokilabs/utils";
 import { FilteredContent } from "../../modules/content-filter";
 import { GEvent, LogChannelType } from "../../typings";
 import { trimHoistingSymbols } from "../../utils/moderation";
+import { UserType } from "guilded.js";
 
 export default {
     execute: async ([event, ctx]) => {
@@ -36,7 +37,7 @@ export default {
         // If the member's nickname is updated, scan it for any harmful content
         // Since ServerMemberUpdated doesn't provide info about user itself, even `.displayName` might not exist within it
         // Of course, the member could be fetched.
-        if (server.antiHoistEnabled && userId !== ctx.user?.id && name) {
+        if (server.antiHoistEnabled && oldMember?.user?.type !== UserType.Bot && userId !== ctx.user?.id && name) {
             const nonHoistingName = trimHoistingSymbols(name);
 
             if (nonHoistingName !== name) {
