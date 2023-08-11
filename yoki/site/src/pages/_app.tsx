@@ -1,3 +1,7 @@
+import "../styles/globals.css";
+import "../styles/styles.css";
+
+import { CssVarsProvider } from "@mui/joy";
 import { Analytics } from "@vercel/analytics/react";
 import type { AppProps } from "next/app";
 import Head from "next/head";
@@ -7,9 +11,6 @@ import { SessionProvider } from "next-auth/react";
 import { ReactElement, ReactNode } from "react";
 import { QueryClient, QueryClientProvider } from "react-query";
 
-import "../styles/globals.css";
-import "../styles/styles.css";
-import { CssVarsProvider, ThemeProvider } from "@mui/joy";
 import { theme } from "../styles/theme";
 
 const ogDescription = "Meet Yoki, your moderation companion. Guilded's first moderation bot.";

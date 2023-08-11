@@ -1,6 +1,6 @@
 import { faChevronDown } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { FormControl, Select, SelectOwnProps, selectClasses } from "@mui/joy";
+import { FormControl, Select, selectClasses, SelectOwnProps } from "@mui/joy";
 
 export default function LabsDropdown(props: SelectOwnProps<string>) {
     return (
@@ -8,6 +8,7 @@ export default function LabsDropdown(props: SelectOwnProps<string>) {
             <Select
                 variant="plain"
                 sx={{
+                    color: "white",
                     "--ListItemDecorator-size": "40px",
                     "--labs-palette-background-surface": "transparent",
                     [`& .${selectClasses.indicator}`]: {

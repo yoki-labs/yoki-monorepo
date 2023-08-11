@@ -1,15 +1,16 @@
-import React from "react";
-import { GuildedServer } from "../../../lib/@types/guilded";
 import { Box, CircularProgress, Stack, Typography } from "@mui/joy";
 import Link from "next/link";
+import React from "react";
+
+import { GuildedServer } from "../../../lib/@types/guilded";
 import ServerDisplay from "../ServerDisplay";
 
-type Props = {
+interface Props {
     servers: GuildedServer[];
-};
-type State = {
+}
+interface State {
     clicked: boolean;
-};
+}
 
 export default class ServerSelectionPage extends React.Component<Props, State> {
     constructor(props: Props) {
@@ -24,26 +25,30 @@ export default class ServerSelectionPage extends React.Component<Props, State> {
     }
 
     renderServers() {
-        const servers = this.props.servers.sort((a, b) => a.name > b.name ? 1 : a.name < b.name ? -1 : 0);
+        const servers = this.props.servers.sort((a, b) => (a.name > b.name ? 1 : a.name < b.name ? -1 : 0));
 
         return (
             <>
-                <Typography level="h3" sx={{ textAlign: "center" }}>Select a server</Typography>
+                <Typography level="h3" color="neutral" sx={{ textAlign: "center" }}>
+                    Select a server
+                </Typography>
                 <Box sx={{ px: 20, py: 5 }} className="grow h-full overflow-y-auto grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {servers.map((server) =>
+                    {servers.map((server) => (
                         <Link href={`/dashboard/${server.id}/overview`}>
-                            <ServerDisplay server={server} onClick={this.onClick.bind(this)} sx={{ cursor: "pointer", bgcolor: "background.level1", "&:hover": { boxShadow: "md", bgcolor: "background.level2" } }} />
+                            <ServerDisplay
+                                server={server}
+                                onClick={this.onClick.bind(this)}
+                                sx={{ cursor: "pointer", bgcolor: "background.level1", "&:hover": { boxShadow: "md", bgcolor: "background.level2" } }}
+                            />
                         </Link>
-                    )}
+                    ))}
                 </Box>
             </>
         );
     }
 
     renderLoading() {
-        return (
-            <CircularProgress />
-        );
+        return <CircularProgress />;
     }
 
     render() {
@@ -51,8 +56,8 @@ export default class ServerSelectionPage extends React.Component<Props, State> {
 
         return (
             <Stack alignItems="center" className="grow basis-0">
-                { clicked ? this.renderLoading() : this.renderServers() }
+                {clicked ? this.renderLoading() : this.renderServers()}
             </Stack>
-        )
+        );
     }
 }
