@@ -1,4 +1,4 @@
-import { Currency, MemberBalance, ServerMember } from "@prisma/client";
+import { Currency, MemberBalance, ModuleName, ServerMember } from "@prisma/client";
 import { inlineCode, ResolvedArgs } from "@yokilabs/bot";
 import { Message } from "guilded.js";
 import ms from "ms";
@@ -8,7 +8,10 @@ import { CommandContext } from "../../typings";
 import { bankCooldown } from "../income/income-defaults";
 
 export function generateBankCommand(balanceType: string, action: string, actionDone: string, depositMultiplier: number, getBalanceAmount: (balance: MemberBalance | undefined, startingBalance: number | null) => number) {
-    return async (message: Message, args: Record<string, ResolvedArgs>, ctx: TuxoClient, _context: CommandContext) => {
+    return async (message: Message, args: Record<string, ResolvedArgs>, ctx: TuxoClient, { server }: CommandContext) => {
+        if (server.modulesDisabled.includes(ModuleName.ECONOMY))
+            return ctx.messageUtil.replyWithError(message, "Economy module disabled", `Economy module has been disabled and this command cannot be used.`);
+
         const amount = args.amount ? Math.floor(args.amount as number) : null;
         const tag = (args.tag as string).toLowerCase();
 

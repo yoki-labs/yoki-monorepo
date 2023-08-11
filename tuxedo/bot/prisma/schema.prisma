@@ -20,11 +20,17 @@ model Server {
     prefix   String?
     locale   String  @default("en-US")
     timezone String?
+    modulesDisabled ModuleName[] @default([])
 
     // --- Incomes
     disableDefaultIncomes DefaultIncomeType[]
 
     botJoinedAt DateTime? @default(now())
+}
+
+enum ModuleName {
+    ECONOMY
+    SHOP
 }
 
 model Giveaway {

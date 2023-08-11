@@ -37,7 +37,7 @@ export default {
             // There is no income by that name, nor a command
             if (!incomeByName) return;
 
-            return useCustomIncomeCommand(ctx, message, incomeByName);
+            return useCustomIncomeCommand(ctx, message, server, incomeByName);
         }
 
         const member = await ctx.members.fetch(message.serverId!, message.authorId).catch(() => null);

@@ -1,6 +1,5 @@
 import { Currency, DefaultIncomeType, IncomeCommand, MemberBalance, Reward, ServerMember } from "@prisma/client";
 import { Util } from "@yokilabs/bot";
-import { formatDate } from "@yokilabs/utils";
 import { nanoid } from "nanoid";
 
 import type { TuxoClient } from "../Client";
@@ -15,17 +14,7 @@ export class DatabaseUtil extends Util<TuxoClient> {
             .then((server) => {
                 if (!server && createIfNotExists) return this.createFreshServerInDatabase(serverId);
                 return server ?? null;
-            })
-            .then((data) =>
-                data
-                    ? {
-                          ...data,
-                          getPrefix: () => data.prefix ?? this.client.prefix,
-                          getTimezone: () => data.timezone ?? "America/New_York",
-                          formatDateByTimezone: (date: Date) => formatDate(date, data.timezone ?? "America/New_York"),
-                      }
-                    : null
-            );
+            });
     }
 
     createFreshServerInDatabase(serverId: string, data?: Record<string, any>) {
@@ -55,6 +44,36 @@ export class DatabaseUtil extends Util<TuxoClient> {
                 // Only server is necessary
                 .then(([server]) => server)
         );
+    }
+
+    /**
+     * Gets whether a module is enabled in a DB server.
+     * @param server The server to check modules of
+     * @param module The module to check in the server
+     * @returns Whether the given module is enabled
+     */
+    hasEnabledModule(server: Server, module: number) {
+        return Boolean(server.modules & module);
+    }
+
+    /**
+     * Appends/enables a module to server's module list and returns the new list.
+     * @param server The server to append module in
+     * @param module The module to append in the server's enabled modules
+     * @returns Server's new module enum with appended module
+     */
+    enableModule(server: Server, module: number) {
+        return server.modules | module;
+    }
+
+    /**
+     * Removes/disables a module from server's module list and returns the new list.
+     * @param server The server to remove module from
+     * @param module The module to remove from the server's enabled modules
+     * @returns Server's new module enum without the provided module
+     */
+    disableModule(server: Server, module: number) {
+        return server.modules & ~module;
     }
 
     getCurrencies(serverId: string) {

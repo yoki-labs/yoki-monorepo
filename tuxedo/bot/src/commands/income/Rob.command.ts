@@ -1,4 +1,4 @@
-import { Currency, DefaultIncomeType, MemberBalance, Reward, ServerMember } from "@prisma/client";
+import { Currency, DefaultIncomeType, MemberBalance, ModuleName, Reward, ServerMember } from "@prisma/client";
 import { inlineCode } from "@yokilabs/bot";
 import { Member, Message } from "guilded.js";
 import ms from "ms";
@@ -27,7 +27,11 @@ const Rob: Command = {
             type: "member",
         },
     ],
-    execute: async (message, args, ctx) => {
+    execute: async (message, args, ctx, { server }) => {
+        // Allow one kill switch to shut all of it down if necessary without any additional hassle
+        if (server.modulesDisabled.includes(ModuleName.ECONOMY))
+            return ctx.messageUtil.replyWithError(message, "Economy module disabled", `Economy module has been disabled and this command cannot be used.`);
+
         const target = args.target as Member;
 
         // Makes no sense to rob yourself

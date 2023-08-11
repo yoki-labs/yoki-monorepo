@@ -1,4 +1,4 @@
-import { Currency, DefaultIncomeType, IncomeCommand, MemberBalance, Reward, ServerMember } from "@prisma/client";
+import { Currency, DefaultIncomeType, IncomeCommand, MemberBalance, ModuleName, Reward, ServerMember } from "@prisma/client";
 import { CommandContext, inlineQuote, ResolvedArgs } from "@yokilabs/bot";
 import { Message } from "guilded.js";
 import ms from "ms";
@@ -18,6 +18,10 @@ export function generateIncomeCommand(incomeType: DefaultIncomeType) {
     } = defaultIncomes[incomeType];
 
     return async function execute(message: Message, _args: Record<string, ResolvedArgs>, ctx: TuxoClient, { server, prefix }: CommandContext<Server>) {
+        // Allow one kill switch to shut all of it down if necessary without any additional hassle
+        if (server.modulesDisabled.includes(ModuleName.ECONOMY))
+            return ctx.messageUtil.replyWithError(message, "Economy module disabled", `Economy module has been disabled and this command cannot be used.`);
+
         if (server.disableDefaultIncomes.includes(incomeType))
             return ctx.messageUtil.replyWithError(message, "Command disabled", `This income command has been disabled!\n\nIt can be re-enable by using \`${prefix}income enable ${incomeType}\`.`);
 
@@ -31,7 +35,11 @@ export function generateIncomeCommand(incomeType: DefaultIncomeType) {
     };
 }
 
-export async function useCustomIncomeCommand(ctx: TuxoClient, message: Message, income: IncomeCommand & { rewards: Reward[] }) {
+export async function useCustomIncomeCommand(ctx: TuxoClient, message: Message, server: Server, income: IncomeCommand & { rewards: Reward[] }) {
+    // Allow one kill switch to shut all of it down if necessary without any additional hassle
+    if (server.modulesDisabled.includes(ModuleName.ECONOMY))
+        return ctx.messageUtil.replyWithError(message, "Economy module disabled", `Economy module has been disabled and this command cannot be used.`);
+
     const currencies = await ctx.dbUtil.getCurrencies(message.serverId!);
 
     if (!currencies.length)

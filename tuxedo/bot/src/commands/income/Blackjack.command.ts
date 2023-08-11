@@ -1,4 +1,4 @@
-import { Currency, DefaultIncomeType, Reward } from "@prisma/client";
+import { Currency, DefaultIncomeType, ModuleName, Reward } from "@prisma/client";
 import { Category, Command } from "../commands";
 import ms from "ms";
 import { defaultIncomes } from "./income-defaults";
@@ -27,7 +27,11 @@ const Blackjack: Command = {
             optional: true,
         },
     ],
-    execute: async (message, args, ctx) => {
+    execute: async (message, args, ctx, { server }) => {
+        // Allow one kill switch to shut all of it down if necessary without any additional hassle
+        if (server.modulesDisabled.includes(ModuleName.ECONOMY))
+            return ctx.messageUtil.replyWithError(message, "Economy module disabled", `Economy module has been disabled and this command cannot be used.`);
+
         const tag = args.currency as string;
         const amount = Math.floor(args.amount as number);
 
