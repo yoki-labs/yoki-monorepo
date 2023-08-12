@@ -4,7 +4,7 @@ import { inlineQuote } from "@yokilabs/bot";
 import { Category, Command } from "../commands";
 import { getUnavailableIncomeNames, nameRegex } from "./income-util";
 
-const MAX_CUSTOM_INCOMES = 10;
+const MAX_CUSTOM_INCOMES = 6;
 
 const Create: Command = {
     name: "income-create",

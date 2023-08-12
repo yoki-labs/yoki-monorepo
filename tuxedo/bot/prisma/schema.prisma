@@ -28,11 +28,6 @@ model Server {
     botJoinedAt DateTime? @default(now())
 }
 
-enum ModuleName {
-    ECONOMY
-    SHOP
-}
-
 model Giveaway {
     // Basics
     id           String   @id @db.VarChar(255)
@@ -51,6 +46,7 @@ model Giveaway {
     createdAt    DateTime @default(now())
 }
 
+///// Currencies & Economy /////
 model Currency {
     // Basics
     id              String   @id @db.VarChar(255)
@@ -62,7 +58,7 @@ model Currency {
     startingBalance Int?
     maximumBalance  Int?
     bankEnabled     Boolean  @default(true)
-    canLose         Boolean  @default(true)
+    //canLose         Boolean  @default(true)
     // Who, when
     createdBy       String?  @db.VarChar(255)
     createdAt       DateTime @default(now())
@@ -85,16 +81,6 @@ model IncomeCommand {
     createdAt       DateTime           @default(now())
 }
 
-// model IncomeCommand {
-//     // Basics
-//     id         Int      @id @default(autoincrement())
-//     serverId   String   @db.VarChar(255)
-//     name       String   @db.VarChar(50)
-//     // Income
-//     cooldownMs Int
-//     rewards    Reward[]
-// }
-
 model Reward {
     // Basics
     id              Int           @id @default(autoincrement())
@@ -102,15 +88,23 @@ model Reward {
     // Relations
     incomeCommandId Int
     incomeCommand   IncomeCommand @relation(fields: [incomeCommandId], references: [id])
-
-    // incomeCommandId Int?
-    // incomeCommand   IncomeCommand? @relation(fields: [incomeCommandId], references: [id])
     // Reward
     currencyId String @db.VarChar(255)
     minAmount  Int
     maxAmount  Int
 }
 
+enum DefaultIncomeType {
+    DAILY
+    WORK
+    HOBBY
+    CHORE
+    COMMUNITY
+    ROB
+    BLACKJACK
+}
+
+///// Member Stuff /////
 model ServerMember {
     // Basics
     id       String          @id @db.VarChar(255)
@@ -136,7 +130,12 @@ model MemberBalance {
     all        Int          @default(0)
 }
 
+///// Additional Configuration /////
 // Copied from Yoki
+enum ModuleName {
+    ECONOMY
+    SHOP
+}
 model Role {
     id        Int      @id @default(autoincrement())
     serverId  String   @db.VarChar(255)
@@ -145,16 +144,6 @@ model Role {
     type      RoleType
 
     @@unique([serverId, roleId, type])
-}
-
-enum DefaultIncomeType {
-    DAILY
-    WORK
-    HOBBY
-    CHORE
-    COMMUNITY
-    ROB
-    BLACKJACK
 }
 
 enum PremiumType {

@@ -21,7 +21,7 @@ const Help: Command = {
             optional: true,
         },
     ],
-    execute: (message, args, ctx, commandCtx) => {
+    execute: async (message, args, ctx, commandCtx) => {
         const commandPath = (args.commandPath as string | null)?.toLowerCase();
 
         // For ?help link url add
@@ -44,9 +44,15 @@ const Help: Command = {
         commandCategoryMap.forEach((value, key) => {
             embed.addField(key in Category ? Category[key] : key, listInlineCode(value.map((x) => x.name))!, value.length < 4);
         });
+        // Display server custom incomes
+        const customIncomes = (await ctx.dbUtil.getIncomeOverrides(message.serverId!)).filter((x) => x.name);
+
+        if (customIncomes.length)
+            embed.addField(":small_orange_diamond: Server Incomes", listInlineCode(customIncomes.map((x) => x.name) as string[])!);
+
         embed.addField(
             ":exclamation: NOTE!!!",
-            "Tuxo is still in very early access and may contain bugs or will be missing certain features. Be sure to join [Yoki Labs server](https://yoki.gg/support) and report issues or submit feedback related to it. :heart_gil:"
+            "Tuxo is still in early stages. Be sure to join [Yoki Labs server](https://yoki.gg/support) and report any issues you find or to submit feedback. :heart_gil:"
         );
 
         return ctx.messageUtil.reply(message, { embeds: [embed] });
