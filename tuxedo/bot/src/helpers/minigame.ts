@@ -60,20 +60,26 @@ export class MinigameUtil extends TickedUtil {
 
         let condition: BlackjackCondition = BlackjackCondition.Playing;
 
+        const dealerDeckValue = this.getDealerDeckValue(instance.dealerDeck);
+
         // Deck is a bust; the max is 21 as your num and even with aces being 1 it's over 21
         if (currentDeckValue > 21) {
-            condition = BlackjackCondition.Lost
             // It's done
             this._blackJackInstances.splice(instanceIndex, 1);
-
+            
             // Remove balance
-            await this.updateBlackjackPlayer(instance, -1);
+            return Promise.all([
+                this.updateBlackjackMessage(instance, currentDeckValue, dealerDeckValue, BlackjackCondition.Lost),
+                this.updateBlackjackPlayer(instance, -1),
+            ]);
+        }
+        else if (currentDeckValue === 21 && dealerDeckValue === 21) {
+            this._blackJackInstances.splice(instanceIndex, 1);
+
+            return this.updateBlackjackMessage(instance, currentDeckValue, dealerDeckValue, BlackjackCondition.NeutralPush);
         }
         else if (currentDeckValue === 21) {
-            const dealerDeckValue = this.getDealerDeckValue(instance.dealerDeck);
-            // Could still be neutral
-            if (dealerDeckValue === 21)
-                return this.updateBlackjackMessage(instance, currentDeckValue, dealerDeckValue, BlackjackCondition.NeutralPush);
+            this._blackJackInstances.splice(instanceIndex, 1);
 
             return Promise.all([
                 this.updateBlackjackMessage(instance, currentDeckValue, dealerDeckValue, BlackjackCondition.Won),
