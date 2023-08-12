@@ -24,7 +24,7 @@ const Disable: Command = {
 
         // No reason to enable it if it's already enabled
         if (server.modulesDisabled.includes(module.resolved as ModuleName))
-            return ctx.messageUtil.replyWithError(message, "Already enabled", `The module ${inlineCode(module.original.toLowerCase())} is already enabled.`)
+            return ctx.messageUtil.replyWithError(message, "Already enabled", `The module ${inlineCode(module.resolved)} is already enabled.`)
 
         void ctx.amp.logEvent({ event_type: "MODULE_DISABLE", user_id: message.authorId, event_properties: { serverId: message.serverId!, module: module.resolved } });
         return ctx.prisma.server
@@ -32,13 +32,7 @@ const Disable: Command = {
                 where: { id: server.id },
                 data: { modulesDisabled: server.modulesDisabled.concat(module.resolved as ModuleName) },
             })
-            .then(() => ctx.messageUtil.replyWithSuccess(message, `Module disabled`, `Successfully disabled the ${inlineCode(module)} module for this server.`))
-            .catch((e: Error) =>
-                ctx.messageUtil.replyWithUnexpected(
-                    message,
-                    `There was an issue disabling the ${module} module for your server. Please forward this error to bot staff: ${inlineCode(e.message)}`
-                )
-            );
+            .then(() => ctx.messageUtil.replyWithSuccess(message, `Module disabled`, `Successfully disabled the ${inlineCode(module.resolved)} module for this server.`));
     },
 };
 
