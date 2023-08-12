@@ -1,5 +1,5 @@
 import { Giveaway } from "@prisma/client";
-import { inlineCode } from "@yokilabs/bot";
+import { errorEmbed, inlineCode } from "@yokilabs/bot";
 import { Colors, formatDate, shuffleArray } from "@yokilabs/utils";
 import { stripIndents } from "common-tags";
 import { Embed, EmbedField } from "guilded.js";
@@ -97,7 +97,6 @@ export class GiveawayUtil extends TickedUtil {
         // Find non-expired giveaways
         const activeGiveaways = await this.client.prisma.giveaway.findMany({ where: { hasEnded: false } });
 
-        console.log("Found giveaways", activeGiveaways);
         for (const giveaway of activeGiveaways) this.addGiveaway(giveaway);
 
         return this;
@@ -116,19 +115,17 @@ export class GiveawayUtil extends TickedUtil {
     async handleGiveaways() {
         const nextTick = Date.now() + tickIntervalMs;
 
-        console.log("Ticked giveaways", this._longGiveaways);
         // Get ending giveaways to cache and start actively tracking them
         const newEndingGiveaways = Object.keys(this._longGiveaways).filter((x) => this._longGiveaways[x].endsAt <= nextTick);
 
-        console.log("Ending giveaways:", newEndingGiveaways);
         if (newEndingGiveaways.length) {
-            console.log("Handling ending giveaways");
             this._endingGiveawayPool.push(...(await this.client.prisma.giveaway.findMany({ where: { id: { in: newEndingGiveaways } } })));
 
             // Since we pulled, it will be handled separately
             for (const endingGiveawayId of newEndingGiveaways) delete this._longGiveaways[endingGiveawayId];
         }
 
+        // Save all the users who participated in the giveaway into DB; we don't want to do that each time user joins giveaway
         await Promise.allSettled(
             Object.values(this._participants).map(({ giveawayId, users }) =>
                 this.client.prisma.giveaway.update({
@@ -144,21 +141,18 @@ export class GiveawayUtil extends TickedUtil {
     }
 
     async handleEndingGiveaways() {
-        console.log("Ticking ending giveaways");
         const now = Date.now();
 
-        console.log("Ending giveaways", this._endingGiveawayPool);
         for (const giveaway of this._endingGiveawayPool)
             try {
-                const { channelId, messageId } = giveaway;
+                //const { channelId, messageId } = giveaway;
 
                 // End it
-                console.log("Is giveaway ending:", giveaway.endsAt.getTime() <= now, giveaway);
-
                 if (giveaway.endsAt.getTime() <= now) await this.concludeGiveaway(giveaway);
-                else await this.client.messages.update(channelId, messageId, this.createGiveawayEmbed(giveaway));
+                //else await this.client.messages.update(channelId, messageId, this.createGiveawayEmbed(giveaway));
             } catch (e) {
                 console.error("Error", e);
+                this.client.errorHandler.send("Error while handling ending giveaways", [errorEmbed((e as Error).toString().substring(0, 2048))]);
             }
     }
 
