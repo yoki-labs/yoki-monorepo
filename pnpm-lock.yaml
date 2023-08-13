@@ -310,6 +310,9 @@ importers:
       '@mui/material':
         specifier: ^5.13.5
         version: 5.13.5(@emotion/react@11.11.1)(@emotion/styled@11.11.0)(@types/react@18.0.11)(react-dom@18.2.0)(react@18.2.0)
+      '@next/font':
+        specifier: ^13.4.13
+        version: 13.4.13
       '@prisma/client':
         specifier: ^4.2.1
         version: 4.13.0(prisma@4.8.1)
@@ -1290,6 +1293,10 @@ packages:
     dependencies:
       glob: 7.1.7
     dev: true
+
+  /@next/font@13.4.13:
+    resolution: {integrity: sha512-jzjUvjO967E2XWku5aImWRVApGwsTJZPp3lY5yFNWZHMkoNNKU9fsTEAhWVcKxCOYmHmSX1n2E09VkzuFdF48Q==}
+    dev: false
 
   /@next/swc-android-arm-eabi@12.3.4:
     resolution: {integrity: sha512-cM42Cw6V4Bz/2+j/xIzO8nK/Q3Ly+VSlZJTa1vHzsocJRYz8KT6MrreXaci2++SIZCF1rVRCDgAg5PpqRibdIA==}
