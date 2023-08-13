@@ -1,5 +1,4 @@
 import "../styles/globals.css";
-import "../styles/styles.css";
 
 import { CssVarsProvider } from "@mui/joy";
 import { Analytics } from "@vercel/analytics/react";
