@@ -35,17 +35,17 @@ export default function Navbar() {
                         </div>
                     </Link>
                     <NavbarItemList>
-                        <Link href="/" className="no-underline">
-                            <a className="nav-link">Home</a>
+                        <Link href="/" className="no-underline nav-link">
+                            Home
                         </Link>
-                        <Link href="/commands" className="no-underline">
-                            <a className="nav-link">Commands</a>
+                        <Link href="/commands" className="no-underline nav-link">
+                            Commands
                         </Link>
-                        <Link href="/premium" className="no-underline">
-                            <a className="nav-link premium">Premium</a>
+                        <Link href="/premium" className="no-underline nav-link premium">
+                            Premium
                         </Link>
-                        <Link href="/invite" className="no-underline">
-                            <a className="nav-link invite">Get Yoki</a>
+                        <Link href="/invite" className="no-underline nav-link invite">
+                            Get Yoki
                         </Link>
                     </NavbarItemList>
                     <Hamburger onClick={() => toggleSidebar()}>
@@ -72,23 +72,23 @@ export default function Navbar() {
                 </SideNavbarHeader>
                 <SideNavbarBody className={sidebarOpen ? "opened " : ""}>
                     <SideNavbarItem onClick={() => toggleSidebar()}>
-                        <Link href="/">
-                            <a className="link">Home</a>
+                        <Link href="/" className="link">
+                            Home
                         </Link>
                     </SideNavbarItem>
                     <SideNavbarItem onClick={() => toggleSidebar()}>
-                        <Link href="/commands">
-                            <a className="link">Commands</a>
+                        <Link href="/commands" className="link">
+                            Commands
                         </Link>
                     </SideNavbarItem>
                     <SideNavbarItem onClick={() => toggleSidebar()}>
-                        <Link href="/premium">
-                            <a className="premium">Premium</a>
+                        <Link href="/premium" className="premium">
+                            Premium
                         </Link>
                     </SideNavbarItem>
                     <SideNavbarItem onClick={() => toggleSidebar()}>
-                        <Link href="/invite">
-                            <a className="invite">Get Yoki</a>
+                        <Link href="/invite" className="invite">
+                            Get Yoki
                         </Link>
                     </SideNavbarItem>
                 </SideNavbarBody>

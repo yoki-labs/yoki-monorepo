@@ -1,5 +1,10 @@
+import "../styles/globals.css";
+import "../styles/styles.css";
+
+import { CssVarsProvider } from "@mui/joy";
 import { Analytics } from "@vercel/analytics/react";
 import type { AppProps } from "next/app";
+import { Inter } from "next/font/google";
 import Head from "next/head";
 import { NextPage } from "next/types";
 import { Session } from "next-auth";
@@ -7,9 +12,6 @@ import { SessionProvider } from "next-auth/react";
 import { ReactElement, ReactNode } from "react";
 import { QueryClient, QueryClientProvider } from "react-query";
 
-import "../styles/globals.css";
-import "../styles/styles.css";
-import { CssVarsProvider, ThemeProvider } from "@mui/joy";
 import { theme } from "../styles/theme";
 
 const ogDescription = "Meet Yoki, your moderation companion. Guilded's first moderation bot.";
@@ -27,6 +29,8 @@ type AppPropsWithLayout = AppProps<{ session: Session }> & {
 };
 
 const queryClient = new QueryClient();
+
+const inter = Inter({ subsets: ["latin"] });
 
 function MyApp({ Component, pageProps: { session, ...pageProps } }: AppPropsWithLayout) {
     const layout = Component.getLayout ?? ((page) => page);
@@ -52,19 +56,15 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }: AppPropsWith
                 <meta name="twitter:image" content={ogFace} />
 
                 <link rel="icon" href="/favicon.ico" />
-
-                <link rel="preload" href="/fonts/inter/Inter-Bold.ttf" as="font/ttf" crossOrigin="anonymous" />
-                <link rel="preload" href="/fonts/inter/Inter-Medium.ttf" as="font/ttf" crossOrigin="anonymous" />
-                <link rel="preload" href="/fonts/inter/Inter-Regular.ttf" as="font/ttf" crossOrigin="anonymous" />
-                <link rel="preload" href="/fonts/inter/Inter-SemiBold.ttf" as="font/ttf" crossOrigin="anonymous" />
-
                 <style>html, body, #__next {`{ width: 100%; height: 100%; }`}</style>
             </Head>
             <SessionProvider session={session}>
                 <QueryClientProvider client={queryClient}>
                     {/* <gqlClientContext.Provider value={gql}> */}
                     <CssVarsProvider theme={theme}>
-                        <Component {...pageProps} />
+                        <main className={inter.className}>
+                            <Component {...pageProps} />
+                        </main>
                     </CssVarsProvider>
                     {/* </gqlClientContext.Provider> */}
                 </QueryClientProvider>
