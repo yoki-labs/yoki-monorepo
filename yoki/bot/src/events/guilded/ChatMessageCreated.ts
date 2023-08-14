@@ -97,7 +97,7 @@ export default {
                 ctx.messages.delete(message.channelId, message.id)
             );
 
-            if (server.scanNSFW) {
+            if (server.scanNSFW && server.premium) {
                 await ctx.contentFilterUtil.scanMessageMedia(message);
             }
             return;
