@@ -34,7 +34,7 @@ const Eval: Command = {
     hidden: true,
     // usage: "",
     devOnly: true,
-    // rawArgs: true,
+    rawArgs: true,
     args: [{ type: "rest", name: "code" }],
     // @ts-ignore _ causes italics, which get turned to *
     // eslint-disable-next-line unused-imports/no-unused-vars
