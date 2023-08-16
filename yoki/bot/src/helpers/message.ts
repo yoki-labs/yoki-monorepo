@@ -50,6 +50,13 @@ export class MessageUtil extends BaseMessageUtil<YokiClient, Server, Command> {
                     if (!server) return;
 
                     const { defaultChannelId } = server;
+                    await this.client.prisma.logChannel.deleteMany({ where: { channelId: where, serverId } });
+                    await this.client.errorHandler.send(stripIndents`
+                        Deleted log channel for count
+                        Channel: \`${where}\`
+                        Count: \`${existing}\`
+                    `);
+
                     if (defaultChannelId)
                         await this.client.messageUtil.send(defaultChannelId, {
                             embeds: [
@@ -64,12 +71,6 @@ export class MessageUtil extends BaseMessageUtil<YokiClient, Server, Command> {
                                 },
                             ],
                         });
-                    await this.client.prisma.logChannel.deleteMany({ where: { channelId: where, serverId } });
-                    await this.client.errorHandler.send(stripIndents`
-					Deleted log channel for count
-					Channel: \`${where}\`
-					Count: \`${existing}\`
-				`);
                     delete this.logchannelErrCounter[where];
                 } else {
                     await this.client.errorHandler.send(stripIndents`
