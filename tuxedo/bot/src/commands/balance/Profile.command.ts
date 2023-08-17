@@ -10,7 +10,7 @@ const Profile: Command = {
     name: "profile",
     description: "View information in Tuxo about a user or yourself.",
     examples: ["0mqNyllA"],
-    aliases: ["money", "bal", "inventory", "inv", "pr"],
+    aliases: ["money", "balance", "bal", "inventory", "inv", "pr"],
     category: Category.Balance,
     args: [
         {

@@ -90,7 +90,7 @@ model Reward {
     serverId        String        @db.VarChar(255)
     // Relations
     incomeCommandId Int
-    incomeCommand   IncomeCommand @relation(fields: [incomeCommandId], references: [id])
+    incomeCommand   IncomeCommand @relation(fields: [incomeCommandId], references: [id], onDelete: Cascade)
     // Reward
     currencyId String @db.VarChar(255)
     minAmount  Int
@@ -128,7 +128,7 @@ model ItemValue {
     serverId        String        @db.VarChar(255)
     // Relations
     itemId          String        @db.VarChar(32)
-    item            Item          @relation(fields: [itemId], references: [id])
+    item            Item          @relation(fields: [itemId], references: [id], onDelete: Cascade)
     // Reward
     currencyId String @db.VarChar(255)
     amount     Int
@@ -154,7 +154,7 @@ model MemberBalance {
     memberId   String       @db.VarChar(255)
     currencyId String       @db.VarChar(255)
     // Relations
-    member     ServerMember @relation(fields: [memberId], references: [id])
+    member     ServerMember @relation(fields: [memberId], references: [id], onDelete: Cascade)
     // Balance
     pocket     Int          @default(0)
     bank       Int          @default(0)
@@ -167,7 +167,7 @@ model MemberItem {
     memberId   String       @db.VarChar(255)
     itemId     String       @db.VarChar(32)
     // Relations
-    member     ServerMember @relation(fields: [memberId], references: [id])
+    member     ServerMember @relation(fields: [memberId], references: [id], onDelete: Cascade)
     // Inventory
     amount     Int
 }

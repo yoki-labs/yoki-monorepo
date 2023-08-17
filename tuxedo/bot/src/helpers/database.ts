@@ -122,7 +122,7 @@ export class DatabaseUtil extends Util<TuxoClient> {
 
     deleteItem(item: Item) {
         return Promise.all([
-            this.client.prisma.item.delete({
+            this.client.prisma.item.deleteMany({
                 where: {
                     id: item.id,
                 },
