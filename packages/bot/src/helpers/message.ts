@@ -220,13 +220,10 @@ export class MessageUtil<
         if (incrementedPage > possiblePages)
             return this.replyWithNullState(message, `No items here`, `There are no items at page ${inlineCode(incrementedPage)}.`, undefined, messagePartial);
 
-        const startingIndex = itemsPerPage * page;
-        const endingIndex = itemsPerPage * incrementedPage;
-
         return this.replyWithInfo(
             message,
             title,
-            items.slice(startingIndex, endingIndex).map(itemMapping).join("\n"),
+            this.createPaginatedText(page, items, itemsPerPage, itemMapping),
             {
                 footer: {
                     text: `Page ${incrementedPage}/${possiblePages} \u2022 ${items.length} total entries`,
@@ -235,6 +232,18 @@ export class MessageUtil<
             },
             messagePartial
         );
+    }
+
+    createPaginatedText<T>(
+        page: number,
+        items: T[],
+        itemsPerPage: number,
+        itemMapping: (item: T, index: number) => string | T,
+    ) {
+        const startingIndex = itemsPerPage * page;
+        const endingIndex = itemsPerPage * (page + 1);
+
+        return items.slice(startingIndex, endingIndex).map(itemMapping).join("\n");
     }
 
     replyWithEnableStateList(message: Message, title: string, enabledItems: string[], allItems: string[], descriptions: Record<string, string>) {

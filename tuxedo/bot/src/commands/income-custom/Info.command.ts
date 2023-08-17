@@ -49,7 +49,7 @@ const Info: Command = {
                 fields: [
                     {
                         name: "Rewards",
-                        value: income?.rewards.length ? displayOverridenRewards(income, currencies) : displayDefaultRewards(incomeType!, currencies),
+                        value: income?.rewards.length ? displayOverridenRewards(income.rewards, currencies) : displayDefaultRewards(incomeType!, currencies),
                     },
                     {
                         name: "Income Info",

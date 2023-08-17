@@ -1,4 +1,4 @@
-import { Currency, DefaultIncomeType, IncomeCommand, Reward } from "@prisma/client";
+import { Currency, DefaultIncomeType, Reward } from "@prisma/client";
 import { inlineCode } from "@yokilabs/bot";
 
 import { TuxoClient } from "../../Client";
@@ -41,8 +41,8 @@ export const nameRegex = /^[A-Za-z-_]+$/;
 
 export const getUnavailableIncomeNames = (client: TuxoClient) => client.commands.map((command) => [command.name, ...(command.aliases ?? [])]).flatMap((x) => x);
 
-export const displayOverridenRewards = (incomeOverride: IncomeCommand & { rewards: Reward[] }, serverCurrencies: Currency[]) =>
-    incomeOverride.rewards
+export const displayOverridenRewards = (rewards: Reward[], serverCurrencies: Currency[]) =>
+    rewards
         .map((x) => {
             const currency = serverCurrencies.find((y) => x.currencyId === y.id);
 

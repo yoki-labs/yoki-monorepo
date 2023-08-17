@@ -1,4 +1,4 @@
-import { Currency, DefaultIncomeType, IncomeCommand, MemberBalance, Reward, ServerMember } from "@prisma/client";
+import { Currency, DefaultIncomeType, IncomeCommand, Item, ItemValue, MemberBalance, MemberItem, Reward, ServerMember } from "@prisma/client";
 import { Util } from "@yokilabs/bot";
 import { nanoid } from "nanoid";
 
@@ -99,8 +99,54 @@ export class DatabaseUtil extends Util<TuxoClient> {
         });
     }
 
+    getItems(serverId: string) {
+        return this.client.prisma.item.findMany({ where: { serverId }, include: { value: true } });
+    }
+
+    async getItem(serverId: string, id: string) {
+        return (await this.getItems(serverId)).find((x) => x.id === id);
+    }
+
+    createItem(serverId: string, createdBy: string, name: string, canBuy: boolean) {
+        return this.client.prisma.item.create({
+            data: {
+                id: nanoid(17),
+                serverId,
+                name,
+                canBuy,
+                createdBy,
+                createdAt: new Date(),
+            },
+        });
+    }
+
+    deleteItem(item: Item) {
+        return Promise.all([
+            this.client.prisma.item.delete({
+                where: {
+                    id: item.id,
+                },
+            }),
+            this.client.prisma.memberItem.deleteMany({
+                where: {
+                    serverId: item.serverId,
+                    itemId: item.id,
+                },
+            }),
+        ]);
+    }
+
+    updateItem(currency: Currency, data: Partial<Omit<Item, "id" | "serverId" | "createdAt" | "createdBy">>) {
+        return this.client.prisma.currency.update({
+            where: {
+                id: currency.id,
+            },
+            data,
+        });
+    }
+
     getServerMembers(serverId: string) {
-        return this.client.prisma.serverMember.findMany({ where: { serverId }, include: { balances: true } });
+        return this.client.prisma.serverMember.findMany({ where: { serverId }, include: { balances: true, items: true } });
     }
 
     getServerMember(serverId: string, userId: string) {
@@ -113,8 +159,19 @@ export class DatabaseUtil extends Util<TuxoClient> {
         member: (ServerMember & { balances: MemberBalance[] }) | undefined,
         balanceChanges: Pick<MemberBalance, "currencyId" | "pocket" | "bank">[]
     ) {
-        if (!member) return this.createMember(serverId, userId, balanceChanges);
+        if (!member) return this._createMember(serverId, userId, balanceChanges);
         return this._updateMemberBalance(member, balanceChanges);
+    }
+
+    updateServerMember(
+        serverId: string,
+        userId: string,
+        member: (ServerMember & { balances: MemberBalance[], items: MemberItem[] }) | undefined,
+        balanceChanges: Pick<MemberBalance, "currencyId" | "pocket" | "bank">[],
+        item?: Pick<MemberItem, "itemId" | "amount">,
+    ) {
+        if (!member) return this._createMember(serverId, userId, balanceChanges, item);
+        return this._updateMember(member, balanceChanges, item);
     }
 
     // async addToMemberBalance(serverId: string, userId: string, currencies: Currency[], balanceChanges: Record<string, number>) {
@@ -176,6 +233,7 @@ export class DatabaseUtil extends Util<TuxoClient> {
         return (await this.getIncomeOverrides(serverId)).find(incomeType ? (x) => x.incomeType === incomeType : (x) => x.name === name);
     }
 
+    //#region Incomes and Balances
     createOrUpdateIncome(
         serverId: string,
         createdBy: string,
@@ -276,8 +334,34 @@ export class DatabaseUtil extends Util<TuxoClient> {
             },
         });
     }
+    //#endregion
+    
+    //#region Item values and Item inventories
+    updateItemValue(item: Item & { value: ItemValue[] }, value: Omit<ItemValue, "id" | "itemId">) {
+        const existingValue = item.value.find((x) => x.currencyId === value.currencyId);
 
-    private createMember(serverId: string, userId: string, balances: Pick<MemberBalance, "currencyId" | "pocket" | "bank">[]) {
+        return this.client.prisma.item.update({
+            where: {
+                id: item.id,
+            },
+            data: {
+                value: {
+                    [existingValue ? "update" : "create"]: existingValue
+                        ? {
+                              where: {
+                                  id: existingValue.id,
+                              },
+                              data: value,
+                          }
+                        : value,
+                },
+            },
+        });
+    }
+    //#endregion
+
+    //#region Private member stuff
+    private _createMember(serverId: string, userId: string, balances: Pick<MemberBalance, "currencyId" | "pocket" | "bank">[], item?: Pick<MemberItem, "itemId" | "amount">) {
         return this.client.prisma.serverMember.create({
             data: {
                 id: nanoid(17),
@@ -292,6 +376,12 @@ export class DatabaseUtil extends Util<TuxoClient> {
                         all: pocket + bank,
                     })),
                 },
+                items: item ? {
+                    create: {
+                        ...item,
+                        serverId,
+                    },
+                } : undefined,
             },
         });
     }
@@ -334,5 +424,86 @@ export class DatabaseUtil extends Util<TuxoClient> {
                 },
             },
         });
+    }
+
+    private _updateMember(member: ServerMember & { balances: MemberBalance[], items: MemberItem[] }, balances: Pick<MemberBalance, "currencyId" | "pocket" | "bank">[], item?: Pick<MemberItem, "itemId" | "amount">) {
+        const balanceUpdate = member.balances.map((x) => {
+            const updated = balances.find((y) => y.currencyId === x.currencyId);
+
+            return {
+                where: {
+                    id: x.id,
+                },
+                data: {
+                    pocket: updated?.pocket ?? x.pocket,
+                    bank: updated?.bank ?? x.bank,
+                    all: (updated?.pocket ?? x.pocket) + (updated?.bank ?? x.bank),
+                },
+            };
+        });
+
+        // Because someone might get currency they never had previously
+        const createBalances = balances
+            .filter((x) => !member.balances.find((y) => y.currencyId === x.currencyId))
+            .map(({ currencyId, pocket, bank }) => ({
+                serverId: member.serverId,
+                currencyId,
+                pocket,
+                bank,
+                all: pocket + bank,
+            })) as Omit<MemberBalance, "id" | "memberId" | "member">[];
+
+        return this.client.prisma.serverMember.update({
+            where: {
+                id: member.id,
+            },
+            data: {
+                balances: {
+                    update: balanceUpdate,
+                    createMany: createBalances.length ? { data: createBalances } : undefined,
+                },
+                items: item && createItemDataMethod(member.serverId, item, member.items.find((x) => x.itemId === item.itemId))
+                // items: item && {
+                //     [existingItem ? item.amount === 0 ? "delete" : "update" : "create"]: existingItem
+                //         ? {
+                //             where: {
+                //                 id: existingItem.id,
+                //             },
+                //             data: item
+                //         }
+                //         : {
+                //             ...item,
+                //             serverId: member.serverId,
+                //         },
+                // }
+            },
+        });
+    }
+    //#endregion
+}
+
+function createItemDataMethod(serverId: string, item: Pick<MemberItem, "itemId" | "amount">, existingItem: MemberItem | undefined) {
+    // We no longer need to store it
+    if (existingItem && item.amount === 0)
+        return {
+            delete: {
+                id: existingItem.id,
+            },
+        };
+    else if (existingItem)
+        return {
+            update: {
+                where: {
+                    id: existingItem.id,
+                },
+                data: item,
+            },
+        };
+
+    return {
+        create: {
+            ...item,
+            serverId,
+        }
     }
 }

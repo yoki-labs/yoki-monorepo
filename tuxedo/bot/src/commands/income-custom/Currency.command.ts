@@ -5,6 +5,7 @@ import { Message } from "guilded.js";
 import { TuxoClient } from "../../Client";
 import { Category, Command } from "../commands";
 import { DefaultIncomeTypeMap, displayDefaultRewards, displayOverridenRewards } from "./income-util";
+import { displayCurrency } from "../../util/text";
 
 const SetCurrency: Command = {
     name: "income-currency",
@@ -58,7 +59,7 @@ const SetCurrency: Command = {
             return ctx.messageUtil.replyWithInfo(
                 message,
                 `Rewards for ${command}`,
-                incomeOverride?.rewards.length ? displayOverridenRewards(incomeOverride, serverCurrencies) : displayDefaultRewards(command, serverCurrencies)
+                incomeOverride?.rewards.length ? displayOverridenRewards(incomeOverride.rewards, serverCurrencies) : displayDefaultRewards(command, serverCurrencies)
             );
 
         // Rewarded currency
@@ -73,7 +74,8 @@ const SetCurrency: Command = {
                 `Please provide minimum and maximum amounts of ${currency.name} user should received from ${command}.`
             );
 
-        if (minAmount === 0 && maxAmount === 0) return removeCurrencyReward(ctx, message, command, currency, incomeOverride);
+        if (minAmount === 0 && maxAmount === 0)
+            return removeCurrencyReward(ctx, message, command, currency, incomeOverride);
 
         await ctx.dbUtil.createOrUpdateIncomeReward(message.serverId!, message.createdById, incomeType, command, incomeOverride, {
             serverId: message.serverId!,
@@ -106,7 +108,7 @@ async function removeCurrencyReward(
 
     await ctx.prisma.reward.deleteMany({ where: { currencyId: currency.id, serverId: message.serverId!, incomeCommandId: incomeOverride.id } });
 
-    return ctx.messageUtil.replyWithSuccess(message, "Rewarded currency removed", `The ${incomeType.toLowerCase()} will no longer hand out ${currency.name}.`);
+    return ctx.messageUtil.replyWithSuccess(message, "Rewarded currency removed", `The ${incomeType.toLowerCase()} will no longer hand out ${displayCurrency(currency)}.`);
 }
 
 export default SetCurrency;

@@ -24,10 +24,12 @@ model Server {
 
     // --- Incomes
     disableDefaultIncomes DefaultIncomeType[]
+    sellCut               Float @default(1)
 
     botJoinedAt DateTime? @default(now())
 }
 
+///// Other features /////
 model Giveaway {
     // Basics
     id           String   @id @db.VarChar(255)
@@ -80,7 +82,8 @@ model IncomeCommand {
     createdBy       String             @default("Ann6LewA") @db.VarChar(255)
     createdAt       DateTime           @default(now())
 }
-
+// Command and action received reward; this originally held item prices too, but it may have additional stuff
+// that may not prove to be as useful in prices and stuff + hogs additional IDs easily
 model Reward {
     // Basics
     id              Int           @id @default(autoincrement())
@@ -104,6 +107,33 @@ enum DefaultIncomeType {
     BLACKJACK
 }
 
+///// Items /////
+model Item {
+    // Basics
+    id              String             @id @db.VarChar(32)
+    serverId        String             @db.VarChar(255)
+    name            String             @db.VarChar(64)
+    // Overrides
+    value           ItemValue[]
+    givesRoles      Int[]              @db.Integer
+    canBuy          Boolean            @default(false)
+    // Who, when
+    createdBy       String             @db.VarChar(255)
+    createdAt       DateTime           @default(now())
+}
+// For giveaways in the future, item prices
+model ItemValue {
+    // Basics
+    id              Int           @id @default(autoincrement())
+    serverId        String        @db.VarChar(255)
+    // Relations
+    itemId          String        @db.VarChar(32)
+    item            Item          @relation(fields: [itemId], references: [id])
+    // Reward
+    currencyId String @db.VarChar(255)
+    amount     Int
+}
+
 ///// Member Stuff /////
 model ServerMember {
     // Basics
@@ -113,7 +143,8 @@ model ServerMember {
     // Inventory
     // balance     Json?           @db.JsonB
     // bankBalance Json?           @db.JsonB
-    balances MemberBalance[]
+    balances   MemberBalance[]
+    items      MemberItem[]
 }
 
 model MemberBalance {
@@ -128,6 +159,17 @@ model MemberBalance {
     pocket     Int          @default(0)
     bank       Int          @default(0)
     all        Int          @default(0)
+}
+model MemberItem {
+    // Basics
+    id         Int          @id @default(autoincrement())
+    serverId   String       @db.VarChar(255)
+    memberId   String       @db.VarChar(255)
+    itemId     String       @db.VarChar(32)
+    // Relations
+    member     ServerMember @relation(fields: [memberId], references: [id])
+    // Inventory
+    amount     Int
 }
 
 ///// Additional Configuration /////
