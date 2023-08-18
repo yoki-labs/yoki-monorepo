@@ -80,17 +80,25 @@ const Buy: Command = {
         }
 
         const existingItem = member?.items.find((x) => x.itemId === item.id);
+        const newCount = (existingItem?.amount ?? 0) + itemAmount;
 
-        await ctx.dbUtil.updateServerMember(
-            message.serverId!,
-            message.createdById,
-            member,
-            balances,
-            {
-                itemId: item.id,
-                amount: (existingItem?.amount ?? 0) + itemAmount,
-            }
-        );
+        await Promise.all([
+            // TODO: Too many roles to give 
+            // ...(!existingItem?.amount && item.givesRoles.length ? item.givesRoles.map((x) =>
+            //     ctx.roles.addRoleToMember(message.serverId!, message.createdById, x)
+            // ) : [])
+            !existingItem?.amount && item.givesRoles.length && ctx.roles.addRoleToMember(message.serverId!, message.createdById, item.givesRoles[0]),
+            ctx.dbUtil.updateServerMember(
+                message.serverId!,
+                message.createdById,
+                member,
+                balances,
+                {
+                    itemId: item.id,
+                    amount: newCount,
+                }
+            ),
+        ]);
 
         return ctx.messageUtil.replyWithSuccess(
             message,

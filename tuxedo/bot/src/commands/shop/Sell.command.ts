@@ -94,17 +94,24 @@ const Sell: Command = {
         }
 
         const existingItem = member?.items.find((x) => x.itemId === item.id);
+        const newAmount = (existingItem?.amount ?? 0) - itemAmount;
 
-        await ctx.dbUtil.updateServerMember(
-            message.serverId!,
-            message.createdById,
-            member,
-            balances,
-            {
-                itemId: item.id,
-                amount: (existingItem?.amount ?? 0) - itemAmount,
-            }
-        );
+        await Promise.all([
+            ctx.dbUtil.updateServerMember(
+                message.serverId!,
+                message.createdById,
+                member,
+                balances,
+                {
+                    itemId: item.id,
+                    amount: newAmount,
+                }
+            ),
+            // They sold all the item stack and no longer has access to the item; role is tied to the item.
+            // TODO: As you can't remove multiple roles and if we did do it one by one it would lead to ratelimiting,
+            // it only does it for the first role
+            newAmount === 0 && item.givesRoles.length && ctx.roles.removeRoleFromMember(message.serverId!, message.createdById, item.givesRoles[0])
+        ]);
 
         // Notify user that they lost some of it
         const lostCurrencyAmounts = balances.filter((x) => x.lost);

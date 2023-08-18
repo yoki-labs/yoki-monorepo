@@ -7,6 +7,7 @@ import Create from "./Create.command";
 import Delete from "./Delete.command";
 import Info from "./Info.command";
 import SetPrice from "./Price.command";
+import SetGiveRole from "./GiveRole.command";
 
 const Items: Command = {
     name: "items",
@@ -21,6 +22,7 @@ const Items: Command = {
         .set("list", List)
         .set("info", Info)
         .set("price", SetPrice)
+        .set("giverole", SetGiveRole)
         .set("delete", Delete),
     execute: () => void 0,
 };

@@ -136,10 +136,10 @@ export class DatabaseUtil extends Util<TuxoClient> {
         ]);
     }
 
-    updateItem(currency: Currency, data: Partial<Omit<Item, "id" | "serverId" | "createdAt" | "createdBy">>) {
-        return this.client.prisma.currency.update({
+    updateItem(item: Item, data: Partial<Omit<Item, "id" | "serverId" | "createdAt" | "createdBy">>) {
+        return this.client.prisma.item.update({
             where: {
-                id: currency.id,
+                id: item.id,
             },
             data,
         });
@@ -453,6 +453,7 @@ export class DatabaseUtil extends Util<TuxoClient> {
                 all: pocket + bank,
             })) as Omit<MemberBalance, "id" | "memberId" | "member">[];
 
+        console.log("Create item method", [item && createItemDataMethod(member.serverId, item, member.items.find((x) => x.itemId === item.itemId))]);
         return this.client.prisma.serverMember.update({
             where: {
                 id: member.id,
@@ -505,5 +506,5 @@ function createItemDataMethod(serverId: string, item: Pick<MemberItem, "itemId" 
             ...item,
             serverId,
         }
-    }
+    };
 }

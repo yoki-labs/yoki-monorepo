@@ -1,5 +1,5 @@
 import { RoleType } from "@prisma/client";
-import { inlineCode, inlineQuote } from "@yokilabs/bot";
+import { inlineCode, inlineQuote, summarizeRolesOrUsers } from "@yokilabs/bot";
 import { formatDate } from "@yokilabs/utils";
 import { stripIndents } from "common-tags";
 
@@ -37,6 +37,10 @@ const Info: Command = {
             `Info about server's local item with the ID ${inlineCode(item.id)} created by <@${item.createdBy}>.`,
             {
                 fields: [
+                    {
+                        name: "Given Roles",
+                        value: item.givesRoles.length ? summarizeRolesOrUsers(item.givesRoles) : "No roles are given by this item.",
+                    },
                     {
                         name: "Price",
                         value: item.value.length ? displayItemValues(item.value, currencies) : "Item has no value and is free.",
