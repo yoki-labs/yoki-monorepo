@@ -24,6 +24,7 @@ const viewSettings = [
         category: "Incomes",
         properties: [
             ["disableDefaultIncomes", "json"],
+            ["sellCut", "json"],
         ],
     },
 ] as const;

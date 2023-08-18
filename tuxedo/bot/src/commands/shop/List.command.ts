@@ -1,4 +1,4 @@
-import { Currency, ItemValue, RoleType } from "@prisma/client";
+import { Currency, ItemValue, ModuleName, RoleType } from "@prisma/client";
 import { inlineQuote } from "@yokilabs/bot";
 
 import { Category, Command } from "../commands";
@@ -17,7 +17,11 @@ const List: Command = {
             optional: true,
         },
     ],
-    execute: async (message, args, ctx) => {
+    execute: async (message, args, ctx, { server }) => {
+        // Allow one kill switch to shut all of it down if necessary without any additional hassle
+        if (server.modulesDisabled.includes(ModuleName.SHOP))
+            return ctx.messageUtil.replyWithError(message, "Shop module disabled", `Shop module has been disabled and this command cannot be used.`);
+
         const page = (args.page as number | undefined ?? 1) - 1;
 
         const items = await ctx.prisma.item.findMany({

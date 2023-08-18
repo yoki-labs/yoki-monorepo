@@ -453,7 +453,6 @@ export class DatabaseUtil extends Util<TuxoClient> {
                 all: pocket + bank,
             })) as Omit<MemberBalance, "id" | "memberId" | "member">[];
 
-        console.log("Create item method", [item && createItemDataMethod(member.serverId, item, member.items.find((x) => x.itemId === item.itemId))]);
         return this.client.prisma.serverMember.update({
             where: {
                 id: member.id,

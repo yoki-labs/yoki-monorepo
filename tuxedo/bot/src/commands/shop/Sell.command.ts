@@ -1,4 +1,4 @@
-import { Currency, MemberBalance, RoleType } from "@prisma/client";
+import { Currency, MemberBalance, ModuleName, RoleType } from "@prisma/client";
 import { inlineCode, inlineQuote } from "@yokilabs/bot";
 
 import { Category, Command } from "../commands";
@@ -25,7 +25,11 @@ const Sell: Command = {
             optional: true,
         },
     ],
-    execute: async (message, args, ctx, { prefix }) => {
+    execute: async (message, args, ctx, { server, prefix }) => {
+        // Allow one kill switch to shut all of it down if necessary without any additional hassle
+        if (server.modulesDisabled.includes(ModuleName.SHOP))
+            return ctx.messageUtil.replyWithError(message, "Shop module disabled", `Shop module has been disabled and this command cannot be used.`);
+
         const number = args.number as number;
         const itemAmount = (args.amount as number | undefined) ?? 1;
 

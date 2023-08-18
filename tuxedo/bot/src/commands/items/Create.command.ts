@@ -2,6 +2,15 @@ import { RoleType } from "@prisma/client";
 import { inlineQuote } from "@yokilabs/bot";
 
 import { Category, Command } from "../commands";
+import { createServerLimit } from "../../util/premium";
+
+const getServerLimit = createServerLimit({
+    Gold: 60,
+    Silver: 45,
+    Copper: 35,
+    Early: 30,
+    Default: 20,
+});
 
 const Create: Command = {
     name: "items-create",
@@ -13,7 +22,7 @@ const Create: Command = {
     args: [
         {
             name: "name",
-            type: "rest",
+            type: "string",
             max: 100,
         },
         {
@@ -23,9 +32,17 @@ const Create: Command = {
             optional: true
         },
     ],
-    execute: async (message, args, ctx) => {
+    execute: async (message, args, ctx, { server }) => {
         const name = args.name as string;
         const canBuy = (args.canBuy as boolean | undefined) ?? true;
+
+        const serverItems = await ctx.dbUtil.getItems(message.serverId!);
+
+        // To not create too many of them for DB to blow up
+        const serverLimit = getServerLimit(server);
+
+        if (serverItems.length >= serverLimit)
+            return ctx.messageUtil.replyWithError(message, "Too many items", `You can only have ${serverLimit} items per server.${server.premium ? "" : "\n\n**Note:** You can upgrade to premium to increase the limit."}`);
 
         await ctx.dbUtil.createItem(message.serverId!, message.createdById, name, canBuy);
 
