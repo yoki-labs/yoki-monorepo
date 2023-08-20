@@ -36,7 +36,7 @@ const Rob: Command = {
 
         // Makes no sense to rob yourself
         if (target.id === message.createdById) return ctx.messageUtil.replyWithError(message, "Cannot rob yourself", `You cannot rob yourself as you own your own balance.`);
-        
+
         const serverConfig = (await ctx.dbUtil.getIncomeOverrides(message.serverId!)).find((x) => x.incomeType === DefaultIncomeType.ROB);
 
         const lastUsed = ctx.balanceUtil.getLastCommandUsage(message.serverId!, message.createdById, DefaultIncomeType.ROB);
@@ -127,7 +127,11 @@ async function handleFailState(ctx: TuxoClient, message: Message, executorInfo: 
         })
     );
 
-    return ctx.messageUtil.replyWithWarning(message, "Robbery failed", `You were caught and you were fined ${newBalance.map((x) => `:${x.currency.emote}: ${Math.floor(x.change * failCut)} ${x.currency.name}`).join(", ")}.`);
+    return ctx.messageUtil.replyWithWarning(
+        message,
+        "Robbery failed",
+        `You were caught and you were fined ${newBalance.map((x) => `:${x.currency.emote}: ${Math.floor(x.change * failCut)} ${x.currency.name}`).join(", ")}.`
+    );
 }
 
 async function handleSuccessState(

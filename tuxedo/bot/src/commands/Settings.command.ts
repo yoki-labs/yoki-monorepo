@@ -1,8 +1,8 @@
+import { RoleType } from "@prisma/client";
 import { Colors } from "@yokilabs/utils";
 import { Embed } from "guilded.js";
 
 import { Category, Command } from "./commands";
-import { RoleType } from "@prisma/client";
 
 const viewSettings = [
     {
@@ -16,9 +16,7 @@ const viewSettings = [
     },
     {
         category: "Preferences",
-        properties: [
-            ["modulesDisabled", "json"],
-        ],
+        properties: [["modulesDisabled", "json"]],
     },
     {
         category: "Incomes",
@@ -46,9 +44,8 @@ const Settings: Command = {
                 description += `[${propKey}]: `;
 
                 // Write content based on its type
-                if (type === "json")
-                    description += commandCtx.server[propKey] ? JSON.stringify(commandCtx.server[propKey]) : "unset";
-                //else if (type === "boolean") description += commandCtx.server[propKey] ? "🟢 enabled" : "🔴 disabled";
+                if (type === "json") description += commandCtx.server[propKey] ? JSON.stringify(commandCtx.server[propKey]) : "unset";
+                // else if (type === "boolean") description += commandCtx.server[propKey] ? "🟢 enabled" : "🔴 disabled";
 
                 description += "\n";
             }

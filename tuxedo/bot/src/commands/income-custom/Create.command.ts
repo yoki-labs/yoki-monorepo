@@ -1,9 +1,9 @@
 import { RoleType } from "@prisma/client";
 import { inlineQuote } from "@yokilabs/bot";
 
+import { createServerLimit } from "../../util/premium";
 import { Category, Command } from "../commands";
 import { getUnavailableIncomeNames, nameRegex } from "./income-util";
-import { createServerLimit } from "../../util/premium";
 
 const getServerLimit = createServerLimit({
     Gold: 50,
@@ -49,7 +49,11 @@ const Create: Command = {
         const serverLimit = getServerLimit(server);
 
         if (incomeCommands.length >= serverLimit)
-            return ctx.messageUtil.replyWithError(message, "Too many currencies", `You can only have ${serverLimit} currencies per server.${server.premium ? "" : "\n\n**Note:** You can upgrade to premium to increase the limit."}`);
+            return ctx.messageUtil.replyWithError(
+                message,
+                "Too many currencies",
+                `You can only have ${serverLimit} currencies per server.${server.premium ? "" : "\n\n**Note:** You can upgrade to premium to increase the limit."}`
+            );
 
         await ctx.prisma.incomeCommand.create({
             data: {

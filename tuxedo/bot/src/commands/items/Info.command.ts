@@ -4,7 +4,6 @@ import { formatDate } from "@yokilabs/utils";
 import { stripIndents } from "common-tags";
 
 import { Category, Command } from "../commands";
-
 import { displayItemValues } from "./item-values";
 const Info: Command = {
     name: "items-info",
@@ -26,8 +25,7 @@ const Info: Command = {
         const item = await ctx.dbUtil.getItem(message.serverId!, id);
 
         // Item needs to exist for it to be deleted
-        if (!item)
-            return ctx.messageUtil.replyWithError(message, "Doesn't exist", `Item with ID ${inlineQuote(id)} does not exist.`);
+        if (!item) return ctx.messageUtil.replyWithError(message, "Doesn't exist", `Item with ID ${inlineQuote(id)} does not exist.`);
 
         const currencies = await ctx.dbUtil.getCurrencies(message.serverId!);
 

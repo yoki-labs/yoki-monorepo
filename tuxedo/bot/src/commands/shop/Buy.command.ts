@@ -1,8 +1,8 @@
 import { MemberBalance, ModuleName, RoleType } from "@prisma/client";
 import { inlineCode } from "@yokilabs/bot";
 
-import { Category, Command } from "../commands";
 import { displayCurrency } from "../../util/text";
+import { Category, Command } from "../commands";
 
 const Buy: Command = {
     name: "shop-buy",
@@ -32,13 +32,15 @@ const Buy: Command = {
         const itemAmount = (args.amount as number | undefined) ?? 1;
 
         // We just use number - 1 as the index of the item
-        if (number < 1)
-            return ctx.messageUtil.replyWithError(message, "Invalid number", `The first item in the store always starts with 1.`);
+        if (number < 1) return ctx.messageUtil.replyWithError(message, "Invalid number", `The first item in the store always starts with 1.`);
         // It would be selling basically, which is done through ?shop sell
-        else if (itemAmount === 0)
-            return ctx.messageUtil.replyWithError(message, "Zero is not valid", `You cannot buy 0 amount of items, as it means you aren't doing anything.`);
+        else if (itemAmount === 0) return ctx.messageUtil.replyWithError(message, "Zero is not valid", `You cannot buy 0 amount of items, as it means you aren't doing anything.`);
         else if (itemAmount < 0)
-            return ctx.messageUtil.replyWithWarning(message, "Cannot buy negative amount", `If you want to sell an item, type ${inlineCode(`${prefix}shop sell ${number} ${-itemAmount}`)}`);
+            return ctx.messageUtil.replyWithWarning(
+                message,
+                "Cannot buy negative amount",
+                `If you want to sell an item, type ${inlineCode(`${prefix}shop sell ${number} ${-itemAmount}`)}`
+            );
 
         const items = await ctx.prisma.item.findMany({
             where: {
@@ -51,10 +53,13 @@ const Buy: Command = {
         });
 
         // Item needs to exist for it to be bought
-        if (!items.length)
-            return ctx.messageUtil.replyWithError(message, "No items", `The store does not have any items at the moment.`);
+        if (!items.length) return ctx.messageUtil.replyWithError(message, "No items", `The store does not have any items at the moment.`);
         else if (number > items.length)
-            return ctx.messageUtil.replyWithError(message, "Doesn't exist", `Item with number ${inlineCode(number)} does not exist. The last item in the list has number ${items.length}.`);
+            return ctx.messageUtil.replyWithError(
+                message,
+                "Doesn't exist",
+                `Item with number ${inlineCode(number)} does not exist. The last item in the list has number ${items.length}.`
+            );
 
         const item = items[number - 1];
 
@@ -74,7 +79,11 @@ const Buy: Command = {
 
             // User doesn't have enough currency to buy this item
             if (amountInMember < requiredAmount)
-                return ctx.messageUtil.replyWithError(message, "Need more currency", `You need ${itemValue.amount * itemAmount} more ${displayCurrency(currency)} to buy this item.`);
+                return ctx.messageUtil.replyWithError(
+                    message,
+                    "Need more currency",
+                    `You need ${itemValue.amount * itemAmount} more ${displayCurrency(currency)} to buy this item.`
+                );
 
             balances.push({
                 currencyId: currency.id,
@@ -87,28 +96,18 @@ const Buy: Command = {
         const newCount = (existingItem?.amount ?? 0) + itemAmount;
 
         await Promise.all([
-            // TODO: Too many roles to give 
+            // TODO: Too many roles to give
             // ...(!existingItem?.amount && item.givesRoles.length ? item.givesRoles.map((x) =>
             //     ctx.roles.addRoleToMember(message.serverId!, message.createdById, x)
             // ) : [])
             !existingItem?.amount && item.givesRoles.length && ctx.roles.addRoleToMember(message.serverId!, message.createdById, item.givesRoles[0]),
-            ctx.dbUtil.updateServerMember(
-                message.serverId!,
-                message.createdById,
-                member,
-                balances,
-                {
-                    itemId: item.id,
-                    amount: newCount,
-                }
-            ),
+            ctx.dbUtil.updateServerMember(message.serverId!, message.createdById, member, balances, {
+                itemId: item.id,
+                amount: newCount,
+            }),
         ]);
 
-        return ctx.messageUtil.replyWithSuccess(
-            message,
-            `Item bought`,
-            `You have successfully purchased ${itemAmount} ${item.name}.`,
-        );
+        return ctx.messageUtil.replyWithSuccess(message, `Item bought`, `You have successfully purchased ${itemAmount} ${item.name}.`);
     },
 };
 

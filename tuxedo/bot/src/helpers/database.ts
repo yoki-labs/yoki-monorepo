@@ -9,12 +9,10 @@ export class DatabaseUtil extends Util<TuxoClient> {
     getServer(serverId: string, createIfNotExists?: true): Promise<Server>;
     getServer(serverId: string, createIfNotExists: false): Promise<Server | null>;
     getServer(serverId: string, createIfNotExists = true): Promise<Server | null> {
-        return this.client.prisma.server
-            .findUnique({ where: { serverId } })
-            .then((server) => {
-                if (!server && createIfNotExists) return this.createFreshServerInDatabase(serverId);
-                return server ?? null;
-            });
+        return this.client.prisma.server.findUnique({ where: { serverId } }).then((server) => {
+            if (!server && createIfNotExists) return this.createFreshServerInDatabase(serverId);
+            return server ?? null;
+        });
     }
 
     createFreshServerInDatabase(serverId: string, data?: Record<string, any>) {
@@ -166,9 +164,9 @@ export class DatabaseUtil extends Util<TuxoClient> {
     updateServerMember(
         serverId: string,
         userId: string,
-        member: (ServerMember & { balances: MemberBalance[], items: MemberItem[] }) | undefined,
+        member: (ServerMember & { balances: MemberBalance[]; items: MemberItem[] }) | undefined,
         balanceChanges: Pick<MemberBalance, "currencyId" | "pocket" | "bank">[],
-        item?: Pick<MemberItem, "itemId" | "amount">,
+        item?: Pick<MemberItem, "itemId" | "amount">
     ) {
         if (!member) return this._createMember(serverId, userId, balanceChanges, item);
         return this._updateMember(member, balanceChanges, item);
@@ -233,7 +231,7 @@ export class DatabaseUtil extends Util<TuxoClient> {
         return (await this.getIncomeOverrides(serverId)).find(incomeType ? (x) => x.incomeType === incomeType : (x) => x.name === name);
     }
 
-    //#region Incomes and Balances
+    // #region Incomes and Balances
     createOrUpdateIncome(
         serverId: string,
         createdBy: string,
@@ -334,9 +332,9 @@ export class DatabaseUtil extends Util<TuxoClient> {
             },
         });
     }
-    //#endregion
-    
-    //#region Item values and Item inventories
+    // #endregion
+
+    // #region Item values and Item inventories
     updateItemValue(item: Item & { value: ItemValue[] }, value: Omit<ItemValue, "id" | "itemId">) {
         const existingValue = item.value.find((x) => x.currencyId === value.currencyId);
 
@@ -358,9 +356,9 @@ export class DatabaseUtil extends Util<TuxoClient> {
             },
         });
     }
-    //#endregion
+    // #endregion
 
-    //#region Private member stuff
+    // #region Private member stuff
     private _createMember(serverId: string, userId: string, balances: Pick<MemberBalance, "currencyId" | "pocket" | "bank">[], item?: Pick<MemberItem, "itemId" | "amount">) {
         return this.client.prisma.serverMember.create({
             data: {
@@ -376,12 +374,14 @@ export class DatabaseUtil extends Util<TuxoClient> {
                         all: pocket + bank,
                     })),
                 },
-                items: item ? {
-                    create: {
-                        ...item,
-                        serverId,
-                    },
-                } : undefined,
+                items: item
+                    ? {
+                          create: {
+                              ...item,
+                              serverId,
+                          },
+                      }
+                    : undefined,
             },
         });
     }
@@ -426,7 +426,11 @@ export class DatabaseUtil extends Util<TuxoClient> {
         });
     }
 
-    private _updateMember(member: ServerMember & { balances: MemberBalance[], items: MemberItem[] }, balances: Pick<MemberBalance, "currencyId" | "pocket" | "bank">[], item?: Pick<MemberItem, "itemId" | "amount">) {
+    private _updateMember(
+        member: ServerMember & { balances: MemberBalance[]; items: MemberItem[] },
+        balances: Pick<MemberBalance, "currencyId" | "pocket" | "bank">[],
+        item?: Pick<MemberItem, "itemId" | "amount">
+    ) {
         const balanceUpdate = member.balances.map((x) => {
             const updated = balances.find((y) => y.currencyId === x.currencyId);
 
@@ -462,7 +466,13 @@ export class DatabaseUtil extends Util<TuxoClient> {
                     update: balanceUpdate,
                     createMany: createBalances.length ? { data: createBalances } : undefined,
                 },
-                items: item && createItemDataMethod(member.serverId, item, member.items.find((x) => x.itemId === item.itemId))
+                items:
+                    item &&
+                    createItemDataMethod(
+                        member.serverId,
+                        item,
+                        member.items.find((x) => x.itemId === item.itemId)
+                    ),
                 // items: item && {
                 //     [existingItem ? item.amount === 0 ? "delete" : "update" : "create"]: existingItem
                 //         ? {
@@ -479,7 +489,7 @@ export class DatabaseUtil extends Util<TuxoClient> {
             },
         });
     }
-    //#endregion
+    // #endregion
 }
 
 function createItemDataMethod(serverId: string, item: Pick<MemberItem, "itemId" | "amount">, existingItem: MemberItem | undefined) {
@@ -504,6 +514,6 @@ function createItemDataMethod(serverId: string, item: Pick<MemberItem, "itemId" 
         create: {
             ...item,
             serverId,
-        }
+        },
     };
 }

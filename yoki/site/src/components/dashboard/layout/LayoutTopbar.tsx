@@ -20,7 +20,7 @@ type Props = {
 export function LayoutTopbar({ children, onServerChange, currentServer, servers, user }: Props) {
     return (
         <Box sx={{ display: "flex", flexDirection: "row", p: 3, gap: 2 }}>
-            { children }
+            {children}
             <Breadcrumbs
                 sx={{ p: 0, "--Breadcrumbs-gap": "20px" }}
                 className="grow"
@@ -31,12 +31,7 @@ export function LayoutTopbar({ children, onServerChange, currentServer, servers,
                 }
             >
                 <Box sx={{ display: "flex", gap: 1 }}>
-                    <Typography
-                        startDecorator={<YokiIcon className="fill-spacelight-700" width="32px" height="32px" />}
-                        level="h6"
-                        textColor="text.secondary"
-                        component="div"
-                    >
+                    <Typography startDecorator={<YokiIcon className="fill-spacelight-700" width="32px" height="32px" />} level="h6" textColor="text.secondary" component="div">
                         Yoki
                     </Typography>
                 </Box>

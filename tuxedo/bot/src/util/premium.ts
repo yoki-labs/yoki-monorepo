@@ -9,6 +9,5 @@ type ServerLimitDictionary = Record<PremiumType | ServerLimitDictionaryFallback,
  * @param dictionary The dictionary of possible values for premium, early access (just "early") or non-premium and non-early access ("default")
  * @returns Function to get a limit of a server
  */
-export const createServerLimit = (dictionary: ServerLimitDictionary) =>
-    (server: Server) =>
-        dictionary[server.premium ?? (server.flags.includes("EARLY_ACCESS") ? "Early" : "Default")];
+export const createServerLimit = (dictionary: ServerLimitDictionary) => (server: Server) =>
+    dictionary[server.premium ?? (server.flags.includes("EARLY_ACCESS") ? "Early" : "Default")];

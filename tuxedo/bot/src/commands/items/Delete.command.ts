@@ -30,8 +30,7 @@ const Delete: Command = {
         const item = await ctx.dbUtil.getItem(message.serverId!, id);
 
         // Item needs to exist for it to be deleted
-        if (!item)
-            return ctx.messageUtil.replyWithError(message, "Doesn't exist", `Item with ID ${inlineQuote(id)} does not exist and cannot be deleted.`);
+        if (!item) return ctx.messageUtil.replyWithError(message, "Doesn't exist", `Item with ID ${inlineQuote(id)} does not exist and cannot be deleted.`);
 
         // To show how many people have that item in their inventory
         const itemInInventoryCount = await ctx.prisma.memberItem.count({

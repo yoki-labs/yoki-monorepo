@@ -3,8 +3,8 @@ import { inlineQuote } from "@yokilabs/bot";
 import { Message } from "guilded.js";
 
 import { TuxoClient } from "../../Client";
-import { Category, Command } from "../commands";
 import { displayCurrency, displayCurrencyAmount } from "../../util/text";
+import { Category, Command } from "../commands";
 import { displayItemValues } from "./item-values";
 
 type ItemValueChange = Pick<ItemValue, "currencyId" | "serverId" | "amount">;
@@ -42,8 +42,7 @@ const SetPrice: Command = {
 
         const item = await ctx.dbUtil.getItem(message.serverId!, itemId);
 
-        if (!item)
-            return ctx.messageUtil.replyWithError(message, "No such item", `Item with ID ${inlineQuote(itemId)} does not exist.`);
+        if (!item) return ctx.messageUtil.replyWithError(message, "No such item", `Item with ID ${inlineQuote(itemId)} does not exist.`);
 
         const serverCurrencies = await ctx.dbUtil.getCurrencies(message.serverId!);
 
@@ -68,14 +67,17 @@ const SetPrice: Command = {
             );
 
         // There is no reason to have it stay if it's 0, it's useless
-        if (amount === 0)
-            return removeItemValue(ctx, message, currency, serverCurrencies, item);
+        if (amount === 0) return removeItemValue(ctx, message, currency, serverCurrencies, item);
 
         const currentItemValue = item.value.find((x) => x.currencyId === currency.id);
 
         // No point in changing it if it's already the desired price
         if (currentItemValue?.amount === amount)
-            return ctx.messageUtil.replyWithError(message, "Already set", `The price for the item ${inlineQuote(item.name)} already includes ${displayCurrencyAmount(currency, amount)}.`);
+            return ctx.messageUtil.replyWithError(
+                message,
+                "Already set",
+                `The price for the item ${inlineQuote(item.name)} already includes ${displayCurrencyAmount(currency, amount)}.`
+            );
 
         // Can't create it, so it has to be updated
         const newCurrencyAmount: ItemValueChange = {
@@ -90,24 +92,14 @@ const SetPrice: Command = {
 
         const newValue: ItemValueChange[] =
             changedIndex < 0
-            ? (item.value as ItemValueChange[]).concat(newCurrencyAmount)
-            : [...item.value.slice(0, changedIndex), newCurrencyAmount, ...item.value.slice(changedIndex + 1)] as ItemValueChange[];
+                ? (item.value as ItemValueChange[]).concat(newCurrencyAmount)
+                : ([...item.value.slice(0, changedIndex), newCurrencyAmount, ...item.value.slice(changedIndex + 1)] as ItemValueChange[]);
 
-        return ctx.messageUtil.replyWithSuccess(
-            message,
-            `Changed item price`,
-            `The item ${inlineQuote(item.name)} ${displayPrice(newValue, serverCurrencies)}.`
-        );
+        return ctx.messageUtil.replyWithSuccess(message, `Changed item price`, `The item ${inlineQuote(item.name)} ${displayPrice(newValue, serverCurrencies)}.`);
     },
 };
 
-async function removeItemValue(
-    ctx: TuxoClient,
-    message: Message,
-    currency: Currency,
-    currencies: Currency[],
-    item: (Item & { value: ItemValue[] })
-) {
+async function removeItemValue(ctx: TuxoClient, message: Message, currency: Currency, currencies: Currency[], item: Item & { value: ItemValue[] }) {
     // Can't remove if it doesn't exist
     if (!item.value.find((x) => x.currencyId === currency.id))
         return ctx.messageUtil.replyWithError(
@@ -121,21 +113,27 @@ async function removeItemValue(
             currencyId: currency.id,
             serverId: message.serverId!,
             itemId: item.id,
-        }
+        },
     });
 
     const newValue = item.value.filter((x) => x.currencyId !== currency.id);
 
-    return ctx.messageUtil.replyWithSuccess(message, "Price currency removed", `The item ${inlineQuote(item.name)} will no longer require ${displayCurrency(currency)} and ${displayPrice(newValue, currencies)}.`);
+    return ctx.messageUtil.replyWithSuccess(
+        message,
+        "Price currency removed",
+        `The item ${inlineQuote(item.name)} will no longer require ${displayCurrency(currency)} and ${displayPrice(newValue, currencies)}.`
+    );
 }
 
 const displayPrice = (newValue: ItemValueChange[], currencies: Currency[]) =>
     newValue.length
-    ? `now costs ${newValue.map((x) => {
-        const currency = currencies.find((y) => y.id === x.currencyId)!;
+        ? `now costs ${newValue
+              .map((x) => {
+                  const currency = currencies.find((y) => y.id === x.currencyId)!;
 
-        return displayCurrencyAmount(currency, x.amount);
-    }).join(", ")}`
-    : "is now free";
+                  return displayCurrencyAmount(currency, x.amount);
+              })
+              .join(", ")}`
+        : "is now free";
 
 export default SetPrice;

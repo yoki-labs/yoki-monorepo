@@ -1,4 +1,5 @@
 import { Util } from "@yokilabs/bot";
+
 import { TuxoClient } from "../Client";
 
 export abstract class TickedUtil extends Util<TuxoClient> {

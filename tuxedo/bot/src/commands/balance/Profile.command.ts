@@ -23,11 +23,11 @@ const Profile: Command = {
             name: "page",
             type: "number",
             optional: true,
-        }
+        },
     ],
     execute: async (message, args, ctx) => {
         const target = (args.target as Member) ?? (await message.client.members.fetch(message.serverId!, message.authorId));
-        const page = args.page as number | undefined ?? 1;
+        const page = (args.page as number | undefined) ?? 1;
 
         const currencies = await ctx.dbUtil.getCurrencies(message.serverId!);
         const items = await ctx.dbUtil.getItems(message.serverId!);
@@ -65,14 +65,19 @@ const Profile: Command = {
                     {
                         name: "Inventory",
                         value: userInfo?.items.length
-                            ? ctx.messageUtil.createPaginatedText(page - 1, userInfo.items, PROFILE_ITEMS_PER_PAGE, (itemStack) => `\u2022 ${itemStack.amount} ${items.find((item) => item.id === itemStack.itemId)!.name}`)
+                            ? ctx.messageUtil.createPaginatedText(
+                                  page - 1,
+                                  userInfo.items,
+                                  PROFILE_ITEMS_PER_PAGE,
+                                  (itemStack) => `\u2022 ${itemStack.amount} ${items.find((item) => item.id === itemStack.itemId)!.name}`
+                              )
                             : "User does not have any items.",
                     },
                 ],
                 footer: userInfo?.items.length
                     ? {
-                        text: `Page ${page}/${Math.ceil(userInfo.items.length / PROFILE_ITEMS_PER_PAGE)} \u2022 total items`
-                    }
+                          text: `Page ${page}/${Math.ceil(userInfo.items.length / PROFILE_ITEMS_PER_PAGE)} \u2022 total items`,
+                      }
                     : undefined,
             },
             {

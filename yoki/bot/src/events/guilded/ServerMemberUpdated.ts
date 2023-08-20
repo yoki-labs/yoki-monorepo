@@ -1,10 +1,10 @@
 import { inlineCode, inlineQuote } from "@yokilabs/bot";
 import { Colors } from "@yokilabs/utils";
+import { UserType } from "guilded.js";
 
 import { FilteredContent } from "../../modules/content-filter";
 import { GEvent, LogChannelType } from "../../typings";
 import { trimHoistingSymbols } from "../../utils/moderation";
-import { UserType } from "guilded.js";
 
 export default {
     execute: async ([event, ctx]) => {

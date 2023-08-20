@@ -2,14 +2,14 @@ import { Collection } from "@discordjs/collection";
 import { RoleType } from "@prisma/client";
 
 import { Category, Command } from "../commands";
+import CanDeposit from "./CanDeposit.command";
 import Create from "./Create.command";
 import Delete from "./Delete.command";
+import Emote from "./Emote.command";
 import Info from "./Info.command";
 import List from "./List.command";
 import Maximum from "./Max.command";
 import Starting from "./Starting.command";
-import Emote from "./Emote.command";
-import CanDeposit from "./CanDeposit.command";
 
 const Currency: Command = {
     name: "currency",

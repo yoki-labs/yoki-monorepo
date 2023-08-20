@@ -22,7 +22,7 @@ const List: Command = {
         if (server.modulesDisabled.includes(ModuleName.SHOP))
             return ctx.messageUtil.replyWithError(message, "Shop module disabled", `Shop module has been disabled and this command cannot be used.`);
 
-        const page = (args.page as number | undefined ?? 1) - 1;
+        const page = ((args.page as number | undefined) ?? 1) - 1;
 
         const items = await ctx.prisma.item.findMany({
             where: {
@@ -35,8 +35,7 @@ const List: Command = {
         });
 
         // Don't need to fetch server currencies and all that nonsense
-        if (!items.length)
-            return ctx.messageUtil.replyWithNullState(message, "Nothing found", `There are no items in the store as of now.`);
+        if (!items.length) return ctx.messageUtil.replyWithNullState(message, "Nothing found", `There are no items in the store as of now.`);
 
         const currencies = await ctx.dbUtil.getCurrencies(message.serverId!);
 
@@ -45,22 +44,21 @@ const List: Command = {
         console.log("Item count", items.length, "of server", JSON.stringify(message.serverId));
 
         return ctx.messageUtil.replyWithPaginatedContent({
-            replyTo: message, 
+            replyTo: message,
             title: "Store items",
             items,
             itemsPerPage: 10,
             page,
-            itemMapping: (x, i) => `${start + i}. ${inlineQuote(x.name)} \u2014 ${displayPrice(x.value, currencies)}`
+            itemMapping: (x, i) => `${start + i}. ${inlineQuote(x.name)} \u2014 ${displayPrice(x.value, currencies)}`,
         });
     },
 };
 
 const displayPrice = (itemValues: ItemValue[], currencies: Currency[]) =>
     itemValues.length
-    ? `${displayCurrencyAmount(itemValues[0].amount, currencies.find((x) => itemValues[0].currencyId === x.id)!)}${itemValues.length > 1 ? ` and other` : ""}`
-    : `Free`
+        ? `${displayCurrencyAmount(itemValues[0].amount, currencies.find((x) => itemValues[0].currencyId === x.id)!)}${itemValues.length > 1 ? ` and other` : ""}`
+        : `Free`;
 
-const displayCurrencyAmount = (amount: number, currency: Currency) =>
-    `:${currency.emote}: ${amount} ${currency.name}`;
+const displayCurrencyAmount = (amount: number, currency: Currency) => `:${currency.emote}: ${amount} ${currency.name}`;
 
 export default List;

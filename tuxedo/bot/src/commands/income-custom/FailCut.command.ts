@@ -1,9 +1,9 @@
 import { DefaultIncomeType, RoleType } from "@prisma/client";
+import { inlineCode } from "@yokilabs/bot";
 
 import { Category, Command } from "../commands";
-import { DefaultIncomeTypeMap, defaultOrCustomIncomeDisplay } from "./income-util";
-import { inlineCode } from "@yokilabs/bot";
 import { defaultIncomes } from "../income/income-defaults";
+import { DefaultIncomeTypeMap, defaultOrCustomIncomeDisplay } from "./income-util";
 
 const SetFailCut: Command = {
     name: "income-failcut",
@@ -40,20 +40,12 @@ const SetFailCut: Command = {
         if (failCut === null) {
             const currentFailCut = incomeOverride?.failSubtractCut ?? (incomeType ? defaultIncomes[incomeType].failCut : 0);
 
-            return ctx.messageUtil.replyWithInfo(
-                message,
-                `Fail cut for ${command}`,
-                `The current fail cut for ${inlineCode(command)} is ${currentFailCut * 100}%.`
-            );
+            return ctx.messageUtil.replyWithInfo(message, `Fail cut for ${command}`, `The current fail cut for ${inlineCode(command)} is ${currentFailCut * 100}%.`);
         }
 
         await ctx.dbUtil.createOrUpdateIncome(message.serverId!, message.createdById, incomeType, command, incomeOverride, { failSubtractCut: failCut });
 
-        return ctx.messageUtil.replyWithSuccess(
-            message,
-            `Changed ${command}'s fail cut`,
-            `The fail cut for ${inlineCode(command)} has been changed to ${failCut! * 100}%.`
-        );
+        return ctx.messageUtil.replyWithSuccess(message, `Changed ${command}'s fail cut`, `The fail cut for ${inlineCode(command)} has been changed to ${failCut! * 100}%.`);
     },
 };
 

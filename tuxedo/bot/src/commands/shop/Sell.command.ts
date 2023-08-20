@@ -1,10 +1,10 @@
 import { Currency, MemberBalance, ModuleName, RoleType } from "@prisma/client";
 import { inlineCode, inlineQuote } from "@yokilabs/bot";
 
-import { Category, Command } from "../commands";
 import { displayCurrencyAmount } from "../../util/text";
+import { Category, Command } from "../commands";
 
-type BalanceChange = Pick<MemberBalance, "currencyId" | "bank" | "pocket"> & { currency: Currency, lost: number };
+type BalanceChange = Pick<MemberBalance, "currencyId" | "bank" | "pocket"> & { currency: Currency; lost: number };
 
 const Sell: Command = {
     name: "shop-sell",
@@ -34,13 +34,15 @@ const Sell: Command = {
         const itemAmount = (args.amount as number | undefined) ?? 1;
 
         // We just use number - 1 as the index of the item
-        if (number < 1)
-            return ctx.messageUtil.replyWithError(message, "Invalid number", `The first item in the store always starts with 1.`);
+        if (number < 1) return ctx.messageUtil.replyWithError(message, "Invalid number", `The first item in the store always starts with 1.`);
         // It would be selling basically, which is done through ?shop sell
-        else if (itemAmount === 0)
-            return ctx.messageUtil.replyWithError(message, "Zero is not valid", `You cannot buy 0 amount of items, as it means you aren't doing anything.`);
+        else if (itemAmount === 0) return ctx.messageUtil.replyWithError(message, "Zero is not valid", `You cannot buy 0 amount of items, as it means you aren't doing anything.`);
         else if (itemAmount < 0)
-            return ctx.messageUtil.replyWithWarning(message, "Cannot buy negative amount", `If you want to sell an item, type ${inlineCode(`${prefix}shop sell ${number} ${-itemAmount}`)}`);
+            return ctx.messageUtil.replyWithWarning(
+                message,
+                "Cannot buy negative amount",
+                `If you want to sell an item, type ${inlineCode(`${prefix}shop sell ${number} ${-itemAmount}`)}`
+            );
 
         const items = await ctx.prisma.item.findMany({
             where: {
@@ -53,10 +55,13 @@ const Sell: Command = {
         });
 
         // Item needs to exist for it to be bought
-        if (!items.length)
-            return ctx.messageUtil.replyWithError(message, "No items", `The store does not have any items at the moment.`);
+        if (!items.length) return ctx.messageUtil.replyWithError(message, "No items", `The store does not have any items at the moment.`);
         else if (number > items.length)
-            return ctx.messageUtil.replyWithError(message, "Doesn't exist", `Item with number ${inlineCode(number)} does not exist. The last item in the list has number ${items.length}.`);
+            return ctx.messageUtil.replyWithError(
+                message,
+                "Doesn't exist",
+                `Item with number ${inlineCode(number)} does not exist. The last item in the list has number ${items.length}.`
+            );
 
         const item = items[number - 1];
 
@@ -68,8 +73,7 @@ const Sell: Command = {
         const memberItemCount = member?.items.find((x) => x.itemId === item.id)?.amount ?? 0;
 
         // Can't sell amount of something you don't have
-        if (memberItemCount < itemAmount)
-            return ctx.messageUtil.replyWithError(message, "Not enough items", `You don't have ${itemAmount} of ${inlineQuote(item.name)}.`);
+        if (memberItemCount < itemAmount) return ctx.messageUtil.replyWithError(message, "Not enough items", `You don't have ${itemAmount} of ${inlineQuote(item.name)}.`);
 
         // We are adding onto the balances
         const balances: BalanceChange[] = [];
@@ -84,9 +88,9 @@ const Sell: Command = {
             const amountAfter = amountInMember + addedAmount;
             const finalAmount =
                 currency.maximumBalance && amountAfter > currency.maximumBalance
-                // ? addedAmount - ((amountInMember + addedAmount) - currency.maximumBalance)
-                ? addedAmount + currency.maximumBalance - amountAfter
-                : addedAmount;
+                    ? // ? addedAmount - ((amountInMember + addedAmount) - currency.maximumBalance)
+                      addedAmount + currency.maximumBalance - amountAfter
+                    : addedAmount;
 
             balances.push({
                 currency,
@@ -101,32 +105,28 @@ const Sell: Command = {
         const newAmount = (existingItem?.amount ?? 0) - itemAmount;
 
         await Promise.all([
-            ctx.dbUtil.updateServerMember(
-                message.serverId!,
-                message.createdById,
-                member,
-                balances,
-                {
-                    itemId: item.id,
-                    amount: newAmount,
-                }
-            ),
+            ctx.dbUtil.updateServerMember(message.serverId!, message.createdById, member, balances, {
+                itemId: item.id,
+                amount: newAmount,
+            }),
             // They sold all the item stack and no longer has access to the item; role is tied to the item.
             // TODO: As you can't remove multiple roles and if we did do it one by one it would lead to ratelimiting,
             // it only does it for the first role
-            newAmount === 0 && item.givesRoles.length && ctx.roles.removeRoleFromMember(message.serverId!, message.createdById, item.givesRoles[0])
+            newAmount === 0 && item.givesRoles.length && ctx.roles.removeRoleFromMember(message.serverId!, message.createdById, item.givesRoles[0]),
         ]);
 
         // Notify user that they lost some of it
         const lostCurrencyAmounts = balances.filter((x) => x.lost);
         if (lostCurrencyAmounts.length)
-            return ctx.messageUtil.replyWithWarning(message, "Item sold", `You have successfully sold ${itemAmount} ${item.name}, but the received currency was exceeded by ${lostCurrencyAmounts.map((x) => displayCurrencyAmount(x.currency, x.lost)).join(", ")}.`)
+            return ctx.messageUtil.replyWithWarning(
+                message,
+                "Item sold",
+                `You have successfully sold ${itemAmount} ${item.name}, but the received currency was exceeded by ${lostCurrencyAmounts
+                    .map((x) => displayCurrencyAmount(x.currency, x.lost))
+                    .join(", ")}.`
+            );
 
-        return ctx.messageUtil.replyWithSuccess(
-            message,
-            `Item sold`,
-            `You have successfully sold ${itemAmount} ${item.name}.`,
-        );
+        return ctx.messageUtil.replyWithSuccess(message, `Item sold`, `You have successfully sold ${itemAmount} ${item.name}.`);
     },
 };
 

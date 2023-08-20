@@ -1,13 +1,17 @@
 import { Currency, DefaultIncomeType, ModuleName, Reward } from "@prisma/client";
-import { Category, Command } from "../commands";
-import ms from "ms";
-import { defaultIncomes } from "./income-defaults";
 import { inlineQuote } from "@yokilabs/bot";
+import ms from "ms";
+
+import { Category, Command } from "../commands";
+import { defaultIncomes } from "./income-defaults";
 
 const defaultConfig = defaultIncomes[DefaultIncomeType.BLACKJACK];
 const [defaultMin, defaultMax] = defaultConfig.reward;
 
-export type BalanceChange = { currency: Currency, change: number };
+export interface BalanceChange {
+    currency: Currency;
+    change: number;
+}
 
 const Blackjack: Command = {
     name: "blackjack",
@@ -35,19 +39,16 @@ const Blackjack: Command = {
         const tag = args.currency as string;
         const amount = Math.floor(args.amount as number);
 
-        if (amount < 1)
-            return ctx.messageUtil.replyWithError(message, "Can only bet at least 1", "Your betting amount should be at least 1 or more.");
+        if (amount < 1) return ctx.messageUtil.replyWithError(message, "Can only bet at least 1", "Your betting amount should be at least 1 or more.");
 
         const currencies = await ctx.dbUtil.getCurrencies(message.serverId!);
 
-        if (!currencies.length)
-            return ctx.messageUtil.replyWithError(message, "No currencies", `This server does not have any local currencies to play blackjack.`);
+        if (!currencies.length) return ctx.messageUtil.replyWithError(message, "No currencies", `This server does not have any local currencies to play blackjack.`);
 
         const selectedCurrency = tag ? currencies.find((x) => x.tag === tag) : currencies[0];
 
         // Can't do blackjack if such currency doesn't exist
-        if (!selectedCurrency)
-            return ctx.messageUtil.replyWithError(message, "No such currency", `There is no currency with tag ${inlineQuote(tag)} in this server.`);
+        if (!selectedCurrency) return ctx.messageUtil.replyWithError(message, "No such currency", `There is no currency with tag ${inlineQuote(tag)} in this server.`);
 
         const serverConfig = (await ctx.dbUtil.getIncomeOverrides(message.serverId!)).find((x) => x.incomeType === DefaultIncomeType.BLACKJACK);
 
@@ -62,7 +63,11 @@ const Blackjack: Command = {
             return ctx.messageUtil.replyWithError(message, "Can't use that currency", `The currency with the tag ${inlineQuote(selectedCurrency)} cannot be used in a bet.`);
         // The amount needs to be of the expected reward
         else if (amount < reward.minAmount || amount > reward.maxAmount)
-            return ctx.messageUtil.replyWithError(message, "Incorrect amount of money", `The expected betting amount is between ${reward.minAmount} ${selectedCurrency.name} and ${reward.maxAmount} ${selectedCurrency.name}.`);
+            return ctx.messageUtil.replyWithError(
+                message,
+                "Incorrect amount of money",
+                `The expected betting amount is between ${reward.minAmount} ${selectedCurrency.name} and ${reward.maxAmount} ${selectedCurrency.name}.`
+            );
 
         const lastUsed = ctx.balanceUtil.getLastCommandUsage(message.serverId!, message.createdById, DefaultIncomeType.BLACKJACK);
 
@@ -81,7 +86,11 @@ const Blackjack: Command = {
 
         // To make it balanced and require you to sacrifice your balance too
         if (balance < amount)
-            return ctx.messageUtil.replyWithError(message, `Not enough currency`, `You are trying to place a bet with ${amount} ${selectedCurrency.name}, but you have ${balance} ${selectedCurrency.name} in total.`);
+            return ctx.messageUtil.replyWithError(
+                message,
+                `Not enough currency`,
+                `You are trying to place a bet with ${amount} ${selectedCurrency.name}, but you have ${balance} ${selectedCurrency.name} in total.`
+            );
 
         return ctx.minigameUtil.initBlackJackInstance(message, selectedCurrency, amount);
     },

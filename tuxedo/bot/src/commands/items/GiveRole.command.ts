@@ -1,8 +1,8 @@
 import { RoleType } from "@prisma/client";
-
-import { Category, Command } from "../commands";
 import { inlineQuote } from "@yokilabs/bot";
 import { Role } from "guilded.js";
+
+import { Category, Command } from "../commands";
 
 const SetGiveRole: Command = {
     name: "items-giverole",
@@ -37,28 +37,19 @@ const SetGiveRole: Command = {
         const item = await ctx.dbUtil.getItem(message.serverId!, itemId);
 
         // Item needs to exist for it to be deleted
-        if (!item)
-            return ctx.messageUtil.replyWithError(message, "Doesn't exist", `Item with ID ${inlineQuote(itemId)} does not exist.`);
+        if (!item) return ctx.messageUtil.replyWithError(message, "Doesn't exist", `Item with ID ${inlineQuote(itemId)} does not exist.`);
 
         // Can easily use XOR, but bad feedback
         const alreadyExist = item.givesRoles.includes(role.id);
 
         if (toRemove && !alreadyExist)
-            return ctx.messageUtil.replyWithError(
-                message,
-                "Role not given",
-                `The role <@${role.id}> is not given by the item ${inlineQuote(item.name)}.`,
-                undefined,
-                { isSilent: true }
-            );
+            return ctx.messageUtil.replyWithError(message, "Role not given", `The role <@${role.id}> is not given by the item ${inlineQuote(item.name)}.`, undefined, {
+                isSilent: true,
+            });
         else if (!toRemove && alreadyExist)
-            return ctx.messageUtil.replyWithError(
-                message,
-                "Role already given",
-                `The role <@${role.id}> is already given by the item ${inlineQuote(item.name)}.`,
-                undefined,
-                { isSilent: true }
-            );
+            return ctx.messageUtil.replyWithError(message, "Role already given", `The role <@${role.id}> is already given by the item ${inlineQuote(item.name)}.`, undefined, {
+                isSilent: true,
+            });
 
         // Since it would force giving out too many roles/too many requests to send
         // If there is a role already and another one needs to be added, throw an error FOR NOW
@@ -69,7 +60,7 @@ const SetGiveRole: Command = {
         const newRoleList = toRemove ? item.givesRoles.filter((x) => x !== role.id) : item.givesRoles.concat(role.id);
 
         await ctx.dbUtil.updateItem(item, {
-            givesRoles: newRoleList
+            givesRoles: newRoleList,
         });
 
         return ctx.messageUtil.replyWithSuccess(

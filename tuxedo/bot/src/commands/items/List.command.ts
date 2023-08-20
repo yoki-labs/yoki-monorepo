@@ -18,14 +18,14 @@ const List: Command = {
         },
     ],
     execute: async (message, args, ctx) => {
-        const page = (args.page as number | undefined ?? 1) - 1;
+        const page = ((args.page as number | undefined) ?? 1) - 1;
 
         const items = await ctx.dbUtil.getItems(message.serverId!);
 
         if (!items.length) return ctx.messageUtil.replyWithNullState(message, "No items", `This server does not have any local items.`);
 
         return ctx.messageUtil.replyWithPaginatedContent({
-            replyTo: message, 
+            replyTo: message,
             title: "Server's items",
             items,
             itemsPerPage: 15,

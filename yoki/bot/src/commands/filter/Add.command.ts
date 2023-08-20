@@ -2,10 +2,10 @@ import { Severity } from "@prisma/client";
 import { inlineCode, inlineQuote } from "@yokilabs/bot";
 
 import { ResolvedEnum, RoleType } from "../../typings";
+import { ONLY_URL_REGEX } from "../../utils/matching";
+import { wordPresets } from "../../utils/presets";
 import { getFilterFromSyntax } from "../../utils/util";
 import { Category, Command } from "../commands";
-import { wordPresets } from "../../utils/presets";
-import { ONLY_URL_REGEX } from "../../utils/matching";
 
 const maxPhrases = 50;
 
@@ -52,14 +52,20 @@ const Add: Command = {
 
         // To not have DB blow up
         if (allBannedWords.length >= maxPhrases)
-            return ctx.messageUtil.replyWithError(message, "Too many words", `For technical reasons, you cannot have more than ${maxPhrases} words added to the filter. You can join the [Yoki Labs server](https://guilded.gg/yoki) to suggest new presets or enable any of the existing ones by using ${inlineQuote(`${prefix}preset`)}.`);
+            return ctx.messageUtil.replyWithError(
+                message,
+                "Too many words",
+                `For technical reasons, you cannot have more than ${maxPhrases} words added to the filter. You can join the [Yoki Labs server](https://guilded.gg/yoki) to suggest new presets or enable any of the existing ones by using ${inlineQuote(
+                    `${prefix}preset`
+                )}.`
+            );
         // Can't add something that already exists
         else if (allBannedWords.find((x) => x.content === content && x.matching === matching))
             return ctx.messageUtil.replyWithError(message, `Already added`, `This word is already in your server's filter!`);
 
         // Suggest using preset instead
         const inPreset = Object.keys(wordPresets).find((x) => wordPresets[x].test(content));
-        
+
         await ctx.dbUtil.addWordToFilter({
             content,
             creatorId: message.authorId,
@@ -70,15 +76,23 @@ const Add: Command = {
         });
 
         const additionalMessages = [
-            inPreset && `\u2022 **NOTE:** This phrase is already in a preset ${inlineCode(inPreset)}. You can enable presets by typing ${inlineQuote(`${prefix}preset enable ${inPreset}`)}`,
-            ONLY_URL_REGEX.test(content) && `\u2022 **NOTE:** This phrase seems to be a link. Yoki has better link matching when it's added in the link or invite filter. Use ${inlineQuote(`${prefix}link url add`)} to add links to the filter.`,
+            inPreset &&
+                `\u2022 **NOTE:** This phrase is already in a preset ${inlineCode(inPreset)}. You can enable presets by typing ${inlineQuote(
+                    `${prefix}preset enable ${inPreset}`
+                )}`,
+            ONLY_URL_REGEX.test(content) &&
+                `\u2022 **NOTE:** This phrase seems to be a link. Yoki has better link matching when it's added in the link or invite filter. Use ${inlineQuote(
+                    `${prefix}link url add`
+                )} to add links to the filter.`,
             !server.filterEnabled && `\u2022 **WARNING:** The filter is currently disabled. To enable it, use the ${inlineQuote(`${prefix}module enable filter`)} command.`,
         ].filter(Boolean);
 
         return ctx.messageUtil.replyWithSuccess(
             message,
             `New phrase added`,
-            `Successfully added ${inlineQuote(phrase)} with the severity ${inlineCode(severity.toLowerCase())} to the automod list!${additionalMessages.length ? `\n\n${additionalMessages.join("\n\n")}` : ""}`
+            `Successfully added ${inlineQuote(phrase)} with the severity ${inlineCode(severity.toLowerCase())} to the automod list!${
+                additionalMessages.length ? `\n\n${additionalMessages.join("\n\n")}` : ""
+            }`
         );
     },
 };

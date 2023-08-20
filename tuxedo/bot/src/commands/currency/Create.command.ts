@@ -1,10 +1,10 @@
 import { RoleType } from "@prisma/client";
 import { inlineQuote } from "@yokilabs/bot";
+import { ReactionInfo } from "@yokilabs/utils";
 
 import { TAG_REGEX } from "../../util/matching";
-import { Category, Command } from "../commands";
-import { ReactionInfo } from "@yokilabs/utils";
 import { createServerLimit } from "../../util/premium";
+import { Category, Command } from "../commands";
 
 const getServerLimit = createServerLimit({
     Gold: 12,
@@ -60,7 +60,11 @@ const Create: Command = {
         const serverLimit = getServerLimit(server);
 
         if (currencies.length >= serverLimit)
-            return ctx.messageUtil.replyWithError(message, "Too many currencies", `You can only have ${serverLimit} currencies per server.${server.premium ? "" : "\n\n**Note:** You can upgrade to premium to increase the limit."}`);
+            return ctx.messageUtil.replyWithError(
+                message,
+                "Too many currencies",
+                `You can only have ${serverLimit} currencies per server.${server.premium ? "" : "\n\n**Note:** You can upgrade to premium to increase the limit."}`
+            );
 
         await ctx.dbUtil.createCurrency(message.serverId!, tag, emote.name, name, message.createdById);
 

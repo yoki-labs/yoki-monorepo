@@ -1,9 +1,9 @@
 import { DefaultIncomeType, RoleType } from "@prisma/client";
+import { inlineCode } from "@yokilabs/bot";
 
 import { Category, Command } from "../commands";
-import { DefaultIncomeTypeMap, defaultOrCustomIncomeDisplay } from "./income-util";
-import { inlineCode } from "@yokilabs/bot";
 import { defaultIncomes } from "../income/income-defaults";
+import { DefaultIncomeTypeMap, defaultOrCustomIncomeDisplay } from "./income-util";
 
 const SetFailChance: Command = {
     name: "income-failchance",
@@ -40,14 +40,10 @@ const SetFailChance: Command = {
         if (failChance === null) {
             const currentFailChance = incomeOverride?.failChance ?? (incomeType ? defaultIncomes[incomeType].failChance : 0);
 
-            return ctx.messageUtil.replyWithInfo(
-                message,
-                `Fail chance for ${command}`,
-                `The current fail chance for ${inlineCode(command)} is ${currentFailChance * 100}%.`
-            );
+            return ctx.messageUtil.replyWithInfo(message, `Fail chance for ${command}`, `The current fail chance for ${inlineCode(command)} is ${currentFailChance * 100}%.`);
         }
 
-        await ctx.dbUtil.createOrUpdateIncome(message.serverId!, message.createdById, incomeType, command, incomeOverride, { failChance: failChance });
+        await ctx.dbUtil.createOrUpdateIncome(message.serverId!, message.createdById, incomeType, command, incomeOverride, { failChance });
 
         return ctx.messageUtil.replyWithSuccess(
             message,

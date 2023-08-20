@@ -13,10 +13,7 @@ const Members: Command = {
     parentCommand: true,
     category: Category.Balance,
     requiredRole: RoleType.MOD,
-    subCommands: new Collection<string, Command>()
-        .set("setbalance", SetBalance)
-        .set("setinventory", SetInventory)
-        .set("purgebalances", Purge),
+    subCommands: new Collection<string, Command>().set("setbalance", SetBalance).set("setinventory", SetInventory).set("purgebalances", Purge),
     execute: () => void 0,
 };
 

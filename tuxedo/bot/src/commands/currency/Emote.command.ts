@@ -1,9 +1,9 @@
 import { RoleType } from "@prisma/client";
 import { inlineQuote } from "@yokilabs/bot";
+import { ReactionInfo } from "@yokilabs/utils";
 
 import { TAG_REGEX } from "../../util/matching";
 import { Category, Command } from "../commands";
-import { ReactionInfo } from "@yokilabs/utils";
 
 const Emote: Command = {
     name: "currency-emote",
@@ -40,11 +40,7 @@ const Emote: Command = {
         if (!currency) return ctx.messageUtil.replyWithError(message, "Doesn't exist", `The currency with tag ${inlineQuote(tag)} does not exist and cannot be edited.`);
         // No reason to do changes in the database
         else if (currency.emote === emote.name)
-            return ctx.messageUtil.replyWithError(
-                message,
-                "Already set",
-                `The emote icon for the currency with tag ${inlineQuote(tag)} is already set to :${emote.name}:.`
-            );
+            return ctx.messageUtil.replyWithError(message, "Already set", `The emote icon for the currency with tag ${inlineQuote(tag)} is already set to :${emote.name}:.`);
 
         await ctx.dbUtil.updateCurrency(currency, { emote: emote.name });
 

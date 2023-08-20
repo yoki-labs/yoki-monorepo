@@ -14,7 +14,7 @@ type SessionProps = {
     user: Partial<{
         name: string | null;
         avatar: string | null;
-    }>
+    }>;
 };
 
 export const getServerSideProps: GetServerSideProps = async (ctx): Promise<GetServerSidePropsResult<SessionProps>> => {

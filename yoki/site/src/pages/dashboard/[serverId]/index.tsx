@@ -18,7 +18,7 @@ type SessionProps = {
     user: Partial<{
         name: string | null;
         avatar: string | null;
-    }>
+    }>;
 };
 
 export const getServerSideProps: GetServerSideProps = async (ctx): Promise<GetServerSidePropsResult<SessionProps>> => {
@@ -34,13 +34,12 @@ export const getServerSideProps: GetServerSideProps = async (ctx): Promise<GetSe
     const { serverId } = ctx.query;
 
     // If this user isn't in that server, redirect them back to dashboard server selection
-    const destination = servers.find((x) => x.id === serverId) ? `/dashboard/${serverId}/overview` : `/dashboard`
+    const destination = servers.find((x) => x.id === serverId) ? `/dashboard/${serverId}/overview` : `/dashboard`;
 
     return { redirect: { destination, permanent: false } };
 };
 
 export default function Dashboard(props: SessionProps) {
-
     // router.push("./overview")
 
     return (

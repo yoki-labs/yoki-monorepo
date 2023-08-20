@@ -49,11 +49,12 @@ const Start: Command = {
         return Promise.all([
             // Too many giveaways, delete the oldest
             // (likely closed, but may be open (it's ordered by whether it's closed)) giveaway
-            giveaways.length >= MAX_GIVEAWAYS && ctx.prisma.giveaway.delete({
-                where: {
-                    id: giveaways[giveaways.length - 1].id,
-                },
-            }),
+            giveaways.length >= MAX_GIVEAWAYS &&
+                ctx.prisma.giveaway.delete({
+                    where: {
+                        id: giveaways[giveaways.length - 1].id,
+                    },
+                }),
             // Actual giveaway fruit stuff
             ctx.giveawayUtil.createGiveaway(
                 {
@@ -65,7 +66,7 @@ const Start: Command = {
                     winnerCount,
                 },
                 timezone
-            )
+            ),
         ]);
     },
 };

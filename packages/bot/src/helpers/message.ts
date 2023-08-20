@@ -76,7 +76,7 @@ export class MessageUtil<
         prefix: string,
         commandArg: CommandArgument,
         command: TCommand,
-        additionalMessage: string,
+        additionalMessage: string
         // argumentConverters: Record<CommandArgType, CommandArgValidator>,
         // castArg: ResolvedArgs
     ) {
@@ -234,12 +234,7 @@ export class MessageUtil<
         );
     }
 
-    createPaginatedText<T>(
-        page: number,
-        items: T[],
-        itemsPerPage: number,
-        itemMapping: (item: T, index: number) => string | T,
-    ) {
+    createPaginatedText<T>(page: number, items: T[], itemsPerPage: number, itemMapping: (item: T, index: number) => string | T) {
         const startingIndex = itemsPerPage * page;
         const endingIndex = itemsPerPage * (page + 1);
 

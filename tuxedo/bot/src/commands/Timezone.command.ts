@@ -1,8 +1,8 @@
+import { RoleType } from "@prisma/client";
 import { inlineQuote } from "@yokilabs/bot";
 import { timezones } from "@yokilabs/utils";
 
 import { Category, Command } from "./commands";
-import { RoleType } from "@prisma/client";
 
 const Timezone: Command = {
     name: "timezone",

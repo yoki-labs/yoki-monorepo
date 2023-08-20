@@ -27,13 +27,7 @@ export default function LabsOverflowButton({ id, children, disabled }: Props) {
             >
                 <FontAwesomeIcon icon={faEllipsisV} />
             </IconButton>
-            <Menu
-                id={`${id}-menu`}
-                anchorEl={overflowRef.current}
-                open={menuOpen}
-                onClose={setMenuOpen.bind(null, false)}
-                placement="bottom"
-            >
+            <Menu id={`${id}-menu`} anchorEl={overflowRef.current} open={menuOpen} onClose={setMenuOpen.bind(null, false)} placement="bottom">
                 {children}
             </Menu>
         </>

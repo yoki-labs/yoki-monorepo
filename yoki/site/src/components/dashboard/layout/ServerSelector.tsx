@@ -40,7 +40,7 @@ export class ServerSelector extends React.Component<Props> {
                 placeholder="Select server"
                 defaultValue={defaultValue?.id}
                 renderValue={this.renderValue.bind(this)}
-                onChange={async (_, serverId) => serverId && await this.props.onChange(serverId)}
+                onChange={async (_, serverId) => serverId && (await this.props.onChange(serverId))}
             >
                 {servers.map((server) => (
                     <Option value={server.id} label={server.name}>

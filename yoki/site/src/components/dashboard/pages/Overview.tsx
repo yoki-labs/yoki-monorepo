@@ -54,13 +54,7 @@ export default function Overview() {
                         activeClassName="from-red-500 to-pink-500"
                         isActive={true}
                     />
-                    <Module
-                        name="Invite Filter"
-                        description="Filters out invites in chat."
-                        icon={faLink}
-                        activeClassName="from-red-500 to-orange-500"
-                        isActive={true}
-                    />
+                    <Module name="Invite Filter" description="Filters out invites in chat." icon={faLink} activeClassName="from-red-500 to-orange-500" isActive={true} />
                     <Module
                         name="Anti-hoist"
                         description="Stops people from putting symbols at the start of their name to put them above everyone else."

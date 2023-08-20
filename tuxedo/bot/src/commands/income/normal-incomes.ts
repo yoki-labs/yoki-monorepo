@@ -23,7 +23,11 @@ export function generateIncomeCommand(incomeType: DefaultIncomeType) {
             return ctx.messageUtil.replyWithError(message, "Economy module disabled", `Economy module has been disabled and this command cannot be used.`);
 
         if (server.disableDefaultIncomes.includes(incomeType))
-            return ctx.messageUtil.replyWithError(message, "Command disabled", `This income command has been disabled!\n\nIt can be re-enable by using \`${prefix}income enable ${incomeType}\`.`);
+            return ctx.messageUtil.replyWithError(
+                message,
+                "Command disabled",
+                `This income command has been disabled!\n\nIt can be re-enable by using \`${prefix}income enable ${incomeType}\`.`
+            );
 
         const currencies = await ctx.dbUtil.getCurrencies(message.serverId!);
 
@@ -75,7 +79,11 @@ async function useIncomeCommand(
     const localCooldown = income?.cooldownMs ?? defaultCooldown;
 
     if (lastUsed && Date.now() - lastUsed < localCooldown)
-        return ctx.messageUtil.replyWithError(message, "Too fast", `You have to wait ${ms(lastUsed + localCooldown - Date.now(), { long: true })} to use ${commandName.toLowerCase()} again.`);
+        return ctx.messageUtil.replyWithError(
+            message,
+            "Too fast",
+            `You have to wait ${ms(lastUsed + localCooldown - Date.now(), { long: true })} to use ${commandName.toLowerCase()} again.`
+        );
 
     // For the cooldown
     ctx.balanceUtil.updateLastCommandUsage(message.serverId!, message.createdById, commandName);
@@ -91,8 +99,7 @@ async function useIncomeCommand(
 
     // Since it can fail too; the loop below is a little different and does additional calculations
     // that are unnecessary
-    if (income?.failChance && income.failChance > Math.random())
-        return onIncomeFail(commandName, income!, rewards, userInfo, currencies, ctx, message);
+    if (income?.failChance && income.failChance > Math.random()) return onIncomeFail(commandName, income!, rewards, userInfo, currencies, ctx, message);
 
     for (const reward of rewards) {
         // The opposite could be done, but this means adding additional `continue` if reward for that currency
@@ -104,7 +111,7 @@ async function useIncomeCommand(
         // Balance changes
         const randomReward = Math.floor(Math.random() * (reward.maxAmount - reward.minAmount) + reward.minAmount);
         const totalBalance = existingBalanceCount + randomReward;
-            
+
         // Check if any of the rewards went over the maximum balance
         if (currency?.maximumBalance && totalBalance > currency.maximumBalance) {
             const lost = totalBalance - currency.maximumBalance;
@@ -148,7 +155,7 @@ async function useIncomeCommand(
 
 async function onIncomeFail(
     commandName: string,
-    income: (IncomeCommand & { rewards: Reward[] }),
+    income: IncomeCommand & { rewards: Reward[] },
     rewards: Pick<Reward, "currencyId" | "minAmount" | "maxAmount">[],
     userInfo: (ServerMember & { balances: MemberBalance[] }) | undefined,
     currencies: Currency[],
@@ -160,8 +167,7 @@ async function onIncomeFail(
     const failCut = income.failSubtractCut ?? 0;
 
     // There is no point in doing anything, nor displaying the fail chance
-    if (!failCut)
-        return ctx.messageUtil.replyWithWarning(message, `${commandName} failed`, `You failed while doing ${commandName}.`);
+    if (!failCut) return ctx.messageUtil.replyWithWarning(message, `${commandName} failed`, `You failed while doing ${commandName}.`);
 
     // Loop for checking whether executor has enough balance and adding rewards; does it all
     for (const reward of rewards) {
@@ -178,22 +184,13 @@ async function onIncomeFail(
             pocket: existingBalance?.pocket ?? 0,
             bank: (existingBalance?.bank ?? currency.startingBalance ?? 0) - lostWithCut,
             currency,
-            change: lostWithCut
+            change: lostWithCut,
         });
     }
 
-    await ctx.dbUtil.updateMemberBalance(
-        message.serverId!,
-        message.createdById,
-        userInfo,
-        newBalance
-    );
+    await ctx.dbUtil.updateMemberBalance(message.serverId!, message.createdById, userInfo, newBalance);
 
     const failedCurrencies = newBalance.map((x) => `:${x.currency.emote}: ${x.change} ${x.currency.name}`);
 
-    return ctx.messageUtil.replyWithWarning(
-        message,
-        `${commandName} failed`,
-        `You failed while doing ${commandName} and lost ${failedCurrencies.join(", ")}.`
-    );
+    return ctx.messageUtil.replyWithWarning(message, `${commandName} failed`, `You failed while doing ${commandName} and lost ${failedCurrencies.join(", ")}.`);
 }

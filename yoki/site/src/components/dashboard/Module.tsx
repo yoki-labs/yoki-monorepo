@@ -40,12 +40,18 @@ export default class Module extends React.Component<Props, { isActive: boolean }
                             <Typography className="grow" fontWeight="md" level="body1">
                                 {name}
                             </Typography>
-                            <LabsSwitch className="toggle justify-end" defaultChecked={this.props.isActive} onChange={({ target }) => this.setState({ isActive: target.checked })} />
+                            <LabsSwitch
+                                className="toggle justify-end"
+                                defaultChecked={this.props.isActive}
+                                onChange={({ target }) => this.setState({ isActive: target.checked })}
+                            />
                         </div>
                         <Typography level="body2">{description}</Typography>
                     </Box>
                     <Box mt={2}>
-                        <Chip variant="outlined" color={requiresPremium ? "primary" : "neutral"}>{ requiresPremium ? "Premium" : "Free" }</Chip>
+                        <Chip variant="outlined" color={requiresPremium ? "primary" : "neutral"}>
+                            {requiresPremium ? "Premium" : "Free"}
+                        </Chip>
                     </Box>
                 </CardContent>
             </Card>

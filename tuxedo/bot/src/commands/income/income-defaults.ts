@@ -1,6 +1,6 @@
 import { DefaultIncomeType } from "@prisma/client";
 
-export const defaultIncomes: Record<DefaultIncomeType, { reward: [number, number]; cooldown: number; action: string; failChance: number; failCut: number; }> = {
+export const defaultIncomes: Record<DefaultIncomeType, { reward: [number, number]; cooldown: number; action: string; failChance: number; failCut: number }> = {
     [DefaultIncomeType.DAILY]: {
         // 1000-10000
         reward: [1000, 9000],

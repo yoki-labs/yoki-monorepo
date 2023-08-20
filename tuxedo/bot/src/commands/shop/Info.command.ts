@@ -26,8 +26,7 @@ const Info: Command = {
         const number = args.number as number;
 
         // We just use number - 1 as the index of the item
-        if (number < 1)
-            return ctx.messageUtil.replyWithError(message, "Invalid number", `The first item in the store always starts with 1.`);
+        if (number < 1) return ctx.messageUtil.replyWithError(message, "Invalid number", `The first item in the store always starts with 1.`);
 
         const items = await ctx.prisma.item.findMany({
             where: {
@@ -40,10 +39,13 @@ const Info: Command = {
         });
 
         // Item needs to exist for it to be deleted
-        if (!items.length)
-            return ctx.messageUtil.replyWithError(message, "No items", `The store does not have any items at the moment.`);
+        if (!items.length) return ctx.messageUtil.replyWithError(message, "No items", `The store does not have any items at the moment.`);
         else if (number > items.length)
-            return ctx.messageUtil.replyWithError(message, "Doesn't exist", `Item with number ${inlineCode(number)} does not exist. The last item in the list has number ${items.length}.`);
+            return ctx.messageUtil.replyWithError(
+                message,
+                "Doesn't exist",
+                `Item with number ${inlineCode(number)} does not exist. The last item in the list has number ${items.length}.`
+            );
 
         const item = items[number - 1];
         const currencies = await ctx.dbUtil.getCurrencies(message.serverId!);
@@ -60,8 +62,8 @@ const Info: Command = {
                     },
                 ],
                 footer: {
-                    text: `You can buy this item by typing ${inlineCode(`${prefix}shop buy ${number}`)}`
-                }
+                    text: `You can buy this item by typing ${inlineCode(`${prefix}shop buy ${number}`)}`,
+                },
             },
             {
                 isSilent: true,

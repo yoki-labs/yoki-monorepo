@@ -8,14 +8,11 @@ import Hobby from "../income/Hobby.command";
 import { defaultCreatedReceivedCurrency, defaultIncomes } from "../income/income-defaults";
 import Work from "../income/Work.command";
 
-export const defaultOrCustomIncomeDisplay = `${
-    Object
-        .keys(DefaultIncomeType)
-        .slice(0, 3)
-        .concat("...")
-        .map((x) => x.toLowerCase())
-        .join(" / ")
-    } / (custom income command)`;
+export const defaultOrCustomIncomeDisplay = `${Object.keys(DefaultIncomeType)
+    .slice(0, 3)
+    .concat("...")
+    .map((x) => x.toLowerCase())
+    .join(" / ")} / (custom income command)`;
 
 export const DefaultIncomeTypeMap: Record<string, string> = Object.assign(
     {},

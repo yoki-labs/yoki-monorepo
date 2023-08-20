@@ -1,7 +1,7 @@
-import { ResolvedEnum, inlineCode } from "@yokilabs/bot";
+import { ModuleName, RoleType } from "@prisma/client";
+import { inlineCode, ResolvedEnum } from "@yokilabs/bot";
 
 import { Category, Command } from "../commands";
-import { ModuleName, RoleType } from "@prisma/client";
 
 const Enable: Command = {
     name: "module-enable",
@@ -23,7 +23,7 @@ const Enable: Command = {
 
         // No reason to enable it if it's already enabled
         if (!server.modulesDisabled.includes(module.resolved as ModuleName))
-            return ctx.messageUtil.replyWithError(message, "Already enabled", `The module ${inlineCode(module.original.toLowerCase())} is already enabled.`)
+            return ctx.messageUtil.replyWithError(message, "Already enabled", `The module ${inlineCode(module.original.toLowerCase())} is already enabled.`);
 
         void ctx.amp.logEvent({ event_type: "MODULE_ENABLE", user_id: message.authorId, event_properties: { serverId: message.serverId!, module: module.resolved } });
 

@@ -47,14 +47,12 @@ export default class Layout extends React.Component<LayoutProps, LayoutState> {
                 currentServer={currentServer}
                 topbarPrefix={
                     <IconButton className="md:hidden block" onClick={this.toggleMenu.bind(this)} color="neutral">
-                        <FontAwesomeIcon icon={faBars}/>
+                        <FontAwesomeIcon icon={faBars} />
                     </IconButton>
                 }
             >
                 <LayoutSidebar menuToggled={this.state.menuEnabled} />
-                <Box className={`overflow-hidden grow basis-0 shrink-0 flex h-full ${this.state.menuEnabled ? "md:block hidden" : ""}`}>
-                    {children}
-                </Box>
+                <Box className={`overflow-hidden grow basis-0 shrink-0 flex h-full ${this.state.menuEnabled ? "md:block hidden" : ""}`}>{children}</Box>
             </LayoutWrapper>
         );
     }

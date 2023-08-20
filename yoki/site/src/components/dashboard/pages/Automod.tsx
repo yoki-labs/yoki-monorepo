@@ -5,8 +5,7 @@ import React from "react";
 import Module from "../Module";
 
 interface Props {}
-interface State {
-}
+interface State {}
 
 const dummyPhrases: ContentFilter[] = [
     {
@@ -45,13 +44,7 @@ export default class Automod extends React.Component<Props, State> {
                         activeClassName="from-red-500 to-pink-500"
                         isActive={true}
                     />
-                    <Module
-                        name="Invite Filter"
-                        description="Filters out invites in chat."
-                        icon={faLink}
-                        activeClassName="from-red-500 to-orange-500"
-                        isActive={true}
-                    />
+                    <Module name="Invite Filter" description="Filters out invites in chat." icon={faLink} activeClassName="from-red-500 to-orange-500" isActive={true} />
                 </Box>
             </>
         );

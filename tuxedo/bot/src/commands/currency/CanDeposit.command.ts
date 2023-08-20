@@ -49,7 +49,11 @@ const CanDeposit: Command = {
 
         await ctx.dbUtil.updateCurrency(currency, { bankEnabled: depositable });
 
-        return ctx.messageUtil.replyWithSuccess(message, depositable ? "Bank enabled" : "Bank disabled", `Currency with the tag ${inlineQuote(tag)} now has bank ${depositable ? "enabled" : "disabled"}.`);
+        return ctx.messageUtil.replyWithSuccess(
+            message,
+            depositable ? "Bank enabled" : "Bank disabled",
+            `Currency with the tag ${inlineQuote(tag)} now has bank ${depositable ? "enabled" : "disabled"}.`
+        );
     },
 };
 

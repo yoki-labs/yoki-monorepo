@@ -9,14 +9,10 @@ export default {
         if (!server || createdBy === ctx.user?.id) return;
 
         // If it's an emote to join and there is an on-going giveaway
-        if (emote.id === defaultGiveawayEmote)
-            return ctx.giveawayUtil.addGiveawayParticipant(messageId, createdBy);
-        else if (emote.id === blackjackReactionHit)
-            return ctx.minigameUtil.addBlackjackHit(serverId, messageId, createdBy);
+        if (emote.id === defaultGiveawayEmote) return ctx.giveawayUtil.addGiveawayParticipant(messageId, createdBy);
+        else if (emote.id === blackjackReactionHit) return ctx.minigameUtil.addBlackjackHit(serverId, messageId, createdBy);
         else if (emote.id === blackjackReactionStand || emote.id === blackjackReactionStandAce1)
             return ctx.minigameUtil.addBlackjackStand(serverId, messageId, createdBy, emote.id === blackjackReactionStand);
-
-        return;
     },
     name: "messageReactionCreated",
 } satisfies GEvent<"messageReactionCreated">;

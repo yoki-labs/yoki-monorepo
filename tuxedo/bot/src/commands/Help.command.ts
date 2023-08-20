@@ -47,8 +47,7 @@ const Help: Command = {
         // Display server custom incomes
         const customIncomes = (await ctx.dbUtil.getIncomeOverrides(message.serverId!)).filter((x) => x.name);
 
-        if (customIncomes.length)
-            embed.addField(":small_orange_diamond: Server Incomes", listInlineCode(customIncomes.map((x) => x.name) as string[])!);
+        if (customIncomes.length) embed.addField(":small_orange_diamond: Server Incomes", listInlineCode(customIncomes.map((x) => x.name) as string[])!);
 
         embed.addField(
             ":exclamation: NOTE!!!",

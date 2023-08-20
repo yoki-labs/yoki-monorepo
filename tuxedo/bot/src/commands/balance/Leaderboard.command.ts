@@ -13,7 +13,7 @@ const Leaderboard: Command = {
         },
     ],
     execute: async (message, args, ctx) => {
-        const page = (args.page as number | undefined ?? 1) - 1;
+        const page = ((args.page as number | undefined) ?? 1) - 1;
 
         const currencies = await ctx.dbUtil.getCurrencies(message.serverId!);
 

@@ -51,13 +51,13 @@ export class ContentFilterUtil extends BaseFilterUtil {
                         `<@${userId}>, our filters have detected that an image attached to your message is inappropriate and has been deleted.`,
                         undefined,
                         { isPrivate: true }
-                    )
+                    );
                 } catch {
                     await this.client.messageUtil.sendWarningBlock(
                         channelId,
                         "Inappropriate Image!",
-                        `<@${userId}>, our filters have detected that an image attached to your message is inappropriate and has been deleted.`,
-                    )
+                        `<@${userId}>, our filters have detected that an image attached to your message is inappropriate and has been deleted.`
+                    );
                 }
                 return;
             }

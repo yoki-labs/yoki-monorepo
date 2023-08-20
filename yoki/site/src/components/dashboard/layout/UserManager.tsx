@@ -29,13 +29,7 @@ export default function UserManager({ user }: Props) {
                     {user?.name?.[0] ?? ""}
                 </Avatar>
             </Button>
-            <Menu
-                id="user-manager-menu"
-                anchorEl={userManagerRef.current}
-                open={menuOpen}
-                onClose={setMenuOpen.bind(null, false)}
-                placement="bottom"
-            >
+            <Menu id="user-manager-menu" anchorEl={userManagerRef.current} open={menuOpen} onClose={setMenuOpen.bind(null, false)} placement="bottom">
                 <MenuItem onClick={() => console.log("Log out clicked")}>
                     <ListItemDecorator>
                         <FontAwesomeIcon icon={faRightFromBracket} />

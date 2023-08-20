@@ -279,23 +279,12 @@ function isArgumentValueInvalid(arg: CommandArgument, value: ResolvedArgs) {
     const hasMax = typeof arg.max !== "undefined";
     const hasMin = typeof arg.min !== "undefined";
 
-    return (
-        (hasMax && ((value! as string | string[]).length ?? value) > arg.max!) ||
-        (hasMin && ((value! as string | string[]).length ?? value) < arg.min!)
-    );
+    return (hasMax && ((value! as string | string[]).length ?? value) > arg.max!) || (hasMin && ((value! as string | string[]).length ?? value) < arg.min!);
 }
 
 function renderExpectedArgumentValue(arg: CommandArgument) {
     const hasMax = typeof arg.max !== "undefined";
     const hasMin = typeof arg.min !== "undefined";
 
-    return (
-        hasMax && hasMin
-        ? ` between ${arg.min} and ${arg.max}`
-        : hasMax
-        ? ` with max ${arg.max}`
-        : hasMin
-        ? ` with min ${arg.min}`
-        : ""
-    );
+    return hasMax && hasMin ? ` between ${arg.min} and ${arg.max}` : hasMax ? ` with max ${arg.max}` : hasMin ? ` with min ${arg.min}` : "";
 }

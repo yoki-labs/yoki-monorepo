@@ -70,7 +70,7 @@ export class GiveawayUtil extends TickedUtil {
         });
 
         // Creating giveway stuff
-        await Promise.all([
+        return Promise.all([
             this.client.reactions.create(message.channelId, message.id, defaultGiveawayEmote),
             this.client.prisma.giveaway
                 .create({
@@ -145,14 +145,14 @@ export class GiveawayUtil extends TickedUtil {
 
         for (const giveaway of this._endingGiveawayPool)
             try {
-                //const { channelId, messageId } = giveaway;
+                // const { channelId, messageId } = giveaway;
 
                 // End it
                 if (giveaway.endsAt.getTime() <= now) await this.concludeGiveaway(giveaway);
-                //else await this.client.messages.update(channelId, messageId, this.createGiveawayEmbed(giveaway));
+                // else await this.client.messages.update(channelId, messageId, this.createGiveawayEmbed(giveaway));
             } catch (e) {
                 console.error("Error", e);
-                this.client.errorHandler.send("Error while handling ending giveaways", [errorEmbed((e as Error).toString().substring(0, 2048))]);
+                await this.client.errorHandler.send("Error while handling ending giveaways", [errorEmbed((e as Error).toString().substring(0, 2048))]);
             }
     }
 

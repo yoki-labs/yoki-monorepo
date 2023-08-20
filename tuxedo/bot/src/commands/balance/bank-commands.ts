@@ -7,7 +7,13 @@ import { TuxoClient } from "../../Client";
 import { CommandContext } from "../../typings";
 import { bankCooldown } from "../income/income-defaults";
 
-export function generateBankCommand(balanceType: string, action: string, actionDone: string, depositMultiplier: number, getBalanceAmount: (balance: MemberBalance | undefined, startingBalance: number | null) => number) {
+export function generateBankCommand(
+    balanceType: string,
+    action: string,
+    actionDone: string,
+    depositMultiplier: number,
+    getBalanceAmount: (balance: MemberBalance | undefined, startingBalance: number | null) => number
+) {
     return async (message: Message, args: Record<string, ResolvedArgs>, ctx: TuxoClient, { server }: CommandContext) => {
         if (server.modulesDisabled.includes(ModuleName.ECONOMY))
             return ctx.messageUtil.replyWithError(message, "Economy module disabled", `Economy module has been disabled and this command cannot be used.`);
@@ -48,13 +54,16 @@ export function generateBankCommand(balanceType: string, action: string, actionD
 
         const depositingCurrency = serverCurrencies.find((x) => x.tag === tag);
 
-        if (!depositingCurrency)
-            return ctx.messageUtil.replyWithError(message, "No such currency", `Currency with the tag ${inlineCode(tag)} does not exist.`);
+        if (!depositingCurrency) return ctx.messageUtil.replyWithError(message, "No such currency", `Currency with the tag ${inlineCode(tag)} does not exist.`);
         // Allow disabling bank for specific currencies
         else if (!depositingCurrency.bankEnabled)
-            return ctx.messageUtil.replyWithError(message, "Can't deposit currency", `Currency with the tag ${inlineCode(tag)} cannot be deposited to the bank, as bank for this currency has been disabled.`);
+            return ctx.messageUtil.replyWithError(
+                message,
+                "Can't deposit currency",
+                `Currency with the tag ${inlineCode(tag)} cannot be deposited to the bank, as bank for this currency has been disabled.`
+            );
 
-        return depositOneCurrency(ctx, message, member, depositingCurrency, amount, depositMultiplier, balanceType, action, actionDone, getBalanceAmount);        
+        return depositOneCurrency(ctx, message, member, depositingCurrency, amount, depositMultiplier, balanceType, action, actionDone, getBalanceAmount);
     };
 }
 
@@ -81,7 +90,7 @@ async function depositAllCurrency(
 
         // // Get the currency to display its name in the error
         // const depositingCurrency = depositingCurrencies.find((x) => x.id === depositingBalance.currencyId)!;
-    
+
         // Check if it can be deposited
         if (amount && balanceAmount < amount)
             return ctx.messageUtil.replyWithError(
@@ -89,20 +98,18 @@ async function depositAllCurrency(
                 "Balance currency too low",
                 `You cannot ${action} ${inlineCode(amount)} ${depositingCurrency.name}, as your ${balanceType} balance only has ${balanceAmount} ${depositingCurrency.name}.`
             );
-    
+
         // If the amount was not specified, deposit all of what is in the pocket
         depositMap[depositingCurrency.id] = (amount ?? balanceAmount) * depositMultiplier;
     }
-    
+
     return depositToBank(
         ctx,
         message,
         member,
         depositMap,
         actionDone,
-        depositingCurrencies
-            .map((x) => `:${x.emote}: ${depositMap[x.id] / depositMultiplier} ${x.name}`)
-            .join(", ")
+        depositingCurrencies.map((x) => `:${x.emote}: ${depositMap[x.id] / depositMultiplier} ${x.name}`).join(", ")
     );
 }
 
@@ -131,7 +138,14 @@ async function depositOneCurrency(
             `You cannot ${action} ${inlineCode(amount)} ${depositingCurrency.name}, as your ${balanceType} balance only has ${balanceAmount} ${depositingCurrency.name}.`
         );
 
-    return depositToBank(ctx, message, member, { [depositingCurrency.id]: (amount ?? balanceAmount) * depositMultiplier }, actionDone, `:${depositingCurrency.emote}: ${amount ?? balanceAmount} ${depositingCurrency.name}`);
+    return depositToBank(
+        ctx,
+        message,
+        member,
+        { [depositingCurrency.id]: (amount ?? balanceAmount) * depositMultiplier },
+        actionDone,
+        `:${depositingCurrency.emote}: ${amount ?? balanceAmount} ${depositingCurrency.name}`
+    );
 }
 
 async function depositToBank(
@@ -143,14 +157,10 @@ async function depositToBank(
     depositedMessage: string
 ) {
     ctx.balanceUtil.updateLastCommandUsage(message.serverId!, message.createdById, "bank");
-    
+
     // Deposit into bank
     await ctx.dbUtil.depositMemberBalance(member, depositMap);
-    
+
     // Reply with success
-    return ctx.messageUtil.replyWithSuccess(
-        message,
-        `Balance ${actionDone}`,
-        `You have successfully ${actionDone} ${depositedMessage}.`
-    );
+    return ctx.messageUtil.replyWithSuccess(message, `Balance ${actionDone}`, `You have successfully ${actionDone} ${depositedMessage}.`);
 }

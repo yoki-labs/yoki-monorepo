@@ -3,9 +3,9 @@ import { inlineCode, inlineQuote } from "@yokilabs/bot";
 import { Message } from "guilded.js";
 
 import { TuxoClient } from "../../Client";
+import { displayCurrency } from "../../util/text";
 import { Category, Command } from "../commands";
 import { DefaultIncomeTypeMap, displayDefaultRewards, displayOverridenRewards } from "./income-util";
-import { displayCurrency } from "../../util/text";
 
 const SetCurrency: Command = {
     name: "income-currency",
@@ -17,8 +17,7 @@ const SetCurrency: Command = {
     args: [
         {
             name: "command",
-            display: `${Object
-                .keys(DefaultIncomeType)
+            display: `${Object.keys(DefaultIncomeType)
                 .slice(0, 3)
                 .concat("...")
                 .map((x) => x.toLowerCase())
@@ -74,8 +73,7 @@ const SetCurrency: Command = {
                 `Please provide minimum and maximum amounts of ${currency.name} user should received from ${command}.`
             );
 
-        if (minAmount === 0 && maxAmount === 0)
-            return removeCurrencyReward(ctx, message, command, currency, incomeOverride);
+        if (minAmount === 0 && maxAmount === 0) return removeCurrencyReward(ctx, message, command, currency, incomeOverride);
 
         await ctx.dbUtil.createOrUpdateIncomeReward(message.serverId!, message.createdById, incomeType, command, incomeOverride, {
             serverId: message.serverId!,

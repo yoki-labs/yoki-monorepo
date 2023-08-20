@@ -1,4 +1,5 @@
 import { ModuleName, RoleType } from "@prisma/client";
+
 import { Category, Command } from "../commands";
 
 const descriptions: Record<ModuleName, string> = {
@@ -17,7 +18,13 @@ const List: Command = {
     category: Category.Custom,
     requiredRole: RoleType.ADMIN,
     execute: (message, _args, ctx, { server }) => {
-        return ctx.messageUtil.replyWithEnableStateList(message, `Modules`, moduleList.filter((x) => !server.modulesDisabled.includes(x)), moduleList, descriptions);
+        return ctx.messageUtil.replyWithEnableStateList(
+            message,
+            `Modules`,
+            moduleList.filter((x) => !server.modulesDisabled.includes(x)),
+            moduleList,
+            descriptions
+        );
     },
 };
 

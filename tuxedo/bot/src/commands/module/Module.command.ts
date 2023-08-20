@@ -1,10 +1,10 @@
 import { Collection } from "@discordjs/collection";
+import { RoleType } from "@prisma/client";
 
 import { Category, Command } from "../commands";
 import Disable from "./Disable.command";
 import Enable from "./Enable.command";
 import List from "./List.command";
-import { RoleType } from "@prisma/client";
 
 const subCommands = new Collection<string, Command>().set("enable", Enable).set("disable", Disable).set("list", List);
 
