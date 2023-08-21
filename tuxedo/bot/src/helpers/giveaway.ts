@@ -230,12 +230,12 @@ export class GiveawayUtil extends TickedUtil {
                 {
                     name: "Amount of Winners",
                     value: `${inlineCode(giveaway.winnerCount)}`,
-                    inline: false,
+                    inline: true,
                 },
                 !ended && {
                     name: "How to Join",
                     value: `React with :plus1: to join the giveaway! Removing the reaction will remove you from the giveaway.`,
-                    inline: true,
+                    inline: false,
                 },
             ].filter(Boolean) as EmbedField[],
         });
