@@ -170,15 +170,15 @@ export class GiveawayUtil extends TickedUtil {
                 {
                     fields: winners.length
                         ? [
-                              {
-                                  name: "Winners",
-                                  value: winners.map((x) => `<@${x}>`).join(", "),
-                              },
-                              {
-                                  name: "Reward",
-                                  value: giveaway.text,
-                              },
-                          ]
+                            {
+                                name: "Winners",
+                                value: winners.map((x) => `<@${x}>`).join(", "),
+                            },
+                            {
+                                name: "Reward",
+                                value: giveaway.text,
+                            },
+                        ]
                         : undefined,
                 },
                 {
@@ -209,22 +209,28 @@ export class GiveawayUtil extends TickedUtil {
         const endDateMessage = canceled
             ? ":x: **Has been cancelled.**"
             : ended
-            ? ":white_check_mark: **Has concluded the winners.**"
-            : `**Ends in:** ${formatDate(giveaway.endsAt, timeZone)} EST (${ms(giveaway.endsAt.getTime() - Date.now(), { long: true })} left)`;
+                ? ":white_check_mark: **Has concluded the winners.**"
+                : `**Ends in:** ${formatDate(giveaway.endsAt, timeZone)} EST (${ms(giveaway.endsAt.getTime() - Date.now(), { long: true })} left)`;
 
         return new Embed({
             title: ended ? ":tada: Giveaway has ended!" : ":tada: Giveaway has started!",
             description: giveaway.text,
             color: canceled ? Colors.red : ended ? Colors.green : Colors.blockBackground,
+            footer: {
+                "text": `Giveaway ID: ${giveaway.id}`,
+            },
             fields: [
                 {
                     name: "Information",
                     value: stripIndents`
                         ${endDateMessage}
-                        **Possible winner count:** ${inlineCode(giveaway.winnerCount)}
-                        **Giveaway ID:** ${inlineCode(giveaway.id)}
                     `,
                     inline: !ended,
+                },
+                {
+                    name: "Amount of Winners",
+                    value: `${inlineCode(giveaway.winnerCount)}`,
+                    inline: false,
                 },
                 !ended && {
                     name: "How to Join",
