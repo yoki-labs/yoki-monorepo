@@ -146,7 +146,6 @@ export class GiveawayUtil extends TickedUtil {
         for (const giveaway of this._endingGiveawayPool)
             try {
                 // const { channelId, messageId } = giveaway;
-
                 // End it
                 if (giveaway.endsAt.getTime() <= now) await this.concludeGiveaway(giveaway);
                 // else await this.client.messages.update(channelId, messageId, this.createGiveawayEmbed(giveaway));
@@ -161,7 +160,7 @@ export class GiveawayUtil extends TickedUtil {
         const participants = this._participants[giveaway.messageId]?.users ?? giveaway.participants;
         const winners = shuffleArray(participants).slice(0, giveaway.winnerCount);
 
-        await Promise.all([
+        await Promise.allSettled([
             this.client.messages.update(channelId, messageId, this.createGiveawayEmbed(giveaway, timeZone, true)),
             this.client.messageUtil.sendSuccessBlock(
                 channelId,
