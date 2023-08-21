@@ -19,7 +19,7 @@ export default function createServerRoute(methodToFunction: Record<string, Route
         // Don't know who is appealing (need a Guilded login)
         const session = await unstable_getServerSession(req, res, authOptions);
         if (!session?.user.id)
-            return res.status(401).json({ error: true, message: "Must be logged in to send appeal." });
+            return res.status(401).json({ error: true, message: "Must be logged in to use this function." });
         
         // Server needs to exist and have appeals enabled
         const server = await prisma.server.findFirst({ where: { serverId } });
@@ -51,7 +51,7 @@ export default function createServerRoute(methodToFunction: Record<string, Route
             .then((roles) =>
                 roles.map((role) => role.roleId)
             );
-        
+
         if (!(member?.isOwner || member?.roleIds.find((x) => adminRoles.includes(x))))
             return res.status(403).json({ error: true, code: "NOT_STAFF", message: "User does not have ADMIN access level." });
 

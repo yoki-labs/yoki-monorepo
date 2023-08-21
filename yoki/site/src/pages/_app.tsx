@@ -56,13 +56,13 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }: AppPropsWith
                 <meta name="twitter:image" content={ogFace} />
 
                 <link rel="icon" href="/favicon.ico" />
-                <style>html, body, #__next {`{ width: 100%; height: 100%; }`}</style>
+                <style>html, body, #main, #__next {`{ margin: 0; padding: 0; width: 100%; height: 100%; }`}</style>
             </Head>
             <SessionProvider session={session}>
                 <QueryClientProvider client={queryClient}>
                     {/* <gqlClientContext.Provider value={gql}> */}
                     <CssVarsProvider defaultMode="dark" theme={theme}>
-                        <main className={inter.className}>
+                        <main id="main" className={inter.className}>
                             <Component {...pageProps} />
                         </main>
                     </CssVarsProvider>

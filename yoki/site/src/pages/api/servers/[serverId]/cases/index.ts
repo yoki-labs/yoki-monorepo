@@ -1,12 +1,12 @@
 import { Action } from "@prisma/client";
-import prisma from "../../../../prisma";
-import createServerRoute from "../../../../utils/route";
+import prisma from "../../../../../prisma";
+import createServerRoute from "../../../../../utils/route";
 
 const casesPerPage = 50;
 
 const serverCasesRoute = createServerRoute({
-    async GET(_req, res, _session, server, _member) {
-        const { page: pageStr } = _req.query;
+    async GET(req, res, _session, server, _member) {
+        const { page: pageStr } = req.query;
 
         // Check query
         if (typeof pageStr !== "string")

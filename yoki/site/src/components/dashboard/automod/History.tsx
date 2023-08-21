@@ -39,6 +39,23 @@ export default class HistoryPage extends React.Component<DashboardPageProps, Sta
             .catch((errorResponse) => console.error("Error while fetching data:", errorResponse));
     }
 
+
+    async deleteCase(action: SanitizedAction) {
+        const { serverId, id } = action;
+        const { cases, totalCases } = this.state;
+
+        // To not make it stay at all
+        this.setState({
+            cases: cases.filter((x) => x.id !== id),
+            totalCases: totalCases - 1,
+        });
+
+        return fetch(`/api/servers/${serverId}/cases/${id}`, {
+            method: "DELETE",
+            headers: { "content-type": "application/json" },
+        });
+    }
+
     componentDidUpdate(_prevProps: DashboardPageProps, prevState: State): Promise<unknown> | void {
         const { page } = this.state;
 
@@ -87,15 +104,15 @@ export default class HistoryPage extends React.Component<DashboardPageProps, Sta
                         </tr>
                     </thead>
                     <tbody>
-                        {cases.map((action) => <HistoryCase timezone={serverConfig.timezone} action={action} />)}
+                        {cases.map((action) => <HistoryCase onDelete={this.deleteCase.bind(this, action)} timezone={serverConfig.timezone} action={action} />)}
                     </tbody>
                 </Table>
 
-                <ButtonGroup>
+                { maxPages > 1 && <ButtonGroup>
                     {[...(pagesToArray(maxPages) as unknown as number[])].map((buttonPage) =>
                         <Button disabled={page === buttonPage} onClick={this.setPage.bind(this, buttonPage)}>{buttonPage + 1}</Button>
                     )}
-                </ButtonGroup>
+                </ButtonGroup> }
             </Stack>
         );
     }

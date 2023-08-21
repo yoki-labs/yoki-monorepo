@@ -16,6 +16,8 @@ type Props = {
     serverRoles: RolePayload[];
     role: SanitizedRole;
     timezone: string | null;
+    onUpdate: (data: { newRoleId: number | null, newType: RoleType | null }) => unknown;
+    onDelete: () => unknown;
 };
 // Edit mode exists instead of putting you right away there because there may be too many Select form fields
 // With too many roles and too many types at a time and it can be pretty laggy, especially on lower-end
@@ -44,7 +46,7 @@ export default class DashboardRole extends React.Component<Props, State> {
     }
     
     RoleItemStaticMode() {
-        const { serverId, serverRoles, role, timezone } = this.props;
+        const { serverId, role, timezone, onDelete } = this.props;
         const serverRole = this.currentServerRole;
         
         return (
@@ -68,7 +70,7 @@ export default class DashboardRole extends React.Component<Props, State> {
                             </ListItemDecorator>
                             Edit role
                         </MenuItem>
-                        <MenuItem color="danger">
+                        <MenuItem onClick={onDelete} color="danger">
                             <ListItemDecorator>
                                 <FontAwesomeIcon icon={faTrash} />
                             </ListItemDecorator>
@@ -104,54 +106,17 @@ export default class DashboardRole extends React.Component<Props, State> {
                 onCancel={() => this.toggleEditMode(false)}
                 />
         );
-
-        // return (
-        //     <LabsForm
-        //         sections={[
-        //             {
-        //                 row: true,
-        //                 start: (
-        //                     <LabsIconWrapper>
-        //                         <FontAwesomeIcon style={{ width: "100%", height: "100%" }} icon={faShieldHalved} />
-        //                     </LabsIconWrapper>
-        //                 ),
-        //                 fields: [
-        //                     {
-        //                         type: LabsFormFieldType.Select,
-        //                         prop: "roleId",
-        //                         defaultValue: role.roleId,
-        //                         selectableValues: serverRoles.sort((a, b) => b.position - a.position).map((serverRole) => ({
-        //                             name: serverRole.name,
-        //                             value: serverRole.id,
-        //                             avatarIcon: serverRole.icon,
-        //                         }))
-        //                     },
-        //                     {
-        //                         type: LabsFormFieldType.Select,
-        //                         prop: "type",
-        //                         selectableValues: staffRoleTypes.map((roleType) => ({
-        //                             name: roleType[0] + roleType.toLowerCase().slice(1),
-        //                             value: roleType,
-        //                         })),
-        //                         defaultValue: role.type,
-        //                         placeholder: "Select role level"
-        //                     }
-        //                 ],
-        //             },
-        //             {
-        //                 description: formatDate(new Date(role.createdAt), timezone),
-        //                 fields: []
-        //             }
-        //         ]}
-        //         onSubmit={onSubmit}
-        //         onCancel={() => this.toggleEditMode(false)}
-        //         canCancel
-        //     />
-        // );
     }
 
-    onRoleItemEdit(state: LabsFormState) {
+    onRoleItemEdit({ values }: LabsFormState) {
+        const { onUpdate, role: { roleId, type } } = this.props;
+
         this.toggleEditMode(false);
+
+        return onUpdate({
+            newRoleId: roleId !== values.roleId ? values.roleId as number : null,
+            newType: type !== values.type ? values.type as RoleType : null,
+        });
     }
 
     render() {

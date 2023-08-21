@@ -4,8 +4,8 @@ const LabsIconWrapper = styled(
     Box,
 )(({ theme }) => ({
     backgroundColor: theme.vars.palette.background.level3,
-    width: 40,
-    height: 40,
+    width: 20,
+    height: 20,
     borderRadius: "50%",
     padding: 10,
     display: "flex",

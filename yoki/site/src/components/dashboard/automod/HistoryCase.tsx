@@ -11,10 +11,12 @@ import { SanitizedAction } from "../../../lib/@types/db";
 import { LabsUserCard } from "../../LabsUserCard";
 import CodeWrapper from "../../CodeWrapper";
 import InfoText from "../../InfoText";
+import DeleteButton from "../../DeleteButton";
 
 type Props = {
     action: SanitizedAction;
     timezone: string | null;
+    onDelete: () => Promise<unknown>;
 };
 
 type State = {
@@ -37,7 +39,7 @@ export default class HistoryCase extends React.Component<Props, State> {
     }
 
     renderInfoRow() {
-        const { action } = this.props;
+        const { action, onDelete } = this.props;
 
         return (
             <tr data-id={action.id}>
@@ -72,7 +74,7 @@ export default class HistoryCase extends React.Component<Props, State> {
                             </Box>}
                             <Box>
                                 <Typography level="h3" fontSize="md" gutterBottom>Actions</Typography>
-                                <Button startDecorator={<FontAwesomeIcon icon={faTrash} />} variant="outlined" color="danger">Delete case</Button>
+                                <DeleteButton itemType="case" onConfirm={onDelete} startDecorator={<FontAwesomeIcon icon={faTrash} />} variant="outlined" color="danger">Delete case</DeleteButton>
                             </Box>
                         </Stack>
                     </Sheet>
