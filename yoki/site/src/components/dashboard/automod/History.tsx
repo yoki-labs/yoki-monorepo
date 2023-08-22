@@ -13,6 +13,7 @@ type State = {
     page: number;
     cases: SanitizedAction[];
     totalCases: number;
+    search?: string;
 };
 
 export default class HistoryPage extends React.Component<DashboardPageProps, State> {
@@ -22,11 +23,11 @@ export default class HistoryPage extends React.Component<DashboardPageProps, Sta
         this.state = { isLoaded: false, cases: [], totalCases: 0, page: 0 };
     }
 
-    fetchCases() {
+    fetchCases(search?: string) {
         const { serverConfig: { serverId } } = this.props;
         const { page } = this.state;
 
-        return fetch(`/api/servers/${serverId}/cases?page=${page}`, {
+        return fetch(`/api/servers/${serverId}/cases?page=${page}${search ? `&search=${encodeURIComponent(search)}` : ""}`, {
             method: "GET",
             headers: { "content-type": "application/json" },
         })
@@ -35,7 +36,7 @@ export default class HistoryPage extends React.Component<DashboardPageProps, Sta
                     throw response;
                 return response.json();
             })
-            .then(({ cases, count }) => this.setState({ isLoaded: true, cases, totalCases: count }))
+            .then(({ cases, count }) => this.setState({ isLoaded: true, cases, totalCases: count, search }))
             .catch((errorResponse) => console.error("Error while fetching data:", errorResponse));
     }
 
@@ -73,7 +74,7 @@ export default class HistoryPage extends React.Component<DashboardPageProps, Sta
     }
 
     render() {
-        const { isLoaded, cases, totalCases, page } = this.state;
+        const { isLoaded, cases, totalCases, page, search } = this.state;
         const { serverConfig } = this.props;
 
         // Still loading the history
@@ -81,15 +82,16 @@ export default class HistoryPage extends React.Component<DashboardPageProps, Sta
             return <CircularProgress />;
 
         // No cases to display
-        if (!totalCases)
+        if (!(totalCases || search))
             return <PagePlaceholder icon={PagePlaceholderIcon.NotFound} title="Squeaky clean history!" description="There are no moderation cases." />
 
         const maxPages = Math.ceil(totalCases / 50);
+        console.log("Rendering with search", { search, totalCases, cases });
 
         return (
             <Stack direction="column" gap={3}>
                 <Box>
-                    <Input placeholder="Search cases" startDecorator={<FontAwesomeIcon icon={faMagnifyingGlass} />} />
+                    <Input onChange={({ target }) => (console.log("Searching", [target.value]), this.fetchCases(target.value))} variant="outlined" placeholder="Search cases" startDecorator={<FontAwesomeIcon icon={faMagnifyingGlass} />} />
                 </Box>
 
                 <Table size="lg" variant="plain" sx={{ borderRadius: 8, overflow: "hidden", "--Table-headerUnderlineThickness": 0 }}>

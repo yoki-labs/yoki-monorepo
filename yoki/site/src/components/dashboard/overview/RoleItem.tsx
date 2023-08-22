@@ -154,7 +154,6 @@ export function RoleItemEditor({ type, roleId, createdAt, serverRoles, timezone,
                 avatarIcon: serverRole.icon,
                 color: serverRole.colors?.[0],
             }));
-    console.log("Role id", [roleId]);
 
     return (
         <LabsForm
@@ -172,6 +171,7 @@ export function RoleItemEditor({ type, roleId, createdAt, serverRoles, timezone,
                             prop: "roleId",
                             defaultValue: roleId,
                             selectableValues: sortedServerRoles,
+                            placeholder: "Select role",
                         },
                         {
                             type: LabsFormFieldType.Select,

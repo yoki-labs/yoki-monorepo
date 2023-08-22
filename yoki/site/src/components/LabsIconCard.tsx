@@ -20,7 +20,7 @@ export default function LabsIconCard(props: Props) {
         <Card orientation={orientation ?? "horizontal"} variant="plain">
             <CardOverflow>
                 <AspectRatio ratio={iconAspectRatio ?? 0.5} sx={{ width: iconWidth }}>
-                    <aside className={`flex w-full h-full items-center col-span-1 transition-all ease-in duration-300 bg-gradient-to-br bg-spacedark-800 ${iconClassName ?? ""}`}>
+                    <aside className={`flex w-full h-full items-center col-span-1 transition-all ease-in duration-300 bg-gradient-to-br bg-spacedark-800 from-0% to-100% ${iconClassName ?? ""}`}>
                         <div className="flex grow flex-col items-center">
                             <FontAwesomeIcon className={`margin-auto w-9 h-9 text-white`} icon={icon} />
                         </div>

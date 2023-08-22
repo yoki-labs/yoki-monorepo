@@ -2,7 +2,7 @@ import { faAnglesDown, faBan, faEnvelope, faExclamationTriangle, faHeart, faImag
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import DashboardModule from "../DashboardModule";
-import { Alert, Box, Stack, Typography } from "@mui/joy";
+import { Alert, Box, Link, Stack, Typography } from "@mui/joy";
 import { DashboardPageProps } from "../pages";
 import DashboardProfileCard from "./ProfileCard";
 
@@ -13,10 +13,12 @@ export default function OverviewPage(props: DashboardPageProps) {
         <Stack direction="column" gap={4}>
             <Alert color="warning" variant="soft" startDecorator={<FontAwesomeIcon icon={faExclamationTriangle} />}>
                 <Box sx={{ alignItems: "baseline" }}>
-                    This dashboard is in-progress and may have some bugs. If you run into any issues, report it in{" "}
-                    <a href="https://www.guilded.gg/yoki" className="font-bold hover:underline">
-                        our Guilded server
-                    </a>
+                    <Typography fontSize="md" sx={{ color: "inherit" }}>
+                        This dashboard is in-progress and may have some bugs. If you run into any issues, report it in{" "}
+                        <Link color="warning" sx={{ textDecoration: "underline" }} href="https://www.guilded.gg/yoki">
+                            our Guilded server
+                        </Link>
+                    </Typography>
                 </Box>
             </Alert>
             {/* Maybe do vertical icon cards with 4 tiers in premium tab? */}

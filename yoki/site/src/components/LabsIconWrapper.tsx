@@ -3,7 +3,7 @@ import { Box, styled } from "@mui/joy";
 const LabsIconWrapper = styled(
     Box,
 )(({ theme }) => ({
-    backgroundColor: theme.vars.palette.background.level3,
+    backgroundColor: theme.vars.palette.background.level2,
     width: 20,
     height: 20,
     borderRadius: "50%",

@@ -14,5 +14,5 @@ export function sanitizeServer({
     updatedAt,
     ...rest
 }: Server): SanitizedServer {
-    return rest;
+    return { ...rest, earlyaccess: flags.includes("EARLY_ACCESS") };
 }

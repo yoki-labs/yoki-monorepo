@@ -1,9 +1,7 @@
-import { Action, Role, RoleType } from "@prisma/client";
+import { Role } from "@prisma/client";
 import prisma from "../../../../../prisma";
 import createServerRoute from "../../../../../utils/route";
-import rest from "../../../../../guilded";
-
-const allowedRoleTypes = [RoleType.ADMIN, RoleType.MOD, RoleType.MINIMOD];
+import { allowedRoleTypes, roleExistsInServer } from "../../../../../utils/roleUtil";
 
 const serverRolesRoute = createServerRoute({
     async PATCH(req, res, _session, { serverId }, _member) {
@@ -21,12 +19,10 @@ const serverRolesRoute = createServerRoute({
         // Type-check body
         const { newRoleId, newType } = req.body;
 
-        console.log("Req body", req.body);
-
         if (newRoleId !== null && (typeof newRoleId !== "number" || newRoleId < 1))
             return res.status(400).json({ error: true, message: "Expected newRoleId to be a positive number." });
         else if (newType !== null && !allowedRoleTypes.includes(newType))
-            return res.status(400).json({ error: true, message: "Expected newLevel to be ADMIN, MOD or MINIMOD." });
+            return res.status(400).json({ error: true, message: "Expected newType to be ADMIN, MOD or MINIMOD." });
 
         const roles: Role[] = await prisma.role
             .findMany({
@@ -44,8 +40,6 @@ const serverRolesRoute = createServerRoute({
         // Role doesn't exist in the server
         if (newRoleId && !await roleExistsInServer(serverId, newRoleId))
             return res.status(400).json({ error: true, message: "Role by that ID does not exist in the server." });
-
-        console.log("S", { existingRole, newRoleId, newType });
 
         await prisma.role.update({
             where: {
@@ -98,11 +92,5 @@ const serverRolesRoute = createServerRoute({
         return res.status(204);
     },
 });
-
-async function roleExistsInServer(serverId: string, roleId: number) {
-    const { roles: serverRoles } = await rest.router.roles.roleReadMany({ serverId });
-
-    return serverRoles.find((x) => x.id === roleId);
-}
 
 export default serverRolesRoute;

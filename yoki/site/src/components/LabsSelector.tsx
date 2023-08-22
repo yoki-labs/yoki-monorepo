@@ -45,7 +45,7 @@ export default class LabsSelector extends React.Component<Props> {
                 <Select
                     id={id}
                     defaultValue={form.state.values[field.prop]}
-                    placeholder={`Select ${field.name?.toLowerCase() ?? "items"}`}
+                    placeholder={field.placeholder ?? `Select ${field.name?.toLowerCase() ?? "items"}`}
                     disabled={field.disabled}
                     onChange={(_, value) => value && form.setValue(field, value)}
                     startDecorator={field.prefixIcon && <FontAwesomeIcon icon={field.prefixIcon} />}

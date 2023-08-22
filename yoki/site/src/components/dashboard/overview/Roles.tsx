@@ -7,9 +7,11 @@ import DashboardRole, { RoleItemEditor } from "./RoleItem";
 import { RoleType } from "@prisma/client";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 
+type Role = SanitizedRole;
+
 type State = {
     isLoaded: boolean;
-    roles: SanitizedRole[];
+    roles: Role[];
     serverRoles: RolePayload[];
 };
 
@@ -72,6 +74,21 @@ export default class RolesPage extends React.Component<DashboardPageProps, State
             body: JSON.stringify(data)
         });
     }
+    
+    async onRoleCreate(roleId: number, type: RoleType) {
+        const { serverId } = this.props.serverConfig;
+        const { roles } = this.state;
+
+        this.setState({
+            roles: roles.concat({ serverId, roleId, type, createdAt: new Date().toISOString() } as Role)
+        });
+
+        return fetch(`/api/servers/${serverId}/roles`, {
+            method: "POST",
+            headers: { "content-type": "application/json" },
+            body: JSON.stringify({ roleId, type })
+        });
+    }
 
     render() {
         const { serverConfig } = this.props;
@@ -90,11 +107,11 @@ export default class RolesPage extends React.Component<DashboardPageProps, State
                         submitText="Create"
                         type={RoleType.MOD}
                         serverRoles={serverRoles}
-                        onSubmit={(state) => console.log("Create role", state)}
+                        onSubmit={({ values: { roleId, type } }) => this.onRoleCreate(roleId as number, type as RoleType)}
                         />
                 </Card>
                 <Stack direction="column" gap={2}>
-                    {roles.map((role) => 
+                    {roles.map((role) =>
                         <DashboardRole
                             serverId={serverConfig.serverId}
                             role={role}

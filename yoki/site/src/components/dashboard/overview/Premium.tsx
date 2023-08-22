@@ -34,7 +34,7 @@ export default class PremiumPage extends React.Component<DashboardPageProps> {
         return (
             <>
                 { !serverConfig.premium && <Typography level="body2">You have not subscribed yet.</Typography> }
-                <Box className="grid sm:grid-cols-1 md:grid-cols-3 xlg:grid-cols-3 gap-7">
+                <Box className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xlg:grid-cols-3 gap-7">
                     <PremiumTier
                         subscribedIconClassName="from-rose-500 to-orange-500"
                         subscribed={serverConfig.premium !== null}
@@ -76,7 +76,7 @@ export function PremiumTier(props: PremiumTierProps) {
     const { price, perks, tier, subscribed, subscribedIconClassName } = props;
 
     return (
-        <LabsIconCard iconAspectRatio={3} orientation="vertical" iconClassName={subscribed ? subscribedIconClassName : undefined} icon={faHeart}>
+        <LabsIconCard iconAspectRatio={5} orientation="vertical" iconClassName={subscribed ? subscribedIconClassName : undefined} icon={faHeart}>
             <Box>
                 <Stack direction="row" alignItems="center" gap={2}>
                     <Typography level="h2">{tier?.toString() ?? "Free"}</Typography>
