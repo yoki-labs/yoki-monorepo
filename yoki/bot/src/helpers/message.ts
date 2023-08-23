@@ -70,7 +70,7 @@ export class MessageUtil extends BaseMessageUtil<YokiClient, Server, Command> {
 						[Need help? Join our support server](https://guilded.gg/Yoki)`,
                                 },
                             ],
-                        });
+                        }).catch(() => null);
                     delete this.logchannelErrCounter[where];
                 } else {
                     await this.client.errorHandler.send(stripIndents`
