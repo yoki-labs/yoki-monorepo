@@ -1,4 +1,4 @@
-import { IconDefinition, faBan, faClipboardUser, faCog, faCommentDots, faCrown, faEnvelope, faHashtag, faHeart, faLayerGroup, faLink, faLinkSlash, faPrayingHands, faShieldHalved, faTextSlash, faTicket } from "@fortawesome/free-solid-svg-icons";
+import { IconDefinition, faBan, faClipboardUser, faCog, faCommentDots, faCrown, faEnvelope, faHashtag, faHeart, faImage, faLayerGroup, faLink, faLinkSlash, faPoo, faPrayingHands, faShieldHalved, faTextSlash, faTicket } from "@fortawesome/free-solid-svg-icons";
 import OverviewPage from "./overview/Overview";
 import ConfigPage from "./overview/Premium";
 import AutomodPage from "./automod/Automod";
@@ -14,6 +14,7 @@ import { ColorPaletteProp } from "@mui/joy";
 import { SanitizedServer } from "../../lib/@types/db";
 import RolesPage from "./overview/Roles";
 import InvitesPage from "./automod/Invites";
+import SpamPage from "./automod/Spam";
 
 export interface DashboardPageItem {
     id: string;
@@ -26,6 +27,7 @@ export interface DashboardPageItem {
 
 export enum DashboardPageCategory {
     Bot,
+    Moderation,
     Automod,
     Entry,
 }
@@ -34,12 +36,13 @@ export const dashboardPageList: DashboardPageItem[] = [
     { id: "overview", name: "Overview", icon: faLayerGroup, component: OverviewPage, category: DashboardPageCategory.Bot },
     { id: "roles", name: "Roles", icon: faCrown, component: RolesPage, category: DashboardPageCategory.Bot },
     { id: "premium", name: "Premium", icon: faHeart, color: "warning", component: ConfigPage, category: DashboardPageCategory.Bot },
+    { id: "logs", name: "Logging", icon: faHashtag, component: LogsPage, category: DashboardPageCategory.Moderation },
+    { id: "cases", name: "Cases", icon: faClipboardUser, component: HistoryPage, category: DashboardPageCategory.Moderation },
     { id: "automod", name: "Automod", icon: faBan, component: AutomodPage, category: DashboardPageCategory.Automod },
-    { id: "logs", name: "Logging", icon: faHashtag, component: LogsPage, category: DashboardPageCategory.Automod },
-    { id: "cases", name: "Cases", icon: faClipboardUser, component: HistoryPage, category: DashboardPageCategory.Automod },
     { id: "phrases", name: "Phrase Filter", icon: faCommentDots, component: PhrasesPage, category: DashboardPageCategory.Automod },
     { id: "urls", name: "URL Filter", icon: faLink, component: LinksPage, category: DashboardPageCategory.Automod },
     { id: "invites", name: "Invite Filter", icon: faTicket, component: InvitesPage, category: DashboardPageCategory.Automod },
+    { id: "spam", name: "Anti-spam", icon: faPoo, component: SpamPage, category: DashboardPageCategory.Automod },
     { id: "modmail", name: "Modmail", icon: faEnvelope, component: ModmailPage, category: DashboardPageCategory.Entry },
     { id: "antiraid", name: "Antiraid", icon: faShieldHalved, component: AntiraidPage, category: DashboardPageCategory.Entry },
     { id: "appeals", name: "Appeals", icon: faPrayingHands, component: AppealsPage, category: DashboardPageCategory.Entry },

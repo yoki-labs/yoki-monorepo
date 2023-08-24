@@ -1,8 +1,7 @@
 import { IconDefinition } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import LabsSwitch from "../LabsSwitch";
 import React from "react";
-import { AspectRatio, Box, Card, CardContent, CardOverflow, Chip, Stack, Typography } from "@mui/joy";
+import { Box, Chip, Stack, Typography } from "@mui/joy";
 import LabsIconCard from "../LabsIconCard";
 
 export type Props = {

@@ -1,11 +1,9 @@
-import { faBan, faClipboardUser, faCog, faDoorOpen, faEnvelope, faHashtag, faLayerGroup, faPrayingHands, faShieldHalved } from "@fortawesome/free-solid-svg-icons";
 import { useAtom } from "jotai";
 
 import { navbarAtom } from "../../../state/navbar";
 import LayoutSidebarTab from "./LayoutSidebarTab";
-import { Box, List, ListItem, ListItemButton, ListItemDecorator, Typography } from "@mui/joy";
-import { DashboardPageCategory, DashboardPageItem, dashboardPageList } from "../pages";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Box, List, Typography } from "@mui/joy";
+import { DashboardPageCategory, dashboardPageList } from "../pages";
 
 type Props = {
     menuToggled: boolean;
@@ -13,6 +11,7 @@ type Props = {
 
 const categoryNames: Record<DashboardPageCategory, string> = {
     [DashboardPageCategory.Bot]: "Yoki",
+    [DashboardPageCategory.Moderation]: "Moderation",
     [DashboardPageCategory.Automod]: "Automod",
     [DashboardPageCategory.Entry]: "Server entry & support",
 };
