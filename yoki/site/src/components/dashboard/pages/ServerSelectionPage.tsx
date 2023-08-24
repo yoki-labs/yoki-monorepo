@@ -34,7 +34,7 @@ export default class ServerSelectionPage extends React.Component<Props, State> {
                 </Typography>
                 <Box sx={{ px: 20, py: 5 }} className="grow h-full overflow-y-auto grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     {servers.map((server) => (
-                        <Link href={`/dashboard/${server.id}/overview`}>
+                        <Link key={server.id} style={{ textDecoration: "none" }} href={`/dashboard/${server.id}/overview`}>
                             <ServerDisplay
                                 server={server}
                                 onClick={this.onClick.bind(this)}

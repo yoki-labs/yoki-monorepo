@@ -24,7 +24,7 @@ export default function OverviewPage(props: DashboardPageProps) {
             {/* Maybe do vertical icon cards with 4 tiers in premium tab? */}
             <DashboardProfileCard serverConfig={serverConfig} />
             <section>
-                <Typography level="h3" gutterBottom>
+                <Typography level="h4" gutterBottom>
                     Modules
                 </Typography>
                 <Box className="grid sm:grid-cols-1 md:grid-cols-2 xlg:grid-cols-3 gap-5">
@@ -62,7 +62,7 @@ export default function OverviewPage(props: DashboardPageProps) {
                         onToggle={(value) => console.log("Appeals toggle", value)}
                     />
                     <DashboardModule
-                        name="Auto-mod"
+                        name="Filter"
                         description="Filters out spam and blacklisted phrases or links."
                         icon={faBan}
                         activeClassName="from-red-500 to-pink-500"

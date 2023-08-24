@@ -107,6 +107,7 @@ export default class RolesPage extends React.Component<DashboardPageProps, State
                         submitText="Create"
                         type={RoleType.MOD}
                         serverRoles={serverRoles}
+                        placeholder="Select role to add"
                         onSubmit={({ values: { roleId, type } }) => this.onRoleCreate(roleId as number, type as RoleType)}
                         />
                 </Card>

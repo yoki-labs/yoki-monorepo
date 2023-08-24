@@ -27,8 +27,8 @@ export default function YokiIcon(props: Props) {
                             id="Yoki-Head-Antenna-Stem"
                             fill="none"
                             stroke="white"
-                            stroke-width="16"
-                            stroke-linecap="round"
+                            strokeWidth="16"
+                            strokeLinecap="round"
                             d="M 256.00,80.00
                             C 256.00,-32.00 464.00,0.00 464.00,112.00"
                         />

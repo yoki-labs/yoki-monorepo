@@ -35,7 +35,7 @@ export function LayoutSidebar({ menuToggled }: Props) {
             { categorizedPages.map(({ category, items }) =>
                 <section className="pb-5">
                     <Typography level="h1" textColor="text.tertiary" fontSize="sm">{categoryNames[category]}</Typography>
-                    <List variant="plain" size="sm">
+                    <List variant="plain">
                         {items.map((item) => (
                             <LayoutSidebarTab key={item.id} item={item} isActive={currentPage === item.id} onClick={() => setModule(item.id)} />
                         ))}

@@ -73,7 +73,7 @@ export default class DashboardLogChannel extends React.Component<Props, State> {
                     <Stack sx={{ flex: "1" }} direction="row" gap={1} alignItems="center">
                         {types.map((type) => <Chip variant="outlined">{typeDisplayNames[type]}</Chip>)}
                     </Stack>
-                    <LabsOverflowButton id={`logs-${serverId}-${channelId}`}>
+                    <LabsOverflowButton variant="outlined" id={`logs-${serverId}-${channelId}`}>
                         <MenuItem onClick={() => this.toggleEditMode(true)}>
                             <ListItemDecorator>
                                 <FontAwesomeIcon icon={faPen} />

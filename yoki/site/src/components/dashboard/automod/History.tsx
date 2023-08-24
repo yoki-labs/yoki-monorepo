@@ -1,33 +1,32 @@
-import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
+import { faClock, faDroplet } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Box, Button, ButtonGroup, CircularProgress, Input, Stack, Table } from "@mui/joy";
+import { Box, Stack, Typography } from "@mui/joy";
 import React from "react";
 
 import { DashboardPageProps } from "../pages";
-import HistoryCase from "./HistoryCase";
 import { SanitizedAction } from "../../../lib/@types/db";
-import PagePlaceholder, { PagePlaceholderIcon } from "../../PagePlaceholder";
+import DataTable, { ItemProps } from "../../DataTable";
+import DataTableRow from "../../DataTableRow";
+import { LabsUserCard } from "../../LabsUserCard";
+import { severityToIcon } from "../../../utils/actionUtil";
+import CodeWrapper from "../../CodeWrapper";
+import { LabsCopyInput } from "../../LabsCopyInput";
+import InfoText from "../../InfoText";
+import { formatDate } from "@yokilabs/utils";
 
-type State = {
-    isLoaded: boolean;
-    page: number;
-    cases: SanitizedAction[];
-    totalCases: number;
-    search?: string;
-};
-
-export default class HistoryPage extends React.Component<DashboardPageProps, State> {
+export default class HistoryPage extends React.Component<DashboardPageProps> {
     constructor(props: DashboardPageProps) {
         super(props);
-
-        this.state = { isLoaded: false, cases: [], totalCases: 0, page: 0 };
     }
 
-    fetchCases(search?: string) {
+    getCasesRoute(page: number, search?: string) {
         const { serverConfig: { serverId } } = this.props;
-        const { page } = this.state;
 
-        return fetch(`/api/servers/${serverId}/cases?page=${page}${search ? `&search=${encodeURIComponent(search)}` : ""}`, {
+        return `/api/servers/${serverId}/cases?page=${page}${search ? `&search=${encodeURIComponent(search)}` : ""}`;
+    }
+
+    async fetchCases(page: number, search?: string) {
+        return fetch(this.getCasesRoute(page, search), {
             method: "GET",
             headers: { "content-type": "application/json" },
         })
@@ -36,91 +35,104 @@ export default class HistoryPage extends React.Component<DashboardPageProps, Sta
                     throw response;
                 return response.json();
             })
-            .then(({ cases, count }) => this.setState({ isLoaded: true, cases, totalCases: count, search }))
-            .catch((errorResponse) => console.error("Error while fetching data:", errorResponse));
-    }
+            .then(({ cases, count }) => ({ items: cases, maxPages: Math.ceil(count / 50) }));
+    } 
 
-
-    async deleteCase(action: SanitizedAction) {
-        const { serverId, id } = action;
-        const { cases, totalCases } = this.state;
-
-        // To not make it stay at all
-        this.setState({
-            cases: cases.filter((x) => x.id !== id),
-            totalCases: totalCases - 1,
-        });
-
-        return fetch(`/api/servers/${serverId}/cases/${id}`, {
+    async deleteCases(caseIds: string[], page: number, search?: string) {
+        return fetch(this.getCasesRoute(page, search), {
             method: "DELETE",
             headers: { "content-type": "application/json" },
-        });
-    }
-
-    componentDidUpdate(_prevProps: DashboardPageProps, prevState: State): Promise<unknown> | void {
-        const { page } = this.state;
-
-        // If page changed, fetch it again
-        if (prevState.page !== page)
-            return this.fetchCases();
-    }
-
-    componentDidMount(): Promise<unknown> {
-        return this.fetchCases();
-    }
-
-    setPage(page: number) {
-        this.setState({ page });
-    }
+            body: JSON.stringify({ caseIds }),
+        })
+            .then((response) => {
+                if (!response.ok)
+                    throw response;
+                return response.json();
+            })
+            .then(({ cases, count }) => ({ items: cases, maxPages: Math.ceil(count / 50) }));
+    } 
 
     render() {
-        const { isLoaded, cases, totalCases, page, search } = this.state;
         const { serverConfig } = this.props;
 
-        // Still loading the history
-        if (!isLoaded)
-            return <CircularProgress />;
-
-        // No cases to display
-        if (!(totalCases || search))
-            return <PagePlaceholder icon={PagePlaceholderIcon.NotFound} title="Squeaky clean history!" description="There are no moderation cases." />
-
-        const maxPages = Math.ceil(totalCases / 50);
-        console.log("Rendering with search", { search, totalCases, cases });
+        // // No cases to display
+        // if (!cases.length)
+        //     return <PagePlaceholder icon={PagePlaceholderIcon.NotFound} title="Squeaky clean history!" description="There are no moderation cases." />
 
         return (
             <Stack direction="column" gap={3}>
-                <Box>
-                    <Input onChange={({ target }) => (console.log("Searching", [target.value]), this.fetchCases(target.value))} variant="outlined" placeholder="Search cases" startDecorator={<FontAwesomeIcon icon={faMagnifyingGlass} />} />
-                </Box>
+                <Typography level="h2" gutterBottom>Server history</Typography>
 
-                <Table size="lg" variant="plain" sx={{ borderRadius: 8, overflow: "hidden", "--Table-headerUnderlineThickness": 0 }}>
-                    <thead>
-                        <tr>
-                            <th style={{ width: 60 }}></th>
-                            <th>Action</th>
-                            <th>Reason</th>
-                            <th>User</th>
-                            <th>Moderator</th>
-                            <th>CreatedAt</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {cases.map((action) => <HistoryCase onDelete={this.deleteCase.bind(this, action)} timezone={serverConfig.timezone} action={action} />)}
-                    </tbody>
-                </Table>
-
-                { maxPages > 1 && <ButtonGroup>
-                    {[...(pagesToArray(maxPages) as unknown as number[])].map((buttonPage) =>
-                        <Button disabled={page === buttonPage} onClick={this.setPage.bind(this, buttonPage)}>{buttonPage + 1}</Button>
-                    )}
-                </ButtonGroup> }
+                <DataTable<SanitizedAction, string>
+                    itemType="cases"
+                    timezone={serverConfig.timezone}
+                    columns={["User", "Action", "Moderator", "Reason", "When"]}
+                    getItems={this.fetchCases.bind(this)}
+                    deleteItems={this.deleteCases.bind(this)}
+                    ItemRenderer={HistoryCase}
+                    />
             </Stack>
         );
     }
 }
 
-function* pagesToArray(maxPages: number) {
-    for (let i = 0; i < maxPages; i++)
-        yield i;
+function HistoryCase({ item: action, columnCount, timezone, isSelected, onSelected }: ItemProps<SanitizedAction>) {
+    const { reason } = action;
+
+    return (
+        <DataTableRow
+            id={action.id}
+            columnCount={columnCount}
+            isSelected={isSelected}
+            onSelected={onSelected}
+            expandedInfo={() =>
+                <Stack gap={3}>
+                    <Box>
+                        <Typography level="h2" fontSize="md" gutterBottom>Reason</Typography>
+                        <CodeWrapper>
+                            <Typography textColor="text.secondary">
+                                {action.reason}
+                            </Typography>
+                        </CodeWrapper>
+                    </Box>
+                    {action.triggerContent &&
+                        <Box>
+                            <Typography level="h2" fontSize="md" gutterBottom>Triggering content</Typography>
+                            <CodeWrapper>
+                                <Typography textColor="text.secondary">
+                                    {action.triggerContent}
+                                </Typography>
+                            </CodeWrapper>
+                        </Box>
+                    }
+                    <Box>
+                        <Typography level="h3" fontSize="md" gutterBottom>Identifier</Typography>
+                        <LabsCopyInput text={action.id} sx={{ width: "max-content" }} />
+                    </Box>
+                    {(action.infractionPoints || action.expiresAt) && <Box>
+                        { action.infractionPoints && <InfoText icon={faDroplet} name="Infraction points">{action.infractionPoints}</InfoText> }
+                        { action.expiresAt && <InfoText icon={faClock} name="Expires at">{formatDate(new Date(action.expiresAt), timezone)}</InfoText> }
+                    </Box>}
+                </Stack>
+            }
+        >
+            <td>
+                <LabsUserCard userId={action.targetId} />
+            </td>
+            <td>
+                <Typography startDecorator={<FontAwesomeIcon icon={severityToIcon[action.type]} />} fontWeight="lg" textColor="text.secondary">
+                    {action.type}
+                </Typography>
+            </td>
+            <td>
+                <LabsUserCard userId={action.executorId} />
+            </td>
+            <td>
+                <Typography level="body2">{reason && reason.length > 32 ? `${reason?.slice(0, 32)}...` : reason}</Typography>
+            </td>
+            <td>
+                <Typography level="body2">{formatDate(new Date(action.createdAt), timezone)}</Typography>
+            </td>
+        </DataTableRow>
+    );
 }

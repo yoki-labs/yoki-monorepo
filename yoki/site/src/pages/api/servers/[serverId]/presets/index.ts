@@ -1,6 +1,6 @@
 import { Preset } from "@prisma/client";
-import prisma from "../../../../prisma";
-import createServerRoute from "../../../../utils/route";
+import prisma from "../../../../../prisma";
+import createServerRoute from "../../../../../utils/route";
 
 const serverPresetsRoute = createServerRoute({
     async GET(_req, res, _session, server, _member) {

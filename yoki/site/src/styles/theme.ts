@@ -18,6 +18,7 @@ const bodyFont = {
 };
 
 const generateColourScheme = (typicalColour: string) => ({
+    950: mixHexColours(typicalColour, mostDark, 0.9),
     900: mixHexColours(typicalColour, mostDark, 0.8),
     800: mixHexColours(typicalColour, mostDark, 0.6),
     700: mixHexColours(typicalColour, mostDark, 0.4),
@@ -36,6 +37,7 @@ const dark = {
     shadowRing: "#000",
     shadowChannel: "#000",
     palette: {
+        divider: labsTheme.spacedark[800],
         neutral: {
             900: labsTheme.spacedark[950],
             800: labsTheme.spacedark[900],
@@ -148,5 +150,15 @@ export const theme = extendTheme({
                 },
             },
         },
+        JoyTable: {
+            styleOverrides: {
+                root: {
+                    "--Table-headerUnderlineThickness": "1px",
+                    "th": {
+                        "--TableCell-headBackground": "transparent",
+                    }
+                }
+            }
+        }
     },
 });

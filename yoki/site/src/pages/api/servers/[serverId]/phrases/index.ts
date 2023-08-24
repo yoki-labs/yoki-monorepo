@@ -1,4 +1,4 @@
-import { Action, Server } from "@prisma/client";
+import { Action, ContentFilter, Server } from "@prisma/client";
 import prisma from "../../../../../prisma";
 import createServerRoute from "../../../../../utils/route";
 import { NextApiRequest, NextApiResponse } from "next";
@@ -7,32 +7,32 @@ const casesPerPage = 50;
 
 const serverCasesRoute = createServerRoute({
     async GET(req, res, _session, server, _member) {
-        return fetchCases(req, res, server);
+        return fetchPhrases(req, res, server);
     },
     async DELETE(req, res, _session, server, _member) {
-        const { caseIds } = req.body;
+        const { phraseIds } = req.body;
 
         // Check query
-        if (!Array.isArray(caseIds) || caseIds.some((x) => typeof x !== "string"))
-            return res.status(400).json({ error: true, message: "Case IDs must be a string array" });
+        if (!Array.isArray(phraseIds) || phraseIds.some((x) => typeof x !== "number"))
+            return res.status(400).json({ error: true, message: "Phrase IDs must be a number array" });
 
         // Just delete all of them
-        await prisma.action
+        await prisma.contentFilter
             .deleteMany({
                 where: {
                     serverId: server.serverId,
                     id: {
-                        in: caseIds,
+                        in: phraseIds,
                     },
                 },
             });
 
         // To update the state
-        return fetchCases(req, res, server);
+        return fetchPhrases(req, res, server);
     },
 });
 
-async function fetchCases(req: NextApiRequest, res: NextApiResponse, server: Server) {
+async function fetchPhrases(req: NextApiRequest, res: NextApiResponse, server: Server) {
     const { page: pageStr, search } = req.query;
 
     // Check query
@@ -46,23 +46,22 @@ async function fetchCases(req: NextApiRequest, res: NextApiResponse, server: Ser
     else if (typeof search !== "undefined" && typeof search !== "string")
         return res.status(400).json({ error: true, message: "Expected search query to be a string." });
 
-    const cases: Action[] = await prisma.action
+    const phrases: ContentFilter[] = await prisma.contentFilter
         .findMany({
             where: {
                 serverId: server.serverId,
             }
         });
-    const foundCases = search ? cases.filter((x) => x.reason?.includes(search)) : cases;
+    const foundPhrases = search ? phrases.filter((x) => x.content?.includes(search)) : phrases;
 
     const startIndex = page * casesPerPage;
     const endIndex = (page + 1) * casesPerPage;
 
     return res.status(200).json({
         // To get rid of useless information
-        cases: foundCases
-            .slice(startIndex, endIndex)
-            .map(({ logChannelId, logChannelMessage, ...rest }) => rest),
-        count: foundCases.length
+        phrases: foundPhrases
+            .slice(startIndex, endIndex),
+        count: foundPhrases.length
     });
 }
 

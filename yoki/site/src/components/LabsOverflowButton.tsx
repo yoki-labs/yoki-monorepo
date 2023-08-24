@@ -7,9 +7,10 @@ type Props = {
     id: string;
     disabled?: boolean;
     children: ReactElement | ReactElement[];
+    variant?: "outlined" | "plain" | "solid" | "soft";
 };
 
-export default function LabsOverflowButton({ id, children, disabled }: Props) {
+export default function LabsOverflowButton({ id, variant, children, disabled }: Props) {
     const overflowRef = React.useRef(null);
     const [menuOpen, setMenuOpen] = React.useState(false);
 
@@ -22,7 +23,7 @@ export default function LabsOverflowButton({ id, children, disabled }: Props) {
                 aria-expanded={menuOpen || void 0}
                 disabled={disabled}
                 color="neutral"
-                variant="outlined"
+                variant={variant}
                 aria-label="Overflow icon"
                 onClick={() => setMenuOpen(!menuOpen)}
             >

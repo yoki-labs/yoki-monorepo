@@ -25,6 +25,7 @@ type SessionProps = {
 };
 
 export const getServerSideProps: GetServerSideProps = async (ctx): Promise<GetServerSidePropsResult<SessionProps>> => {
+    console.log("Got CTX", [ctx.req.url]);
     const session = await getServerSession(ctx.req, ctx.res, authOptions);
     if (!session?.user.access_token) return { redirect: { destination: "/auth/signin", permanent: false } };
 

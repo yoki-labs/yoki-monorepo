@@ -63,7 +63,7 @@ export default class DashboardRole extends React.Component<Props, State> {
                     <Stack sx={{ flex: "1" }} direction="row" gap={1} alignItems="center">
                         <Chip variant="outlined" sx={{ flex: "1" }}>{role.type}</Chip>
                     </Stack>
-                    <LabsOverflowButton id={`logs-${serverId}-${role.roleId}`}>
+                    <LabsOverflowButton variant="outlined" id={`logs-${serverId}-${role.roleId}`}>
                         <MenuItem onClick={() => this.toggleEditMode(true)}>
                             <ListItemDecorator>
                                 <FontAwesomeIcon icon={faPen} />
@@ -136,6 +136,7 @@ type EditorProps = {
     serverRoles: RolePayload[];
     submitText?: string;
     icon: IconDefinition;
+    placeholder?: string;
     onSubmit: (state: LabsFormState) => unknown;
     onCancel?: () => unknown;
     type?: RoleType;
@@ -144,7 +145,7 @@ type EditorProps = {
     timezone?: string | null;
 };
 
-export function RoleItemEditor({ type, roleId, createdAt, serverRoles, timezone, onSubmit, onCancel, submitText, icon }: EditorProps) {
+export function RoleItemEditor({ type, roleId, createdAt, serverRoles, timezone, onSubmit, onCancel, submitText, icon, placeholder }: EditorProps) {
     const sortedServerRoles: LabsFormFieldOption<number>[] =
         serverRoles
             .sort((a, b) => b.position - a.position)
@@ -171,7 +172,7 @@ export function RoleItemEditor({ type, roleId, createdAt, serverRoles, timezone,
                             prop: "roleId",
                             defaultValue: roleId,
                             selectableValues: sortedServerRoles,
-                            placeholder: "Select role",
+                            placeholder: placeholder ?? "Select role",
                         },
                         {
                             type: LabsFormFieldType.Select,
