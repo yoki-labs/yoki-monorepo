@@ -1,7 +1,7 @@
 import { atom, useAtomValue } from "jotai";
 
 import Config from "./overview/Premium";
-import History from "./automod/History";
+import History from "./moderation/History";
 import Overview from "./overview/Overview";
 import { Alert, Box, Typography } from "@mui/joy";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -22,7 +22,7 @@ export default function DashForm(props: Props) {
     const PageComponent = pageInfo?.component;
 
     return (
-        <Box sx={{ width: "100%", pt: 1, pb: 6, pl: 5.6, pr: 5.6 }} className="w-full h-full overflow-y-auto flex flex-col space-y-8 scrollbar">
+        <Box sx={{ width: "100%", pt: 1, pb: 6, pl: 5.6, pr: 5.6 }} className="w-full overflow-y-auto flex flex-col space-y-8 scrollbar">
             {PageComponent ? <PageComponent serverConfig={props.serverConfig} /> : (
                 <Alert startDecorator={<FontAwesomeIcon icon={faExclamationTriangle} />} variant="solid" color="warning">
                     Work in progress. Come back later!

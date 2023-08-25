@@ -33,57 +33,57 @@ export default function OverviewPage(props: DashboardPageProps) {
                         description="Customize how your users interact with your moderators."
                         icon={faEnvelope}
                         activeClassName="from-purple-500 to-blue-500"
-                        isActive={serverConfig.modmailEnabled}
-                        onToggle={(value) => console.log("Modmail toggle", value)}
+                        serverConfig={serverConfig}
+                        prop="modmailEnabled"
                     />
                     <DashboardModule
                         name="NSFW Image Scan"
                         description="Removes any potentially NSFW images from chat and media."
                         icon={faImage}
                         activeClassName="from-pink-500 to-purple-500"
-                        isActive={serverConfig.scanNSFW}
+                        serverConfig={serverConfig}
+                        prop="scanNSFW"
                         requiresPremium
-                        onToggle={(value) => console.log("NSFW Image Scan toggle", value)}
                     />
                     <DashboardModule
                         name="Anti-raid"
                         description="Customize how the bot detects and handles suspicious accounts."
                         icon={faShieldHalved}
                         activeClassName="from-green-500 to-blue-500"
-                        isActive={serverConfig.antiRaidEnabled}
-                        onToggle={(value) => console.log("Anti-raid toggle", value)}
+                        serverConfig={serverConfig}
+                        prop="antiRaidEnabled"
                     />
                     <DashboardModule
                         name="Appeals"
                         description="Allows people to apply for an unban in your server."
                         icon={faPrayingHands}
                         activeClassName="from-violet-500 to-cyan-500"
-                        isActive={serverConfig.appealsEnabled}
-                        onToggle={(value) => console.log("Appeals toggle", value)}
+                        serverConfig={serverConfig}
+                        prop="appealsEnabled"
                     />
                     <DashboardModule
                         name="Filter"
                         description="Filters out spam and blacklisted phrases or links."
                         icon={faBan}
                         activeClassName="from-red-500 to-pink-500"
-                        isActive={serverConfig.filterEnabled}
-                        onToggle={(value) => console.log("Auto-mod toggle", value)}
+                        serverConfig={serverConfig}
+                        prop="filterEnabled"
                     />
                     <DashboardModule
                         name="Invite Filter"
-                        description="Filters out invites in chat."
+                        description="Filters out invites to other non-whitelisted servers in chat."
                         icon={faLink}
                         activeClassName="from-red-500 to-orange-500"
-                        isActive={serverConfig.filterInvites}
-                        onToggle={(value) => console.log("Invite Filter toggle", value)}
+                        serverConfig={serverConfig}
+                        prop="filterInvites"
                     />
                     <DashboardModule
                         name="Anti-hoist"
-                        description="Stops people from putting symbols at the start of their name to put them above everyone else."
+                        description="Prevents people from purposefully putting themselves from above everyone."
                         icon={faAnglesDown}
                         activeClassName="from-orange-500 to-yellow-500"
-                        isActive={serverConfig.antiHoistEnabled}
-                        onToggle={(value) => console.log("Anti-hoist toggle", value)}
+                        serverConfig={serverConfig}
+                        prop="antiHoistEnabled"
                     />
                 </Box>
             </section>

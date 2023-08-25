@@ -57,13 +57,13 @@ export default class UrlsPage extends React.Component<DashboardPageProps> {
             <>
                 <Box className="grid">
                     <DashboardModule
-                        name="Link Filter"
+                        name="Url Filter"
                         description="Filters blacklisted or non-whitelisted URLs, as well as spam and blacklisted phrases."
                         icon={faBan}
                         activeClassName="from-red-500 to-pink-500"
-                        isActive={serverConfig.filterEnabled}
-                        onToggle={(value) => console.log("Auto-mod toggle", value)}
-                        iconAspectRatio={1}
+                        serverConfig={serverConfig}
+                        prop="filterEnabled"
+                        iconAspectRatio={0.9}
                         hideBadges
                         largeHeader
                     />

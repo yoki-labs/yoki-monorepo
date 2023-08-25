@@ -1,5 +1,5 @@
 import React from "react";
-import LabsForm, { LabsFormFieldHeader } from "./LabsForm";
+import LabsForm, { FormFieldHeader } from "./LabsForm";
 import { Avatar, ListItemDecorator, Option, Select, SelectOption, Typography } from "@mui/joy";
 import { LabsFormFieldByType, LabsFormFieldOption, LabsFormFieldType } from "./form";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -41,7 +41,7 @@ export default class LabsSelector extends React.Component<Props> {
 
         return (
             <>
-                <LabsFormFieldHeader field={field} />
+                <FormFieldHeader field={field} />
                 <Select
                     id={id}
                     defaultValue={form.state.values[field.prop]}

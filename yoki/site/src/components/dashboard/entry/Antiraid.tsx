@@ -21,9 +21,9 @@ export default class AntiraidPage extends React.Component<DashboardPageProps> {
                         description="Customize how the bot detects and handles suspicious accounts."
                         icon={faShieldHalved}
                         activeClassName="from-green-500 to-blue-500"
-                        isActive={serverConfig.antiRaidEnabled}
-                        onToggle={(value) => console.log("Anti-raid toggle", value)}
-                        iconAspectRatio={1}
+                        serverConfig={serverConfig}
+                        prop="antiRaidEnabled"
+                        iconAspectRatio={0.9}
                         hideBadges
                         largeHeader
                         />

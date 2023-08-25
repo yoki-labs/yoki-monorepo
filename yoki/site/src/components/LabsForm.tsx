@@ -1,10 +1,11 @@
-import { Box, Button, Chip, FormControl, FormHelperText, FormLabel, Input, Stack, Typography } from "@mui/joy";
+import { Box, Button, Chip, Divider, FormControl, FormHelperText, FormLabel, Input, Stack, Typography } from "@mui/joy";
 import React from "react";
 import { FormEvent } from "react";
 import { BaseLabsFormField, LabsFormField, LabsFormFieldByType, LabsFormFieldType, LabsFormSection } from "./form";
 import LabsSwitch from "./LabsSwitch";
 import LabsMultiSelector from "./LabsMultiSelector";
 import LabsSelector from "./LabsSelector";
+import NumberInput from "./NumberInput";
 
 type LabsFormFieldValue = string | string[] | number | boolean | undefined | null;
 
@@ -68,12 +69,13 @@ export default class LabsForm extends React.Component<LabsFormProps, LabsFormSta
         return (
             <form id={`form-${this.formId}`} autoComplete="off" onSubmit={onSubmit}>
                 {children}
-                <Stack direction="column" gap={2}>
-                    {sections.map((section) => (
+                <Stack direction="column" gap={3}>
+                    {sections.map((section, i) => (
                         <Box component="section">
-                            {section.name && <Typography level="h2" fontSize="md">{section.name}</Typography>}
+                            {i > 0 && <Divider sx={{ mb: 2 }} />}
+                            {section.name && <Typography level="h2" fontSize="lg" sx={{ mb: 2 }}>{section.name}</Typography>}
                             {section.description && <Typography level="body2">{section.description}</Typography>}
-                            <Stack direction={section.row ? "row" : "column"} gap={2}>
+                            <Stack direction={section.row ? "row" : "column"} gap={section.gap ?? 2}>
                                 {section.start}
                                 {section.fields.map(this.generateField.bind(this))}
                             </Stack>
@@ -112,7 +114,7 @@ type FieldRendererRecord = {
 export const fieldRenderers: FieldRendererRecord = {
     [LabsFormFieldType.Text]: (form, id, field) =>
         <>
-            <LabsFormFieldHeader field={field} />
+            <FormFieldHeader field={field} />
             <Input
                 id={id}
                 placeholder={field.placeholder}
@@ -124,19 +126,11 @@ export const fieldRenderers: FieldRendererRecord = {
                 />
         </>,
     [LabsFormFieldType.Number]: (form, id, field) =>
-        <>
-            <LabsFormFieldHeader field={field} />
-            <Input
-                id={id}
-                type="number"
-                placeholder={field.placeholder}
-                defaultValue={field.defaultValue ?? void 0}
-                size={field.size}
-                disabled={field.disabled}
-                onChange={({ target }) => form.setValue(field, target.value)}
-                variant={field.variant ?? "outlined"}
-                />
-        </>,
+        <NumberInput
+            id={id}
+            form={form}
+            field={field}
+            />,
     [LabsFormFieldType.Select]: (form, id, field) =>
         <LabsSelector
             id={id}
@@ -145,7 +139,7 @@ export const fieldRenderers: FieldRendererRecord = {
             />,
     [LabsFormFieldType.Toggle]: (form, id, field) =>
         <Stack spacing={2} direction="row">
-            <LabsFormFieldHeader field={field} />
+            <FormFieldHeader field={field} />
             <Typography level="body1" fontWeight="bolder">{field.name}</Typography>
             <LabsSwitch
                 id={id}
@@ -162,11 +156,11 @@ export const fieldRenderers: FieldRendererRecord = {
         />,
 };
 
-export function LabsFormFieldHeader({ field }: { field: BaseLabsFormField<LabsFormFieldType, any> }) {
+export function FormFieldHeader({ field }: { field: BaseLabsFormField<LabsFormFieldType, any> }) {
     return (
         field.name
             ? <Stack spacing={1} direction="row">
-                <FormLabel>{ field.name }</FormLabel>
+                <FormLabel sx={{ fontWeight: "normal" }}>{ field.name }</FormLabel>
                 { field.badge && <Chip size="sm" variant="outlined" color={field.badge.color}>{ field.badge.text }</Chip> }
             </Stack>
             : null

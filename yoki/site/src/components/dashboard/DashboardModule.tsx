@@ -3,6 +3,8 @@ import LabsSwitch from "../LabsSwitch";
 import React from "react";
 import { Box, Chip, Stack, Typography } from "@mui/joy";
 import LabsIconCard from "../LabsIconCard";
+import { SanitizedServer } from "../../lib/@types/db";
+import { toggleModule } from "./modules";
 
 export type Props = {
     name: string;
@@ -10,9 +12,11 @@ export type Props = {
     description: string;
 
     activeClassName: string;
-    isActive: boolean;
-    onToggle: (value: boolean) => unknown;
-    
+    //isActive: boolean;
+    //onToggle: (value: boolean) => unknown;
+    prop: keyof SanitizedServer;
+    serverConfig: SanitizedServer;
+
     iconAspectRatio?: number;
     hideBadges?: boolean;
     requiresPremium?: boolean;
@@ -22,13 +26,19 @@ export type Props = {
 export default class DashboardModule extends React.Component<Props, { isActive: boolean }> {
     constructor(props: Props) {
         super(props);
-        this.state = { isActive: props.isActive };
+
+        const { serverConfig, prop: propType } = this.props;
+
+        this.state = { isActive: serverConfig[propType] as boolean };
     }
 
-    onToggle(value: boolean) {
+    async onToggle(value: boolean) {
+        const { serverConfig, prop: propType } = this.props;
+
         this.setState({ isActive: value });
 
-        this.props.onToggle(value);
+        return toggleModule(serverConfig.serverId, propType, value);
+        // this.props.onToggle(value);
     }
 
     render() {
@@ -39,19 +49,17 @@ export default class DashboardModule extends React.Component<Props, { isActive: 
             <LabsIconCard icon={icon} iconAspectRatio={iconAspectRatio} iconClassName={isActive ? activeClassName : ""} iconWidth={80}>
                 <Box className="grow">
                     <Stack direction="row" gap={4}>
-                        <Typography className="grow" fontWeight="md" level="body1" fontSize={largeHeader ? "lg" : "md"}>
+                        <Typography className="grow" fontWeight="md" level={largeHeader ? "h4" : "body1"}>
                             {name}
                         </Typography>
-                        <LabsSwitch className="toggle justify-end" defaultChecked={this.props.isActive} onChange={({ target }) => this.onToggle(target.checked)} />
+                        <LabsSwitch className="toggle justify-end" defaultChecked={this.state.isActive} onChange={({ target }) => this.onToggle(target.checked)} />
                     </Stack>
                     <Typography level="body2">{description}</Typography>
                 </Box>
-                {
-                    !hideBadges &&
+                { !hideBadges &&
                     <Box mt={2}>
                         <Chip color={requiresPremium ? "warning" : "neutral"}>{ requiresPremium ? "Premium" : "Free" }</Chip>
-                    </Box>
-                }
+                    </Box> }
             </LabsIconCard>
         );
     }

@@ -1,6 +1,6 @@
 import React, { ReactNode } from "react";
 import { LabsFormFieldByType, LabsFormFieldType } from "./form";
-import LabsForm, { LabsFormFieldHeader } from "./LabsForm";
+import LabsForm, { FormFieldHeader } from "./LabsForm";
 import { Chip, ListItemDecorator, Menu, MenuItem, Option, Select, SelectProps, Stack, Typography, styled } from "@mui/joy";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck } from "@fortawesome/free-solid-svg-icons";
@@ -99,7 +99,7 @@ export default class LabsMultiSelector extends React.Component<Props> {
 
         return (
             <>
-                <LabsFormFieldHeader field={field} />
+                <FormFieldHeader field={field} />
                 <LabsMultiSelectorShell
                     id={id}
                     disabled={field.disabled}

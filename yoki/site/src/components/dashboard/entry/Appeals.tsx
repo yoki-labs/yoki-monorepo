@@ -21,9 +21,9 @@ export default class AppealsPage extends React.Component<DashboardPageProps> {
                         description="Allows people to apply for an unban in your server."
                         icon={faPrayingHands}
                         activeClassName="from-violet-500 to-cyan-500"
-                        isActive={serverConfig.appealsEnabled}
-                        onToggle={(value) => console.log("Appeals toggle", value)}
-                        iconAspectRatio={1}
+                        serverConfig={serverConfig}
+                        prop="appealsEnabled"
+                        iconAspectRatio={0.9}
                         hideBadges
                         largeHeader
                         />

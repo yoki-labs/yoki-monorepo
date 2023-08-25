@@ -7,6 +7,7 @@ export interface LabsFormSection {
     name?: string;
     description?: string;
     row?: boolean;
+    gap?: number;
     start?: ReactNode;
     fields: LabsFormField[];
 };
@@ -59,7 +60,10 @@ interface LabsFormFieldInput<TType extends LabsFormFieldType, TValue> extends
     BaseLabsFormField<TType, TValue>,
     StyledLabsFormField,
     PlaceholdableLabsFormField
-{}
+{
+    min?: number;
+    max?: number;
+}
 interface LabsFormFieldSelectable<TType extends LabsFormFieldType> extends
     BaseLabsFormField<TType, string | number>,
     OptionedLabsFormField<TType, string | number, string | number>,

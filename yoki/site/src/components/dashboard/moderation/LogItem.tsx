@@ -1,5 +1,4 @@
 import { Box, Card, CardContent, Chip, ListItemDecorator, MenuItem, Stack, Typography } from "@mui/joy";
-import { SanitizedLogChannel } from "../../../lib/@types/db";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHashtag, faPen, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { formatDate } from "@yokilabs/utils";

@@ -2,12 +2,12 @@ import { IconDefinition, faBan, faClipboardUser, faCog, faCommentDots, faCrown, 
 import OverviewPage from "./overview/Overview";
 import ConfigPage from "./overview/Premium";
 import AutomodPage from "./automod/Automod";
-import HistoryPage from "./automod/History";
+import HistoryPage from "./moderation/History";
 import ModmailPage from "./entry/Modmail";
 import React from "react";
 import AntiraidPage from "./entry/Antiraid";
 import AppealsPage from "./entry/Appeals";
-import LogsPage from "./automod/Logs";
+import LogsPage from "./moderation/Logs";
 import LinksPage from "./automod/Urls";
 import PhrasesPage from "./automod/Phrases";
 import { ColorPaletteProp } from "@mui/joy";

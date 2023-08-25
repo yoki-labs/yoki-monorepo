@@ -47,44 +47,44 @@ export default class AutomodPage extends React.Component<DashboardPageProps, Sta
 
         return (
             <>
-                <Typography level="h2" gutterBottom>Auto-moderation</Typography>
+                <Typography level="h4" gutterBottom>Auto-moderation</Typography>
                 <Box className="grid sm:grid-cols-1 md:grid-cols-2 xlg:grid-cols-3 gap-4">
                     <DashboardModule
                         name="NSFW Image Scan"
                         description="Removes any potentially NSFW images from chat and media."
                         icon={faImage}
                         activeClassName="from-pink-500 to-purple-500"
-                        isActive={serverConfig.scanNSFW}
+                        serverConfig={serverConfig}
+                        prop="scanNSFW"
                         requiresPremium
-                        onToggle={(value) => console.log("Automod toggle NSFW Image scan", value)}
                     />
                     <DashboardModule
                         name="Auto-mod"
                         description="Filters out spam and blacklisted phrases, words or links."
                         icon={faBan}
                         activeClassName="from-red-500 to-pink-500"
-                        isActive={serverConfig.filterEnabled}
-                        onToggle={(value) => console.log("Automod toggle NSFW Image scan", value)}
+                        serverConfig={serverConfig}
+                        prop="filterEnabled"
                     />
                     <DashboardModule
                         name="Invite Filter"
-                        description="Filters out invites in chat."
+                        description="Filters out invites to other non-whitelisted servers in chat."
                         icon={faLink}
                         activeClassName="from-red-500 to-orange-500"
-                        isActive={serverConfig.filterInvites}
-                        onToggle={(value) => console.log("Automod toggle NSFW Image scan", value)}
+                        serverConfig={serverConfig}
+                        prop="filterInvites"
                     />
                     <DashboardModule
                         name="Anti-hoist"
-                        description="Stops people from putting symbols at the start of their name to put them above everyone else."
+                        description="Prevents people from purposefully putting themselves from above everyone."
                         icon={faAnglesDown}
                         activeClassName="from-orange-500 to-yellow-500"
-                        isActive={serverConfig.antiHoistEnabled}
-                        onToggle={(value) => console.log("Anti-hoist toggle", value)}
+                        serverConfig={serverConfig}
+                        prop="antiHoistEnabled"
                     />
                 </Box>
                 <Box>
-                    <Typography level="h4" gutterBottom>Presets</Typography>
+                    <Typography level="h5" gutterBottom>Presets</Typography>
                     <Box className="grid sm:grid-cols-1 md:grid-cols-2 xlg:grid-cols-3 gap-4">
                         <AutomodPreset
                             presetName="profanity"
@@ -112,7 +112,6 @@ export default class AutomodPage extends React.Component<DashboardPageProps, Sta
                             />
                     </Box>
                 </Box>
-                <PagePlaceholder icon={PagePlaceholderIcon.Wip} title="Work in progress" description="This section has not been done yet. Come back later!" />
             </>
         );
     }

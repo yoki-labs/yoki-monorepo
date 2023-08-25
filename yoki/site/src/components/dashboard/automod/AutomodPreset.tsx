@@ -58,6 +58,8 @@ export default class AutomodPreset extends React.Component<Props, State> {
                                         placeholder: "A whole number",
                                         defaultValue: preset?.infractionPoints ?? 5,
                                         disabled: !isEnabled,
+                                        min: 0,
+                                        max: 10000,
                                     }
                                 ]
                             }

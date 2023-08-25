@@ -18,12 +18,12 @@ export default class InvitesPage extends React.Component<DashboardPageProps> {
                 <Box className="grid gap-4">
                     <DashboardModule
                         name="Invite Filter"
-                        description="Filters out invites in chat."
+                        description="Filters out invites to other non-whitelisted servers in chat."
                         icon={faLink}
                         activeClassName="from-red-500 to-orange-500"
-                        isActive={serverConfig.filterInvites}
-                        onToggle={(value) => console.log("Invite Filter toggle", value)}
-                        iconAspectRatio={1}
+                        serverConfig={serverConfig}
+                        prop="filterInvites"
+                        iconAspectRatio={0.9}
                         hideBadges
                         largeHeader
                         />

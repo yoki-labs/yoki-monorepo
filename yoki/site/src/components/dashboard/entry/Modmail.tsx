@@ -21,9 +21,9 @@ export default class ModmailPage extends React.Component<DashboardPageProps> {
                         description="Customize how your users interact with your moderators."
                         icon={faEnvelope}
                         activeClassName="from-purple-500 to-blue-500"
-                        isActive={serverConfig.modmailEnabled}
-                        onToggle={(value) => console.log("Modmail toggle", value)}
-                        iconAspectRatio={1}
+                        serverConfig={serverConfig}
+                        prop="modmailEnabled"
+                        iconAspectRatio={0.9}
                         hideBadges
                         largeHeader
                         />

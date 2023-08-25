@@ -46,7 +46,7 @@ export default class Layout extends React.Component<LayoutProps, LayoutState> {
                 }
             >
                 <LayoutSidebar menuToggled={this.state.menuEnabled} />
-                <Box className={`overflow-hidden grow basis-0 shrink-0 flex h-full ${this.state.menuEnabled ? "md:block hidden" : ""}`}>
+                <Box className={`overflow-hidden grow basis-0 shrink-0 flex ${this.state.menuEnabled ? "md:block hidden" : ""}`}>
                     {children}
                 </Box>
                 {/* <Box className="md:block hidden w-64">

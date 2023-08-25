@@ -61,7 +61,7 @@ export default class HistoryPage extends React.Component<DashboardPageProps> {
 
         return (
             <Stack direction="column" gap={3}>
-                <Typography level="h2" gutterBottom>Server history</Typography>
+                <Typography level="h4" gutterBottom>Server history</Typography>
 
                 <DataTable<SanitizedAction, string>
                     itemType="cases"

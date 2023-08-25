@@ -62,9 +62,9 @@ export default class PhrasesPage extends React.Component<DashboardPageProps> {
                         description="Filters blacklisted phrases, as well as spam and links."
                         icon={faBan}
                         activeClassName="from-red-500 to-pink-500"
-                        isActive={serverConfig.filterEnabled}
-                        onToggle={(value) => console.log("Automod toggle NSFW Image scan", value)}
-                        iconAspectRatio={1}
+                        serverConfig={serverConfig}
+                        prop="filterEnabled"
+                        iconAspectRatio={0.9}
                         hideBadges
                         largeHeader
                     />

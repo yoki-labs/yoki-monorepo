@@ -10,19 +10,19 @@
 @import 'additional-styles/theme.css'; */
 
 :root {
-  --primary: #191B1F;
-  --grey: #202227;
-  --off-grey: rgb(39, 41, 52);
-  --grey-bg: #191B1F;
-  --light-grey: #dcdcdc;
-  --grey-fade: #8080802a;
-  --guilded-yellow: #F5C400;
+    --primary: #191B1F;
+    --grey: #202227;
+    --off-grey: rgb(39, 41, 52);
+    --grey-bg: #191B1F;
+    --light-grey: #dcdcdc;
+    --grey-fade: #8080802a;
+    --guilded-yellow: #F5C400;
 
-  --status-bg: url("../../public/status-bg.png");
+    --status-bg: url("../../public/status-bg.png");
 }
 
 html {
-  scroll-behavior: smooth;
+    scroll-behavior: smooth;
 }
 
 h1,
@@ -30,55 +30,69 @@ h2,
 h3,
 p,
 a {
-  font-family: "Inter";
+    font-family: "Inter";
 }
 
 html, body, #main, #__next {
-  margin: 0;
-  padding: 0;
-  width: 100%;
-  height: 100%;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
 }
 
+/* Hide default number input arrows/spin. Stolen from StackOverflow. I am not bothering figuring out CSS nonsense */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    -moz-appearance: none; /* Firefox */
+    appearance: none;
+    margin: 0;
+}
+
+input[type=number] {
+    -webkit-appearance: textfield;
+    -moz-appearance: textfield; /* Firefox */
+    appearance: textfield;
+}
 
 /* For Firefox Browser */
 /* .scrollbar {
-  scrollbar-width: thin;
-  scrollbar-color: var(--guilded-yellow) var(--grey-bg);
+    scrollbar-width: thin;
+    scrollbar-color: var(--guilded-yellow) var(--grey-bg);
 } */
 
 
 /* For Chrome, EDGE, Opera, Others */
 /* .scrollbar::-webkit-scrollbar {
-  width: 20px;
+    width: 20px;
 }
 
 .scrollbar::-webkit-scrollbar-track {
-  background: rgb(51 65 85);
+    background: rgb(51 65 85);
 }
 
 .scrollbar::-webkit-scrollbar-thumb {
-  background: var(--guilded-yellow);
+    background: var(--guilded-yellow);
 }
 
 @layer utilities {
-  .scrollbar::-webkit-scrollbar {
-    width: 10px;
-    height: 10px;
-  }
+    .scrollbar::-webkit-scrollbar {
+        width: 10px;
+        height: 10px;
+    }
 
-  .scrollbar::-webkit-scrollbar-track {
-    border-radius: 100vh;
-    background: var(--guilded-yellow);
-  }
+    .scrollbar::-webkit-scrollbar-track {
+        border-radius: 100vh;
+        background: var(--guilded-yellow);
+    }
 
-  .scrollbar::-webkit-scrollbar-thumb {
-    background: #e0cbcb;
-    border-radius: 100vh;
-    border: 3px solid var(--guilded-yellow);
-  }
+    .scrollbar::-webkit-scrollbar-thumb {
+        background: #e0cbcb;
+        border-radius: 100vh;
+        border: 3px solid var(--guilded-yellow);
+    }
 
-  .scrollbar::-webkit-scrollbar-thumb:hover {
-    background: var(--guilded-yellow);
-  }
+    .scrollbar::-webkit-scrollbar-thumb:hover {
+        background: var(--guilded-yellow);
+    }
 } */
