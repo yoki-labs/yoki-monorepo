@@ -1,14 +1,23 @@
-import Footer from "./footer/Footer";
-import Navbar from "./navbar/navbar";
+import { Box, Stack, styled } from "@mui/joy";
+import Footer from "./Footer";
+import Navbar from "./Navbar";
+
+const PageWrapper = styled(Box)(({ theme }) => ({
+    backgroundColor: theme.vars.palette.background.body,
+}));
 
 export const LandingPage = ({ children }: { children: React.ReactNode }) => {
     return (
-        <>
+        <PageWrapper>
+            {/* Anything here will be fixed */}
             <Navbar />
-            <div className="bg-custom-gray pb-12">{children}</div>
-            <div className="bg-[#15171d] px-12 md:px-20">
+            {/* Scrollable item */}
+            <Box>
+                <Box component="article">
+                    {children}
+                </Box>
                 <Footer />
-            </div>
-        </>
+            </Box>
+        </PageWrapper>
     );
 };

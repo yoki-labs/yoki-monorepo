@@ -21,7 +21,7 @@
 		"prisma:env:prod": "pnpx dotenv-cli -e ../.env.prod --",
 		"prisma:env:dev": "pnpx dotenv-cli -e ../.env --",
 		"generate": "prisma generate",
-		"commands": "ts-node scripts/gen-cmds-list.ts"
+		"commands": "node scripts/gen-cmds-list.mjs"
 	},
 	"devDependencies": {
 		"@guildedjs/guilded-api-typings": "4.0.0",

@@ -1,5 +1,6 @@
 import "../styles/globals.css";
-import "../styles/styles.css";
+import "../styles/fonts.css";
+import "../styles/animations.css";
 
 import { CssVarsProvider } from "@mui/joy";
 import { Inter } from "@next/font/google";

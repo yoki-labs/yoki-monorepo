@@ -106,6 +106,14 @@ export const theme = extendTheme({
         dark,
     },
     components: {
+        JoyButton: {
+            styleOverrides: {
+                root: {
+                    transition: "0.2s ease-out",
+                    transitionProperty: "border, background-color, color",
+                },
+            },
+        },
         JoyInput: {
             styleOverrides: {
                 input: {

@@ -1,113 +1,280 @@
 import type { NextPage } from "next";
-import Link from "next/link";
 
-import FeatureListItem from "../components/landing/FeatureListItem";
 import { LandingPage } from "../components/landing/LandingPage";
-import FeaturePreview from "../components/landing/previews/FeaturePreview";
-import YokiPreview from "../components/landing/previews/YokiPreview";
-import { HomePreview, HomeTextBlurb, HomeWrapper } from "../styles/components/home";
-import { Button } from "../styles/globals";
-import Statistic from "../components/landing/Statistic";
+import { Alert, Avatar, Box, Button, Card, Chip, Link, List, Stack, Typography } from "@mui/joy";
+import LandingFeature from "../components/landing/home/LandingFeature";
+import LabsButton from "../components/LabsButton";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faGuilded } from "@fortawesome/free-brands-svg-icons";
+import LandingProfileCard from "../components/landing/home/LandingProfileCard";
+import LandingStat from "../components/landing/home/LandingStat";
+import FeaturePreview from "../components/landing/home/FeaturePreview";
+import { faCog, faEnvelope, faExclamation, faHashtag, faRobot, faShieldHalved } from "@fortawesome/free-solid-svg-icons";
+import GuildedContent from "../components/guilded/GuildedContent";
+import GuildedChat, { GuildedChatMasked } from "../components/guilded/GuildedChat";
+import GuildedMessage from "../components/guilded/GuildedMessage";
+import GuildedEmbed, { GuildedEmbedField } from "../components/guilded/GuildedEmbed";
+import GuildedMention from "../components/guilded/GuildedMention";
+import { Colors } from "@yokilabs/utils";
+import { labsSecondaryColour } from "../styles/theme";
+
 
 const Home: NextPage = () => {
-    const features = [
-        {
-            header: "Moderation without the mods.",
-            shortHeader: "automod",
-            description:
-                "Our robust content filter scans text, images, invites, and links to keep the content you want and block the content you don't. Comes with numerous presets for popular slurs, NSFW links, profanity, and more.",
-            src: "/features/wordFilter.png",
-        },
-        {
-            header: "Bringing your staff and members closer.",
-            shortHeader: "modmail",
-            description: "Our modmail system provides your server a way for members to communicate directly with your staff. Comes with full chat logs.",
-            src: "/features/modmail.png",
-        },
-        {
-            header: "Stopping raiders right in their tracks.",
-            shortHeader: "antiraid",
-            description: "Present new or suspicious accounts with captchas or kick them automatically. Choose from a variety of properties to mark an account as suspicious.",
-            src: "/features/site_cap_combined.png",
-        },
-        {
-            header: "Giving you a record of everything.",
-            shortHeader: "log channels",
-            description: "Track message edits/deletions, member joins/leaves, moderator actions, and much more with log channels.",
-            src: "/features/logchannels.png",
-        },
-    ];
+    // const features = [
+    //     {
+    //         header: "Moderation without the mods.",
+    //         shortHeader: "automod",
+    //         description:
+    //             "Our robust content filter scans text, images, invites, and links to keep the content you want and block the content you don't. Comes with numerous presets for popular slurs, NSFW links, profanity, and more.",
+    //         src: "/features/wordFilter.png",
+    //     },
+    //     {
+    //         header: "Bringing your staff and members closer.",
+    //         shortHeader: "modmail",
+    //         description: "Our modmail system provides your server a way for members to communicate directly with your staff. Comes with full chat logs.",
+    //         src: "/features/modmail.png",
+    //     },
+    //     {
+    //         header: "Stopping raiders right in their tracks.",
+    //         shortHeader: "antiraid",
+    //         description: "Present new or suspicious accounts with captchas or kick them automatically. Choose from a variety of properties to mark an account as suspicious.",
+    //         src: "/features/site_cap_combined.png",
+    //     },
+    //     {
+    //         header: "Giving you a record of everything.",
+    //         shortHeader: "log channels",
+    //         description: "Track message edits/deletions, member joins/leaves, moderator actions, and much more with log channels.",
+    //         src: "/features/logchannels.png",
+    //     },
+    // ];
 
-    const previews = features.map((x, i) => <FeaturePreview key={x.src} {...x} position={i % 2 === 0 ? "right" : "left"} />);
+    //const previews = features.map((x, i) => <FeaturePreview key={x.src} {...x} position={i % 2 === 0 ? "right" : "left"} />);
 
     return (
         <LandingPage>
-            <HomeWrapper>
-                <div className="border-slate-200"></div>
-                <div className="pb-20">
-                    <HomePreview>
-                        <div className="flex flex-col justify-center meet-yoki">
-                            <h1 className="flex flex-col text-6xl md:text-8xl text-white font-bold">
-                                <span>
-                                    Meet <span className="text-custom-guilded">Yoki</span>
-                                </span>
-                                <span className="text-xl md:text-2xl">Your moderation companion</span>
-                            </h1>
-                            <div className="py-2 md:py-2 text-white">
-                                <div className="inline-block space-y-2 text-left">
-                                    <FeatureListItem text="Moderation + automod" />
-                                    <FeatureListItem text="Text + link + image scanning" />
-                                    <FeatureListItem text="Server + moderation logs" />
-                                    <FeatureListItem text="Modmail + support" />
-                                </div>
-                            </div>
-                            <div className="flex flex-col md:flex-row gap-2 py-2 md:space-x-4 md:inline-flex">
-                                <Button className="filled">
-                                    <a href="/invite">Invite Now</a>
-                                </Button>
-                                <Button>
-                                    <a href="/support">Get Support</a>
-                                </Button>
-                            </div>
-                            <p className="text-gray-50 text-sm">
-                                Made by{" "}
-                                <a className="underline underline-offset-4" href="https://github.com/yoki-labs">
-                                    Yoki Labs
-                                </a>
-                            </p>
-                        </div>
-                        <div className="my-auto hidden lg:block">
-                            <YokiPreview />
-                        </div>
-                    </HomePreview>
-                    <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-8">
-                        <Statistic amount="20,000,000+" subText="Scanned" text="messages" />
-                        <Statistic amount="10,000+" subText="Actioned" text="cases" />
-                        <Statistic amount="1,400+" subText="Serving" text="servers" />
-                        <Statistic amount="90,000+" subText="Watching over" text="members" />
-                        <Statistic amount="9,000+" subText="Stopped" text="bad actors" />
-                        <Statistic amount="6,000+" subText="Served" text="captchas" />
-                    </div>
-                    <HomeTextBlurb>
-                        <h1>Why Yoki?</h1>
-                        <p>Yoki delivers a reliable service from moderation to ...</p>
-                    </HomeTextBlurb>
-                    <hr className="text-grey-600 opacity-50" />
-                    <div>{previews}</div>
-                </div>
-                <div className="w-full rounded-lg py-8 md:py-16 px-8 text-center bg-custom-guilded">
-                    <div className="m-auto">
-                        <h1 className="text-black text-4xl md:text-6xl font-bold">Get started now</h1>
-                        <div className="py-6">
-                            <Link href="/invite">
-                                <button className="px-6 py-2 md:px-4 md:py-1 rounded text-2xl md:text-lg bg-custom-gray transition hover:scale-110">
-                                    <p className="font-semibold text-white">Invite the bot</p>
-                                </button>
-                            </Link>
-                        </div>
-                    </div>
-                </div>
-            </HomeWrapper>
+            <Box sx={{ py: 16, px: 20 }}>
+                <Stack direction="row">
+                    <Box sx={{ flex: "1" }}>
+                        <Typography level="h1" fontSize="xlg" sx={{ fontSize: "5rem" }}>
+                            Meet{" "}
+                            <Typography textColor="primary.500">Yoki</Typography>
+                        </Typography>
+                        <Typography level="h3">Your moderation companion</Typography>
+                        <List size="lg">
+                            <LandingFeature>
+                                Server auto-moderation
+                            </LandingFeature>
+                            <LandingFeature>
+                                Text, link and image scanning
+                            </LandingFeature>
+                            <LandingFeature opacity={0.8}>
+                                Server & moderation logs
+                            </LandingFeature>
+                            <LandingFeature opacity={0.6}>
+                                Spam prevention
+                            </LandingFeature>
+                            <LandingFeature opacity={0.4}>
+                                Modmail & support
+                            </LandingFeature>
+                            <LandingFeature opacity={0.2}>
+                                Ban appeals
+                            </LandingFeature>
+                        </List>
+                        <Typography textColor="text.primary">... and much more!</Typography>
+                        <Stack sx={{ my: 2 }} direction="row" gap={2}>
+                            <LabsButton
+                                size="lg"
+                                startDecorator={<FontAwesomeIcon icon={faGuilded} height="100%" />}
+                            >
+                                Add to Guilded
+                            </LabsButton>
+                            <Button variant="outlined" color="primary" size="lg">
+                                See all features
+                            </Button>
+                        </Stack>
+                        <Typography textColor="text.secondary">Made by Yoki Labs</Typography>
+                    </Box>
+                    <LandingProfileCard serverCount={2000} />
+                </Stack>
+            </Box>
+            {/* TODO: Server carousel */}
+            {/* Statistics */}
+            <Box sx={{ pt: 14, pb: 20, px: 20 }} className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-8">
+                <LandingStat amount="20,000,000+" subtitle="Scanned" what="messages" />
+                <LandingStat amount="10,000+" subtitle="Actioned" what="cases" />
+                <LandingStat amount="1,400+" subtitle="Serving" what="servers" />
+                <LandingStat amount="90,000+" subtitle="Watching over" what="members" />
+                <LandingStat amount="9,000+" subtitle="Stopped" what="bad actors" />
+                <LandingStat amount="6,000+" subtitle="Served" what="captchas" />
+            </Box>
+            {/* Yoki's features */}
+            <Box sx={{ py: 4, px: 20 }}>
+                <Box sx={{ textAlign: "center", mb: 32 }}>
+                    <Typography level="h2">All the tools you need</Typography>
+                    <Typography level="h4" textColor="text.secondary">Yoki provides everything you will ever need to moderate your servers</Typography>
+                </Box>
+                <Stack gap={24}>
+                    <FeaturePreview
+                        title="Moderation without mods."
+                        subtitle="automod"
+                        icon={faRobot}
+                        description="Our robust content filter scans text, images, invites, and links to keep the content you want and block the content you don't. Comes with numerous presets for popular slurs, NSFW links, profanity, and more."
+                    >
+                        <GuildedContent>
+                            <GuildedChat>
+                                <GuildedMessage name="Yoki" bot>
+                                    <GuildedEmbed color={`#${Colors.yellow.toString(16)}`}>
+                                        <GuildedEmbedField title={
+                                            <>
+                                                <FontAwesomeIcon icon={faExclamation} style={{ color: `#${Colors.yellow.toString(16)}`, width: "1em", marginRight: 12 }} />
+                                                Cannot use that word
+                                            </>
+                                        }>
+                                            <Typography>
+                                                <GuildedMention>User</GuildedMention>,
+                                                you have used a filtered word. This is a warning for you to not use it again,
+                                                otherwise moderation actions may be taken against you.
+                                            </Typography>
+                                        </GuildedEmbedField>
+                                    </GuildedEmbed>
+                                </GuildedMessage>
+                            </GuildedChat>
+                        </GuildedContent>
+                    </FeaturePreview>
+                    <FeaturePreview
+                        title="Bringing your staff and members closer."
+                        subtitle="modmail"
+                        icon={faEnvelope}
+                        description="Our robust content filter scans text, images, invites, and links to keep the content you want and block the content you don't. Comes with numerous presets for popular slurs, NSFW links, profanity, and more."
+                        rightSide
+                    >
+                        <GuildedContent>
+                            <GuildedChatMasked>
+                                <GuildedMessage name="Yoki" bot>
+                                    <GuildedEmbed>
+                                        <GuildedEmbedField title="New modmail thread opened">
+                                            <Typography>
+                                                A new modmail thread by ID R40Mp0WdAnn6Le has been opened by <GuildedMention>User</GuildedMention>.
+                                            </Typography>
+                                        </GuildedEmbedField>
+                                        <GuildedEmbedField title="Roles">
+                                            <Chip variant="outlined" startDecorator={
+                                                <Box sx={(theme) => ({ width: 16, height: 16, borderRadius: "100%", backgroundColor: theme.vars.palette.primary[500] })}></Box>
+                                            }>
+                                                Level 30
+                                            </Chip>
+                                        </GuildedEmbedField>
+                                    </GuildedEmbed>
+                                    <GuildedEmbed author="Moderator">
+                                        <Typography>
+                                            Hello! How can I help you?
+                                        </Typography>
+                                    </GuildedEmbed>
+                                    <GuildedEmbed author="User">
+                                        <Typography>
+                                            Hey hey! I have a question...
+                                        </Typography>
+                                    </GuildedEmbed>
+                                </GuildedMessage>
+                            </GuildedChatMasked>
+                        </GuildedContent>
+                    </FeaturePreview>
+                    <FeaturePreview
+                        title="Stopping bad actors right in their tracks."
+                        subtitle="antiraid"
+                        icon={faShieldHalved}
+                        description="Present new or suspicious accounts with captchas or kick them automatically. Choose from a variety of properties to mark an account as suspicious."
+                    >
+                        <GuildedContent>
+                            <GuildedChat>
+                                <GuildedMessage name="Yoki" bot>
+                                    <GuildedEmbed color={`#${Colors.yellow.toString(16)}`}>
+                                        <GuildedEmbedField title={
+                                            <>
+                                                <FontAwesomeIcon icon={faExclamation} style={{ color: `#${Colors.yellow.toString(16)}`, width: "1em", marginRight: 12 }} />
+                                                Halt! Please complete this captcha
+                                            </>
+                                        }>
+                                            <Typography>
+                                                <GuildedMention>User</GuildedMention>,
+                                                your account has tripped the anti-raid filter and requires further verification to ensure that
+                                                you are not a bot.
+                                            </Typography>
+                                            <Typography sx={{ mt: 2 }}>
+                                                Please visit <Link>this link</Link> to complete the captcha and use the server.
+                                            </Typography>
+                                        </GuildedEmbedField>
+                                    </GuildedEmbed>
+                                </GuildedMessage>
+                            </GuildedChat>
+                        </GuildedContent>
+                    </FeaturePreview>
+                    <FeaturePreview
+                        title="Giving you a record of everything"
+                        subtitle="log channels"
+                        icon={faHashtag}
+                        description="Track message edits/deletions, member joins/leaves, moderator actions, and much more with log channels."
+                        rightSide
+                    >
+                        <GuildedContent>
+                            <GuildedChatMasked>
+                                <GuildedMessage name="Yoki" bot>
+                                    <GuildedEmbed color={`#${Colors.yellow.toString(16)}`} footer={
+                                        <Typography textColor="text.tertiary">Aug 27, 2023</Typography>
+                                    }>
+                                        <GuildedEmbedField title="User joined">
+                                            <Typography>
+                                                <GuildedMention>User</GuildedMention>{" "}has joined the server.
+                                            </Typography>
+                                        </GuildedEmbedField>
+                                        <GuildedEmbedField title="Additional info">
+                                            <Typography>
+                                                <Typography component="span" fontWeight="bolder">Account created:</Typography>{" "}
+                                                August 27, 2023 at 10:00 AM EST
+                                            </Typography>
+                                            <Typography>
+                                                <Typography component="span" fontWeight="bolder">Joined at:</Typography>{" "}
+                                                August 27, 2023 at 11:30 AM EST
+                                            </Typography>
+                                        </GuildedEmbedField>
+                                    </GuildedEmbed>
+                                    <GuildedEmbed color={`#${Colors.red.toString(16)}`} footer={
+                                        <Typography textColor="text.tertiary">Aug 27, 2023</Typography>
+                                    }>
+                                        <GuildedEmbedField title="User warned">
+                                            <Typography>
+                                                <GuildedMention>User</GuildedMention>{" "}has been warned by{" "}<GuildedMention>Moderator</GuildedMention>.
+                                            </Typography>
+                                        </GuildedEmbedField>
+                                        <GuildedEmbedField title="Reason">
+                                            <Box sx={{ backgroundColor: "black", py: 2, px: 2, borderRadius: 4 }}>
+                                                <Typography>
+                                                    Being disrespectful to others.
+                                                </Typography>
+                                            </Box>
+                                        </GuildedEmbedField>
+                                        <GuildedEmbedField title="Additional info">
+                                            <Typography>
+                                                <Typography component="span" fontWeight="bolder">Infraction points:</Typography>{" "}5
+                                            </Typography>
+                                            <Typography>
+                                                <Typography component="span" fontWeight="bolder">Case ID:</Typography>{" "}R40Mp0WdAnn6Le
+                                            </Typography>
+                                        </GuildedEmbedField>
+                                    </GuildedEmbed>
+                                </GuildedMessage>
+                            </GuildedChatMasked>
+                        </GuildedContent>
+                    </FeaturePreview>
+                </Stack>
+            </Box>
+            {/* Final invite section */}
+            <Card sx={{ mx: 16, mt: 20, mb: 10, py: 10, px: 16, backgroundImage: `linear-gradient(to bottom right, ${labsSecondaryColour[0]}, ${labsSecondaryColour[1]})` }} color="primary" variant="solid" invertedColors>
+                <Stack sx={{ alignItems: "center" }}>
+                    <Typography level="h2" gutterBottom>Have hassle-free moderation today</Typography>
+                    <Button size="lg" startDecorator={<FontAwesomeIcon icon={faGuilded} />} variant="solid">Add Yoki to your server</Button>
+                </Stack>
+            </Card>
         </LandingPage>
     );
 };

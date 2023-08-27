@@ -1,0 +1,8 @@
+@keyframes carousel {
+    from {
+        left: 0;
+    }
+    to {
+        left: 2000px;
+    }
+}
