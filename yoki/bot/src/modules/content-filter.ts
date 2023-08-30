@@ -215,7 +215,7 @@ export class ContentFilterUtil extends BaseFilterUtil {
             return this.client.messageUtil.sendWarningBlock(
                 channelId!,
                 `Cannot use that word`,
-                `**Alert:** <@${userId}>, you have used a filtered word. This is a warning for you to not use it again, otherwise moderation actions may be taken against you.`,
+                `<@${userId}>, you have used a filtered word. This is a warning for you to not use it again, otherwise moderation actions may be taken against you.`,
                 undefined,
                 { isPrivate: true }
             );
@@ -230,7 +230,7 @@ export class ContentFilterUtil extends BaseFilterUtil {
                 channelId!,
                 {
                     title: `:mute: You have been muted`,
-                    description: `**Alert:** <@${userId}>, you have been muted for using a filtered word excessively. Please reach out to staff if this was in error.`,
+                    description: `<@${userId}>, you have been muted for using a filtered word excessively. Please reach out to staff if this was in error.`,
                     color: Colors.red,
                 },
                 {

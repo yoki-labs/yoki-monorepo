@@ -246,7 +246,7 @@ export class LinkFilterUtil extends BaseFilterUtil {
             return this.client.messageUtil.sendWarningBlock(
                 channelId!,
                 `Stop spamming`,
-                `**Alert:** <@${userId}>, you have posted a blacklisted/non-whitelisted domain or invite in this server. This is a warning for you to not do it again, otherwise moderation actions may be taken against you.`,
+                `<@${userId}>, you have posted a blacklisted/non-whitelisted domain or invite in this server. This is a warning for you to not do it again, otherwise moderation actions may be taken against you.`,
                 undefined,
                 { isPrivate: true }
             );
@@ -261,7 +261,7 @@ export class LinkFilterUtil extends BaseFilterUtil {
                 channelId!,
                 {
                     title: `:mute: You have been muted`,
-                    description: `**Alert:** <@${userId}>, you have been muted for posting a blacklisted/non-whitelisted domain or invite in this server.`,
+                    description: `<@${userId}>, you have been muted for posting a blacklisted/non-whitelisted domain or invite in this server.`,
                     color: Colors.red,
                 },
                 { isPrivate: true }
