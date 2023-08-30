@@ -26,12 +26,24 @@ const logCommands = async (message: Message, command: Command, args: Record<stri
         .catch(() => null);
 };
 
+// TEMPORARY: As `ChatMessageDeleted` doesn't provide ID of the user that created a deleted message, we have to store
+// client's last posted messages to not make deletion logs looped and spam them
+export const lastClientServerMessages: Record<string, string> = {};
+
 export default {
     execute: async (args) => {
         const [message, ctx] = args;
 
+        if (!message.serverId)
+            return;
+
+        // If any of the flowbots delete Yoki's message deletion logs, do not make it loop and make Yoki spam
+        if (message.authorId === ctx.user!.id) {
+            lastClientServerMessages[message.serverId!] = message.id;
+            return;
+        }
         // if the message wasn't sent in a server, or the person was a bot then don't do anything
-        if (message.createdByWebhookId || message.authorId === ctx.user!.id || message.authorId === "Ann6LewA" || !message.serverId) return;
+        else if (message.createdByWebhookId || message.authorId === ctx.user!.id || message.authorId === "Ann6LewA") return;
         void ctx.amp.logEvent({ event_type: "MESSAGE_CREATE", user_id: message.authorId, event_properties: { serverId: message.serverId! } });
 
         const isModmailChannel = await ctx.prisma.modmailThread.findFirst({
