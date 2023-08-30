@@ -5,6 +5,7 @@ import type { AbstractClient } from "../Client";
 import type { IServer } from "../db-types";
 import type { CommandContext } from "../typings";
 import type { ResolvedArgs, UsedMentions } from "./arguments";
+import { CommandArgumentInfo } from "@yokilabs/utils";
 
 export interface BaseCommand<
     TCommand extends BaseCommand<TCommand, TClient, TRoleType, TServer>,
@@ -28,28 +29,15 @@ export interface BaseCommand<
     clientPermissions?: string[];
     userPermissions?: string[];
     args?: CommandArgument[];
-    preRunCheck?: (message: Message, args: string[], ctx: TClient) => unknown;
+    // preRunCheck?: (message: Message, args: string[], ctx: TClient) => unknown;
     requiredRole?: TRoleType;
     rawArgs?: boolean;
     devOnly?: boolean;
     execute: (message: Message, args: Record<string, ResolvedArgs>, ctx: TClient, raw: CommandContext<TServer>) => unknown;
 }
 
-export interface CommandArgument {
-    // In-code basics
-    name: string;
-    type: CommandArgType;
-    optional?: boolean;
-
-    // Display
-    display?: string;
-
-    // Type-based
-    separator?: string;
-    max?: number;
-    min?: number;
-    values?: any;
-    resolver?: (...content: any[]) => any;
+export interface CommandArgument extends CommandArgumentInfo {
+    // resolver?: (...content: any[]) => any;
 }
 export type CommandArgType = "string" | "UUID" | "member" | "number" | "boolean" | "enum" | "time" | "rest" | "enumList" | "channel" | "emote" | "role";
 export type CommandArgValidator = [

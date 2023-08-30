@@ -33,7 +33,7 @@ export default class PremiumPage extends React.Component<DashboardPageProps> {
 
         return (
             <>
-                { !serverConfig.premium && <Typography level="body2">You have not subscribed yet.</Typography> }
+                { !serverConfig.premium && <Typography level="body-md">You have not subscribed yet.</Typography> }
                 <Box className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xlg:grid-cols-3 gap-7">
                     <PremiumTier
                         subscribedIconClassName="from-rose-500 to-orange-500"
@@ -85,14 +85,14 @@ export function PremiumTier(props: PremiumTierProps) {
                 <Typography level="h4" textColor="text.secondary">${price.toFixed(2)}</Typography>
             </Box>
             <Box sx={{ flex: "1", mt: 3 }}>
-                <Typography level="h5">Tier perks</Typography>
+                <Typography level="title-md">Tier perks</Typography>
                 <List sx={{ p: 0 }}>
                     {perks.map((perk) => (
                         <ListItem sx={{ "--ListItemDecorator-size": "30px" }}>
                             <ListItemDecorator>
                                 <FontAwesomeIcon icon={faCheckCircle} />
                             </ListItemDecorator>
-                            <Typography lineHeight={1.25} level="body1">{perk}</Typography>
+                            <Typography lineHeight={1.25} level="body-md">{perk}</Typography>
                         </ListItem>
                     ))}
                 </List>

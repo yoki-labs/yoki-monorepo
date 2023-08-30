@@ -16,7 +16,7 @@ export function DeletionConfirmationModal({ itemType, onConfirm, onClose }: Prop
             onClose={onClose}
         >
             <Box>
-                <Typography level="body2">Are you sure you want to delete the {itemType}?</Typography>
+                <Typography level="body-md">Are you sure you want to delete the {itemType}?</Typography>
             </Box>
             <Stack mt={2} direction="row-reverse" gap={2}>
                 <Button onClick={onConfirm} variant="solid" color="danger">

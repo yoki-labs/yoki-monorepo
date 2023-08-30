@@ -128,10 +128,10 @@ function HistoryCase({ item: action, columnCount, timezone, isSelected, onSelect
                 <LabsUserCard userId={action.executorId} />
             </td>
             <td>
-                <Typography level="body2">{reason && reason.length > 32 ? `${reason?.slice(0, 32)}...` : reason}</Typography>
+                <Typography level="body-md">{reason && reason.length > 32 ? `${reason?.slice(0, 32)}...` : reason}</Typography>
             </td>
             <td>
-                <Typography level="body2">{formatDate(new Date(action.createdAt), timezone)}</Typography>
+                <Typography level="body-md">{formatDate(new Date(action.createdAt), timezone)}</Typography>
             </td>
         </DataTableRow>
     );

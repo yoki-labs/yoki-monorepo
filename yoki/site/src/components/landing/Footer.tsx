@@ -21,7 +21,7 @@ export default function Footer() {
                 </Box>
                 <Stack direction="row" gap={12}>
                     <Box>
-                        <Typography level="h5">Web pages</Typography>
+                        <Typography level="title-md">Web pages</Typography>
                         <List>
                             <ListItem>
                                 <Link color="neutral" textColor="text.secondary" href="/dashboard">
@@ -34,7 +34,7 @@ export default function Footer() {
                         </List>
                     </Box>
                     <Box>
-                        <Typography level="h5">Check us out</Typography>
+                        <Typography level="title-md">Check us out</Typography>
                         <List>
                             <ListItem>
                                 <Link color="neutral" textColor="text.secondary" href="/guilded">
@@ -55,7 +55,7 @@ export default function Footer() {
                         </List>
                     </Box>
                     <Box>
-                        <Typography level="h5">Documents</Typography>
+                        <Typography level="title-md">Documents</Typography>
                         <List>
                             <ListItem>
                                 <Link color="neutral" textColor="text.secondary" href="/terms">

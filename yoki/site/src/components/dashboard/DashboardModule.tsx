@@ -49,12 +49,12 @@ export default class DashboardModule extends React.Component<Props, { isActive: 
             <LabsIconCard icon={icon} iconAspectRatio={iconAspectRatio} iconClassName={isActive ? activeClassName : ""} iconWidth={80}>
                 <Box className="grow">
                     <Stack direction="row" gap={4}>
-                        <Typography className="grow" fontWeight="md" level={largeHeader ? "h4" : "body1"}>
+                        <Typography className="grow" fontWeight="md" level={largeHeader ? "title-lg" : "title-md"}>
                             {name}
                         </Typography>
                         <LabsSwitch className="toggle justify-end" defaultChecked={this.state.isActive} onChange={({ target }) => this.onToggle(target.checked)} />
                     </Stack>
-                    <Typography level="body2">{description}</Typography>
+                    <Typography level="body-md">{description}</Typography>
                 </Box>
                 { !hideBadges &&
                     <Box mt={2}>

@@ -25,7 +25,7 @@ export function LayoutTopbar({ children, onServerChange, currentServer, servers,
                 sx={{ p: 0, "--Breadcrumbs-gap": "20px" }}
                 className="grow"
                 separator={
-                    <Typography level="h6" textColor="text.secondary">
+                    <Typography level="title-sm" textColor="text.secondary">
                         /
                     </Typography>
                 }
@@ -33,7 +33,7 @@ export function LayoutTopbar({ children, onServerChange, currentServer, servers,
                 <Box sx={{ display: "flex", gap: 1 }}>
                     <Typography
                         startDecorator={<YokiIcon className="fill-spacelight-700" width="32px" height="32px" />}
-                        level="h6"
+                        level="title-sm"
                         textColor="text.secondary"
                         component="div"
                     >

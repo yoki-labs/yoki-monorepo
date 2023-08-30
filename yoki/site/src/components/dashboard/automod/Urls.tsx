@@ -113,7 +113,7 @@ function LinkRow({ item: link, columnCount, timezone, isSelected, onSelected }: 
                 <LabsUserCard userId={link.creatorId} />
             </td>
             <td>
-                <Typography level="body2">{formatDate(new Date(link.createdAt), timezone)}</Typography>
+                <Typography level="body-md">{formatDate(new Date(link.createdAt), timezone)}</Typography>
             </td>
         </DataTableRow>
     );
@@ -121,7 +121,7 @@ function LinkRow({ item: link, columnCount, timezone, isSelected, onSelected }: 
 
 function UrlContentDisplay({ subdomain, domain, route }: { subdomain: string | null; domain: string; route: string | null; }) {
     return (
-        <Typography level="body2" textColor="text.secondary">
+        <Typography level="body-md" textColor="text.secondary">
             {subdomain}{domain}{route}
         </Typography>
     )

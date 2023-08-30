@@ -1,11 +1,13 @@
+import { RoleType } from "@prisma/client";
+import { CommandArgumentInfo } from "@yokilabs/utils";
+
 export interface Command {
     name: string;
     category?: string;
     description: string;
-    usage?: string;
-    args?: { name: string; type: string; optional?: boolean }[];
+    args?: CommandArgumentInfo[];
     examples?: string[];
-    requiredRole?: string;
+    requiredRole?: RoleType;
     subCommands?: Command[];
     aliases?: string[];
 }

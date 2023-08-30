@@ -83,7 +83,7 @@ const GuildedEmbed = React.forwardRef<unknown, Props>((props, ref) => {
 export function GuildedEmbedField({ title, children }: { title: ReactNode | ReactNode[]; children: ReactNode | ReactNode[]; }) {
     return (
         <Box component="section">
-            <Typography level="h6" gutterBottom>{ title }</Typography>
+            <Typography level="title-sm" gutterBottom>{ title }</Typography>
             <Box component="article">
                 { children }
             </Box>

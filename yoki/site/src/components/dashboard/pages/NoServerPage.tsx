@@ -12,7 +12,7 @@ export default function NoServerPage({ currentServer }: Props) {
         <Stack alignItems="center" className="grow shrink-0">
             <Typography className="mb-4" level="h3">Uh oh! Yoki isn't in this server:</Typography>
             <ServerDisplay server={currentServer} />
-            <Typography className="mt-8 mb-2" level="body2">Invite Yoki to the server to manage and protect your server.</Typography>
+            <Typography className="mt-8 mb-2" level="body-md">Invite Yoki to the server to manage and protect your server.</Typography>
             <LabsButton>Invite Yoki</LabsButton>
         </Stack>
     );

@@ -68,12 +68,12 @@ export default class AutomodPreset extends React.Component<Props, State> {
                     >
                         <Box sx={{ mb: 2 }}>
                             <Stack gap={4} direction="row">
-                                <Typography className="grow" fontWeight="md" level="body1">
+                                <Typography className="grow" fontWeight="md" level="body-md">
                                     {title}
                                 </Typography>
                                 <LabsSwitch className="toggle justify-end" defaultChecked={!!preset} onChange={({ target }) => this.onToggle(target.checked)} />
                             </Stack>
-                            <Typography level="body2">{description}</Typography>
+                            <Typography level="body-md">{description}</Typography>
                         </Box>
                     </LabsForm>
                 </CardContent>

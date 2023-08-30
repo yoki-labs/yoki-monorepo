@@ -18,9 +18,9 @@ export default function ServerDisplay({ server, onClick, sx }: Props) {
                 </Stack>
             </CardOverflow>
             <CardContent>
-                <Typography component="span" level="h6">{server.name}</Typography>
+                <Typography component="span" level="title-sm">{server.name}</Typography>
                 <Stack sx={{ alignItems: "start", flexGrow: "1" }} spacing={2} direction="row">
-                    <Typography level="body2">/{server.subdomain}</Typography>
+                    <Typography level="body-md">/{server.subdomain}</Typography>
                 </Stack>
             </CardContent>
         </Card>

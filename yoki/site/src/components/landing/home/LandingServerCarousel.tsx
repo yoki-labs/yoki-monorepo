@@ -55,7 +55,7 @@
 //             </CardOverflow>
 //             <CardContent>
 //                 <Typography level="h4">{ name }</Typography>
-//                 <Typography level="body1">{ memberCount } members</Typography>
+//                 <Typography level="body-md">{ memberCount } members</Typography>
 //             </CardContent>
 //         </ServerCard>
 //     )

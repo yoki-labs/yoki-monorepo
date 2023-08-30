@@ -20,7 +20,7 @@ export default function FeaturePreview({ icon, subtitle, title, description, chi
                     startDecorator={
                         <FontAwesomeIcon icon={icon} />
                     }
-                    level="body1"
+                    level="body-md"
                     textColor="text.tertiary"
                     sx={{ mb: 2 }}
                     fontWeight="bolder"
@@ -30,7 +30,7 @@ export default function FeaturePreview({ icon, subtitle, title, description, chi
                 <Typography level="h1" sx={{ mb: 2 }}>
                     { title }
                 </Typography>
-                <Typography level="body1">
+                <Typography level="body-md">
                     { description }
                 </Typography>
             </Box>

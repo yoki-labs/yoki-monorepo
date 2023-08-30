@@ -74,7 +74,7 @@ export default class LabsForm extends React.Component<LabsFormProps, LabsFormSta
                         <Box component="section">
                             {i > 0 && <Divider sx={{ mb: 2 }} />}
                             {section.name && <Typography level="h2" fontSize="lg" sx={{ mb: 2 }}>{section.name}</Typography>}
-                            {section.description && <Typography level="body2">{section.description}</Typography>}
+                            {section.description && <Typography level="body-md">{section.description}</Typography>}
                             <Stack direction={section.row ? "row" : "column"} gap={section.gap ?? 2}>
                                 {section.start}
                                 {section.fields.map(this.generateField.bind(this))}
@@ -140,7 +140,7 @@ export const fieldRenderers: FieldRendererRecord = {
     [LabsFormFieldType.Toggle]: (form, id, field) =>
         <Stack spacing={2} direction="row">
             <FormFieldHeader field={field} />
-            <Typography level="body1" fontWeight="bolder">{field.name}</Typography>
+            <Typography level="body-md" fontWeight="bolder">{field.name}</Typography>
             <LabsSwitch
                 id={id}
                 defaultChecked={field.defaultValue ?? void 0}

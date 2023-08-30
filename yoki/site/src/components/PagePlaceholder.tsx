@@ -29,7 +29,7 @@ export default class PagePlaceholder extends React.Component<Props> {
             <Stack direction="column" alignItems="center">
                 <Typography level="h2" textColor="text.secondary" fontSize="xlg" gutterBottom>{ icons[icon] }</Typography>
                 <Typography level="h1" fontSize="lg">{ title }</Typography>
-                <Typography level="body1" textColor="text.secondary">{ description }</Typography>
+                <Typography level="body-md" textColor="text.secondary">{ description }</Typography>
             </Stack>
         )
     }

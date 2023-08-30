@@ -20,7 +20,7 @@ export default class DashboardProfileCard extends React.Component<Props> {
         const { premium } = this.props.serverConfig;
 
         return (
-            <Typography level="body2" textColor="text.primary" fontWeight="bolder">
+            <Typography level="body-md" textColor="text.primary" fontWeight="bolder">
                 {premium?.toString() ?? "Free"} tier
             </Typography>
         );
@@ -65,7 +65,7 @@ export default class DashboardProfileCard extends React.Component<Props> {
                                 <Typography level="h2">Yoki</Typography>
                                 <Typography sx={{ ml: 1, px: 1 }} level="h3" fontSize="md" color="neutral" variant="solid">Bot</Typography>
                             </Stack>
-                            <Typography level="body2">Meet Yoki, your moderation companion and the biggest moderation bot on Guilded.</Typography>
+                            <Typography level="body-md">Meet Yoki, your moderation companion and the biggest moderation bot on Guilded.</Typography>
                         </Box>
                         <DashboardProfileCardForm serverConfig={serverConfig} onSubmit={({ values: { prefix, timezone } }) => this.onServerUpdate(prefix as string | null, timezone as string | null)} />
                     </Box>

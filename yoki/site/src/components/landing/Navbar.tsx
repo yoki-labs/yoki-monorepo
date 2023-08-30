@@ -69,7 +69,7 @@ export default function Navbar() {
                     />
                 <NavbarButton
                     text="Commands"
-                    href="/commands"
+                    href="/commands/general"
                     color="neutral"
                     />
                 <NavbarButton

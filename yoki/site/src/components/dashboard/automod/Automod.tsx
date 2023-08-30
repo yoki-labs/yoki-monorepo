@@ -84,7 +84,7 @@ export default class AutomodPage extends React.Component<DashboardPageProps, Sta
                     />
                 </Box>
                 <Box>
-                    <Typography level="h5" gutterBottom>Presets</Typography>
+                    <Typography level="title-md" gutterBottom>Presets</Typography>
                     <Box className="grid sm:grid-cols-1 md:grid-cols-2 xlg:grid-cols-3 gap-4">
                         <AutomodPreset
                             presetName="profanity"

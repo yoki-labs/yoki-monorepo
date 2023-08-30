@@ -81,7 +81,7 @@ export default class DashboardRole extends React.Component<Props, State> {
                 <CardContent>
                     <Box sx={{ mt: 0.5 }}>
                         {/* Additional info, such as its creation date */}
-                        <Typography level="body2">
+                        <Typography level="body-md">
                             {formatDate(new Date(role.createdAt), timezone)}
                         </Typography>
                     </Box>

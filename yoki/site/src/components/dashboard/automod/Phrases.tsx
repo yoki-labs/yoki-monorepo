@@ -113,7 +113,7 @@ function PhraseRow({ item: phrase, columnCount, timezone, isSelected, onSelected
                 <LabsUserCard userId={phrase.creatorId} />
             </td>
             <td>
-                <Typography level="body2">{formatDate(new Date(phrase.createdAt), timezone)}</Typography>
+                <Typography level="body-md">{formatDate(new Date(phrase.createdAt), timezone)}</Typography>
             </td>
         </DataTableRow>
     );
@@ -124,13 +124,13 @@ const suffixed: FilterMatching[] = [FilterMatching.POSTFIX, FilterMatching.INFIX
 function PhraseContentDisplay({ content, matching }: { content: string; matching: FilterMatching }) {
     return (
         <Stack direction="row" gap={0.5} alignItems="center">
-            {prefixed.includes(matching) && <Typography level="body1" textColor="text.tertiary" fontSize="lg" fontWeight="bolder" sx={{ userSelect: "none" }}>
+            {prefixed.includes(matching) && <Typography level="body-md" textColor="text.tertiary" fontSize="lg" fontWeight="bolder" sx={{ userSelect: "none" }}>
                 {"*"}
             </Typography> }
-            <Typography level="body2" textColor="text.secondary">
+            <Typography level="body-md" textColor="text.secondary">
                 {content.length > 32 ? `${content.slice(0, 32)}...` : content}
             </Typography>
-            {suffixed.includes(matching) && <Typography level="body1" textColor="text.tertiary" fontSize="lg" fontWeight="bolder" sx={{ userSelect: "none" }}>
+            {suffixed.includes(matching) && <Typography level="body-md" textColor="text.tertiary" fontSize="lg" fontWeight="bolder" sx={{ userSelect: "none" }}>
                 {"*"}
             </Typography> }
         </Stack>

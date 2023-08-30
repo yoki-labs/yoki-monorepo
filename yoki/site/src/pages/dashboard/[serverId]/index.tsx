@@ -45,7 +45,7 @@ export default function Dashboard(props: SessionProps) {
 
     return (
         <LayoutWrapper {...props}>
-            <Typography level="h6">Redirecting.</Typography>
+            <Typography level="title-sm">Redirecting.</Typography>
         </LayoutWrapper>
     );
 }
