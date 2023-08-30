@@ -6,6 +6,7 @@ import { stripIndents } from "common-tags";
 
 import type { FilteredContent } from "../modules/content-filter";
 import type { Context, Server } from "../typings";
+import { Member } from "guilded.js";
 
 const numberCharCodeStart = 48;
 const numberCharCodeEnd = 57;
@@ -49,7 +50,7 @@ export async function moderateContent(
     channelId: string,
     contentType: ContentIgnoreType,
     filteredContent: FilteredContent,
-    createdBy: string,
+    member: Member,
     content: string,
     mentions: Schema<"Mentions"> | undefined,
     resultingAction: () => Promise<unknown>
@@ -59,35 +60,63 @@ export async function moderateContent(
 
     const enabledPresets = server.filterEnabled ? await ctx.dbUtil.getEnabledPresets(serverId) : undefined;
 
-    if (server.filterEnabled && !channelIgnores.find((x) => x.type === "AUTOMOD")) {
+    const canFilter = server.filterEnabled && !channelIgnores.find((x) => x.type === "AUTOMOD");
+    const canFilterLinks = (server.filterInvites && !channelIgnores.find((x) => x.type === "INVITE")) || (server.filterEnabled && !channelIgnores.find((x) => x.type === "URL"));
+    const canScanImages = server.scanNSFW && server.premium;
+
+    return Promise.any([
         // scan the message for any harmful content (filter list, presets)
-        await ctx.contentFilterUtil.scanContent({
-            userId: createdBy,
-            text: content,
-            filteredContent,
-            channelId,
-            server,
-            presets: enabledPresets,
-            // Filter
-            resultingAction,
-        });
-
+        canFilter && 
+            ctx.contentFilterUtil.scanContent({
+                member,
+                text: content,
+                filteredContent,
+                channelId,
+                server,
+                presets: enabledPresets,
+                // Filter
+                resultingAction,
+            })
+                .then((success) => {
+                    // To be ignored in Promise.any
+                    if (!success)
+                        throw 0;
+                }),
         // Spam prevention
-        await ctx.spamFilterUtil.checkForSpam(server, createdBy, channelId, mentions, resultingAction);
-    }
-
-    if ((server.filterInvites && !channelIgnores.find((x) => x.type === "INVITE")) || (server.filterEnabled && !channelIgnores.find((x) => x.type === "URL")))
+        canFilter &&
+            ctx.spamFilterUtil.checkForSpam(server, member.id, channelId, mentions, resultingAction)
+                .then((success) => {
+                    // To be ignored in Promise.any
+                    if (!success)
+                        throw 0;
+                }),
         // Invites or bad URLs
-        await ctx.linkFilterUtil.checkLinks({
-            server,
-            userId: createdBy,
-            channelId,
-            content,
-            filteredContent,
-            contentType,
-            presets: enabledPresets,
-            resultingAction,
-        });
+        canFilterLinks &&
+            ctx.linkFilterUtil.checkLinks({
+                server,
+                userId: member.id,
+                channelId,
+                content,
+                filteredContent,
+                contentType,
+                presets: enabledPresets,
+                resultingAction,
+            })
+                .then((success) => {
+                    // To be ignored in Promise.any
+                    if (!success)
+                        throw 0;
+                }),
+        canScanImages &&
+            ctx.contentFilterUtil.scanMessageMedia(serverId, channelId, content, member.id, resultingAction)
+                .then((success) => {
+                    // To be ignored in Promise.any
+                    if (!success)
+                        throw 0;
+                }),
+    ])
+        .then(() => true)
+        .catch(() => false);
 }
 
 export const describeAction = (data: Action): string[] =>

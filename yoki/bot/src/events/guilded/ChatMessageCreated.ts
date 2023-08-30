@@ -1,7 +1,7 @@
 import { createCommandHandler } from "@yokilabs/bot";
 import { Colors } from "@yokilabs/utils";
 import { stripIndents } from "common-tags";
-import { Embed, Message, UserType } from "guilded.js";
+import { Embed, Member, Message, UserType } from "guilded.js";
 import { inspect } from "util";
 
 import type YokiClient from "../../Client";
@@ -11,6 +11,7 @@ import type { GEvent, RoleType, Server } from "../../typings";
 import { moderateContent } from "../../utils/moderation";
 import { errorLoggerS3 } from "../../utils/s3";
 import { roleValues } from "../../utils/util";
+import { ContentIgnoreType } from "@prisma/client";
 
 const { fetchPrefix, parseCommand, fetchCommandInfo, resolveArguments, checkUserPermissions, tryExecuteCommand } = createCommandHandler<YokiClient, Server, Command, RoleType>(
     roleValues,
@@ -50,12 +51,15 @@ export default {
             where: { serverId: message.serverId!, userFacingChannelId: message.channelId, openerId: message.authorId, closed: false },
         });
 
+        const member = await ctx.members.fetch(message.serverId!, message.authorId).catch(() => null);
+        // Can't do much
+        if (!member || member.user?.type === UserType.Bot)
+            return;
+
         if (isModmailChannel) {
             void ctx.amp.logEvent({ event_type: "MODMAIL_MESSAGE", user_id: message.authorId, event_properties: { serverId: message.serverId!, modmailId: isModmailChannel.id } });
             void ctx.messages.delete(message.channelId, message.id);
 
-            const member = await ctx.members.fetch(message.serverId!, message.authorId).catch(() => null);
-            if (!member) return;
             const newModmailMessage = await ctx.messages.send(
                 isModmailChannel.modFacingChannelId,
                 new Embed()
@@ -99,20 +103,10 @@ export default {
 
         // if the message does not start with the prefix
         if (!message.content.startsWith(prefix)) {
-            const member = await ctx.members.fetch(message.serverId!, message.authorId).catch(() => null);
-            if (member?.user?.type === UserType.Bot) return;
-
             // store the message in the database
             await ctx.dbUtil.storeMessage(message).catch(console.log);
 
-            await moderateContent(ctx, server, message.channelId, "MESSAGE", FilteredContent.Message, message.authorId, message.content, message.mentions, () =>
-                ctx.messages.delete(message.channelId, message.id)
-            );
-
-            if (server.scanNSFW && server.premium) {
-                await ctx.contentFilterUtil.scanMessageMedia(message);
-            }
-            return;
+            return moderateMessage(ctx, server, message, member);
         }
 
         const parsed = await parseCommand([message, ctx], prefix);
@@ -120,18 +114,28 @@ export default {
         let { command, commandName, args: parsedArgs } = parsed;
 
         if (!command) {
+            await moderateMessage(ctx, server, message, member);
+
             const customCommand = await ctx.prisma.customTag.findFirst({ where: { serverId: message.serverId!, name: commandName } });
+
             if (!customCommand) return ctx.amp.logEvent({ event_type: "INVALID_COMMAND", user_id: message.authorId, event_properties: { serverId: message.serverId! } });
+
             void ctx.amp.logEvent({ event_type: "TAG_RAN", user_id: message.authorId, event_properties: { serverId: message.serverId! } });
             return ctx.messageUtil.send(message.channelId, customCommand.content);
         }
 
-        // Fetch the member from either the server or the redis cache
-        const member = await ctx.members.fetch(message.serverId!, message.createdById).catch(() => null);
-        if (!member) return;
+        // // Fetch the member from either the server or the redis cache
+        // const member = await ctx.members.fetch(message.serverId!, message.createdById).catch(() => null);
+        // if (!member) return;
 
         const canExecute = await checkUserPermissions(fetchServerRoles, [message, ctx, member], command);
-        if (!canExecute) return;
+
+        // If it could be moderated and it was moderated, ignore it
+        if ((!command.requiredRole || !canExecute) && await moderateMessage(ctx, server, message, member))
+            return;
+        // It was just unable to execute
+        else if (!canExecute)
+            return;
 
         const isCommandModule = `${command.module}Enabled` in server;
         const moduleEnabledStatus = isCommandModule && server[`${command.module}Enabled`];
@@ -158,3 +162,17 @@ export default {
     },
     name: "messageCreated",
 } satisfies GEvent<"messageCreated">;
+
+const moderateMessage = (ctx: YokiClient, server: Server, message: Message, member: Member) =>
+    moderateContent(
+        ctx,
+        server,
+        message.channelId,
+        ContentIgnoreType.MESSAGE,
+        FilteredContent.Message,
+        member,
+        message.content,
+        message.mentions,
+        () =>
+            ctx.messages.delete(message.channelId, message.id)
+    );

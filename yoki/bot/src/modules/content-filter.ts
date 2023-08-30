@@ -1,6 +1,6 @@
 import { ContentFilter, FilterMatching, Preset } from "@prisma/client";
 import { Colors } from "@yokilabs/utils";
-import { Message, UserType } from "guilded.js";
+import { Member } from "guilded.js";
 
 import { ContentFilterScan, Server, Severity } from "../typings";
 import { IMAGE_REGEX } from "../utils/matching";
@@ -22,10 +22,11 @@ export class ContentFilterUtil extends BaseFilterUtil {
 
     readonly presets = wordPresets;
 
-    async scanMessageMedia(message: Message): Promise<void> {
-        const { serverId, channelId, content, authorId: userId, id: messageId } = message;
+    async scanMessageMedia(serverId: string, channelId: string, content: string, userId: string, onDelete: () => Promise<unknown>): Promise<boolean> {
+        //const { serverId, channelId, content, authorId: userId, id: messageId } = message;
         const matches = [...content.matchAll(IMAGE_REGEX)];
-        if (!matches.length) return;
+        if (!matches.length)
+            return false;
 
         void this.client.amp.logEvent({
             event_type: "MESSAGE_MEDIA_SCAN",
@@ -35,6 +36,7 @@ export class ContentFilterUtil extends BaseFilterUtil {
 
         for (const [_, url] of matches) {
             const result = await this.imageFilterUtil.scanImage(url).catch(() => void 0);
+
             if (result) {
                 void this.client.amp.logEvent({
                     event_type: "MESSAGE_MEDIA_ACTION",
@@ -42,9 +44,9 @@ export class ContentFilterUtil extends BaseFilterUtil {
                     event_properties: { serverId },
                 });
 
-                this.client.messages.delete(channelId, messageId).catch(() => null);
-
                 try {
+                    await onDelete();
+
                     await this.client.messageUtil.sendWarningBlock(
                         channelId,
                         "Inappropriate Image!",
@@ -52,21 +54,19 @@ export class ContentFilterUtil extends BaseFilterUtil {
                         undefined,
                         { isPrivate: true }
                     );
-                } catch {
-                    await this.client.messageUtil.sendWarningBlock(
-                        channelId,
-                        "Inappropriate Image!",
-                        `<@${userId}>, our filters have detected that an image attached to your message is inappropriate and has been deleted.`
-                    );
+                } catch(e) {
                 }
-                return;
+
+                return true;
             }
         }
+
+        return false;
     }
 
     // This will scan any content that is piped into it for breaking the content filter or preset list and will apply the associated punishment in the final param as a callback
     async scanContent({
-        userId,
+        member,
         text,
         filteredContent,
         channelId,
@@ -74,16 +74,16 @@ export class ContentFilterUtil extends BaseFilterUtil {
         presets,
         resultingAction,
     }: {
-        userId: string;
+        member: Member;
         text: string;
         filteredContent: FilteredContent;
         channelId: string | null;
         server: Server;
         presets?: Preset[];
         resultingAction: () => unknown;
-    }) {
-        // If the bot is the one who did this action, ignore.
-        if (userId === this.client.user!.id) return;
+    }): Promise<boolean> {
+        // // If the bot is the one who did this action, ignore.
+        // if (member.id === this.client.user!.id) return;
         const { serverId } = server;
 
         // Get all the banned words in this server
@@ -91,8 +91,9 @@ export class ContentFilterUtil extends BaseFilterUtil {
         // Get all the enabled presets in this server
         const enabledPresets = (presets ?? (await this.client.dbUtil.getEnabledPresets(serverId))).filter((x) => x.preset in this.presets);
 
-        if (!bannedWordsList.length && !enabledPresets.length) return;
-        void this.client.amp.logEvent({ event_type: "MESSAGE_TEXT_SCAN", user_id: userId, event_properties: { serverId: server.serverId } });
+        if (!bannedWordsList.length && !enabledPresets.length)
+            return false;
+        void this.client.amp.logEvent({ event_type: "MESSAGE_TEXT_SCAN", user_id: member.id, event_properties: { serverId: server.serverId } });
 
         // Sanitize data into standard form
         const lowerCasedMessageContent = text.toLowerCase();
@@ -127,51 +128,48 @@ export class ContentFilterUtil extends BaseFilterUtil {
         const triggeredWord = (ifTriggersCustom ?? ifTriggersPreset) as ContentFilterScan | undefined;
 
         // If the content does not violate any filters or presets, ignore
-        if (!triggeredWord) return;
+        if (!triggeredWord)
+            return false;
 
-        // By now, we assume the member has violated a filter or preset
-        // Get the member from cache or API
-        const member = await this.client.members.fetch(serverId, userId);
+        // // By now, we assume the member has violated a filter or preset
+        // // Get the member from cache or API
+        // const member = await this.client.members.fetch(serverId, userId);
 
-        // Don't moderate bots
-        if (member.user!.type === UserType.Bot) return;
+        // // Don't moderate bots
+        // if (member.user!.type === UserType.Bot) throw 0;
 
         // Get all the mod roles in this server
         const modRoles = await this.client.prisma.role.findMany({ where: { serverId } });
 
         // If the server doesn't have "filterOnMods" setting enabled and a mod violates the filter/preset, ignore
-        if (!server.filterOnMods && modRoles.some((modRole) => member.roleIds.includes(modRole.roleId))) return;
+        if (!server.filterOnMods && modRoles.some((modRole) => member.roleIds.includes(modRole.roleId)))
+            return false;
 
         // Check whether this member exceeds the infraction threshold for this server
-        const exceededThreshold = await this.getMemberExceedsThreshold(server, userId, triggeredWord.infractionPoints);
+        const exceededThreshold = await this.getMemberExceedsThreshold(server, member.id, triggeredWord.infractionPoints);
 
         void this.client.amp.logEvent({
             event_type: "AUTOMOD_ACTION",
-            user_id: userId,
+            user_id: member.id,
             event_properties: { serverId, action: exceededThreshold ?? triggeredWord.severity, infractionPoints: triggeredWord.infractionPoints },
         });
 
-        // Add this action to the database
         const createdCase = await this.client.dbUtil.addAction({
             serverId,
-            // Whether this action is a result of the threshold exceeding or a severity
             type: exceededThreshold ?? triggeredWord.severity,
-            // The bot ID
+            // Since it's an automod, we set it as the client did it
             executorId: this.client.user!.id,
-            // The reason for this action, whether it's the threshold exceeded or a filter was violated
             reason: `[AUTOMOD] Content filter tripped.${exceededThreshold ? ` ${exceededThreshold} threshold exceeded.` : ""}`,
             // The offending content
             triggerContent: triggeredWord.content,
             // The place where unmute messages will happen
             channelId,
             // The offending user
-            targetId: userId,
-            // Whether this case will expire (mutes)
+            targetId: member.id,
             expiresAt:
                 (exceededThreshold ?? triggeredWord.severity) === Severity.MUTE
                     ? new Date(server.muteInfractionDuration ? Date.now() + server.muteInfractionDuration : Date.now() + 1000 * 60 * 60 * 12)
                     : null,
-            // The amount of infraction points this specific word gives
             infractionPoints: triggeredWord.infractionPoints,
         });
 
@@ -182,14 +180,17 @@ export class ContentFilterUtil extends BaseFilterUtil {
             // Perform resulting action, for message filtering it's deleting the original message
             await resultingAction();
         } catch (err: any) {
-            if (err instanceof Error) await errorLoggerS3(this.client, "AUTOMOD_ACTION", err, { serverId, userId, channelId });
+            if (err instanceof Error) await errorLoggerS3(this.client, "AUTOMOD_ACTION", err, { serverId, userId: member.id, channelId });
         }
 
         // Execute the punishing action. If this is a threshold exceeding, execute the punishment associated with the exceeded threshold
         // Otherwise, execute the action associated with this specific filter word or preset entry
-        return exceededThreshold
-            ? this.severityAction[exceededThreshold](member.user!.id, server, channelId, filteredContent, null)
-            : this.severityAction[triggeredWord.severity]?.(member.user!.id, server, channelId, filteredContent, null);
+        if (exceededThreshold)
+            await this.severityAction[exceededThreshold](member.user!.id, server, channelId, filteredContent, null)
+        else
+            await this.severityAction[triggeredWord.severity]?.(member.user!.id, server, channelId, filteredContent, null);
+
+        return true;
     }
 
     tripsFilter(contentFilter: ContentFilter | Omit<ContentFilterScan, "severity">, message: string) {
