@@ -63,11 +63,11 @@ export const getServerSideProps: GetServerSideProps = async (ctx): Promise<GetSe
     };
 };
 
-export default function Dashboard(props: SessionProps) {
+export default function Dashboard({ serverConfig, ...props }: SessionProps) {
     return (
-        props.serverConfig
-        ? <Layout {...props}>
-            <DashForm serverConfig={props.serverConfig} page={props.page} />
+        serverConfig
+        ? <Layout {...props} serverConfig={serverConfig!}>
+            <DashForm serverConfig={serverConfig!} page={props.page} />
         </Layout>
         : <LayoutWrapper {...props}>
             <NoServerPage currentServer={props.currentServer} />

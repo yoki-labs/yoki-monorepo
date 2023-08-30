@@ -6,7 +6,7 @@ import { formatDate } from "@yokilabs/utils";
 import LabsIconWrapper from "../../LabsIconWrapper";
 import LabsOverflowButton from "../../LabsOverflowButton";
 import React from "react";
-import LabsForm, { LabsFormState } from "../../LabsForm";
+import LabsForm, { LabsFormFieldValueMap } from "../../LabsForm";
 import { LabsFormFieldOption, LabsFormFieldType, LabsFormSection } from "../../form";
 import { RolePayload } from "@guildedjs/api";
 import { RoleType } from "@prisma/client";
@@ -61,7 +61,7 @@ export default class DashboardRole extends React.Component<Props, State> {
                         {serverRole?.name ?? role.roleId}
                     </Typography>
                     <Stack sx={{ flex: "1" }} direction="row" gap={1} alignItems="center">
-                        <Chip variant="outlined" sx={{ flex: "1" }}>{role.type}</Chip>
+                        <Chip color="primary" variant="outlined" sx={{ flex: "1" }}>{role.type}</Chip>
                     </Stack>
                     <LabsOverflowButton variant="outlined" id={`logs-${serverId}-${role.roleId}`}>
                         <MenuItem onClick={() => this.toggleEditMode(true)}>
@@ -108,7 +108,7 @@ export default class DashboardRole extends React.Component<Props, State> {
         );
     }
 
-    onRoleItemEdit({ values }: LabsFormState) {
+    onRoleItemEdit(values: LabsFormFieldValueMap) {
         const { onUpdate, role: { roleId, type } } = this.props;
 
         this.toggleEditMode(false);
@@ -137,7 +137,7 @@ type EditorProps = {
     submitText?: string;
     icon: IconDefinition;
     placeholder?: string;
-    onSubmit: (state: LabsFormState) => unknown;
+    onSubmit: (state: LabsFormFieldValueMap) => unknown;
     onCancel?: () => unknown;
     type?: RoleType;
     roleId?: number;

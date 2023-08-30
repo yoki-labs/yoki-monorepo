@@ -5,14 +5,17 @@ import React from "react";
 import LayoutWrapper from "./LayoutWrapper";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars } from "@fortawesome/free-solid-svg-icons";
+import { SanitizedServer } from "../../../lib/@types/db";
 
 type LayoutProps = {
     servers: GuildedServer[];
     currentServer?: GuildedServer;
+    serverConfig: SanitizedServer;
     user: Partial<{
         name: string | null;
         avatar: string | null;
     }>;
+    page: string;
     children: React.ReactNode;
 };
 type LayoutState = {
@@ -32,7 +35,7 @@ export default class Layout extends React.Component<LayoutProps, LayoutState> {
     }
 
     render() {
-        const { children, currentServer, servers, user } = this.props;
+        const { page, children, currentServer, serverConfig, servers, user } = this.props;
 
         return (
             <LayoutWrapper
@@ -45,7 +48,7 @@ export default class Layout extends React.Component<LayoutProps, LayoutState> {
                     </IconButton>
                 }
             >
-                <LayoutSidebar menuToggled={this.state.menuEnabled} />
+                <LayoutSidebar menuToggled={this.state.menuEnabled} serverConfig={serverConfig} page={page} />
                 <Box className={`overflow-hidden grow basis-0 shrink-0 flex ${this.state.menuEnabled ? "md:block hidden" : ""}`}>
                     {children}
                 </Box>

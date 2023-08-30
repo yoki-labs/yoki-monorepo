@@ -78,7 +78,7 @@ export default function Footer() {
                 </Stack>
             </Stack>
             <Box sx={{ mt: 2 }}>
-                <Typography level="body3">
+                <Typography level="body-sm">
                     © 2022{" "}
                     <Link href="/">Yoki Labs</Link>
                     . All Rights Reserved.

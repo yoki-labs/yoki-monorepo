@@ -28,9 +28,17 @@ const generateColourScheme = (typicalColour: string) => ({
     300: mixHexColours(typicalColour, mostLight, 0.4),
     200: mixHexColours(typicalColour, mostLight, 0.6),
     100: mixHexColours(typicalColour, mostLight, 0.8),
+    // Solid
     solidBg: typicalColour,
-    plainHoverBg: mixHexColours(typicalColour, mostDark, 0.9),
     solidHoverBg: mixHexColours(typicalColour, mostLight, 0.2),
+    // Plain
+    plainHoverBg: mixHexColours(typicalColour, mostDark, 0.9),
+    plainActiveBg: mixHexColours(typicalColour, mostDark, 0.7),
+    // Outlined
+    outlinedDisabledColor: mixHexColours(typicalColour, mostDark, 0.8),
+    outlinedDisabledBorder: mixHexColours(typicalColour, mostDark, 0.9),
+    // Soft
+    softBg: mixHexColours(typicalColour, mostDark, 0.8),
 });
 
 const dark = {
@@ -52,6 +60,11 @@ const dark = {
             // Solid components
             solidBg: labsTheme.spacedark[600],
             solidHoverBg: labsTheme.spacedark[500],
+            solidActiveBg: labsTheme.spacedark[400],
+            // Plain components
+            plainColor: labsTheme.spacedark[300],
+            plainHoverBg: labsTheme.spacedark[900],
+            plainActiveBg: labsTheme.spacedark[800],
             // Outlined components
             outlinedBorder: labsTheme.spacedark[700],
             outlinedColor: labsTheme.spacelight[600],
@@ -88,11 +101,10 @@ const light = dark;
 
 export const theme = extendTheme({
     typography: {
-        body1: bodyFont,
-        body2: bodyFont,
-        body3: bodyFont,
-        body4: bodyFont,
-        body5: bodyFont,
+        "body-xs": bodyFont,
+        "body-sm": bodyFont,
+        "body-md": bodyFont,
+        "body-lg": bodyFont,
     },
     cssVarPrefix: "labs",
     shadow: {

@@ -1,6 +1,6 @@
 import React from "react";
 import { SanitizedLogChannel } from "../../../lib/@types/db";
-import { Alert, CircularProgress } from "@mui/joy";
+import { Alert, Box, Card, CircularProgress, Skeleton, Stack } from "@mui/joy";
 import DashboardLogChannel from "./LogItem";
 import { toLookup } from "@yokilabs/utils";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -40,7 +40,7 @@ export default class LogsPage extends React.Component<DashboardPageProps, State>
 
         // Still fetching data
         if (!isLoaded)
-            return <CircularProgress />;
+            return <LogsPageSkeleton />;
 
         const channelLookup = toLookup(logs, (log) => log.channelId);
         // There is no fetch many channels route on Guilded
@@ -68,4 +68,35 @@ export default class LogsPage extends React.Component<DashboardPageProps, State>
             </>
         );
     }
+}
+
+/**
+ * The barebones skeleton of the page for when logs page is loading.
+ * @returns Logs page skeleton
+ */
+function LogsPageSkeleton() {
+    return (
+        <Box sx={{ overflow: "hidden" }}>
+            <Skeleton animation="wave" width="100%" height={45} sx={{ position: "initial" }} />
+            <LogsPageLogSkeleton />
+            <LogsPageLogSkeleton />
+            <LogsPageLogSkeleton />
+        </Box>
+    );
+}
+
+function LogsPageLogSkeleton() {
+    return (
+        <Card sx={{ mt: 4 }}>
+            <Stack direction="row" gap={2} alignItems="center">
+                <Skeleton animation="wave" variant="circular" width={40} height={40} sx={{ position: "initial" }} />
+                <Skeleton animation="wave" width={320} height={20} sx={{ position: "initial" }} />
+                <Stack direction="row" gap={1}>
+                    <Skeleton animation="wave" width={80} height={25} sx={{ position: "initial" }} />
+                    <Skeleton animation="wave" width={100} height={25} sx={{ position: "initial" }} />
+                </Stack>
+            </Stack>
+            <Skeleton animation="wave" width={222} height={20} sx={{ position: "initial" }} />
+        </Card>
+    );
 }

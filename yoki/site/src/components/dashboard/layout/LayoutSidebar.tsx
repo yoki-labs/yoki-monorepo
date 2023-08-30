@@ -4,9 +4,12 @@ import { navbarAtom } from "../../../state/navbar";
 import LayoutSidebarTab from "./LayoutSidebarTab";
 import { Box, List, Typography } from "@mui/joy";
 import { DashboardPageCategory, dashboardPageList } from "../pages";
+import { SanitizedServer } from "../../../lib/@types/db";
 
 type Props = {
     menuToggled: boolean;
+    serverConfig: SanitizedServer;
+    page: string;
 };
 
 const categoryNames: Record<DashboardPageCategory, string> = {
@@ -16,8 +19,8 @@ const categoryNames: Record<DashboardPageCategory, string> = {
     [DashboardPageCategory.Entry]: "Server entry & support",
 };
 
-export function LayoutSidebar({ menuToggled }: Props) {
-    const [currentPage, setModule] = useAtom(navbarAtom);
+export function LayoutSidebar({ page, serverConfig, menuToggled }: Props) {
+    // const [currentPage, setModule] = useAtom(navbarAtom);
     const showStateClass = menuToggled ? "" : " md:block hidden";
 
     const categorizedPages =
@@ -36,7 +39,7 @@ export function LayoutSidebar({ menuToggled }: Props) {
                     <Typography level="h1" textColor="text.tertiary" fontSize="sm">{categoryNames[category]}</Typography>
                     <List variant="plain">
                         {items.map((item) => (
-                            <LayoutSidebarTab key={item.id} item={item} isActive={currentPage === item.id} onClick={() => setModule(item.id)} />
+                            <LayoutSidebarTab key={item.id} serverId={serverConfig.serverId} item={item} isActive={page === item.id} />
                         ))}
                     </List>
                 </section>

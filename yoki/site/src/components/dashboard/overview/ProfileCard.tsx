@@ -1,7 +1,7 @@
 import React from "react";
 import { SanitizedServer } from "../../../lib/@types/db";
 import { AspectRatio, Avatar, Box, Card, CardContent, CardOverflow, Stack, Tooltip, Typography } from "@mui/joy";
-import LabsForm, { LabsFormState } from "../../LabsForm";
+import LabsForm, { LabsFormFieldValueMap } from "../../LabsForm";
 import { LabsFormFieldType } from "../../form";
 import { timezones } from "@yokilabs/utils";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -67,7 +67,7 @@ export default class DashboardProfileCard extends React.Component<Props> {
                             </Stack>
                             <Typography level="body-md">Meet Yoki, your moderation companion and the biggest moderation bot on Guilded.</Typography>
                         </Box>
-                        <DashboardProfileCardForm serverConfig={serverConfig} onSubmit={({ values: { prefix, timezone } }) => this.onServerUpdate(prefix as string | null, timezone as string | null)} />
+                        <DashboardProfileCardForm serverConfig={serverConfig} onSubmit={({ prefix, timezone }) => this.onServerUpdate(prefix as string | null, timezone as string | null)} />
                     </Box>
                 </CardContent>
             </Card>
@@ -75,7 +75,7 @@ export default class DashboardProfileCard extends React.Component<Props> {
     }
 }
 
-function DashboardProfileCardForm(props: { onSubmit: (state: LabsFormState) => unknown | Promise<unknown>; serverConfig: SanitizedServer; }) {
+function DashboardProfileCardForm(props: { onSubmit: (values: LabsFormFieldValueMap) => unknown | Promise<unknown>; serverConfig: SanitizedServer; }) {
     const { serverConfig, onSubmit } = props;
 
     return (

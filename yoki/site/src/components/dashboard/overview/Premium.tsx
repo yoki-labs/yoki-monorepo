@@ -87,8 +87,8 @@ export function PremiumTier(props: PremiumTierProps) {
             <Box sx={{ flex: "1", mt: 3 }}>
                 <Typography level="title-md">Tier perks</Typography>
                 <List sx={{ p: 0 }}>
-                    {perks.map((perk) => (
-                        <ListItem sx={{ "--ListItemDecorator-size": "30px" }}>
+                    {perks.map((perk, i) => (
+                        <ListItem key={i.toString()} sx={{ "--ListItemDecorator-size": "30px" }}>
                             <ListItemDecorator>
                                 <FontAwesomeIcon icon={faCheckCircle} />
                             </ListItemDecorator>

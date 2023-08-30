@@ -59,7 +59,7 @@ export default class LabsMultiSelector extends React.Component<Props> {
     get selectedValues() {
         const { field, form } = this.props;
 
-        return (form.state.values[field.prop] ?? []) as string[];
+        return (form.fieldValues[field.prop] ?? []) as string[];
     }
 
     setSelectedValues(values: string[]) {
@@ -109,7 +109,7 @@ export default class LabsMultiSelector extends React.Component<Props> {
                     valueDecorator={
                         <Stack direction="row" gap={1} alignItems="center">
                             {selectedValueInfos?.slice(0, 2).map(({ name }) => <Chip variant="outlined" color="primary">{name}</Chip>)}
-                            {(selectedValueInfos?.length ?? 0) > 2 && <Typography level="body3" fontSize="sm">...and {selectedValueInfos!.length - 2} more</Typography>}
+                            {(selectedValueInfos?.length ?? 0) > 2 && <Typography level="body-sm" fontSize="sm">...and {selectedValueInfos!.length - 2} more</Typography>}
                         </Stack>
                     }>
                     <MultiSelectorMenuItems />

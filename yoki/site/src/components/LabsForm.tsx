@@ -9,6 +9,8 @@ import NumberInput from "./NumberInput";
 
 type LabsFormFieldValue = string | string[] | number | boolean | undefined | null;
 
+export type LabsFormFieldValueMap = Record<string, LabsFormFieldValue>;
+
 export type LabsFormProps = {
     sections: LabsFormSection[];
     children?: React.ReactElement | React.ReactElement[];
@@ -16,30 +18,34 @@ export type LabsFormProps = {
     // Actions
     alwaysDisplayActions?: boolean;
 
-    onSubmit: (state: LabsFormState) => unknown;
+    onSubmit: (values: LabsFormFieldValueMap) => unknown;
     submitText?: string;
 
     onCancel?: (state: LabsFormState) => unknown;
 };
 
-export type LabsFormState = {
+type LabsFormState = {
     changed: boolean;
-    values: Record<string, LabsFormFieldValue>;
+    // values: Record<string, LabsFormFieldValue>;
 };
 
 export default class LabsForm extends React.Component<LabsFormProps, LabsFormState> {
     private formId: number;
+    // Do not use state for performance reasons
+    public fieldValues: Record<string, LabsFormFieldValue>;
 
     constructor(props: LabsFormProps) {
         super(props);
 
         const fields = this.props.sections.flatMap((section) => section.fields);
+
         this.state = {
             changed: false,
-            values: fields.reduce<Record<string, LabsFormFieldValue>>((mapped, field) => ((mapped[field.prop] = field.defaultValue ?? null), mapped), {}),
         };
 
         this.formId = Math.floor(Math.random() * 75 + 25);
+
+        this.fieldValues = fields.reduce<Record<string, LabsFormFieldValue>>((mapped, field) => ((mapped[field.prop] = field.defaultValue ?? null), mapped), {});
     }
 
     onSubmit(event: FormEvent<HTMLFormElement>) {
@@ -48,7 +54,7 @@ export default class LabsForm extends React.Component<LabsFormProps, LabsFormSta
         // To not be able to save again
         this.setState({ changed: false });
 
-        return this.props.onSubmit(this.state);
+        return this.props.onSubmit(this.fieldValues);
     }
 
     onCancel(event: FormEvent<HTMLButtonElement>) {
@@ -58,7 +64,13 @@ export default class LabsForm extends React.Component<LabsFormProps, LabsFormSta
     }
 
     setValue<T>(field: LabsFormField, value: T) {
-        this.setState(({ values }) => ({ changed: true, values: Object.assign({}, values, { [field.prop]: value }) }));
+        const { changed } = this.state;
+        
+        // this.setState(({ values }) => ({ changed: true, values: Object.assign({}, values, { [field.prop]: value }) }));
+        this.fieldValues = Object.assign({}, this.fieldValues, { [field.prop]: value });
+
+        if (!changed)
+            this.setState({ changed: true });
     }
 
     render(): React.ReactNode {
@@ -159,7 +171,7 @@ export const fieldRenderers: FieldRendererRecord = {
 export function FormFieldHeader({ field }: { field: BaseLabsFormField<LabsFormFieldType, any> }) {
     return (
         field.name
-            ? <Stack spacing={1} direction="row">
+            ? <Stack spacing={1} direction="row" sx={{ mb: 1 }}>
                 <FormLabel sx={{ fontWeight: "normal" }}>{ field.name }</FormLabel>
                 { field.badge && <Chip size="sm" variant="outlined" color={field.badge.color}>{ field.badge.text }</Chip> }
             </Stack>

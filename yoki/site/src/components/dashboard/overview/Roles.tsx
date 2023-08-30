@@ -1,6 +1,6 @@
 import React from "react";
 import { SanitizedRole } from "../../../lib/@types/db";
-import { Card, CircularProgress, Stack, Typography } from "@mui/joy";
+import { Box, Card, CircularProgress, Skeleton, Stack, Typography } from "@mui/joy";
 import { DashboardPageProps } from "../pages";
 import { RolePayload } from "@guildedjs/api";
 import DashboardRole, { RoleItemEditor } from "./RoleItem";
@@ -96,7 +96,7 @@ export default class RolesPage extends React.Component<DashboardPageProps, State
 
         // Still fetching data
         if (!isLoaded)
-            return <CircularProgress />;
+            return <RolesPageSkeleton />;
 
         return (
             <>
@@ -108,7 +108,7 @@ export default class RolesPage extends React.Component<DashboardPageProps, State
                         type={RoleType.MOD}
                         serverRoles={serverRoles}
                         placeholder="Select role to add"
-                        onSubmit={({ values: { roleId, type } }) => this.onRoleCreate(roleId as number, type as RoleType)}
+                        onSubmit={({ roleId, type }) => this.onRoleCreate(roleId as number, type as RoleType)}
                         />
                 </Card>
                 <Stack direction="column" gap={2}>
@@ -126,4 +126,43 @@ export default class RolesPage extends React.Component<DashboardPageProps, State
             </>
         );
     }
+}
+
+/**
+ * The barebones skeleton of the page for when roles page is loading.
+ * @returns Roles page skeleton
+ */
+function RolesPageSkeleton() {
+    return (
+        <Box sx={{ overflow: "hidden" }}>
+            <Typography level="h2">
+                <Skeleton animation="wave">
+                    Staff roles
+                </Skeleton>
+            </Typography>
+            <Card sx={{ mt: 4 }}>
+                <Stack direction="row" gap={2} alignItems="center">
+                    <Skeleton animation="wave" variant="circular" width={40} height={40} sx={{ position: "initial" }} />
+                    <Skeleton animation="wave" width={182} height={40} sx={{ position: "initial" }} />
+                    <Skeleton animation="wave" width={100} height={40} sx={{ position: "initial" }} />
+                </Stack>
+            </Card>
+            <RolesPageRoleSkeleton />
+            <RolesPageRoleSkeleton />
+            <RolesPageRoleSkeleton />
+        </Box>
+    );
+}
+
+function RolesPageRoleSkeleton() {
+    return (
+        <Card sx={{ mt: 4 }}>
+            <Stack direction="row" gap={2} alignItems="center">
+                <Skeleton animation="wave" variant="circular" width={40} height={40} sx={{ position: "initial" }} />
+                <Skeleton animation="wave" width={162} height={20} sx={{ position: "initial" }} />
+                <Skeleton animation="wave" width={70} height={25} sx={{ position: "initial" }} />
+            </Stack>
+            <Skeleton animation="wave" width={222} height={20} sx={{ position: "initial" }} />
+        </Card>
+    );
 }

@@ -36,6 +36,11 @@ const categoryKeys = Object.keys(commandCategories);
 export const getServerSideProps: GetServerSideProps = async (ctx): Promise<GetServerSidePropsResult<CommandProps>> => {
     const category = ctx.query.category as string;
 
+    ctx.res.setHeader(
+        "Cache-Control",
+        "public, s-maxage=10, stale-while-revalidate=59"
+    );
+
     // Doesn't exist
     if (!categoryKeys.includes(category))
         return { redirect: { destination: "/commands/general", permanent: false } };

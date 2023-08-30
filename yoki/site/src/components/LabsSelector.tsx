@@ -44,7 +44,8 @@ export default class LabsSelector extends React.Component<Props> {
                 <FormFieldHeader field={field} />
                 <Select
                     id={id}
-                    defaultValue={form.state.values[field.prop]}
+                    defaultValue={field.defaultValue}
+                    value={form.fieldValues[field.prop]}
                     placeholder={field.placeholder ?? `Select ${field.name?.toLowerCase() ?? "items"}`}
                     disabled={field.disabled}
                     onChange={(_, value) => value && form.setValue(field, value)}

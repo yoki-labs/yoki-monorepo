@@ -5,6 +5,7 @@ import { ServerSelector } from "./ServerSelector";
 import { GuildedServer } from "../../../lib/@types/guilded";
 import { faBars } from "@fortawesome/free-solid-svg-icons";
 import UserManager from "./UserManager";
+import Branding from "../../Branding";
 
 type Props = {
     servers: GuildedServer[];
@@ -30,15 +31,8 @@ export function LayoutTopbar({ children, onServerChange, currentServer, servers,
                     </Typography>
                 }
             >
-                <Box sx={{ display: "flex", gap: 1 }}>
-                    <Typography
-                        startDecorator={<YokiIcon className="fill-spacelight-700" width="32px" height="32px" />}
-                        level="title-sm"
-                        textColor="text.secondary"
-                        component="div"
-                    >
-                        Yoki
-                    </Typography>
+                <Box>
+                    <Branding />
                 </Box>
                 <ServerSelector onChange={onServerChange} defaultValue={currentServer} servers={servers} />
             </Breadcrumbs>

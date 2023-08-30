@@ -8,7 +8,6 @@ export default function LabsDropdown(props: SelectOwnProps<string>) {
             <Select
                 variant="plain"
                 sx={{
-                    color: "white",
                     "--ListItemDecorator-size": "40px",
                     "--labs-palette-background-surface": "transparent",
                     [`& .${selectClasses.indicator}`]: {

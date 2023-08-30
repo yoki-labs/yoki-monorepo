@@ -24,7 +24,7 @@ export default class NumberInput extends React.Component<Props, State> {
     get currentValue() {
         const { field, form } = this.props;
 
-        return (form.state.values[field.prop] ?? []) as number;
+        return (form.fieldValues[field.prop] ?? []) as number;
     }
 
     setValue(target: EventTarget & HTMLInputElement) {
