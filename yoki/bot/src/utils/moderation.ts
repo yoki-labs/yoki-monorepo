@@ -115,8 +115,8 @@ export async function moderateContent(
                         throw 0;
                 }),
     ])
-        .then(() => true)
-        .catch(() => false);
+        .then(() => false)
+        .catch(() => true);
 }
 
 export const describeAction = (data: Action): string[] =>
