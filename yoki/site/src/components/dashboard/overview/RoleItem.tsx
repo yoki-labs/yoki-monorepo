@@ -14,6 +14,7 @@ import { RoleType } from "@prisma/client";
 type Props = {
     serverId: string;
     serverRoles: RolePayload[];
+    serverRoleOptions: LabsFormFieldOption<number>[];
     role: SanitizedRole;
     timezone: string | null;
     onUpdate: (data: { newRoleId: number | null, newType: RoleType | null }) => unknown;
@@ -91,7 +92,7 @@ export default class DashboardRole extends React.Component<Props, State> {
     }
 
     RoleItemEditMode() {
-        const { serverRoles, role, timezone } = this.props;
+        const { serverRoleOptions, role, timezone } = this.props;
         const onSubmit = this.onRoleItemEdit.bind(this);
 
         return (
@@ -100,7 +101,7 @@ export default class DashboardRole extends React.Component<Props, State> {
                 type={role.type}
                 roleId={role.roleId}
                 createdAt={role.createdAt}
-                serverRoles={serverRoles}
+                serverRoleOptions={serverRoleOptions}
                 timezone={timezone}
                 onSubmit={onSubmit}
                 onCancel={() => this.toggleEditMode(false)}
@@ -133,7 +134,7 @@ export default class DashboardRole extends React.Component<Props, State> {
 }
 
 type EditorProps = {
-    serverRoles: RolePayload[];
+    serverRoleOptions: LabsFormFieldOption<number>[];
     submitText?: string;
     icon: IconDefinition;
     placeholder?: string;
@@ -145,17 +146,7 @@ type EditorProps = {
     timezone?: string | null;
 };
 
-export function RoleItemEditor({ type, roleId, createdAt, serverRoles, timezone, onSubmit, onCancel, submitText, icon, placeholder }: EditorProps) {
-    const sortedServerRoles: LabsFormFieldOption<number>[] =
-        serverRoles
-            .sort((a, b) => b.position - a.position)
-            .map((serverRole) => ({
-                name: serverRole.name,
-                value: serverRole.id,
-                avatarIcon: serverRole.icon,
-                color: serverRole.colors?.[0],
-            }));
-
+export function RoleItemEditor({ type, roleId, createdAt, serverRoleOptions, timezone, onSubmit, onCancel, submitText, icon, placeholder }: EditorProps) {
     return (
         <LabsForm
             sections={[
@@ -171,7 +162,7 @@ export function RoleItemEditor({ type, roleId, createdAt, serverRoles, timezone,
                             type: LabsFormFieldType.Select,
                             prop: "roleId",
                             defaultValue: roleId,
-                            selectableValues: sortedServerRoles,
+                            selectableValues: serverRoleOptions,
                             placeholder: placeholder ?? "Select role",
                         },
                         {

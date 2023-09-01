@@ -2,12 +2,13 @@ import { NextApiResponse } from "next";
 import prisma from "../../../../prisma";
 import createServerRoute from "../../../../utils/route";
 import { timezones } from "@yokilabs/utils";
-import { Server } from "@prisma/client";
+import { Server, Severity } from "@prisma/client";
 
 const DEFAULT_PREFIX = process.env.DEFAULT_PREFIX as string;
 const MAP_DEFAULT_PREFIXES = [DEFAULT_PREFIX, null, ""];
 const DEFAULT_TIMEZONE = "america/new_york";
 const MAP_DEFAULT_TIMEZONE = [DEFAULT_TIMEZONE, null];
+const MAP_DEFAULT_SEVERITY = [Severity.WARN, null];
 
 const BOOLEAN_PROPERTIES: (keyof Server)[] = [
     // Modules Automod
@@ -17,6 +18,8 @@ const BOOLEAN_PROPERTIES: (keyof Server)[] = [
     // Other Boolean properties
     "filterOnMods", "urlFilterIsWhitelist",
 ];
+
+const availableSeverity = Object.keys(Severity);
 
 const serverConfigRoute = createServerRoute({
     async PATCH(req, res, _session, server, _member) {
@@ -40,6 +43,9 @@ const serverConfigRoute = createServerRoute({
             return getErrorResponse(res, "spamInfractionPoints", "number between 0 and 10'000");
         else if (isPropertyTypeInvalid(body.linkInfractionPoints, "number") || body.linkInfractionPoints < 0 || body.linkInfractionPoints > 10000)
             return getErrorResponse(res, "linkInfractionPoints", "number between 0 and 10'000");
+        // Severity
+        else if (isEnumPropertyInvalid(body.linkSeverity, availableSeverity))
+            return getErrorResponse(res, "linkSeverity", "severity");
 
         // Modules
         const data: Partial<Server> = {
@@ -52,6 +58,7 @@ const serverConfigRoute = createServerRoute({
             // Infractions
             spamInfractionPoints: body.spamInfractionPoints,
             linkInfractionPoints: body.linkInfractionPoints,
+            linkSeverity: MAP_DEFAULT_SEVERITY.includes(body.linkSeverity) ? null : body.linkSeverity ?? server.linkSeverity,
         };
 
         // Remove repetition

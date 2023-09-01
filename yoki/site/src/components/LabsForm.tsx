@@ -152,7 +152,6 @@ export const fieldRenderers: FieldRendererRecord = {
     [LabsFormFieldType.Toggle]: (form, id, field) =>
         <Stack spacing={2} direction="row">
             <FormFieldHeader field={field} />
-            <Typography level="body-md" fontWeight="bolder">{field.name}</Typography>
             <LabsSwitch
                 id={id}
                 defaultChecked={field.defaultValue ?? void 0}
@@ -172,7 +171,11 @@ export function FormFieldHeader({ field }: { field: BaseLabsFormField<LabsFormFi
     return (
         field.name
             ? <Stack spacing={1} direction="row" sx={{ mb: 1 }}>
-                <FormLabel sx={{ fontWeight: "normal" }}>{ field.name }</FormLabel>
+                <FormLabel sx={{ fontWeight: "normal" }}>
+                    <Typography level="title-md">
+                        { field.name }
+                    </Typography>
+                </FormLabel>
                 { field.badge && <Chip size="sm" variant="outlined" color={field.badge.color}>{ field.badge.text }</Chip> }
             </Stack>
             : null

@@ -1,4 +1,4 @@
-import { Box, Stack, Typography } from "@mui/joy";
+import { Box, Card, CardContent, Stack, Typography } from "@mui/joy";
 import React from "react";
 import DashboardModule from "../DashboardModule";
 import { DashboardPageProps } from "../pages";
@@ -9,8 +9,11 @@ import DataTableRow from "../../DataTableRow";
 import InfoText from "../../InfoText";
 import { LabsUserCard } from "../../LabsUserCard";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { severityToIcon } from "../../../utils/actionUtil";
+import { severityOptions, severityToIcon } from "../../../utils/actionUtil";
 import { formatDate } from "@yokilabs/utils";
+import LabsForm from "../../LabsForm";
+import { LabsFormFieldType } from "../../form";
+import { Severity } from "@prisma/client";
 
 export default class UrlsPage extends React.Component<DashboardPageProps> {
     constructor(props: DashboardPageProps) {
@@ -48,7 +51,17 @@ export default class UrlsPage extends React.Component<DashboardPageProps> {
                 return response.json();
             })
             .then(({ urls, count }) => ({ items: urls, maxPages: Math.ceil(count / 50) }));
-    } 
+    }
+
+    async onServerUpdate(urlFilterIsWhitelist: boolean | null, linkSeverity: Severity | null, linkInfractionPoints: number | null) {
+        const { serverId } = this.props.serverConfig;
+
+        return fetch(`/api/servers/${serverId}`, {
+            method: "PATCH",
+            headers: { "content-type": "application/json" },
+            body: JSON.stringify({ urlFilterIsWhitelist, linkSeverity, linkInfractionPoints })
+        })
+    }
 
     render() {
         const { serverConfig } = this.props;
@@ -67,6 +80,53 @@ export default class UrlsPage extends React.Component<DashboardPageProps> {
                         hideBadges
                         largeHeader
                     />
+                </Box>
+                <Box>
+                    <Typography level="h4" gutterBottom>URLs whitelists & blacklists</Typography>
+                    <Card>
+                        <CardContent>
+                            <LabsForm
+                                sections={[
+                                    {
+                                        row: true,
+                                        fields: [
+                                            {
+                                                type: LabsFormFieldType.Toggle,
+                                                prop: "urlFilterIsWhitelist",
+                                                name: "URL Filter is whitelist",
+                                                description: "Whether URLs added to the filter is a whitelist instead of a blacklist. Off \u2014 link blacklist, on \u2014 link whitelist.",
+                                                defaultValue: serverConfig.urlFilterIsWhitelist,
+                                            },
+                                        ]
+                                    },
+                                    {
+                                        name: "Non-whitelisted link punishment",
+                                        row: true,
+                                        fields: [
+                                            {
+                                                type: LabsFormFieldType.Select,
+                                                prop: "linkSeverity",
+                                                name: "Link severity",
+                                                description: "What will be done when someone posts a link that is not in the filter whitelist.",
+                                                selectableValues: severityOptions,
+                                                defaultValue: serverConfig.linkSeverity,
+                                            },
+                                            {
+                                                type: LabsFormFieldType.Number,
+                                                prop: "linkInfractionPoints",
+                                                name: "Link infraction points",
+                                                description: "The amount of infraction points to give when someone posts a link that is not in the filter whitelist.",
+                                                defaultValue: serverConfig.linkInfractionPoints,
+                                                min: 1,
+                                                max: 100,
+                                            },
+                                        ]
+                                    },
+                                ]}
+                                onSubmit={(values) => console.log("Values", { values })}
+                            />
+                        </CardContent>
+                    </Card>
                 </Box>
                 <Stack direction="column" gap={3}>
                     <Typography level="h4">Banned URLs/domains</Typography>

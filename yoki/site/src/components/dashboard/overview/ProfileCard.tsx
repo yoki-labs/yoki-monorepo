@@ -29,8 +29,6 @@ export default class DashboardProfileCard extends React.Component<Props> {
     onServerUpdate(prefix: string | null, timezone: string | null) {
         const { serverId } = this.props.serverConfig;
 
-        console.log("Server update", { prefix, timezone });
-
         return fetch(`/api/servers/${serverId}`, {
             method: "PATCH",
             headers: { "content-type": "application/json" },

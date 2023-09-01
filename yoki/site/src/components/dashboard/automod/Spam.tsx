@@ -3,8 +3,7 @@ import { Box, Card, CardContent, Stack, Typography } from "@mui/joy";
 import React from "react";
 import DashboardModule from "../DashboardModule";
 import { DashboardPageProps } from "../pages";
-import PagePlaceholder, { PagePlaceholderIcon } from "../../PagePlaceholder";
-import LabsForm, { LabsFormState } from "../../LabsForm";
+import LabsForm, { LabsFormFieldValueMap } from "../../LabsForm";
 import { LabsFormFieldType } from "../../form";
 
 export default class SpamPage extends React.Component<DashboardPageProps> {
@@ -12,7 +11,7 @@ export default class SpamPage extends React.Component<DashboardPageProps> {
         super(props);
     }
 
-    async onSettingsModified({ values }: LabsFormState) {
+    async onSettingsModified(values: LabsFormFieldValueMap) {
         const { serverId } = this.props.serverConfig;
         const { spamFrequency, spamMentionFrequency, spamInfractionPoints } = values;
 
@@ -91,7 +90,7 @@ export default class SpamPage extends React.Component<DashboardPageProps> {
                                                 type: LabsFormFieldType.Number,
                                                 prop: "spamInfractionPoints",
                                                 name: "Spam infraction points",
-                                                description: "The number of messages that is needed to be posted within 5 seconds to consider it as spam.",
+                                                description: "The amount of infraction points to give when someone starts spamming.",
                                                 defaultValue: serverConfig.spamInfractionPoints,
                                                 min: 1,
                                                 max: 100,

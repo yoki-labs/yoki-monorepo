@@ -1,11 +1,13 @@
 import React from "react";
 import { SanitizedRole } from "../../../lib/@types/db";
-import { Box, Card, CircularProgress, Skeleton, Stack, Typography } from "@mui/joy";
+import { Box, Card, CardContent, Skeleton, Stack, Typography } from "@mui/joy";
 import { DashboardPageProps } from "../pages";
 import { RolePayload } from "@guildedjs/api";
 import DashboardRole, { RoleItemEditor } from "./RoleItem";
 import { RoleType } from "@prisma/client";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
+import { optionifyRoles } from "./role";
+import BaseRolesForm from "./BaseRoleForm";
 
 type Role = SanitizedRole;
 
@@ -98,15 +100,27 @@ export default class RolesPage extends React.Component<DashboardPageProps, State
         if (!isLoaded)
             return <RolesPageSkeleton />;
 
+        const roleOptions = optionifyRoles(serverRoles);
+
         return (
-            <>
-                <Typography level="h2">Staff roles</Typography>
-                <Card>
+            <Box>
+                <Typography level="h2" sx={{ mb: 2 }}>Roles</Typography>
+                <Typography level="title-md" gutterBottom>Base roles</Typography>
+                <Card sx={{ mb: 4 }}>
+                    <CardContent>
+                        <BaseRolesForm
+                            serverRoleOptions={roleOptions}
+                            serverConfig={serverConfig}
+                        />
+                    </CardContent>
+                </Card>
+                <Typography level="title-md" gutterBottom>Staff roles</Typography>
+                <Card sx={{ mb: 2 }}>
                     <RoleItemEditor
                         icon={faPlus}
                         submitText="Create"
                         type={RoleType.MOD}
-                        serverRoles={serverRoles}
+                        serverRoleOptions={roleOptions}
                         placeholder="Select role to add"
                         onSubmit={({ roleId, type }) => this.onRoleCreate(roleId as number, type as RoleType)}
                         />
@@ -117,13 +131,14 @@ export default class RolesPage extends React.Component<DashboardPageProps, State
                             serverId={serverConfig.serverId}
                             role={role}
                             serverRoles={serverRoles}
+                            serverRoleOptions={roleOptions}
                             timezone={serverConfig.timezone}
                             onDelete={this.onRoleDelete.bind(this, role)}
                             onUpdate={this.onRoleUpdate.bind(this, role)}
                             />
                     )}
                 </Stack>
-            </>
+            </Box>
         );
     }
 }
@@ -135,12 +150,48 @@ export default class RolesPage extends React.Component<DashboardPageProps, State
 function RolesPageSkeleton() {
     return (
         <Box sx={{ overflow: "hidden" }}>
-            <Typography level="h2">
+            <Typography level="h2" sx={{ mb: 2 }}>
+                <Skeleton animation="wave">
+                    Roles
+                </Skeleton>
+            </Typography>
+            <Typography level="title-md" gutterBottom>
+                <Skeleton animation="wave">
+                    Base roles
+                </Skeleton>
+            </Typography>
+            <Card sx={{ mb: 4 }}>
+                <CardContent>
+                    <Typography level="title-md" sx={{ mb: 1 }}>
+                        <Skeleton animation="wave">
+                            Mute role
+                        </Skeleton>
+                    </Typography>
+                    <Skeleton animation="wave" width="100%" height={40} sx={{ position: "initial", mb: 0 }} />
+                    <Typography level="body-sm" sx={{ mb: 2 }}>
+                        <Skeleton animation="wave">
+                            The role that will be assigned when user gets muted.
+                        </Skeleton>
+                    </Typography>
+                    <Typography level="body-sm" sx={{ mb: 1 }}>
+                        <Skeleton animation="wave">
+                            Member role
+                        </Skeleton>
+                    </Typography>
+                    <Skeleton animation="wave" width="100%" height={40} sx={{ position: "initial" }} />
+                    <Typography level="body-sm">
+                        <Skeleton animation="wave">
+                            The role that will be assigned when user gets muted.
+                        </Skeleton>
+                    </Typography>
+                </CardContent>
+            </Card>
+            <Typography level="title-md" sx={{ mb: 1 }}>
                 <Skeleton animation="wave">
                     Staff roles
                 </Skeleton>
             </Typography>
-            <Card sx={{ mt: 4 }}>
+            <Card>
                 <Stack direction="row" gap={2} alignItems="center">
                     <Skeleton animation="wave" variant="circular" width={40} height={40} sx={{ position: "initial" }} />
                     <Skeleton animation="wave" width={182} height={40} sx={{ position: "initial" }} />
@@ -156,7 +207,7 @@ function RolesPageSkeleton() {
 
 function RolesPageRoleSkeleton() {
     return (
-        <Card sx={{ mt: 4 }}>
+        <Card sx={{ mt: 2 }}>
             <Stack direction="row" gap={2} alignItems="center">
                 <Skeleton animation="wave" variant="circular" width={40} height={40} sx={{ position: "initial" }} />
                 <Skeleton animation="wave" width={162} height={20} sx={{ position: "initial" }} />
