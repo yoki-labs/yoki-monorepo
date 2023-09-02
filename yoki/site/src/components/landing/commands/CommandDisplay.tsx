@@ -1,4 +1,4 @@
-import { Accordion, AccordionDetails, AccordionGroup, AccordionSummary, Box, Card, Chip, Grid, List, ListItem, Stack, Typography, styled } from "@mui/joy";
+import { Accordion, AccordionDetails, AccordionGroup, AccordionSummary, Box, Card, Chip, Grid, List, ListItem, ListItemDecorator, Stack, Typography, styled } from "@mui/joy";
 import { Command } from "../../../lib/Command";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faShieldHalved } from "@fortawesome/free-solid-svg-icons";
@@ -6,6 +6,7 @@ import { CommandArgType } from "@yokilabs/utils";
 
 type Props = {
     command: Command;
+    isSubCommand?: boolean;
 };
 
 const argumentTypeToDisplay: Record<CommandArgType, string> = {
@@ -23,13 +24,36 @@ const argumentTypeToDisplay: Record<CommandArgType, string> = {
     role: "server role",
 };
 
-export default function CommandDisplay({ command }: Props) {
+const SubCommandCard = styled(Card)(({ theme }) => ({
+    position: "relative",
+    "::after": {
+        content: "''",
+        top: "50%",
+        left: -32,
+        width: 32,
+        // borderLeft: `solid 3px ${theme.vars.palette.background.level2}`,
+        borderBottom: `solid 3px ${theme.vars.palette.background.level2}`,
+        // borderBottomLeftRadius: theme.vars.radius.sm,
+        position: "absolute",
+        zIndex: "-1",
+    }
+}));
+const Line = styled(`div`, {
+    name: `CommandDisplayLine`
+})(({ theme }) => ({
+    width: 3,
+    height: "100%",
+    backgroundColor: theme.vars.palette.background.level2,
+}));
+
+export default function CommandDisplay({ command, isSubCommand }: Props) {
     const requiredRoleBadge = command.requiredRole && <Chip color="primary" startDecorator={<FontAwesomeIcon icon={faShieldHalved} />}>{ command.requiredRole }</Chip>;
     const normalizedName = command.name.split("-").join(" ");
 
+    const CommandCard = isSubCommand ? SubCommandCard : Card;
     return (
         <Box>
-            <Card sx={{ zIndex: "4" }}>
+            <CommandCard sx={{ zIndex: "4" }}>
                 <Typography level="title-md" sx={{ "--Typography-gap": "16px", }} endDecorator={requiredRoleBadge}>
                     {`${normalizedName[0].toUpperCase()}${normalizedName.substring(1)}`}
                 </Typography>
@@ -37,7 +61,7 @@ export default function CommandDisplay({ command }: Props) {
                     {command.description}
                 </Typography>
                 { command.args && <CommandDisplayArguments args={command.args} /> }
-            </Card>
+            </CommandCard>
             { command.subCommands && <CommandDisplaySubCommands commands={command.subCommands} /> }
         </Box>
     );
@@ -49,7 +73,10 @@ function CommandDisplayArguments({ args }: { args: Command["args"] }) {
             <Typography level="title-sm">Arguments</Typography>
             <List>
                 {args!.map((x) =>
-                    <ListItem>
+                    <ListItem sx={{ "margin-inline": 0, "--ListItemDecorator-size": "1.5rem" }}>
+                        <ListItemDecorator>
+                            <Typography fontWeight="bolder" textColor="text.tertiary" fontSize="lg">{"\u2022"}</Typography>
+                        </ListItemDecorator>
                         <Grid container spacing={1} sx={{ flexGrow: 1 }}>
                             <Grid xs={4}>
                                 <Typography component="span" level="body-md">
@@ -73,33 +100,19 @@ function CommandDisplayArguments({ args }: { args: Command["args"] }) {
     )
 }
 
-const SubCommandWrapper = styled(Box)(({ theme }) => ({
-    position: "relative",
-    "::after": {
-        content: "''",
-        top: "-150%",
-        left: -20,
-        width: 40,
-        height: "200%",
-        borderLeft: `solid 3px ${theme.vars.palette.background.level2}`,
-        borderBottom: `solid 3px ${theme.vars.palette.background.level2}`,
-        borderBottomLeftRadius: theme.vars.radius.sm,
-        position: "absolute",
-    }
-}));
-
 function CommandDisplaySubCommands({ commands }: { commands: Command[]; }) {
     return (
         <AccordionGroup size="lg">
             <Accordion>
                 <AccordionSummary>Sub-commands</AccordionSummary>
                 <AccordionDetails>
-                    <Stack sx={{ pt: 2, pl: 4 }} gap={2}>
-                        {commands.map((subCommand) =>
-                            <SubCommandWrapper>
-                                <CommandDisplay command={subCommand} />
-                            </SubCommandWrapper>
-                        )}
+                    <Stack gap={4} direction="row" alignItems="stretch">
+                        <Line />
+                        <Stack sx={{ pt: 2, flex: "1" }} gap={2} alignItems="stretch">
+                            {commands.map((subCommand) =>
+                                <CommandDisplay command={subCommand} isSubCommand />
+                            )}
+                        </Stack>
                     </Stack>
                 </AccordionDetails>
             </Accordion>
