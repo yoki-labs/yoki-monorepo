@@ -1,4 +1,4 @@
-import { Box, Stack, styled } from "@mui/joy";
+import { Box, styled } from "@mui/joy";
 import Footer from "./Footer";
 import Navbar from "./Navbar";
 
@@ -13,7 +13,7 @@ export const LandingPage = ({ children }: { children: React.ReactNode }) => {
             <Navbar />
             {/* Scrollable item */}
             <Box>
-                <Box component="article">
+                <Box sx={{ minHeight: "100vh" }} component="article">
                     {children}
                 </Box>
                 <Footer />
