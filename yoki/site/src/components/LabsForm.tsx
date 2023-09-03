@@ -1,8 +1,7 @@
-import { Box, Button, Chip, Divider, FormControl, FormHelperText, FormLabel, Input, Stack, Typography } from "@mui/joy";
+import { Box, Button, Chip, Divider, FormControl, FormHelperText, FormLabel, Input, Stack, Switch, Typography } from "@mui/joy";
 import React from "react";
 import { FormEvent } from "react";
 import { BaseLabsFormField, LabsFormField, LabsFormFieldByType, LabsFormFieldType, LabsFormSection } from "./form";
-import LabsSwitch from "./LabsSwitch";
 import LabsMultiSelector from "./LabsMultiSelector";
 import LabsSelector from "./LabsSelector";
 import NumberInput from "./NumberInput";
@@ -37,15 +36,24 @@ export default class LabsForm extends React.Component<LabsFormProps, LabsFormSta
     constructor(props: LabsFormProps) {
         super(props);
 
-        const fields = this.props.sections.flatMap((section) => section.fields);
-
         this.state = {
             changed: false,
         };
 
         this.formId = Math.floor(Math.random() * 75 + 25);
 
-        this.fieldValues = fields.reduce<Record<string, LabsFormFieldValue>>((mapped, field) => ((mapped[field.prop] = field.defaultValue ?? null), mapped), {});
+        this.fieldValues = this.fields.reduce<Record<string, LabsFormFieldValue>>((mapped, field) => ((mapped[field.prop] = field.defaultValue ?? null), mapped), {});
+    }
+    
+    get fields() {
+        return this.props.sections.flatMap((x) => x.fields);
+    }
+
+    get displayActions() {
+        const { alwaysDisplayActions } = this.props;
+        const { changed } = this.state;
+
+        return alwaysDisplayActions || changed;
     }
 
     onSubmit(event: FormEvent<HTMLFormElement>) {
@@ -71,11 +79,13 @@ export default class LabsForm extends React.Component<LabsFormProps, LabsFormSta
 
         if (!changed)
             this.setState({ changed: true });
+
+        return value;
     }
 
     render(): React.ReactNode {
         const onSubmit = this.onSubmit.bind(this);
-        const { sections, children, submitText, alwaysDisplayActions, onCancel } = this.props;
+        const { sections, children, submitText, onCancel } = this.props;
         const { changed } = this.state;
 
         return (
@@ -84,7 +94,7 @@ export default class LabsForm extends React.Component<LabsFormProps, LabsFormSta
                 <Stack direction="column" gap={3}>
                     {sections.map((section, i) => (
                         <Box component="section">
-                            {i > 0 && <Divider sx={{ mb: 2 }} />}
+                            {i > 0 && !section.hideDivider && <Divider sx={{ mb: 2 }} />}
                             {section.name && <Typography level="h2" fontSize="lg" sx={{ mb: 2 }}>{section.name}</Typography>}
                             {section.description && <Typography level="body-md">{section.description}</Typography>}
                             <Stack direction={section.row ? "row" : "column"} gap={section.gap ?? 2}>
@@ -94,7 +104,7 @@ export default class LabsForm extends React.Component<LabsFormProps, LabsFormSta
                         </Box>
                     ))}
                 </Stack>
-                {(alwaysDisplayActions || changed) && <Stack sx={{ mt: 2 }} direction="row" gap={1}>
+                {this.displayActions && <Stack sx={{ mt: 2 }} direction="row" gap={1}>
                     <Button disabled={!changed} variant="outlined" color="success" type="submit">
                         {submitText ?? "Save"}
                     </Button>
@@ -152,7 +162,7 @@ export const fieldRenderers: FieldRendererRecord = {
     [LabsFormFieldType.Toggle]: (form, id, field) =>
         <Stack spacing={2} direction="row">
             <FormFieldHeader field={field} />
-            <LabsSwitch
+            <Switch
                 id={id}
                 defaultChecked={field.defaultValue ?? void 0}
                 disabled={field.disabled}

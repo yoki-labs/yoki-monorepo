@@ -1,7 +1,6 @@
 import { IconDefinition } from "@fortawesome/free-solid-svg-icons";
-import LabsSwitch from "../LabsSwitch";
 import React from "react";
-import { Box, Chip, Stack, Typography } from "@mui/joy";
+import { Box, Chip, Stack, Switch, Typography } from "@mui/joy";
 import LabsIconCard from "../LabsIconCard";
 import { SanitizedServer } from "../../lib/@types/db";
 import { toggleModule } from "./modules";
@@ -52,7 +51,7 @@ export default class DashboardModule extends React.Component<Props, { isActive: 
                         <Typography className="grow" fontWeight="md" level={largeHeader ? "title-lg" : "title-md"}>
                             {name}
                         </Typography>
-                        <LabsSwitch className="toggle justify-end" defaultChecked={this.state.isActive} onChange={({ target }) => this.onToggle(target.checked)} />
+                        <Switch className="toggle justify-end" defaultChecked={this.state.isActive} onChange={({ target }) => this.onToggle(target.checked)} />
                     </Stack>
                     <Typography level="body-md">{description}</Typography>
                 </Box>

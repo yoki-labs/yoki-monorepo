@@ -1,7 +1,7 @@
 import { Box, Card, CardContent, Chip, ListItemDecorator, MenuItem, Stack, Typography } from "@mui/joy";
 import { SanitizedRole } from "../../../lib/@types/db";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { IconDefinition, faPen, faShieldHalved, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { IconDefinition, faPen, faPlus, faShieldHalved, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { formatDate } from "@yokilabs/utils";
 import LabsIconWrapper from "../../LabsIconWrapper";
 import LabsOverflowButton from "../../LabsOverflowButton";
@@ -96,16 +96,44 @@ export default class DashboardRole extends React.Component<Props, State> {
         const onSubmit = this.onRoleItemEdit.bind(this);
 
         return (
-            <RoleItemEditor
-                icon={faShieldHalved}
-                type={role.type}
-                roleId={role.roleId}
-                createdAt={role.createdAt}
-                serverRoleOptions={serverRoleOptions}
-                timezone={timezone}
+            <LabsForm
+                sections={[
+                    {
+                        row: true,
+                        start: (
+                            <LabsIconWrapper>
+                                <FontAwesomeIcon style={{ width: "100%", height: "100%" }} icon={faShieldHalved} />
+                            </LabsIconWrapper>
+                        ),
+                        fields: [
+                            {
+                                type: LabsFormFieldType.Select,
+                                prop: "roleId",
+                                defaultValue: role.roleId,
+                                selectableValues: serverRoleOptions,
+                                placeholder: "Select role",
+                            },
+                            {
+                                type: LabsFormFieldType.Select,
+                                prop: "type",
+                                selectableValues: staffRoleTypes.map((roleType) => ({
+                                    name: roleType[0] + roleType.toLowerCase().slice(1),
+                                    value: roleType,
+                                })),
+                                defaultValue: role.type,
+                                placeholder: "Select role level"
+                            }
+                        ],
+                    },
+                    {
+                        hideDivider: true,
+                        description: formatDate(new Date(role.createdAt), timezone),
+                        fields: []
+                    }
+                ].filter(Boolean) as LabsFormSection[]}
                 onSubmit={onSubmit}
-                onCancel={() => this.toggleEditMode(false)}
-                />
+                onCancel={this.toggleEditMode.bind(this, false)}
+            />
         );
     }
 
@@ -135,18 +163,10 @@ export default class DashboardRole extends React.Component<Props, State> {
 
 type EditorProps = {
     serverRoleOptions: LabsFormFieldOption<number>[];
-    submitText?: string;
-    icon: IconDefinition;
-    placeholder?: string;
-    onSubmit: (state: LabsFormFieldValueMap) => unknown;
-    onCancel?: () => unknown;
-    type?: RoleType;
-    roleId?: number;
-    createdAt?: string;
-    timezone?: string | null;
+    onCreate: (roleId: number, type: RoleType) => Promise<unknown>;
 };
 
-export function RoleItemEditor({ type, roleId, createdAt, serverRoleOptions, timezone, onSubmit, onCancel, submitText, icon, placeholder }: EditorProps) {
+export function RoleItemCreationForm({ serverRoleOptions, onCreate }: EditorProps) {
     return (
         <LabsForm
             sections={[
@@ -154,16 +174,15 @@ export function RoleItemEditor({ type, roleId, createdAt, serverRoleOptions, tim
                     row: true,
                     start: (
                         <LabsIconWrapper>
-                            <FontAwesomeIcon style={{ width: "100%", height: "100%" }} icon={icon} />
+                            <FontAwesomeIcon style={{ width: "100%", height: "100%" }} icon={faPlus} />
                         </LabsIconWrapper>
                     ),
                     fields: [
                         {
                             type: LabsFormFieldType.Select,
                             prop: "roleId",
-                            defaultValue: roleId,
                             selectableValues: serverRoleOptions,
-                            placeholder: placeholder ?? "Select role",
+                            placeholder: "Select role to add",
                         },
                         {
                             type: LabsFormFieldType.Select,
@@ -172,19 +191,12 @@ export function RoleItemEditor({ type, roleId, createdAt, serverRoleOptions, tim
                                 name: roleType[0] + roleType.toLowerCase().slice(1),
                                 value: roleType,
                             })),
-                            defaultValue: type,
                             placeholder: "Select role level"
                         }
                     ],
                 },
-                createdAt && {
-                    description: formatDate(new Date(createdAt), timezone),
-                    fields: []
-                }
             ].filter(Boolean) as LabsFormSection[]}
-            onSubmit={onSubmit}
-            submitText={submitText}
-            onCancel={onCancel}
+            onSubmit={({ roleId, type }) => onCreate(roleId as number, type as RoleType)}
         />
     );
 }

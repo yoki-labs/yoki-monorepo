@@ -1,5 +1,4 @@
-import { Box, Card, CardContent, Stack, Typography } from "@mui/joy";
-import LabsSwitch from "../../LabsSwitch";
+import { Box, Card, CardContent, Stack, Switch, Typography } from "@mui/joy";
 import React from "react";
 import { SanitizedPreset } from "../../../lib/@types/db";
 import LabsForm from "../../LabsForm";
@@ -71,7 +70,7 @@ export default class AutomodPreset extends React.Component<Props, State> {
                                 <Typography className="grow" fontWeight="md" level="title-md">
                                     {title}
                                 </Typography>
-                                <LabsSwitch className="toggle justify-end" defaultChecked={!!preset} onChange={({ target }) => this.onToggle(target.checked)} />
+                                <Switch className="toggle justify-end" defaultChecked={!!preset} onChange={({ target }) => this.onToggle(target.checked)} />
                             </Stack>
                             <Typography level="body-md">{description}</Typography>
                         </Box>

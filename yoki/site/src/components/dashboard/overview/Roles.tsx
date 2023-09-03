@@ -3,7 +3,7 @@ import { SanitizedRole } from "../../../lib/@types/db";
 import { Box, Card, CardContent, Skeleton, Stack, Typography } from "@mui/joy";
 import { DashboardPageProps } from "../pages";
 import { RolePayload } from "@guildedjs/api";
-import DashboardRole, { RoleItemEditor } from "./RoleItem";
+import DashboardRole, { RoleItemCreationForm } from "./RoleItem";
 import { RoleType } from "@prisma/client";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { optionifyRoles } from "./role";
@@ -116,13 +116,9 @@ export default class RolesPage extends React.Component<DashboardPageProps, State
                 </Card>
                 <Typography level="title-md" gutterBottom>Staff roles</Typography>
                 <Card sx={{ mb: 2 }}>
-                    <RoleItemEditor
-                        icon={faPlus}
-                        submitText="Create"
-                        type={RoleType.MOD}
+                    <RoleItemCreationForm
                         serverRoleOptions={roleOptions}
-                        placeholder="Select role to add"
-                        onSubmit={({ roleId, type }) => this.onRoleCreate(roleId as number, type as RoleType)}
+                        onCreate={this.onRoleCreate.bind(this)}
                         />
                 </Card>
                 <Stack direction="column" gap={2}>

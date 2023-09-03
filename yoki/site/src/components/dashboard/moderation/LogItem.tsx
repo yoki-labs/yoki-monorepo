@@ -1,12 +1,12 @@
 import { Box, Card, CardContent, Chip, ListItemDecorator, MenuItem, Stack, Typography } from "@mui/joy";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHashtag, faPen, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { IconDefinition, faHashtag, faPen, faPlus, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { formatDate } from "@yokilabs/utils";
 import LabsIconWrapper from "../../LabsIconWrapper";
 import { LogChannelType } from "@prisma/client";
 import LabsOverflowButton from "../../LabsOverflowButton";
 import React from "react";
-import LabsForm, { LabsFormState } from "../../LabsForm";
+import LabsForm, { LabsFormFieldValueMap } from "../../LabsForm";
 import { LabsFormFieldType } from "../../form";
 
 type Props = {
@@ -16,6 +16,8 @@ type Props = {
     createdAt: string;
     types: LogChannelType[];
     timezone: string | null;
+
+    onUpdate: (types: LogChannelType[]) => Promise<unknown>; 
 };
 // Edit mode exists instead of putting you right away there because there may be too many Select form fields
 // With too many channels and too many types at a time and it can be pretty laggy, especially on lower-end
@@ -79,7 +81,7 @@ export default class DashboardLogChannel extends React.Component<Props, State> {
                             </ListItemDecorator>
                             Edit log channel
                         </MenuItem>
-                        <MenuItem color="danger">
+                        <MenuItem color="danger" onClick={() => this.onLogChannelDelete()}>
                             <ListItemDecorator>
                                 <FontAwesomeIcon icon={faTrash} />
                             </ListItemDecorator>
@@ -126,7 +128,7 @@ export default class DashboardLogChannel extends React.Component<Props, State> {
                             },
                             {
                                 type: LabsFormFieldType.MultiSelect,
-                                prop: "type",
+                                prop: "types",
                                 selectableValues: typeOptions,
                                 defaultValue: types,
                                 placeholder: "Select log types"
@@ -134,18 +136,26 @@ export default class DashboardLogChannel extends React.Component<Props, State> {
                         ],
                     },
                     {
+                        hideDivider: true,
                         description: formatDate(new Date(createdAt), timezone),
                         fields: []
                     }
                 ]}
                 onSubmit={onSubmit}
                 onCancel={() => this.toggleEditMode(false)}
+                alwaysDisplayActions
             />
         );
     }
 
-    onLogChannelEdit(state: LabsFormState) {
+    async onLogChannelEdit({ types, channelId }: LabsFormFieldValueMap) {
         this.toggleEditMode(false);
+
+        return this.props.onUpdate(types as LogChannelType[]);
+    }
+
+    async onLogChannelDelete() {
+        return this.props.onUpdate([]);
     }
 
     render() {
@@ -159,4 +169,35 @@ export default class DashboardLogChannel extends React.Component<Props, State> {
             </Card>
         )
     }
+}
+
+export function LogItemCreationForm({ onCreate: onCreated }: { onCreate: (channelId: string, types: LogChannelType[]) => Promise<unknown> }) {
+    return (
+        <LabsForm
+            sections={[
+                {
+                    row: true,
+                    start: (
+                        <LabsIconWrapper>
+                            <FontAwesomeIcon style={{ width: "100%", height: "100%" }} icon={faPlus} />
+                        </LabsIconWrapper>
+                    ),
+                    fields: [
+                        {
+                            type: LabsFormFieldType.Text,
+                            prop: "channelId",
+                            placeholder: "The copied ID of the channel",
+                        },
+                        {
+                            type: LabsFormFieldType.MultiSelect,
+                            prop: "types",
+                            selectableValues: typeOptions,
+                            placeholder: "Select log types"
+                        }
+                    ],
+                },
+            ]}
+            onSubmit={({ channelId, types }) => onCreated(channelId as string, types as LogChannelType[])}
+        />
+    );
 }

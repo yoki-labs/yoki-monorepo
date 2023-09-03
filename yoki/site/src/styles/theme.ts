@@ -179,6 +179,14 @@ export const theme = extendTheme({
                     }
                 }
             }
+        },
+        JoySkeleton: {
+            styleOverrides: {
+                root: `
+                    overflow: hidden;
+                    position: relative !important;
+                `
+            }
         }
     },
 });

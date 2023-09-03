@@ -38,9 +38,3 @@ const LabsButton = styled(
 });
 
 export default LabsButton;
-
-// export default function LabsButton(props: ButtonProps) {
-//     const colour = props.color ? buttonColours[props.color] : buttonColours.primary;
-
-//     return <Button {...props} />;
-// }

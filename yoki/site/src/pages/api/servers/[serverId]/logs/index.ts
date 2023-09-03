@@ -1,5 +1,5 @@
-import prisma from "../../../../prisma";
-import createServerRoute from "../../../../utils/route";
+import prisma from "../../../../../prisma";
+import createServerRoute from "../../../../../utils/route";
 
 const serverLogsRoute = createServerRoute({
     async GET(_req, res, _session, server, _member) {
@@ -19,7 +19,7 @@ const serverLogsRoute = createServerRoute({
                 createdAt,
             }))
         });
-    }
+    },
 });
 
 export default serverLogsRoute;

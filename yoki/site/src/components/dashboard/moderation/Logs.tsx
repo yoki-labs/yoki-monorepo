@@ -1,11 +1,13 @@
 import React from "react";
 import { SanitizedLogChannel } from "../../../lib/@types/db";
 import { Alert, Box, Card, CircularProgress, Skeleton, Stack } from "@mui/joy";
-import DashboardLogChannel from "./LogItem";
+import DashboardLogChannel, { LogItemCreationForm } from "./LogItem";
 import { toLookup } from "@yokilabs/utils";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faExclamationTriangle } from "@fortawesome/free-solid-svg-icons";
 import { DashboardPageProps } from "../pages";
+import PagePlaceholder, { PagePlaceholderIcon } from "../../PagePlaceholder";
+import { LogChannelType } from "@prisma/client";
 
 type State = {
     isLoaded: boolean;
@@ -21,7 +23,8 @@ export default class LogsPage extends React.Component<DashboardPageProps, State>
 
     async componentDidMount(): Promise<void> {
         const { serverConfig: { serverId } } = this.props;
-        await fetch(`/api/servers/${serverId}/logchannels`, {
+        
+        return fetch(`/api/servers/${serverId}/logs`, {
             method: "GET",
             headers: { "content-type": "application/json" },
         })
@@ -31,6 +34,23 @@ export default class LogsPage extends React.Component<DashboardPageProps, State>
                 return response.json();
             })
             .then(({ logs }) => this.setState({ isLoaded: true, logs }))
+            .catch((errorResponse) => console.error("Error while fetching data:", errorResponse));
+    }
+
+    async onLogsUpdate(channelId: string, types: LogChannelType[]) {
+        const { serverConfig: { serverId } } = this.props;
+
+        return fetch(`/api/servers/${serverId}/logs/${channelId}`, {
+            method: "PUT",
+            headers: { "content-type": "application/json" },
+            body: JSON.stringify({ types })
+        })
+            .then((response) => {
+                if (!response.ok)
+                    throw response;
+                return response.json();
+            })
+            .then(({ logs }) => this.setState({ logs }))
             .catch((errorResponse) => console.error("Error while fetching data:", errorResponse));
     }
 
@@ -47,25 +67,38 @@ export default class LogsPage extends React.Component<DashboardPageProps, State>
         const possibleChannels = Object.keys(channelLookup);
 
         return (
-            <>
-                <Alert color="warning" variant="soft" startDecorator={<FontAwesomeIcon icon={faExclamationTriangle}/>}>
-                    As of now, fetching all server channels is not possible using Guilded API. As such, creating new log channels or changing channels of log types is not possible.
+            <Box>
+                <Alert sx={{ mb: 4 }} color="warning" variant="soft" startDecorator={<FontAwesomeIcon icon={faExclamationTriangle}/>}>
+                    As of now, fetching all server channels is not possible using Guilded API. As such, as of now, you need to copy & paste channel IDs instead of being able to select channels.
                 </Alert>
-                {Object.keys(channelLookup).map((channelId) => {
-                    const channelTypeInfos = channelLookup[channelId]!;
+                <Card sx={{ mb: 2 }}>
+                    <LogItemCreationForm
+                        onCreate={this.onLogsUpdate.bind(this)}
+                        />
+                </Card>
+                <Stack gap={2} direction="column">
+                    {Object.keys(channelLookup).map((channelId) => {
+                        const channelTypeInfos = channelLookup[channelId]!;
 
-                    return (
-                        <DashboardLogChannel
-                            serverId={serverConfig.serverId}
-                            channelId={channelId}
-                            serverChannels={possibleChannels}
-                            createdAt={channelTypeInfos[0].createdAt}
-                            types={channelTypeInfos.map((x) => x.type)}
-                            timezone={serverConfig.timezone}
-                            />
-                    );
-                })}
-            </>
+                        return (
+                            <DashboardLogChannel
+                                serverId={serverConfig.serverId}
+                                channelId={channelId}
+                                serverChannels={possibleChannels}
+                                createdAt={channelTypeInfos[0].createdAt}
+                                types={channelTypeInfos.map((x) => x.type)}
+                                timezone={serverConfig.timezone}
+                                onUpdate={this.onLogsUpdate.bind(this, channelId)}
+                                />
+                        );
+                    })}
+                </Stack>
+                <PagePlaceholder
+                    icon={PagePlaceholderIcon.Wip}
+                    title="Work in progress"
+                    description="We are still in the process of building this page."
+                    />
+            </Box>
         );
     }
 }

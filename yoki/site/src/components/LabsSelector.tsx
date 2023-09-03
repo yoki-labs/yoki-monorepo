@@ -3,6 +3,7 @@ import LabsForm, { FormFieldHeader } from "./LabsForm";
 import { Avatar, ListItemDecorator, Option, Select, SelectOption, Typography } from "@mui/joy";
 import { LabsFormFieldByType, LabsFormFieldOption, LabsFormFieldType } from "./form";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faAngleDown } from "@fortawesome/free-solid-svg-icons";
 
 type Props = {
     field: LabsFormFieldByType<LabsFormFieldType.Select>;
@@ -25,7 +26,7 @@ export default class LabsSelector extends React.Component<Props> {
     renderValue(value: LabsFormFieldOption<string | number>) {
         return (
             <>
-                {((value.icon) && <ListItemDecorator sx={{ width: 20 }}>
+                {((value.icon || value.avatarIcon) && <ListItemDecorator sx={{ width: 25 }}>
                     {value.icon && <FontAwesomeIcon icon={value.icon} />}
                     {value.avatarIcon && <Avatar size="sm" src={value.avatarIcon} />}
                 </ListItemDecorator>)}
@@ -50,6 +51,7 @@ export default class LabsSelector extends React.Component<Props> {
                     disabled={field.disabled}
                     onChange={(_, value) => value && form.setValue(field, value)}
                     startDecorator={field.prefixIcon && <FontAwesomeIcon icon={field.prefixIcon} />}
+                    indicator={<FontAwesomeIcon width={14} height={14} icon={faAngleDown} />}
                     size={field.size ?? "md"}
                     renderValue={this.renderOption.bind(this)}
                 >

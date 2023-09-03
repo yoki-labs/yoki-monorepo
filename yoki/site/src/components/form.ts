@@ -7,6 +7,7 @@ export interface LabsFormSection {
     name?: string;
     description?: string;
     row?: boolean;
+    hideDivider?: boolean;
     gap?: number;
     start?: ReactNode;
     fields: LabsFormField[];
