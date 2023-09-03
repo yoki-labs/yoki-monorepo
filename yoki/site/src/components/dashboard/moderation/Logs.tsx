@@ -129,6 +129,13 @@ function LogsPageSkeleton() {
     return (
         <Box sx={{ overflow: "hidden" }}>
             <Skeleton animation="wave" width="100%" height={45} sx={{ position: "initial" }} />
+            <Card sx={{ mt: 4 }}>
+                <Stack direction="row" gap={2} alignItems="center">
+                    <Skeleton animation="wave" variant="circular" width={40} height={40} sx={{ position: "initial" }} />
+                    <Skeleton animation="wave" width={242} height={40} sx={{ position: "initial" }} />
+                    <Skeleton animation="wave" width={178} height={40} sx={{ position: "initial" }} />
+                </Stack>
+            </Card>
             <LogsPageLogSkeleton />
             <LogsPageLogSkeleton />
             <LogsPageLogSkeleton />
@@ -138,7 +145,7 @@ function LogsPageSkeleton() {
 
 function LogsPageLogSkeleton() {
     return (
-        <Card sx={{ mt: 4 }}>
+        <Card sx={{ mt: 2 }}>
             <Stack direction="row" gap={2} alignItems="center">
                 <Skeleton animation="wave" variant="circular" width={40} height={40} sx={{ position: "initial" }} />
                 <Skeleton animation="wave" width={320} height={20} sx={{ position: "initial" }} />
