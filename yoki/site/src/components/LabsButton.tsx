@@ -27,12 +27,15 @@ const LabsButton = styled(
             bottom: 0,
             left: 0,
             right: 0,
-            borderRadius: 12,
+            borderRadius: theme.vars.radius.sm,
             backgroundColor: "transparent",
             transition: "background-color 0.2s ease-out"
         },
         "&:hover::after": disabled ? undefined : {
-            backgroundColor: "rgba(255, 255, 255, 0.35)",
+            backgroundColor: "rgba(255, 255, 255, 0.30)",
+        },
+        "&:active::after": disabled ? undefined : {
+            backgroundColor: "rgba(255, 255, 255, 0.50)",
         },
     };
 });

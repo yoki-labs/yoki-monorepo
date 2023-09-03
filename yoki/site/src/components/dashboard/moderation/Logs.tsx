@@ -12,6 +12,7 @@ import { LogChannelType } from "@prisma/client";
 type State = {
     isLoaded: boolean;
     logs: SanitizedLogChannel[];
+    error?: { code: string; message: string; };
 };
 
 export default class LogsPage extends React.Component<DashboardPageProps, State> {
@@ -34,7 +35,15 @@ export default class LogsPage extends React.Component<DashboardPageProps, State>
                 return response.json();
             })
             .then(({ logs }) => this.setState({ isLoaded: true, logs }))
-            .catch((errorResponse) => console.error("Error while fetching data:", errorResponse));
+            .catch(async (errorResponse) => this.onError(errorResponse));
+    }
+
+    async onError(errorResponse: Response) {
+        const error = await errorResponse.json();
+
+        console.log("Error while fetching logs data:", error);
+
+        this.setState({ error });
     }
 
     async onLogsUpdate(channelId: string, types: LogChannelType[]) {
@@ -56,10 +65,19 @@ export default class LogsPage extends React.Component<DashboardPageProps, State>
 
     render() {
         const { serverConfig } = this.props;
-        const { isLoaded, logs } = this.state;
+        const { error, isLoaded, logs } = this.state;
 
+        // Server-side error
+        if (error)
+            return (
+                <PagePlaceholder
+                    icon={PagePlaceholderIcon.Unexpected}
+                    title={`Error while fetching data (${error.code})`}
+                    description={error.message}
+                    />
+            );
         // Still fetching data
-        if (!isLoaded)
+        else if (!isLoaded)
             return <LogsPageSkeleton />;
 
         const channelLookup = toLookup(logs, (log) => log.channelId);

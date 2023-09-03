@@ -49,7 +49,7 @@ export default class PhrasesPage extends React.Component<DashboardPageProps> {
                 return response.json();
             })
             .then(({ phrases, count }) => ({ items: phrases, maxPages: Math.ceil(count / 50) }));
-    } 
+    }
 
     render() {
         const { serverConfig } = this.props;

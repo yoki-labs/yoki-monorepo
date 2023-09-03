@@ -11,7 +11,7 @@ type Props = {
 
 export default function ServerDisplay({ server, onClick, sx }: Props) {
     return (
-        <Card sx={{ bgcolor: "background.level1", ...sx }} onClick={onClick} orientation="horizontal">
+        <Card sx={{ bgcolor: "background.level1", minWidth: 200, ...sx }} onClick={onClick} orientation="horizontal">
             <CardOverflow sx={{ pl: 2 }}>
                 <Stack sx={{ height: "100%" }} direction="row" alignItems="center">
                     <Avatar src={server.profilePicture ?? void 0}>{server.name[0]}</Avatar>

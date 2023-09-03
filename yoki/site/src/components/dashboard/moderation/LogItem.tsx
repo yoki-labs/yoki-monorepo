@@ -186,7 +186,7 @@ export function LogItemCreationForm({ onCreate: onCreated }: { onCreate: (channe
                         {
                             type: LabsFormFieldType.Text,
                             prop: "channelId",
-                            placeholder: "The copied ID of the channel",
+                            placeholder: "Type in the ID of a channel",
                         },
                         {
                             type: LabsFormFieldType.MultiSelect,

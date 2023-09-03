@@ -10,21 +10,20 @@ type Props = {
     currentServer: GuildedServer;
 };
 
-export default function NoServerPage({ currentServer }: Props) {
+export default function NotPermittedPage({ currentServer }: Props) {
     return (
         <Stack alignItems="center" direction="row" className="grow shrink-0">
             <Stack alignItems="center" direction="column" gap={3} sx={{ flex: "1", mb: 20 }}>
                 <PagePlaceholder
                     icon={PagePlaceholderIcon.NoPermission}
-                    title="Uh oh! Yoki isn't in this server"
-                    description="Yoki hasn't been in this server yet. Invite Yoki to protect the server and be able to manage it through this dashboard."
+                    title="Not permitted"
+                    description="Unfortunately, you do not have a role that is configured as ADMIN or you are not the owner of this server."
                 />
                 <ServerDisplay server={currentServer} />
-                <LabsButton>Invite Yoki</LabsButton>
                 <Alert color="primary" variant="soft" startDecorator={<FontAwesomeIcon icon={faInfoCircle} />} sx={{ mt: 8 }}>
                     <Box sx={{ alignItems: "baseline" }}>
                         <Typography fontSize="md" sx={{ color: "inherit" }}>
-                            If you believe this is a bug, be sure to report it in{" "}
+                            Make sure you have one of the roles set as ADMIN in Yoki and have them assigned to you. If you believe this is a bug, be sure to report it in{" "}
                             <Link color="primary" sx={{ textDecoration: "underline" }} href="https://www.guilded.gg/yoki">
                                 Yoki Labs server
                             </Link>

@@ -13,7 +13,6 @@ import CodeWrapper from "../../CodeWrapper";
 import { LabsCopyInput } from "../../LabsCopyInput";
 import InfoText from "../../InfoText";
 import { formatDate } from "@yokilabs/utils";
-
 export default class HistoryPage extends React.Component<DashboardPageProps> {
     constructor(props: DashboardPageProps) {
         super(props);
@@ -50,7 +49,7 @@ export default class HistoryPage extends React.Component<DashboardPageProps> {
                 return response.json();
             })
             .then(({ cases, count }) => ({ items: cases, maxPages: Math.ceil(count / 50) }));
-    } 
+    }
 
     render() {
         const { serverConfig } = this.props;

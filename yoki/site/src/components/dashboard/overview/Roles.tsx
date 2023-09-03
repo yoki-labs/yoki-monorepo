@@ -8,6 +8,7 @@ import { RoleType } from "@prisma/client";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { optionifyRoles } from "./role";
 import BaseRolesForm from "./BaseRoleForm";
+import PagePlaceholder, { PagePlaceholderIcon } from "../../PagePlaceholder";
 
 type Role = SanitizedRole;
 
@@ -15,6 +16,7 @@ type State = {
     isLoaded: boolean;
     roles: Role[];
     serverRoles: RolePayload[];
+    error?: { code: string; message: string; };
 };
 
 export default class RolesPage extends React.Component<DashboardPageProps, State> {
@@ -30,13 +32,21 @@ export default class RolesPage extends React.Component<DashboardPageProps, State
             method: "GET",
             headers: { "content-type": "application/json" },
         })
-        .then((response) => {
-            if (!response.ok)
+            .then((response) => {
+                if (!response.ok)
                     throw response;
                 return response.json();
             })
             .then(({ roles, serverRoles }) => this.setState({ isLoaded: true, roles, serverRoles }))
-            .catch((errorResponse) => console.error("Error while fetching data:", errorResponse));
+            .catch(async (errorResponse) => this.onError(errorResponse));
+    }
+
+    async onError(errorResponse: Response) {
+        const error = await errorResponse.json();
+
+        console.log("Error while fetching role data:", error);
+
+        this.setState({ error });
     }
 
     async onRoleDelete(role: SanitizedRole) {
@@ -94,10 +104,19 @@ export default class RolesPage extends React.Component<DashboardPageProps, State
 
     render() {
         const { serverConfig } = this.props;
-        const { isLoaded, roles, serverRoles } = this.state;
+        const { error, isLoaded, roles, serverRoles } = this.state;
 
+        // Server-side error
+        if (error)
+            return (
+                <PagePlaceholder
+                    icon={PagePlaceholderIcon.Unexpected}
+                    title={`Error while fetching data (${error.code})`}
+                    description={error.message}
+                    />
+            );
         // Still fetching data
-        if (!isLoaded)
+        else if (!isLoaded)
             return <RolesPageSkeleton />;
 
         const roleOptions = optionifyRoles(serverRoles);

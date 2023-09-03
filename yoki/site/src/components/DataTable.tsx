@@ -37,6 +37,7 @@ type State<TItem extends { id: TItemId }, TItemId> = {
     search?: string;
     selectedItems: TItemId[];
     maxPages: number;
+    error?: { code: string; message: string };
 };
 
 type Props<TItem extends { id: TItemId }, TItemId> = {
@@ -82,8 +83,8 @@ export default class DataTable<TItem extends { id: TItemId }, TItemId> extends R
             .then(({ items, maxPages }) =>
                 this.setState({ isLoaded: true, items, maxPages, page, search })
             )
-            .catch((error) =>
-                console.error("Error while fetching data table items:", error)
+            .catch(async (errorResponse) =>
+                this.onFetchError(errorResponse)
             );
     }
         
@@ -100,6 +101,14 @@ export default class DataTable<TItem extends { id: TItemId }, TItemId> extends R
             );
     }
 
+    async onFetchError(errorResponse: Response) {
+        const error = await errorResponse.json();
+
+        console.log(`Error while fetching ${this.props.itemType} in data table:`, error);
+
+        this.setState({ error });
+    }
+
     toggleSelection(item: TItem, isChecked: boolean) {
         const { selectedItems } = this.state;
 
@@ -112,7 +121,15 @@ export default class DataTable<TItem extends { id: TItemId }, TItemId> extends R
 
     render() {
         // Still loading the items
-        if (!this.state.isLoaded)
+        if (this.state.error)
+            return (
+                <PagePlaceholder
+                    icon={PagePlaceholderIcon.Unexpected}
+                    title={`Error while fetching ${this.props.itemType} (${this.state.error.code})`}
+                    description={this.state.error.message}
+                    />
+            );
+        else if (!this.state.isLoaded)
             return (
                 <Stack direction="column" alignItems="center">
                     <CircularProgress />

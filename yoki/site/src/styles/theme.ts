@@ -118,6 +118,13 @@ export const theme = extendTheme({
         dark,
     },
     components: {
+        JoyLink: {
+            styleOverrides: {
+                root: {
+                    userSelect: "all",
+                },
+            },
+        },
         JoyButton: {
             styleOverrides: {
                 root: {
