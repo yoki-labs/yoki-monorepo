@@ -1,6 +1,6 @@
 import { extendTheme } from "@mui/joy";
 
-import { mixHexColours } from "../utils/colorUtil";
+import { greyscaleColour, greyscaleHexColour, mixHexColours } from "../utils/colorUtil";
 import labsTheme from "./theme.json";
 
 const mostDark = labsTheme.spacedark[950];
@@ -35,8 +35,8 @@ const generateColourScheme = (typicalColour: string) => ({
     plainHoverBg: mixHexColours(typicalColour, mostDark, 0.9),
     plainActiveBg: mixHexColours(typicalColour, mostDark, 0.7),
     // Outlined
-    outlinedDisabledColor: mixHexColours(typicalColour, mostDark, 0.8),
-    outlinedDisabledBorder: mixHexColours(typicalColour, mostDark, 0.9),
+    outlinedDisabledColor: mixHexColours(greyscaleHexColour(typicalColour, 0.7), mostDark, 0.5),
+    outlinedDisabledBorder: mixHexColours(typicalColour, mostDark, 0.7),
     // Soft
     softBg: mixHexColours(typicalColour, mostDark, 0.8),
 });

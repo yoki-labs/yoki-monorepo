@@ -17,14 +17,6 @@ import { RoleType } from "@prisma/client";
 import NotPermittedPage from "../../../components/dashboard/pages/NotPermittedPage";
 import NoEarlyAccessPage from "../../../components/dashboard/pages/NoEarlyAccessPage";
 
-// type SessionProps = {
-    //     serverConfig: SanitizedServer | null;
-    //     user: Partial<{
-//         name: string | null;
-//         avatar: string | null;
-//     }>
-//     page: string;
-// };
 type BaseSessionProps = {
     user: Partial<{
         name: string | null;

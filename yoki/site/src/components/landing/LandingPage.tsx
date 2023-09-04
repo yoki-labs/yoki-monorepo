@@ -13,7 +13,7 @@ export const LandingPage = ({ children }: { children: React.ReactNode }) => {
             <Navbar />
             {/* Scrollable item */}
             <Box>
-                <Box sx={{ minHeight: "100vh" }} component="article">
+                <Box sx={{ minHeight: "100vh", display: "flex" }} component="article">
                     {children}
                 </Box>
                 <Footer />

@@ -21,7 +21,7 @@ export default function createServerRoute(methodToFunction: Record<string, Route
         if (!session?.user.id)
             return res.status(401).json({ error: true, message: "Must be logged in to use this function." });
         
-        // Server needs to exist and have appeals enabled
+        // Server needs to exist
         const server = await prisma.server.findFirst({ where: { serverId } });
         if (!server)
             return res.status(404).json({ error: true, message: "Invalid server ID." });

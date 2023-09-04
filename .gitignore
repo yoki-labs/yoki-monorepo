@@ -19,7 +19,7 @@ generated.prisma
 .vscode/
 .idea/
 *.env
-docs/
+./docs/
 .env.prod
 
 .next/

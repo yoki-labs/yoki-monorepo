@@ -1,4 +1,4 @@
-import { Box, Button, Chip, Divider, FormControl, FormHelperText, FormLabel, Input, Stack, Switch, Typography } from "@mui/joy";
+import { Box, Button, Chip, Divider, FormControl, FormHelperText, FormLabel, Input, Stack, Switch, Textarea, Typography } from "@mui/joy";
 import React from "react";
 import { FormEvent } from "react";
 import { BaseLabsFormField, LabsFormField, LabsFormFieldByType, LabsFormFieldType, LabsFormSection } from "./form";
@@ -87,6 +87,7 @@ export default class LabsForm extends React.Component<LabsFormProps, LabsFormSta
         const onSubmit = this.onSubmit.bind(this);
         const { sections, children, submitText, onCancel } = this.props;
         const { changed } = this.state;
+        const { displayActions } = this;
 
         return (
             <form id={`form-${this.formId}`} autoComplete="off" onSubmit={onSubmit}>
@@ -104,12 +105,12 @@ export default class LabsForm extends React.Component<LabsFormProps, LabsFormSta
                         </Box>
                     ))}
                 </Stack>
-                {this.displayActions && <Stack sx={{ mt: 2 }} direction="row" gap={1}>
+                {displayActions && <Stack sx={{ mt: 2 }} direction="row" gap={1}>
                     <Button disabled={!changed} variant="outlined" color="success" type="submit">
                         {submitText ?? "Save"}
                     </Button>
                     { onCancel &&
-                        <Button variant="outlined" onClick={this.onCancel.bind(this)} color="neutral" type="submit">
+                        <Button variant="plain" onClick={this.onCancel.bind(this)} color="neutral" type="submit">
                             Cancel
                         </Button> }
                 </Stack>}
@@ -145,6 +146,20 @@ export const fieldRenderers: FieldRendererRecord = {
                 disabled={field.disabled}
                 onChange={({ target }) => form.setValue(field, target.value)}
                 variant={field.variant ?? "outlined"}
+                />
+        </>,
+    [LabsFormFieldType.TextArea]: (form, id, field) =>
+        <>
+            <FormFieldHeader field={field} />
+            <Textarea
+                id={id}
+                placeholder={field.placeholder}
+                defaultValue={field.defaultValue ?? void 0}
+                size={field.size}
+                disabled={field.disabled}
+                onChange={({ target }) => form.setValue(field, target.value)}
+                variant={field.variant ?? "outlined"}
+                minRows={field.minRows}
                 />
         </>,
     [LabsFormFieldType.Number]: (form, id, field) =>

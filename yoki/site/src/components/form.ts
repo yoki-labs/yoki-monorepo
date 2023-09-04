@@ -65,6 +65,10 @@ interface LabsFormFieldInput<TType extends LabsFormFieldType, TValue> extends
     min?: number;
     max?: number;
 }
+interface LabsFormFieldInputLarge<TType extends LabsFormFieldType, TValue> extends LabsFormFieldInput<TType, TValue>
+{
+    minRows?: number;
+}
 interface LabsFormFieldSelectable<TType extends LabsFormFieldType> extends
     BaseLabsFormField<TType, string | number>,
     OptionedLabsFormField<TType, string | number, string | number>,
@@ -82,6 +86,8 @@ interface LabsFormFieldMultiSelection<TType extends LabsFormFieldType> extends
 export type LabsFormFieldByType<T extends LabsFormFieldType> =
     T extends LabsFormFieldType.Text
     ? LabsFormFieldInput<LabsFormFieldType.Text, string>
+    : T extends LabsFormFieldType.TextArea
+    ? LabsFormFieldInputLarge<LabsFormFieldType.TextArea, string>
     : T extends LabsFormFieldType.Number
     ? LabsFormFieldInput<LabsFormFieldType.Number, number>
     : T extends LabsFormFieldType.Select
@@ -94,6 +100,7 @@ export type LabsFormFieldByType<T extends LabsFormFieldType> =
 
 export type LabsFormField =
     LabsFormFieldByType<LabsFormFieldType.Text> |
+    LabsFormFieldByType<LabsFormFieldType.TextArea> |
     LabsFormFieldByType<LabsFormFieldType.Number> |
     LabsFormFieldByType<LabsFormFieldType.Select> |
     LabsFormFieldByType<LabsFormFieldType.Toggle> |
@@ -102,6 +109,7 @@ export type LabsFormField =
 
 export enum LabsFormFieldType {
     Text,
+    TextArea,
     Number,
     Select,
     Toggle,
