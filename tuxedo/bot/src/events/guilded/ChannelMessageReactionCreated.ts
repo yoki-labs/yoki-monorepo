@@ -13,6 +13,7 @@ export default {
         else if (emote.id === blackjackReactionHit) return ctx.minigameUtil.addBlackjackHit(serverId, messageId, createdBy);
         else if (emote.id === blackjackReactionStand || emote.id === blackjackReactionStandAce1)
             return ctx.minigameUtil.addBlackjackStand(serverId, messageId, createdBy, emote.id === blackjackReactionStand);
+        return null;
     },
     name: "messageReactionCreated",
 } satisfies GEvent<"messageReactionCreated">;
