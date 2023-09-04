@@ -15,6 +15,7 @@ import Layout from "../../../components/dashboard/layout/Layout";
 import rest from "../../../guilded";
 import { RoleType } from "@prisma/client";
 import NotPermittedPage from "../../../components/dashboard/pages/NotPermittedPage";
+import NoEarlyAccessPage from "../../../components/dashboard/pages/NoEarlyAccessPage";
 
 // type SessionProps = {
     //     serverConfig: SanitizedServer | null;
@@ -34,12 +35,12 @@ type BaseSessionProps = {
 };
 type SessionProps =
     (BaseSessionProps & {
-        code: 0,
+        code: null;
         serverConfig: SanitizedServer;
         page: string;
     }) |
     (BaseSessionProps & {
-        code: 1 | 2,
+        code: "NOT_FOUND" | "UNPERMITTED" | "NO_FLAG",
     })
 ;
 
@@ -71,7 +72,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx): Promise<GetSe
 
     // No server found
     if (!serverInDb)
-        return { props: { code: 1, servers, user, currentServer: referencedServer, } };
+        return { props: { code: "NOT_FOUND", servers, user, currentServer: referencedServer, } };
 
     // If they don't have a proper role to manage the server, then don't allow using dashboard functions
     const member = await rest.router.members
@@ -82,8 +83,10 @@ export const getServerSideProps: GetServerSideProps = async (ctx): Promise<GetSe
     // Pretend server doesn't exist by also giving 404 instead of 403
     // Not much use for privacy, but just giving less info I guess
     if (!member)
-        return { props: { code: 1, servers, user, currentServer: referencedServer, } };
-    
+        return { props: { code: "NOT_FOUND", servers, user, currentServer: referencedServer, } };
+    else if (!serverInDb.flags.includes("EARLY_ACCESS"))
+        return { props: { code: "NO_FLAG", servers, user, currentServer: referencedServer, } };
+
     const adminRoles = await prisma.role
         .findMany({
             where: {
@@ -96,14 +99,14 @@ export const getServerSideProps: GetServerSideProps = async (ctx): Promise<GetSe
         );
 
     if (!(member?.isOwner || member?.roleIds.find((x) => adminRoles.includes(x))))
-        return { props: { code: 2, servers, user, currentServer: referencedServer, } };
+        return { props: { code: "UNPERMITTED", servers, user, currentServer: referencedServer!, } };
 
     return {
         props: {
-            code: 0,
+            code: null,
             servers,
             user,
-            currentServer: referencedServer,
+            currentServer: referencedServer!,
             serverConfig: sanitizeServer(serverInDb),
             page: page as string,
         }
@@ -119,10 +122,17 @@ export default function Dashboard(props: SessionProps) {
             </Layout>
         );
     // No ADMIN code
-    else if (props.code === 2)
+    else if (props.code === "UNPERMITTED")
         return (
             <LayoutWrapper {...props}>
                 <NotPermittedPage currentServer={props.currentServer} />
+            </LayoutWrapper>
+        );
+    // No EARLY ACCESS
+    else if (props.code === "NO_FLAG")
+        return (
+            <LayoutWrapper {...props}>
+                <NoEarlyAccessPage currentServer={props.currentServer} />
             </LayoutWrapper>
         );
 
