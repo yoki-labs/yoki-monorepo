@@ -1,3 +1,4 @@
+import { ContentIgnoreType } from "@prisma/client";
 import { createCommandHandler } from "@yokilabs/bot";
 import { Colors } from "@yokilabs/utils";
 import { stripIndents } from "common-tags";
@@ -11,7 +12,6 @@ import type { GEvent, RoleType, Server } from "../../typings";
 import { moderateContent } from "../../utils/moderation";
 import { errorLoggerS3 } from "../../utils/s3";
 import { roleValues } from "../../utils/util";
-import { ContentIgnoreType } from "@prisma/client";
 
 const { fetchPrefix, parseCommand, fetchCommandInfo, resolveArguments, checkUserPermissions, tryExecuteCommand } = createCommandHandler<YokiClient, Server, Command, RoleType>(
     roleValues,
@@ -141,8 +141,7 @@ export default {
         const moduleEnabledStatus = isCommandModule && server[`${command.module}Enabled`];
         const commandModuleMessage =
             isCommandModule &&
-            `${moduleEnabledStatus ? "" : "⚠️"} The \`${command.module}\` module is ${
-                moduleEnabledStatus ? "enabled" : `disabled. To enable it, run \`${server.getPrefix()}module enable ${command.module}\``
+            `${moduleEnabledStatus ? "" : "⚠️"} The \`${command.module}\` module is ${moduleEnabledStatus ? "enabled" : `disabled. To enable it, run \`${server.getPrefix()}module enable ${command.module}\``
             }.`;
         const subCommand = await fetchCommandInfo([message, ctx], prefix, command, parsedArgs, commandModuleMessage || undefined);
 
@@ -170,7 +169,8 @@ const moderateMessage = (ctx: YokiClient, server: Server, message: Message, memb
         message.channelId,
         ContentIgnoreType.MESSAGE,
         FilteredContent.Message,
-        member,
+        member.id,
+        member.roleIds,
         message.content,
         message.mentions,
         () =>

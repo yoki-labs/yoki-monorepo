@@ -30,7 +30,7 @@ export default {
         }
 
         // scan the updated message content
-        await moderateContent(ctx, server, message.channelId, "MESSAGE", FilteredContent.Message, message.authorId, message.content, message.mentions, () =>
+        await moderateContent(ctx, server, message.channelId, "MESSAGE", FilteredContent.Message, message.authorId, member?.roleIds ?? [], message.content, message.mentions, () =>
             ctx.messages.delete(message.channelId, message.id)
         );
 

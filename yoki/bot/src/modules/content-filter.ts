@@ -1,6 +1,5 @@
 import { ContentFilter, FilterMatching, Preset } from "@prisma/client";
 import { Colors } from "@yokilabs/utils";
-import { Member } from "guilded.js";
 
 import { ContentFilterScan, Server, Severity } from "../typings";
 import { IMAGE_REGEX } from "../utils/matching";
@@ -23,7 +22,7 @@ export class ContentFilterUtil extends BaseFilterUtil {
     readonly presets = wordPresets;
 
     async scanMessageMedia(serverId: string, channelId: string, content: string, userId: string, onDelete: () => Promise<unknown>): Promise<boolean> {
-        //const { serverId, channelId, content, authorId: userId, id: messageId } = message;
+        // const { serverId, channelId, content, authorId: userId, id: messageId } = message;
         const matches = [...content.matchAll(IMAGE_REGEX)];
         if (!matches.length)
             return false;
@@ -54,7 +53,7 @@ export class ContentFilterUtil extends BaseFilterUtil {
                         undefined,
                         { isPrivate: true }
                     );
-                } catch(e) {
+                } catch (e) {
                 }
 
                 return true;
@@ -66,7 +65,8 @@ export class ContentFilterUtil extends BaseFilterUtil {
 
     // This will scan any content that is piped into it for breaking the content filter or preset list and will apply the associated punishment in the final param as a callback
     async scanContent({
-        member,
+        userId,
+        roleIds,
         text,
         filteredContent,
         channelId,
@@ -74,7 +74,8 @@ export class ContentFilterUtil extends BaseFilterUtil {
         presets,
         resultingAction,
     }: {
-        member: Member;
+        userId: string;
+        roleIds: number[];
         text: string;
         filteredContent: FilteredContent;
         channelId: string | null;
@@ -93,7 +94,7 @@ export class ContentFilterUtil extends BaseFilterUtil {
 
         if (!bannedWordsList.length && !enabledPresets.length)
             return false;
-        void this.client.amp.logEvent({ event_type: "MESSAGE_TEXT_SCAN", user_id: member.id, event_properties: { serverId: server.serverId } });
+        void this.client.amp.logEvent({ event_type: "MESSAGE_TEXT_SCAN", user_id: userId, event_properties: { serverId: server.serverId } });
 
         // Sanitize data into standard form
         const lowerCasedMessageContent = text.toLowerCase();
@@ -142,15 +143,15 @@ export class ContentFilterUtil extends BaseFilterUtil {
         const modRoles = await this.client.prisma.role.findMany({ where: { serverId } });
 
         // If the server doesn't have "filterOnMods" setting enabled and a mod violates the filter/preset, ignore
-        if (!server.filterOnMods && modRoles.some((modRole) => member.roleIds.includes(modRole.roleId)))
+        if (!server.filterOnMods && modRoles.some((modRole) => roleIds.includes(modRole.roleId)))
             return false;
 
         // Check whether this member exceeds the infraction threshold for this server
-        const exceededThreshold = await this.getMemberExceedsThreshold(server, member.id, triggeredWord.infractionPoints);
+        const exceededThreshold = await this.getMemberExceedsThreshold(server, userId, triggeredWord.infractionPoints);
 
         void this.client.amp.logEvent({
             event_type: "AUTOMOD_ACTION",
-            user_id: member.id,
+            user_id: userId,
             event_properties: { serverId, action: exceededThreshold ?? triggeredWord.severity, infractionPoints: triggeredWord.infractionPoints },
         });
 
@@ -165,7 +166,7 @@ export class ContentFilterUtil extends BaseFilterUtil {
             // The place where unmute messages will happen
             channelId,
             // The offending user
-            targetId: member.id,
+            targetId: userId,
             expiresAt:
                 (exceededThreshold ?? triggeredWord.severity) === Severity.MUTE
                     ? new Date(server.muteInfractionDuration ? Date.now() + server.muteInfractionDuration : Date.now() + 1000 * 60 * 60 * 12)
@@ -180,15 +181,15 @@ export class ContentFilterUtil extends BaseFilterUtil {
             // Perform resulting action, for message filtering it's deleting the original message
             await resultingAction();
         } catch (err: any) {
-            if (err instanceof Error) await errorLoggerS3(this.client, "AUTOMOD_ACTION", err, { serverId, userId: member.id, channelId });
+            if (err instanceof Error) await errorLoggerS3(this.client, "AUTOMOD_ACTION", err, { serverId, userId, channelId });
         }
 
         // Execute the punishing action. If this is a threshold exceeding, execute the punishment associated with the exceeded threshold
         // Otherwise, execute the action associated with this specific filter word or preset entry
         if (exceededThreshold)
-            await this.severityAction[exceededThreshold](member.user!.id, server, channelId, filteredContent, null)
+            await this.severityAction[exceededThreshold](userId, server, channelId, filteredContent, null)
         else
-            await this.severityAction[triggeredWord.severity]?.(member.user!.id, server, channelId, filteredContent, null);
+            await this.severityAction[triggeredWord.severity]?.(userId, server, channelId, filteredContent, null);
 
         return true;
     }
@@ -203,10 +204,10 @@ export class ContentFilterUtil extends BaseFilterUtil {
         return contentFilter.matching === FilterMatching.WORD
             ? phrase === contentFilter.content
             : contentFilter.matching === FilterMatching.INFIX
-            ? phrase.includes(contentFilter.content)
-            : contentFilter.matching === FilterMatching.POSTFIX
-            ? phrase.endsWith(contentFilter.content)
-            : phrase.startsWith(contentFilter.content);
+                ? phrase.includes(contentFilter.content)
+                : contentFilter.matching === FilterMatching.POSTFIX
+                    ? phrase.endsWith(contentFilter.content)
+                    : phrase.startsWith(contentFilter.content);
     }
 
     override onUserWarn(userId: string, _serv: Server, channelId: string | null, filteredContent: FilteredContent) {

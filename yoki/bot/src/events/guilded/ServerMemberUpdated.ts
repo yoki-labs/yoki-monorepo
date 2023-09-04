@@ -25,9 +25,8 @@ export default {
                 fields: [
                     {
                         name: "Nickname Changes",
-                        value: `${oldMember ? (oldMember.nickname ? inlineQuote(oldMember.nickname) : "No nickname") : "Unknown nickname"} -> ${
-                            nickname ? inlineQuote(nickname) : "No nickname"
-                        }`,
+                        value: `${oldMember ? (oldMember.nickname ? inlineQuote(oldMember.nickname) : "No nickname") : "Unknown nickname"} -> ${nickname ? inlineQuote(nickname) : "No nickname"
+                            }`,
                     },
                 ],
                 occurred: new Date().toISOString(),
@@ -44,9 +43,11 @@ export default {
                 void ctx.amp.logEvent({ event_type: "HOISTER_RENAMED_JOIN", user_id: userId, event_properties: { serverId } });
                 return ctx.members.updateNickname(serverId, userId, nonHoistingName?.trim() || "NON-HOISTING NAME");
             }
+            const member = await ctx.members.fetch(serverId, userId).catch(() => null);
 
             return ctx.contentFilterUtil.scanContent({
                 userId,
+                roleIds: member?.roleIds ?? oldMember?.roleIds ?? [],
                 text: name,
                 filteredContent: FilteredContent.ServerContent,
                 channelId: null,
@@ -54,6 +55,8 @@ export default {
                 resultingAction: () => ctx.members.resetNickname(serverId, userId),
             });
         }
+
+        return null;
     },
     name: "memberUpdated",
 } satisfies GEvent<"memberUpdated">;

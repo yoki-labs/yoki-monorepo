@@ -30,6 +30,7 @@ export default {
             "FORUM_TOPIC",
             FilteredContent.ChannelContent,
             forumTopic.createdBy,
+            member?.roleIds ?? [],
             // To moderate forum titles as well
             `${forumTopic.title}\n${forumTopic.content ?? ""}`,
             forumTopic.mentions,

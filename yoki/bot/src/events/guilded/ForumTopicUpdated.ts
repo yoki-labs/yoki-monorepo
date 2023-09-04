@@ -23,6 +23,7 @@ export default {
 
         // Scanning
         const deletion = () => ctx.rest.delete(`/channels/${forumTopic.channelId}/topics/${forumTopic.id}`);
+        const member = await ctx.members.fetch(serverId, forumTopic.createdBy).catch(() => null);
 
         await moderateContent(
             ctx,
@@ -31,6 +32,7 @@ export default {
             "FORUM_TOPIC",
             FilteredContent.ChannelContent,
             forumTopic.createdBy,
+            member?.roleIds ?? [],
             `${forumTopic.title}\n${forumTopic.content ?? ""}`,
             forumTopic.mentions,
             deletion
@@ -51,9 +53,8 @@ export default {
             where: editedTopicLogChannel.channelId,
             title: "Forum Topic Edited",
             serverId: server.serverId,
-            description: `A topic ${inlineQuote(forumTopic.title)} from <@${forumTopic.createdBy}> (${inlineCode(forumTopic.createdBy)}) has been edited in [#${
-                channel.name
-            }](${channelURL})
+            description: `A topic ${inlineQuote(forumTopic.title)} from <@${forumTopic.createdBy}> (${inlineCode(forumTopic.createdBy)}) has been edited in [#${channel.name
+                }](${channelURL})
 
 			Topic ID: ${inlineCode(forumTopic.id)}
 			Channel ID: ${inlineCode(forumTopic.channelId)}
