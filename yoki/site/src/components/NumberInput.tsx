@@ -34,15 +34,23 @@ export default class NumberInput extends React.Component<Props, State> {
         if (target.validity.badInput)
             return this.setState({ isInvalid: true });
 
-        this.setState({ isInvalid: false });
-
         // Just set the valid value instead of erroring out
         if (typeof max === "number" && target.valueAsNumber > max)
-            return form.setValue(field, max);
+            form.setValue(field, max);
         else if (typeof min === "number" && target.valueAsNumber < min)
-            return form.setValue(field, min);
+            form.setValue(field, min);
+        else
+            form.setValue(field, target.valueAsNumber);
 
-        form.setValue(field, target.valueAsNumber);
+        this.setState({ isInvalid: false });
+    }
+
+    addValue(value: number) {
+        const { form, field } = this.props;
+        const { currentValue } = this;
+
+        form.setValue(field, currentValue + value);
+        this.setState({});
     }
 
     render() {
@@ -83,7 +91,7 @@ export default class NumberInput extends React.Component<Props, State> {
                                     variant="outlined"
                                     color="neutral"
                                     size="sm"
-                                    onClick={() => form.setValue(field, currentValue + 1)}
+                                    onClick={() => this.addValue(1)}
                                 >
                                     <FontAwesomeIcon icon={faChevronUp} style={{ width: 10, height: 10 }} />
                                 </IconButton>
@@ -93,7 +101,7 @@ export default class NumberInput extends React.Component<Props, State> {
                                     variant="outlined"
                                     color="neutral"
                                     size="sm"
-                                    onClick={() => form.setValue(field, currentValue - 1)}
+                                    onClick={() => this.addValue(-1)}
                                 >
                                     <FontAwesomeIcon icon={faChevronDown} style={{ width: 10, height: 10 }} />
                                 </IconButton>

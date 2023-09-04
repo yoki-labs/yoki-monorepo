@@ -7,6 +7,7 @@ import { severityOptions } from "../../../utils/actionUtil";
 import { Severity } from "@prisma/client";
 
 type Props = {
+    serverId: string;
     title: string;
     description: string;
     preset?: SanitizedPreset;
@@ -21,19 +22,41 @@ export default class AutomodPreset extends React.Component<Props, State> {
     constructor(props: Props) {
         super(props);
 
+        console.log("Preset constructor", props);
         this.state = { isEnabled: !!props.preset };
     }
 
-    onToggle(isEnabled: boolean) {
-        console.log("Preset value changed", [isEnabled]);
-
+    async onToggle(isEnabled: boolean) {
         this.setState({ isEnabled });
+
+        return this.togglePreset(isEnabled ? "POST" : "DELETE");
+    }
+
+    async togglePreset(method: string) {
+        const { serverId, presetName } = this.props;
+        
+        return fetch(`/api/servers/${serverId}/presets/${presetName}`, {
+            method,
+            headers: { "content-type": "application/json" },
+        });
+    }
+    
+    async onPresetUpdate(severity: Severity, infractionPoints: number) {
+        const { serverId, presetName } = this.props;
+
+        console.log("Preset update", { severity, infractionPoints });
+        return fetch(`/api/servers/${serverId}/presets/${presetName}`, {
+            method: "PATCH",
+            headers: { "content-type": "application/json" },
+            body: JSON.stringify({ severity, infractionPoints }),
+        });
     }
 
     render() {
         const { title, description, preset } = this.props;
         const { isEnabled } = this.state;
 
+        console.log("Render preset props", this.props, this.state);
         return (
             <Card>
                 <CardContent>
@@ -52,8 +75,8 @@ export default class AutomodPreset extends React.Component<Props, State> {
                                     },
                                     {
                                         type: LabsFormFieldType.Number,
-                                        name: "Infraction Points",
-                                        prop: "infractions",
+                                        name: "Infraction points",
+                                        prop: "infractionPoints",
                                         placeholder: "A whole number",
                                         defaultValue: preset?.infractionPoints ?? 5,
                                         disabled: !isEnabled,
@@ -63,14 +86,14 @@ export default class AutomodPreset extends React.Component<Props, State> {
                                 ]
                             }
                         ]}
-                        onSubmit={() => console.log("On preset change")}
+                        onSubmit={({ severity, infractionPoints }) => this.onPresetUpdate(severity as Severity, infractionPoints as number)}
                     >
                         <Box sx={{ mb: 2 }}>
                             <Stack gap={4} direction="row">
                                 <Typography className="grow" fontWeight="md" level="title-md">
                                     {title}
                                 </Typography>
-                                <Switch className="toggle justify-end" defaultChecked={!!preset} onChange={({ target }) => this.onToggle(target.checked)} />
+                                <Switch className="toggle justify-end" defaultChecked={isEnabled} checked={isEnabled} onChange={({ target }) => this.onToggle(target.checked)} />
                             </Stack>
                             <Typography level="body-md">{description}</Typography>
                         </Box>

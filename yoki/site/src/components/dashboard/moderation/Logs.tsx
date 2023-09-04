@@ -128,12 +128,12 @@ export default class LogsPage extends React.Component<DashboardPageProps, State>
 function LogsPageSkeleton() {
     return (
         <Box sx={{ overflow: "hidden" }}>
-            <Skeleton animation="wave" width="100%" height={45} sx={{ position: "initial" }} />
+            <Skeleton animation="wave" width="100%" height={45} />
             <Card sx={{ mt: 4 }}>
                 <Stack direction="row" gap={2} alignItems="center">
-                    <Skeleton animation="wave" variant="circular" width={40} height={40} sx={{ position: "initial" }} />
-                    <Skeleton animation="wave" width={242} height={40} sx={{ position: "initial" }} />
-                    <Skeleton animation="wave" width={178} height={40} sx={{ position: "initial" }} />
+                    <Skeleton animation="wave" variant="circular" width={40} height={40} />
+                    <Skeleton animation="wave" width={242} height={40} />
+                    <Skeleton animation="wave" width={178} height={40} />
                 </Stack>
             </Card>
             <LogsPageLogSkeleton />

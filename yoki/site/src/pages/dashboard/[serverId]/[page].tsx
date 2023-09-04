@@ -39,10 +39,7 @@ type SessionProps =
         page: string;
     }) |
     (BaseSessionProps & {
-        code: 1,
-    }) |
-    (BaseSessionProps & {
-        code: 2,
+        code: 1 | 2,
     })
 ;
 
@@ -114,12 +111,14 @@ export const getServerSideProps: GetServerSideProps = async (ctx): Promise<GetSe
 };
 
 export default function Dashboard(props: SessionProps) {
+    // All good
     if (!props.code)
         return (
             <Layout {...props}>
                 <DashForm serverConfig={props.serverConfig} page={props.page} />
             </Layout>
         );
+    // No ADMIN code
     else if (props.code === 2)
         return (
             <LayoutWrapper {...props}>
@@ -127,6 +126,7 @@ export default function Dashboard(props: SessionProps) {
             </LayoutWrapper>
         );
 
+    // No server
     return (
         <LayoutWrapper {...props}>
             <NoServerPage currentServer={props.currentServer} />
