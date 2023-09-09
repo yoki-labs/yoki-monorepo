@@ -6,6 +6,7 @@ import LabsForm from "../LabsForm";
 import { LabsFormFieldType } from "../form";
 import { checkServerIdentity } from "tls";
 import ms from "ms";
+import { notifyFetchError } from "../../utils/errorUtil";
 
 export default function AppealsPageDisplay(props: AppealsSessionProps) {
     const { code } = props;
@@ -74,7 +75,7 @@ export default function AppealsPageDisplay(props: AppealsSessionProps) {
                             ]
                         }
                     ]}
-                    onSubmit={({ reason }) => sendAppeal(server.id, reason as string)}
+                    onSubmit={async ({ reason }) => sendAppeal(server.id, reason as string)}
                     submitText="Send appeal"
                     alwaysDisplayActions
                     />
@@ -88,7 +89,8 @@ async function sendAppeal(serverId: string, content: string) {
         method: "POST",
         body: JSON.stringify({ content }),
         headers: { "content-type": "application/json" },
-    });
+    })
+        .catch(notifyFetchError.bind(null, "Error while sending an appeal"));
 }
 
 function AppealsPagePlaceholder({ icon, title, description }: { icon: PagePlaceholderIcon, title: string, description: string }) {

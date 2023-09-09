@@ -6,6 +6,7 @@ import { DashboardPageProps } from "../pages";
 import PagePlaceholder, { PagePlaceholderIcon } from "../../PagePlaceholder";
 import AutomodPreset from "./AutomodPreset";
 import { SanitizedPreset } from "../../../lib/@types/db";
+import { notifyFetchError } from "../../../utils/errorUtil";
 
 type State = {
     isLoaded: boolean;
@@ -38,14 +39,19 @@ export default class AutomodPage extends React.Component<DashboardPageProps, Sta
                 return response.json();
             })
             .then(({ presets }) => this.setState({ isLoaded: true, presets }))
-            .catch((errorResponse) => console.error("Error while fetching data:", errorResponse));
+            .catch(async (errorResponse) => this.onPresetFetchError(errorResponse));
+    }
+
+    async onPresetFetchError(errorResponse: Response) {
+        this.setState({ isLoaded: true, presets: [] });
+
+        notifyFetchError("Error while fetching preset data", errorResponse);
     }
 
     render() {
         const { serverConfig } = this.props;
         const { isLoaded, presets } = this.state;
 
-        console.log("Presets", { presets });
         return (
             <>
                 <Typography level="h4" gutterBottom>Auto-moderation</Typography>

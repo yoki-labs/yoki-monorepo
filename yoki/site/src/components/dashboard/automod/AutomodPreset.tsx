@@ -5,6 +5,7 @@ import LabsForm from "../../LabsForm";
 import { LabsFormFieldType } from "../../form";
 import { severityOptions } from "../../../utils/actionUtil";
 import { Severity } from "@prisma/client";
+import { notifyFetchError } from "../../../utils/errorUtil";
 
 type Props = {
     serverId: string;
@@ -22,7 +23,6 @@ export default class AutomodPreset extends React.Component<Props, State> {
     constructor(props: Props) {
         super(props);
 
-        console.log("Preset constructor", props);
         this.state = { isEnabled: !!props.preset };
     }
 
@@ -38,25 +38,25 @@ export default class AutomodPreset extends React.Component<Props, State> {
         return fetch(`/api/servers/${serverId}/presets/${presetName}`, {
             method,
             headers: { "content-type": "application/json" },
-        });
+        })
+            .catch(notifyFetchError.bind(null, "Error while toggling presets"));
     }
     
     async onPresetUpdate(severity: Severity, infractionPoints: number) {
         const { serverId, presetName } = this.props;
 
-        console.log("Preset update", { severity, infractionPoints });
         return fetch(`/api/servers/${serverId}/presets/${presetName}`, {
             method: "PATCH",
             headers: { "content-type": "application/json" },
             body: JSON.stringify({ severity, infractionPoints }),
-        });
+        })
+            .catch(notifyFetchError.bind(null, "Error while updating preset data"));
     }
 
     render() {
         const { title, description, preset } = this.props;
         const { isEnabled } = this.state;
 
-        console.log("Render preset props", this.props, this.state);
         return (
             <Card>
                 <CardContent>

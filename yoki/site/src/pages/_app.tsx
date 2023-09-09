@@ -14,6 +14,8 @@ import { ReactElement, ReactNode } from "react";
 import { QueryClient, QueryClientProvider } from "react-query";
 
 import { theme } from "../styles/theme";
+import { Toaster } from "react-hot-toast";
+import LabsToast from "../components/LabsToast";
 
 const ogDescription = "Meet Yoki, your moderation companion. Guilded's first moderation bot.";
 const ogUrl = "https://yoki.gg/";
@@ -66,6 +68,9 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }: AppPropsWith
                         <main id="main" className={inter.className}>
                             <Component {...pageProps} />
                         </main>
+                        <Toaster>
+                            {(toast) => <LabsToast toast={toast} />}
+                        </Toaster>
                     </CssVarsProvider>
                     {/* </gqlClientContext.Provider> */}
                 </QueryClientProvider>

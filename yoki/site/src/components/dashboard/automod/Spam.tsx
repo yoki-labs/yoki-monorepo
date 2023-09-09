@@ -5,6 +5,7 @@ import DashboardModule from "../DashboardModule";
 import { DashboardPageProps } from "../pages";
 import LabsForm, { LabsFormFieldValueMap } from "../../LabsForm";
 import { LabsFormFieldType } from "../../form";
+import { notifyFetchError } from "../../../utils/errorUtil";
 
 export default class SpamPage extends React.Component<DashboardPageProps> {
     constructor(props: DashboardPageProps) {
@@ -19,7 +20,8 @@ export default class SpamPage extends React.Component<DashboardPageProps> {
             method: "PATCH",
             headers: { "content-type": "application/json" },
             body: JSON.stringify({ spamFrequency, spamMentionFrequency, spamInfractionPoints }),
-        });
+        })
+            .catch(notifyFetchError.bind(null, "Error while updating server data for spam settings"));
     }
 
     render() {

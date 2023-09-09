@@ -6,6 +6,8 @@ import React, { ReactNode } from "react";
 import PagePlaceholder, { PagePlaceholderIcon } from "./PagePlaceholder";
 import LabsOverflowButton from "./LabsOverflowButton";
 import { DeletionConfirmationModal } from "./DeletionConfirmationModal";
+import { toast } from "react-hot-toast";
+import { notifyFetchError } from "../utils/errorUtil";
 
 // type State = {
 //     isLoaded: boolean;
@@ -96,9 +98,7 @@ export default class DataTable<TItem extends { id: TItemId }, TItemId> extends R
             .then(({ items, maxPages }) =>
                 this.setState({ items, maxPages, page, search })
             )
-            .catch((error) =>
-                console.error("Error while deleting data table items:", error)
-            );
+            .catch(notifyFetchError.bind(null, `Error while deleting data table item`));
     }
 
     async onFetchError(errorResponse: Response) {

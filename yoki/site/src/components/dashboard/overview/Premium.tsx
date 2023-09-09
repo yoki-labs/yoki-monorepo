@@ -5,6 +5,7 @@ import LabsIconCard from "../../LabsIconCard";
 import { faCheckCircle, faHeart } from "@fortawesome/free-solid-svg-icons";
 import { PremiumType } from "@prisma/client";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Link from "next/link";
 
 const tierPerks: Record<PremiumType | "Copper", string[]> = {
     Copper: [
@@ -97,7 +98,9 @@ export function PremiumTier(props: PremiumTierProps) {
                 </List>
             </Box>
             <Box sx={{ mt: 3, width: "100%" }}>
-                <Button variant="outlined" disabled={subscribed} sx={{ width: "100%" }}>Subscribe</Button>
+                <Link href="/premium" style={{ textDecoration: "none" }}>
+                    <Button variant="outlined" disabled={subscribed} sx={{ width: "100%" }}>Subscribe</Button>
+                </Link>
             </Box>
         </LabsIconCard>
     );

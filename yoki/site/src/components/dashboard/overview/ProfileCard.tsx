@@ -6,6 +6,8 @@ import { LabsFormFieldType } from "../../form";
 import { timezones } from "@yokilabs/utils";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faRocket } from "@fortawesome/free-solid-svg-icons";
+import { toast } from "react-hot-toast";
+import { notifyFetchError } from "../../../utils/errorUtil";
 
 export type Props = {
     serverConfig: SanitizedServer;
@@ -34,6 +36,7 @@ export default class DashboardProfileCard extends React.Component<Props> {
             headers: { "content-type": "application/json" },
             body: JSON.stringify({ prefix, timezone })
         })
+            .catch(notifyFetchError.bind(null, "Error while updating server data"));
     }
 
     render() {

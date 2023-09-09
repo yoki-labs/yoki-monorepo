@@ -8,6 +8,8 @@ import { faExclamationTriangle } from "@fortawesome/free-solid-svg-icons";
 import { DashboardPageProps } from "../pages";
 import PagePlaceholder, { PagePlaceholderIcon } from "../../PagePlaceholder";
 import { LogChannelType } from "@prisma/client";
+import { toast } from "react-hot-toast";
+import { notifyFetchError } from "../../../utils/errorUtil";
 
 type State = {
     isLoaded: boolean;
@@ -35,10 +37,10 @@ export default class LogsPage extends React.Component<DashboardPageProps, State>
                 return response.json();
             })
             .then(({ logs }) => this.setState({ isLoaded: true, logs }))
-            .catch(async (errorResponse) => this.onError(errorResponse));
+            .catch(async (errorResponse) => this.onFetchError(errorResponse));
     }
 
-    async onError(errorResponse: Response) {
+    async onFetchError(errorResponse: Response) {
         const error = await errorResponse.json();
 
         console.log("Error while fetching logs data:", error);
@@ -60,7 +62,7 @@ export default class LogsPage extends React.Component<DashboardPageProps, State>
                 return response.json();
             })
             .then(({ logs }) => this.setState({ logs }))
-            .catch((errorResponse) => console.error("Error while fetching data:", errorResponse));
+            .catch(notifyFetchError.bind(null, "Error while updating log data"));
     }
 
     render() {

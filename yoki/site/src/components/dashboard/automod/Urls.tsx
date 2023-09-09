@@ -14,6 +14,7 @@ import { formatDate } from "@yokilabs/utils";
 import LabsForm from "../../LabsForm";
 import { LabsFormFieldType } from "../../form";
 import { Severity } from "@prisma/client";
+import { notifyFetchError } from "../../../utils/errorUtil";
 
 export default class UrlsPage extends React.Component<DashboardPageProps> {
     constructor(props: DashboardPageProps) {
@@ -61,6 +62,7 @@ export default class UrlsPage extends React.Component<DashboardPageProps> {
             headers: { "content-type": "application/json" },
             body: JSON.stringify({ urlFilterIsWhitelist, linkSeverity, linkInfractionPoints })
         })
+            .catch(notifyFetchError.bind(null, "Error while creating role data"));
     }
 
     render() {

@@ -9,6 +9,8 @@ import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { optionifyRoles } from "./role";
 import BaseRolesForm from "./BaseRoleForm";
 import PagePlaceholder, { PagePlaceholderIcon } from "../../PagePlaceholder";
+import { toast } from "react-hot-toast";
+import { notifyFetchError } from "../../../utils/errorUtil";
 
 type Role = SanitizedRole;
 
@@ -38,10 +40,12 @@ export default class RolesPage extends React.Component<DashboardPageProps, State
                 return response.json();
             })
             .then(({ roles, serverRoles }) => this.setState({ isLoaded: true, roles, serverRoles }))
-            .catch(async (errorResponse) => this.onError(errorResponse));
+            .catch(async (errorResponse) =>
+                this.onFetchError(errorResponse)
+            );
     }
 
-    async onError(errorResponse: Response) {
+    async onFetchError(errorResponse: Response) {
         const error = await errorResponse.json();
 
         console.log("Error while fetching role data:", error);
@@ -63,7 +67,8 @@ export default class RolesPage extends React.Component<DashboardPageProps, State
         return fetch(`/api/servers/${serverId}/roles/${roleId}`, {
             method: "DELETE",
             headers: { "content-type": "application/json" },
-        });
+        })
+            .catch(notifyFetchError.bind(null, "Error while deleting staff role"));
     }
 
     async onRoleUpdate(role: SanitizedRole, data: { newRoleId: number | null, newType: RoleType | null, }) {
@@ -84,7 +89,8 @@ export default class RolesPage extends React.Component<DashboardPageProps, State
             method: "PATCH",
             headers: { "content-type": "application/json" },
             body: JSON.stringify(data)
-        });
+        })
+            .catch(notifyFetchError.bind(null, "Error while updating role data"));
     }
     
     async onRoleCreate(roleId: number, type: RoleType) {
@@ -99,7 +105,8 @@ export default class RolesPage extends React.Component<DashboardPageProps, State
             method: "POST",
             headers: { "content-type": "application/json" },
             body: JSON.stringify({ roleId, type })
-        });
+        })
+            .catch(notifyFetchError.bind(null, "Error while creating role data"));
     }
 
     render() {

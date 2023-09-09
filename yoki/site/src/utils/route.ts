@@ -59,24 +59,10 @@ export default function createServerRoute(methodToFunction: Record<string, Route
     }
 }
 
-// const GetLogsRoute = async (req: NextApiRequest, res: NextApiResponse) => {
+export const allowedRoleTypes = [RoleType.ADMIN, RoleType.MOD, RoleType.MINIMOD];
 
-//     const logChannels = await prisma.logChannel
-//         .findMany({
-//             where: {
-//                 serverId: server.serverId,
-//             }
-//         });
+export async function roleExistsInServer(serverId: string, roleId: number) {
+    const { roles: serverRoles } = await rest.router.roles.roleReadMany({ serverId });
 
-//     return res.status(200).json({
-//         // To get rid of things like tokens and useless information
-//         logs: logChannels.map(({ serverId, channelId, type, createdAt }) => ({
-//             serverId,
-//             channelId,
-//             type,
-//             createdAt,
-//         }))
-//     });
-// };
-
-// export default createRoute;
+    return serverRoles.find((x) => x.id === roleId);
+}

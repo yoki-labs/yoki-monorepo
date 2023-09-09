@@ -1,4 +1,4 @@
-import { faEnvelope, faLink } from "@fortawesome/free-solid-svg-icons";
+import { faLink } from "@fortawesome/free-solid-svg-icons";
 import { Box } from "@mui/joy";
 import React from "react";
 import DashboardModule from "../DashboardModule";

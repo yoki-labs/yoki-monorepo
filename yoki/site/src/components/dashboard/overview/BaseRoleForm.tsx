@@ -1,4 +1,5 @@
 import { SanitizedServer } from "../../../lib/@types/db";
+import { notifyFetchError } from "../../../utils/errorUtil";
 import LabsForm from "../../LabsForm";
 import { LabsFormFieldOption, LabsFormFieldType } from "../../form";
 
@@ -7,7 +8,8 @@ async function onBaseRoleChanges(serverId: string, muteRoleId: number | undefine
         method: "PATCH",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ muteRoleId, memberRoleId }),
-    });
+    })
+        .catch(notifyFetchError.bind(null, "Error while updating server data for role changes"));
 }
 
 export default function BaseRolesForm({ serverConfig, serverRoleOptions }: { serverConfig: SanitizedServer, serverRoleOptions: LabsFormFieldOption<number>[] }) {
