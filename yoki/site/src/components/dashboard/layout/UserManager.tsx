@@ -1,6 +1,7 @@
 import { faChevronDown, faRightFromBracket } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Avatar, Button, ListItemDecorator, Menu, MenuItem, buttonClasses } from "@mui/joy";
+import Link from "next/link";
 import React from "react";
 
 type Props = {
@@ -43,12 +44,14 @@ export default function UserManager({ user }: Props) {
                 onClose={setMenuOpen.bind(null, false)}
                 placement="bottom"
             >
-                <MenuItem color="danger" onClick={() => console.log("Log out clicked")}>
-                    <ListItemDecorator>
-                        <FontAwesomeIcon icon={faRightFromBracket} />
-                    </ListItemDecorator>
-                    Log out
-                </MenuItem>
+                <Link href="/auth/signout" style={{ textDecoration: "none" }}>
+                    <MenuItem color="danger">
+                        <ListItemDecorator>
+                            <FontAwesomeIcon icon={faRightFromBracket} />
+                        </ListItemDecorator>
+                        Sign out
+                    </MenuItem>
+                </Link>
             </Menu>
         </>
     );
