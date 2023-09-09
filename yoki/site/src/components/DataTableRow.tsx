@@ -1,6 +1,6 @@
 import { faChevronDown, faChevronRight } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Checkbox, IconButton, Sheet } from "@mui/joy";
+import { Checkbox, IconButton, Sheet, styled } from "@mui/joy";
 import React, { ReactNode } from "react";
 import { CSSProperties } from "styled-components";
 
@@ -36,7 +36,7 @@ export default class DataTableRow extends React.Component<Props, State> {
         return (
             <tr style={{ "--TableCell-dataBackground": isSelected ? "var(--labs-palette-primary-950)" : "transparent" } as unknown as CSSProperties} data-id={`${id}:expansion`}>
                 <td style={{ height: 0, padding: 0 }} colSpan={columnCount + 2}>
-                    <Sheet variant="soft" sx={{ m: 1, borderRadius: 8, p: 2, pl: 4, pr: 4 }}>
+                    <Sheet color="neutral" sx={{ m: 1, borderRadius: 8, p: 2, pl: 4, pr: 4 }}>
                         { expandedInfo() }
                     </Sheet>
                 </td>
@@ -56,7 +56,7 @@ export default class DataTableRow extends React.Component<Props, State> {
                     </td>
                     { children }
                     <td>
-                        <IconButton onClick={this.toggleExpanded.bind(this)} color="neutral" aria-label="More button">
+                        <IconButton onClick={this.toggleExpanded.bind(this)} color="neutral" variant="soft" aria-label="More button">
                             <FontAwesomeIcon icon={isExpanded ? faChevronDown : faChevronRight} />
                         </IconButton>
                     </td>

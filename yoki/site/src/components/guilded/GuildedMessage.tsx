@@ -17,7 +17,7 @@ export default function GuildedMessage({ name, bot, children }: Props) {
                 <Box sx={{ flex: "1" }}>
                     <Stack gap={2} direction="row" alignItems="center" sx={{ mb: 1 }}>
                         <Typography component="span" level="title-md" fontWeight="bolder">{ name }</Typography>
-                        { bot && <Typography component="span" sx={{ px: 1 }} level="body-md" fontSize="sm" fontWeight="bolder" color="neutral" variant="solid">BOT</Typography> }
+                        { bot && <Typography component="span" sx={{ px: 1 }} level="body-md" fontSize="xs" fontWeight="bolder" color="neutral" variant="solid">BOT</Typography> }
                         <Typography component="span" level="body-md">2:00 PM</Typography>
                     </Stack>
                     <Stack direction="column" gap={1}>

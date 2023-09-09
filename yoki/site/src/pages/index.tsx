@@ -1,7 +1,7 @@
 import type { NextPage } from "next";
 
 import { LandingPage } from "../components/landing/LandingPage";
-import { Alert, Avatar, Box, Button, Card, Chip, Link, List, Stack, Typography } from "@mui/joy";
+import { Box, Button, Card, Chip, Link, List, Stack, Typography } from "@mui/joy";
 import LandingFeature from "../components/landing/home/LandingFeature";
 import LabsButton from "../components/LabsButton";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -9,14 +9,14 @@ import { faGuilded } from "@fortawesome/free-brands-svg-icons";
 import LandingProfileCard from "../components/landing/home/LandingProfileCard";
 import LandingStat from "../components/landing/home/LandingStat";
 import FeaturePreview from "../components/landing/home/FeaturePreview";
-import { faCog, faEnvelope, faExclamation, faHashtag, faRobot, faShieldHalved } from "@fortawesome/free-solid-svg-icons";
+import { faEnvelope, faExclamation, faHashtag, faRobot, faShieldHalved } from "@fortawesome/free-solid-svg-icons";
 import GuildedContent from "../components/guilded/GuildedContent";
 import GuildedChat, { GuildedChatMasked } from "../components/guilded/GuildedChat";
 import GuildedMessage from "../components/guilded/GuildedMessage";
 import GuildedEmbed, { GuildedEmbedField } from "../components/guilded/GuildedEmbed";
 import GuildedMention from "../components/guilded/GuildedMention";
 import { Colors } from "@yokilabs/utils";
-import { labsSecondaryColour } from "../styles/theme";
+import FinalSection from "../components/landing/home/FinalSection";
 
 
 const Home: NextPage = () => {
@@ -59,7 +59,7 @@ const Home: NextPage = () => {
                                 >
                                     Add to Guilded
                                 </LabsButton>
-                                <Button variant="outlined" color="primary" size="lg">
+                                <Button variant="outlined" color="primary" size="lg" onClick={() => window.scrollTo(0, 1200)}>
                                     See all features
                                 </Button>
                             </Stack>
@@ -101,7 +101,7 @@ const Home: NextPage = () => {
                                                     Cannot use that word
                                                 </>
                                             }>
-                                                <Typography>
+                                                <Typography textColor="text.primary">
                                                     <GuildedMention>User</GuildedMention>,
                                                     you have used a filtered word. This is a warning for you to not use it again,
                                                     otherwise moderation actions may be taken against you.
@@ -116,7 +116,7 @@ const Home: NextPage = () => {
                             title="Bringing your staff and members closer."
                             subtitle="modmail"
                             icon={faEnvelope}
-                            description="Our robust content filter scans text, images, invites, and links to keep the content you want and block the content you don't. Comes with numerous presets for popular slurs, NSFW links, profanity, and more."
+                            description="Our modmail system provides your server a way for members to communicate directly with your staff. Comes with full chat logs."
                             rightSide
                         >
                             <GuildedContent>
@@ -124,12 +124,12 @@ const Home: NextPage = () => {
                                     <GuildedMessage name="Yoki" bot>
                                         <GuildedEmbed>
                                             <GuildedEmbedField title="New modmail thread opened">
-                                                <Typography>
+                                                <Typography textColor="text.primary">
                                                     A new modmail thread by ID R40Mp0WdAnn6Le has been opened by <GuildedMention>User</GuildedMention>.
                                                 </Typography>
                                             </GuildedEmbedField>
                                             <GuildedEmbedField title="Roles">
-                                                <Chip variant="outlined" startDecorator={
+                                                <Chip color="primary" variant="outlined" sx={{ backgroundColor: "transparent" }} startDecorator={
                                                     <Box sx={(theme) => ({ width: 16, height: 16, borderRadius: "100%", backgroundColor: theme.vars.palette.primary[500] })}></Box>
                                                 }>
                                                     Level 30
@@ -137,12 +137,12 @@ const Home: NextPage = () => {
                                             </GuildedEmbedField>
                                         </GuildedEmbed>
                                         <GuildedEmbed author="Moderator">
-                                            <Typography>
+                                            <Typography textColor="text.primary">
                                                 Hello! How can I help you?
                                             </Typography>
                                         </GuildedEmbed>
                                         <GuildedEmbed author="User">
-                                            <Typography>
+                                            <Typography textColor="text.primary">
                                                 Hey hey! I have a question...
                                             </Typography>
                                         </GuildedEmbed>
@@ -166,12 +166,12 @@ const Home: NextPage = () => {
                                                     Halt! Please complete this captcha
                                                 </>
                                             }>
-                                                <Typography>
+                                                <Typography textColor="text.primary">
                                                     <GuildedMention>User</GuildedMention>,
                                                     your account has tripped the anti-raid filter and requires further verification to ensure that
                                                     you are not a bot.
                                                 </Typography>
-                                                <Typography sx={{ mt: 2 }}>
+                                                <Typography textColor="text.primary" sx={{ mt: 2 }}>
                                                     Please visit <Link>this link</Link> to complete the captcha and use the server.
                                                 </Typography>
                                             </GuildedEmbedField>
@@ -181,7 +181,7 @@ const Home: NextPage = () => {
                             </GuildedContent>
                         </FeaturePreview>
                         <FeaturePreview
-                            title="Giving you a record of everything"
+                            title="Giving you a record of everything."
                             subtitle="log channels"
                             icon={faHashtag}
                             description="Track message edits/deletions, member joins/leaves, moderator actions, and much more with log channels."
@@ -194,16 +194,16 @@ const Home: NextPage = () => {
                                             <Typography textColor="text.tertiary">Aug 27, 2023</Typography>
                                         }>
                                             <GuildedEmbedField title="User joined">
-                                                <Typography>
+                                                <Typography textColor="text.primary">
                                                     <GuildedMention>User</GuildedMention>{" "}has joined the server.
                                                 </Typography>
                                             </GuildedEmbedField>
                                             <GuildedEmbedField title="Additional info">
-                                                <Typography>
+                                                <Typography textColor="text.primary">
                                                     <Typography component="span" fontWeight="bolder">Account created:</Typography>{" "}
                                                     August 27, 2023 at 10:00 AM EST
                                                 </Typography>
-                                                <Typography>
+                                                <Typography textColor="text.primary">
                                                     <Typography component="span" fontWeight="bolder">Joined at:</Typography>{" "}
                                                     August 27, 2023 at 11:30 AM EST
                                                 </Typography>
@@ -213,7 +213,7 @@ const Home: NextPage = () => {
                                             <Typography textColor="text.tertiary">Aug 27, 2023</Typography>
                                         }>
                                             <GuildedEmbedField title="User warned">
-                                                <Typography>
+                                                <Typography textColor="text.primary">
                                                     <GuildedMention>User</GuildedMention>{" "}has been warned by{" "}<GuildedMention>Moderator</GuildedMention>.
                                                 </Typography>
                                             </GuildedEmbedField>
@@ -225,10 +225,10 @@ const Home: NextPage = () => {
                                                 </Box>
                                             </GuildedEmbedField>
                                             <GuildedEmbedField title="Additional info">
-                                                <Typography>
+                                                <Typography textColor="text.primary">
                                                     <Typography component="span" fontWeight="bolder">Infraction points:</Typography>{" "}5
                                                 </Typography>
-                                                <Typography>
+                                                <Typography textColor="text.primary">
                                                     <Typography component="span" fontWeight="bolder">Case ID:</Typography>{" "}R40Mp0WdAnn6Le
                                                 </Typography>
                                             </GuildedEmbedField>
@@ -240,12 +240,7 @@ const Home: NextPage = () => {
                     </Stack>
                 </Box>
                 {/* Final invite section */}
-                <Card sx={{ mx: 16, mt: 20, mb: 10, py: 10, px: 16, backgroundImage: `linear-gradient(to bottom right, ${labsSecondaryColour[0]}, ${labsSecondaryColour[1]})` }} color="primary" variant="solid" invertedColors>
-                    <Stack sx={{ alignItems: "center" }}>
-                        <Typography level="h2" gutterBottom>Have hassle-free moderation today</Typography>
-                        <Button size="lg" startDecorator={<FontAwesomeIcon icon={faGuilded} />} variant="solid">Add Yoki to your server</Button>
-                    </Stack>
-                </Card>
+                <FinalSection />
             </Box>
         </LandingPage>
     );

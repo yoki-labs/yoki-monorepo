@@ -1,5 +1,6 @@
 import { faEllipsisV } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { ClickAwayListener } from "@mui/base";
 import { IconButton, Menu } from "@mui/joy";
 import React, { ReactElement } from "react";
 
@@ -36,7 +37,11 @@ export default function LabsOverflowButton({ id, variant, children, disabled }: 
                 onClose={setMenuOpen.bind(null, false)}
                 placement="bottom"
             >
-                {children}
+                <ClickAwayListener onClickAway={setMenuOpen.bind(null, false)}>
+                    <div>
+                        {children}
+                    </div>
+                </ClickAwayListener>
             </Menu>
         </>
     );

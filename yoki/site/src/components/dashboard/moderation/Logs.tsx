@@ -94,7 +94,7 @@ export default class LogsPage extends React.Component<DashboardPageProps, State>
                         onCreate={this.onLogsUpdate.bind(this)}
                         />
                 </Card>
-                <Stack gap={2} direction="column">
+                <Stack sx={{ mb: 4 }} gap={2} direction="column">
                     {Object.keys(channelLookup).map((channelId) => {
                         const channelTypeInfos = channelLookup[channelId]!;
 
@@ -111,11 +111,6 @@ export default class LogsPage extends React.Component<DashboardPageProps, State>
                         );
                     })}
                 </Stack>
-                <PagePlaceholder
-                    icon={PagePlaceholderIcon.Wip}
-                    title="Work in progress"
-                    description="We are still in the process of building this page."
-                    />
             </Box>
         );
     }

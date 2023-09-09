@@ -200,7 +200,7 @@ function HistoryOverflow<TItem>({ itemType, selectedItems, onCaseDeletion }: { i
 
     return (
         <>
-            <LabsOverflowButton id={`history-overflow`} disabled={!selectedItems.length}>
+            <LabsOverflowButton id={`history-overflow`} disabled={!selectedItems.length} variant="soft">
                 <MenuItem color="danger" onClick={() => setOpenDeletePrompt(true)}>
                     <ListItemDecorator>
                         <FontAwesomeIcon icon={faTrash} />

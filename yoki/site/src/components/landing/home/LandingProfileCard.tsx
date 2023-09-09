@@ -1,12 +1,5 @@
 import React, { ReactNode } from "react";
-import { SanitizedServer } from "../../../lib/@types/db";
-import { AspectRatio, Avatar, Box, Card, CardContent, CardOverflow, Chip, Stack, Tooltip, Typography } from "@mui/joy";
-import LabsForm, { LabsFormState } from "../../LabsForm";
-import { LabsFormFieldType } from "../../form";
-import { timezones } from "@yokilabs/utils";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faRocket } from "@fortawesome/free-solid-svg-icons";
-import { labsSecondaryColour } from "../../../styles/theme";
+import { AspectRatio, Avatar, Box, Card, CardContent, CardOverflow, Chip, Stack, Typography, styled } from "@mui/joy";
 
 export type Props = {
     serverCount: ReactNode;
@@ -20,6 +13,13 @@ function BotRole() {
     );
 }
 
+const RoleDot = styled(`span`)<{ color?: string }>(({ theme, color }) => ({
+    width: 20,
+    height: 20,
+    borderRadius: "100%",
+    backgroundColor: color ?? theme.vars.palette.primary[500],
+}));
+
 function ProfileCardSection({ title, children }: { title: string; children: ReactNode | ReactNode[]; }) {
     return (
         <Stack component="section" gap={0.6}>
@@ -31,7 +31,7 @@ function ProfileCardSection({ title, children }: { title: string; children: Reac
 
 export default function LandingProfileCard({ serverCount }: Props) {
     return (
-        <Card sx={{ maxWidth: 650 }}>
+        <Card sx={{ maxWidth: 650, minWidth: 600 }}>
             <CardOverflow>
                 <AspectRatio ratio="5">
                     <img src="/banner.png" alt="Yoki's Banner" />
@@ -46,24 +46,25 @@ export default function LandingProfileCard({ serverCount }: Props) {
                             <Typography level="h2">Yoki</Typography>
                             <Typography sx={{ ml: 1, px: 1 }} level="h3" fontSize="md" color="neutral" variant="solid">Bot</Typography>
                         </Stack>
-                        <Typography level="body-md">Meet Yoki, your moderation companion and the biggest moderation bot on Guilded.</Typography>
+                        <Typography level="body-md">The biggest moderation bot on Guilded.</Typography>
                     </Box>
                     <Stack mt={3} gap={3}>
                         <ProfileCardSection title="Status">
-                            <Typography level="body-md" textColor="text.primary">Keeping {serverCount} servers safe</Typography>
+                            <Typography level="body-md" textColor="text.primary">Keeping {serverCount}+ servers safe</Typography>
                         </ProfileCardSection>
                         <ProfileCardSection title="Roles">
                             <Stack direction="row" gap={1}>
                                 <Chip
-                                    startDecorator={<span style={{ width: 20, height: 20, borderRadius: "100%", backgroundColor: "white" }}></span>}
+                                    startDecorator={<RoleDot color="white"/>}
                                     variant="outlined"
                                     sx={{ px: 1, borderStyle: "dashed", borderColor: "white", color: "white" }}
                                 >
                                     <Typography component="span" textColor="white">Admin</Typography>
                                 </Chip>
                                 <Chip
-                                    startDecorator={<span style={{ width: 20, height: 20, borderRadius: "100%", backgroundImage: `linear-gradient(to left, ${labsSecondaryColour[0]}, ${labsSecondaryColour[1]})` }}></span>}
+                                    startDecorator={<RoleDot />}
                                     variant="outlined"
+                                    color="primary"
                                 >
                                     <Typography component="span" textColor="primary.500">Server Protector 4000</Typography>
                                 </Chip>

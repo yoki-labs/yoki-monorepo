@@ -2,10 +2,9 @@ import { Box, Button, Chip, List, ListItem, ListItemDecorator, Stack, Typography
 import { DashboardPageProps } from "../pages";
 import React from "react";
 import LabsIconCard from "../../LabsIconCard";
-import { faCheck, faCheckCircle, faCircleCheck, faHeart } from "@fortawesome/free-solid-svg-icons";
+import { faCheckCircle, faHeart } from "@fortawesome/free-solid-svg-icons";
 import { PremiumType } from "@prisma/client";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import LabsButton from "../../LabsButton";
 
 const tierPerks: Record<PremiumType | "Copper", string[]> = {
     Copper: [

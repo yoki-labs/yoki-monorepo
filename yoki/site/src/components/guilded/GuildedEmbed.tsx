@@ -31,7 +31,7 @@ const EmbedAuthor = styled(Stack, {
     slot: "author",
 })(({ theme }) => ({
     flexDirection: "row",
-    padding: `8px 16px 0px 16px`,
+    padding: `12px 16px 0px 16px`,
     alignItems: "center",
     gap: 8,
 }));
@@ -83,7 +83,7 @@ const GuildedEmbed = React.forwardRef<unknown, Props>((props, ref) => {
 export function GuildedEmbedField({ title, children }: { title: ReactNode | ReactNode[]; children: ReactNode | ReactNode[]; }) {
     return (
         <Box component="section">
-            <Typography level="title-sm" gutterBottom>{ title }</Typography>
+            <Typography level="title-md" fontWeight="bolder" gutterBottom>{ title }</Typography>
             <Box component="article">
                 { children }
             </Box>
