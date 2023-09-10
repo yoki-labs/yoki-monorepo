@@ -10,7 +10,7 @@ export enum PagePlaceholderIcon {
 
 const icons: Record<PagePlaceholderIcon, string> = {
     [PagePlaceholderIcon.NotFound]: "¯\\_ (ツ)_/¯",
-    [PagePlaceholderIcon.Wip]: "(｡-‿-｡)💤",
+    [PagePlaceholderIcon.Wip]: "(｡-   ‿   -｡)💤",
     [PagePlaceholderIcon.NoPermission]: "( •́ ‸ •̀ )",
     [PagePlaceholderIcon.Unexpected]: "( •́ _ •́ )?"
 };

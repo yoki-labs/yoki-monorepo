@@ -28,9 +28,14 @@ html {
 h1,
 h2,
 h3,
+h4 {
+    font-family: "Lexend";
+}
+
+li,
 p,
 a {
-    font-family: "Inter";
+    font-family: "Montserrat";
 }
 
 html, body, #main, #__next {

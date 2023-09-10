@@ -11,7 +11,7 @@ export const labsSecondaryColourHover: [string, string] = [mixHexColours(labsSec
 
 const bodyFont = {
     fontFamily: [
-        `"Inter"`,
+        `"Montserrat"`,
         `"Public Sans"`,
         `var(--labs-fontFamily-fallback, var(--labs--apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"))`,
     ].join(", "),
@@ -44,6 +44,10 @@ const generateColourScheme = (typicalColour: string) => ({
 const dark = {
     shadowRing: "#000",
     shadowChannel: "#000",
+    fontFamily: {
+        display: "Lexend",
+        body: "Montserrat",
+    },
     palette: {
         divider: labsTheme.spacedark[800],
         neutral: {

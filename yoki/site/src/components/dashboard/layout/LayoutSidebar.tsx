@@ -35,7 +35,7 @@ export function LayoutSidebar({ page, serverConfig, menuToggled }: Props) {
     return (
         <Box sx={{ width: 300, maxWidth: 300, fontSize: 14, px: 4.3, pt: 0, pb: 5 }} className={`h-full overflow-y-auto overflow-x-hidden ${showStateClass}`}>
             { categorizedPages.map(({ category, items }) =>
-                <section className="pb-5">
+                <section className="pb-5" key={`sidebar-category-${category}`}>
                     <Typography level="h1" textColor="text.tertiary" fontSize="sm">{categoryNames[category]}</Typography>
                     <List variant="plain">
                         {items.map((item) => (
