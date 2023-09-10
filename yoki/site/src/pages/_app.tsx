@@ -21,8 +21,9 @@ import "@fontsource/montserrat";
 import "@fontsource/montserrat/500.css";
 import "@fontsource/montserrat/500-italic.css";
 import "@fontsource/lexend";
+import "@fontsource/space-mono";
 
-const ogDescription = "Meet Yoki, your moderation companion. Guilded's first moderation bot.";
+const ogDescription = "Meet Yoki, your moderation companion and Guilded's biggest moderation bot.";
 const ogUrl = "https://yoki.gg/";
 const ogFace = "https://yoki.gg/face.png";
 const ogTitle = "Yoki";

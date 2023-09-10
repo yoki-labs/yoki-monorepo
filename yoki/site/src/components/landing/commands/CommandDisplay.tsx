@@ -3,6 +3,7 @@ import { Command } from "../../../lib/Command";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faShieldHalved } from "@fortawesome/free-solid-svg-icons";
 import { CommandArgType } from "@yokilabs/utils";
+import CodeWrapper from "../../CodeWrapper";
 
 type Props = {
     command: Command;
@@ -54,13 +55,17 @@ export default function CommandDisplay({ command, isSubCommand }: Props) {
     return (
         <Box>
             <CommandCard sx={{ zIndex: "4" }}>
-                <Typography level="title-md" sx={{ "--Typography-gap": "16px", }} endDecorator={requiredRoleBadge}>
-                    {`${normalizedName[0].toUpperCase()}${normalizedName.substring(1)}`}
-                </Typography>
+                <Stack direction="row" gap={2}>
+                    <Typography level="code" fontWeight="bolder">
+                        ?{normalizedName}
+                    </Typography>
+                    {requiredRoleBadge}
+                </Stack>
                 <Typography level="body-md">
                     {command.description}
                 </Typography>
-                { command.args && <CommandDisplayArguments args={command.args} /> }
+                { command.args?.length ? <CommandDisplayArguments args={command.args} /> : null }
+                { command.examples?.length ? <CommandDisplayExamples name={normalizedName} examples={command.examples} /> : null }
             </CommandCard>
             { command.subCommands && <CommandDisplaySubCommands commands={command.subCommands} /> }
         </Box>
@@ -73,7 +78,7 @@ function CommandDisplayArguments({ args }: { args: Command["args"] }) {
             <Typography level="title-sm">Arguments</Typography>
             <List>
                 {args!.map((x) =>
-                    <ListItem sx={{ "margin-inline": 0, "--ListItemDecorator-size": "1.5rem" }}>
+                    <ListItem sx={{ "margin-inline": 0, "--ListItemDecorator-size": "1.2rem" }}>
                         <ListItemDecorator>
                             <Typography fontWeight="bolder" textColor="text.tertiary" fontSize="lg">{"\u2022"}</Typography>
                         </ListItemDecorator>
@@ -96,6 +101,23 @@ function CommandDisplayArguments({ args }: { args: Command["args"] }) {
                     </ListItem>
                 )}
             </List>
+        </Box>
+    )
+}
+
+function CommandDisplayExamples({ name, examples }: { name: string; examples: string[] }) {
+    return (
+        <Box>
+            <Typography level="title-sm" gutterBottom>Examples</Typography>
+            <CodeWrapper>
+                <Typography level="code" textColor="text.secondary">
+                    {examples.map((x) =>
+                        <Typography sx={{ display: "block" }}>
+                            ?{name} {x}
+                        </Typography>
+                    )}
+                </Typography>
+            </CodeWrapper>
         </Box>
     )
 }

@@ -292,6 +292,9 @@ importers:
       '@fontsource/montserrat':
         specifier: ^5.0.8
         version: 5.0.8
+      '@fontsource/space-mono':
+        specifier: ^5.0.12
+        version: 5.0.12
       '@fortawesome/fontawesome-svg-core':
         specifier: ^6.4.2
         version: 6.4.2
@@ -489,10 +492,10 @@ packages:
       '@babel/helpers': 7.22.11
       '@babel/parser': 7.22.13
       '@babel/template': 7.22.5
-      '@babel/traverse': 7.22.11(supports-color@5.5.0)
+      '@babel/traverse': 7.22.11
       '@babel/types': 7.22.11
       convert-source-map: 1.9.0
-      debug: 4.3.4(supports-color@5.5.0)
+      debug: 4.3.4(supports-color@9.3.1)
       gensync: 1.0.0-beta.2
       json5: 2.2.3
       semver: 6.3.1
@@ -608,7 +611,7 @@ packages:
     engines: {node: '>=6.9.0'}
     dependencies:
       '@babel/template': 7.22.5
-      '@babel/traverse': 7.22.11(supports-color@5.5.0)
+      '@babel/traverse': 7.22.11
       '@babel/types': 7.22.11
     transitivePeerDependencies:
       - supports-color
@@ -654,6 +657,24 @@ packages:
       '@babel/code-frame': 7.22.13
       '@babel/parser': 7.22.13
       '@babel/types': 7.22.11
+    dev: false
+
+  /@babel/traverse@7.22.11:
+    resolution: {integrity: sha512-mzAenteTfomcB7mfPtyi+4oe5BZ6MXxWcn4CX+h4IRJ+OOGXBrWU6jDQavkQI9Vuc5P+donFabBfFCcmWka9lQ==}
+    engines: {node: '>=6.9.0'}
+    dependencies:
+      '@babel/code-frame': 7.22.13
+      '@babel/generator': 7.22.10
+      '@babel/helper-environment-visitor': 7.22.5
+      '@babel/helper-function-name': 7.22.5
+      '@babel/helper-hoist-variables': 7.22.5
+      '@babel/helper-split-export-declaration': 7.22.6
+      '@babel/parser': 7.22.13
+      '@babel/types': 7.22.11
+      debug: 4.3.4(supports-color@9.3.1)
+      globals: 11.12.0
+    transitivePeerDependencies:
+      - supports-color
     dev: false
 
   /@babel/traverse@7.22.11(supports-color@5.5.0):
@@ -927,6 +948,10 @@ packages:
 
   /@fontsource/montserrat@5.0.8:
     resolution: {integrity: sha512-bNj6wfiWXXbsxb2ffatjpX+GBv30cWZ1lwNXW9qTeX2FnzPomsGRV4HdPrf3TqyTiVqX6fLo80zrQcMi7r8+fA==}
+    dev: false
+
+  /@fontsource/space-mono@5.0.12:
+    resolution: {integrity: sha512-ZPSKPLSYQ1xbs2J0nXEhki/cpwY5QkXejuErG0ssvOmNSQN+6JS1I955N2+jbFqisB6WMwdoblz1qCojXuqliw==}
     dev: false
 
   /@fortawesome/fontawesome-common-types@6.4.2:

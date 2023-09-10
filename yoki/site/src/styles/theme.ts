@@ -87,6 +87,7 @@ const dark = {
             primary: labsTheme.spacelight[900],
             secondary: labsTheme.spacelight[700],
             tertiary: labsTheme.spacelight[500],
+            code: mixHexColours(labsTheme.spacelight[800], labsSecondaryColour[0], 0.75),
         },
         background: {
             body: labsTheme.spacedark[950],
@@ -103,12 +104,26 @@ const dark = {
 };
 const light = dark;
 
+declare module '@mui/joy/styles' {
+    interface TypographySystemOverrides {
+        "code": true;
+    }
+}
+
 export const theme = extendTheme({
     typography: {
         "body-xs": bodyFont,
         "body-sm": bodyFont,
         "body-md": bodyFont,
         "body-lg": bodyFont,
+        "code": {
+            backgroundColor: `var(--labs-palette-background-body)`,
+            color: `var(--labs-palette-text-code)`,
+            width: "max-content",
+            borderRadius: `var(--labs-radius-sm)`,
+            padding: `2px 4px`,
+            fontFamily: ["'Space Mono'"],
+        },
     },
     cssVarPrefix: "labs",
     shadow: {
