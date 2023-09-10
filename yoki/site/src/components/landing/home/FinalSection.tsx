@@ -36,52 +36,54 @@ const DecorationStarStack = styled(`div`)(({ theme }) => ({
 
 export default function FinalSection() {
     return (
-        <FinalSectionCard sx={{ mx: 20, mt: 20, mb: 10, py: 16, px: 16, }} color="primary" variant="solid" invertedColors>
-            <CardDecorationWrapper>
-                <CardDecorationContainer>
-                    <CurvyMask placement="bottom" start="80%" sx={{ width: "100%", height: "150%", transform: "rotate(-10deg) translateY(20px) translateX(250px)" }}>
-                        <Box sx={{ width: "100%", height: "100%", backgroundImage: "linear-gradient(to bottom right, rgba(255, 255, 255, 0.3), transparent)" }}></Box>
-                    </CurvyMask>
-                    {/* TODO: Change this whole grid to be SVG and use components for stars inside that SVG */}
-                    <DecorationStarStack sx={{ position: "absolute", top: 0, left: 0, mask: "linear-gradient(to bottom right, white 0%, transparent 65%)" }}>
-                        <StarSvg top={0} left={0} column={1}/>
-                        <StarSvg top={60} left={0} column={2} />
-                        <StarSvg top={13} left={12} column={3} />
-                        <StarSvg top={60} left={30} column={4} />
-                        <StarSvg top={40} left={40} column={5} />
-                        <StarSvg top={10} left={20} column={6} />
-                        <StarSvg top={70} left={40} column={7} />
-                        <StarSvg top={10} left={20} column={8} />
+        <Box className="px-5 md:px-40">
+            <FinalSectionCard className="py-16 px-16 mt-40 mb-20 md:py-32 md:px-32" color="primary" variant="solid" invertedColors>
+                <CardDecorationWrapper>
+                    <CardDecorationContainer>
+                        <CurvyMask placement="bottom" start="80%" sx={{ width: "100%", height: "150%", transform: "rotate(-10deg) translateY(20px) translateX(250px)" }}>
+                            <Box sx={{ width: "100%", height: "100%", backgroundImage: "linear-gradient(to bottom right, rgba(255, 255, 255, 0.3), transparent)" }}></Box>
+                        </CurvyMask>
+                        {/* TODO: Change this whole grid to be SVG and use components for stars inside that SVG */}
+                        <DecorationStarStack sx={{ position: "absolute", top: 0, left: 0, mask: "linear-gradient(to bottom right, white 0%, transparent 65%)" }}>
+                            <StarSvg top={0} left={0} column={1}/>
+                            <StarSvg top={60} left={0} column={2} />
+                            <StarSvg top={13} left={12} column={3} />
+                            <StarSvg top={60} left={30} column={4} />
+                            <StarSvg top={40} left={40} column={5} />
+                            <StarSvg top={10} left={20} column={6} />
+                            <StarSvg top={70} left={40} column={7} />
+                            <StarSvg top={10} left={20} column={8} />
 
-                        <StarSvg top={60} left={20} column={1}/>
-                        <StarSvg top={10} left={45} column={2} />
-                        <StarSvg top={40} left={50} column={3} />
-                        <StarSvg top={90} left={0} column={4} />
-                        <StarSvg top={0} left={0} column={5} />
-                        <StarSvg top={32} left={10} column={6} />
-                        <StarSvg top={0} left={40} column={7} />
-                        <StarSvg top={30} left={0} column={8} />
+                            <StarSvg top={60} left={20} column={1}/>
+                            <StarSvg top={10} left={45} column={2} />
+                            <StarSvg top={40} left={50} column={3} />
+                            <StarSvg top={90} left={0} column={4} />
+                            <StarSvg top={0} left={0} column={5} />
+                            <StarSvg top={32} left={10} column={6} />
+                            <StarSvg top={0} left={40} column={7} />
+                            <StarSvg top={30} left={0} column={8} />
 
-                        <StarSvg top={20} left={10} column={1}/>
-                        <StarSvg top={0} left={30} column={2} />
-                        <StarSvg top={60} left={20} column={3} />
-                        <StarSvg top={40} left={10} column={4} />
-                        <StarSvg top={30} left={30} column={5} />
-                        <StarSvg top={23} left={50} column={6} />
-                        <StarSvg top={30} left={20} column={7} />
-                        <StarSvg top={0} left={40} column={8} />
-                    </DecorationStarStack>
-                </CardDecorationContainer>
-            </CardDecorationWrapper>
-            <Stack sx={{ alignItems: "center", zIndex: 2 }}>
-                <Typography level="h2" gutterBottom>Have hassle-free moderation today</Typography>
-                <Link href="/invite">
-                    <Button size="lg" startDecorator={<FontAwesomeIcon icon={faGuilded} />} variant="solid">
-                        Add Yoki to your server
-                    </Button>
-                </Link>
-            </Stack>
-        </FinalSectionCard>
+                            <StarSvg top={20} left={10} column={1}/>
+                            <StarSvg top={0} left={30} column={2} />
+                            <StarSvg top={60} left={20} column={3} />
+                            <StarSvg top={40} left={10} column={4} />
+                            <StarSvg top={30} left={30} column={5} />
+                            <StarSvg top={23} left={50} column={6} />
+                            <StarSvg top={30} left={20} column={7} />
+                            <StarSvg top={0} left={40} column={8} />
+                        </DecorationStarStack>
+                    </CardDecorationContainer>
+                </CardDecorationWrapper>
+                <Stack sx={{ alignItems: "center", zIndex: 2 }}>
+                    <Typography level="h2" gutterBottom>Have hassle-free moderation today</Typography>
+                    <Link href="/invite">
+                        <Button size="lg" startDecorator={<FontAwesomeIcon icon={faGuilded} />} variant="solid">
+                            Add Yoki to your server
+                        </Button>
+                    </Link>
+                </Stack>
+            </FinalSectionCard>
+        </Box>
     );
 }
 

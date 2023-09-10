@@ -10,8 +10,8 @@ import LandingProfileCard from "../components/landing/home/LandingProfileCard";
 import LandingStat from "../components/landing/home/LandingStat";
 import FeaturePreview from "../components/landing/home/FeaturePreview";
 import { faEnvelope, faExclamation, faHashtag, faRobot, faShieldHalved } from "@fortawesome/free-solid-svg-icons";
-import GuildedContent from "../components/guilded/GuildedContent";
-import GuildedChat, { GuildedChatMasked } from "../components/guilded/GuildedChat";
+import GuildedContentWrapper from "../components/guilded/GuildedContent";
+import GuildedChatWrapper, { GuildedChatMasked } from "../components/guilded/GuildedChat";
 import GuildedMessage from "../components/guilded/GuildedMessage";
 import GuildedEmbed, { GuildedEmbedField } from "../components/guilded/GuildedEmbed";
 import GuildedMention from "../components/guilded/GuildedMention";
@@ -22,11 +22,11 @@ import FinalSection from "../components/landing/home/FinalSection";
 const Home: NextPage = () => {
     return (
         <LandingPage>
-            <Box>
-                <Box sx={{ py: 16, px: 20 }}>
+            <Stack direction="column" alignItems="stretch" sx={{ width: "100%" }}>
+                <Box className="py-20 px-5 md:py-32 md:px-40">
                     <Stack direction="row">
                         <Box sx={{ flex: "1" }}>
-                            <Typography level="h1" fontSize="xlg" sx={{ fontSize: "5rem" }}>
+                            <Typography level="h1" fontSize="xlg" className="text-5xl pb-4 md:text-7xl">
                                 Meet{" "}
                                 <Typography textColor="primary.500">Yoki</Typography>
                             </Typography>
@@ -52,7 +52,7 @@ const Home: NextPage = () => {
                                 </LandingFeature>
                             </List>
                             <Typography textColor="text.primary">... and much more!</Typography>
-                            <Stack sx={{ my: 2 }} direction="row" gap={2}>
+                            <Stack sx={{ my: 2 }} gap={2} className="flex-col md:flex-row">
                                 <LabsButton
                                     size="lg"
                                     startDecorator={<FontAwesomeIcon icon={faGuilded} height="100%" />}
@@ -70,7 +70,7 @@ const Home: NextPage = () => {
                 </Box>
                 {/* TODO: Server carousel */}
                 {/* Statistics */}
-                <Box sx={{ pt: 14, pb: 20, px: 20 }} className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-8">
+                <Box className="pt-28 pb-40 px-5 md:px-40 grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-8">
                     <LandingStat amount="20,000,000+" subtitle="Scanned" what="messages" />
                     <LandingStat amount="10,000+" subtitle="Actioned" what="cases" />
                     <LandingStat amount="1,400+" subtitle="Serving" what="servers" />
@@ -79,7 +79,7 @@ const Home: NextPage = () => {
                     <LandingStat amount="6,000+" subtitle="Served" what="captchas" />
                 </Box>
                 {/* Yoki's features */}
-                <Box sx={{ py: 4, px: 20 }}>
+                <Box className="py-8 px-5 md:px-40">
                     <Box sx={{ textAlign: "center", mb: 24 }}>
                         <Typography level="h1">All the tools you need</Typography>
                         <Typography level="h4" textColor="text.secondary">Yoki provides everything you will ever need to moderate your servers</Typography>
@@ -91,8 +91,8 @@ const Home: NextPage = () => {
                             icon={faRobot}
                             description="Our robust content filter scans text, images, invites, and links to keep the content you want and block the content you don't. Comes with numerous presets for popular slurs, NSFW links, profanity, and more."
                         >
-                            <GuildedContent>
-                                <GuildedChat>
+                            <GuildedContentWrapper>
+                                <GuildedChatWrapper>
                                     <GuildedMessage name="Yoki" bot>
                                         <GuildedEmbed color={`#${Colors.yellow.toString(16)}`}>
                                             <GuildedEmbedField title={
@@ -109,8 +109,8 @@ const Home: NextPage = () => {
                                             </GuildedEmbedField>
                                         </GuildedEmbed>
                                     </GuildedMessage>
-                                </GuildedChat>
-                            </GuildedContent>
+                                </GuildedChatWrapper>
+                            </GuildedContentWrapper>
                         </FeaturePreview>
                         <FeaturePreview
                             title="Bringing your staff and members closer."
@@ -119,7 +119,7 @@ const Home: NextPage = () => {
                             description="Our modmail system provides your server a way for members to communicate directly with your staff. Comes with full chat logs."
                             rightSide
                         >
-                            <GuildedContent>
+                            <GuildedContentWrapper>
                                 <GuildedChatMasked>
                                     <GuildedMessage name="Yoki" bot>
                                         <GuildedEmbed>
@@ -148,7 +148,7 @@ const Home: NextPage = () => {
                                         </GuildedEmbed>
                                     </GuildedMessage>
                                 </GuildedChatMasked>
-                            </GuildedContent>
+                            </GuildedContentWrapper>
                         </FeaturePreview>
                         <FeaturePreview
                             title="Stopping bad actors right in their tracks."
@@ -156,8 +156,8 @@ const Home: NextPage = () => {
                             icon={faShieldHalved}
                             description="Present new or suspicious accounts with captchas or kick them automatically. Choose from a variety of properties to mark an account as suspicious."
                         >
-                            <GuildedContent>
-                                <GuildedChat>
+                            <GuildedContentWrapper>
+                                <GuildedChatWrapper>
                                     <GuildedMessage name="Yoki" bot>
                                         <GuildedEmbed color={`#${Colors.yellow.toString(16)}`}>
                                             <GuildedEmbedField title={
@@ -177,8 +177,8 @@ const Home: NextPage = () => {
                                             </GuildedEmbedField>
                                         </GuildedEmbed>
                                     </GuildedMessage>
-                                </GuildedChat>
-                            </GuildedContent>
+                                </GuildedChatWrapper>
+                            </GuildedContentWrapper>
                         </FeaturePreview>
                         <FeaturePreview
                             title="Giving you a record of everything."
@@ -187,7 +187,7 @@ const Home: NextPage = () => {
                             description="Track message edits/deletions, member joins/leaves, moderator actions, and much more with log channels."
                             rightSide
                         >
-                            <GuildedContent>
+                            <GuildedContentWrapper>
                                 <GuildedChatMasked>
                                     <GuildedMessage name="Yoki" bot>
                                         <GuildedEmbed color={`#${Colors.yellow.toString(16)}`} footer={
@@ -235,13 +235,13 @@ const Home: NextPage = () => {
                                         </GuildedEmbed>
                                     </GuildedMessage>
                                 </GuildedChatMasked>
-                            </GuildedContent>
+                            </GuildedContentWrapper>
                         </FeaturePreview>
                     </Stack>
                 </Box>
                 {/* Final invite section */}
                 <FinalSection />
-            </Box>
+            </Stack>
         </LandingPage>
     );
 };

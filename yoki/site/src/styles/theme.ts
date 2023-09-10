@@ -119,7 +119,8 @@ export const theme = extendTheme({
         "code": {
             backgroundColor: `var(--labs-palette-background-body)`,
             color: `var(--labs-palette-text-code)`,
-            width: "max-content",
+            // Doesn't make the text break, so it isn't recommended.
+            // width: "max-content",
             borderRadius: `var(--labs-radius-sm)`,
             padding: `2px 4px`,
             fontFamily: ["'Space Mono'"],

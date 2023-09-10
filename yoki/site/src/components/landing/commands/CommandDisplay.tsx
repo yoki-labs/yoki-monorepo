@@ -37,6 +37,7 @@ const SubCommandCard = styled(Card)(({ theme }) => ({
         // borderBottomLeftRadius: theme.vars.radius.sm,
         position: "absolute",
         zIndex: "-1",
+        "--tw-content": "''",
     }
 }));
 const Line = styled(`div`, {
@@ -54,8 +55,8 @@ export default function CommandDisplay({ command, isSubCommand }: Props) {
     const CommandCard = isSubCommand ? SubCommandCard : Card;
     return (
         <Box>
-            <CommandCard sx={{ zIndex: "4" }}>
-                <Stack direction="row" gap={2}>
+            <CommandCard sx={{ zIndex: "4" }} className="after:w-3 after:-left-3 md:after:w-8 md:after:-left-8">
+                <Stack direction="row" gap={2} alignItems="center">
                     <Typography level="code" fontWeight="bolder">
                         ?{normalizedName}
                     </Typography>
@@ -82,22 +83,22 @@ function CommandDisplayArguments({ args }: { args: Command["args"] }) {
                         <ListItemDecorator>
                             <Typography fontWeight="bolder" textColor="text.tertiary" fontSize="lg">{"\u2022"}</Typography>
                         </ListItemDecorator>
-                        <Grid container spacing={1} sx={{ flexGrow: 1 }}>
-                            <Grid xs={4}>
+                        <Box sx={{ flexGrow: 1 }} className="grid grid-cols-1 md:grid-cols-2">
+                            <Box>
                                 <Typography component="span" level="body-md">
                                     { (x.type === "rest" || x.type === "enumList") && "..." }
                                     { x.display ?? x.name }
                                 </Typography>
-                            </Grid>
-                            <Grid xs={6}>
+                            </Box>
+                            <Box>
                                 <Stack direction="row" gap={1}>
                                     <Typography component="span" level="body-md" textColor="text.secondary" fontWeight="bold">
                                         { argumentTypeToDisplay[x.type] }
                                     </Typography>
                                     { x.optional && <Chip size="sm" color="neutral">Optional</Chip> }
                                 </Stack>
-                            </Grid>
-                        </Grid>
+                            </Box>
+                        </Box>
                     </ListItem>
                 )}
             </List>
@@ -110,13 +111,13 @@ function CommandDisplayExamples({ name, examples }: { name: string; examples: st
         <Box>
             <Typography level="title-sm" gutterBottom>Examples</Typography>
             <CodeWrapper>
-                <Typography level="code" textColor="text.secondary">
+                <Stack direction="column" gap={1}>
                     {examples.map((x) =>
-                        <Typography sx={{ display: "block" }}>
+                        <Typography level="code" textColor="text.secondary">
                             ?{name} {x}
                         </Typography>
                     )}
-                </Typography>
+                </Stack>
             </CodeWrapper>
         </Box>
     )
@@ -128,7 +129,7 @@ function CommandDisplaySubCommands({ commands }: { commands: Command[]; }) {
             <Accordion>
                 <AccordionSummary>Sub-commands</AccordionSummary>
                 <AccordionDetails>
-                    <Stack gap={4} direction="row" alignItems="stretch">
+                    <Stack direction="row" alignItems="stretch" className="gap-3 md:gap-8">
                         <Line />
                         <Stack sx={{ pt: 2, flex: "1" }} gap={2} alignItems="stretch">
                             {commands.map((subCommand) =>

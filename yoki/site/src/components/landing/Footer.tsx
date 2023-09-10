@@ -11,15 +11,15 @@ const FooterWrapper = styled(Box)(({ theme }) => ({
 
 export default function Footer() {
     return (
-        <FooterWrapper component="footer" sx={{ py: 6, px: 20 }}>
-            <Stack direction="row">
+        <FooterWrapper component="footer" className="py-12 px-10 md:px-40">
+            <Stack className="direction-column gap-10 md:direction-row md:gap-0">
                 <Box sx={{ flex: "1" }}>
                     <Typography level="h2">
                         <Typography component="span" textColor="primary.500">Yoki</Typography>
                         Labs
                     </Typography>
                 </Box>
-                <Stack direction="row" gap={12}>
+                <Stack direction="row" gap={12} className="grid grid-cols-1 md:grid-cols-3">
                     <Box>
                         <Typography level="title-md">Web pages</Typography>
                         <List>

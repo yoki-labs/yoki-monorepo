@@ -59,9 +59,9 @@ const Commands: NextPage<CommandProps> = ({ commandByCategory, commandCategories
 
     return (
         <LandingPage>
-            <Stack sx={{ py: 6, px: 20 }} direction="row">
+            <Stack className="px-5 py-12 flex-col md:flex-row md:px-40">
                 <CommandSidebar categories={commandCategories} activeCategory={category} />
-                <Box sx={{ px: 8, flex: "1" }}>
+                <Box className="md:px-16" sx={{ flex: "1" }}>
                     <Typography level="h2" sx={{ mb: 4 }}>{commandCategories[category]}</Typography>
                     <Stack gap={2} direction="column" alignItems="stretch">
                         {commands.map((x) =>

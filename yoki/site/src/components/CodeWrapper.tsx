@@ -1,7 +1,7 @@
-import { Sheet, styled } from "@mui/joy";
+import { Box, Sheet, styled } from "@mui/joy";
 
 const CodeWrapper = styled(
-    Sheet
+    Box
 )(({ theme }) => ({
     backgroundColor: theme.vars.palette.neutral[900],
     borderRadius: theme.vars.radius.sm,

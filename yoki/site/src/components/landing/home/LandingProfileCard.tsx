@@ -31,7 +31,7 @@ function ProfileCardSection({ title, children }: { title: string; children: Reac
 
 export default function LandingProfileCard({ serverCount }: Props) {
     return (
-        <Card sx={{ maxWidth: 650, minWidth: 600 }}>
+        <Card sx={{ maxWidth: 650, minWidth: 600 }} className="hidden md:block">
             <CardOverflow>
                 <AspectRatio ratio="5">
                     <img src="/banner.png" alt="Yoki's Banner" />
