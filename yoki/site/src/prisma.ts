@@ -1,13 +1,14 @@
 import { PrismaClient, Server } from "@prisma/client";
+
 import { SanitizedServer } from "./lib/@types/db";
 
 export function sanitizeServer({
-    id,
+    id: _i,
     flags,
-    blacklisted,
-    botJoinedAt,
-    createdAt,
-    updatedAt,
+    blacklisted: _b,
+    botJoinedAt: _j,
+    createdAt: _c,
+    updatedAt: _u,
     ...rest
 }: Server): SanitizedServer {
     return { ...rest, earlyaccess: flags.includes("EARLY_ACCESS") };

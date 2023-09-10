@@ -1,8 +1,9 @@
+import { Server, Severity } from "@prisma/client";
+import { timezones } from "@yokilabs/utils";
 import { NextApiResponse } from "next";
+
 import prisma from "../../../../prisma";
 import createServerRoute from "../../../../utils/route";
-import { timezones } from "@yokilabs/utils";
-import { Server, Severity } from "@prisma/client";
 
 const DEFAULT_PREFIX = process.env.DEFAULT_PREFIX as string;
 const MAP_DEFAULT_PREFIXES = [DEFAULT_PREFIX, null, ""];
@@ -26,7 +27,7 @@ const serverConfigRoute = createServerRoute({
         // Type-check body
         const { body } = req;
 
-        /////// Body validity check
+        // ///// Body validity check
         // Prefix can be string or unset
         if (isUnsettablePropertyTypeInvalid(body.prefix, "string"))
             return getErrorResponse(res, "prefix", "null or string");
@@ -87,17 +88,17 @@ const getErrorResponse = (res: NextApiResponse, name: string, type: string) =>
 type AllowedValues = "string" | "number" | "boolean" | "object";
 
 // Can only be set; no default
-function isPropertyTypeInvalid(value: any, expectedType: AllowedValues) {
+function isPropertyTypeInvalid<T>(value: T, expectedType: AllowedValues) {
     const valueType = typeof value;
 
     return valueType !== "undefined" && valueType !== expectedType;
 }
 
 // Null is set back to default
-const isUnsettablePropertyTypeInvalid = (value: any, expectedType: AllowedValues) =>
+const isUnsettablePropertyTypeInvalid = <T>(value: T, expectedType: AllowedValues) =>
     value !== null && isPropertyTypeInvalid(value, expectedType);
 
-const isEnumPropertyInvalid = (value: any, expectedValues: string[]) =>
-    value !== null && typeof value !== "undefined" && !expectedValues.includes(value);
+const isEnumPropertyInvalid = <T extends string>(value: unknown, expectedValues: T[]) =>
+    value !== null && typeof value !== "undefined" && !expectedValues.includes(value as T);
 
 export default serverConfigRoute;

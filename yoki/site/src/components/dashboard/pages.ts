@@ -1,26 +1,27 @@
-import { IconDefinition, faBan, faClipboardUser, faCog, faCommentDots, faCrown, faEnvelope, faHashtag, faHeart, faImage, faLayerGroup, faLink, faLinkSlash, faPoo, faPrayingHands, faShieldHalved, faTextSlash, faTicket } from "@fortawesome/free-solid-svg-icons";
-import OverviewPage from "./overview/Overview";
-import ConfigPage from "./overview/Premium";
-import AutomodPage from "./automod/Automod";
-import HistoryPage from "./moderation/History";
-import ModmailPage from "./entry/Modmail";
+import { faBan, faClipboardUser, faCommentDots, faCrown, faEnvelope, faHashtag, faHeart, faLayerGroup, faLink, faPoo, faPrayingHands, faShieldHalved, faTicket,IconDefinition } from "@fortawesome/free-solid-svg-icons";
+import { ColorPaletteProp } from "@mui/joy";
 import React from "react";
+
+import AutomodPage from "./automod/Automod";
+import InvitesPage from "./automod/Invites";
+import PhrasesPage from "./automod/Phrases";
+import SpamPage from "./automod/Spam";
+import LinksPage from "./automod/Urls";
 import AntiraidPage from "./entry/Antiraid";
 import AppealsPage from "./entry/Appeals";
+import ModmailPage from "./entry/Modmail";
+import HistoryPage from "./moderation/History";
 import LogsPage from "./moderation/Logs";
-import LinksPage from "./automod/Urls";
-import PhrasesPage from "./automod/Phrases";
-import { ColorPaletteProp } from "@mui/joy";
-import { SanitizedServer } from "../../lib/@types/db";
+import OverviewPage from "./overview/Overview";
+import ConfigPage from "./overview/Premium";
 import RolesPage from "./overview/Roles";
-import InvitesPage from "./automod/Invites";
-import SpamPage from "./automod/Spam";
+import { SanitizedServer } from "../../lib/@types/db";
 
 export interface DashboardPageItem {
     id: string;
     name: string;
     icon: IconDefinition;
-    component: (typeof React.Component) | ((props: any) => React.ReactElement);
+    component: (typeof React.Component) | ((props: DashboardPageProps) => React.ReactElement);
     category: DashboardPageCategory;
     color?: ColorPaletteProp;
 }
@@ -48,6 +49,6 @@ export const dashboardPageList: DashboardPageItem[] = [
     { id: "appeals", name: "Appeals", icon: faPrayingHands, component: AppealsPage, category: DashboardPageCategory.Entry },
 ];
 
-export type DashboardPageProps = {
+export interface DashboardPageProps {
     serverConfig: SanitizedServer;
-};
+}

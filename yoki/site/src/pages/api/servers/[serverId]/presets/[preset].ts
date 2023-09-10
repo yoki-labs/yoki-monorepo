@@ -1,4 +1,5 @@
 import { Preset, Severity } from "@prisma/client";
+
 import prisma from "../../../../../prisma";
 import createServerRoute from "../../../../../utils/route";
 
@@ -18,7 +19,7 @@ const serverPresetRoute = createServerRoute({
         const presets: Preset[] = await prisma.preset
             .findMany({
                 where: {
-                    serverId: serverId,
+                    serverId,
                 }
             });
 
@@ -61,7 +62,7 @@ const serverPresetRoute = createServerRoute({
         const presets: Preset[] = await prisma.preset
             .findMany({
                 where: {
-                    serverId: serverId,
+                    serverId,
                 }
             });
 
@@ -99,7 +100,7 @@ const serverPresetRoute = createServerRoute({
         const presets: Preset[] = await prisma.preset
             .findMany({
                 where: {
-                    serverId: serverId,
+                    serverId,
                 }
             });
         

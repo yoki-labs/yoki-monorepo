@@ -1,17 +1,20 @@
-import { NextApiRequest, NextApiResponse } from "next";
-import rest from "../guilded";
-import prisma from "../prisma";
-import { authOptions } from "../pages/api/auth/[...nextauth]";
-import { RoleType, Server } from "@prisma/client";
-import { Session, unstable_getServerSession } from "next-auth";
 import { ServerMember } from "@guildedjs/api/types/generated/router/models/ServerMember";
+import { RoleType, Server } from "@prisma/client";
+import { NextApiRequest, NextApiResponse } from "next";
+import { Session, unstable_getServerSession } from "next-auth";
+
+import rest from "../guilded";
+import { authOptions } from "../pages/api/auth/[...nextauth]";
+import prisma from "../prisma";
 
 type RouteFunction = (req: NextApiRequest, res: NextApiResponse, session: Session | null, server: Server, member: ServerMember) => Promise<unknown>;
 
-export default function createServerRoute(methodToFunction: Record<string, RouteFunction>) {
+type RouteInfo = Record<string, RouteFunction>;
+
+export default function createServerRoute(methodToFunction: RouteInfo) {
     return async function onRequest(req: NextApiRequest, res: NextApiResponse) {
         // Has to be allowed method; this is the only method available
-        if (!(req.method && methodToFunction.hasOwnProperty(req.method)))
+        if (!(req.method && Object.hasOwn(methodToFunction, req.method)))
             return res.status(405).send("");
 
         const serverId = req.query.serverId as string;

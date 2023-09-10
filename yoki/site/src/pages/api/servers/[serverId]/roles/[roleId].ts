@@ -1,4 +1,5 @@
 import { Role } from "@prisma/client";
+
 import prisma from "../../../../../prisma";
 import createServerRoute, { allowedRoleTypes, roleExistsInServer } from "../../../../../utils/route";
 
@@ -10,7 +11,7 @@ const serverRolesRoute = createServerRoute({
         if (typeof roleIdQuery !== "string")
             return res.status(400).json({ error: true, message: "Role ID must exist" });
 
-        const roleId = parseInt(roleIdQuery);
+        const roleId = parseInt(roleIdQuery, 10);
 
         if (typeof roleId !== "number" || roleId < 0)
             return res.status(400).json({ error: true, message: "Expected role ID to be a positive number." });
@@ -26,7 +27,7 @@ const serverRolesRoute = createServerRoute({
         const roles: Role[] = await prisma.role
             .findMany({
                 where: {
-                    serverId: serverId,
+                    serverId,
                 }
             });
         const existingRole = roles.find((x) => x.roleId === roleId);
@@ -65,7 +66,7 @@ const serverRolesRoute = createServerRoute({
         if (typeof roleIdQuery !== "string")
             return res.status(400).json({ error: true, message: "Role ID must exist" });
 
-        const roleId = parseInt(roleIdQuery);
+        const roleId = parseInt(roleIdQuery, 10);
 
         if (typeof roleId !== "number" || roleId < 0)
             return res.status(400).json({ error: true, message: "Expected role ID to be a positive number." });
@@ -73,7 +74,7 @@ const serverRolesRoute = createServerRoute({
         const roles: Role[] = await prisma.role
             .findMany({
                 where: {
-                    serverId: serverId,
+                    serverId,
                 }
             });
         const existingRole = roles.find((x) => x.roleId === roleId);

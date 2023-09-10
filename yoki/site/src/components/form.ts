@@ -2,7 +2,7 @@ import { IconDefinition } from "@fortawesome/free-solid-svg-icons";
 import { DefaultColorPalette, VariantProp } from "@mui/joy/styles/types";
 import { ReactNode } from "react";
 
-//#region Interfaces Form basic info structure
+// #region Interfaces Form basic info structure
 export interface LabsFormSection {
     name?: string;
     description?: string;
@@ -26,9 +26,9 @@ export interface BaseLabsFormField<TType extends LabsFormFieldType, TValue> {
     disabled?: boolean;
     optional?: boolean;
 }
-//#endregion
+// #endregion
 
-//#region Interfaces Labs field common stuff
+// #region Interfaces Labs field common stuff
 interface StyledLabsFormField {
     prefixIcon?: IconDefinition;
     size?: "sm" | "md" | "lg";
@@ -55,7 +55,7 @@ interface OptionedLabsFormField<
 interface PlaceholdableLabsFormField {
     placeholder?: string;
 }
-//#endregion
+// #endregion
 
 interface LabsFormFieldInput<TType extends LabsFormFieldType, TValue> extends
     BaseLabsFormField<TType, TValue>,

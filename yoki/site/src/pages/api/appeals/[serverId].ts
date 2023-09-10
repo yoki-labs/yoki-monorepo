@@ -1,13 +1,13 @@
 import { WebhookEmbed } from "@guildedjs/api";
+import { Colors, formatDate } from "@yokilabs/utils";
 import { stripIndents } from "common-tags";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { unstable_getServerSession } from "next-auth";
 
+import { authOptions } from "../auth/[...nextauth]";
 import rest from "../../../guilded";
 import errorHandler, { errorEmbed } from "../../../lib/ErrorHandler";
 import prisma from "../../../prisma";
-import { authOptions } from "../auth/[...nextauth]";
-import { Colors, formatDate } from "@yokilabs/utils";
 import { appealWaitingTime } from "../../../utils/appealUtil";
 
 const PostAppealRoute = async (req: NextApiRequest, res: NextApiResponse) => {
@@ -46,7 +46,7 @@ const PostAppealRoute = async (req: NextApiRequest, res: NextApiResponse) => {
     const previousAppeals = (await prisma.appeal.findMany({
         orderBy: [{ createdAt: "desc" }],
         where: {
-            serverId: serverId,
+            serverId,
             creatorId: session.user.id!,
         },
     }));
@@ -71,7 +71,7 @@ const PostAppealRoute = async (req: NextApiRequest, res: NextApiResponse) => {
                         .addFields([
                             {
                                 name: "Appeal reason",
-                                value: `\`\`\`md\n${stripIndents(content.replaceAll("\`\`\`", "'''"))}\n\`\`\``,
+                                value: `\`\`\`md\n${stripIndents(content.replaceAll("```", "'''"))}\n\`\`\``,
                             },
                             {
                                 name: "Additional info",

@@ -1,22 +1,23 @@
-import { Action, Role } from "@prisma/client";
-import prisma from "../../../../../prisma";
-import createServerRoute from "../../../../../utils/route";
+import { Role } from "@prisma/client";
+
 import rest from "../../../../../guilded";
+import prisma from "../../../../../prisma";
 import { allowedRoleTypes, roleExistsInServer } from "../../../../../utils/roleUtil";
+import createServerRoute from "../../../../../utils/route";
 
 const serverRolesRoute = createServerRoute({
     async GET(_req, res, _session, { serverId }, _member) {
         const roles: Role[] = await prisma.role
             .findMany({
                 where: {
-                    serverId: serverId,
+                    serverId,
                 }
             });
 
         const { roles: serverRoles } = await rest.router.roles.roleReadMany({ serverId });
 
         return res.status(200).json({
-            roles: roles.map(({ id, ...rest }) => rest),
+            roles: roles.map(({ id: _, ...rest }) => rest),
             serverRoles,
         });
     },
@@ -32,7 +33,7 @@ const serverRolesRoute = createServerRoute({
         const roles: Role[] = await prisma.role
             .findMany({
                 where: {
-                    serverId: serverId,
+                    serverId,
                 },
             });
         const existingRole = roles.find((x) => x.roleId === roleId);

@@ -1,7 +1,8 @@
 import { Action, Server } from "@prisma/client";
+import { NextApiRequest, NextApiResponse } from "next";
+
 import prisma from "../../../../../prisma";
 import createServerRoute from "../../../../../utils/route";
-import { NextApiRequest, NextApiResponse } from "next";
 
 const casesPerPage = 50;
 
@@ -39,7 +40,7 @@ async function fetchCases(req: NextApiRequest, res: NextApiResponse, server: Ser
     if (typeof pageStr !== "string")
         return res.status(400).json({ error: true, message: "Expected page single query" });
 
-    const page = parseInt(pageStr);
+    const page = parseInt(pageStr, 10);
 
     if (typeof page !== "number" || page < 0)
         return res.status(400).json({ error: true, message: "Expected page to be a number that is at least 0." });
@@ -61,7 +62,7 @@ async function fetchCases(req: NextApiRequest, res: NextApiResponse, server: Ser
         // To get rid of useless information
         cases: foundCases
             .slice(startIndex, endIndex)
-            .map(({ logChannelId, logChannelMessage, ...rest }) => rest),
+            .map(({ logChannelId: _i, logChannelMessage: _m, ...rest }) => rest),
         count: foundCases.length
     });
 }

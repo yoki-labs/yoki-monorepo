@@ -1,11 +1,11 @@
 import type { Collection } from "@discordjs/collection";
+import { CommandArgumentInfo } from "@yokilabs/utils";
 import type { Message } from "guilded.js";
 
 import type { AbstractClient } from "../Client";
 import type { IServer } from "../db-types";
 import type { CommandContext } from "../typings";
 import type { ResolvedArgs, UsedMentions } from "./arguments";
-import { CommandArgumentInfo } from "@yokilabs/utils";
 
 export interface BaseCommand<
     TCommand extends BaseCommand<TCommand, TClient, TRoleType, TServer>,

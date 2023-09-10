@@ -1,8 +1,9 @@
-import { LogChannel, LogChannelType } from "@prisma/client";
+import { LogChannelType } from "@prisma/client";
+import { isUUID } from "@yokilabs/utils";
+
+import rest from "../../../../../guilded";
 import prisma from "../../../../../prisma";
 import createServerRoute from "../../../../../utils/route";
-import { isUUID } from "@yokilabs/utils";
-import rest from "../../../../../guilded";
 
 const serverLogsRoute = createServerRoute({
     async DELETE(req, res, _session, { serverId} , _member) {
@@ -15,7 +16,7 @@ const serverLogsRoute = createServerRoute({
         const logChannels = await prisma.logChannel
             .findMany({
                 where: {
-                    serverId: serverId,
+                    serverId,
                 }
             });
 
@@ -27,7 +28,7 @@ const serverLogsRoute = createServerRoute({
 
         await prisma.logChannel.deleteMany({
             where: {
-                serverId: serverId,
+                serverId,
                 channelId: existingLog.channelId,
             }
         });
@@ -44,7 +45,7 @@ const serverLogsRoute = createServerRoute({
     },
     async PUT(req, res, _session, { serverId }, _member) {
         const { logId } = req.query;
-        const types = req.body.types;
+        const {types} = req.body;
 
         // Check query
         if (typeof logId !== "string")
@@ -57,7 +58,7 @@ const serverLogsRoute = createServerRoute({
         const logChannels = await prisma.logChannel
             .findMany({
                 where: {
-                    serverId: serverId,
+                    serverId,
                 }
             });
 
@@ -82,7 +83,7 @@ const serverLogsRoute = createServerRoute({
         await Promise.all([
             logsToAdd.length && prisma.logChannel.createMany({
                 data: logsToAdd.map((x) => ({
-                    serverId: serverId,
+                    serverId,
                     channelId: logId,
                     type: x as LogChannelType,
                 }))

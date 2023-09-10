@@ -1,7 +1,8 @@
-import { Action, ContentFilter, Server, UrlFilter } from "@prisma/client";
+import { Server, UrlFilter } from "@prisma/client";
+import { NextApiRequest, NextApiResponse } from "next";
+
 import prisma from "../../../../../prisma";
 import createServerRoute from "../../../../../utils/route";
-import { NextApiRequest, NextApiResponse } from "next";
 
 const casesPerPage = 50;
 
@@ -39,7 +40,7 @@ async function fetchUrls(req: NextApiRequest, res: NextApiResponse, server: Serv
     if (typeof pageStr !== "string")
         return res.status(400).json({ error: true, message: "Expected page single query" });
 
-    const page = parseInt(pageStr);
+    const page = parseInt(pageStr, 10);
 
     if (typeof page !== "number" || page < 0)
         return res.status(400).json({ error: true, message: "Expected page to be a number that is at least 0." });

@@ -1,7 +1,7 @@
 import { extendTheme } from "@mui/joy";
 
-import { greyscaleColour, greyscaleHexColour, mixHexColours } from "../utils/colorUtil";
 import labsTheme from "./theme.json";
+import { greyscaleHexColour, mixHexColours } from "../utils/colorUtil";
 
 const mostDark = labsTheme.spacedark[950];
 const mostLight = labsTheme.spacelight[950];
