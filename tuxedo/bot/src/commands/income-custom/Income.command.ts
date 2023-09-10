@@ -6,6 +6,11 @@ import SetCooldown from "./Cooldown.command";
 import Create from "./Create.command";
 import SetCurrency from "./Currency.command";
 import Enable from "./Enable.command";
+<<<<<<< HEAD
+=======
+import SetFailChance from "./FailChance.command";
+import SetFailCut from "./FailCut.command";
+>>>>>>> main
 import Info from "./Info.command";
 import List from "./List.command";
 import SetMessage from "./Message.command";
@@ -25,6 +30,8 @@ const Income: Command = {
         .set("cooldown", SetCooldown)
         .set("message", SetMessage)
         .set("currency", SetCurrency)
+        .set("failchance", SetFailChance)
+        .set("failcut", SetFailCut)
         .set("enable", Enable)
         .set("remove", Remove),
     execute: () => void 0,

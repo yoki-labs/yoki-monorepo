@@ -3,6 +3,7 @@ import { inlineCode, inlineQuote } from "@yokilabs/bot";
 import { Message } from "guilded.js";
 
 import { TuxoClient } from "../../Client";
+import { displayCurrency } from "../../util/text";
 import { Category, Command } from "../commands";
 import { DefaultIncomeTypeMap, displayDefaultRewards, displayOverridenRewards } from "./income-util";
 
@@ -16,8 +17,7 @@ const SetCurrency: Command = {
     args: [
         {
             name: "command",
-            display: `${Object
-                .keys(DefaultIncomeType)
+            display: `${Object.keys(DefaultIncomeType)
                 .slice(0, 3)
                 .concat("...")
                 .map((x) => x.toLowerCase())
@@ -57,8 +57,8 @@ const SetCurrency: Command = {
         if (!currencyTag)
             return ctx.messageUtil.replyWithInfo(
                 message,
-                `Rewards for ${command.toLowerCase()}`,
-                incomeOverride?.rewards.length ? displayOverridenRewards(incomeOverride, serverCurrencies) : displayDefaultRewards(command, serverCurrencies)
+                `Rewards for ${command}`,
+                incomeOverride?.rewards.length ? displayOverridenRewards(incomeOverride.rewards, serverCurrencies) : displayDefaultRewards(command, serverCurrencies)
             );
 
         // Rewarded currency
@@ -70,7 +70,7 @@ const SetCurrency: Command = {
             return ctx.messageUtil.replyWithError(
                 message,
                 `Expected minimum and maximum amount`,
-                `Please provide minimum and maximum amounts of ${currency.name} user should received from ${command.toLowerCase()}.`
+                `Please provide minimum and maximum amounts of ${currency.name} user should received from ${command}.`
             );
 
         if (minAmount === 0 && maxAmount === 0) return removeCurrencyReward(ctx, message, command, currency, incomeOverride);
@@ -84,8 +84,8 @@ const SetCurrency: Command = {
 
         return ctx.messageUtil.replyWithSuccess(
             message,
-            `Changed rewards for ${command.toLowerCase()}`,
-            `Users will now be able to receive from ${inlineCode(minAmount)} to ${inlineCode(maxAmount)} of ${currency.name} while using ${command.toLowerCase()} command.`
+            `Changed rewards for ${command}`,
+            `Users will now be able to receive from ${inlineCode(minAmount)} to ${inlineCode(maxAmount)} of ${currency.name} while using ${command} command.`
         );
     },
 };
@@ -106,7 +106,7 @@ async function removeCurrencyReward(
 
     await ctx.prisma.reward.deleteMany({ where: { currencyId: currency.id, serverId: message.serverId!, incomeCommandId: incomeOverride.id } });
 
-    return ctx.messageUtil.replyWithSuccess(message, "Rewarded currency removed", `The ${incomeType.toLowerCase()} will no longer hand out ${currency.name}.`);
+    return ctx.messageUtil.replyWithSuccess(message, "Rewarded currency removed", `The ${incomeType.toLowerCase()} will no longer hand out ${displayCurrency(currency)}.`);
 }
 
 export default SetCurrency;

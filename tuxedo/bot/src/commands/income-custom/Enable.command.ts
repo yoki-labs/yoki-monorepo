@@ -23,7 +23,7 @@ const Enable: Command = {
         },
     ],
     execute: async (message, args, ctx, { server }) => {
-        const { resolved: incomeType } = args.incomeType as ResolvedEnum;
+        const incomeType = (args.incomeType as ResolvedEnum).resolved as string;
         const { disableDefaultIncomes } = server;
 
         // Can't disable it; it's already disabled

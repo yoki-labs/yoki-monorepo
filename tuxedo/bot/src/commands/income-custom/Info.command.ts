@@ -49,15 +49,15 @@ const Info: Command = {
                 fields: [
                     {
                         name: "Rewards",
-                        value: income?.rewards.length ? displayOverridenRewards(income, currencies) : displayDefaultRewards(incomeType!, currencies),
+                        value: income?.rewards.length ? displayOverridenRewards(income.rewards, currencies) : displayDefaultRewards(incomeType!, currencies),
                     },
                     {
                         name: "Income Info",
                         value: stripIndents`
                                 **Action message:** ${inlineCode(income?.action ?? defaultIncomeInfo?.action ?? `used ${income!.name}`)}
                                 **Cooldown:** ${ms(income?.cooldownMs ?? defaultIncomeInfo?.cooldown ?? defaultCreatedCooldown, { long: true })}
-                                **Fail chance:** 0%
-                                **Fail percentage cut:** 0%
+                                **Fail chance:** ${(income?.failChance ?? defaultIncomeInfo?.failChance ?? 0) * 100}%
+                                **Fail percentage cut:** ${(income?.failSubtractCut ?? defaultIncomeInfo?.failCut ?? 0) * 100}%
                             `,
                     },
                     income && {

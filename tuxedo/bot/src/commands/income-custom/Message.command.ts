@@ -27,7 +27,7 @@ const SetMessage: Command = {
         },
     ],
     execute: async (message, args, ctx) => {
-        const command = args.command as string;
+        const command = (args.command as string).toLowerCase();
         const action = args.action as string | undefined;
 
         const incomeType = DefaultIncomeTypeMap[command] as DefaultIncomeType | undefined;

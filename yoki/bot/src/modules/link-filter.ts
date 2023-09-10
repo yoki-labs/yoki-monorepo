@@ -53,7 +53,7 @@ export class LinkFilterUtil extends BaseFilterUtil {
         contentType: ContentIgnoreType;
         presets?: Preset[];
         resultingAction: () => unknown;
-    }) {
+    }): Promise<boolean> {
         // Too many DB stuff to fetch to be honest
         const ignored = await this.client.prisma.channelIgnore.findMany({
             where: {
@@ -73,7 +73,8 @@ export class LinkFilterUtil extends BaseFilterUtil {
         const dontFilterInvites = !server.filterInvites || ignored.find((x) => x.type === ChannelIgnoreType.INVITE);
 
         // ! ( (server.filterEnabled && !ignoredUrls) || (server.filterInvites && !ignoredInvites) )
-        if (dontFilterUrls && dontFilterInvites) return;
+        if (dontFilterUrls && dontFilterInvites)
+            return false;
 
         // Server settings
         const greylistedUrls = dontFilterUrls ? null : await this.client.prisma.urlFilter.findMany({ where: { serverId: server.serverId } });
@@ -83,7 +84,8 @@ export class LinkFilterUtil extends BaseFilterUtil {
         const enabledPresets = (presets ?? (await this.client.dbUtil.getEnabledPresets(server.serverId))).filter((x) => x.preset in this.presets);
 
         // If there are no blacklisted URLs, no presets enabled and invites shouldn't be filtered, there is no point in checking the links
-        if (!(greylistedUrls?.length || server.urlFilterIsWhitelist || enabledPresets.length) && dontFilterInvites) return;
+        if (!(greylistedUrls?.length || server.urlFilterIsWhitelist || enabledPresets.length) && dontFilterInvites)
+            return false;
 
         void this.client.amp.logEvent({
             event_type: "MESSAGE_LINKS_SCAN",
@@ -115,7 +117,7 @@ export class LinkFilterUtil extends BaseFilterUtil {
             // Not guilded.gg, thing above (OR) is one of the preset items
             if (!dontFilterUrls && domain !== "guilded.gg" && (badUrl || inPreset)) {
                 void this.client.amp.logEvent({ event_type: "MESSAGE_LINK_ACTION", user_id: userId, event_properties: { serverId: server.serverId } });
-                return this.dealWithUser(
+                await this.dealWithUser(
                     userId,
                     server,
                     channelId,
@@ -126,10 +128,13 @@ export class LinkFilterUtil extends BaseFilterUtil {
                     greylistedUrl?.severity ?? inPreset?.severity ?? server.linkSeverity,
                     domain
                 );
+
+                return false;
             }
             // No bad invites (filter invites enabled, it's guilded gg, route exists and it's none of Guilded's subdomains)
             // E.g., we don't need to filter support.guilded.gg/hc/en-us -- support. is there, which we can match
-            if (dontFilterInvites || !(domain === "guilded.gg" && route && (subdomain === "www." || !subdomain))) return;
+            if (dontFilterInvites || !(domain === "guilded.gg" && route && (subdomain === "www." || !subdomain)))
+                return false;
 
             const breadCrumbs = route.split("/");
 
@@ -140,18 +145,22 @@ export class LinkFilterUtil extends BaseFilterUtil {
                 const teamId = breadCrumbs.slice(2, 3)[0];
 
                 await this.checkServerId(server, userId, channelId, filteredContent, teamId, whitelistedInvites!, route, resultingAction);
+
+                return false;
             }
             // Invite
             else if (route.startsWith("/i/")) {
                 // Same as above condition
                 const invite = breadCrumbs.splice(2, 3)[0];
 
-                if (!isHashId(invite)) return;
+                if (!isHashId(invite))
+                    return false;
 
                 const response = await fetch(`https://www.guilded.gg/api/content/route/metadata?route=/i/${invite}`);
 
                 // Don't filter if it's bad
-                if (!response.ok) return;
+                if (!response.ok)
+                    return false;
 
                 const json = await response.json();
 
@@ -159,18 +168,22 @@ export class LinkFilterUtil extends BaseFilterUtil {
                 const targetServerId = (json as { metadata?: { inviteInfo?: { team: { id: string } } } }).metadata?.inviteInfo?.team.id;
 
                 await this.checkServerId(server, userId, channelId, filteredContent, targetServerId, whitelistedInvites!, route, resultingAction);
+
+                return true;
             }
             // Specified by vanity link
             else if (!this.nonServerRoutes.includes(breadCrumbs[1])) {
                 const [, vanity] = breadCrumbs;
 
                 // (It's not a vanity)
-                if (!this.vanityRegex.test(vanity)) return;
+                if (!this.vanityRegex.test(vanity))
+                    return false;
 
                 const response = await fetch(`https://www.guilded.gg/api/content/route/metadata?route=/${vanity}`);
 
                 // Don't filter if it's bad
-                if (!response.ok) return;
+                if (!response.ok)
+                    return false;
 
                 const json = await response.json();
 
@@ -178,8 +191,12 @@ export class LinkFilterUtil extends BaseFilterUtil {
                 const targetServerId = (json as { metadata?: { team?: { id: string } } }).metadata?.team?.id;
 
                 await this.checkServerId(server, userId, channelId, filteredContent, targetServerId, whitelistedInvites!, route, resultingAction);
+
+                return true;
             }
         }
+
+        return false;
     }
 
     matchesPresetLink(presetLink: PresetLink, subdomain: string | undefined, domain: string, route: string | undefined) {
@@ -229,7 +246,7 @@ export class LinkFilterUtil extends BaseFilterUtil {
             return this.client.messageUtil.sendWarningBlock(
                 channelId!,
                 `Stop spamming`,
-                `**Alert:** <@${userId}>, you have posted a blacklisted/non-whitelisted domain or invite in this server. This is a warning for you to not do it again, otherwise moderation actions may be taken against you.`,
+                `<@${userId}>, you have posted a blacklisted/non-whitelisted domain or invite in this server. This is a warning for you to not do it again, otherwise moderation actions may be taken against you.`,
                 undefined,
                 { isPrivate: true }
             );
@@ -244,7 +261,7 @@ export class LinkFilterUtil extends BaseFilterUtil {
                 channelId!,
                 {
                     title: `:mute: You have been muted`,
-                    description: `**Alert:** <@${userId}>, you have been muted for posting a blacklisted/non-whitelisted domain or invite in this server.`,
+                    description: `<@${userId}>, you have been muted for posting a blacklisted/non-whitelisted domain or invite in this server.`,
                     color: Colors.red,
                 },
                 { isPrivate: true }

@@ -61,7 +61,6 @@ input[type=number] {
     scrollbar-color: var(--guilded-yellow) var(--grey-bg);
 } */
 
-
 /* For Chrome, EDGE, Opera, Others */
 /* .scrollbar::-webkit-scrollbar {
     width: 20px;

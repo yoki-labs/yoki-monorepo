@@ -18,7 +18,7 @@ const Withdraw: Command = {
             optional: true,
         },
     ],
-    execute: generateBankCommand("bank", "withdraw", "withdrew", -1, (balance) => balance.bank),
+    execute: generateBankCommand("bank", "withdraw", "withdrew", -1, (balance, startingBalance) => balance?.bank ?? startingBalance ?? 0),
 };
 
 export default Withdraw;

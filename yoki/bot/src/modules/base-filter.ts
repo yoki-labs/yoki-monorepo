@@ -25,6 +25,9 @@ export default abstract class BaseFilterUtil<TFilterType = null> extends Util<Yo
                 await this.client.roles.addRoleToMember(server.serverId, userId, server.muteRoleId);
                 return this.onUserMute(userId, server, channelId, filteredContent, filterType);
             }
+
+            // Since muting doesn't exist, just warn them instead
+            return this.onUserWarn(userId, server, channelId, filteredContent, filterType);
         },
         [Severity.WARN]: this.onUserWarn.bind(this),
     };

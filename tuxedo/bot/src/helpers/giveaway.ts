@@ -1,5 +1,5 @@
 import { Giveaway } from "@prisma/client";
-import { inlineCode } from "@yokilabs/bot";
+import { errorEmbed, inlineCode } from "@yokilabs/bot";
 import { Colors, formatDate, shuffleArray } from "@yokilabs/utils";
 import { stripIndents } from "common-tags";
 import { Embed, EmbedField } from "guilded.js";
@@ -70,7 +70,7 @@ export class GiveawayUtil extends TickedUtil {
         });
 
         // Creating giveway stuff
-        await Promise.all([
+        return Promise.all([
             this.client.reactions.create(message.channelId, message.id, defaultGiveawayEmote),
             this.client.prisma.giveaway
                 .create({
@@ -97,7 +97,6 @@ export class GiveawayUtil extends TickedUtil {
         // Find non-expired giveaways
         const activeGiveaways = await this.client.prisma.giveaway.findMany({ where: { hasEnded: false } });
 
-        console.log("Found giveaways", activeGiveaways);
         for (const giveaway of activeGiveaways) this.addGiveaway(giveaway);
 
         return this;
@@ -116,19 +115,17 @@ export class GiveawayUtil extends TickedUtil {
     async handleGiveaways() {
         const nextTick = Date.now() + tickIntervalMs;
 
-        console.log("Ticked giveaways", this._longGiveaways);
         // Get ending giveaways to cache and start actively tracking them
         const newEndingGiveaways = Object.keys(this._longGiveaways).filter((x) => this._longGiveaways[x].endsAt <= nextTick);
 
-        console.log("Ending giveaways:", newEndingGiveaways);
         if (newEndingGiveaways.length) {
-            console.log("Handling ending giveaways");
             this._endingGiveawayPool.push(...(await this.client.prisma.giveaway.findMany({ where: { id: { in: newEndingGiveaways } } })));
 
             // Since we pulled, it will be handled separately
             for (const endingGiveawayId of newEndingGiveaways) delete this._longGiveaways[endingGiveawayId];
         }
 
+        // Save all the users who participated in the giveaway into DB; we don't want to do that each time user joins giveaway
         await Promise.allSettled(
             Object.values(this._participants).map(({ giveawayId, users }) =>
                 this.client.prisma.giveaway.update({
@@ -144,21 +141,17 @@ export class GiveawayUtil extends TickedUtil {
     }
 
     async handleEndingGiveaways() {
-        console.log("Ticking ending giveaways");
         const now = Date.now();
 
-        console.log("Ending giveaways", this._endingGiveawayPool);
         for (const giveaway of this._endingGiveawayPool)
             try {
-                const { channelId, messageId } = giveaway;
-
+                // const { channelId, messageId } = giveaway;
                 // End it
-                console.log("Is giveaway ending:", giveaway.endsAt.getTime() <= now, giveaway);
-
                 if (giveaway.endsAt.getTime() <= now) await this.concludeGiveaway(giveaway);
-                else await this.client.messages.update(channelId, messageId, this.createGiveawayEmbed(giveaway));
+                // else await this.client.messages.update(channelId, messageId, this.createGiveawayEmbed(giveaway));
             } catch (e) {
                 console.error("Error", e);
+                await this.client.errorHandler.send("Error while handling ending giveaways", [errorEmbed((e as Error).toString().substring(0, 2048))]);
             }
     }
 
@@ -167,7 +160,7 @@ export class GiveawayUtil extends TickedUtil {
         const participants = this._participants[giveaway.messageId]?.users ?? giveaway.participants;
         const winners = shuffleArray(participants).slice(0, giveaway.winnerCount);
 
-        await Promise.all([
+        await Promise.allSettled([
             this.client.messages.update(channelId, messageId, this.createGiveawayEmbed(giveaway, timeZone, true)),
             this.client.messageUtil.sendSuccessBlock(
                 channelId,
@@ -176,15 +169,15 @@ export class GiveawayUtil extends TickedUtil {
                 {
                     fields: winners.length
                         ? [
-                              {
-                                  name: "Winners",
-                                  value: winners.map((x) => `<@${x}>`).join(", "),
-                              },
-                              {
-                                  name: "Reward",
-                                  value: giveaway.text,
-                              },
-                          ]
+                            {
+                                name: "Winners",
+                                value: winners.map((x) => `<@${x}>`).join(", "),
+                            },
+                            {
+                                name: "Reward",
+                                value: giveaway.text,
+                            },
+                        ]
                         : undefined,
                 },
                 {
@@ -215,27 +208,33 @@ export class GiveawayUtil extends TickedUtil {
         const endDateMessage = canceled
             ? ":x: **Has been cancelled.**"
             : ended
-            ? ":white_check_mark: **Has concluded the winners.**"
-            : `**Ends in:** ${formatDate(giveaway.endsAt, timeZone)} EST (${ms(giveaway.endsAt.getTime() - Date.now(), { long: true })} left)`;
+                ? ":white_check_mark: **Has concluded the winners.**"
+                : `**Ends in:** ${formatDate(giveaway.endsAt, timeZone)} EST (${ms(giveaway.endsAt.getTime() - Date.now(), { long: true })} left)`;
 
         return new Embed({
             title: ended ? ":tada: Giveaway has ended!" : ":tada: Giveaway has started!",
             description: giveaway.text,
             color: canceled ? Colors.red : ended ? Colors.green : Colors.blockBackground,
+            footer: {
+                "text": `Giveaway ID: ${giveaway.id}`,
+            },
             fields: [
                 {
                     name: "Information",
                     value: stripIndents`
                         ${endDateMessage}
-                        **Possible winner count:** ${inlineCode(giveaway.winnerCount)}
-                        **Giveaway ID:** ${inlineCode(giveaway.id)}
                     `,
                     inline: !ended,
+                },
+                {
+                    name: "Amount of Winners",
+                    value: `${inlineCode(giveaway.winnerCount)}`,
+                    inline: true,
                 },
                 !ended && {
                     name: "How to Join",
                     value: `React with :plus1: to join the giveaway! Removing the reaction will remove you from the giveaway.`,
-                    inline: true,
+                    inline: false,
                 },
             ].filter(Boolean) as EmbedField[],
         });

@@ -17,7 +17,7 @@ export interface CommentPayload {
 
 export default async (serverId: string, parentId: number, comment: CommentPayload, contentType: "topics" | "docs" | "events", ctx: Context, server: Server) => {
     const member = await ctx.members.fetch(serverId, comment.createdBy).catch(() => null);
-    if (member?.user?.type === UserType.Bot) return;
+    if (member?.user?.type === UserType.Bot || !member) return;
 
     // // check if there's a log channel channel if it needs to be even logged
     // const editedTopicLogChannel = await ctx.dbUtil.getLogChannel(serverId, LogChannelType.topic_edits);
@@ -29,5 +29,5 @@ export default async (serverId: string, parentId: number, comment: CommentPayloa
     // Scanning
     const deletion = () => ctx.rest.delete(`/channels/${comment.channelId}/${contentType}/${parentId}/comments/${comment.id}`);
 
-    await moderateContent(ctx, server, comment.channelId, "COMMENT", FilteredContent.ChannelContent, comment.createdBy, comment.content, comment.mentions, deletion);
+    await moderateContent(ctx, server, comment.channelId, "COMMENT", FilteredContent.ChannelContent, comment.createdBy, member?.roleIds ?? [], comment.content, comment.mentions, deletion);
 };

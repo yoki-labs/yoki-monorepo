@@ -1,4 +1,4 @@
-import { Currency, DefaultIncomeType, IncomeCommand, Reward } from "@prisma/client";
+import { Currency, DefaultIncomeType, Reward } from "@prisma/client";
 import { inlineCode } from "@yokilabs/bot";
 
 import { TuxoClient } from "../../Client";
@@ -8,14 +8,11 @@ import Hobby from "../income/Hobby.command";
 import { defaultCreatedReceivedCurrency, defaultIncomes } from "../income/income-defaults";
 import Work from "../income/Work.command";
 
-export const defaultOrCustomIncomeDisplay = `${
-    Object
-        .keys(DefaultIncomeType)
-        .slice(0, 3)
-        .concat("...")
-        .map((x) => x.toLowerCase())
-        .join(" / ")
-    } / (custom income command)`;
+export const defaultOrCustomIncomeDisplay = `${Object.keys(DefaultIncomeType)
+    .slice(0, 3)
+    .concat("...")
+    .map((x) => x.toLowerCase())
+    .join(" / ")} / (custom income command)`;
 
 export const DefaultIncomeTypeMap: Record<string, string> = Object.assign(
     {},
@@ -41,15 +38,20 @@ export const nameRegex = /^[A-Za-z-_]+$/;
 
 export const getUnavailableIncomeNames = (client: TuxoClient) => client.commands.map((command) => [command.name, ...(command.aliases ?? [])]).flatMap((x) => x);
 
-export const displayOverridenRewards = (incomeOverride: IncomeCommand & { rewards: Reward[] }, serverCurrencies: Currency[]) =>
-    incomeOverride.rewards
-        .map((x) => `\u2022 ${inlineCode(x.minAmount)} to ${inlineCode(x.minAmount + x.minAmount)} ${serverCurrencies.find((y) => x.currencyId === y.id)?.name}`)
+export const displayOverridenRewards = (rewards: Reward[], serverCurrencies: Currency[]) =>
+    rewards
+        .map((x) => {
+            const currency = serverCurrencies.find((y) => x.currencyId === y.id);
+
+            return `:${currency?.emote}: ${inlineCode(x.minAmount)} to ${inlineCode(x.minAmount + x.minAmount)} ${currency?.name}`;
+        })
         .join("\n");
 
 export function displayDefaultRewards(incomeType: DefaultIncomeType | string, serverCurrencies: Currency[]) {
-    if (!serverCurrencies?.length) return `\u2022 (There is no currency to give)`;
+    if (!serverCurrencies?.length) return `(There is no currency to give)`;
 
     const receivedCurrency = defaultIncomes[incomeType]?.rewards ?? defaultCreatedReceivedCurrency;
+    const firstCurrency = serverCurrencies[0];
 
-    return `\u2022 ${inlineCode(receivedCurrency[0])} to ${inlineCode(receivedCurrency[1] + receivedCurrency[0])} ${serverCurrencies[0].name} (default)`;
+    return `:${firstCurrency.emote}: ${inlineCode(receivedCurrency[0])} to ${inlineCode(receivedCurrency[1] + receivedCurrency[0])} ${firstCurrency.name} (default)`;
 }

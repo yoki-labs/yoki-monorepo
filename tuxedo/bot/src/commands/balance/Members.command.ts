@@ -3,7 +3,8 @@ import { RoleType } from "@prisma/client";
 
 import { Category, Command } from "../commands";
 import Purge from "./Purge.command";
-import Set from "./Set.command";
+import SetBalance from "./SetBalance.command";
+import SetInventory from "./SetInventory.command";
 
 const Members: Command = {
     name: "members",
@@ -12,7 +13,7 @@ const Members: Command = {
     parentCommand: true,
     category: Category.Balance,
     requiredRole: RoleType.MOD,
-    subCommands: new Collection<string, Command>().set("setbalance", Set).set("purgebalances", Purge),
+    subCommands: new Collection<string, Command>().set("setbalance", SetBalance).set("setinventory", SetInventory).set("purgebalances", Purge),
     execute: () => void 0,
 };
 

@@ -38,7 +38,7 @@ const Delete: Command = {
         const currency = await ctx.dbUtil.getCurrency(message.serverId!, tag);
 
         // Currency needs to exist for it to be deleted
-        if (!currency) return ctx.messageUtil.replyWithError(message, "Doesn't exist", `The currency with tag ${inlineQuote(tag)} does not exist and cannot be deleted.`);
+        if (!currency) return ctx.messageUtil.replyWithError(message, "Doesn't exist", `Currency with tag ${inlineQuote(tag)} does not exist and cannot be deleted.`);
 
         // To show how many people have that currency in their balance
         const balanceCount = await ctx.prisma.memberBalance.count({
@@ -55,7 +55,7 @@ const Delete: Command = {
                 stripIndents`
                     Are you sure you want to delete currency ${inlineQuote(currency.name)}? This will also delete the currency from balances of ${inlineCode(
                     balanceCount
-                )} members, as well as rewards of this currency in income commands. If that is intended, redo the command with \`confirm\` at the end like so:
+                )} members, as well as rewards of this currency in income commands and currency in item prices. If that is intended, redo the command with \`confirm\` at the end like so:
                     \`\`\`md
                     ${prefix}currency delete ${tag} confirm
                     \`\`\`
@@ -64,7 +64,7 @@ const Delete: Command = {
 
         await ctx.dbUtil.deleteCurrency(currency);
 
-        return ctx.messageUtil.replyWithSuccess(message, "Currency deleted", `Currency with the tag ${inlineQuote(tag)} has been successfully deleted.`);
+        return ctx.messageUtil.replyWithSuccess(message, "Currency deleted", `Currency with tag ${inlineQuote(tag)} has been successfully deleted.`);
     },
 };
 

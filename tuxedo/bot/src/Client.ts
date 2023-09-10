@@ -22,7 +22,7 @@ export class TuxoClient extends AbstractClient<TuxoClient, Server, Command> {
     readonly dbUtil: DatabaseUtil = new DatabaseUtil(this);
 
     readonly giveawayUtil: GiveawayUtil = new GiveawayUtil(this);
-    
+
     readonly balanceUtil: BalanceUtil = new BalanceUtil(this);
 
     readonly minigameUtil: MinigameUtil = new MinigameUtil(this);

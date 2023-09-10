@@ -51,8 +51,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx): Promise<GetSe
     const referencedServer = servers.find((x) => x.id === serverId);
 
     // Not in that server; cannot manage it
-    if (!referencedServer)
-        return { redirect: { destination: `/dashboard`, permanent: false } };
+    if (!referencedServer) return { redirect: { destination: `/dashboard`, permanent: false } };
 
     const serverInDb = (await prisma.server.findMany({
         where: {

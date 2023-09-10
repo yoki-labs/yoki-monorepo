@@ -18,7 +18,7 @@ const Deposit: Command = {
             optional: true,
         },
     ],
-    execute: generateBankCommand("pocket", "deposit", "deposited", 1, (balance) => balance.pocket),
+    execute: generateBankCommand("pocket", "deposit", "deposited", 1, (balance) => balance?.pocket ?? 0),
 };
 
 export default Deposit;

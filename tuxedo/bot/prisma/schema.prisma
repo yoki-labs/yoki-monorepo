@@ -20,13 +20,16 @@ model Server {
     prefix   String?
     locale   String  @default("en-US")
     timezone String?
+    modulesDisabled ModuleName[] @default([])
 
     // --- Incomes
     disableDefaultIncomes DefaultIncomeType[]
+    sellCut               Float @default(1)
 
     botJoinedAt DateTime? @default(now())
 }
 
+///// Other features /////
 model Giveaway {
     // Basics
     id           String   @id @db.VarChar(255)
@@ -45,17 +48,19 @@ model Giveaway {
     createdAt    DateTime @default(now())
 }
 
+///// Currencies & Economy /////
 model Currency {
     // Basics
     id              String   @id @db.VarChar(255)
     serverId        String   @db.VarChar(255)
     name            String   @db.VarChar(100)
     tag             String   @db.VarChar(16)
+    emote           String   @db.VarChar(32) @default("small_orange_diamond")
     // Perks
     startingBalance Int?
     maximumBalance  Int?
     bankEnabled     Boolean  @default(true)
-    canLose         Boolean  @default(true)
+    //canLose         Boolean  @default(true)
     // Who, when
     createdBy       String?  @db.VarChar(255)
     createdAt       DateTime @default(now())
@@ -71,73 +76,25 @@ model IncomeCommand {
     action          String?            @db.VarChar(50)
     cooldownMs      Int?
     rewards         Reward[]
-    failChance      Int?
-    failSubtractCut Int?
+    failChance      Float?
+    failSubtractCut Float?
     // Who, when
     createdBy       String             @default("Ann6LewA") @db.VarChar(255)
     createdAt       DateTime           @default(now())
 }
-
-// model IncomeCommand {
-//     // Basics
-//     id         Int      @id @default(autoincrement())
-//     serverId   String   @db.VarChar(255)
-//     name       String   @db.VarChar(50)
-//     // Income
-//     cooldownMs Int
-//     rewards    Reward[]
-// }
-
+// Command and action received reward; this originally held item prices too, but it may have additional stuff
+// that may not prove to be as useful in prices and stuff + hogs additional IDs easily
 model Reward {
     // Basics
     id              Int           @id @default(autoincrement())
     serverId        String        @db.VarChar(255)
     // Relations
     incomeCommandId Int
-    incomeCommand   IncomeCommand @relation(fields: [incomeCommandId], references: [id])
-
-    // incomeCommandId Int?
-    // incomeCommand   IncomeCommand? @relation(fields: [incomeCommandId], references: [id])
+    incomeCommand   IncomeCommand @relation(fields: [incomeCommandId], references: [id], onDelete: Cascade)
     // Reward
     currencyId String @db.VarChar(255)
     minAmount  Int
     maxAmount  Int
-}
-
-model ServerMember {
-    // Basics
-    id       String          @id @db.VarChar(255)
-    serverId String          @db.VarChar(255)
-    userId   String          @db.VarChar(255)
-    // Inventory
-    // balance     Json?           @db.JsonB
-    // bankBalance Json?           @db.JsonB
-    balances MemberBalance[]
-}
-
-model MemberBalance {
-    // Basics
-    id         Int          @id @default(autoincrement())
-    serverId   String       @db.VarChar(255)
-    memberId   String       @db.VarChar(255)
-    currencyId String       @db.VarChar(255)
-    // Relations
-    member     ServerMember @relation(fields: [memberId], references: [id])
-    // Balance
-    pocket     Int          @default(0)
-    bank       Int          @default(0)
-    all        Int          @default(0)
-}
-
-// Copied from Yoki
-model Role {
-    id        Int      @id @default(autoincrement())
-    serverId  String   @db.VarChar(255)
-    roleId    Int      @db.Integer
-    createdAt DateTime @default(now())
-    type      RoleType
-
-    @@unique([serverId, roleId, type])
 }
 
 enum DefaultIncomeType {
@@ -148,6 +105,87 @@ enum DefaultIncomeType {
     COMMUNITY
     ROB
     BLACKJACK
+}
+
+///// Items /////
+model Item {
+    // Basics
+    id              String             @id @db.VarChar(32)
+    serverId        String             @db.VarChar(255)
+    name            String             @db.VarChar(64)
+    // Overrides
+    value           ItemValue[]
+    givesRoles      Int[]              @db.Integer
+    canBuy          Boolean            @default(false)
+    // Who, when
+    createdBy       String             @db.VarChar(255)
+    createdAt       DateTime           @default(now())
+}
+// For giveaways in the future, item prices
+model ItemValue {
+    // Basics
+    id              Int           @id @default(autoincrement())
+    serverId        String        @db.VarChar(255)
+    // Relations
+    itemId          String        @db.VarChar(32)
+    item            Item          @relation(fields: [itemId], references: [id], onDelete: Cascade)
+    // Reward
+    currencyId String @db.VarChar(255)
+    amount     Int
+}
+
+///// Member Stuff /////
+model ServerMember {
+    // Basics
+    id       String          @id @db.VarChar(255)
+    serverId String          @db.VarChar(255)
+    userId   String          @db.VarChar(255)
+    // Inventory
+    // balance     Json?           @db.JsonB
+    // bankBalance Json?           @db.JsonB
+    balances   MemberBalance[]
+    items      MemberItem[]
+}
+
+model MemberBalance {
+    // Basics
+    id         Int          @id @default(autoincrement())
+    serverId   String       @db.VarChar(255)
+    memberId   String       @db.VarChar(255)
+    currencyId String       @db.VarChar(255)
+    // Relations
+    member     ServerMember @relation(fields: [memberId], references: [id], onDelete: Cascade)
+    // Balance
+    pocket     Int          @default(0)
+    bank       Int          @default(0)
+    all        Int          @default(0)
+}
+model MemberItem {
+    // Basics
+    id         Int          @id @default(autoincrement())
+    serverId   String       @db.VarChar(255)
+    memberId   String       @db.VarChar(255)
+    itemId     String       @db.VarChar(32)
+    // Relations
+    member     ServerMember @relation(fields: [memberId], references: [id], onDelete: Cascade)
+    // Inventory
+    amount     Int
+}
+
+///// Additional Configuration /////
+// Copied from Yoki
+enum ModuleName {
+    ECONOMY
+    SHOP
+}
+model Role {
+    id        Int      @id @default(autoincrement())
+    serverId  String   @db.VarChar(255)
+    roleId    Int      @db.Integer
+    createdAt DateTime @default(now())
+    type      RoleType
+
+    @@unique([serverId, roleId, type])
 }
 
 enum PremiumType {

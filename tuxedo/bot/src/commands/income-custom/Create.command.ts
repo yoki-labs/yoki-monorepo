@@ -1,10 +1,17 @@
 import { RoleType } from "@prisma/client";
 import { inlineQuote } from "@yokilabs/bot";
 
+import { createServerLimit } from "../../util/premium";
 import { Category, Command } from "../commands";
 import { getUnavailableIncomeNames, nameRegex } from "./income-util";
 
-const MAX_CUSTOM_INCOMES = 10;
+const getServerLimit = createServerLimit({
+    Gold: 50,
+    Silver: 30,
+    Copper: 20,
+    Early: 15,
+    Default: 10,
+});
 
 const Create: Command = {
     name: "income-create",
@@ -20,7 +27,7 @@ const Create: Command = {
             type: "string",
         },
     ],
-    execute: async (message, args, ctx) => {
+    execute: async (message, args, ctx, { server }) => {
         const name = (args.name as string).toLowerCase();
 
         const disallowedNames = getUnavailableIncomeNames(ctx);
@@ -37,9 +44,16 @@ const Create: Command = {
         // To check if it exists already
         if (incomeCommands.find((x) => x.name === name))
             return ctx.messageUtil.replyWithError(message, "Already exists", `The income by the name of ${inlineQuote(name)} already exists.`);
-        // Or if the count is too high
-        else if (incomeCommands.length > MAX_CUSTOM_INCOMES)
-            return ctx.messageUtil.replyWithError(message, "Too many incomes", `You cannot create more than ${MAX_CUSTOM_INCOMES} income commands.`);
+
+        // To not create too many of them for DB to blow up
+        const serverLimit = getServerLimit(server);
+
+        if (incomeCommands.length >= serverLimit)
+            return ctx.messageUtil.replyWithError(
+                message,
+                "Too many currencies",
+                `You can only have ${serverLimit} currencies per server.${server.premium ? "" : "\n\n**Note:** You can upgrade to premium to increase the limit."}`
+            );
 
         await ctx.prisma.incomeCommand.create({
             data: {

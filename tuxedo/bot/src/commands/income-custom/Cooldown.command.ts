@@ -29,7 +29,7 @@ const SetCooldown: Command = {
         },
     ],
     execute: async (message, args, ctx) => {
-        const command = args.command as string;
+        const command = (args.command as string).toLowerCase();
         const time = args.time as number | undefined;
 
         const incomeType = DefaultIncomeTypeMap[command] as DefaultIncomeType | undefined;
@@ -39,20 +39,12 @@ const SetCooldown: Command = {
         if (!time) {
             const currentCooldown = incomeOverride?.cooldownMs ?? defaultIncomes[command]?.cooldown ?? defaultCreatedCooldown;
 
-            return ctx.messageUtil.replyWithInfo(
-                message,
-                `Cooldown for ${command.toLowerCase()}`,
-                `The current cooldown for ${inlineCode(command.toLowerCase())} is ${ms(currentCooldown, { long: true })}.`
-            );
+            return ctx.messageUtil.replyWithInfo(message, `Cooldown for ${command}`, `The current cooldown for ${inlineCode(command)} is ${ms(currentCooldown, { long: true })}.`);
         }
 
         await ctx.dbUtil.createOrUpdateIncome(message.serverId!, message.createdById, incomeType, command, incomeOverride, { cooldownMs: time });
 
-        return ctx.messageUtil.replyWithSuccess(
-            message,
-            `Changed ${command.toLowerCase()}'s cooldown`,
-            `The cooldown for ${command.toLowerCase()} has been changed to ${ms(time, { long: true })}.`
-        );
+        return ctx.messageUtil.replyWithSuccess(message, `Changed ${command}'s cooldown`, `The cooldown for ${command} has been changed to ${ms(time, { long: true })}.`);
     },
 };
 

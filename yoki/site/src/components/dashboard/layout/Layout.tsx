@@ -44,7 +44,7 @@ export default class Layout extends React.Component<LayoutProps, LayoutState> {
                 currentServer={currentServer}
                 topbarPrefix={
                     <IconButton className="md:hidden block" onClick={this.toggleMenu.bind(this)} color="neutral">
-                        <FontAwesomeIcon icon={faBars}/>
+                        <FontAwesomeIcon icon={faBars} />
                     </IconButton>
                 }
             >

@@ -6,9 +6,14 @@ import { UserType } from "guilded.js";
 
 import type { GEvent } from "../../typings";
 import { uploadS3 } from "../../utils/s3";
+import { lastClientServerMessages } from "./ChatMessageCreated";
 
 export default {
     execute: async ([message, ctx]) => {
+        // One of the flowbots may be deleting Yoki's message deletion logs specifically and it may be causing loops
+        if (lastClientServerMessages[message.serverId] === message.id)
+            return;
+
         // check if there's a log channel channel for message deletions
         const deletedMessageLogChannel = await ctx.dbUtil.getLogChannel(message.serverId!, LogChannelType.message_deletions);
         if (!deletedMessageLogChannel) return;

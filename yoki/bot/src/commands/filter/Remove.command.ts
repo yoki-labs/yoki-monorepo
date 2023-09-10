@@ -1,4 +1,4 @@
-import { inlineCode } from "@yokilabs/bot";
+import { inlineQuote } from "@yokilabs/bot";
 
 import { RoleType } from "../../typings";
 import { getFilterFromSyntax } from "../../utils/util";
@@ -26,7 +26,7 @@ const Delete: Command = {
         const existingEntry = await ctx.prisma.contentFilter.findFirst({ where: { serverId: message.serverId!, content, matching } });
         if (!existingEntry) return ctx.messageUtil.replyWithError(message, `Phrase not found`, `This phrase is not in your server's filter!`);
         await ctx.dbUtil.removeWordFromFilter(message.serverId!, content, matching);
-        return ctx.messageUtil.replyWithSuccess(message, `Phrase deleted`, `Successfully deleted ${inlineCode(phrase)} from the automod list!`);
+        return ctx.messageUtil.replyWithSuccess(message, `Phrase deleted`, `Successfully deleted ${inlineQuote(phrase)} from the automod list!`);
     },
 };
 

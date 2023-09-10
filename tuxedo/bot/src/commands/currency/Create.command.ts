@@ -1,8 +1,18 @@
 import { RoleType } from "@prisma/client";
 import { inlineQuote } from "@yokilabs/bot";
+import { ReactionInfo } from "@yokilabs/utils";
 
 import { TAG_REGEX } from "../../util/matching";
+import { createServerLimit } from "../../util/premium";
 import { Category, Command } from "../commands";
+
+const getServerLimit = createServerLimit({
+    Gold: 12,
+    Silver: 8,
+    Copper: 6,
+    Early: 5,
+    Default: 3,
+});
 
 const Create: Command = {
     name: "currency-create",
@@ -18,14 +28,21 @@ const Create: Command = {
             max: 16,
         },
         {
+            name: "emote",
+            display: "emote icon",
+            type: "emote",
+            max: 100,
+        },
+        {
             name: "name",
             type: "rest",
             max: 100,
         },
     ],
-    execute: async (message, args, ctx) => {
+    execute: async (message, args, ctx, { server }) => {
         const tag = (args.tag as string).toLowerCase();
         const name = args.name as string;
+        const emote = args.emote as ReactionInfo;
 
         if (!TAG_REGEX.test(tag))
             return ctx.messageUtil.replyWithError(
@@ -38,9 +55,18 @@ const Create: Command = {
         const currencies = await ctx.dbUtil.getCurrencies(message.serverId!);
 
         if (currencies.find((x) => x.tag === tag)) return ctx.messageUtil.replyWithError(message, "Already exists", `The currency with tag ${inlineQuote(tag)} already exists.`);
-        else if (currencies.length >= 3) return ctx.messageUtil.replyWithError(message, "Too many currencies", `You have created the maximum amount of currencies there can be.`);
 
-        await ctx.dbUtil.createCurrency(message.serverId!, tag, name, message.createdById);
+        // To not create too many of them for DB to blow up
+        const serverLimit = getServerLimit(server);
+
+        if (currencies.length >= serverLimit)
+            return ctx.messageUtil.replyWithError(
+                message,
+                "Too many currencies",
+                `You can only have ${serverLimit} currencies per server.${server.premium ? "" : "\n\n**Note:** You can upgrade to premium to increase the limit."}`
+            );
+
+        await ctx.dbUtil.createCurrency(message.serverId!, tag, emote.name, name, message.createdById);
 
         return ctx.messageUtil.replyWithSuccess(message, "Currency created", `Currency with tag ${inlineQuote(tag)} has been successfully created.`);
     },

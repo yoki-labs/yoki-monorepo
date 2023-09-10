@@ -1,9 +1,6 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Avatar, Box, Breadcrumbs, IconButton, Typography } from "@mui/joy";
-import YokiIcon from "../../YokiIcon";
+import { Box, Breadcrumbs, Typography } from "@mui/joy";
 import { ServerSelector } from "./ServerSelector";
 import { GuildedServer } from "../../../lib/@types/guilded";
-import { faBars } from "@fortawesome/free-solid-svg-icons";
 import UserManager from "./UserManager";
 import Branding from "../../Branding";
 

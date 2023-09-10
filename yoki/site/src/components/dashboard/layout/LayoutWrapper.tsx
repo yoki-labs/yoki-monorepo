@@ -22,13 +22,13 @@ export default function LayoutWrapper(props: LayoutProps) {
 
     const onServerChange = (serverId: string) => {
         router.push(`/dashboard/${serverId}/overview`);
-    }
+    };
 
     return (
         <>
             <div className="flex flex-col h-full w-full bg-spacedark-950">
                 <LayoutTopbar onServerChange={onServerChange} currentServer={currentServer} servers={servers} user={user}>
-                    { topbarPrefix }
+                    {topbarPrefix}
                 </LayoutTopbar>
                 <Box className="flex flex-row grow overflow-hidden">
                     { children }

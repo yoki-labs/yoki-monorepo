@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 import { Currency, DefaultIncomeType, Reward } from "@prisma/client";
+=======
+import { Currency, DefaultIncomeType, ModuleName, Reward } from "@prisma/client";
+>>>>>>> main
 import { inlineQuote } from "@yokilabs/bot";
 import ms from "ms";
 
@@ -20,24 +24,32 @@ const Blackjack: Command = {
     category: Category.Income,
     args: [
         {
-            name: "currency",
-            display: "currency to bet",
-            type: "string",
-        },
-        {
             name: "amount",
             display: "amount to bet",
             type: "number",
         },
+        {
+            name: "currency",
+            display: "currency to bet",
+            type: "string",
+            optional: true,
+        },
     ],
-    execute: async (message, args, ctx) => {
+    execute: async (message, args, ctx, { server }) => {
+        // Allow one kill switch to shut all of it down if necessary without any additional hassle
+        if (server.modulesDisabled.includes(ModuleName.ECONOMY))
+            return ctx.messageUtil.replyWithError(message, "Economy module disabled", `Economy module has been disabled and this command cannot be used.`);
+
         const tag = args.currency as string;
         const amount = Math.floor(args.amount as number);
 
         if (amount < 1) return ctx.messageUtil.replyWithError(message, "Can only bet at least 1", "Your betting amount should be at least 1 or more.");
 
         const currencies = await ctx.dbUtil.getCurrencies(message.serverId!);
-        const selectedCurrency = currencies.find((x) => x.tag === tag);
+
+        if (!currencies.length) return ctx.messageUtil.replyWithError(message, "No currencies", `This server does not have any local currencies to play blackjack.`);
+
+        const selectedCurrency = tag ? currencies.find((x) => x.tag === tag) : currencies[0];
 
         // Can't do blackjack if such currency doesn't exist
         if (!selectedCurrency) return ctx.messageUtil.replyWithError(message, "No such currency", `There is no currency with tag ${inlineQuote(tag)} in this server.`);

@@ -56,22 +56,35 @@ export class MinigameUtil extends TickedUtil {
 
         const currentDeckValue = this.getDeckValue(instance.deck);
 
-        let condition: BlackjackCondition = BlackjackCondition.Playing;
+        const condition: BlackjackCondition = BlackjackCondition.Playing;
+
+        const dealerDeckValue = this.getDealerDeckValue(instance.dealerDeck);
 
         // Deck is a bust; the max is 21 as your num and even with aces being 1 it's over 21
         if (currentDeckValue > 21) {
+<<<<<<< HEAD
             condition = BlackjackCondition.Lost;
+=======
+>>>>>>> main
             // It's done
             this._blackJackInstances.splice(instanceIndex, 1);
 
             // Remove balance
-            await this.updateBlackjackPlayer(instance, -1);
+            return Promise.all([this.updateBlackjackMessage(instance, currentDeckValue, dealerDeckValue, BlackjackCondition.Lost), this.updateBlackjackPlayer(instance, -1)]);
+        } else if (currentDeckValue === 21 && dealerDeckValue === 21) {
+            this._blackJackInstances.splice(instanceIndex, 1);
+
+            return this.updateBlackjackMessage(instance, currentDeckValue, dealerDeckValue, BlackjackCondition.NeutralPush);
+        } else if (currentDeckValue === 21) {
+            this._blackJackInstances.splice(instanceIndex, 1);
+
+            return Promise.all([this.updateBlackjackMessage(instance, currentDeckValue, dealerDeckValue, BlackjackCondition.Won), this.updateBlackjackPlayer(instance, 1)]);
         }
         // To add new reaction for hit with ace values
         else if (!previousDeckHadAces && newCard === SpecialBlackjackVariant.Ace)
             await this.client.reactions.create(instance.channelId, instance.messageId, blackjackReactionStandAce1);
 
-        return this.updateBlackjackMessage(instance, currentDeckValue, condition);
+        return this.updateBlackjackMessage(instance, currentDeckValue, 0, condition);
     }
 
     async addBlackjackStand(serverId: string, messageId: string, createdBy: string, acesAre11: boolean) {
@@ -104,21 +117,37 @@ export class MinigameUtil extends TickedUtil {
 
         const userDeckValue = userDeckValue11 > 21 || !acesAre11 ? userDeckValue1 : userDeckValue11;
 
+<<<<<<< HEAD
         const dealerAceCount = instance.dealerDeck.filter((card) => card === SpecialBlackjackVariant.Ace).length;
         // Have to remember which value aces are (1 or 11)
         const dealerDeckValueAce1 = this.getDeckValue(instance.dealerDeck);
         const dealerDeckValueAce11 = this.getDeckValue(instance.dealerDeck) + dealerAceCount * 10;
         const dealerDeckValue = dealerDeckValueAce11 ? dealerDeckValueAce1 : dealerDeckValueAce1;
+=======
+        // const dealerAceCount = instance.dealerDeck.filter((card) => card === SpecialBlackjackVariant.Ace).length;
+        // // Have to remember which value aces are (1 or 11)
+        // const dealerDeckValueAce1 = this.getDeckValue(instance.dealerDeck);
+        // const dealerDeckValueAce11 = this.getDeckValue(instance.dealerDeck) + (dealerAceCount * 10);
+        // const dealerDeckValue = dealerDeckValueAce11 > 21 ? dealerDeckValueAce1 : dealerDeckValueAce11;
+        const dealerDeckValue = this.getDealerDeckValue(instance.dealerDeck);
+>>>>>>> main
 
         this._blackJackInstances.splice(instanceIndex, 1);
 
         // After standing, dealer has 2 cards and draws until they hit 17 or more;
         // we have already done it at the start and now need to see if they bust
         if (dealerDeckValue > 21 || userDeckValue > dealerDeckValue)
+<<<<<<< HEAD
             return Promise.all([this.updateBlackjackMessage(instance, userDeckValue, BlackjackCondition.Won), this.updateBlackjackPlayer(instance, 1)]);
         else if (userDeckValue < dealerDeckValue)
             return Promise.all([this.updateBlackjackMessage(instance, userDeckValue, BlackjackCondition.Lost), this.updateBlackjackPlayer(instance, -1)]);
         return this.updateBlackjackMessage(instance, userDeckValue, BlackjackCondition.NeutralPush);
+=======
+            return Promise.all([this.updateBlackjackMessage(instance, userDeckValue, dealerDeckValue, BlackjackCondition.Won), this.updateBlackjackPlayer(instance, 1)]);
+        else if (userDeckValue < dealerDeckValue)
+            return Promise.all([this.updateBlackjackMessage(instance, userDeckValue, dealerDeckValue, BlackjackCondition.Lost), this.updateBlackjackPlayer(instance, -1)]);
+        return this.updateBlackjackMessage(instance, userDeckValue, dealerDeckValue, BlackjackCondition.NeutralPush);
+>>>>>>> main
     }
 
     async updateBlackjackPlayer(instance: BlackjackInstance, receivedAmountMultiplier: number) {
@@ -134,9 +163,15 @@ export class MinigameUtil extends TickedUtil {
         ]);
     }
 
+<<<<<<< HEAD
     updateBlackjackMessage(instance: BlackjackInstance, deckValue: number, condition: BlackjackCondition) {
         return this.client.messages.update(instance.channelId, instance.messageId, {
             embeds: [this.createBlackjackEmbed(instance.createdBy, instance.deck, instance.dealerDeck, deckValue, condition)],
+=======
+    updateBlackjackMessage(instance: BlackjackInstance, deckValue: number, dealerDeckValue: number, condition: BlackjackCondition) {
+        return this.client.messages.update(instance.channelId, instance.messageId, {
+            embeds: [this.createBlackjackEmbed(instance.createdBy, instance.deck, instance.dealerDeck, deckValue, dealerDeckValue, condition)],
+>>>>>>> main
         });
     }
 
@@ -148,7 +183,11 @@ export class MinigameUtil extends TickedUtil {
 
         const messageCreated = await this.client.messageUtil.replyWithEmbed(
             message,
+<<<<<<< HEAD
             this.createBlackjackEmbed(message.createdById, startingDeck, dealerDeck, this.getDeckValue(startingDeck), BlackjackCondition.Playing)
+=======
+            this.createBlackjackEmbed(message.createdById, startingDeck, dealerDeck, this.getDeckValue(startingDeck), 0, BlackjackCondition.Playing)
+>>>>>>> main
         );
 
         // Add reactions for easier interactions
@@ -184,6 +223,15 @@ export class MinigameUtil extends TickedUtil {
         return deck.map(this.getCardValue).reduce((a, b) => a + b);
     }
 
+    getDealerDeckValue(dealerDeck: BlackjackDeck) {
+        const dealerAceCount = dealerDeck.filter((card) => card === SpecialBlackjackVariant.Ace).length;
+        // Have to remember which value aces are (1 or 11)
+        const dealerDeckValueAce1 = this.getDeckValue(dealerDeck);
+        const dealerDeckValueAce11 = this.getDeckValue(dealerDeck) + dealerAceCount * 10;
+
+        return dealerDeckValueAce11 > 21 ? dealerDeckValueAce1 : dealerDeckValueAce11;
+    }
+
     getCardValue(card: SpecialBlackjackVariant | number) {
         return typeof card === "number" ? card : card === SpecialBlackjackVariant.Ace ? 1 : 10;
     }
@@ -209,7 +257,14 @@ export class MinigameUtil extends TickedUtil {
         return dealerDeck;
     }
 
-    createBlackjackEmbed(memberId: string, deck: BlackjackDeck, dealerDeck: BlackjackDeck, deckValue: number, condition: BlackjackCondition): EmbedPayload {
+    createBlackjackEmbed(
+        memberId: string,
+        deck: BlackjackDeck,
+        dealerDeck: BlackjackDeck,
+        deckValue: number,
+        dealerDeckValue: number,
+        condition: BlackjackCondition
+    ): EmbedPayload {
         const aceCount = deck.filter((x) => x === SpecialBlackjackVariant.Ace).length;
         const acesCanBe11 = (aceCount as unknown as boolean) && deckValue + aceCount * 10 < 22;
 
@@ -235,9 +290,13 @@ export class MinigameUtil extends TickedUtil {
                 {
                     name: "Dealer's Deck",
                     value:
+<<<<<<< HEAD
                         condition === BlackjackCondition.Playing
                             ? `[ ${stringifyCard(dealerDeck[0])}, Card ]`
                             : `[ ${stringifyBlackjackDeck(dealerDeck)} ] = ${this.getDeckValue(dealerDeck)}`,
+=======
+                        condition === BlackjackCondition.Playing ? `[ ${stringifyCard(dealerDeck[0])}, Card ]` : `[ ${stringifyBlackjackDeck(dealerDeck)} ] = ${dealerDeckValue}`,
+>>>>>>> main
                     inline: true,
                 },
                 getStatusField(acesCanBe11, condition),
@@ -273,12 +332,24 @@ const getStatusField = (allowAce1: boolean, condition: BlackjackCondition): Embe
         ? {
               name: "Actions",
               value: stripIndents`
+<<<<<<< HEAD
             \u2022 :point_down: \u2014 Hit
             \u2022 :white_check_mark: \u2014 Stand${allowAce1 ? " (Aces as 11)\n\u2022 :ballot_box_with_check: \u2014 Stand (Aces as 1)" : ""}
             (Double down and split not available)
         `,
+=======
+            :point_down: \u2014 Hit
+            :white_check_mark: \u2014 Stand${allowAce1 ? " (Aces as 11)\n\u2022 :ballot_box_with_check: \u2014 Stand (Aces as 1)" : ""}
+            (Double down and split not available)
+        `,
+              inline: true,
+>>>>>>> main
           }
         : {
               name: "Game concluded",
               value: condition === BlackjackCondition.Won ? "You won." : condition === BlackjackCondition.Lost ? "You lost." : "It's a draw/neutral push.",
+<<<<<<< HEAD
+=======
+              inline: true,
+>>>>>>> main
           };

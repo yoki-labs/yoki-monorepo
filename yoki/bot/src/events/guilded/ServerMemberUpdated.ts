@@ -1,5 +1,6 @@
 import { inlineCode, inlineQuote } from "@yokilabs/bot";
 import { Colors } from "@yokilabs/utils";
+import { UserType } from "guilded.js";
 
 import { FilteredContent } from "../../modules/content-filter";
 import { GEvent, LogChannelType } from "../../typings";
@@ -24,9 +25,8 @@ export default {
                 fields: [
                     {
                         name: "Nickname Changes",
-                        value: `${oldMember ? (oldMember.nickname ? inlineQuote(oldMember.nickname) : "No nickname") : "Unknown nickname"} -> ${
-                            nickname ? inlineQuote(nickname) : "No nickname"
-                        }`,
+                        value: `${oldMember ? (oldMember.nickname ? inlineQuote(oldMember.nickname) : "No nickname") : "Unknown nickname"} -> ${nickname ? inlineQuote(nickname) : "No nickname"
+                            }`,
                     },
                 ],
                 occurred: new Date().toISOString(),
@@ -36,16 +36,18 @@ export default {
         // If the member's nickname is updated, scan it for any harmful content
         // Since ServerMemberUpdated doesn't provide info about user itself, even `.displayName` might not exist within it
         // Of course, the member could be fetched.
-        if (server.antiHoistEnabled && name) {
+        if (server.antiHoistEnabled && oldMember?.user?.type !== UserType.Bot && userId !== ctx.user?.id && name) {
             const nonHoistingName = trimHoistingSymbols(name);
 
             if (nonHoistingName !== name) {
                 void ctx.amp.logEvent({ event_type: "HOISTER_RENAMED_JOIN", user_id: userId, event_properties: { serverId } });
                 return ctx.members.updateNickname(serverId, userId, nonHoistingName?.trim() || "NON-HOISTING NAME");
             }
+            const member = await ctx.members.fetch(serverId, userId).catch(() => null);
 
             return ctx.contentFilterUtil.scanContent({
                 userId,
+                roleIds: member?.roleIds ?? oldMember?.roleIds ?? [],
                 text: name,
                 filteredContent: FilteredContent.ServerContent,
                 channelId: null,
@@ -53,6 +55,8 @@ export default {
                 resultingAction: () => ctx.members.resetNickname(serverId, userId),
             });
         }
+
+        return null;
     },
     name: "memberUpdated",
 } satisfies GEvent<"memberUpdated">;

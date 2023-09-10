@@ -15,7 +15,7 @@ const List: Command = {
 
         if (!currencies.length) return ctx.messageUtil.replyWithNullState(message, "No currencies", `This server does not have any local currencies.`);
 
-        return ctx.messageUtil.replyWithInfo(message, "Server's currencies", currencies.map((x) => `- ${inlineQuote(x.name)} (${inlineCode(x.tag)})`).join("\n"));
+        return ctx.messageUtil.replyWithInfo(message, "Server's currencies", currencies.map((x) => `- :${x.emote}: ${inlineQuote(x.name)} (${inlineCode(x.tag)})`).join("\n"));
     },
 };
 

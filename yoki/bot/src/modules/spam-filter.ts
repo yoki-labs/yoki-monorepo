@@ -1,6 +1,5 @@
 import type { Schema } from "@guildedjs/guilded-api-typings";
 import { Colors } from "@yokilabs/utils";
-import type { Message } from "guilded.js";
 
 import { Server, Severity } from "../typings";
 import BaseFilterUtil from "./base-filter";
@@ -22,11 +21,7 @@ export class SpamFilterUtil extends BaseFilterUtil<SpamType> {
 
     readonly messageCounter = new Map<string, Counter>();
 
-    checkForMessageSpam(server: Server, message: Message) {
-        return this.checkForSpam(server, message.authorId, message.channelId, message.mentions, () => this.client.messages.delete(message.channelId, message.id));
-    }
-
-    async checkForSpam(server: Server, userId: string, channelId: string, mentions: Schema<"Mentions"> | undefined, resultingAction: () => unknown) {
+    async checkForSpam(server: Server, userId: string, channelId: string, mentions: Schema<"Mentions"> | undefined, resultingAction: () => unknown): Promise<boolean> {
         void this.client.amp.logEvent({ event_type: "SPAM_SCAN", user_id: userId, event_properties: { serverId: server.serverId } });
         // Only do it for a specific server
         const key = `${server.serverId}:${userId}`;
@@ -34,7 +29,7 @@ export class SpamFilterUtil extends BaseFilterUtil<SpamType> {
         let instance = this.messageCounter.get(key);
 
         // Have not sent messages in "awhile"
-        if (!instance)
+        if (!instance) {
             instance = this.messageCounter
                 .set(key, {
                     count: 1,
@@ -42,8 +37,10 @@ export class SpamFilterUtil extends BaseFilterUtil<SpamType> {
                     mentions: 0,
                 })
                 .get(key);
+        }
         else if (++instance.count >= server.spamFrequency) {
             this.onSpam(server, key, userId, instance);
+
             // Warn/mute/kick/ban
             await this.dealWithUser(
                 userId,
@@ -57,6 +54,8 @@ export class SpamFilterUtil extends BaseFilterUtil<SpamType> {
                 null,
                 SpamType.Content
             );
+
+            return true;
         }
 
         instance = instance!;
@@ -79,7 +78,10 @@ export class SpamFilterUtil extends BaseFilterUtil<SpamType> {
                 null,
                 SpamType.Mention
             );
+            return true;
         }
+
+        return false;
     }
 
     onSpam(server: Server, key: string, userId: string, instance: Counter) {
@@ -99,7 +101,7 @@ export class SpamFilterUtil extends BaseFilterUtil<SpamType> {
             return this.client.messageUtil.sendWarningBlock(
                 channelId!,
                 `Stop spamming`,
-                `**Alert:** <@${userId}>, you have been posting too many ${
+                `<@${userId}>, you have been posting too many ${
                     spamType === SpamType.Mention ? "mentions" : "messages"
                 } in a short period of time. This is a warning for you to not do it again, otherwise moderation actions may be taken against you.`,
                 undefined,
@@ -116,7 +118,7 @@ export class SpamFilterUtil extends BaseFilterUtil<SpamType> {
                 channelId!,
                 {
                     title: `:mute: You have been muted`,
-                    description: `**Alert:** <@${userId}>, you have been muted for posting too many ${
+                    description: `<@${userId}>, you have been muted for posting too many ${
                         spamType === SpamType.Mention ? "mentions" : "messages"
                     } in a short period of time.`,
                     color: Colors.red,

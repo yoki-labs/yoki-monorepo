@@ -1,11 +1,17 @@
 import "../styles/globals.css";
+<<<<<<< HEAD
 import "../styles/fonts.css";
 import "../styles/animations.css";
 
 import { CssVarsProvider } from "@mui/joy";
 import { Inter } from "@next/font/google";
+=======
+
+import { CssVarsProvider } from "@mui/joy";
+>>>>>>> main
 import { Analytics } from "@vercel/analytics/react";
 import type { AppProps } from "next/app";
+import { Inter } from "next/font/google";
 import Head from "next/head";
 import { NextPage } from "next/types";
 import { Session } from "next-auth";

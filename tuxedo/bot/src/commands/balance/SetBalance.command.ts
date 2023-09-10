@@ -39,7 +39,7 @@ const Set: Command = {
     execute: async (message, args, ctx) => {
         const member = args.member as Member;
         const tag = (args.tag as string).toLowerCase();
-        const amount = Math.floor(args.amount as number);
+        const amount = args.amount as number;
         const balanceType = args.balanceType as { resolved: BalanceType; original: string } | null;
 
         if (!TAG_REGEX.test(tag))

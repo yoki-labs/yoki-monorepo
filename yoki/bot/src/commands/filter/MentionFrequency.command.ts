@@ -4,7 +4,7 @@ import { RoleType } from "../../typings";
 import { Category, Command } from "../commands";
 
 const MentionSpamFrequency: Command = {
-    name: "antiraid-mentionfrequency",
+    name: "filter-mentionfrequency",
     description: "Sets required mention count to count it as a mention spaam.",
     // usage: "[mentions per 5 secs]",
     examples: ["5"],

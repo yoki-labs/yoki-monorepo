@@ -1,7 +1,8 @@
+import { ContentIgnoreType } from "@prisma/client";
 import { createCommandHandler } from "@yokilabs/bot";
 import { Colors } from "@yokilabs/utils";
 import { stripIndents } from "common-tags";
-import { Embed, Message, UserType } from "guilded.js";
+import { Embed, Member, Message, UserType } from "guilded.js";
 import { inspect } from "util";
 
 import type YokiClient from "../../Client";
@@ -26,24 +27,39 @@ const logCommands = async (message: Message, command: Command, args: Record<stri
         .catch(() => null);
 };
 
+// TEMPORARY: As `ChatMessageDeleted` doesn't provide ID of the user that created a deleted message, we have to store
+// client's last posted messages to not make deletion logs looped and spam them
+export const lastClientServerMessages: Record<string, string> = {};
+
 export default {
     execute: async (args) => {
         const [message, ctx] = args;
 
+        if (!message.serverId)
+            return;
+
+        // If any of the flowbots delete Yoki's message deletion logs, do not make it loop and make Yoki spam
+        if (message.authorId === ctx.user!.id) {
+            lastClientServerMessages[message.serverId!] = message.id;
+            return;
+        }
         // if the message wasn't sent in a server, or the person was a bot then don't do anything
-        if (message.createdByWebhookId || message.authorId === ctx.user!.id || message.authorId === "Ann6LewA" || !message.serverId) return;
+        else if (message.createdByWebhookId || message.authorId === ctx.user!.id || message.authorId === "Ann6LewA") return;
         void ctx.amp.logEvent({ event_type: "MESSAGE_CREATE", user_id: message.authorId, event_properties: { serverId: message.serverId! } });
 
         const isModmailChannel = await ctx.prisma.modmailThread.findFirst({
             where: { serverId: message.serverId!, userFacingChannelId: message.channelId, openerId: message.authorId, closed: false },
         });
 
+        const member = await ctx.members.fetch(message.serverId!, message.authorId).catch(() => null);
+        // Can't do much
+        if (!member || member.user?.type === UserType.Bot)
+            return;
+
         if (isModmailChannel) {
             void ctx.amp.logEvent({ event_type: "MODMAIL_MESSAGE", user_id: message.authorId, event_properties: { serverId: message.serverId!, modmailId: isModmailChannel.id } });
             void ctx.messages.delete(message.channelId, message.id);
 
-            const member = await ctx.members.fetch(message.serverId!, message.authorId).catch(() => null);
-            if (!member) return;
             const newModmailMessage = await ctx.messages.send(
                 isModmailChannel.modFacingChannelId,
                 new Embed()
@@ -87,20 +103,10 @@ export default {
 
         // if the message does not start with the prefix
         if (!message.content.startsWith(prefix)) {
-            const member = await ctx.members.fetch(message.serverId!, message.authorId).catch(() => null);
-            if (member?.user?.type === UserType.Bot) return;
-
             // store the message in the database
             await ctx.dbUtil.storeMessage(message).catch(console.log);
 
-            await moderateContent(ctx, server, message.channelId, "MESSAGE", FilteredContent.Message, message.authorId, message.content, message.mentions, () =>
-                ctx.messages.delete(message.channelId, message.id)
-            );
-
-            if (server.scanNSFW) {
-                await ctx.contentFilterUtil.scanMessageMedia(message);
-            }
-            return;
+            return moderateMessage(ctx, server, message, member);
         }
 
         const parsed = await parseCommand([message, ctx], prefix);
@@ -108,25 +114,34 @@ export default {
         let { command, commandName, args: parsedArgs } = parsed;
 
         if (!command) {
+            await moderateMessage(ctx, server, message, member);
+
             const customCommand = await ctx.prisma.customTag.findFirst({ where: { serverId: message.serverId!, name: commandName } });
+
             if (!customCommand) return ctx.amp.logEvent({ event_type: "INVALID_COMMAND", user_id: message.authorId, event_properties: { serverId: message.serverId! } });
+
             void ctx.amp.logEvent({ event_type: "TAG_RAN", user_id: message.authorId, event_properties: { serverId: message.serverId! } });
             return ctx.messageUtil.send(message.channelId, customCommand.content);
         }
 
-        // Fetch the member from either the server or the redis cache
-        const member = await ctx.members.fetch(message.serverId!, message.createdById).catch(() => null);
-        if (!member) return;
+        // // Fetch the member from either the server or the redis cache
+        // const member = await ctx.members.fetch(message.serverId!, message.createdById).catch(() => null);
+        // if (!member) return;
 
         const canExecute = await checkUserPermissions(fetchServerRoles, [message, ctx, member], command);
-        if (!canExecute) return;
+
+        // If it could be moderated and it was moderated, ignore it
+        if ((!command.requiredRole || !canExecute) && await moderateMessage(ctx, server, message, member))
+            return;
+        // It was just unable to execute
+        else if (!canExecute)
+            return;
 
         const isCommandModule = `${command.module}Enabled` in server;
         const moduleEnabledStatus = isCommandModule && server[`${command.module}Enabled`];
         const commandModuleMessage =
             isCommandModule &&
-            `${moduleEnabledStatus ? "" : "⚠️"} The \`${command.module}\` module is ${
-                moduleEnabledStatus ? "enabled" : `disabled. To enable it, run \`${server.getPrefix()}module enable ${command.module}\``
+            `${moduleEnabledStatus ? "" : "⚠️"} The \`${command.module}\` module is ${moduleEnabledStatus ? "enabled" : `disabled. To enable it, run \`${server.getPrefix()}module enable ${command.module}\``
             }.`;
         const subCommand = await fetchCommandInfo([message, ctx], prefix, command, parsedArgs, commandModuleMessage || undefined);
 
@@ -146,3 +161,18 @@ export default {
     },
     name: "messageCreated",
 } satisfies GEvent<"messageCreated">;
+
+const moderateMessage = (ctx: YokiClient, server: Server, message: Message, member: Member) =>
+    moderateContent(
+        ctx,
+        server,
+        message.channelId,
+        ContentIgnoreType.MESSAGE,
+        FilteredContent.Message,
+        member.id,
+        member.roleIds,
+        message.content,
+        message.mentions,
+        () =>
+            ctx.messages.delete(message.channelId, message.id)
+    );

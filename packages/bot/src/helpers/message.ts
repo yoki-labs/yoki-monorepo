@@ -5,8 +5,7 @@ import { stripIndents } from "common-tags";
 import { Embed, Message, MessageContent } from "guilded.js";
 
 import type { AbstractClient } from "../Client";
-import type { ResolvedArgs } from "../commands/arguments";
-import type { BaseCommand, CommandArgType, CommandArgument, CommandArgValidator } from "../commands/command-typings";
+import type { BaseCommand, CommandArgument } from "../commands/command-typings";
 import type { IServer } from "../db-types";
 import { inlineCode, listInlineCode } from "../utils/formatting";
 import { Util } from "./util";
@@ -77,16 +76,17 @@ export class MessageUtil<
         prefix: string,
         commandArg: CommandArgument,
         command: TCommand,
-        argumentConverters: Record<CommandArgType, CommandArgValidator>,
-        castArg: ResolvedArgs
+        additionalMessage: string
+        // argumentConverters: Record<CommandArgType, CommandArgValidator>,
+        // castArg: ResolvedArgs
     ) {
-        const [, invalidStringGenerator] = argumentConverters[commandArg.type];
+        // const [, invalidStringGenerator] = argumentConverters[commandArg.type];
 
         return this.replyWithError(
             message,
             "Incorrect Command Usage",
             stripIndents`
-                For the argument \`${commandArg.name}\`, ${stripIndents(invalidStringGenerator(commandArg, castArg?.toString()))}
+                For the argument \`${commandArg.name}\`, ${additionalMessage}
             
                 _Need more help? [Join our support server](https://guilded.gg/Yoki)_
             `,
@@ -220,13 +220,10 @@ export class MessageUtil<
         if (incrementedPage > possiblePages)
             return this.replyWithNullState(message, `No items here`, `There are no items at page ${inlineCode(incrementedPage)}.`, undefined, messagePartial);
 
-        const startingIndex = itemsPerPage * page;
-        const endingIndex = itemsPerPage * incrementedPage;
-
         return this.replyWithInfo(
             message,
             title,
-            items.slice(startingIndex, endingIndex).map(itemMapping).join("\n"),
+            this.createPaginatedText(page, items, itemsPerPage, itemMapping),
             {
                 footer: {
                     text: `Page ${incrementedPage}/${possiblePages} \u2022 ${items.length} total entries`,
@@ -235,6 +232,13 @@ export class MessageUtil<
             },
             messagePartial
         );
+    }
+
+    createPaginatedText<T>(page: number, items: T[], itemsPerPage: number, itemMapping: (item: T, index: number) => string | T) {
+        const startingIndex = itemsPerPage * page;
+        const endingIndex = itemsPerPage * (page + 1);
+
+        return items.slice(startingIndex, endingIndex).map(itemMapping).join("\n");
     }
 
     replyWithEnableStateList(message: Message, title: string, enabledItems: string[], allItems: string[], descriptions: Record<string, string>) {

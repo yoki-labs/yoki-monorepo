@@ -11,6 +11,8 @@ export default async function ServerChannelEvent(ctx: YokiClient, channel: Chann
     const server = await ctx.dbUtil.getServer(serverId, false);
     if (!server) return;
 
+    const member = await ctx.members.fetch(serverId, channel.createdBy).catch(() => null);
+
     // Only if it's a thread; parentId instead of messageId, because it can filter list threads too
     if (!(channel.raw as { id: string; parentId: string }).parentId) return;
 
@@ -22,6 +24,7 @@ export default async function ServerChannelEvent(ctx: YokiClient, channel: Chann
         ContentIgnoreType.THREAD,
         FilteredContent.Channel,
         channel.createdBy,
+        member?.roleIds ?? [],
         // To moderate forum titles as well
         channel.name,
         undefined,
