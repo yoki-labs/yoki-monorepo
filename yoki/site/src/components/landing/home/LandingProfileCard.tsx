@@ -44,7 +44,7 @@ export default function LandingProfileCard({ serverCount }: Props) {
                         <BotRole />
                         <Stack direction="row" alignItems="center" sx={{ my: 1 }}>
                             <Typography level="h2">Yoki</Typography>
-                            <Typography sx={{ ml: 1, px: 1 }} level="h3" fontSize="md" color="neutral" variant="solid">Bot</Typography>
+                            <Typography sx={{ ml: 1, px: 1 }} level="h3" fontSize="md" color="neutral" variant="solid">BOT</Typography>
                         </Stack>
                         <Typography level="body-md">The biggest moderation bot on Guilded.</Typography>
                     </Box>

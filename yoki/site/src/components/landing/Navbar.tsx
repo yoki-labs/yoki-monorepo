@@ -16,6 +16,7 @@ const NavbarWrapper = styled(Stack)(({ theme }) => ({
     transition: "0.2s ease",
     padding: "24px 160px",
     borderBottom: `solid 1px ${theme.vars.palette.divider}`,
+    backgroundColor: theme.vars.palette.background.backdrop,
 }));
 
 function NavbarButton({ text, icon, href, color }: { text: string; icon?: IconDefinition; href: string; color: "primary" | "neutral" | "warning"; }) {
@@ -50,7 +51,7 @@ export default function Navbar() {
     const isNavbarDetached = scrollY > 80;
 
     return (
-        <NavbarWrapper direction="row" sx={(theme) => ({ backgroundColor: isNavbarDetached ? theme.vars.palette.background.level1 : "transparent" })}>
+        <NavbarWrapper direction="row">
             {/* Branding */}
             <Box sx={{ flex: "1" }}>
                 <Branding />
@@ -79,74 +80,5 @@ export default function Navbar() {
                     />
             </Stack>
         </NavbarWrapper>
-        // <NavbarWrapper className={`${scrollY > 20 ? "scrolled" : ""} bg-custom-gray`}>
-        //     <nav>
-        //         <div className="wrapper">
-        //             <Link href="/">
-        //                 <div className="cursor-pointer flex select-none">
-        //                     <Image src="/face.png" width="54" height="54" alt="Yoki Face" />
-        //                 </div>
-        //             </Link>
-        //             <NavbarItemList>
-        //                 <Link href="/" className="nav-link no-underline">
-        //                     Home
-        //                 </Link>
-        //                 <Link href="/commands" className="no-underline">
-        //                     Commands
-        //                 </Link>
-        //                 <Link href="/premium" className="nav-link premium no-underline">
-        //                     Premium
-        //                 </Link>
-        //                 <Link href="/invite" className="nav-link invite no-underline">
-        //                     Get Yoki
-        //                 </Link>
-        //             </NavbarItemList>
-        //             <Hamburger onClick={() => toggleSidebar()}>
-        //                 <span></span>
-        //                 <span></span>
-        //                 <span></span>
-        //             </Hamburger>
-        //         </div>
-        //     </nav>
-        //     <SideNavbarBg className={sidebarOpen ? "opened " : ""} onClick={() => toggleSidebar()}></SideNavbarBg>
-        //     <SideNavbar className={sidebarOpen ? "opened " : ""}>
-        //         <SideNavbarHeader>
-        //             <SideNavbarItem className="flex justify-between header">
-        //                 <div className="flex gap-2 items-center">
-        //                     <Image src="/face.png" className="rounded-full" width="50" height="50" alt="Yoki Face" />
-        //                     <span className="text-white text-2xl">Yoki</span>
-        //                 </div>
-        //                 <Hamburger className={sidebarOpen ? "sidenav opened" : "sidenav"} onClick={() => toggleSidebar()}>
-        //                     <span></span>
-        //                     <span></span>
-        //                     <span></span>
-        //                 </Hamburger>
-        //             </SideNavbarItem>
-        //         </SideNavbarHeader>
-        //         <SideNavbarBody className={sidebarOpen ? "opened " : ""}>
-        //             <SideNavbarItem onClick={() => toggleSidebar()}>
-        //                 <Link href="/" className="link">
-        //                     Home
-        //                 </Link>
-        //             </SideNavbarItem>
-        //             <SideNavbarItem onClick={() => toggleSidebar()}>
-        //                 <Link href="/commands" className="link">
-        //                     Commands
-        //                 </Link>
-        //             </SideNavbarItem>
-        //             <SideNavbarItem onClick={() => toggleSidebar()}>
-        //                 <Link href="/premium" className="premium">
-        //                     Premium
-        //                 </Link>
-        //             </SideNavbarItem>
-        //             <SideNavbarItem onClick={() => toggleSidebar()}>
-        //                 <Link href="/invite" className="invite">
-        //                     Get Yoki
-        //                 </Link>
-        //             </SideNavbarItem>
-        //         </SideNavbarBody>
-        //         <SideNavbarFooter></SideNavbarFooter>
-        //     </SideNavbar>
-        // </NavbarWrapper>
     );
 }

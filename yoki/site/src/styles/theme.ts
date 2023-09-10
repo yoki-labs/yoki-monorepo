@@ -96,7 +96,7 @@ const dark = {
             level3: labsTheme.spacedark[700],
 
             surface: labsTheme.spacedark[900],
-            backdrop: `${mostDark}AA`,
+            backdrop: `${mostDark}DF`,
             popup: "#000",
             tooltip: "#000",
         },
