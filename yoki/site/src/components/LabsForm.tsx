@@ -98,7 +98,7 @@ export default class LabsForm extends React.Component<LabsFormProps, LabsFormSta
                             {i > 0 && !section.hideDivider && <Divider sx={{ mb: 2 }} />}
                             {section.name && <Typography level="h2" fontSize="lg" sx={{ mb: 2 }}>{section.name}</Typography>}
                             {section.description && <Typography level="body-md">{section.description}</Typography>}
-                            <Stack direction={section.row ? "row" : "column"} gap={section.gap ?? 2}>
+                            <Stack direction={section.row ? "row" : "column"} gap={section.gap ?? 2} className={section.row ? `flex-col md:flex-row` : `flex-col`}>
                                 {section.start}
                                 {section.fields.map(this.generateField.bind(this))}
                             </Stack>

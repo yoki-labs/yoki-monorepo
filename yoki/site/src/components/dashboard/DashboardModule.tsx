@@ -45,7 +45,7 @@ export default class DashboardModule extends React.Component<Props, { isActive: 
         const { isActive } = this.state;
 
         return (
-            <LabsIconCard icon={icon} iconAspectRatio={iconAspectRatio} iconClassName={isActive ? activeClassName : ""} iconWidth={80}>
+            <LabsIconCard icon={icon} iconSize={80} iconClassName={isActive ? activeClassName : ""}>
                 <Box className="grow">
                     <Stack direction="row" gap={4}>
                         <Typography className="grow" fontWeight="md" level={largeHeader ? "title-lg" : "title-md"}>

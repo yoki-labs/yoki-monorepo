@@ -1,6 +1,6 @@
 import type { NextPage } from "next";
 
-import { LandingPage } from "../components/landing/LandingPage";
+import LandingPage from "../components/landing/LandingPage";
 import { Box, Button, Card, Chip, Link, List, Stack, Typography } from "@mui/joy";
 import LandingFeature from "../components/landing/home/LandingFeature";
 import LabsButton from "../components/LabsButton";

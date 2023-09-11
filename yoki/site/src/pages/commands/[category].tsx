@@ -1,5 +1,5 @@
 import type { GetServerSideProps, GetServerSidePropsResult, NextPage } from "next";
-import { LandingPage } from "../../components/landing/LandingPage";
+import LandingPage from "../../components/landing/LandingPage";
 import { Command } from "../../lib/Command";
 import commands from "../../../commands.json";
 import { Box, Stack, Typography } from "@mui/joy";

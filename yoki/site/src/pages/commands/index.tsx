@@ -1,6 +1,6 @@
 import { Typography } from "@mui/joy";
 import type { NextPage } from "next";
-import { LandingPage } from "../../components/landing/LandingPage";
+import LandingPage from "../../components/landing/LandingPage";
 
 export const getStaticProps = () => ({
     redirect: { destination: "/commands/general", permanent: false, },

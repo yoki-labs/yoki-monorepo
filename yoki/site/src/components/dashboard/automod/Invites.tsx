@@ -23,7 +23,7 @@ export default class InvitesPage extends React.Component<DashboardPageProps> {
                         activeClassName="from-red-500 to-orange-500"
                         serverConfig={serverConfig}
                         prop="filterInvites"
-                        iconAspectRatio={0.9}
+                        iconAspectRatio={0.8}
                         hideBadges
                         largeHeader
                         />

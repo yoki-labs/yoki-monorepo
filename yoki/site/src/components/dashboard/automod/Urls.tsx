@@ -78,13 +78,13 @@ export default class UrlsPage extends React.Component<DashboardPageProps> {
                         activeClassName="from-red-500 to-pink-500"
                         serverConfig={serverConfig}
                         prop="filterEnabled"
-                        iconAspectRatio={0.9}
+                        iconAspectRatio={0.8}
                         hideBadges
                         largeHeader
                     />
                 </Box>
                 <Box>
-                    <Typography level="h4" gutterBottom>URLs whitelists & blacklists</Typography>
+                    <Typography level="h4" gutterBottom>URL filter list configuration</Typography>
                     <Card>
                         <CardContent>
                             <LabsForm
@@ -95,7 +95,7 @@ export default class UrlsPage extends React.Component<DashboardPageProps> {
                                             {
                                                 type: LabsFormFieldType.Toggle,
                                                 prop: "urlFilterIsWhitelist",
-                                                name: "URL Filter is whitelist",
+                                                name: "URL Filter list is whitelist",
                                                 description: "Whether URLs added to the filter is a whitelist instead of a blacklist. Off \u2014 link blacklist, on \u2014 link whitelist.",
                                                 defaultValue: serverConfig.urlFilterIsWhitelist,
                                             },
@@ -131,9 +131,9 @@ export default class UrlsPage extends React.Component<DashboardPageProps> {
                     </Card>
                 </Box>
                 <Stack direction="column" gap={3}>
-                    <Typography level="h4">Banned URLs/domains</Typography>
+                    <Typography level="h4">Blacklisted or whitelisted URLs/domains</Typography>
                     <DataTable<SanitizedUrlFilter, number>
-                        itemType="banned URLs"
+                        itemType="filter list URLs"
                         timezone={serverConfig.timezone}
                         columns={["Content", "Severity", "Created by", "Created at"]}
                         getItems={this.fetchUrls.bind(this)}

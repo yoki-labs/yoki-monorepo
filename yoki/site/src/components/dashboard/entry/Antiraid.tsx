@@ -23,7 +23,7 @@ export default class AntiraidPage extends React.Component<DashboardPageProps> {
                         activeClassName="from-green-500 to-blue-500"
                         serverConfig={serverConfig}
                         prop="antiRaidEnabled"
-                        iconAspectRatio={0.9}
+                        iconAspectRatio={0.8}
                         hideBadges
                         largeHeader
                         />

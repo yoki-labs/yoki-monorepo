@@ -37,7 +37,7 @@ export default class SpamPage extends React.Component<DashboardPageProps> {
                         activeClassName="from-red-500 to-pink-500"
                         serverConfig={serverConfig}
                         prop="filterEnabled"
-                        iconAspectRatio={0.9}
+                        iconAspectRatio={0.8}
                         hideBadges
                         largeHeader
                         />
@@ -48,7 +48,7 @@ export default class SpamPage extends React.Component<DashboardPageProps> {
                         activeClassName="from-orange-500 to-yellow-500"
                         serverConfig={serverConfig}
                         prop="antiHoistEnabled"
-                        iconAspectRatio={0.9}
+                        iconAspectRatio={0.8}
                         hideBadges
                         largeHeader
                         />

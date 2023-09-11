@@ -1,6 +1,6 @@
 import type { NextPage } from "next";
 
-import { LandingPage } from "../components/landing/LandingPage";
+import LandingPage from "../components/landing/LandingPage";
 
 const TOS: NextPage = () => {
     return (

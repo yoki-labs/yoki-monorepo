@@ -16,6 +16,7 @@ import rest from "../../../guilded";
 import { RoleType } from "@prisma/client";
 import NotPermittedPage from "../../../components/dashboard/pages/NotPermittedPage";
 import NoEarlyAccessPage from "../../../components/dashboard/pages/NoEarlyAccessPage";
+import { useRouter } from "next/router";
 
 type BaseSessionProps = {
     user: Partial<{
@@ -105,31 +106,37 @@ export const getServerSideProps: GetServerSideProps = async (ctx): Promise<GetSe
 };
 
 export default function Dashboard(props: SessionProps) {
+    const router = useRouter();
+
+    const onServerChange = (serverId: string) => {
+        router.push(`/dashboard/${serverId}/overview`);
+    };
+
     // All good
     if (!props.code)
         return (
-            <Layout {...props}>
+            <Layout {...props} onServerChange={onServerChange}>
                 <DashForm serverConfig={props.serverConfig} page={props.page} />
             </Layout>
         );
     // No ADMIN code
     else if (props.code === "UNPERMITTED")
         return (
-            <LayoutWrapper {...props}>
+            <LayoutWrapper {...props} onServerChange={onServerChange}>
                 <NotPermittedPage currentServer={props.currentServer} />
             </LayoutWrapper>
         );
     // No EARLY ACCESS
     else if (props.code === "NO_FLAG")
         return (
-            <LayoutWrapper {...props}>
+            <LayoutWrapper {...props} onServerChange={onServerChange}>
                 <NoEarlyAccessPage currentServer={props.currentServer} />
             </LayoutWrapper>
         );
 
     // No server
     return (
-        <LayoutWrapper {...props}>
+        <LayoutWrapper {...props} onServerChange={onServerChange}>
             <NoServerPage currentServer={props.currentServer} />
         </LayoutWrapper>
     );

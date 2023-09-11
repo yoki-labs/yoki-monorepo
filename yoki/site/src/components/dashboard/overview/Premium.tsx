@@ -76,7 +76,7 @@ export function PremiumTier(props: PremiumTierProps) {
     const { price, perks, tier, subscribed, subscribedIconClassName } = props;
 
     return (
-        <LabsIconCard iconAspectRatio={5} orientation="vertical" iconClassName={subscribed ? subscribedIconClassName : undefined} icon={faHeart}>
+        <LabsIconCard iconSize={100} orientation="vertical" iconClassName={subscribed ? subscribedIconClassName : undefined} icon={faHeart}>
             <Box>
                 <Stack direction="row" alignItems="center" gap={2}>
                     <Typography level="h2">{tier?.toString() ?? "Free"}</Typography>

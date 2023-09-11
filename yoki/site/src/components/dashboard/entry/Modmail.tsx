@@ -23,7 +23,7 @@ export default class ModmailPage extends React.Component<DashboardPageProps> {
                         activeClassName="from-purple-500 to-blue-500"
                         serverConfig={serverConfig}
                         prop="modmailEnabled"
-                        iconAspectRatio={0.9}
+                        iconAspectRatio={0.8}
                         hideBadges
                         largeHeader
                         />

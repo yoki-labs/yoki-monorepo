@@ -23,7 +23,7 @@ export default class AppealsPage extends React.Component<DashboardPageProps> {
                         activeClassName="from-violet-500 to-cyan-500"
                         serverConfig={serverConfig}
                         prop="appealsEnabled"
-                        iconAspectRatio={0.9}
+                        iconAspectRatio={0.8}
                         hideBadges
                         largeHeader
                         />

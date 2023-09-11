@@ -13,16 +13,11 @@ type LayoutProps = {
     }>;
     topbarPrefix?: React.ReactNode | React.ReactNode[];
     children: React.ReactNode;
+    onServerChange: (serverId: string) => void;
 };
 
 export default function LayoutWrapper(props: LayoutProps) {
-    const { children, user, currentServer, servers, topbarPrefix } = props;
-
-    const router = useRouter();
-
-    const onServerChange = (serverId: string) => {
-        router.push(`/dashboard/${serverId}/overview`);
-    };
+    const { children, user, currentServer, servers, topbarPrefix, onServerChange } = props;
 
     return (
         <>

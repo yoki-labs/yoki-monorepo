@@ -17,6 +17,7 @@ type LayoutProps = {
     }>;
     page: string;
     children: React.ReactNode;
+    onServerChange: (serverId: string) => void;
 };
 type LayoutState = {
     menuEnabled: boolean;
@@ -35,7 +36,7 @@ export default class Layout extends React.Component<LayoutProps, LayoutState> {
     }
 
     render() {
-        const { page, children, currentServer, serverConfig, servers, user } = this.props;
+        const { page, children, currentServer, serverConfig, servers, user, onServerChange } = this.props;
 
         return (
             <LayoutWrapper
@@ -47,14 +48,12 @@ export default class Layout extends React.Component<LayoutProps, LayoutState> {
                         <FontAwesomeIcon icon={faBars} />
                     </IconButton>
                 }
+                onServerChange={onServerChange}
             >
-                <LayoutSidebar menuToggled={this.state.menuEnabled} serverConfig={serverConfig} page={page} />
+                <LayoutSidebar menuToggled={this.state.menuEnabled} serverConfig={serverConfig} servers={servers} currentServer={currentServer} onServerChange={onServerChange} page={page} />
                 <Box className={`overflow-hidden grow basis-0 shrink-0 flex ${this.state.menuEnabled ? "md:block hidden" : ""}`}>
                     {children}
                 </Box>
-                {/* <Box className="md:block hidden w-64">
-
-                </Box> */}
             </LayoutWrapper>
         );
     }
