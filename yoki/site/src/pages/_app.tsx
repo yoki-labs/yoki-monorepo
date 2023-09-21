@@ -1,4 +1,3 @@
-
 import { CssVarsProvider } from "@mui/joy";
 // import { Inter } from "@next/font/google";
 import { Analytics } from "@vercel/analytics/react";
