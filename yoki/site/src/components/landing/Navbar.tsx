@@ -1,4 +1,4 @@
-import { IconButton, Stack, styled } from "@mui/joy";
+import { Box, IconButton, Stack, styled } from "@mui/joy";
 // import Image from "next/image";
 // import Link from "next/link";
 import Branding from "../Branding";
@@ -53,9 +53,11 @@ export default function Navbar({ menuToggled, onMenuToggle }: Props) {
             <Stack direction="row" gap={2} className="hidden md:flex">
                 <NavbarButtonList />
             </Stack>
-            <IconButton variant="plain" color="neutral" className="block md:hidden" onClick={() => onMenuToggle(!menuToggled)}>
-                <FontAwesomeIcon icon={faBars} />
-            </IconButton>
+            <div className="block md:hidden">
+                <IconButton variant="plain" color="neutral" onClick={() => onMenuToggle(!menuToggled)}>
+                    <FontAwesomeIcon icon={faBars} />
+                </IconButton>
+            </div>
         </NavbarWrapper>
     );
 }

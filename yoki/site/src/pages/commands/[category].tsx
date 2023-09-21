@@ -53,9 +53,9 @@ const Commands: NextPage<CommandProps> = ({ commandByCategory, commandCategories
 
     return (
         <LandingPage>
-            <Stack className="px-5 py-12 flex-col md:flex-row md:px-40">
+            <div className="flex w-full px-5 py-12 flex-col md:flex-row md:px-40">
                 <CommandSidebar categories={commandCategories} activeCategory={category} />
-                <Box className="md:px-16" sx={{ flex: "1" }}>
+                <div className="grow md:px-16">
                     <Typography level="h2" sx={{ mb: 4 }}>
                         {commandCategories[category]}
                     </Typography>
@@ -64,8 +64,8 @@ const Commands: NextPage<CommandProps> = ({ commandByCategory, commandCategories
                             <CommandDisplay command={x} />
                         ))}
                     </Stack>
-                </Box>
-            </Stack>
+                </div>
+            </div>
         </LandingPage>
     );
 };

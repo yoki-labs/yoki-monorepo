@@ -31,7 +31,7 @@ export default class PagePlaceholder extends React.Component<Props> {
 
         return (
             <Stack direction="column" alignItems="center">
-                <Typography level="h2" textColor="text.secondary" fontSize="xlg" gutterBottom>
+                <Typography level="title-lg" textColor="text.secondary" fontSize="xlg" sx={{ fontSize: "2.5em" }} gutterBottom>
                     {icons[icon]}
                 </Typography>
                 <Typography level="h1" fontSize="lg">
