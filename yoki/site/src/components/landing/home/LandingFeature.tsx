@@ -12,7 +12,7 @@ export default function LandingFeature({ opacity, children }: Props) {
     return (
         <ListItem color="primary" sx={{ opacity, "--ListItemDecorator-size": "1.5rem", "--ListItem-minHeight": "2rem" }}>
             <ListItemDecorator>
-                <FontAwesomeIcon icon={faCheckSquare} />
+                <FontAwesomeIcon icon={faCheckSquare} className="h-5" />
             </ListItemDecorator>
             <Typography textColor="text.primary">{children}</Typography>
         </ListItem>

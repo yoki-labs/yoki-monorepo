@@ -22,7 +22,7 @@ const Home: NextPage = () => {
     return (
         <LandingPage>
             <Stack direction="column" alignItems="stretch" sx={{ width: "100%" }}>
-                <Box className="py-20 px-5 md:py-32 md:px-40">
+                <div className="py-20 px-5 md:py-32 md:px-40">
                     <Stack direction="row">
                         <Box sx={{ flex: "1" }}>
                             <Typography level="h1" fontSize="xlg" className="text-5xl pb-4 md:text-7xl">
@@ -39,7 +39,7 @@ const Home: NextPage = () => {
                             </List>
                             <Typography textColor="text.primary">... and much more!</Typography>
                             <Stack sx={{ my: 2 }} gap={2} className="flex-col md:flex-row">
-                                <LabsButton size="lg" startDecorator={<FontAwesomeIcon icon={faGuilded} height="100%" />}>
+                                <LabsButton size="lg" startDecorator={<FontAwesomeIcon icon={faGuilded} className="h-5" />}>
                                     Add to Guilded
                                 </LabsButton>
                                 <Button variant="outlined" color="primary" size="lg" onClick={() => window.scrollTo(0, 1200)}>
@@ -50,19 +50,19 @@ const Home: NextPage = () => {
                         </Box>
                         <LandingProfileCard serverCount={2000} />
                     </Stack>
-                </Box>
+                </div>
                 {/* TODO: Server carousel */}
                 {/* Statistics */}
-                <Box className="pt-28 pb-40 px-5 md:px-40 grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-8">
+                <div className="pt-28 pb-40 px-5 md:px-40 grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-8">
                     <LandingStat amount="20,000,000+" subtitle="Scanned" what="messages" />
                     <LandingStat amount="10,000+" subtitle="Actioned" what="cases" />
                     <LandingStat amount="1,400+" subtitle="Serving" what="servers" />
                     <LandingStat amount="90,000+" subtitle="Watching over" what="members" />
                     <LandingStat amount="9,000+" subtitle="Stopped" what="bad actors" />
                     <LandingStat amount="6,000+" subtitle="Served" what="captchas" />
-                </Box>
+                </div>
                 {/* Yoki's features */}
-                <Box className="py-8 px-5 md:px-40">
+                <div className="py-8 px-5 md:px-40">
                     <Box sx={{ textAlign: "center", mb: 24 }}>
                         <Typography level="h1">All the tools you need</Typography>
                         <Typography level="h4" textColor="text.secondary">
@@ -83,7 +83,7 @@ const Home: NextPage = () => {
                                             <GuildedEmbedField
                                                 title={
                                                     <>
-                                                        <FontAwesomeIcon icon={faExclamation} style={{ color: `#${Colors.yellow.toString(16)}`, width: "1em", marginRight: 12 }} />
+                                                        <FontAwesomeIcon icon={faExclamation} style={{ color: `#${Colors.yellow.toString(16)}`, width: "1em", height: "1em", marginRight: 12 }} />
                                                         Cannot use that word
                                                     </>
                                                 }
@@ -152,7 +152,7 @@ const Home: NextPage = () => {
                                             <GuildedEmbedField
                                                 title={
                                                     <>
-                                                        <FontAwesomeIcon icon={faExclamation} style={{ color: `#${Colors.yellow.toString(16)}`, width: "1em", marginRight: 12 }} />
+                                                        <FontAwesomeIcon icon={faExclamation} style={{ color: `#${Colors.yellow.toString(16)}`, width: "1em", height: "1em", marginRight: 12 }} />
                                                         Halt! Please complete this captcha
                                                     </>
                                                 }
@@ -232,7 +232,7 @@ const Home: NextPage = () => {
                             </GuildedContentWrapper>
                         </FeaturePreview>
                     </Stack>
-                </Box>
+                </div>
                 {/* Final invite section */}
                 <FinalSection />
             </Stack>

@@ -36,7 +36,7 @@ const DecorationStarStack = styled(`div`)(({ theme }) => ({
 
 export default function FinalSection() {
     return (
-        <Box className="px-5 md:px-40">
+        <div className="px-5 md:px-40">
             <FinalSectionCard className="py-8 px-8 mt-40 mb-20 md:py-32 md:px-32" color="primary" variant="solid" invertedColors>
                 <CardDecorationWrapper>
                     <CardDecorationContainer>
@@ -85,7 +85,7 @@ export default function FinalSection() {
                     </Link>
                 </Stack>
             </FinalSectionCard>
-        </Box>
+        </div>
     );
 }
 

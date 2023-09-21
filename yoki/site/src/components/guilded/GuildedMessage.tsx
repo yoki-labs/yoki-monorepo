@@ -11,12 +11,14 @@ export default function GuildedMessage({ name, bot, children }: Props) {
     return (
         <Box className="py-2 px-4 md:py-4 md:px-8">
             <Stack direction="row">
-                <Box className="hidden md:block mr-4">
+                <div className="hidden md:block mr-4">
                     <Avatar src="/icon.png" size="lg" />
-                </Box>
+                </div>
                 <Box sx={{ flex: "1" }}>
                     <Stack direction="row" alignItems="center" sx={{ mb: 1 }} className="gap-2 md:gap-4">
-                        <Avatar src="/icon.png" size="sm" className="block md:hidden" />
+                        <span className="block md:hidden">
+                            <Avatar src="/icon.png" size="sm" />
+                        </span>
                         <Typography component="span" level="title-md" fontWeight="bolder">
                             {name}
                         </Typography>
@@ -25,9 +27,11 @@ export default function GuildedMessage({ name, bot, children }: Props) {
                                 BOT
                             </Typography>
                         )}
-                        <Typography component="span" level="body-md" className="hidden md:block">
-                            2:00 PM
-                        </Typography>
+                        <span className="hidden md:block">
+                            <Typography component="span" level="body-md">
+                                2:00 PM
+                            </Typography>
+                        </span>
                     </Stack>
                     <Stack direction="column" gap={1}>
                         {children}

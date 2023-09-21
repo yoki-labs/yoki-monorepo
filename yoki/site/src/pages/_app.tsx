@@ -1,5 +1,3 @@
-import "../styles/globals.css";
-import "../styles/animations.css";
 
 import { CssVarsProvider } from "@mui/joy";
 // import { Inter } from "@next/font/google";
@@ -11,10 +9,15 @@ import { Session } from "next-auth";
 import { SessionProvider } from "next-auth/react";
 import { ReactElement, ReactNode } from "react";
 import { QueryClient, QueryClientProvider } from "react-query";
+import { config } from "@fortawesome/fontawesome-svg-core";
 
 import { theme } from "../styles/theme";
 import { Toaster } from "react-hot-toast";
 import LabsToast from "../components/LabsToast";
+
+import "@fortawesome/fontawesome-svg-core/styles.css";
+import "../styles/globals.css";
+import "../styles/animations.css";
 
 // Fonts
 import "@fontsource/montserrat";
@@ -38,6 +41,8 @@ type AppPropsWithLayout = AppProps<{ session: Session }> & {
 };
 
 const queryClient = new QueryClient();
+
+config.autoAddCss = false;
 
 // const inter = Inter({ subsets: ["latin"] });
 
