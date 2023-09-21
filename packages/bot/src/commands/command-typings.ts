@@ -23,7 +23,6 @@ export interface BaseCommand<
     examples?: string[];
     aliases?: string[];
     module?: string;
-    allowDecimal?: boolean;
     parentCommand?: boolean;
     subCommand?: boolean;
     subCommands?: Collection<string, TCommand>;
