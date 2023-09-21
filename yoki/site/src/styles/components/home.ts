@@ -1,4 +1,4 @@
-
+export default null;
 // export const HomeWrapper = styled.div`
 //     max-width: 1200px;
 //     margin: auto;
