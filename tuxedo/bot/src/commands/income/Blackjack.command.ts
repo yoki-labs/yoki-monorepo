@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-import { Currency, DefaultIncomeType, Reward } from "@prisma/client";
-=======
 import { Currency, DefaultIncomeType, ModuleName, Reward } from "@prisma/client";
->>>>>>> main
 import { inlineQuote } from "@yokilabs/bot";
 import ms from "ms";
 
