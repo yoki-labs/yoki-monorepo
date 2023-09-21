@@ -11,9 +11,17 @@ type Props = {
     id: string;
 };
 
-export default class LabsSelector extends React.Component<Props> {
+type State = {
+    value?: string | undefined | null;
+};
+
+export default class LabsSelector extends React.Component<Props, State> {
     constructor(props: Props) {
         super(props);
+
+        const { field } = props;
+
+        this.state = { value: field.defaultValue as string | undefined | null };
     }
 
     renderOption(option: SelectOption<any> | null) {
@@ -27,7 +35,7 @@ export default class LabsSelector extends React.Component<Props> {
         return (
             <>
                 {(value.icon || value.avatarIcon) && (
-                    <ListItemDecorator sx={{ width: 25 }}>
+                    <ListItemDecorator sx={{ width: 40 }}>
                         {value.icon && <FontAwesomeIcon icon={value.icon} />}
                         {value.avatarIcon && <Avatar size="sm" src={value.avatarIcon} />}
                     </ListItemDecorator>
@@ -35,6 +43,18 @@ export default class LabsSelector extends React.Component<Props> {
                 <Typography sx={{ color: value.color ? `#${value.color.toString(16)}` : "inherit" }}>{value.name}</Typography>
             </>
         );
+    }
+
+    get selectedValues() {
+        const { field, form } = this.props;
+
+        return (form.fieldValues[field.prop] ?? []) as string;
+    }
+
+    setSelectedValue(value: string) {
+        const { field, form } = this.props;
+
+        return this.setState({ value: form.setValue(field, value) });
     }
 
     render() {
@@ -49,7 +69,7 @@ export default class LabsSelector extends React.Component<Props> {
                     value={form.fieldValues[field.prop]}
                     placeholder={field.placeholder ?? `Select ${field.name?.toLowerCase() ?? "items"}`}
                     disabled={field.disabled}
-                    onChange={(_, value) => value && form.setValue(field, value)}
+                    onChange={(_, value) => this.setSelectedValue(value as string)}
                     startDecorator={field.prefixIcon && <FontAwesomeIcon icon={field.prefixIcon} />}
                     indicator={<FontAwesomeIcon width={14} height={14} icon={faAngleDown} />}
                     size={field.size ?? "md"}
