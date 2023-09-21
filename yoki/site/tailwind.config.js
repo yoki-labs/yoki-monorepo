@@ -12,6 +12,10 @@ delete colors["blueGray"];
 /** @type {import('tailwindcss').Config} */
 module.exports = withMT({
     content: ["./src/**/*.{js,ts,jsx,tsx}"],
+    corePlugins: {
+        preflight: false,
+    },
+    important: "#__next",
     theme: {
         colors: {
             ...colors,

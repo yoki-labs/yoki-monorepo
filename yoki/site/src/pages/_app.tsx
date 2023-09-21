@@ -1,4 +1,4 @@
-import { CssVarsProvider } from "@mui/joy";
+import { CssVarsProvider, StyledEngineProvider } from "@mui/joy";
 // import { Inter } from "@next/font/google";
 import { Analytics } from "@vercel/analytics/react";
 import type { AppProps } from "next/app";
@@ -74,12 +74,14 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }: AppPropsWith
             <SessionProvider session={session}>
                 <QueryClientProvider client={queryClient}>
                     {/* <gqlClientContext.Provider value={gql}> */}
-                    <CssVarsProvider defaultMode="dark" theme={theme}>
-                        <main id="main">
-                            <Component {...pageProps} />
-                        </main>
-                        <Toaster>{(toast) => <LabsToast toast={toast} />}</Toaster>
-                    </CssVarsProvider>
+                    <StyledEngineProvider injectFirst>
+                        <CssVarsProvider defaultMode="dark" theme={theme}>
+                            <main id="main">
+                                <Component {...pageProps} />
+                            </main>
+                            <Toaster>{(toast) => <LabsToast toast={toast} />}</Toaster>
+                        </CssVarsProvider>
+                    </StyledEngineProvider>
                     {/* </gqlClientContext.Provider> */}
                 </QueryClientProvider>
             </SessionProvider>
