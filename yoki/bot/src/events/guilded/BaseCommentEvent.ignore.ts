@@ -29,5 +29,16 @@ export default async (serverId: string, parentId: number, comment: CommentPayloa
     // Scanning
     const deletion = () => ctx.rest.delete(`/channels/${comment.channelId}/${contentType}/${parentId}/comments/${comment.id}`);
 
-    await moderateContent(ctx, server, comment.channelId, "COMMENT", FilteredContent.ChannelContent, comment.createdBy, member?.roleIds ?? [], comment.content, comment.mentions, deletion);
+    await moderateContent(
+        ctx,
+        server,
+        comment.channelId,
+        "COMMENT",
+        FilteredContent.ChannelContent,
+        comment.createdBy,
+        member?.roleIds ?? [],
+        comment.content,
+        comment.mentions,
+        deletion
+    );
 };

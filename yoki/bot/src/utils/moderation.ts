@@ -64,71 +64,69 @@ export async function moderateContent(
     const canFilterLinks = (server.filterInvites && !channelIgnores.find((x) => x.type === "INVITE")) || (server.filterEnabled && !channelIgnores.find((x) => x.type === "URL"));
     const canScanImages = server.scanNSFW && server.premium;
 
-    return Promise.any([
-        // scan the message for any harmful content (filter list, presets)
-        canFilter &&
-        ctx.contentFilterUtil.scanContent({
-            userId,
-            roleIds,
-            text: content,
-            filteredContent,
-            channelId,
-            server,
-            presets: enabledPresets,
-            // Filter
-            resultingAction,
-        })
-            .then((success) => {
-                // To be ignored in Promise.any
-                if (!success)
-                    throw 0;
-            }),
-        // Spam prevention
-        canFilter &&
-        ctx.spamFilterUtil.checkForSpam(server, userId, channelId, mentions, resultingAction)
-            .then((success) => {
-                // To be ignored in Promise.any
-                if (!success)
-                    throw 0;
-            }),
-        // Invites or bad URLs
-        canFilterLinks &&
-        ctx.linkFilterUtil.checkLinks({
-            server,
-            userId,
-            channelId,
-            content,
-            filteredContent,
-            contentType,
-            presets: enabledPresets,
-            resultingAction,
-        })
-            .then((success) => {
-                // To be ignored in Promise.any
-                if (!success)
-                    throw 0;
-            }),
-        canScanImages &&
-        ctx.contentFilterUtil.scanMessageMedia(serverId, channelId, content, userId, resultingAction)
-            .then((success) => {
-                // To be ignored in Promise.any
-                if (!success)
-                    throw 0;
-            }),
-    ].filter(Boolean))
+    return Promise.any(
+        [
+            // scan the message for any harmful content (filter list, presets)
+            canFilter &&
+                ctx.contentFilterUtil
+                    .scanContent({
+                        userId,
+                        roleIds,
+                        text: content,
+                        filteredContent,
+                        channelId,
+                        server,
+                        presets: enabledPresets,
+                        // Filter
+                        resultingAction,
+                    })
+                    .then((success) => {
+                        // To be ignored in Promise.any
+                        if (!success) throw 0;
+                    }),
+            // Spam prevention
+            canFilter &&
+                ctx.spamFilterUtil.checkForSpam(server, userId, channelId, mentions, resultingAction).then((success) => {
+                    // To be ignored in Promise.any
+                    if (!success) throw 0;
+                }),
+            // Invites or bad URLs
+            canFilterLinks &&
+                ctx.linkFilterUtil
+                    .checkLinks({
+                        server,
+                        userId,
+                        channelId,
+                        content,
+                        filteredContent,
+                        contentType,
+                        presets: enabledPresets,
+                        resultingAction,
+                    })
+                    .then((success) => {
+                        // To be ignored in Promise.any
+                        if (!success) throw 0;
+                    }),
+            canScanImages &&
+                ctx.contentFilterUtil.scanMessageMedia(serverId, channelId, content, userId, resultingAction).then((success) => {
+                    // To be ignored in Promise.any
+                    if (!success) throw 0;
+                }),
+        ].filter(Boolean)
+    )
         .then(() => true)
         .catch(() => false);
 }
 
 export const describeAction = (data: Action): string[] =>
-({
-    [Severity.NOTE]: ["Moderation Note Added", "had a moderation note placed on them"],
-    [Severity.WARN]: ["User Warned", "has been warned"],
-    [Severity.MUTE]: ["User Muted", "has been muted"],
-    [Severity.SOFTBAN]: ["User Softbanned", "has been softbanned and their content has been cleared"],
-    [Severity.BAN]: ["User Banned", "has been banned"],
-    [Severity.KICK]: ["User Kicked", "has been kicked"],
-}[data.type]);
+    ({
+        [Severity.NOTE]: ["Moderation Note Added", "had a moderation note placed on them"],
+        [Severity.WARN]: ["User Warned", "has been warned"],
+        [Severity.MUTE]: ["User Muted", "has been muted"],
+        [Severity.SOFTBAN]: ["User Softbanned", "has been softbanned and their content has been cleared"],
+        [Severity.BAN]: ["User Banned", "has been banned"],
+        [Severity.KICK]: ["User Kicked", "has been kicked"],
+    }[data.type]);
 
 export function getActionInfo(ctx: Context, data: Action & { isAutomod?: boolean }): [string, string] {
     const [title, description] = describeAction(data);

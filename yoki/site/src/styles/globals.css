@@ -1,22 +1,22 @@
-@tailwind base;
+/*@tailwind base;*/
 @tailwind components;
 @tailwind utilities;
 
 /* Additional styles */
-@import "additional-styles/utility-patterns.css";
-@import "additional-styles/range-slider.css";
-@import "additional-styles/toggle-switch.css";
-@import "additional-styles/flatpickr.css";
-@import "additional-styles/theme.css";
+/* @import 'additional-styles/utility-patterns.css';
+@import 'additional-styles/range-slider.css';
+@import 'additional-styles/toggle-switch.css';
+@import 'additional-styles/flatpickr.css';
+@import 'additional-styles/theme.css'; */
 
 :root {
-    --primary: #191b1f;
+    --primary: #191B1F;
     --grey: #202227;
     --off-grey: rgb(39, 41, 52);
-    --grey-bg: #191b1f;
+    --grey-bg: #191B1F;
     --light-grey: #dcdcdc;
     --grey-fade: #8080802a;
-    --guilded-yellow: #f5c400;
+    --guilded-yellow: #F5C400;
 
     --status-bg: url("../../public/status-bg.png");
 }
@@ -25,14 +25,53 @@ html {
     scroll-behavior: smooth;
 }
 
-/* For Firefox Browser */
-.scrollbar {
-    scrollbar-width: thin;
-    scrollbar-color: var(--guilded-yellow) var(--grey-bg);
+h1,
+h2,
+h3,
+h4 {
+    font-family: "Lexend";
 }
 
+code {
+    font-family: "Space Mono";
+}
+
+li,
+p,
+a {
+    font-family: "Montserrat";
+}
+
+html, body, #main, #__next {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+}
+
+/* Hide default number input arrows/spin. Stolen from StackOverflow. I am not bothering figuring out CSS nonsense */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    -moz-appearance: none; /* Firefox */
+    appearance: none;
+    margin: 0;
+}
+
+input[type=number] {
+    -webkit-appearance: textfield;
+    -moz-appearance: textfield; /* Firefox */
+    appearance: textfield;
+}
+
+/* For Firefox Browser */
+/* .scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: var(--guilded-yellow) var(--grey-bg);
+} */
+
 /* For Chrome, EDGE, Opera, Others */
-.scrollbar::-webkit-scrollbar {
+/* .scrollbar::-webkit-scrollbar {
     width: 20px;
 }
 
@@ -64,4 +103,4 @@ html {
     .scrollbar::-webkit-scrollbar-thumb:hover {
         background: var(--guilded-yellow);
     }
-}
+} */

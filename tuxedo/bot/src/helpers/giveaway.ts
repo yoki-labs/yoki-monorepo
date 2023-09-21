@@ -169,15 +169,15 @@ export class GiveawayUtil extends TickedUtil {
                 {
                     fields: winners.length
                         ? [
-                            {
-                                name: "Winners",
-                                value: winners.map((x) => `<@${x}>`).join(", "),
-                            },
-                            {
-                                name: "Reward",
-                                value: giveaway.text,
-                            },
-                        ]
+                              {
+                                  name: "Winners",
+                                  value: winners.map((x) => `<@${x}>`).join(", "),
+                              },
+                              {
+                                  name: "Reward",
+                                  value: giveaway.text,
+                              },
+                          ]
                         : undefined,
                 },
                 {
@@ -208,15 +208,15 @@ export class GiveawayUtil extends TickedUtil {
         const endDateMessage = canceled
             ? ":x: **Has been cancelled.**"
             : ended
-                ? ":white_check_mark: **Has concluded the winners.**"
-                : `**Ends in:** ${formatDate(giveaway.endsAt, timeZone)} EST (${ms(giveaway.endsAt.getTime() - Date.now(), { long: true })} left)`;
+            ? ":white_check_mark: **Has concluded the winners.**"
+            : `**Ends in:** ${formatDate(giveaway.endsAt, timeZone)} EST (${ms(giveaway.endsAt.getTime() - Date.now(), { long: true })} left)`;
 
         return new Embed({
             title: ended ? ":tada: Giveaway has ended!" : ":tada: Giveaway has started!",
             description: giveaway.text,
             color: canceled ? Colors.red : ended ? Colors.green : Colors.blockBackground,
             footer: {
-                "text": `Giveaway ID: ${giveaway.id}`,
+                text: `Giveaway ID: ${giveaway.id}`,
             },
             fields: [
                 {

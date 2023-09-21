@@ -1,14 +1,14 @@
-import React from "react";
-import { GuildedServer } from "../../../lib/@types/guilded/Server";
 import { Avatar, ListItemDecorator, Option, SelectOption } from "@mui/joy";
-import LabsDropdown from "../../LabsDropdown";
-import { useRouter } from "next/router";
+import React from "react";
 
-type Props = {
+import { GuildedServer } from "../../../lib/@types/guilded";
+import LabsDropdown from "../../LabsDropdown";
+
+interface Props {
     servers: GuildedServer[];
     defaultValue?: GuildedServer;
     onChange: (serverId: string) => unknown | Promise<unknown>;
-};
+}
 
 export class ServerSelector extends React.Component<Props> {
     constructor(props: Props) {
@@ -43,7 +43,7 @@ export class ServerSelector extends React.Component<Props> {
                 onChange={async (_, serverId) => serverId && (await this.props.onChange(serverId))}
             >
                 {servers.map((server) => (
-                    <Option value={server.id} label={server.name}>
+                    <Option key={server.id} value={server.id} label={server.name}>
                         {this.renderOption(server)}
                     </Option>
                 ))}

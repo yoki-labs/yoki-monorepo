@@ -53,8 +53,9 @@ export default {
             where: editedTopicLogChannel.channelId,
             title: "Forum Topic Edited",
             serverId: server.serverId,
-            description: `A topic ${inlineQuote(forumTopic.title)} from <@${forumTopic.createdBy}> (${inlineCode(forumTopic.createdBy)}) has been edited in [#${channel.name
-                }](${channelURL})
+            description: `A topic ${inlineQuote(forumTopic.title)} from <@${forumTopic.createdBy}> (${inlineCode(forumTopic.createdBy)}) has been edited in [#${
+                channel.name
+            }](${channelURL})
 
 			Topic ID: ${inlineCode(forumTopic.id)}
 			Channel ID: ${inlineCode(forumTopic.channelId)}

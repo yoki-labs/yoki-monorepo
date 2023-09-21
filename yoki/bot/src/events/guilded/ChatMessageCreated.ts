@@ -35,8 +35,7 @@ export default {
     execute: async (args) => {
         const [message, ctx] = args;
 
-        if (!message.serverId)
-            return;
+        if (!message.serverId) return;
 
         // If any of the flowbots delete Yoki's message deletion logs, do not make it loop and make Yoki spam
         if (message.authorId === ctx.user!.id) {
@@ -53,8 +52,7 @@ export default {
 
         const member = await ctx.members.fetch(message.serverId!, message.authorId).catch(() => null);
         // Can't do much
-        if (!member || member.user?.type === UserType.Bot)
-            return;
+        if (!member || member.user?.type === UserType.Bot) return;
 
         if (isModmailChannel) {
             void ctx.amp.logEvent({ event_type: "MODMAIL_MESSAGE", user_id: message.authorId, event_properties: { serverId: message.serverId!, modmailId: isModmailChannel.id } });
@@ -131,17 +129,16 @@ export default {
         const canExecute = await checkUserPermissions(fetchServerRoles, [message, ctx, member], command);
 
         // If it could be moderated and it was moderated, ignore it
-        if ((!command.requiredRole || !canExecute) && await moderateMessage(ctx, server, message, member))
-            return;
+        if ((!command.requiredRole || !canExecute) && (await moderateMessage(ctx, server, message, member))) return;
         // It was just unable to execute
-        else if (!canExecute)
-            return;
+        else if (!canExecute) return;
 
         const isCommandModule = `${command.module}Enabled` in server;
         const moduleEnabledStatus = isCommandModule && server[`${command.module}Enabled`];
         const commandModuleMessage =
             isCommandModule &&
-            `${moduleEnabledStatus ? "" : "⚠️"} The \`${command.module}\` module is ${moduleEnabledStatus ? "enabled" : `disabled. To enable it, run \`${server.getPrefix()}module enable ${command.module}\``
+            `${moduleEnabledStatus ? "" : "⚠️"} The \`${command.module}\` module is ${
+                moduleEnabledStatus ? "enabled" : `disabled. To enable it, run \`${server.getPrefix()}module enable ${command.module}\``
             }.`;
         const subCommand = await fetchCommandInfo([message, ctx], prefix, command, parsedArgs, commandModuleMessage || undefined);
 
@@ -163,16 +160,6 @@ export default {
 } satisfies GEvent<"messageCreated">;
 
 const moderateMessage = (ctx: YokiClient, server: Server, message: Message, member: Member) =>
-    moderateContent(
-        ctx,
-        server,
-        message.channelId,
-        ContentIgnoreType.MESSAGE,
-        FilteredContent.Message,
-        member.id,
-        member.roleIds,
-        message.content,
-        message.mentions,
-        () =>
-            ctx.messages.delete(message.channelId, message.id)
+    moderateContent(ctx, server, message.channelId, ContentIgnoreType.MESSAGE, FilteredContent.Message, member.id, member.roleIds, message.content, message.mentions, () =>
+        ctx.messages.delete(message.channelId, message.id)
     );

@@ -1,6 +1,6 @@
-import { faChevronDown } from "@fortawesome/free-solid-svg-icons";
+import { faAngleDown, faChevronDown } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { FormControl, Select, SelectOwnProps, selectClasses } from "@mui/joy";
+import { FormControl, Select, selectClasses, SelectOwnProps } from "@mui/joy";
 
 export default function LabsDropdown(props: SelectOwnProps<string>) {
     return (
@@ -24,7 +24,7 @@ export default function LabsDropdown(props: SelectOwnProps<string>) {
                         },
                     },
                 }}
-                indicator={<FontAwesomeIcon width={"14px"} icon={faChevronDown} />}
+                indicator={<FontAwesomeIcon width="14px" icon={faAngleDown} />}
                 {...props}
             />
         </FormControl>

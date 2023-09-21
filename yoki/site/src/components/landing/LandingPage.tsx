@@ -1,14 +1,55 @@
-import Footer from "./footer/Footer";
-import Navbar from "./navbar/navbar";
+import { Box, Stack, styled } from "@mui/joy";
+import Footer from "./Footer";
+import Navbar from "./Navbar";
+import React from "react";
+import { NavbarButtonList } from "./NavbarButton";
 
-export const LandingPage = ({ children }: { children: React.ReactNode }) => {
-    return (
-        <>
-            <Navbar />
-            <div className="bg-custom-gray pb-12">{children}</div>
-            <div className="bg-[#15171d] px-12 md:px-20">
-                <Footer />
-            </div>
-        </>
-    );
+type Props = {
+    children: React.ReactNode;
 };
+type State = {
+    isMenuToggled: boolean;
+};
+
+const PageWrapper = styled(Box)(({ theme }) => ({
+    backgroundColor: theme.vars.palette.background.body,
+    minHeight: "100%",
+}));
+
+export default class LandingPage extends React.Component<Props, State> {
+    constructor(props: Props) {
+        super(props);
+
+        this.state = {
+            isMenuToggled: false,
+        };
+    }
+
+    onMenuToggle(isMenuToggled: boolean) {
+        return this.setState({ isMenuToggled });
+    }
+
+    render() {
+        const { children } = this.props;
+        const { isMenuToggled } = this.state;
+
+        return (
+            <PageWrapper>
+                {/* Anything here will be fixed */}
+                <Navbar onMenuToggle={this.onMenuToggle.bind(this)} menuToggled={isMenuToggled} />
+                {/* Scrollable item */}
+                <Box className={isMenuToggled ? `hidden md:block` : ``}>
+                    <Box sx={{ minHeight: "100vh", display: "flex" }} component="article">
+                        {children}
+                    </Box>
+                    <Footer />
+                </Box>
+                <Box className={isMenuToggled ? `h-full block md:hidden` : `hidden`}>
+                    <Stack direction="column" gap={2} sx={{ my: 4, mx: 4 }} alignItems="stretch">
+                        <NavbarButtonList />
+                    </Stack>
+                </Box>
+            </PageWrapper>
+        );
+    }
+}

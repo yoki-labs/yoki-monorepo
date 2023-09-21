@@ -73,8 +73,7 @@ export class LinkFilterUtil extends BaseFilterUtil {
         const dontFilterInvites = !server.filterInvites || ignored.find((x) => x.type === ChannelIgnoreType.INVITE);
 
         // ! ( (server.filterEnabled && !ignoredUrls) || (server.filterInvites && !ignoredInvites) )
-        if (dontFilterUrls && dontFilterInvites)
-            return false;
+        if (dontFilterUrls && dontFilterInvites) return false;
 
         // Server settings
         const greylistedUrls = dontFilterUrls ? null : await this.client.prisma.urlFilter.findMany({ where: { serverId: server.serverId } });
@@ -84,8 +83,7 @@ export class LinkFilterUtil extends BaseFilterUtil {
         const enabledPresets = (presets ?? (await this.client.dbUtil.getEnabledPresets(server.serverId))).filter((x) => x.preset in this.presets);
 
         // If there are no blacklisted URLs, no presets enabled and invites shouldn't be filtered, there is no point in checking the links
-        if (!(greylistedUrls?.length || server.urlFilterIsWhitelist || enabledPresets.length) && dontFilterInvites)
-            return false;
+        if (!(greylistedUrls?.length || server.urlFilterIsWhitelist || enabledPresets.length) && dontFilterInvites) return false;
 
         void this.client.amp.logEvent({
             event_type: "MESSAGE_LINKS_SCAN",
@@ -133,8 +131,7 @@ export class LinkFilterUtil extends BaseFilterUtil {
             }
             // No bad invites (filter invites enabled, it's guilded gg, route exists and it's none of Guilded's subdomains)
             // E.g., we don't need to filter support.guilded.gg/hc/en-us -- support. is there, which we can match
-            if (dontFilterInvites || !(domain === "guilded.gg" && route && (subdomain === "www." || !subdomain)))
-                return false;
+            if (dontFilterInvites || !(domain === "guilded.gg" && route && (subdomain === "www." || !subdomain))) return false;
 
             const breadCrumbs = route.split("/");
 
@@ -153,14 +150,12 @@ export class LinkFilterUtil extends BaseFilterUtil {
                 // Same as above condition
                 const invite = breadCrumbs.splice(2, 3)[0];
 
-                if (!isHashId(invite))
-                    return false;
+                if (!isHashId(invite)) return false;
 
                 const response = await fetch(`https://www.guilded.gg/api/content/route/metadata?route=/i/${invite}`);
 
                 // Don't filter if it's bad
-                if (!response.ok)
-                    return false;
+                if (!response.ok) return false;
 
                 const json = await response.json();
 
@@ -176,14 +171,12 @@ export class LinkFilterUtil extends BaseFilterUtil {
                 const [, vanity] = breadCrumbs;
 
                 // (It's not a vanity)
-                if (!this.vanityRegex.test(vanity))
-                    return false;
+                if (!this.vanityRegex.test(vanity)) return false;
 
                 const response = await fetch(`https://www.guilded.gg/api/content/route/metadata?route=/${vanity}`);
 
                 // Don't filter if it's bad
-                if (!response.ok)
-                    return false;
+                if (!response.ok) return false;
 
                 const json = await response.json();
 

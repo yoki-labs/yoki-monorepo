@@ -1,10 +1,8 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Avatar, Box, Breadcrumbs, IconButton, Typography } from "@mui/joy";
-import YokiIcon from "../../YokiIcon";
+import { Box, Breadcrumbs, Typography } from "@mui/joy";
 import { ServerSelector } from "./ServerSelector";
-import { GuildedServer } from "../../../lib/@types/guilded/Server";
-import { faBars } from "@fortawesome/free-solid-svg-icons";
+import { GuildedServer } from "../../../lib/@types/guilded";
 import UserManager from "./UserManager";
+import Branding from "../../Branding";
 
 type Props = {
     servers: GuildedServer[];
@@ -19,23 +17,23 @@ type Props = {
 
 export function LayoutTopbar({ children, onServerChange, currentServer, servers, user }: Props) {
     return (
-        <Box sx={{ display: "flex", flexDirection: "row", p: 3, gap: 2 }}>
+        <Box sx={{ display: "flex", flexDirection: "row", gap: 2 }} className="px-2 py-4 md:px-10 md:py-8">
             {children}
             <Breadcrumbs
-                sx={{ p: 0, "--Breadcrumbs-gap": "20px" }}
+                sx={{ p: 0, "--Breadcrumbs-gap": "20px", display: "flex", alignItems: "center" }}
                 className="grow"
                 separator={
-                    <Typography level="h6" textColor="text.secondary">
+                    <Typography level="title-sm" textColor="text.secondary" className="hidden md:block">
                         /
                     </Typography>
                 }
             >
-                <Box sx={{ display: "flex", gap: 1 }}>
-                    <Typography startDecorator={<YokiIcon className="fill-spacelight-700" width="32px" height="32px" />} level="h6" textColor="text.secondary" component="div">
-                        Yoki
-                    </Typography>
+                <Box>
+                    <Branding />
                 </Box>
-                <ServerSelector onChange={onServerChange} defaultValue={currentServer} servers={servers} />
+                <Box className="hidden md:block">
+                    <ServerSelector onChange={onServerChange} defaultValue={currentServer} servers={servers} />
+                </Box>
             </Breadcrumbs>
             <UserManager user={user} />
         </Box>

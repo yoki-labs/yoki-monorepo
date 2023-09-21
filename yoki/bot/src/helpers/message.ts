@@ -58,19 +58,21 @@ export class MessageUtil extends BaseMessageUtil<YokiClient, Server, Command> {
                     `);
 
                     if (defaultChannelId)
-                        await this.client.messageUtil.send(defaultChannelId, {
-                            embeds: [
-                                {
-                                    color: Colors.red,
-                                    description: stripIndents`
+                        await this.client.messageUtil
+                            .send(defaultChannelId, {
+                                embeds: [
+                                    {
+                                        color: Colors.red,
+                                        description: stripIndents`
 						<@${server.ownerId}>, the log channel with the ID \`${where}\` has blocked the bot from sending a log message three consistent times. 
 						As such, we've gone ahead and deleted it from your settings. 
 						Please readjust the channel permissions and add the channel back once done.
 						
 						[Need help? Join our support server](https://guilded.gg/Yoki)`,
-                                },
-                            ],
-                        }).catch(() => null);
+                                    },
+                                ],
+                            })
+                            .catch(() => null);
                     delete this.logchannelErrCounter[where];
                 } else {
                     await this.client.errorHandler.send(stripIndents`

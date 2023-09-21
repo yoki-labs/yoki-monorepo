@@ -1,9 +1,10 @@
 import "../styles/globals.css";
+import "../styles/animations.css";
 
 import { CssVarsProvider } from "@mui/joy";
+// import { Inter } from "@next/font/google";
 import { Analytics } from "@vercel/analytics/react";
 import type { AppProps } from "next/app";
-import { Inter } from "next/font/google";
 import Head from "next/head";
 import { NextPage } from "next/types";
 import { Session } from "next-auth";
@@ -12,8 +13,17 @@ import { ReactElement, ReactNode } from "react";
 import { QueryClient, QueryClientProvider } from "react-query";
 
 import { theme } from "../styles/theme";
+import { Toaster } from "react-hot-toast";
+import LabsToast from "../components/LabsToast";
 
-const ogDescription = "Meet Yoki, your moderation companion. Guilded's first moderation bot.";
+// Fonts
+import "@fontsource/montserrat";
+import "@fontsource/montserrat/500.css";
+import "@fontsource/montserrat/500-italic.css";
+import "@fontsource/lexend";
+import "@fontsource/space-mono";
+
+const ogDescription = "Meet Yoki, your moderation companion and Guilded's biggest moderation bot.";
 const ogUrl = "https://yoki.gg/";
 const ogFace = "https://yoki.gg/face.png";
 const ogTitle = "Yoki";
@@ -29,7 +39,7 @@ type AppPropsWithLayout = AppProps<{ session: Session }> & {
 
 const queryClient = new QueryClient();
 
-const inter = Inter({ subsets: ["latin"] });
+// const inter = Inter({ subsets: ["latin"] });
 
 function MyApp({ Component, pageProps: { session, ...pageProps } }: AppPropsWithLayout) {
     const layout = Component.getLayout ?? ((page) => page);
@@ -55,15 +65,16 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }: AppPropsWith
                 <meta name="twitter:image" content={ogFace} />
 
                 <link rel="icon" href="/favicon.ico" />
-                <style>html, body, #__next {`{ width: 100%; height: 100%; }`}</style>
+                <style>html, body, #main, #__next {`{ margin: 0; padding: 0; width: 100%; height: 100%; }`}</style>
             </Head>
             <SessionProvider session={session}>
                 <QueryClientProvider client={queryClient}>
                     {/* <gqlClientContext.Provider value={gql}> */}
-                    <CssVarsProvider theme={theme}>
-                        <main className={inter.className}>
+                    <CssVarsProvider defaultMode="dark" theme={theme}>
+                        <main id="main">
                             <Component {...pageProps} />
                         </main>
+                        <Toaster>{(toast) => <LabsToast toast={toast} />}</Toaster>
                     </CssVarsProvider>
                     {/* </gqlClientContext.Provider> */}
                 </QueryClientProvider>

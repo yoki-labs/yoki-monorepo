@@ -1,4 +1,4 @@
-import { GuildedServer } from "../../../lib/@types/guilded/Server";
+import { GuildedServer } from "../../../lib/@types/guilded";
 import { Box } from "@mui/joy";
 import React from "react";
 import { LayoutTopbar } from "./LayoutTopbar";
@@ -13,16 +13,11 @@ type LayoutProps = {
     }>;
     topbarPrefix?: React.ReactNode | React.ReactNode[];
     children: React.ReactNode;
+    onServerChange: (serverId: string) => void;
 };
 
 export default function LayoutWrapper(props: LayoutProps) {
-    const { children, user, currentServer, servers, topbarPrefix } = props;
-
-    const router = useRouter();
-
-    const onServerChange = (serverId: string) => {
-        router.push(`/dashboard/${serverId}/overview`);
-    };
+    const { children, user, currentServer, servers, topbarPrefix, onServerChange } = props;
 
     return (
         <>
@@ -30,7 +25,7 @@ export default function LayoutWrapper(props: LayoutProps) {
                 <LayoutTopbar onServerChange={onServerChange} currentServer={currentServer} servers={servers} user={user}>
                     {topbarPrefix}
                 </LayoutTopbar>
-                <Box className="flex flex-row overflow-hidden">{children}</Box>
+                <Box className="flex flex-row grow overflow-hidden">{children}</Box>
             </div>
         </>
     );

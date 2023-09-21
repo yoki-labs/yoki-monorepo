@@ -1,39 +1,57 @@
-import { faArrowDownZA, faBan, faClipboardUser, faCog, faEnvelope, faHashtag, faHome, faLayerGroup, faPrayingHands, faShieldHalved } from "@fortawesome/free-solid-svg-icons";
 import { useAtom } from "jotai";
 
 import { navbarAtom } from "../../../state/navbar";
 import LayoutSidebarTab from "./LayoutSidebarTab";
-import { Box, List } from "@mui/joy";
-
-const sidebarItems = [
-    { id: "overview", name: "Overview", icon: faLayerGroup },
-    { id: "main", name: "Config", icon: faCog },
-    { id: "automod", name: "Automod", icon: faBan },
-    { id: "history", name: "Cases", icon: faClipboardUser },
-    { id: "logs", name: "Logging", icon: faHashtag },
-    { id: "modmail", name: "Modmail", icon: faEnvelope },
-    { id: "antiraid", name: "Antiraid", icon: faShieldHalved },
-    { id: "antihoist", name: "Antihoist", icon: faArrowDownZA },
-    { id: "appeals", name: "Appeals", icon: faPrayingHands },
-];
+import { Box, List, Typography } from "@mui/joy";
+import { DashboardPageCategory, dashboardPageList } from "../pages";
+import { SanitizedServer } from "../../../lib/@types/db";
+import { ServerSelector } from "./ServerSelector";
+import { GuildedServer } from "../../../lib/@types/guilded";
 
 type Props = {
     menuToggled: boolean;
+    serverConfig: SanitizedServer;
+    servers: GuildedServer[];
+    currentServer: GuildedServer | undefined;
+    page: string;
+    onServerChange: (serverId: string) => void;
 };
 
-export function LayoutSidebar({ menuToggled }: Props) {
-    const [currentPage, setModule] = useAtom(navbarAtom);
-    const showStateClass = menuToggled ? "" : "md:block hidden";
+const categoryNames: Record<DashboardPageCategory, string> = {
+    [DashboardPageCategory.Bot]: "Yoki",
+    [DashboardPageCategory.Moderation]: "Moderation",
+    [DashboardPageCategory.Automod]: "Automod",
+    [DashboardPageCategory.Entry]: "Server entry & support",
+};
+
+export function LayoutSidebar({ page, serverConfig, menuToggled, currentServer, servers, onServerChange }: Props) {
+    // const [currentPage, setModule] = useAtom(navbarAtom);
+    const showStateClass = menuToggled ? "" : " md:block hidden";
+
+    const categorizedPages = Object.values(DashboardPageCategory)
+        .filter((category) => typeof category === "number")
+        .map((category) => ({
+            category: category as DashboardPageCategory,
+            items: dashboardPageList.filter((page) => page.category === category),
+        }));
 
     return (
-        <Box className={showStateClass}>
-            <ul className="menu p-6 w-64 text-base-content flex flex-col">
-                <List variant="plain" size="sm" sx={{ maxWidth: 320, fontSize: 14 }}>
-                    {sidebarItems.map((item) => (
-                        <LayoutSidebarTab key={item.id} item={item} isActive={currentPage === item.id} onClick={() => setModule(item.id)} />
-                    ))}
-                </List>
-            </ul>
+        <Box sx={{ width: 300, maxWidth: 300, fontSize: 14, px: 4.3, pt: 0, pb: 5 }} className={`h-full overflow-y-auto overflow-x-hidden ${showStateClass}`}>
+            <Box sx={{ mb: 5 }} className="block md:hidden">
+                <ServerSelector onChange={onServerChange} defaultValue={currentServer} servers={servers} />
+            </Box>
+            {categorizedPages.map(({ category, items }) => (
+                <section className="pb-5" key={`sidebar-category-${category}`}>
+                    <Typography level="h1" textColor="text.tertiary" fontSize="sm">
+                        {categoryNames[category]}
+                    </Typography>
+                    <List variant="plain">
+                        {items.map((item) => (
+                            <LayoutSidebarTab key={item.id} serverId={serverConfig.serverId} item={item} isActive={page === item.id} />
+                        ))}
+                    </List>
+                </section>
+            ))}
         </Box>
     );
 }

@@ -56,12 +56,13 @@ export class MinigameUtil extends TickedUtil {
 
         const currentDeckValue = this.getDeckValue(instance.deck);
 
-        const condition: BlackjackCondition = BlackjackCondition.Playing;
+        let condition: BlackjackCondition = BlackjackCondition.Playing;
 
         const dealerDeckValue = this.getDealerDeckValue(instance.dealerDeck);
 
         // Deck is a bust; the max is 21 as your num and even with aces being 1 it's over 21
         if (currentDeckValue > 21) {
+            condition = BlackjackCondition.Lost;
             // It's done
             this._blackJackInstances.splice(instanceIndex, 1);
 

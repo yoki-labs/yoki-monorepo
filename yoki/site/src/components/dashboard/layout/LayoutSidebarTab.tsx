@@ -1,16 +1,12 @@
-import { IconDefinition } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ListItemButton, ListItemDecorator, Typography } from "@mui/joy";
-
-export interface LayoutModule {
-    name: string;
-    icon: IconDefinition;
-}
+import { DashboardPageItem } from "../pages";
+import Link from "next/link";
 
 interface Prop {
-    item: LayoutModule;
+    item: DashboardPageItem;
+    serverId: string;
     isActive: boolean;
-    onClick: () => unknown;
 }
 
 /**
@@ -18,17 +14,17 @@ interface Prop {
  * @param props The component properties.
  * @returns {Element} Rendered component
  */
-export default function LayoutSidebarTab({ item, isActive, onClick }: Prop) {
-    const textColor = isActive ? "text.secondary" : "text.tertiary";
-
+export default function LayoutSidebarTab({ item, serverId, isActive }: Prop) {
     return (
-        <ListItemButton selected={isActive} onClick={onClick}>
-            <ListItemDecorator>
-                <FontAwesomeIcon icon={item.icon} className={`${isActive ? "text-spacelight-500" : "text-spacelight-400"}`} />
-            </ListItemDecorator>
-            <Typography component="span" textColor={textColor}>
-                {item.name}
-            </Typography>
-        </ListItemButton>
+        <Link href={`/dashboard/${serverId}/${item.id}`} style={{ textDecoration: "none" }}>
+            <ListItemButton sx={{ borderRadius: 6 }} color={item.color} selected={isActive}>
+                <ListItemDecorator>
+                    <FontAwesomeIcon icon={item.icon} />
+                </ListItemDecorator>
+                <Typography sx={{ color: "inherit" }} component="span">
+                    {item.name}
+                </Typography>
+            </ListItemButton>
+        </Link>
     );
 }
