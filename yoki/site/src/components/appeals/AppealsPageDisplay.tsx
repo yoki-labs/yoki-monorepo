@@ -14,30 +14,14 @@ export default function AppealsPageDisplay(props: AppealsSessionProps) {
     // Wrong ID or Yoki isn't in the server
     if (code === "NOT_FOUND")
         return (
-            <AppealsPagePlaceholder
-                icon={PagePlaceholderIcon.NotFound}
-                title="Not found"
-                description="This server either doesn't exist or does not have Yoki to have appeals."
-                />
+            <AppealsPagePlaceholder icon={PagePlaceholderIcon.NotFound} title="Not found" description="This server either doesn't exist or does not have Yoki to have appeals." />
         );
     // Can't unban them; they aren't in the ban list of that Guilded server on Guilded
     else if (code === "NOT_BANNED")
-        return (
-            <AppealsPagePlaceholder
-                icon={PagePlaceholderIcon.NotFound}
-                title="Not banned"
-                description="You haven't been banned yet and cannot appeal for an unban."
-                />
-        );
+        return <AppealsPagePlaceholder icon={PagePlaceholderIcon.NotFound} title="Not banned" description="You haven't been banned yet and cannot appeal for an unban." />;
     // Can't unban them; they aren't in the ban list of that Guilded server on Guilded
     else if (code === "UNAVAILABLE")
-        return (
-            <AppealsPagePlaceholder
-                icon={PagePlaceholderIcon.NoPermission}
-                title="Appeals not enabled"
-                description="This server does not have ban appeals enabled."
-                />
-        );
+        return <AppealsPagePlaceholder icon={PagePlaceholderIcon.NoPermission} title="Appeals not enabled" description="This server does not have ban appeals enabled." />;
     // Can't unban them; they aren't in the ban list of that Guilded server on Guilded
     else if (code === "TOO_FAST") {
         const { elapsedTime } = props;
@@ -48,11 +32,11 @@ export default function AppealsPageDisplay(props: AppealsSessionProps) {
                 icon={PagePlaceholderIcon.NoPermission}
                 title="Too fast"
                 description={`You have recently appealed. You can come back in ${ms(needToWait, { long: true })}.`}
-                />
+            />
         );
     }
 
-    const { user, server } = props as (BaseAppealsSessionProps & { code: null, server: ServerPayload });
+    const { user, server } = props as BaseAppealsSessionProps & { code: null; server: ServerPayload };
 
     return (
         <Stack direction="column" alignItems="center" sx={{ flex: "1", mt: 8 }}>
@@ -71,14 +55,14 @@ export default function AppealsPageDisplay(props: AppealsSessionProps) {
                                     minRows: 8,
                                     min: 10,
                                     max: 1000,
-                                }
-                            ]
-                        }
+                                },
+                            ],
+                        },
                     ]}
                     onSubmit={async ({ reason }) => sendAppeal(server.id, reason as string)}
                     submitText="Send appeal"
                     alwaysDisplayActions
-                    />
+                />
             </Box>
         </Stack>
     );
@@ -89,20 +73,15 @@ async function sendAppeal(serverId: string, content: string) {
         method: "POST",
         body: JSON.stringify({ content }),
         headers: { "content-type": "application/json" },
-    })
-        .catch(notifyFetchError.bind(null, "Error while sending an appeal"));
+    }).catch(notifyFetchError.bind(null, "Error while sending an appeal"));
 }
 
-function AppealsPagePlaceholder({ icon, title, description }: { icon: PagePlaceholderIcon, title: string, description: string }) {
+function AppealsPagePlaceholder({ icon, title, description }: { icon: PagePlaceholderIcon; title: string; description: string }) {
     return (
         <Stack direction="row" alignItems="center" sx={{ flex: "1" }}>
             <Stack direction="column" alignItems="center" sx={{ flex: "1", mb: 40 }}>
-                <PagePlaceholder
-                    icon={icon}
-                    title={title}
-                    description={description}
-                    />
+                <PagePlaceholder icon={icon} title={title} description={description} />
             </Stack>
         </Stack>
-    )
+    );
 }

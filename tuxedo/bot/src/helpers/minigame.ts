@@ -249,10 +249,10 @@ export class MinigameUtil extends TickedUtil {
                 condition === BlackjackCondition.Playing
                     ? Colors.blockBackground
                     : condition === BlackjackCondition.Won
-                        ? Colors.green
-                        : condition === BlackjackCondition.Lost
-                            ? Colors.red
-                            : Colors.yellow,
+                    ? Colors.green
+                    : condition === BlackjackCondition.Lost
+                    ? Colors.red
+                    : Colors.yellow,
             fields: [
                 {
                     name: "Your Deck",
@@ -296,16 +296,16 @@ const asAce11 = (value: number, aceCount: number) => value + 10 * aceCount;
 const getStatusField = (allowAce1: boolean, condition: BlackjackCondition): EmbedField =>
     condition === BlackjackCondition.Playing
         ? {
-            name: "Actions",
-            value: stripIndents`
+              name: "Actions",
+              value: stripIndents`
             :point_down: \u2014 Hit
             :white_check_mark: \u2014 Stand${allowAce1 ? " (Aces as 11)\n\u2022 :ballot_box_with_check: \u2014 Stand (Aces as 1)" : ""}
             (Double down and split not available)
         `,
-            inline: true,
-        }
+              inline: true,
+          }
         : {
-            name: "Game concluded",
-            value: condition === BlackjackCondition.Won ? "You won." : condition === BlackjackCondition.Lost ? "You lost." : "It's a draw/neutral push.",
-            inline: true,
-        };
+              name: "Game concluded",
+              value: condition === BlackjackCondition.Won ? "You won." : condition === BlackjackCondition.Lost ? "You lost." : "It's a draw/neutral push.",
+              inline: true,
+          };

@@ -74,9 +74,7 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }: AppPropsWith
                         <main id="main">
                             <Component {...pageProps} />
                         </main>
-                        <Toaster>
-                            {(toast) => <LabsToast toast={toast} />}
-                        </Toaster>
+                        <Toaster>{(toast) => <LabsToast toast={toast} />}</Toaster>
                     </CssVarsProvider>
                     {/* </gqlClientContext.Provider> */}
                 </QueryClientProvider>

@@ -22,7 +22,9 @@ export default class UrlsPage extends React.Component<DashboardPageProps> {
     }
 
     getPhrasesRoute(page: number, search?: string) {
-        const { serverConfig: { serverId } } = this.props;
+        const {
+            serverConfig: { serverId },
+        } = this.props;
 
         return `/api/servers/${serverId}/urls?page=${page}${search ? `&search=${encodeURIComponent(search)}` : ""}`;
     }
@@ -33,12 +35,11 @@ export default class UrlsPage extends React.Component<DashboardPageProps> {
             headers: { "content-type": "application/json" },
         })
             .then((response) => {
-                if (!response.ok)
-                    throw response;
+                if (!response.ok) throw response;
                 return response.json();
             })
             .then(({ urls, count }) => ({ items: urls, maxPages: Math.ceil(count / 50) }));
-    } 
+    }
 
     async deleteUrls(urlIds: number[], page: number, search?: string) {
         return fetch(this.getPhrasesRoute(page, search), {
@@ -47,8 +48,7 @@ export default class UrlsPage extends React.Component<DashboardPageProps> {
             body: JSON.stringify({ urlIds }),
         })
             .then((response) => {
-                if (!response.ok)
-                    throw response;
+                if (!response.ok) throw response;
                 return response.json();
             })
             .then(({ urls, count }) => ({ items: urls, maxPages: Math.ceil(count / 50) }));
@@ -60,9 +60,8 @@ export default class UrlsPage extends React.Component<DashboardPageProps> {
         return fetch(`/api/servers/${serverId}`, {
             method: "PATCH",
             headers: { "content-type": "application/json" },
-            body: JSON.stringify({ urlFilterIsWhitelist, linkSeverity, linkInfractionPoints })
-        })
-            .catch(notifyFetchError.bind(null, "Error while creating role data"));
+            body: JSON.stringify({ urlFilterIsWhitelist, linkSeverity, linkInfractionPoints }),
+        }).catch(notifyFetchError.bind(null, "Error while creating role data"));
     }
 
     render() {
@@ -84,7 +83,9 @@ export default class UrlsPage extends React.Component<DashboardPageProps> {
                     />
                 </Box>
                 <Box>
-                    <Typography level="h4" gutterBottom>URL filter list configuration</Typography>
+                    <Typography level="h4" gutterBottom>
+                        URL filter list configuration
+                    </Typography>
                     <Card>
                         <CardContent>
                             <LabsForm
@@ -96,10 +97,11 @@ export default class UrlsPage extends React.Component<DashboardPageProps> {
                                                 type: LabsFormFieldType.Toggle,
                                                 prop: "urlFilterIsWhitelist",
                                                 name: "URL Filter list is whitelist",
-                                                description: "Whether URLs added to the filter is a whitelist instead of a blacklist. Off \u2014 link blacklist, on \u2014 link whitelist.",
+                                                description:
+                                                    "Whether URLs added to the filter is a whitelist instead of a blacklist. Off \u2014 link blacklist, on \u2014 link whitelist.",
                                                 defaultValue: serverConfig.urlFilterIsWhitelist,
                                             },
-                                        ]
+                                        ],
                                     },
                                     {
                                         name: "Non-whitelisted link punishment",
@@ -122,7 +124,7 @@ export default class UrlsPage extends React.Component<DashboardPageProps> {
                                                 min: 1,
                                                 max: 100,
                                             },
-                                        ]
+                                        ],
                                     },
                                 ]}
                                 onSubmit={(values) => console.log("Values", { values })}
@@ -139,7 +141,7 @@ export default class UrlsPage extends React.Component<DashboardPageProps> {
                         getItems={this.fetchUrls.bind(this)}
                         deleteItems={this.deleteUrls.bind(this)}
                         ItemRenderer={LinkRow}
-                        />
+                    />
                 </Stack>
             </>
         );
@@ -153,18 +155,16 @@ function LinkRow({ item: link, columnCount, timezone, isSelected, onSelected }: 
             columnCount={columnCount}
             isSelected={isSelected}
             onSelected={onSelected}
-            expandedInfo={() =>
+            expandedInfo={() => (
                 <Stack gap={3}>
-                    <InfoText icon={faDroplet} name="Infraction points">{link.infractionPoints}</InfoText>
+                    <InfoText icon={faDroplet} name="Infraction points">
+                        {link.infractionPoints}
+                    </InfoText>
                 </Stack>
-            }
+            )}
         >
             <td>
-                <UrlContentDisplay
-                    subdomain={link.subdomain}
-                    domain={link.domain}
-                    route={link.route}
-                    />
+                <UrlContentDisplay subdomain={link.subdomain} domain={link.domain} route={link.route} />
             </td>
             <td>
                 <Typography startDecorator={<FontAwesomeIcon icon={severityToIcon[link.severity]} />} fontWeight="lg" textColor="text.secondary">
@@ -181,10 +181,12 @@ function LinkRow({ item: link, columnCount, timezone, isSelected, onSelected }: 
     );
 }
 
-function UrlContentDisplay({ subdomain, domain, route }: { subdomain: string | null; domain: string; route: string | null; }) {
+function UrlContentDisplay({ subdomain, domain, route }: { subdomain: string | null; domain: string; route: string | null }) {
     return (
         <Typography level="body-md" textColor="text.secondary">
-            {subdomain}{domain}{route}
+            {subdomain}
+            {domain}
+            {route}
         </Typography>
-    )
+    );
 }

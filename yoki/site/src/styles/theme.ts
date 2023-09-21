@@ -104,9 +104,9 @@ const dark = {
 };
 const light = dark;
 
-declare module '@mui/joy/styles' {
+declare module "@mui/joy/styles" {
     interface TypographySystemOverrides {
-        "code": true;
+        code: true;
     }
 }
 
@@ -116,7 +116,7 @@ export const theme = extendTheme({
         "body-sm": bodyFont,
         "body-md": bodyFont,
         "body-lg": bodyFont,
-        "code": {
+        code: {
             backgroundColor: `var(--labs-palette-background-body)`,
             color: `var(--labs-palette-text-code)`,
             // Doesn't make the text break, so it isn't recommended.
@@ -201,19 +201,19 @@ export const theme = extendTheme({
             styleOverrides: {
                 root: {
                     "--Table-headerUnderlineThickness": "1px",
-                    "th": {
+                    th: {
                         "--TableCell-headBackground": "transparent",
-                    }
-                }
-            }
+                    },
+                },
+            },
         },
         JoySkeleton: {
             styleOverrides: {
                 root: `
                     overflow: hidden;
                     position: relative !important;
-                `
-            }
-        }
+                `,
+            },
+        },
     },
 });

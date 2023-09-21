@@ -14,9 +14,7 @@ export default function LandingFeature({ opacity, children }: Props) {
             <ListItemDecorator>
                 <FontAwesomeIcon icon={faCheckSquare} />
             </ListItemDecorator>
-            <Typography textColor="text.primary">
-                { children }
-            </Typography>
+            <Typography textColor="text.primary">{children}</Typography>
         </ListItem>
     );
 }

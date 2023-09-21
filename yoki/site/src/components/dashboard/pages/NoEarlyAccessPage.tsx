@@ -14,11 +14,7 @@ export default function NoEarlyAccessPage({ currentServer }: Props) {
     return (
         <Stack alignItems="center" direction="row" className="grow shrink-0">
             <Stack alignItems="center" direction="column" gap={3} sx={{ flex: "1", mb: 20 }}>
-                <PagePlaceholder
-                    icon={PagePlaceholderIcon.NoPermission}
-                    title="Not permitted"
-                    description="Unfortunately, this server does not have early access to use this."
-                />
+                <PagePlaceholder icon={PagePlaceholderIcon.NoPermission} title="Not permitted" description="Unfortunately, this server does not have early access to use this." />
                 <ServerDisplay server={currentServer} />
                 <Alert color="primary" variant="soft" startDecorator={<FontAwesomeIcon icon={faInfoCircle} />} sx={{ mt: 8 }}>
                     <Box sx={{ alignItems: "baseline" }}>

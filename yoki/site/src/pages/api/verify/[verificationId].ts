@@ -7,8 +7,7 @@ import prisma from "../../../prisma";
 
 const PostVerifyRoute = async (req: NextApiRequest, res: NextApiResponse) => {
     // Has to be POST; cannot be other method, since there are no other functions than POST
-    if (req.method !== "POST")
-        return res.status(405).send("");
+    if (req.method !== "POST") return res.status(405).send("");
 
     // Verification info to verify
     const id = req.query.verificationId as string;
@@ -17,22 +16,18 @@ const PostVerifyRoute = async (req: NextApiRequest, res: NextApiResponse) => {
     const ip = typeof forwarded === "string" ? forwarded.split(/, /)[0] : req.socket.remoteAddress;
 
     // Invalid parameters
-    if (!token)
-        return res.status(400).json({ error: true, message: "Missing captcha token." });
-    if (!ip)
-        return res.status(400).json({ error: true, message: "Missing IP with request." });
+    if (!token) return res.status(400).json({ error: true, message: "Missing captcha token." });
+    if (!ip) return res.status(400).json({ error: true, message: "Missing IP with request." });
 
     // Don't know what captcha to solve
     // While this allows user to complete captcha for someone else, it also doesn't require
     // logging in with Guilded
     const captcha = await prisma.captcha.findFirst({ where: { id } });
-    if (!captcha)
-        return res.status(404).json({ error: true, message: "Invalid verification ID." });
+    if (!captcha) return res.status(404).json({ error: true, message: "Invalid verification ID." });
 
     // Verify to join what? Make sure it exists
     const server = await prisma.server.findFirst({ where: { serverId: captcha.serverId } });
-    if (!server)
-        return res.status(404).json({ error: true, message: "Invalid server ID." });
+    if (!server) return res.status(404).json({ error: true, message: "Invalid server ID." });
 
     // If DB leak happens, make sure that at least IPs are safe
     const hashedIp = createHmac("sha256", process.env.HMAC_SECRET!).update(ip).digest("hex");
@@ -41,8 +36,7 @@ const PostVerifyRoute = async (req: NextApiRequest, res: NextApiResponse) => {
 
     // TODO: Use Guilded API instead
     const ban = await prisma.action.findFirst({ where: { serverId: captcha.serverId, targetId: { in: allPossiblePastAccounts }, expired: false, type: "BAN" } });
-    if (ban)
-        return res.status(403).json({ error: true, message: "You have been banned from this server." });
+    if (ban) return res.status(403).json({ error: true, message: "You have been banned from this server." });
 
     // For Cloudflare's easy captcha
     const params = new URLSearchParams();
@@ -67,8 +61,7 @@ const PostVerifyRoute = async (req: NextApiRequest, res: NextApiResponse) => {
             // Remove mute role if it was added; mute role in this case was added for unverified people
             // instead of it being moderation thing
             console.log("Removing muted role from user if still exists - ", server.muteRoleId);
-            if (server.muteRoleId)
-                await rest.router.roleMembership.roleMembershipDelete({ serverId: captcha.serverId, userId: captcha.triggeringUser, roleId: server.muteRoleId });
+            if (server.muteRoleId) await rest.router.roleMembership.roleMembershipDelete({ serverId: captcha.serverId, userId: captcha.triggeringUser, roleId: server.muteRoleId });
 
             // Add member role to allow access throughout the server
             console.log("Adding member role to user if exists - ", server.memberRoleId);

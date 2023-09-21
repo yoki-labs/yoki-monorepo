@@ -37,13 +37,7 @@ export default function UserManager({ user }: Props) {
                     {user?.name?.[0] ?? ""}
                 </Avatar>
             </Button>
-            <Menu
-                id="user-manager-menu"
-                anchorEl={userManagerRef.current}
-                open={menuOpen}
-                onClose={setMenuOpen.bind(null, false)}
-                placement="bottom"
-            >
+            <Menu id="user-manager-menu" anchorEl={userManagerRef.current} open={menuOpen} onClose={setMenuOpen.bind(null, false)} placement="bottom">
                 <Link href="/auth/signout" style={{ textDecoration: "none" }}>
                     <MenuItem color="danger">
                         <ListItemDecorator>

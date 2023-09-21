@@ -1,4 +1,19 @@
-import { faBan, faClipboardUser, faCommentDots, faCrown, faEnvelope, faHashtag, faHeart, faLayerGroup, faLink, faPoo, faPrayingHands, faShieldHalved, faTicket,IconDefinition } from "@fortawesome/free-solid-svg-icons";
+import {
+    faBan,
+    faClipboardUser,
+    faCommentDots,
+    faCrown,
+    faEnvelope,
+    faHashtag,
+    faHeart,
+    faLayerGroup,
+    faLink,
+    faPoo,
+    faPrayingHands,
+    faShieldHalved,
+    faTicket,
+    IconDefinition,
+} from "@fortawesome/free-solid-svg-icons";
 import { ColorPaletteProp } from "@mui/joy";
 import React from "react";
 
@@ -21,7 +36,7 @@ export interface DashboardPageItem {
     id: string;
     name: string;
     icon: IconDefinition;
-    component: (typeof React.Component) | ((props: DashboardPageProps) => React.ReactElement);
+    component: typeof React.Component | ((props: DashboardPageProps) => React.ReactElement);
     category: DashboardPageCategory;
     color?: ColorPaletteProp;
 }

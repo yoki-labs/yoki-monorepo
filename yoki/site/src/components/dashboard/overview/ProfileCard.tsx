@@ -34,9 +34,8 @@ export default class DashboardProfileCard extends React.Component<Props> {
         return fetch(`/api/servers/${serverId}`, {
             method: "PATCH",
             headers: { "content-type": "application/json" },
-            body: JSON.stringify({ prefix, timezone })
-        })
-            .catch(notifyFetchError.bind(null, "Error while updating server data"));
+            body: JSON.stringify({ prefix, timezone }),
+        }).catch(notifyFetchError.bind(null, "Error while updating server data"));
     }
 
     render() {
@@ -53,22 +52,27 @@ export default class DashboardProfileCard extends React.Component<Props> {
                 </CardOverflow>
                 <CardContent>
                     <Stack sx={{ mt: 1, height: 24 }} direction="row-reverse">
-                        { serverConfig.earlyaccess &&
+                        {serverConfig.earlyaccess && (
                             <Tooltip title="Yoki Early Access" color="neutral">
-                                <FontAwesomeIcon icon={faRocket} style={{ width: 24, height: 24, }} />
+                                <FontAwesomeIcon icon={faRocket} style={{ width: 24, height: 24 }} />
                             </Tooltip>
-                        }
+                        )}
                     </Stack>
                     <Box sx={{ mt: 3, py: 0.5, px: 1.5 }}>
                         <Box>
                             <BotTier />
                             <Stack direction="row" alignItems="center">
                                 <Typography level="h2">Yoki</Typography>
-                                <Typography sx={{ ml: 1, px: 1 }} level="h3" fontSize="md" color="neutral" variant="solid">Bot</Typography>
+                                <Typography sx={{ ml: 1, px: 1 }} level="h3" fontSize="md" color="neutral" variant="solid">
+                                    Bot
+                                </Typography>
                             </Stack>
                             <Typography level="body-md">Meet Yoki, your moderation companion and the biggest moderation bot on Guilded.</Typography>
                         </Box>
-                        <DashboardProfileCardForm serverConfig={serverConfig} onSubmit={({ prefix, timezone }) => this.onServerUpdate(prefix as string | null, timezone as string | null)} />
+                        <DashboardProfileCardForm
+                            serverConfig={serverConfig}
+                            onSubmit={({ prefix, timezone }) => this.onServerUpdate(prefix as string | null, timezone as string | null)}
+                        />
                     </Box>
                 </CardContent>
             </Card>
@@ -76,7 +80,7 @@ export default class DashboardProfileCard extends React.Component<Props> {
     }
 }
 
-function DashboardProfileCardForm(props: { onSubmit: (values: LabsFormFieldValueMap) => unknown | Promise<unknown>; serverConfig: SanitizedServer; }) {
+function DashboardProfileCardForm(props: { onSubmit: (values: LabsFormFieldValueMap) => unknown | Promise<unknown>; serverConfig: SanitizedServer }) {
     const { serverConfig, onSubmit } = props;
 
     return (
@@ -118,10 +122,10 @@ function DashboardProfileCardForm(props: { onSubmit: (values: LabsFormFieldValue
                                 selectableValues: timezones.map((timezone) => ({ name: timezone, value: timezone })),
                                 description: "The timezone Yoki displays time in.",
                             },
-                        ]
-                    }
+                        ],
+                    },
                 ]}
             />
         </Box>
-    )
+    );
 }

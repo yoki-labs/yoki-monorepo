@@ -19,7 +19,9 @@ export default class PhrasesPage extends React.Component<DashboardPageProps> {
     }
 
     getPhrasesRoute(page: number, search?: string) {
-        const { serverConfig: { serverId } } = this.props;
+        const {
+            serverConfig: { serverId },
+        } = this.props;
 
         return `/api/servers/${serverId}/phrases?page=${page}${search ? `&search=${encodeURIComponent(search)}` : ""}`;
     }
@@ -30,12 +32,11 @@ export default class PhrasesPage extends React.Component<DashboardPageProps> {
             headers: { "content-type": "application/json" },
         })
             .then((response) => {
-                if (!response.ok)
-                    throw response;
+                if (!response.ok) throw response;
                 return response.json();
             })
             .then(({ phrases, count }) => ({ items: phrases, maxPages: Math.ceil(count / 50) }));
-    } 
+    }
 
     async deletePhrases(phraseIds: number[], page: number, search?: string) {
         return fetch(this.getPhrasesRoute(page, search), {
@@ -44,8 +45,7 @@ export default class PhrasesPage extends React.Component<DashboardPageProps> {
             body: JSON.stringify({ phraseIds }),
         })
             .then((response) => {
-                if (!response.ok)
-                    throw response;
+                if (!response.ok) throw response;
                 return response.json();
             })
             .then(({ phrases, count }) => ({ items: phrases, maxPages: Math.ceil(count / 50) }));
@@ -78,7 +78,7 @@ export default class PhrasesPage extends React.Component<DashboardPageProps> {
                         getItems={this.fetchPhrases.bind(this)}
                         deleteItems={this.deletePhrases.bind(this)}
                         ItemRenderer={PhraseRow}
-                        />
+                    />
                 </Stack>
             </>
         );
@@ -92,17 +92,16 @@ function PhraseRow({ item: phrase, columnCount, timezone, isSelected, onSelected
             columnCount={columnCount}
             isSelected={isSelected}
             onSelected={onSelected}
-            expandedInfo={() =>
+            expandedInfo={() => (
                 <Stack gap={3}>
-                    <InfoText icon={faDroplet} name="Infraction points">{phrase.infractionPoints}</InfoText>
+                    <InfoText icon={faDroplet} name="Infraction points">
+                        {phrase.infractionPoints}
+                    </InfoText>
                 </Stack>
-            }
+            )}
         >
             <td>
-                <PhraseContentDisplay
-                    content={phrase.content}
-                    matching={phrase.matching}
-                    />
+                <PhraseContentDisplay content={phrase.content} matching={phrase.matching} />
             </td>
             <td>
                 <Typography startDecorator={<FontAwesomeIcon icon={severityToIcon[phrase.severity]} />} fontWeight="lg" textColor="text.secondary">
@@ -124,15 +123,19 @@ const suffixed: FilterMatching[] = [FilterMatching.POSTFIX, FilterMatching.INFIX
 function PhraseContentDisplay({ content, matching }: { content: string; matching: FilterMatching }) {
     return (
         <Stack direction="row" gap={0.5} alignItems="center">
-            {prefixed.includes(matching) && <Typography level="body-md" textColor="text.tertiary" fontSize="lg" fontWeight="bolder" sx={{ userSelect: "none" }}>
-                {"*"}
-            </Typography> }
+            {prefixed.includes(matching) && (
+                <Typography level="body-md" textColor="text.tertiary" fontSize="lg" fontWeight="bolder" sx={{ userSelect: "none" }}>
+                    {"*"}
+                </Typography>
+            )}
             <Typography level="body-md" textColor="text.secondary">
                 {content.length > 32 ? `${content.slice(0, 32)}...` : content}
             </Typography>
-            {suffixed.includes(matching) && <Typography level="body-md" textColor="text.tertiary" fontSize="lg" fontWeight="bolder" sx={{ userSelect: "none" }}>
-                {"*"}
-            </Typography> }
+            {suffixed.includes(matching) && (
+                <Typography level="body-md" textColor="text.tertiary" fontSize="lg" fontWeight="bolder" sx={{ userSelect: "none" }}>
+                    {"*"}
+                </Typography>
+            )}
         </Stack>
-    )
+    );
 }

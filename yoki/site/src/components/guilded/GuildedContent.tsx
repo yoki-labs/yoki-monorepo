@@ -1,4 +1,4 @@
-import { Box, styled } from "@mui/joy"
+import { Box, styled } from "@mui/joy";
 import { ReactNode } from "react";
 
 const GuildedContentWrapper = styled(Box, {
@@ -11,10 +11,6 @@ const GuildedContentWrapper = styled(Box, {
     userSelect: "none",
 }));
 
-export default function GuildedContent({ children }: { children: ReactNode | ReactNode[]; }) {
-    return (
-        <GuildedContentWrapper className="py-0 px-0 md:py-6 md:px-8">
-            { children }
-        </GuildedContentWrapper>
-    );
+export default function GuildedContent({ children }: { children: ReactNode | ReactNode[] }) {
+    return <GuildedContentWrapper className="py-0 px-0 md:py-6 md:px-8">{children}</GuildedContentWrapper>;
 }

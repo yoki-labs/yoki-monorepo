@@ -20,8 +20,7 @@ export default class SpamPage extends React.Component<DashboardPageProps> {
             method: "PATCH",
             headers: { "content-type": "application/json" },
             body: JSON.stringify({ spamFrequency, spamMentionFrequency, spamInfractionPoints }),
-        })
-            .catch(notifyFetchError.bind(null, "Error while updating server data for spam settings"));
+        }).catch(notifyFetchError.bind(null, "Error while updating server data for spam settings"));
     }
 
     render() {
@@ -40,7 +39,7 @@ export default class SpamPage extends React.Component<DashboardPageProps> {
                         iconAspectRatio={0.8}
                         hideBadges
                         largeHeader
-                        />
+                    />
                     <DashboardModule
                         name="Anti-hoist"
                         description="Prevents people from purposefully putting themselves from above everyone."
@@ -51,10 +50,12 @@ export default class SpamPage extends React.Component<DashboardPageProps> {
                         iconAspectRatio={0.8}
                         hideBadges
                         largeHeader
-                        />
+                    />
                 </Box>
                 <Box>
-                    <Typography level="h4" gutterBottom>Content frequency</Typography>
+                    <Typography level="h4" gutterBottom>
+                        Content frequency
+                    </Typography>
                     <Card>
                         <CardContent>
                             <LabsForm
@@ -81,8 +82,8 @@ export default class SpamPage extends React.Component<DashboardPageProps> {
                                                 defaultValue: serverConfig.spamMentionFrequency,
                                                 min: 2,
                                                 max: 100,
-                                            }
-                                        ]
+                                            },
+                                        ],
                                     },
                                     {
                                         name: "Spam punishment",
@@ -97,8 +98,8 @@ export default class SpamPage extends React.Component<DashboardPageProps> {
                                                 min: 1,
                                                 max: 100,
                                             },
-                                        ]
-                                    }
+                                        ],
+                                    },
                                 ]}
                                 onSubmit={(formState) => this.onSettingsModified(formState)}
                             />

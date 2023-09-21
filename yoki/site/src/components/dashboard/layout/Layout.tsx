@@ -50,12 +50,16 @@ export default class Layout extends React.Component<LayoutProps, LayoutState> {
                 }
                 onServerChange={onServerChange}
             >
-                <LayoutSidebar menuToggled={this.state.menuEnabled} serverConfig={serverConfig} servers={servers} currentServer={currentServer} onServerChange={onServerChange} page={page} />
-                <Box className={`overflow-hidden grow basis-0 shrink-0 flex ${this.state.menuEnabled ? "md:block hidden" : ""}`}>
-                    {children}
-                </Box>
+                <LayoutSidebar
+                    menuToggled={this.state.menuEnabled}
+                    serverConfig={serverConfig}
+                    servers={servers}
+                    currentServer={currentServer}
+                    onServerChange={onServerChange}
+                    page={page}
+                />
+                <Box className={`overflow-hidden grow basis-0 shrink-0 flex ${this.state.menuEnabled ? "md:block hidden" : ""}`}>{children}</Box>
             </LayoutWrapper>
         );
     }
 }
-

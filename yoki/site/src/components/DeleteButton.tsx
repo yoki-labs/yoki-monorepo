@@ -14,13 +14,8 @@ export default function DeleteButton({ itemType, onConfirm, ...rest }: Props) {
         <>
             <Button onClick={() => setOpen(true)} {...rest} />
             <Modal open={open} onClose={() => setOpen(false)}>
-                <DeletionConfirmationModal
-                    itemType={itemType}
-                    onClose={() => setOpen(false)}
-                    onConfirm={() => (setOpen(false), onConfirm())}
-                    />
+                <DeletionConfirmationModal itemType={itemType} onClose={() => setOpen(false)} onConfirm={() => (setOpen(false), onConfirm())} />
             </Modal>
         </>
-    )
+    );
 }
-

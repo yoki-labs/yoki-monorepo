@@ -39,12 +39,12 @@ export class LabsCopyInput extends React.Component<Props, State> {
                 slotProps={{
                     input: {
                         children: [
-                            <Typography>
-                                {text}
-                            </Typography>,
-                            copied && <Chip variant="outlined" color="success">
-                                Copied!
-                            </Chip>
+                            <Typography>{text}</Typography>,
+                            copied && (
+                                <Chip variant="outlined" color="success">
+                                    Copied!
+                                </Chip>
+                            ),
                         ],
                         direction: "row",
                         alignItems: "center",
@@ -59,13 +59,13 @@ export class LabsCopyInput extends React.Component<Props, State> {
                             backgroundColor: `${theme.vars.palette.neutral[600]} !important`,
                             ":hover": {
                                 backgroundColor: `${theme.vars.palette.neutral[500]} !important`,
-                            }
+                            },
                         })}
                         onClick={this.copyText.bind(this)}
-                        startDecorator={
-                            <FontAwesomeIcon icon={faClipboard} />
-                        }
-                    >Copy</Button>
+                        startDecorator={<FontAwesomeIcon icon={faClipboard} />}
+                    >
+                        Copy
+                    </Button>
                 }
                 {...this.props}
             />

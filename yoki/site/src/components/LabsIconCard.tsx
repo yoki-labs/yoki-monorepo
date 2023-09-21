@@ -22,16 +22,18 @@ export default function LabsIconCard(props: Props) {
                 {/* <AspectRatio ratio={iconAspectRatio ?? 0.6} sx={{ width: iconWidth }}>
                 </AspectRatio> */}
                 <Box sx={{ display: "flex", width: orientation === "vertical" ? "100%" : iconSize, height: orientation !== "vertical" ? "100%" : iconSize }}>
-                    <aside className={`flex grow w-full h-full items-center col-span-1 transition-all ease-in duration-300 bg-gradient-to-br bg-spacedark-800 from-0% to-100% ${iconClassName ?? ""}`}>
+                    <aside
+                        className={`flex grow w-full h-full items-center col-span-1 transition-all ease-in duration-300 bg-gradient-to-br bg-spacedark-800 from-0% to-100% ${
+                            iconClassName ?? ""
+                        }`}
+                    >
                         <div className="flex grow flex-col items-center">
                             <FontAwesomeIcon className={`margin-auto w-9 h-9 text-white`} icon={icon} />
                         </div>
                     </aside>
                 </Box>
             </CardOverflow>
-            <CardContent className="flex flex-col">
-                { children }
-            </CardContent>
+            <CardContent className="flex flex-col">{children}</CardContent>
         </Card>
     );
 }

@@ -12,7 +12,7 @@ const icons: Record<PagePlaceholderIcon, string> = {
     [PagePlaceholderIcon.NotFound]: "¯\\_ (ツ)_/¯",
     [PagePlaceholderIcon.Wip]: "(｡-   ‿   -｡)💤",
     [PagePlaceholderIcon.NoPermission]: "( •́ ‸ •̀ )",
-    [PagePlaceholderIcon.Unexpected]: "( •́ _ •́ )?"
+    [PagePlaceholderIcon.Unexpected]: "( •́ _ •́ )?",
 };
 
 type Props = {
@@ -31,10 +31,16 @@ export default class PagePlaceholder extends React.Component<Props> {
 
         return (
             <Stack direction="column" alignItems="center">
-                <Typography level="h2" textColor="text.secondary" fontSize="xlg" gutterBottom>{ icons[icon] }</Typography>
-                <Typography level="h1" fontSize="lg">{ title }</Typography>
-                <Typography level="body-md" textColor="text.secondary">{ description }</Typography>
+                <Typography level="h2" textColor="text.secondary" fontSize="xlg" gutterBottom>
+                    {icons[icon]}
+                </Typography>
+                <Typography level="h1" fontSize="lg">
+                    {title}
+                </Typography>
+                <Typography level="body-md" textColor="text.secondary">
+                    {description}
+                </Typography>
             </Stack>
-        )
+        );
     }
 }

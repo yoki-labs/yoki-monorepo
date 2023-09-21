@@ -26,13 +26,13 @@ export default class LabsSelector extends React.Component<Props> {
     renderValue(value: LabsFormFieldOption<string | number>) {
         return (
             <>
-                {((value.icon || value.avatarIcon) && <ListItemDecorator sx={{ width: 25 }}>
-                    {value.icon && <FontAwesomeIcon icon={value.icon} />}
-                    {value.avatarIcon && <Avatar size="sm" src={value.avatarIcon} />}
-                </ListItemDecorator>)}
-                <Typography sx={{ color: value.color ? `#${value.color.toString(16)}` : "inherit" }}>
-                    {value.name}  
-                </Typography>
+                {(value.icon || value.avatarIcon) && (
+                    <ListItemDecorator sx={{ width: 25 }}>
+                        {value.icon && <FontAwesomeIcon icon={value.icon} />}
+                        {value.avatarIcon && <Avatar size="sm" src={value.avatarIcon} />}
+                    </ListItemDecorator>
+                )}
+                <Typography sx={{ color: value.color ? `#${value.color.toString(16)}` : "inherit" }}>{value.name}</Typography>
             </>
         );
     }
@@ -62,6 +62,6 @@ export default class LabsSelector extends React.Component<Props> {
                     ))}
                 </Select>
             </>
-        )
+        );
     }
 }

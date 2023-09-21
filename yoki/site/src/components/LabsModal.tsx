@@ -19,15 +19,15 @@ export function LabsModal({ icon, title, onClose, children }: Props) {
         >
             <Stack mb={2} gap={2} direction="row" alignItems="center">
                 <FontAwesomeIcon icon={icon} />
-                <Typography level="h2" fontSize="md" sx={{ flex: "1" }}>{ title }</Typography>
+                <Typography level="h2" fontSize="md" sx={{ flex: "1" }}>
+                    {title}
+                </Typography>
                 <IconButton size="sm" variant="outlined" color="neutral" onClick={onClose}>
                     <FontAwesomeIcon icon={faTimes} />
                 </IconButton>
             </Stack>
             <Divider />
-            <Box mt={2}>
-                { children }
-            </Box>
+            <Box mt={2}>{children}</Box>
         </ModalDialog>
     );
 }

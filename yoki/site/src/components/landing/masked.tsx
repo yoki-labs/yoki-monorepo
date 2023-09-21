@@ -20,6 +20,6 @@ export const CurvyMask = styled(`div`, {
     return {
         mask,
         maskSize: "33.4% 150%",
-        maskRepeat: "no-repeat"
+        maskRepeat: "no-repeat",
     };
 });

@@ -8,14 +8,15 @@ async function onBaseRoleChanges(serverId: string, muteRoleId: number | undefine
         method: "PATCH",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ muteRoleId, memberRoleId }),
-    })
-        .catch(notifyFetchError.bind(null, "Error while updating server data for role changes"));
+    }).catch(notifyFetchError.bind(null, "Error while updating server data for role changes"));
 }
 
-export default function BaseRolesForm({ serverConfig, serverRoleOptions }: { serverConfig: SanitizedServer, serverRoleOptions: LabsFormFieldOption<number>[] }) {
+export default function BaseRolesForm({ serverConfig, serverRoleOptions }: { serverConfig: SanitizedServer; serverRoleOptions: LabsFormFieldOption<number>[] }) {
     return (
         <LabsForm
-            onSubmit={({ muteRoleId, memberRoleId }) => onBaseRoleChanges(serverConfig.serverId, muteRoleId as number | null | undefined, memberRoleId as number | null | undefined)}
+            onSubmit={({ muteRoleId, memberRoleId }) =>
+                onBaseRoleChanges(serverConfig.serverId, muteRoleId as number | null | undefined, memberRoleId as number | null | undefined)
+            }
             sections={[
                 {
                     fields: [
@@ -37,8 +38,8 @@ export default function BaseRolesForm({ serverConfig, serverRoleOptions }: { ser
                             selectableValues: serverRoleOptions,
                             placeholder: "Select member role",
                         },
-                    ]
-                }
+                    ],
+                },
             ]}
         />
     );

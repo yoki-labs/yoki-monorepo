@@ -37,8 +37,7 @@ export class SpamFilterUtil extends BaseFilterUtil<SpamType> {
                     mentions: 0,
                 })
                 .get(key);
-        }
-        else if (++instance.count >= server.spamFrequency) {
+        } else if (++instance.count >= server.spamFrequency) {
             this.onSpam(server, key, userId, instance);
 
             // Warn/mute/kick/ban
@@ -118,9 +117,7 @@ export class SpamFilterUtil extends BaseFilterUtil<SpamType> {
                 channelId!,
                 {
                     title: `:mute: You have been muted`,
-                    description: `<@${userId}>, you have been muted for posting too many ${
-                        spamType === SpamType.Mention ? "mentions" : "messages"
-                    } in a short period of time.`,
+                    description: `<@${userId}>, you have been muted for posting too many ${spamType === SpamType.Mention ? "mentions" : "messages"} in a short period of time.`,
                     color: Colors.red,
                 },
                 { isPrivate: true }

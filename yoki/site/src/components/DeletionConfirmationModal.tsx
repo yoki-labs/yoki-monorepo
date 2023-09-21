@@ -10,11 +10,7 @@ type Props = {
 
 export function DeletionConfirmationModal({ itemType, onConfirm, onClose }: Props) {
     return (
-        <LabsModal
-            icon={faTriangleExclamation}
-            title={`Delete ${itemType}?`}
-            onClose={onClose}
-        >
+        <LabsModal icon={faTriangleExclamation} title={`Delete ${itemType}?`} onClose={onClose}>
             <Box>
                 <Typography level="body-md">Are you sure you want to delete the {itemType}?</Typography>
             </Box>
@@ -27,5 +23,5 @@ export function DeletionConfirmationModal({ itemType, onConfirm, onClose }: Prop
                 </Button>
             </Stack>
         </LabsModal>
-    )
+    );
 }

@@ -18,7 +18,7 @@ type State = {
     isLoaded: boolean;
     roles: Role[];
     serverRoles: RolePayload[];
-    error?: { code: string; message: string; };
+    error?: { code: string; message: string };
 };
 
 export default class RolesPage extends React.Component<DashboardPageProps, State> {
@@ -29,20 +29,19 @@ export default class RolesPage extends React.Component<DashboardPageProps, State
     }
 
     async componentDidMount(): Promise<void> {
-        const { serverConfig: { serverId } } = this.props;
+        const {
+            serverConfig: { serverId },
+        } = this.props;
         await fetch(`/api/servers/${serverId}/roles`, {
             method: "GET",
             headers: { "content-type": "application/json" },
         })
             .then((response) => {
-                if (!response.ok)
-                    throw response;
+                if (!response.ok) throw response;
                 return response.json();
             })
             .then(({ roles, serverRoles }) => this.setState({ isLoaded: true, roles, serverRoles }))
-            .catch(async (errorResponse) =>
-                this.onFetchError(errorResponse)
-            );
+            .catch(async (errorResponse) => this.onFetchError(errorResponse));
     }
 
     async onFetchError(errorResponse: Response) {
@@ -67,46 +66,39 @@ export default class RolesPage extends React.Component<DashboardPageProps, State
         return fetch(`/api/servers/${serverId}/roles/${roleId}`, {
             method: "DELETE",
             headers: { "content-type": "application/json" },
-        })
-            .catch(notifyFetchError.bind(null, "Error while deleting staff role"));
+        }).catch(notifyFetchError.bind(null, "Error while deleting staff role"));
     }
 
-    async onRoleUpdate(role: SanitizedRole, data: { newRoleId: number | null, newType: RoleType | null, }) {
+    async onRoleUpdate(role: SanitizedRole, data: { newRoleId: number | null; newType: RoleType | null }) {
         const { serverId, roleId, createdAt, type } = role;
         const { roles } = this.state;
         const index = roles.findIndex((x) => x.roleId === roleId);
 
         // To change the state of the role that was updated
         this.setState({
-            roles:  [
-                ...roles.slice(0, index),
-                { serverId, roleId: data.newRoleId ?? roleId, type: data.newType ?? type, createdAt },
-                ...roles.slice(index + 1)
-            ]
+            roles: [...roles.slice(0, index), { serverId, roleId: data.newRoleId ?? roleId, type: data.newType ?? type, createdAt }, ...roles.slice(index + 1)],
         });
 
         return fetch(`/api/servers/${serverId}/roles/${roleId}`, {
             method: "PATCH",
             headers: { "content-type": "application/json" },
-            body: JSON.stringify(data)
-        })
-            .catch(notifyFetchError.bind(null, "Error while updating role data"));
+            body: JSON.stringify(data),
+        }).catch(notifyFetchError.bind(null, "Error while updating role data"));
     }
-    
+
     async onRoleCreate(roleId: number, type: RoleType) {
         const { serverId } = this.props.serverConfig;
         const { roles } = this.state;
 
         this.setState({
-            roles: roles.concat({ serverId, roleId, type, createdAt: new Date().toISOString() } as Role)
+            roles: roles.concat({ serverId, roleId, type, createdAt: new Date().toISOString() } as Role),
         });
 
         return fetch(`/api/servers/${serverId}/roles`, {
             method: "POST",
             headers: { "content-type": "application/json" },
-            body: JSON.stringify({ roleId, type })
-        })
-            .catch(notifyFetchError.bind(null, "Error while creating role data"));
+            body: JSON.stringify({ roleId, type }),
+        }).catch(notifyFetchError.bind(null, "Error while creating role data"));
     }
 
     render() {
@@ -114,41 +106,33 @@ export default class RolesPage extends React.Component<DashboardPageProps, State
         const { error, isLoaded, roles, serverRoles } = this.state;
 
         // Server-side error
-        if (error)
-            return (
-                <PagePlaceholder
-                    icon={PagePlaceholderIcon.Unexpected}
-                    title={`Error while fetching data (${error.code})`}
-                    description={error.message}
-                    />
-            );
+        if (error) return <PagePlaceholder icon={PagePlaceholderIcon.Unexpected} title={`Error while fetching data (${error.code})`} description={error.message} />;
         // Still fetching data
-        else if (!isLoaded)
-            return <RolesPageSkeleton />;
+        else if (!isLoaded) return <RolesPageSkeleton />;
 
         const roleOptions = optionifyRoles(serverRoles);
 
         return (
             <Box>
-                <Typography level="h2" sx={{ mb: 2 }}>Roles</Typography>
-                <Typography level="title-md" gutterBottom>Base roles</Typography>
+                <Typography level="h2" sx={{ mb: 2 }}>
+                    Roles
+                </Typography>
+                <Typography level="title-md" gutterBottom>
+                    Base roles
+                </Typography>
                 <Card sx={{ mb: 4 }}>
                     <CardContent>
-                        <BaseRolesForm
-                            serverRoleOptions={roleOptions}
-                            serverConfig={serverConfig}
-                        />
+                        <BaseRolesForm serverRoleOptions={roleOptions} serverConfig={serverConfig} />
                     </CardContent>
                 </Card>
-                <Typography level="title-md" gutterBottom>Staff roles</Typography>
+                <Typography level="title-md" gutterBottom>
+                    Staff roles
+                </Typography>
                 <Card sx={{ mb: 2 }}>
-                    <RoleItemCreationForm
-                        serverRoleOptions={roleOptions}
-                        onCreate={this.onRoleCreate.bind(this)}
-                        />
+                    <RoleItemCreationForm serverRoleOptions={roleOptions} onCreate={this.onRoleCreate.bind(this)} />
                 </Card>
                 <Stack direction="column" gap={2}>
-                    {roles.map((role) =>
+                    {roles.map((role) => (
                         <DashboardRole
                             serverId={serverConfig.serverId}
                             role={role}
@@ -157,8 +141,8 @@ export default class RolesPage extends React.Component<DashboardPageProps, State
                             timezone={serverConfig.timezone}
                             onDelete={this.onRoleDelete.bind(this, role)}
                             onUpdate={this.onRoleUpdate.bind(this, role)}
-                            />
-                    )}
+                        />
+                    ))}
                 </Stack>
             </Box>
         );
@@ -173,45 +157,31 @@ function RolesPageSkeleton() {
     return (
         <Box sx={{ overflow: "hidden" }}>
             <Typography level="h2" sx={{ mb: 2 }}>
-                <Skeleton animation="wave">
-                    Roles
-                </Skeleton>
+                <Skeleton animation="wave">Roles</Skeleton>
             </Typography>
             <Typography level="title-md" gutterBottom>
-                <Skeleton animation="wave">
-                    Base roles
-                </Skeleton>
+                <Skeleton animation="wave">Base roles</Skeleton>
             </Typography>
             <Card sx={{ mb: 4 }}>
                 <CardContent>
                     <Typography level="title-md" sx={{ mb: 1 }}>
-                        <Skeleton animation="wave">
-                            Mute role
-                        </Skeleton>
+                        <Skeleton animation="wave">Mute role</Skeleton>
                     </Typography>
                     <Skeleton animation="wave" width="100%" height={40} sx={{ position: "initial", mb: 0 }} />
                     <Typography level="body-sm" sx={{ mb: 2 }}>
-                        <Skeleton animation="wave">
-                            The role that will be assigned when user gets muted.
-                        </Skeleton>
+                        <Skeleton animation="wave">The role that will be assigned when user gets muted.</Skeleton>
                     </Typography>
                     <Typography level="body-sm" sx={{ mb: 1 }}>
-                        <Skeleton animation="wave">
-                            Member role
-                        </Skeleton>
+                        <Skeleton animation="wave">Member role</Skeleton>
                     </Typography>
                     <Skeleton animation="wave" width="100%" height={40} sx={{ position: "initial" }} />
                     <Typography level="body-sm">
-                        <Skeleton animation="wave">
-                            The role that will be assigned when user gets muted.
-                        </Skeleton>
+                        <Skeleton animation="wave">The role that will be assigned when user gets muted.</Skeleton>
                     </Typography>
                 </CardContent>
             </Card>
             <Typography level="title-md" sx={{ mb: 1 }}>
-                <Skeleton animation="wave">
-                    Staff roles
-                </Skeleton>
+                <Skeleton animation="wave">Staff roles</Skeleton>
             </Typography>
             <Card>
                 <Stack direction="row" gap={2} alignItems="center">

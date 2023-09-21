@@ -13,10 +13,7 @@ export default function LandingStat({ subtitle, amount: numbers, what }: Props) 
             <CardContent sx={{ py: 2, px: 4 }}>
                 <Typography level="body-md">{subtitle}</Typography>
                 <Typography level="h3" fontWeight="normal">
-                    <Typography fontWeight="bolder">
-                        {numbers}
-                    </Typography>
-                    {" "}{what}
+                    <Typography fontWeight="bolder">{numbers}</Typography> {what}
                 </Typography>
             </CardContent>
         </Card>

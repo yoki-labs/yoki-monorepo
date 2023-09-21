@@ -55,10 +55,11 @@ export default class DashboardModule extends React.Component<Props, { isActive: 
                     </Stack>
                     <Typography level="body-md">{description}</Typography>
                 </Box>
-                { !hideBadges &&
+                {!hideBadges && (
                     <Box mt={2}>
-                        <Chip color={requiresPremium ? "warning" : "neutral"}>{ requiresPremium ? "Premium" : "Free" }</Chip>
-                    </Box> }
+                        <Chip color={requiresPremium ? "warning" : "neutral"}>{requiresPremium ? "Premium" : "Free"}</Chip>
+                    </Box>
+                )}
             </LabsIconCard>
         );
     }

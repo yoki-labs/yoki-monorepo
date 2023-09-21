@@ -22,21 +22,19 @@ export function LabsMultiSelectorShell({ children, valueDecorator, placeholder }
     return (
         <Dropdown disabled>
             <MenuButton onClick={() => setMenuOpen(!menuOpen)} endDecorator={<FontAwesomeIcon width="14px" icon={faAngleDown} />}>
-                {valueDecorator ||<Typography fontWeight="normal" sx={{ opacity: "50%" }}>{ placeholder }</Typography>}
+                {valueDecorator || (
+                    <Typography fontWeight="normal" sx={{ opacity: "50%" }}>
+                        {placeholder}
+                    </Typography>
+                )}
             </MenuButton>
-            <Menu
-                open={menuOpen}
-                onClose={setMenuOpen.bind(null, false)}
-                placement="bottom"
-            >
+            <Menu open={menuOpen} onClose={setMenuOpen.bind(null, false)} placement="bottom">
                 <ClickAwayListener onClickAway={setMenuOpen.bind(null, false)}>
-                    <div>
-                        {children}
-                    </div>
+                    <div>{children}</div>
                 </ClickAwayListener>
             </Menu>
         </Dropdown>
-    )
+    );
 }
 
 export default class LabsMultiSelector extends React.Component<Props, State> {
@@ -65,9 +63,7 @@ export default class LabsMultiSelector extends React.Component<Props, State> {
 
             return (
                 <MenuItem onClick={() => this.setSelectedValues(isSelected ? selectedValues.filter((x) => x !== value) : selectedValues.concat(value))}>
-                    <ListItemDecorator>
-                        {isSelected && <FontAwesomeIcon icon={faCheck} />}
-                    </ListItemDecorator>
+                    <ListItemDecorator>{isSelected && <FontAwesomeIcon icon={faCheck} />}</ListItemDecorator>
                     {name}
                 </MenuItem>
             );
@@ -92,12 +88,23 @@ export default class LabsMultiSelector extends React.Component<Props, State> {
                     placeholder={field.placeholder ?? `Select ${field.name?.toLowerCase() ?? "items"}`}
                     size={field.size ?? "md"}
                     valueDecorator={
-                        selectedValueInfos?.length && <Stack direction="row" gap={1} alignItems="center">
-                            {selectedValueInfos?.slice(0, 2).map(({ name }) => <Chip variant="outlined" color="primary">{name}</Chip>)}
-                            {(selectedValueInfos?.length ?? 0) > 2 && <Typography level="body-sm" fontSize="sm">...and {selectedValueInfos!.length - 2} more</Typography>}
-                        </Stack>
-                    }>
-                    { this.MultiSelectorMenuItems() }
+                        selectedValueInfos?.length && (
+                            <Stack direction="row" gap={1} alignItems="center">
+                                {selectedValueInfos?.slice(0, 2).map(({ name }) => (
+                                    <Chip variant="outlined" color="primary">
+                                        {name}
+                                    </Chip>
+                                ))}
+                                {(selectedValueInfos?.length ?? 0) > 2 && (
+                                    <Typography level="body-sm" fontSize="sm">
+                                        ...and {selectedValueInfos!.length - 2} more
+                                    </Typography>
+                                )}
+                            </Stack>
+                        )
+                    }
+                >
+                    {this.MultiSelectorMenuItems()}
                 </LabsMultiSelectorShell>
             </>
         );

@@ -19,7 +19,9 @@ export default class HistoryPage extends React.Component<DashboardPageProps> {
     }
 
     getCasesRoute(page: number, search?: string) {
-        const { serverConfig: { serverId } } = this.props;
+        const {
+            serverConfig: { serverId },
+        } = this.props;
 
         return `/api/servers/${serverId}/cases?page=${page}${search ? `&search=${encodeURIComponent(search)}` : ""}`;
     }
@@ -30,12 +32,11 @@ export default class HistoryPage extends React.Component<DashboardPageProps> {
             headers: { "content-type": "application/json" },
         })
             .then((response) => {
-                if (!response.ok)
-                    throw response;
+                if (!response.ok) throw response;
                 return response.json();
             })
             .then(({ cases, count }) => ({ items: cases, maxPages: Math.ceil(count / 50) }));
-    } 
+    }
 
     async deleteCases(caseIds: string[], page: number, search?: string) {
         return fetch(this.getCasesRoute(page, search), {
@@ -44,8 +45,7 @@ export default class HistoryPage extends React.Component<DashboardPageProps> {
             body: JSON.stringify({ caseIds }),
         })
             .then((response) => {
-                if (!response.ok)
-                    throw response;
+                if (!response.ok) throw response;
                 return response.json();
             })
             .then(({ cases, count }) => ({ items: cases, maxPages: Math.ceil(count / 50) }));
@@ -60,7 +60,9 @@ export default class HistoryPage extends React.Component<DashboardPageProps> {
 
         return (
             <Stack direction="column" gap={3}>
-                <Typography level="h4" gutterBottom>Server history</Typography>
+                <Typography level="h4" gutterBottom>
+                    Server history
+                </Typography>
 
                 <DataTable<SanitizedAction, string>
                     itemType="cases"
@@ -69,7 +71,7 @@ export default class HistoryPage extends React.Component<DashboardPageProps> {
                     getItems={this.fetchCases.bind(this)}
                     deleteItems={this.deleteCases.bind(this)}
                     ItemRenderer={HistoryCase}
-                    />
+                />
             </Stack>
         );
     }
@@ -84,36 +86,48 @@ function HistoryCase({ item: action, columnCount, timezone, isSelected, onSelect
             columnCount={columnCount}
             isSelected={isSelected}
             onSelected={onSelected}
-            expandedInfo={() =>
+            expandedInfo={() => (
                 <Stack gap={3}>
                     <Box>
-                        <Typography level="h2" fontSize="md" gutterBottom>Reason</Typography>
+                        <Typography level="h2" fontSize="md" gutterBottom>
+                            Reason
+                        </Typography>
                         <CodeWrapper>
-                            <Typography textColor="text.secondary">
-                                {action.reason}
-                            </Typography>
+                            <Typography textColor="text.secondary">{action.reason}</Typography>
                         </CodeWrapper>
                     </Box>
-                    {action.triggerContent &&
+                    {action.triggerContent && (
                         <Box>
-                            <Typography level="h2" fontSize="md" gutterBottom>Triggering content</Typography>
+                            <Typography level="h2" fontSize="md" gutterBottom>
+                                Triggering content
+                            </Typography>
                             <CodeWrapper>
-                                <Typography textColor="text.secondary">
-                                    {action.triggerContent}
-                                </Typography>
+                                <Typography textColor="text.secondary">{action.triggerContent}</Typography>
                             </CodeWrapper>
                         </Box>
-                    }
+                    )}
                     <Box>
-                        <Typography level="h3" fontSize="md" gutterBottom>Identifier</Typography>
+                        <Typography level="h3" fontSize="md" gutterBottom>
+                            Identifier
+                        </Typography>
                         <LabsCopyInput text={action.id} sx={{ width: "max-content" }} />
                     </Box>
-                    {(action.infractionPoints || action.expiresAt) && <Box>
-                        { action.infractionPoints && <InfoText icon={faDroplet} name="Infraction points">{action.infractionPoints}</InfoText> }
-                        { action.expiresAt && <InfoText icon={faClock} name="Expires at">{formatDate(new Date(action.expiresAt), timezone)}</InfoText> }
-                    </Box>}
+                    {(action.infractionPoints || action.expiresAt) && (
+                        <Box>
+                            {action.infractionPoints && (
+                                <InfoText icon={faDroplet} name="Infraction points">
+                                    {action.infractionPoints}
+                                </InfoText>
+                            )}
+                            {action.expiresAt && (
+                                <InfoText icon={faClock} name="Expires at">
+                                    {formatDate(new Date(action.expiresAt), timezone)}
+                                </InfoText>
+                            )}
+                        </Box>
+                    )}
                 </Stack>
-            }
+            )}
         >
             <td>
                 <LabsUserCard userId={action.targetId} />

@@ -20,11 +20,13 @@ const RoleDot = styled(`span`)<{ color?: string }>(({ theme, color }) => ({
     backgroundColor: color ?? theme.vars.palette.primary[500],
 }));
 
-function ProfileCardSection({ title, children }: { title: string; children: ReactNode | ReactNode[]; }) {
+function ProfileCardSection({ title, children }: { title: string; children: ReactNode | ReactNode[] }) {
     return (
         <Stack component="section" gap={0.6}>
-            <Typography level="body-md" fontWeight="bolder" textColor="text.secondary">{title}</Typography>
-            <Box>{ children }</Box>
+            <Typography level="body-md" fontWeight="bolder" textColor="text.secondary">
+                {title}
+            </Typography>
+            <Box>{children}</Box>
         </Stack>
     );
 }
@@ -44,29 +46,29 @@ export default function LandingProfileCard({ serverCount }: Props) {
                         <BotRole />
                         <Stack direction="row" alignItems="center" sx={{ my: 1 }}>
                             <Typography level="h2">Yoki</Typography>
-                            <Typography sx={{ ml: 1, px: 1 }} level="h3" fontSize="md" color="neutral" variant="solid">BOT</Typography>
+                            <Typography sx={{ ml: 1, px: 1 }} level="h3" fontSize="md" color="neutral" variant="solid">
+                                BOT
+                            </Typography>
                         </Stack>
                         <Typography level="body-md">The biggest moderation bot on Guilded.</Typography>
                     </Box>
                     <Stack mt={3} gap={3}>
                         <ProfileCardSection title="Status">
-                            <Typography level="body-md" textColor="text.primary">Keeping {serverCount}+ servers safe</Typography>
+                            <Typography level="body-md" textColor="text.primary">
+                                Keeping {serverCount}+ servers safe
+                            </Typography>
                         </ProfileCardSection>
                         <ProfileCardSection title="Roles">
                             <Stack direction="row" gap={1}>
-                                <Chip
-                                    startDecorator={<RoleDot color="white"/>}
-                                    variant="outlined"
-                                    sx={{ px: 1, borderStyle: "dashed", borderColor: "white", color: "white" }}
-                                >
-                                    <Typography component="span" textColor="white">Admin</Typography>
+                                <Chip startDecorator={<RoleDot color="white" />} variant="outlined" sx={{ px: 1, borderStyle: "dashed", borderColor: "white", color: "white" }}>
+                                    <Typography component="span" textColor="white">
+                                        Admin
+                                    </Typography>
                                 </Chip>
-                                <Chip
-                                    startDecorator={<RoleDot />}
-                                    variant="outlined"
-                                    color="primary"
-                                >
-                                    <Typography component="span" textColor="primary.500">Server Protector 4000</Typography>
+                                <Chip startDecorator={<RoleDot />} variant="outlined" color="primary">
+                                    <Typography component="span" textColor="primary.500">
+                                        Server Protector 4000
+                                    </Typography>
                                 </Chip>
                             </Stack>
                         </ProfileCardSection>

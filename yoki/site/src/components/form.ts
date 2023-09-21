@@ -11,7 +11,7 @@ export interface LabsFormSection {
     gap?: number;
     start?: ReactNode;
     fields: LabsFormField[];
-};
+}
 
 export interface BaseLabsFormField<TType extends LabsFormFieldType, TValue> {
     // Functionality
@@ -21,7 +21,7 @@ export interface BaseLabsFormField<TType extends LabsFormFieldType, TValue> {
     // Display
     name?: string;
     description?: string;
-    badge?: { text: string, color: DefaultColorPalette };
+    badge?: { text: string; color: DefaultColorPalette };
     // Config
     disabled?: boolean;
     optional?: boolean;
@@ -44,11 +44,7 @@ export interface LabsFormFieldOption<T> {
     disabled?: boolean;
 }
 
-interface OptionedLabsFormField<
-    TType extends LabsFormFieldType,
-    TValue,
-    TOptionValue = TValue
-> extends BaseLabsFormField<TType, TValue> {
+interface OptionedLabsFormField<TType extends LabsFormFieldType, TValue, TOptionValue = TValue> extends BaseLabsFormField<TType, TValue> {
     selectableValues?: Array<LabsFormFieldOption<TOptionValue>>;
 }
 
@@ -57,34 +53,26 @@ interface PlaceholdableLabsFormField {
 }
 // #endregion
 
-interface LabsFormFieldInput<TType extends LabsFormFieldType, TValue> extends
-    BaseLabsFormField<TType, TValue>,
-    StyledLabsFormField,
-    PlaceholdableLabsFormField
-{
+interface LabsFormFieldInput<TType extends LabsFormFieldType, TValue> extends BaseLabsFormField<TType, TValue>, StyledLabsFormField, PlaceholdableLabsFormField {
     min?: number;
     max?: number;
 }
-interface LabsFormFieldInputLarge<TType extends LabsFormFieldType, TValue> extends LabsFormFieldInput<TType, TValue>
-{
+interface LabsFormFieldInputLarge<TType extends LabsFormFieldType, TValue> extends LabsFormFieldInput<TType, TValue> {
     minRows?: number;
 }
-interface LabsFormFieldSelectable<TType extends LabsFormFieldType> extends
-    BaseLabsFormField<TType, string | number>,
-    OptionedLabsFormField<TType, string | number, string | number>,
-    StyledLabsFormField,
-    PlaceholdableLabsFormField
-{ }
+interface LabsFormFieldSelectable<TType extends LabsFormFieldType>
+    extends BaseLabsFormField<TType, string | number>,
+        OptionedLabsFormField<TType, string | number, string | number>,
+        StyledLabsFormField,
+        PlaceholdableLabsFormField {}
 
-interface LabsFormFieldMultiSelection<TType extends LabsFormFieldType> extends
-    BaseLabsFormField<TType, string[]>,
-    OptionedLabsFormField<TType, string[], string>,
-    StyledLabsFormField,
-    PlaceholdableLabsFormField
-{}
+interface LabsFormFieldMultiSelection<TType extends LabsFormFieldType>
+    extends BaseLabsFormField<TType, string[]>,
+        OptionedLabsFormField<TType, string[], string>,
+        StyledLabsFormField,
+        PlaceholdableLabsFormField {}
 
-export type LabsFormFieldByType<T extends LabsFormFieldType> =
-    T extends LabsFormFieldType.Text
+export type LabsFormFieldByType<T extends LabsFormFieldType> = T extends LabsFormFieldType.Text
     ? LabsFormFieldInput<LabsFormFieldType.Text, string>
     : T extends LabsFormFieldType.TextArea
     ? LabsFormFieldInputLarge<LabsFormFieldType.TextArea, string>
@@ -99,13 +87,12 @@ export type LabsFormFieldByType<T extends LabsFormFieldType> =
     : never;
 
 export type LabsFormField =
-    LabsFormFieldByType<LabsFormFieldType.Text> |
-    LabsFormFieldByType<LabsFormFieldType.TextArea> |
-    LabsFormFieldByType<LabsFormFieldType.Number> |
-    LabsFormFieldByType<LabsFormFieldType.Select> |
-    LabsFormFieldByType<LabsFormFieldType.Toggle> |
-    LabsFormFieldByType<LabsFormFieldType.MultiSelect>
-    ;
+    | LabsFormFieldByType<LabsFormFieldType.Text>
+    | LabsFormFieldByType<LabsFormFieldType.TextArea>
+    | LabsFormFieldByType<LabsFormFieldType.Number>
+    | LabsFormFieldByType<LabsFormFieldType.Select>
+    | LabsFormFieldByType<LabsFormFieldType.Toggle>
+    | LabsFormFieldByType<LabsFormFieldType.MultiSelect>;
 
 export enum LabsFormFieldType {
     Text,

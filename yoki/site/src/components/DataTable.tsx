@@ -60,8 +60,7 @@ export default class DataTable<TItem extends { id: TItemId }, TItemId> extends R
 
     componentDidMount(): unknown {
         // To not re-mount
-        if (this.state.isMounted)
-            return;
+        if (this.state.isMounted) return;
 
         this.setState({ isMounted: true });
         return this.fetchItems(0);
@@ -69,35 +68,29 @@ export default class DataTable<TItem extends { id: TItemId }, TItemId> extends R
 
     set allSelected(checked: boolean) {
         const { items } = this.state;
-        
+
         this.setState({ selectedItems: checked ? items.map((x) => x.id) : [] });
     }
 
     get allSelected(): boolean {
         const { items, selectedItems } = this.state;
-        
+
         return !items.some((item) => !selectedItems.includes(item.id));
     }
 
     async fetchItems(page: number, search?: string) {
         return this.props
             .getItems(page, search)
-            .then(({ items, maxPages }) =>
-                this.setState({ isLoaded: true, items, maxPages, page, search })
-            )
-            .catch(async (errorResponse) =>
-                this.onFetchError(errorResponse)
-            );
+            .then(({ items, maxPages }) => this.setState({ isLoaded: true, items, maxPages, page, search }))
+            .catch(async (errorResponse) => this.onFetchError(errorResponse));
     }
-        
+
     async deleteSelectedItems() {
         const { selectedItems, page, search } = this.state;
 
         return this.props
             .deleteItems(selectedItems, page, search)
-            .then(({ items, maxPages }) =>
-                this.setState({ items, maxPages, page, search })
-            )
+            .then(({ items, maxPages }) => this.setState({ items, maxPages, page, search }))
             .catch(notifyFetchError.bind(null, `Error while deleting data table item`));
     }
 
@@ -113,9 +106,7 @@ export default class DataTable<TItem extends { id: TItemId }, TItemId> extends R
         const { selectedItems } = this.state;
 
         this.setState({
-            selectedItems: isChecked
-                ? selectedItems.concat(item.id)
-                : selectedItems.filter((x) => x !== item.id)
+            selectedItems: isChecked ? selectedItems.concat(item.id) : selectedItems.filter((x) => x !== item.id),
         });
     }
 
@@ -127,7 +118,7 @@ export default class DataTable<TItem extends { id: TItemId }, TItemId> extends R
                     icon={PagePlaceholderIcon.Unexpected}
                     title={`Error while fetching ${this.props.itemType} (${this.state.error.code})`}
                     description={this.state.error.message}
-                    />
+                />
             );
         else if (!this.state.isLoaded)
             return (
@@ -143,59 +134,65 @@ export default class DataTable<TItem extends { id: TItemId }, TItemId> extends R
             <Stack direction="column" gap={3}>
                 <Grid container spacing={5}>
                     <Grid xs={4}>
-                        <Input onChange={({ target }) => this.fetchItems(page, target.value)} variant="outlined" placeholder={`Search ${itemType}`} startDecorator={<FontAwesomeIcon icon={faMagnifyingGlass} />} />
+                        <Input
+                            onChange={({ target }) => this.fetchItems(page, target.value)}
+                            variant="outlined"
+                            placeholder={`Search ${itemType}`}
+                            startDecorator={<FontAwesomeIcon icon={faMagnifyingGlass} />}
+                        />
                     </Grid>
                 </Grid>
 
-                { items.length
-                    ? <>
+                {items.length ? (
+                    <>
                         <Table size="lg" variant="plain" sx={{ borderRadius: 8, overflow: "hidden" }}>
                             <thead>
                                 <tr>
                                     {/* Select corner */}
                                     <th style={{ width: 30 }}>
-                                        <Checkbox checked={this.allSelected} variant="soft" size="lg" onChange={({ target }) => this.allSelected = target.checked} />
+                                        <Checkbox checked={this.allSelected} variant="soft" size="lg" onChange={({ target }) => (this.allSelected = target.checked)} />
                                     </th>
-                                    {columns.map((column) =>
-                                        <th>{ column }</th>
-                                    )}
+                                    {columns.map((column) => (
+                                        <th>{column}</th>
+                                    ))}
                                     {/* Expand corner */}
                                     <th style={{ width: 60 }}>
-                                        <HistoryOverflow
-                                            itemType={itemType}
-                                            selectedItems={this.state.selectedItems}
-                                            onCaseDeletion={this.deleteSelectedItems.bind(this)}
-                                            />
+                                        <HistoryOverflow itemType={itemType} selectedItems={this.state.selectedItems} onCaseDeletion={this.deleteSelectedItems.bind(this)} />
                                     </th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {items.map((item) =>
+                                {items.map((item) => (
                                     <ItemRenderer
                                         item={item}
                                         timezone={timezone}
                                         columnCount={columns.length}
                                         isSelected={selectedItems.includes(item.id)}
                                         onSelected={this.toggleSelection.bind(this, item)}
-                                        />
-                                )}
+                                    />
+                                ))}
                             </tbody>
                         </Table>
 
-                        { maxPages > 1 && <ButtonGroup>
-                            {[...(pagesToArray(maxPages) as unknown as number[])].map((buttonPage) =>
-                                <Button disabled={page === buttonPage} onClick={this.fetchItems.bind(this, buttonPage, search)}>{buttonPage + 1}</Button>
-                            )}
-                        </ButtonGroup> }
+                        {maxPages > 1 && (
+                            <ButtonGroup>
+                                {[...(pagesToArray(maxPages) as unknown as number[])].map((buttonPage) => (
+                                    <Button disabled={page === buttonPage} onClick={this.fetchItems.bind(this, buttonPage, search)}>
+                                        {buttonPage + 1}
+                                    </Button>
+                                ))}
+                            </ButtonGroup>
+                        )}
                     </>
-                    : <PagePlaceholder icon={PagePlaceholderIcon.NotFound} title={`No ${itemType}`} description={`There are no ${itemType} to be found.`} />
-                }
+                ) : (
+                    <PagePlaceholder icon={PagePlaceholderIcon.NotFound} title={`No ${itemType}`} description={`There are no ${itemType} to be found.`} />
+                )}
             </Stack>
         );
     }
 }
 
-function HistoryOverflow<TItem>({ itemType, selectedItems, onCaseDeletion }: { itemType: string, selectedItems: TItem[], onCaseDeletion: () => Promise<unknown> }) {
+function HistoryOverflow<TItem>({ itemType, selectedItems, onCaseDeletion }: { itemType: string; selectedItems: TItem[]; onCaseDeletion: () => Promise<unknown> }) {
     const [openDeletePrompt, setOpenDeletePrompt] = React.useState(false);
 
     return (
@@ -213,13 +210,12 @@ function HistoryOverflow<TItem>({ itemType, selectedItems, onCaseDeletion }: { i
                     itemType={`${selectedItems.length} ${itemType}`}
                     onClose={() => setOpenDeletePrompt(false)}
                     onConfirm={() => (setOpenDeletePrompt(false), onCaseDeletion())}
-                    />
+                />
             </Modal>
         </>
-    )
+    );
 }
 
 function* pagesToArray(maxPages: number) {
-    for (let i = 0; i < maxPages; i++)
-        yield i;
+    for (let i = 0; i < maxPages; i++) yield i;
 }

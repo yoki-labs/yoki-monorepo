@@ -1,4 +1,4 @@
-import { Box, styled } from "@mui/joy"
+import { Box, styled } from "@mui/joy";
 
 const GuildedChat = styled(Box, {
     name: "GuildedChat",
@@ -22,7 +22,7 @@ export const GuildedChatMasked = styled(GuildedChat, {
         bottom: 0,
         position: "absolute",
         backgroundImage: `linear-gradient(to bottom, transparent 0%, transparent 70%, ${theme.vars.palette.background.level1} 95%)`,
-    }
+    },
 }));
 
 export default GuildedChat;

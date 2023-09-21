@@ -60,35 +60,31 @@ const GuildedEmbed = React.forwardRef<unknown, Props>((props, ref) => {
 
     return (
         <EmbedWrapper ref={ref} sx={{ borderLeft: color && `solid 4px ${color}` }}>
-            { author &&
+            {author && (
                 <EmbedAuthor>
                     <Avatar size="sm">{author[0]}</Avatar>
-                    <Typography component="span" fontWeight="bolder">{author}</Typography>
+                    <Typography component="span" fontWeight="bolder">
+                        {author}
+                    </Typography>
                 </EmbedAuthor>
-            }
+            )}
             <EmbedContainer>
-                <EmbedContent>
-                    { children }
-                </EmbedContent>
+                <EmbedContent>{children}</EmbedContent>
             </EmbedContainer>
-            { footer &&
-                <EmbedFooter>
-                    { footer }
-                </EmbedFooter>
-            }
+            {footer && <EmbedFooter>{footer}</EmbedFooter>}
         </EmbedWrapper>
     );
 });
 
-export function GuildedEmbedField({ title, children }: { title: ReactNode | ReactNode[]; children: ReactNode | ReactNode[]; }) {
+export function GuildedEmbedField({ title, children }: { title: ReactNode | ReactNode[]; children: ReactNode | ReactNode[] }) {
     return (
         <Box component="section">
-            <Typography level="title-md" fontWeight="bolder" gutterBottom>{ title }</Typography>
-            <Box component="article">
-                { children }
-            </Box>
+            <Typography level="title-md" fontWeight="bolder" gutterBottom>
+                {title}
+            </Typography>
+            <Box component="article">{children}</Box>
         </Box>
-    )
+    );
 }
 
 export default GuildedEmbed;

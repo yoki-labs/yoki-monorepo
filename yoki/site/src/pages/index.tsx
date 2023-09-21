@@ -18,7 +18,6 @@ import GuildedMention from "../components/guilded/GuildedMention";
 import { Colors } from "@yokilabs/utils";
 import FinalSection from "../components/landing/home/FinalSection";
 
-
 const Home: NextPage = () => {
     return (
         <LandingPage>
@@ -27,36 +26,20 @@ const Home: NextPage = () => {
                     <Stack direction="row">
                         <Box sx={{ flex: "1" }}>
                             <Typography level="h1" fontSize="xlg" className="text-5xl pb-4 md:text-7xl">
-                                Meet{" "}
-                                <Typography textColor="primary.500">Yoki</Typography>
+                                Meet <Typography textColor="primary.500">Yoki</Typography>
                             </Typography>
                             <Typography level="h3">Your moderation companion</Typography>
                             <List size="lg">
-                                <LandingFeature>
-                                    Server auto-moderation
-                                </LandingFeature>
-                                <LandingFeature>
-                                    Text, link and image scanning
-                                </LandingFeature>
-                                <LandingFeature opacity={0.8}>
-                                    Server & moderation logs
-                                </LandingFeature>
-                                <LandingFeature opacity={0.6}>
-                                    Spam prevention
-                                </LandingFeature>
-                                <LandingFeature opacity={0.4}>
-                                    Modmail & support
-                                </LandingFeature>
-                                <LandingFeature opacity={0.2}>
-                                    Ban appeals
-                                </LandingFeature>
+                                <LandingFeature>Server auto-moderation</LandingFeature>
+                                <LandingFeature>Text, link and image scanning</LandingFeature>
+                                <LandingFeature opacity={0.8}>Server & moderation logs</LandingFeature>
+                                <LandingFeature opacity={0.6}>Spam prevention</LandingFeature>
+                                <LandingFeature opacity={0.4}>Modmail & support</LandingFeature>
+                                <LandingFeature opacity={0.2}>Ban appeals</LandingFeature>
                             </List>
                             <Typography textColor="text.primary">... and much more!</Typography>
                             <Stack sx={{ my: 2 }} gap={2} className="flex-col md:flex-row">
-                                <LabsButton
-                                    size="lg"
-                                    startDecorator={<FontAwesomeIcon icon={faGuilded} height="100%" />}
-                                >
+                                <LabsButton size="lg" startDecorator={<FontAwesomeIcon icon={faGuilded} height="100%" />}>
                                     Add to Guilded
                                 </LabsButton>
                                 <Button variant="outlined" color="primary" size="lg" onClick={() => window.scrollTo(0, 1200)}>
@@ -82,7 +65,9 @@ const Home: NextPage = () => {
                 <Box className="py-8 px-5 md:px-40">
                     <Box sx={{ textAlign: "center", mb: 24 }}>
                         <Typography level="h1">All the tools you need</Typography>
-                        <Typography level="h4" textColor="text.secondary">Yoki provides everything you will ever need to moderate your servers</Typography>
+                        <Typography level="h4" textColor="text.secondary">
+                            Yoki provides everything you will ever need to moderate your servers
+                        </Typography>
                     </Box>
                     <Stack gap={24}>
                         <FeaturePreview
@@ -95,16 +80,17 @@ const Home: NextPage = () => {
                                 <GuildedChatWrapper>
                                     <GuildedMessage name="Yoki" bot>
                                         <GuildedEmbed color={`#${Colors.yellow.toString(16)}`}>
-                                            <GuildedEmbedField title={
-                                                <>
-                                                    <FontAwesomeIcon icon={faExclamation} style={{ color: `#${Colors.yellow.toString(16)}`, width: "1em", marginRight: 12 }} />
-                                                    Cannot use that word
-                                                </>
-                                            }>
+                                            <GuildedEmbedField
+                                                title={
+                                                    <>
+                                                        <FontAwesomeIcon icon={faExclamation} style={{ color: `#${Colors.yellow.toString(16)}`, width: "1em", marginRight: 12 }} />
+                                                        Cannot use that word
+                                                    </>
+                                                }
+                                            >
                                                 <Typography textColor="text.primary">
-                                                    <GuildedMention>User</GuildedMention>,
-                                                    you have used a filtered word. This is a warning for you to not use it again,
-                                                    otherwise moderation actions may be taken against you.
+                                                    <GuildedMention>User</GuildedMention>, you have used a filtered word. This is a warning for you to not use it again, otherwise
+                                                    moderation actions may be taken against you.
                                                 </Typography>
                                             </GuildedEmbedField>
                                         </GuildedEmbed>
@@ -129,22 +115,25 @@ const Home: NextPage = () => {
                                                 </Typography>
                                             </GuildedEmbedField>
                                             <GuildedEmbedField title="Roles">
-                                                <Chip color="primary" variant="outlined" sx={{ backgroundColor: "transparent" }} startDecorator={
-                                                    <Box sx={(theme) => ({ width: 16, height: 16, borderRadius: "100%", backgroundColor: theme.vars.palette.primary[500] })}></Box>
-                                                }>
+                                                <Chip
+                                                    color="primary"
+                                                    variant="outlined"
+                                                    sx={{ backgroundColor: "transparent" }}
+                                                    startDecorator={
+                                                        <Box
+                                                            sx={(theme) => ({ width: 16, height: 16, borderRadius: "100%", backgroundColor: theme.vars.palette.primary[500] })}
+                                                        ></Box>
+                                                    }
+                                                >
                                                     Level 30
                                                 </Chip>
                                             </GuildedEmbedField>
                                         </GuildedEmbed>
                                         <GuildedEmbed author="Moderator">
-                                            <Typography textColor="text.primary">
-                                                Hello! How can I help you?
-                                            </Typography>
+                                            <Typography textColor="text.primary">Hello! How can I help you?</Typography>
                                         </GuildedEmbed>
                                         <GuildedEmbed author="User">
-                                            <Typography textColor="text.primary">
-                                                Hey hey! I have a question...
-                                            </Typography>
+                                            <Typography textColor="text.primary">Hey hey! I have a question...</Typography>
                                         </GuildedEmbed>
                                     </GuildedMessage>
                                 </GuildedChatMasked>
@@ -160,16 +149,17 @@ const Home: NextPage = () => {
                                 <GuildedChatWrapper>
                                     <GuildedMessage name="Yoki" bot>
                                         <GuildedEmbed color={`#${Colors.yellow.toString(16)}`}>
-                                            <GuildedEmbedField title={
-                                                <>
-                                                    <FontAwesomeIcon icon={faExclamation} style={{ color: `#${Colors.yellow.toString(16)}`, width: "1em", marginRight: 12 }} />
-                                                    Halt! Please complete this captcha
-                                                </>
-                                            }>
+                                            <GuildedEmbedField
+                                                title={
+                                                    <>
+                                                        <FontAwesomeIcon icon={faExclamation} style={{ color: `#${Colors.yellow.toString(16)}`, width: "1em", marginRight: 12 }} />
+                                                        Halt! Please complete this captcha
+                                                    </>
+                                                }
+                                            >
                                                 <Typography textColor="text.primary">
-                                                    <GuildedMention>User</GuildedMention>,
-                                                    your account has tripped the anti-raid filter and requires further verification to ensure that
-                                                    you are not a bot.
+                                                    <GuildedMention>User</GuildedMention>, your account has tripped the anti-raid filter and requires further verification to ensure
+                                                    that you are not a bot.
                                                 </Typography>
                                                 <Typography textColor="text.primary" sx={{ mt: 2 }}>
                                                     Please visit <Link>this link</Link> to complete the captcha and use the server.
@@ -190,46 +180,50 @@ const Home: NextPage = () => {
                             <GuildedContentWrapper>
                                 <GuildedChatMasked>
                                     <GuildedMessage name="Yoki" bot>
-                                        <GuildedEmbed color={`#${Colors.yellow.toString(16)}`} footer={
-                                            <Typography textColor="text.tertiary">Aug 27, 2023</Typography>
-                                        }>
+                                        <GuildedEmbed color={`#${Colors.yellow.toString(16)}`} footer={<Typography textColor="text.tertiary">Aug 27, 2023</Typography>}>
                                             <GuildedEmbedField title="User joined">
                                                 <Typography textColor="text.primary">
-                                                    <GuildedMention>User</GuildedMention>{" "}has joined the server.
+                                                    <GuildedMention>User</GuildedMention> has joined the server.
                                                 </Typography>
                                             </GuildedEmbedField>
                                             <GuildedEmbedField title="Additional info">
                                                 <Typography textColor="text.primary">
-                                                    <Typography component="span" fontWeight="bolder">Account created:</Typography>{" "}
+                                                    <Typography component="span" fontWeight="bolder">
+                                                        Account created:
+                                                    </Typography>{" "}
                                                     August 27, 2023 at 10:00 AM EST
                                                 </Typography>
                                                 <Typography textColor="text.primary">
-                                                    <Typography component="span" fontWeight="bolder">Joined at:</Typography>{" "}
+                                                    <Typography component="span" fontWeight="bolder">
+                                                        Joined at:
+                                                    </Typography>{" "}
                                                     August 27, 2023 at 11:30 AM EST
                                                 </Typography>
                                             </GuildedEmbedField>
                                         </GuildedEmbed>
-                                        <GuildedEmbed color={`#${Colors.red.toString(16)}`} footer={
-                                            <Typography textColor="text.tertiary">Aug 27, 2023</Typography>
-                                        }>
+                                        <GuildedEmbed color={`#${Colors.red.toString(16)}`} footer={<Typography textColor="text.tertiary">Aug 27, 2023</Typography>}>
                                             <GuildedEmbedField title="User warned">
                                                 <Typography textColor="text.primary">
-                                                    <GuildedMention>User</GuildedMention>{" "}has been warned by{" "}<GuildedMention>Moderator</GuildedMention>.
+                                                    <GuildedMention>User</GuildedMention> has been warned by <GuildedMention>Moderator</GuildedMention>.
                                                 </Typography>
                                             </GuildedEmbedField>
                                             <GuildedEmbedField title="Reason">
                                                 <Box sx={{ backgroundColor: "black", py: 2, px: 2, borderRadius: 4 }}>
-                                                    <Typography>
-                                                        Being disrespectful to others.
-                                                    </Typography>
+                                                    <Typography>Being disrespectful to others.</Typography>
                                                 </Box>
                                             </GuildedEmbedField>
                                             <GuildedEmbedField title="Additional info">
                                                 <Typography textColor="text.primary">
-                                                    <Typography component="span" fontWeight="bolder">Infraction points:</Typography>{" "}5
+                                                    <Typography component="span" fontWeight="bolder">
+                                                        Infraction points:
+                                                    </Typography>{" "}
+                                                    5
                                                 </Typography>
                                                 <Typography textColor="text.primary">
-                                                    <Typography component="span" fontWeight="bolder">Case ID:</Typography>{" "}R40Mp0WdAnn6Le
+                                                    <Typography component="span" fontWeight="bolder">
+                                                        Case ID:
+                                                    </Typography>{" "}
+                                                    R40Mp0WdAnn6Le
                                                 </Typography>
                                             </GuildedEmbedField>
                                         </GuildedEmbed>

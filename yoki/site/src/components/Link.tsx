@@ -10,5 +10,5 @@ export default function Link({ href, ...props }: Props & LinkProps) {
         <NextLink href={href}>
             <JoyLink component="span" {...props} />
         </NextLink>
-    )
+    );
 }

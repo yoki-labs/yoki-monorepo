@@ -17,7 +17,7 @@ type Props = {
     serverRoleOptions: LabsFormFieldOption<number>[];
     role: SanitizedRole;
     timezone: string | null;
-    onUpdate: (data: { newRoleId: number | null, newType: RoleType | null }) => unknown;
+    onUpdate: (data: { newRoleId: number | null; newType: RoleType | null }) => unknown;
     onDelete: () => unknown;
 };
 // Edit mode exists instead of putting you right away there because there may be too many Select form fields
@@ -45,11 +45,11 @@ export default class DashboardRole extends React.Component<Props, State> {
 
         return serverRoles.find((serverRole) => serverRole.id === role.roleId);
     }
-    
+
     RoleItemStaticMode() {
         const { serverId, role, timezone, onDelete } = this.props;
         const serverRole = this.currentServerRole;
-        
+
         return (
             <>
                 {/* The hashtag icon (kind of useless, but there should be indication that it is a channel), channel ID */}
@@ -62,7 +62,9 @@ export default class DashboardRole extends React.Component<Props, State> {
                         {serverRole?.name ?? role.roleId}
                     </Typography>
                     <Stack sx={{ flex: "1" }} direction="row" gap={1} alignItems="center" className="hidden md:flex">
-                        <Chip color="primary" variant="outlined" sx={{ flex: "1" }}>{role.type}</Chip>
+                        <Chip color="primary" variant="outlined" sx={{ flex: "1" }}>
+                            {role.type}
+                        </Chip>
                     </Stack>
                     <LabsOverflowButton variant="outlined" id={`logs-${serverId}-${role.roleId}`}>
                         <MenuItem onClick={() => this.toggleEditMode(true)}>
@@ -81,13 +83,13 @@ export default class DashboardRole extends React.Component<Props, State> {
                 </Stack>
                 <CardContent>
                     <Box sx={{ flex: "1", my: 1 }} className="block md:hidden">
-                        <Chip color="primary" variant="outlined" sx={{ flex: "1" }}>{role.type}</Chip>
+                        <Chip color="primary" variant="outlined" sx={{ flex: "1" }}>
+                            {role.type}
+                        </Chip>
                     </Box>
                     <Box sx={{ mt: 0.5 }}>
                         {/* Additional info, such as its creation date */}
-                        <Typography level="body-md">
-                            {formatDate(new Date(role.createdAt), timezone)}
-                        </Typography>
+                        <Typography level="body-md">{formatDate(new Date(role.createdAt), timezone)}</Typography>
                     </Box>
                 </CardContent>
             </>
@@ -100,40 +102,42 @@ export default class DashboardRole extends React.Component<Props, State> {
 
         return (
             <LabsForm
-                sections={[
-                    {
-                        row: true,
-                        start: (
-                            <LabsIconWrapper className="hidden md:block">
-                                <FontAwesomeIcon style={{ width: "100%", height: "100%" }} icon={faShieldHalved} />
-                            </LabsIconWrapper>
-                        ),
-                        fields: [
-                            {
-                                type: LabsFormFieldType.Select,
-                                prop: "roleId",
-                                defaultValue: role.roleId,
-                                selectableValues: serverRoleOptions,
-                                placeholder: "Select role",
-                            },
-                            {
-                                type: LabsFormFieldType.Select,
-                                prop: "type",
-                                selectableValues: staffRoleTypes.map((roleType) => ({
-                                    name: roleType[0] + roleType.toLowerCase().slice(1),
-                                    value: roleType,
-                                })),
-                                defaultValue: role.type,
-                                placeholder: "Select role level"
-                            }
-                        ],
-                    },
-                    {
-                        hideDivider: true,
-                        description: formatDate(new Date(role.createdAt), timezone),
-                        fields: []
-                    }
-                ].filter(Boolean) as LabsFormSection[]}
+                sections={
+                    [
+                        {
+                            row: true,
+                            start: (
+                                <LabsIconWrapper className="hidden md:block">
+                                    <FontAwesomeIcon style={{ width: "100%", height: "100%" }} icon={faShieldHalved} />
+                                </LabsIconWrapper>
+                            ),
+                            fields: [
+                                {
+                                    type: LabsFormFieldType.Select,
+                                    prop: "roleId",
+                                    defaultValue: role.roleId,
+                                    selectableValues: serverRoleOptions,
+                                    placeholder: "Select role",
+                                },
+                                {
+                                    type: LabsFormFieldType.Select,
+                                    prop: "type",
+                                    selectableValues: staffRoleTypes.map((roleType) => ({
+                                        name: roleType[0] + roleType.toLowerCase().slice(1),
+                                        value: roleType,
+                                    })),
+                                    defaultValue: role.type,
+                                    placeholder: "Select role level",
+                                },
+                            ],
+                        },
+                        {
+                            hideDivider: true,
+                            description: formatDate(new Date(role.createdAt), timezone),
+                            fields: [],
+                        },
+                    ].filter(Boolean) as LabsFormSection[]
+                }
                 onSubmit={onSubmit}
                 onCancel={this.toggleEditMode.bind(this, false)}
             />
@@ -141,13 +145,16 @@ export default class DashboardRole extends React.Component<Props, State> {
     }
 
     onRoleItemEdit(values: LabsFormFieldValueMap) {
-        const { onUpdate, role: { roleId, type } } = this.props;
+        const {
+            onUpdate,
+            role: { roleId, type },
+        } = this.props;
 
         this.toggleEditMode(false);
 
         return onUpdate({
-            newRoleId: roleId !== values.roleId ? values.roleId as number : null,
-            newType: type !== values.type ? values.type as RoleType : null,
+            newRoleId: roleId !== values.roleId ? (values.roleId as number) : null,
+            newType: type !== values.type ? (values.type as RoleType) : null,
         });
     }
 
@@ -156,11 +163,7 @@ export default class DashboardRole extends React.Component<Props, State> {
         const RoleItemStaticMode = this.RoleItemStaticMode.bind(this);
         const RoleItemEditMode = this.RoleItemEditMode.bind(this);
 
-        return (
-            <Card>
-                { inEditMode ? <RoleItemEditMode /> : <RoleItemStaticMode /> }
-            </Card>
-        )
+        return <Card>{inEditMode ? <RoleItemEditMode /> : <RoleItemStaticMode />}</Card>;
     }
 }
 
@@ -172,33 +175,35 @@ type EditorProps = {
 export function RoleItemCreationForm({ serverRoleOptions, onCreate }: EditorProps) {
     return (
         <LabsForm
-            sections={[
-                {
-                    row: true,
-                    start: (
-                        <LabsIconWrapper className="hidden md:block">
-                            <FontAwesomeIcon style={{ width: "100%", height: "100%" }} icon={faPlus} />
-                        </LabsIconWrapper>
-                    ),
-                    fields: [
-                        {
-                            type: LabsFormFieldType.Select,
-                            prop: "roleId",
-                            selectableValues: serverRoleOptions,
-                            placeholder: "Select role to add",
-                        },
-                        {
-                            type: LabsFormFieldType.Select,
-                            prop: "type",
-                            selectableValues: staffRoleTypes.map((roleType) => ({
-                                name: roleType[0] + roleType.toLowerCase().slice(1),
-                                value: roleType,
-                            })),
-                            placeholder: "Select role level"
-                        }
-                    ],
-                },
-            ].filter(Boolean) as LabsFormSection[]}
+            sections={
+                [
+                    {
+                        row: true,
+                        start: (
+                            <LabsIconWrapper className="hidden md:block">
+                                <FontAwesomeIcon style={{ width: "100%", height: "100%" }} icon={faPlus} />
+                            </LabsIconWrapper>
+                        ),
+                        fields: [
+                            {
+                                type: LabsFormFieldType.Select,
+                                prop: "roleId",
+                                selectableValues: serverRoleOptions,
+                                placeholder: "Select role to add",
+                            },
+                            {
+                                type: LabsFormFieldType.Select,
+                                prop: "type",
+                                selectableValues: staffRoleTypes.map((roleType) => ({
+                                    name: roleType[0] + roleType.toLowerCase().slice(1),
+                                    value: roleType,
+                                })),
+                                placeholder: "Select role level",
+                            },
+                        ],
+                    },
+                ].filter(Boolean) as LabsFormSection[]
+            }
             onSubmit={({ roleId, type }) => onCreate(roleId as number, type as RoleType)}
         />
     );

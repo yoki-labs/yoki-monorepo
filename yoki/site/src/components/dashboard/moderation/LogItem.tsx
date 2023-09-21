@@ -17,7 +17,7 @@ type Props = {
     types: LogChannelType[];
     timezone: string | null;
 
-    onUpdate: (types: LogChannelType[]) => Promise<unknown>; 
+    onUpdate: (types: LogChannelType[]) => Promise<unknown>;
 };
 // Edit mode exists instead of putting you right away there because there may be too many Select form fields
 // With too many channels and too many types at a time and it can be pretty laggy, especially on lower-end
@@ -56,10 +56,10 @@ export default class DashboardLogChannel extends React.Component<Props, State> {
     toggleEditMode(inEditMode: boolean) {
         this.setState({ inEditMode });
     }
-    
+
     LogChannelStaticMode() {
         const { serverId, channelId, types, createdAt, timezone } = this.props;
-        
+
         return (
             <>
                 {/* The hashtag icon (kind of useless, but there should be indication that it is a channel), channel ID */}
@@ -72,7 +72,9 @@ export default class DashboardLogChannel extends React.Component<Props, State> {
                         {channelId}
                     </Typography>
                     <Stack sx={{ flex: "1" }} direction="row" gap={1} alignItems="center" className="hidden md:flex">
-                        {types.map((type) => <Chip variant="outlined">{typeDisplayNames[type]}</Chip>)}
+                        {types.map((type) => (
+                            <Chip variant="outlined">{typeDisplayNames[type]}</Chip>
+                        ))}
                     </Stack>
                     <LabsOverflowButton variant="outlined" id={`logs-${serverId}-${channelId}`}>
                         <MenuItem onClick={() => this.toggleEditMode(true)}>
@@ -91,13 +93,15 @@ export default class DashboardLogChannel extends React.Component<Props, State> {
                 </Stack>
                 <CardContent>
                     <Box sx={{ flex: "1", my: 1 }} className="block md:hidden">
-                        {types.map((type) => <Chip variant="outlined" sx={{ mr: 1 }}>{typeDisplayNames[type]}</Chip>)}
+                        {types.map((type) => (
+                            <Chip variant="outlined" sx={{ mr: 1 }}>
+                                {typeDisplayNames[type]}
+                            </Chip>
+                        ))}
                     </Box>
                     <Box sx={{ mt: 0.5 }}>
                         {/* Additional info, such as its creation date */}
-                        <Typography level="body-md">
-                            {formatDate(new Date(createdAt), timezone)}
-                        </Typography>
+                        <Typography level="body-md">{formatDate(new Date(createdAt), timezone)}</Typography>
                     </Box>
                 </CardContent>
             </>
@@ -127,22 +131,22 @@ export default class DashboardLogChannel extends React.Component<Props, State> {
                                     name: chatChannelId,
                                     value: chatChannelId,
                                     icon: faHashtag,
-                                }))
+                                })),
                             },
                             {
                                 type: LabsFormFieldType.MultiSelect,
                                 prop: "types",
                                 selectableValues: typeOptions,
                                 defaultValue: types,
-                                placeholder: "Select log types"
-                            }
+                                placeholder: "Select log types",
+                            },
                         ],
                     },
                     {
                         hideDivider: true,
                         description: formatDate(new Date(createdAt), timezone),
-                        fields: []
-                    }
+                        fields: [],
+                    },
                 ]}
                 onSubmit={onSubmit}
                 onCancel={() => this.toggleEditMode(false)}
@@ -166,11 +170,7 @@ export default class DashboardLogChannel extends React.Component<Props, State> {
         const LogChannelStaticMode = this.LogChannelStaticMode.bind(this);
         const LogChannelEditMode = this.LogChannelEditMode.bind(this);
 
-        return (
-            <Card>
-                { inEditMode ? <LogChannelEditMode /> : <LogChannelStaticMode /> }
-            </Card>
-        )
+        return <Card>{inEditMode ? <LogChannelEditMode /> : <LogChannelStaticMode />}</Card>;
     }
 }
 
@@ -195,8 +195,8 @@ export function LogItemCreationForm({ onCreate: onCreated }: { onCreate: (channe
                             type: LabsFormFieldType.MultiSelect,
                             prop: "types",
                             selectableValues: typeOptions,
-                            placeholder: "Select log types"
-                        }
+                            placeholder: "Select log types",
+                        },
                     ],
                 },
             ]}

@@ -14,7 +14,7 @@ import { notifyFetchError } from "../../../utils/errorUtil";
 type State = {
     isLoaded: boolean;
     logs: SanitizedLogChannel[];
-    error?: { code: string; message: string; };
+    error?: { code: string; message: string };
 };
 
 export default class LogsPage extends React.Component<DashboardPageProps, State> {
@@ -25,15 +25,16 @@ export default class LogsPage extends React.Component<DashboardPageProps, State>
     }
 
     async componentDidMount(): Promise<void> {
-        const { serverConfig: { serverId } } = this.props;
-        
+        const {
+            serverConfig: { serverId },
+        } = this.props;
+
         return fetch(`/api/servers/${serverId}/logs`, {
             method: "GET",
             headers: { "content-type": "application/json" },
         })
             .then((response) => {
-                if (!response.ok)
-                    throw response;
+                if (!response.ok) throw response;
                 return response.json();
             })
             .then(({ logs }) => this.setState({ isLoaded: true, logs }))
@@ -49,16 +50,17 @@ export default class LogsPage extends React.Component<DashboardPageProps, State>
     }
 
     async onLogsUpdate(channelId: string, types: LogChannelType[]) {
-        const { serverConfig: { serverId } } = this.props;
+        const {
+            serverConfig: { serverId },
+        } = this.props;
 
         return fetch(`/api/servers/${serverId}/logs/${channelId}`, {
             method: "PUT",
             headers: { "content-type": "application/json" },
-            body: JSON.stringify({ types })
+            body: JSON.stringify({ types }),
         })
             .then((response) => {
-                if (!response.ok)
-                    throw response;
+                if (!response.ok) throw response;
                 return response.json();
             })
             .then(({ logs }) => this.setState({ logs }))
@@ -70,17 +72,9 @@ export default class LogsPage extends React.Component<DashboardPageProps, State>
         const { error, isLoaded, logs } = this.state;
 
         // Server-side error
-        if (error)
-            return (
-                <PagePlaceholder
-                    icon={PagePlaceholderIcon.Unexpected}
-                    title={`Error while fetching data (${error.code})`}
-                    description={error.message}
-                    />
-            );
+        if (error) return <PagePlaceholder icon={PagePlaceholderIcon.Unexpected} title={`Error while fetching data (${error.code})`} description={error.message} />;
         // Still fetching data
-        else if (!isLoaded)
-            return <LogsPageSkeleton />;
+        else if (!isLoaded) return <LogsPageSkeleton />;
 
         const channelLookup = toLookup(logs, (log) => log.channelId);
         // There is no fetch many channels route on Guilded
@@ -88,13 +82,12 @@ export default class LogsPage extends React.Component<DashboardPageProps, State>
 
         return (
             <Box>
-                <Alert sx={{ mb: 4 }} color="warning" variant="soft" startDecorator={<FontAwesomeIcon icon={faExclamationTriangle}/>}>
-                    As of now, fetching all server channels is not possible using Guilded API. As such, as of now, you need to copy & paste channel IDs instead of being able to select channels.
+                <Alert sx={{ mb: 4 }} color="warning" variant="soft" startDecorator={<FontAwesomeIcon icon={faExclamationTriangle} />}>
+                    As of now, fetching all server channels is not possible using Guilded API. As such, as of now, you need to copy & paste channel IDs instead of being able to
+                    select channels.
                 </Alert>
                 <Card sx={{ mb: 2 }}>
-                    <LogItemCreationForm
-                        onCreate={this.onLogsUpdate.bind(this)}
-                        />
+                    <LogItemCreationForm onCreate={this.onLogsUpdate.bind(this)} />
                 </Card>
                 <Stack sx={{ mb: 4 }} gap={2} direction="column">
                     {Object.keys(channelLookup).map((channelId) => {
@@ -109,7 +102,7 @@ export default class LogsPage extends React.Component<DashboardPageProps, State>
                                 types={channelTypeInfos.map((x) => x.type)}
                                 timezone={serverConfig.timezone}
                                 onUpdate={this.onLogsUpdate.bind(this, channelId)}
-                                />
+                            />
                         );
                     })}
                 </Stack>

@@ -30,17 +30,9 @@ export default function LabsOverflowButton({ id, variant, children, disabled }: 
             >
                 <FontAwesomeIcon icon={faEllipsisV} />
             </IconButton>
-            <Menu
-                id={`${id}-menu`}
-                anchorEl={overflowRef.current}
-                open={menuOpen}
-                onClose={setMenuOpen.bind(null, false)}
-                placement="bottom"
-            >
+            <Menu id={`${id}-menu`} anchorEl={overflowRef.current} open={menuOpen} onClose={setMenuOpen.bind(null, false)} placement="bottom">
                 <ClickAwayListener onClickAway={setMenuOpen.bind(null, false)}>
-                    <div>
-                        {children}
-                    </div>
+                    <div>{children}</div>
                 </ClickAwayListener>
             </Menu>
         </>

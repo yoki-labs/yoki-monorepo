@@ -38,10 +38,10 @@ const SubCommandCard = styled(Card)(({ theme }) => ({
         position: "absolute",
         zIndex: "-1",
         "--tw-content": "''",
-    }
+    },
 }));
 const Line = styled(`div`, {
-    name: `CommandDisplayLine`
+    name: `CommandDisplayLine`,
 })(({ theme }) => ({
     width: 3,
     height: "100%",
@@ -49,7 +49,11 @@ const Line = styled(`div`, {
 }));
 
 export default function CommandDisplay({ command, isSubCommand }: Props) {
-    const requiredRoleBadge = command.requiredRole && <Chip color="primary" startDecorator={<FontAwesomeIcon icon={faShieldHalved} />}>{ command.requiredRole }</Chip>;
+    const requiredRoleBadge = command.requiredRole && (
+        <Chip color="primary" startDecorator={<FontAwesomeIcon icon={faShieldHalved} />}>
+            {command.requiredRole}
+        </Chip>
+    );
     const normalizedName = command.name.split("-").join(" ");
 
     const CommandCard = isSubCommand ? SubCommandCard : Card;
@@ -62,13 +66,11 @@ export default function CommandDisplay({ command, isSubCommand }: Props) {
                     </Typography>
                     {requiredRoleBadge}
                 </Stack>
-                <Typography level="body-md">
-                    {command.description}
-                </Typography>
-                { command.args?.length ? <CommandDisplayArguments args={command.args} /> : null }
-                { command.examples?.length ? <CommandDisplayExamples name={normalizedName} examples={command.examples} /> : null }
+                <Typography level="body-md">{command.description}</Typography>
+                {command.args?.length ? <CommandDisplayArguments args={command.args} /> : null}
+                {command.examples?.length ? <CommandDisplayExamples name={normalizedName} examples={command.examples} /> : null}
             </CommandCard>
-            { command.subCommands && <CommandDisplaySubCommands commands={command.subCommands} /> }
+            {command.subCommands && <CommandDisplaySubCommands commands={command.subCommands} />}
         </Box>
     );
 }
@@ -78,52 +80,60 @@ function CommandDisplayArguments({ args }: { args: Command["args"] }) {
         <Box>
             <Typography level="title-sm">Arguments</Typography>
             <List>
-                {args!.map((x) =>
+                {args!.map((x) => (
                     <ListItem sx={{ "margin-inline": 0, "--ListItemDecorator-size": "1.2rem" }}>
                         <ListItemDecorator>
-                            <Typography fontWeight="bolder" textColor="text.tertiary" fontSize="lg">{"\u2022"}</Typography>
+                            <Typography fontWeight="bolder" textColor="text.tertiary" fontSize="lg">
+                                {"\u2022"}
+                            </Typography>
                         </ListItemDecorator>
                         <Box sx={{ flexGrow: 1 }} className="grid grid-cols-1 md:grid-cols-2">
                             <Box>
                                 <Typography component="span" level="body-md">
-                                    { (x.type === "rest" || x.type === "enumList") && "..." }
-                                    { x.display ?? x.name }
+                                    {(x.type === "rest" || x.type === "enumList") && "..."}
+                                    {x.display ?? x.name}
                                 </Typography>
                             </Box>
                             <Box>
                                 <Stack direction="row" gap={1}>
                                     <Typography component="span" level="body-md" textColor="text.secondary" fontWeight="bold">
-                                        { argumentTypeToDisplay[x.type] }
+                                        {argumentTypeToDisplay[x.type]}
                                     </Typography>
-                                    { x.optional && <Chip size="sm" color="neutral">Optional</Chip> }
+                                    {x.optional && (
+                                        <Chip size="sm" color="neutral">
+                                            Optional
+                                        </Chip>
+                                    )}
                                 </Stack>
                             </Box>
                         </Box>
                     </ListItem>
-                )}
+                ))}
             </List>
         </Box>
-    )
+    );
 }
 
 function CommandDisplayExamples({ name, examples }: { name: string; examples: string[] }) {
     return (
         <Box>
-            <Typography level="title-sm" gutterBottom>Examples</Typography>
+            <Typography level="title-sm" gutterBottom>
+                Examples
+            </Typography>
             <CodeWrapper>
                 <Stack direction="column" gap={1}>
-                    {examples.map((x) =>
+                    {examples.map((x) => (
                         <Typography level="code" textColor="text.secondary">
                             ?{name} {x}
                         </Typography>
-                    )}
+                    ))}
                 </Stack>
             </CodeWrapper>
         </Box>
-    )
+    );
 }
 
-function CommandDisplaySubCommands({ commands }: { commands: Command[]; }) {
+function CommandDisplaySubCommands({ commands }: { commands: Command[] }) {
     return (
         <AccordionGroup size="lg">
             <Accordion>
@@ -132,9 +142,9 @@ function CommandDisplaySubCommands({ commands }: { commands: Command[]; }) {
                     <Stack direction="row" alignItems="stretch" className="gap-3 md:gap-8">
                         <Line />
                         <Stack sx={{ pt: 2, flex: "1" }} gap={2} alignItems="stretch">
-                            {commands.map((subCommand) =>
+                            {commands.map((subCommand) => (
                                 <CommandDisplay command={subCommand} isSubCommand />
-                            )}
+                            ))}
                         </Stack>
                     </Stack>
                 </AccordionDetails>

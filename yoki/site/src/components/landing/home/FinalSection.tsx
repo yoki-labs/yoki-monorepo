@@ -45,7 +45,7 @@ export default function FinalSection() {
                         </CurvyMask>
                         {/* TODO: Change this whole grid to be SVG and use components for stars inside that SVG */}
                         <DecorationStarStack sx={{ position: "absolute", top: 0, left: 0, mask: "linear-gradient(to bottom right, white 0%, transparent 65%)" }}>
-                            <StarSvg top={0} left={0} column={1}/>
+                            <StarSvg top={0} left={0} column={1} />
                             <StarSvg top={60} left={0} column={2} />
                             <StarSvg top={13} left={12} column={3} />
                             <StarSvg top={60} left={30} column={4} />
@@ -54,7 +54,7 @@ export default function FinalSection() {
                             <StarSvg top={70} left={40} column={7} />
                             <StarSvg top={10} left={20} column={8} />
 
-                            <StarSvg top={60} left={20} column={1}/>
+                            <StarSvg top={60} left={20} column={1} />
                             <StarSvg top={10} left={45} column={2} />
                             <StarSvg top={40} left={50} column={3} />
                             <StarSvg top={90} left={0} column={4} />
@@ -63,7 +63,7 @@ export default function FinalSection() {
                             <StarSvg top={0} left={40} column={7} />
                             <StarSvg top={30} left={0} column={8} />
 
-                            <StarSvg top={20} left={10} column={1}/>
+                            <StarSvg top={20} left={10} column={1} />
                             <StarSvg top={0} left={30} column={2} />
                             <StarSvg top={60} left={20} column={3} />
                             <StarSvg top={40} left={10} column={4} />
@@ -75,7 +75,9 @@ export default function FinalSection() {
                     </CardDecorationContainer>
                 </CardDecorationWrapper>
                 <Stack sx={{ alignItems: "center", zIndex: 2 }}>
-                    <Typography level="h2" gutterBottom>Have hassle-free moderation today</Typography>
+                    <Typography level="h2" gutterBottom>
+                        Have hassle-free moderation today
+                    </Typography>
                     <Link href="/invite">
                         <Button size="lg" startDecorator={<FontAwesomeIcon icon={faGuilded} />} variant="solid">
                             Add Yoki to your server
@@ -87,11 +89,11 @@ export default function FinalSection() {
     );
 }
 
-function StarSvg({ top, left, column }: { top?: number, left?: number, column?: number }) {
+function StarSvg({ top, left, column }: { top?: number; left?: number; column?: number }) {
     return (
         <svg viewBox="0 0 16 16" style={{ width: 20, height: 20, marginTop: top, marginLeft: left, gridColumn: column }} fill="white">
             <ellipse cx="8" cy="8" rx="1.5" ry="8" />
             <ellipse cx="8" cy="8" rx="8" ry="1.5" />
         </svg>
-    )
+    );
 }

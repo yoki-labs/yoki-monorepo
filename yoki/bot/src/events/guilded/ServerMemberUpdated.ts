@@ -25,8 +25,9 @@ export default {
                 fields: [
                     {
                         name: "Nickname Changes",
-                        value: `${oldMember ? (oldMember.nickname ? inlineQuote(oldMember.nickname) : "No nickname") : "Unknown nickname"} -> ${nickname ? inlineQuote(nickname) : "No nickname"
-                            }`,
+                        value: `${oldMember ? (oldMember.nickname ? inlineQuote(oldMember.nickname) : "No nickname") : "Unknown nickname"} -> ${
+                            nickname ? inlineQuote(nickname) : "No nickname"
+                        }`,
                     },
                 ],
                 occurred: new Date().toISOString(),

@@ -25,9 +25,7 @@ export default function LayoutWrapper(props: LayoutProps) {
                 <LayoutTopbar onServerChange={onServerChange} currentServer={currentServer} servers={servers} user={user}>
                     {topbarPrefix}
                 </LayoutTopbar>
-                <Box className="flex flex-row grow overflow-hidden">
-                    { children }
-                </Box>
+                <Box className="flex flex-row grow overflow-hidden">{children}</Box>
             </div>
         </>
     );

@@ -13,10 +13,10 @@ export default function InfoText({ icon, name, children }: Props) {
     return (
         <Stack gap={1} direction="row" alignItems="center">
             <FontAwesomeIcon icon={icon} />
-            <Typography textColor="text.primary" fontWeight="bolder">{name}:</Typography>
-            <Typography textColor="text.secondary">
-                {children}
+            <Typography textColor="text.primary" fontWeight="bolder">
+                {name}:
             </Typography>
+            <Typography textColor="text.secondary">{children}</Typography>
         </Stack>
-    )
+    );
 }

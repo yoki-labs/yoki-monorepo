@@ -9,12 +9,15 @@ export interface BaseAppealsSessionProps {
     }>;
 }
 
-export type AppealsSessionProps = (BaseAppealsSessionProps & {
-    code: "NOT_FOUND" | "UNAVAILABLE" | "NOT_BANNED";
-}) | (BaseAppealsSessionProps & {
-    code: "TOO_FAST";
-    elapsedTime: number;
-}) | (BaseAppealsSessionProps & {
-    code: null;
-    server: ServerPayload;
-});
+export type AppealsSessionProps =
+    | (BaseAppealsSessionProps & {
+          code: "NOT_FOUND" | "UNAVAILABLE" | "NOT_BANNED";
+      })
+    | (BaseAppealsSessionProps & {
+          code: "TOO_FAST";
+          elapsedTime: number;
+      })
+    | (BaseAppealsSessionProps & {
+          code: null;
+          server: ServerPayload;
+      });

@@ -24,8 +24,7 @@ export class ContentFilterUtil extends BaseFilterUtil {
     async scanMessageMedia(serverId: string, channelId: string, content: string, userId: string, onDelete: () => Promise<unknown>): Promise<boolean> {
         // const { serverId, channelId, content, authorId: userId, id: messageId } = message;
         const matches = [...content.matchAll(IMAGE_REGEX)];
-        if (!matches.length)
-            return false;
+        if (!matches.length) return false;
 
         void this.client.amp.logEvent({
             event_type: "MESSAGE_MEDIA_SCAN",
@@ -53,8 +52,7 @@ export class ContentFilterUtil extends BaseFilterUtil {
                         undefined,
                         { isPrivate: true }
                     );
-                } catch (e) {
-                }
+                } catch (e) {}
 
                 return true;
             }
@@ -92,8 +90,7 @@ export class ContentFilterUtil extends BaseFilterUtil {
         // Get all the enabled presets in this server
         const enabledPresets = (presets ?? (await this.client.dbUtil.getEnabledPresets(serverId))).filter((x) => x.preset in this.presets);
 
-        if (!bannedWordsList.length && !enabledPresets.length)
-            return false;
+        if (!bannedWordsList.length && !enabledPresets.length) return false;
         void this.client.amp.logEvent({ event_type: "MESSAGE_TEXT_SCAN", user_id: userId, event_properties: { serverId: server.serverId } });
 
         // Sanitize data into standard form
@@ -129,8 +126,7 @@ export class ContentFilterUtil extends BaseFilterUtil {
         const triggeredWord = (ifTriggersCustom ?? ifTriggersPreset) as ContentFilterScan | undefined;
 
         // If the content does not violate any filters or presets, ignore
-        if (!triggeredWord)
-            return false;
+        if (!triggeredWord) return false;
 
         // // By now, we assume the member has violated a filter or preset
         // // Get the member from cache or API
@@ -143,8 +139,7 @@ export class ContentFilterUtil extends BaseFilterUtil {
         const modRoles = await this.client.prisma.role.findMany({ where: { serverId } });
 
         // If the server doesn't have "filterOnMods" setting enabled and a mod violates the filter/preset, ignore
-        if (!server.filterOnMods && modRoles.some((modRole) => roleIds.includes(modRole.roleId)))
-            return false;
+        if (!server.filterOnMods && modRoles.some((modRole) => roleIds.includes(modRole.roleId))) return false;
 
         // Check whether this member exceeds the infraction threshold for this server
         const exceededThreshold = await this.getMemberExceedsThreshold(server, userId, triggeredWord.infractionPoints);
@@ -186,10 +181,8 @@ export class ContentFilterUtil extends BaseFilterUtil {
 
         // Execute the punishing action. If this is a threshold exceeding, execute the punishment associated with the exceeded threshold
         // Otherwise, execute the action associated with this specific filter word or preset entry
-        if (exceededThreshold)
-            await this.severityAction[exceededThreshold](userId, server, channelId, filteredContent, null)
-        else
-            await this.severityAction[triggeredWord.severity]?.(userId, server, channelId, filteredContent, null);
+        if (exceededThreshold) await this.severityAction[exceededThreshold](userId, server, channelId, filteredContent, null);
+        else await this.severityAction[triggeredWord.severity]?.(userId, server, channelId, filteredContent, null);
 
         return true;
     }
@@ -204,10 +197,10 @@ export class ContentFilterUtil extends BaseFilterUtil {
         return contentFilter.matching === FilterMatching.WORD
             ? phrase === contentFilter.content
             : contentFilter.matching === FilterMatching.INFIX
-                ? phrase.includes(contentFilter.content)
-                : contentFilter.matching === FilterMatching.POSTFIX
-                    ? phrase.endsWith(contentFilter.content)
-                    : phrase.startsWith(contentFilter.content);
+            ? phrase.includes(contentFilter.content)
+            : contentFilter.matching === FilterMatching.POSTFIX
+            ? phrase.endsWith(contentFilter.content)
+            : phrase.startsWith(contentFilter.content);
     }
 
     override onUserWarn(userId: string, _serv: Server, channelId: string | null, filteredContent: FilteredContent) {

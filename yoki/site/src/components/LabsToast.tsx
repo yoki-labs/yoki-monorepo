@@ -7,7 +7,7 @@ type Props = {
     toast: Toast;
 };
 
-const infoByToastType: Record<ToastType, { icon: IconDefinition, color: ColorPaletteProp }> = {
+const infoByToastType: Record<ToastType, { icon: IconDefinition; color: ColorPaletteProp }> = {
     success: { icon: faCheckCircle, color: "success" },
     error: { icon: faTimesCircle, color: "danger" },
     blank: { icon: faInfoCircle, color: "primary" },
@@ -23,14 +23,12 @@ export default function LabsToast({ toast: currentToast }: Props) {
             <Stack direction="row" alignItems="center" gap={4}>
                 <FontAwesomeIcon icon={icon} />
                 <Box>
-                    <>
-                        {currentToast.message}
-                    </>
+                    <>{currentToast.message}</>
                 </Box>
                 <IconButton color={color} onClick={() => toast.dismiss(currentToast.id)}>
                     <FontAwesomeIcon icon={faTimes} />
                 </IconButton>
             </Stack>
         </Alert>
-    )
+    );
 }

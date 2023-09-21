@@ -12,8 +12,7 @@ import { appealWaitingTime } from "../../../utils/appealUtil";
 
 const PostAppealRoute = async (req: NextApiRequest, res: NextApiResponse) => {
     // Has to be allowed method; this is the only method available
-    if (req.method !== "POST")
-        return res.status(405).send("");
+    if (req.method !== "POST") return res.status(405).send("");
 
     const serverId = req.query.serverId as string;
 
@@ -24,15 +23,12 @@ const PostAppealRoute = async (req: NextApiRequest, res: NextApiResponse) => {
 
     // Don't know who is appealing (need a Guilded login)
     const session = await unstable_getServerSession(req, res, authOptions);
-    if (!session?.user.id)
-        return res.status(401).json({ error: true, message: "Must be logged in to use this function." });
+    if (!session?.user.id) return res.status(401).json({ error: true, message: "Must be logged in to use this function." });
 
     // Server needs to exist and have appeals enabled
     const server = await prisma.server.findFirst({ where: { serverId } });
-    if (!server)
-        return res.status(404).json({ error: true, message: "Invalid server ID." });
-    else if (!(server.appealsEnabled && server.appealChannelId))
-        return res.status(403).json({ error: true, message: "Server does not have appeals enabled." });
+    if (!server) return res.status(404).json({ error: true, message: "Invalid server ID." });
+    else if (!(server.appealsEnabled && server.appealChannelId)) return res.status(403).json({ error: true, message: "Server does not have appeals enabled." });
 
     const memberBan = await rest.router.memberBans
         .serverMemberBanRead({ serverId: server.serverId, userId: session.user.id })
@@ -40,22 +36,20 @@ const PostAppealRoute = async (req: NextApiRequest, res: NextApiResponse) => {
         .catch(() => null);
 
     // No purpose in appealing
-    if (!memberBan)
-        return res.status(403).json({ error: true, message: "You are not banned from this server." });
+    if (!memberBan) return res.status(403).json({ error: true, message: "You are not banned from this server." });
 
-    const previousAppeals = (await prisma.appeal.findMany({
+    const previousAppeals = await prisma.appeal.findMany({
         orderBy: [{ createdAt: "desc" }],
         where: {
             serverId,
             creatorId: session.user.id!,
         },
-    }));
+    });
 
     const elapsedTime = Date.now() - (previousAppeals[0]?.createdAt.getTime() ?? 0);
 
     // 5 days haven't been waited through
-    if (elapsedTime < appealWaitingTime)
-        return res.status(403).json({ error: true, message: "It's too early to appeal again." });
+    if (elapsedTime < appealWaitingTime) return res.status(403).json({ error: true, message: "It's too early to appeal again." });
 
     try {
         await prisma.appeal.create({ data: { content, serverId: server.serverId, creatorId: session.user.id } });
@@ -77,8 +71,8 @@ const PostAppealRoute = async (req: NextApiRequest, res: NextApiResponse) => {
                                 name: "Additional info",
                                 value: stripIndents`
                                     **Last banned:** ${formatDate(new Date(memberBan.createdAt), server.timezone)} (EST)
-                                `
-                            }
+                                `,
+                            },
                         ])
                         .toJSON(),
                 ],

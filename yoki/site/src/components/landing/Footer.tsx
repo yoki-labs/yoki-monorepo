@@ -15,7 +15,9 @@ export default function Footer() {
             <Stack className="direction-column gap-10 md:direction-row md:gap-0">
                 <Box sx={{ flex: "1" }}>
                     <Typography level="h2">
-                        <Typography component="span" textColor="primary.500">Yoki</Typography>
+                        <Typography component="span" textColor="primary.500">
+                            Yoki
+                        </Typography>
                         Labs
                     </Typography>
                 </Box>
@@ -79,9 +81,7 @@ export default function Footer() {
             </Stack>
             <Box sx={{ mt: 2 }}>
                 <Typography level="body-sm">
-                    © 2022{" "}
-                    <Link href="/">Yoki Labs</Link>
-                    . All Rights Reserved.
+                    © 2022 <Link href="/">Yoki Labs</Link>. All Rights Reserved.
                 </Typography>
             </Box>
         </FooterWrapper>

@@ -8,19 +8,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
 
 const tierPerks: Record<PremiumType | "Copper", string[]> = {
-    Copper: [
-        "You allow us to continue doing what we love",
-        "Faster & more responsive support",
-    ],
-    [PremiumType.Silver]: [
-        "Copper tier perks",
-        "Automatically delete NSFW images (if anti-NSFW module is enabled)",
-        "Early access to features",
-    ],
-    [PremiumType.Gold]: [
-        "Copper & Silver tier perks",
-        "All the future premium perks"
-    ],
+    Copper: ["You allow us to continue doing what we love", "Faster & more responsive support"],
+    [PremiumType.Silver]: ["Copper tier perks", "Automatically delete NSFW images (if anti-NSFW module is enabled)", "Early access to features"],
+    [PremiumType.Gold]: ["Copper & Silver tier perks", "All the future premium perks"],
 };
 
 export default class PremiumPage extends React.Component<DashboardPageProps> {
@@ -33,7 +23,7 @@ export default class PremiumPage extends React.Component<DashboardPageProps> {
 
         return (
             <>
-                { !serverConfig.premium && <Typography level="body-md">You have not subscribed yet.</Typography> }
+                {!serverConfig.premium && <Typography level="body-md">You have not subscribed yet.</Typography>}
                 <Box className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xlg:grid-cols-3 gap-7">
                     <PremiumTier
                         subscribedIconClassName="from-rose-500 to-orange-500"
@@ -41,7 +31,7 @@ export default class PremiumPage extends React.Component<DashboardPageProps> {
                         tier={"Copper"}
                         price={5}
                         perks={tierPerks.Copper}
-                        />
+                    />
                     <PremiumTier
                         subscribedIconClassName="from-cyan-500 to-purple-400"
                         subscribed={serverConfig.premium !== null}
@@ -49,7 +39,7 @@ export default class PremiumPage extends React.Component<DashboardPageProps> {
                         price={10}
                         // perks={tierPerks.Copper.concat(...tierPerks.Silver)}
                         perks={tierPerks.Silver}
-                        />
+                    />
                     <PremiumTier
                         subscribedIconClassName="from-red-400 to-yellow-500"
                         subscribed={serverConfig.premium === PremiumType.Gold}
@@ -57,7 +47,7 @@ export default class PremiumPage extends React.Component<DashboardPageProps> {
                         price={20}
                         // perks={tierPerks.Copper.concat(...tierPerks.Silver).concat(...tierPerks.Gold)}
                         perks={tierPerks.Gold}
-                        />
+                    />
                 </Box>
             </>
         );
@@ -66,7 +56,7 @@ export default class PremiumPage extends React.Component<DashboardPageProps> {
 
 type PremiumTierProps = {
     tier: PremiumType | "Copper";
-    subscribedIconClassName: string,
+    subscribedIconClassName: string;
     subscribed: boolean;
     price: number;
     perks: string[];
@@ -80,9 +70,15 @@ export function PremiumTier(props: PremiumTierProps) {
             <Box>
                 <Stack direction="row" alignItems="center" gap={2}>
                     <Typography level="h2">{tier?.toString() ?? "Free"}</Typography>
-                    { subscribed && <Chip size="lg" variant="outlined" color="primary">Active</Chip> }
+                    {subscribed && (
+                        <Chip size="lg" variant="outlined" color="primary">
+                            Active
+                        </Chip>
+                    )}
                 </Stack>
-                <Typography level="h4" textColor="text.secondary">${price.toFixed(2)}</Typography>
+                <Typography level="h4" textColor="text.secondary">
+                    ${price.toFixed(2)}
+                </Typography>
             </Box>
             <Box sx={{ flex: "1", mt: 3 }}>
                 <Typography level="title-md">Tier perks</Typography>
@@ -92,14 +88,18 @@ export function PremiumTier(props: PremiumTierProps) {
                             <ListItemDecorator>
                                 <FontAwesomeIcon icon={faCheckCircle} />
                             </ListItemDecorator>
-                            <Typography lineHeight={1.25} level="body-md">{perk}</Typography>
+                            <Typography lineHeight={1.25} level="body-md">
+                                {perk}
+                            </Typography>
                         </ListItem>
                     ))}
                 </List>
             </Box>
             <Box sx={{ mt: 3, width: "100%" }}>
                 <Link href="/premium" style={{ textDecoration: "none" }}>
-                    <Button variant="outlined" disabled={subscribed} sx={{ width: "100%" }}>Subscribe</Button>
+                    <Button variant="outlined" disabled={subscribed} sx={{ width: "100%" }}>
+                        Subscribe
+                    </Button>
                 </Link>
             </Box>
         </LabsIconCard>

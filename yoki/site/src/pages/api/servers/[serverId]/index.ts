@@ -13,11 +13,17 @@ const MAP_DEFAULT_SEVERITY = [Severity.WARN, null];
 
 const BOOLEAN_PROPERTIES: (keyof Server)[] = [
     // Modules Automod
-    "filterEnabled", "filterInvites", "scanNSFW", "antiHoistEnabled",
+    "filterEnabled",
+    "filterInvites",
+    "scanNSFW",
+    "antiHoistEnabled",
     // Modules Server entry & support
-    "modmailEnabled", "antiRaidEnabled", "appealsEnabled",
+    "modmailEnabled",
+    "antiRaidEnabled",
+    "appealsEnabled",
     // Other Boolean properties
-    "filterOnMods", "urlFilterIsWhitelist",
+    "filterOnMods",
+    "urlFilterIsWhitelist",
 ];
 
 const availableSeverity = Object.keys(Severity);
@@ -29,11 +35,9 @@ const serverConfigRoute = createServerRoute({
 
         // ///// Body validity check
         // Prefix can be string or unset
-        if (isUnsettablePropertyTypeInvalid(body.prefix, "string"))
-            return getErrorResponse(res, "prefix", "null or string");
+        if (isUnsettablePropertyTypeInvalid(body.prefix, "string")) return getErrorResponse(res, "prefix", "null or string");
         // Timezones can be valid timezones or unset
-        else if (isEnumPropertyInvalid(body.timezone, timezones))
-            return getErrorResponse(res, "timezone", "null or string");
+        else if (isEnumPropertyInvalid(body.timezone, timezones)) return getErrorResponse(res, "timezone", "null or string");
         // Expect number between 2-100
         else if (isPropertyTypeInvalid(body.spamFrequency, "number") || body.spamFrequency < 2 || body.spamFrequency > 100)
             return getErrorResponse(res, "spamFrequency", "number between 2 and 100");
@@ -45,8 +49,7 @@ const serverConfigRoute = createServerRoute({
         else if (isPropertyTypeInvalid(body.linkInfractionPoints, "number") || body.linkInfractionPoints < 0 || body.linkInfractionPoints > 10000)
             return getErrorResponse(res, "linkInfractionPoints", "number between 0 and 10'000");
         // Severity
-        else if (isEnumPropertyInvalid(body.linkSeverity, availableSeverity))
-            return getErrorResponse(res, "linkSeverity", "severity");
+        else if (isEnumPropertyInvalid(body.linkSeverity, availableSeverity)) return getErrorResponse(res, "linkSeverity", "severity");
 
         // Modules
         const data: Partial<Server> = {
@@ -64,8 +67,7 @@ const serverConfigRoute = createServerRoute({
 
         // Remove repetition
         for (const moduleProp of BOOLEAN_PROPERTIES) {
-            if (isPropertyTypeInvalid(body[moduleProp], "boolean"))
-                return getErrorResponse(res, moduleProp, "boolean");
+            if (isPropertyTypeInvalid(body[moduleProp], "boolean")) return getErrorResponse(res, moduleProp, "boolean");
 
             // It is fine
             data[moduleProp] = body[moduleProp];
@@ -82,8 +84,7 @@ const serverConfigRoute = createServerRoute({
     },
 });
 
-const getErrorResponse = (res: NextApiResponse, name: string, type: string) =>
-    res.status(400).json({ error: true, message: `Invalid ${name}. Expected ${type}` });
+const getErrorResponse = (res: NextApiResponse, name: string, type: string) => res.status(400).json({ error: true, message: `Invalid ${name}. Expected ${type}` });
 
 type AllowedValues = "string" | "number" | "boolean" | "object";
 
@@ -95,10 +96,8 @@ function isPropertyTypeInvalid<T>(value: T, expectedType: AllowedValues) {
 }
 
 // Null is set back to default
-const isUnsettablePropertyTypeInvalid = <T>(value: T, expectedType: AllowedValues) =>
-    value !== null && isPropertyTypeInvalid(value, expectedType);
+const isUnsettablePropertyTypeInvalid = <T>(value: T, expectedType: AllowedValues) => value !== null && isPropertyTypeInvalid(value, expectedType);
 
-const isEnumPropertyInvalid = <T extends string>(value: unknown, expectedValues: T[]) =>
-    value !== null && typeof value !== "undefined" && !expectedValues.includes(value as T);
+const isEnumPropertyInvalid = <T extends string>(value: unknown, expectedValues: T[]) => value !== null && typeof value !== "undefined" && !expectedValues.includes(value as T);
 
 export default serverConfigRoute;

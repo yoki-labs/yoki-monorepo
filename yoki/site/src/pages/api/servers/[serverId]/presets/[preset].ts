@@ -3,9 +3,7 @@ import { Preset, Severity } from "@prisma/client";
 import prisma from "../../../../../prisma";
 import createServerRoute from "../../../../../utils/route";
 
-const allowedPresets = [
-    "profanity", "sexual", "slurs", "sexual-links"
-];
+const allowedPresets = ["profanity", "sexual", "slurs", "sexual-links"];
 const allowedSeverities = Object.keys(Severity);
 
 const serverPresetRoute = createServerRoute({
@@ -13,26 +11,23 @@ const serverPresetRoute = createServerRoute({
         const { preset } = req.query;
 
         // Check query
-        if (!allowedPresets.includes(preset as string))
-            return res.status(400).json({ error: true, message: "Preset must be one of the allowed preset names." });
+        if (!allowedPresets.includes(preset as string)) return res.status(400).json({ error: true, message: "Preset must be one of the allowed preset names." });
 
-        const presets: Preset[] = await prisma.preset
-            .findMany({
-                where: {
-                    serverId,
-                }
-            });
+        const presets: Preset[] = await prisma.preset.findMany({
+            where: {
+                serverId,
+            },
+        });
 
         // Can't enable it; it's enabled
         const existingPreset = presets.find((x) => x.preset === preset);
-        if (existingPreset)
-            return res.status(404).json({ error: true, message: "Preset already exists." });
+        if (existingPreset) return res.status(404).json({ error: true, message: "Preset already exists." });
 
         await prisma.preset.create({
             data: {
                 serverId,
                 preset: preset as string,
-            }
+            },
         });
 
         return res.status(200).json({
@@ -41,15 +36,14 @@ const serverPresetRoute = createServerRoute({
                 preset,
                 severity: null,
                 infractionPoints: null,
-            }
+            },
         });
     },
     async PATCH(req, res, _session, { serverId }, _member) {
         const { preset } = req.query;
 
         // Check query
-        if (!allowedPresets.includes(preset as string))
-            return res.status(400).json({ error: true, message: "Preset must be one of the allowed preset names." });
+        if (!allowedPresets.includes(preset as string)) return res.status(400).json({ error: true, message: "Preset must be one of the allowed preset names." });
 
         // Type-check body
         const { severity, infractionPoints } = req.body;
@@ -59,17 +53,15 @@ const serverPresetRoute = createServerRoute({
         else if (typeof severity !== "string" || !allowedSeverities.includes(severity))
             return res.status(400).json({ error: true, message: "Expected severity to be a severity type." });
 
-        const presets: Preset[] = await prisma.preset
-            .findMany({
-                where: {
-                    serverId,
-                }
-            });
+        const presets: Preset[] = await prisma.preset.findMany({
+            where: {
+                serverId,
+            },
+        });
 
         const existingPreset = presets.find((x) => x.preset === preset);
 
-        if (!existingPreset)
-            return res.status(404).json({ error: true, message: "No such preset found." });
+        if (!existingPreset) return res.status(404).json({ error: true, message: "No such preset found." });
 
         await prisma.preset.update({
             where: {
@@ -78,37 +70,34 @@ const serverPresetRoute = createServerRoute({
             data: {
                 infractionPoints,
                 severity: severity as Severity,
-            }
+            },
         });
-        
+
         return res.status(200).json({
             preset: {
                 serverId: existingPreset.serverId,
                 preset: existingPreset.preset,
                 severity,
                 infractionPoints,
-            }
+            },
         });
     },
     async DELETE(req, res, _session, { serverId }, _member) {
         const { preset } = req.query;
-        
-        // Check query
-        if (!allowedPresets.includes(preset as string))
-            return res.status(400).json({ error: true, message: "Preset must be one of the allowed preset names." });
 
-        const presets: Preset[] = await prisma.preset
-            .findMany({
-                where: {
-                    serverId,
-                }
-            });
-        
+        // Check query
+        if (!allowedPresets.includes(preset as string)) return res.status(400).json({ error: true, message: "Preset must be one of the allowed preset names." });
+
+        const presets: Preset[] = await prisma.preset.findMany({
+            where: {
+                serverId,
+            },
+        });
+
         const existingPreset = presets.find((x) => x.preset === preset);
-        
-        if (!existingPreset)
-            return res.status(404).json({ error: true, message: "No such preset found." });
-        
+
+        if (!existingPreset) return res.status(404).json({ error: true, message: "No such preset found." });
+
         await prisma.preset.delete({
             where: {
                 id: existingPreset.id,

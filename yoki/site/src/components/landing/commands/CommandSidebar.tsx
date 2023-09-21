@@ -11,13 +11,13 @@ export default function CommandSidebar({ categories, activeCategory }: Props) {
     return (
         <Box sx={{ width: 300, maxWidth: 300, fontSize: 14, pt: 0, pb: 5 }} className={`h-full overflow-y-auto overflow-x-hidden`}>
             <List variant="plain">
-                { Object.keys(categories).map((category) =>
+                {Object.keys(categories).map((category) => (
                     <Link href={`/commands/${category}`} style={{ textDecoration: "none" }}>
                         <ListItemButton key={`command-category-${category}`} selected={category === activeCategory}>
-                            { categories[category] }
+                            {categories[category]}
                         </ListItemButton>
                     </Link>
-                )}
+                ))}
             </List>
         </Box>
     );

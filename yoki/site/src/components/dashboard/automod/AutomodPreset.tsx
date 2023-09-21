@@ -34,14 +34,13 @@ export default class AutomodPreset extends React.Component<Props, State> {
 
     async togglePreset(method: string) {
         const { serverId, presetName } = this.props;
-        
+
         return fetch(`/api/servers/${serverId}/presets/${presetName}`, {
             method,
             headers: { "content-type": "application/json" },
-        })
-            .catch(notifyFetchError.bind(null, "Error while toggling presets"));
+        }).catch(notifyFetchError.bind(null, "Error while toggling presets"));
     }
-    
+
     async onPresetUpdate(severity: Severity, infractionPoints: number) {
         const { serverId, presetName } = this.props;
 
@@ -49,8 +48,7 @@ export default class AutomodPreset extends React.Component<Props, State> {
             method: "PATCH",
             headers: { "content-type": "application/json" },
             body: JSON.stringify({ severity, infractionPoints }),
-        })
-            .catch(notifyFetchError.bind(null, "Error while updating preset data"));
+        }).catch(notifyFetchError.bind(null, "Error while updating preset data"));
     }
 
     render() {
@@ -82,9 +80,9 @@ export default class AutomodPreset extends React.Component<Props, State> {
                                         disabled: !isEnabled,
                                         min: 0,
                                         max: 10000,
-                                    }
-                                ]
-                            }
+                                    },
+                                ],
+                            },
                         ]}
                         onSubmit={({ severity, infractionPoints }) => this.onPresetUpdate(severity as Severity, infractionPoints as number)}
                     >

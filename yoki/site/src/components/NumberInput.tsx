@@ -31,16 +31,12 @@ export default class NumberInput extends React.Component<Props, State> {
         const { form, field } = this.props;
         const { max, min } = field;
 
-        if (target.validity.badInput)
-            return this.setState({ isInvalid: true });
+        if (target.validity.badInput) return this.setState({ isInvalid: true });
 
         // Just set the valid value instead of erroring out
-        if (typeof max === "number" && target.valueAsNumber > max)
-            form.setValue(field, max);
-        else if (typeof min === "number" && target.valueAsNumber < min)
-            form.setValue(field, min);
-        else
-            form.setValue(field, target.valueAsNumber);
+        if (typeof max === "number" && target.valueAsNumber > max) form.setValue(field, max);
+        else if (typeof min === "number" && target.valueAsNumber < min) form.setValue(field, min);
+        else form.setValue(field, target.valueAsNumber);
 
         this.setState({ isInvalid: false });
     }
@@ -108,7 +104,7 @@ export default class NumberInput extends React.Component<Props, State> {
                             </Stack>
                         </>
                     }
-                    />
+                />
             </>
         );
     }

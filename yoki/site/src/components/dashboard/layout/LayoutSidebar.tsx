@@ -28,30 +28,30 @@ export function LayoutSidebar({ page, serverConfig, menuToggled, currentServer, 
     // const [currentPage, setModule] = useAtom(navbarAtom);
     const showStateClass = menuToggled ? "" : " md:block hidden";
 
-    const categorizedPages =
-        Object
-            .values(DashboardPageCategory)
-            .filter((category) => typeof category === "number")
-            .map((category) => ({
-                category: category as DashboardPageCategory,
-                items: dashboardPageList.filter((page) => page.category === category)
-            }));
+    const categorizedPages = Object.values(DashboardPageCategory)
+        .filter((category) => typeof category === "number")
+        .map((category) => ({
+            category: category as DashboardPageCategory,
+            items: dashboardPageList.filter((page) => page.category === category),
+        }));
 
     return (
         <Box sx={{ width: 300, maxWidth: 300, fontSize: 14, px: 4.3, pt: 0, pb: 5 }} className={`h-full overflow-y-auto overflow-x-hidden ${showStateClass}`}>
             <Box sx={{ mb: 5 }} className="block md:hidden">
                 <ServerSelector onChange={onServerChange} defaultValue={currentServer} servers={servers} />
             </Box>
-            { categorizedPages.map(({ category, items }) =>
+            {categorizedPages.map(({ category, items }) => (
                 <section className="pb-5" key={`sidebar-category-${category}`}>
-                    <Typography level="h1" textColor="text.tertiary" fontSize="sm">{categoryNames[category]}</Typography>
+                    <Typography level="h1" textColor="text.tertiary" fontSize="sm">
+                        {categoryNames[category]}
+                    </Typography>
                     <List variant="plain">
                         {items.map((item) => (
                             <LayoutSidebarTab key={item.id} serverId={serverConfig.serverId} item={item} isActive={page === item.id} />
                         ))}
                     </List>
                 </section>
-            )}
+            ))}
         </Box>
     );
 }

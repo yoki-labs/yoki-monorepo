@@ -27,15 +27,14 @@ type BaseSessionProps = {
     currentServer: GuildedServer;
 };
 type SessionProps =
-    (BaseSessionProps & {
-        code: null;
-        serverConfig: SanitizedServer;
-        page: string;
-    }) |
-    (BaseSessionProps & {
-        code: "NOT_FOUND" | "UNPERMITTED" | "NO_FLAG",
-    })
-;
+    | (BaseSessionProps & {
+          code: null;
+          serverConfig: SanitizedServer;
+          page: string;
+      })
+    | (BaseSessionProps & {
+          code: "NOT_FOUND" | "UNPERMITTED" | "NO_FLAG";
+      });
 
 export const getServerSideProps: GetServerSideProps = async (ctx): Promise<GetServerSidePropsResult<SessionProps>> => {
     const session = await getServerSession(ctx.req, ctx.res, authOptions);
@@ -54,44 +53,40 @@ export const getServerSideProps: GetServerSideProps = async (ctx): Promise<GetSe
     // Not in that server; cannot manage it
     if (!referencedServer) return { redirect: { destination: `/dashboard`, permanent: false } };
 
-    const serverInDb = (await prisma.server.findMany({
-        where: {
-            serverId: referencedServer.id,
-        }
-    }))[0];
-    
+    const serverInDb = (
+        await prisma.server.findMany({
+            where: {
+                serverId: referencedServer.id,
+            },
+        })
+    )[0];
+
     const user = { name: session.user.name, avatar: session.user.avatar };
 
     // No server found
-    if (!serverInDb)
-        return { props: { code: "NOT_FOUND", servers, user, currentServer: referencedServer, } };
+    if (!serverInDb) return { props: { code: "NOT_FOUND", servers, user, currentServer: referencedServer } };
 
     // If they don't have a proper role to manage the server, then don't allow using dashboard functions
     const member = await rest.router.members
         .serverMemberRead({ serverId: serverInDb.serverId, userId: session.user.id! })
         .then((x) => x.member)
         .catch(() => null);
-    
+
     // Pretend server doesn't exist by also giving 404 instead of 403
     // Not much use for privacy, but just giving less info I guess
-    if (!member)
-        return { props: { code: "NOT_FOUND", servers, user, currentServer: referencedServer, } };
-    else if (!serverInDb.flags.includes("EARLY_ACCESS"))
-        return { props: { code: "NO_FLAG", servers, user, currentServer: referencedServer, } };
+    if (!member) return { props: { code: "NOT_FOUND", servers, user, currentServer: referencedServer } };
+    else if (!serverInDb.flags.includes("EARLY_ACCESS")) return { props: { code: "NO_FLAG", servers, user, currentServer: referencedServer } };
 
     const adminRoles = await prisma.role
         .findMany({
             where: {
                 serverId: serverInDb.serverId,
                 type: RoleType.ADMIN,
-            }
+            },
         })
-        .then((roles) =>
-            roles.map((role) => role.roleId)
-        );
+        .then((roles) => roles.map((role) => role.roleId));
 
-    if (!(member?.isOwner || member?.roleIds.find((x) => adminRoles.includes(x))))
-        return { props: { code: "UNPERMITTED", servers, user, currentServer: referencedServer!, } };
+    if (!(member?.isOwner || member?.roleIds.find((x) => adminRoles.includes(x)))) return { props: { code: "UNPERMITTED", servers, user, currentServer: referencedServer! } };
 
     return {
         props: {
@@ -101,7 +96,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx): Promise<GetSe
             currentServer: referencedServer!,
             serverConfig: sanitizeServer(serverInDb),
             page: page as string,
-        }
+        },
     };
 };
 

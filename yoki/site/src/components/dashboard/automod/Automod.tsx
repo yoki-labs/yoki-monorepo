@@ -12,7 +12,7 @@ type State = {
     isLoaded: boolean;
     isMounted: boolean;
     presets: SanitizedPreset[];
-}
+};
 
 export default class AutomodPage extends React.Component<DashboardPageProps, State> {
     constructor(props: DashboardPageProps) {
@@ -22,10 +22,11 @@ export default class AutomodPage extends React.Component<DashboardPageProps, Sta
     }
 
     async componentDidMount(): Promise<void> {
-        const { serverConfig: { serverId } } = this.props;
+        const {
+            serverConfig: { serverId },
+        } = this.props;
 
-        if (this.state.isMounted)
-            return;
+        if (this.state.isMounted) return;
 
         this.setState({ isMounted: false });
 
@@ -34,8 +35,7 @@ export default class AutomodPage extends React.Component<DashboardPageProps, Sta
             headers: { "content-type": "application/json" },
         })
             .then((response) => {
-                if (!response.ok)
-                    throw response;
+                if (!response.ok) throw response;
                 return response.json();
             })
             .then(({ presets }) => this.setState({ isLoaded: true, presets }))
@@ -54,7 +54,9 @@ export default class AutomodPage extends React.Component<DashboardPageProps, Sta
 
         return (
             <>
-                <Typography level="h4" gutterBottom>Auto-moderation</Typography>
+                <Typography level="h4" gutterBottom>
+                    Auto-moderation
+                </Typography>
                 <Box className="grid sm:grid-cols-1 md:grid-cols-2 xlg:grid-cols-3 gap-4">
                     <DashboardModule
                         name="NSFW Image Scan"
@@ -91,46 +93,49 @@ export default class AutomodPage extends React.Component<DashboardPageProps, Sta
                     />
                 </Box>
                 <Box>
-                    <Typography level="title-md" gutterBottom>Presets</Typography>
+                    <Typography level="title-md" gutterBottom>
+                        Presets
+                    </Typography>
                     <Box className="grid sm:grid-cols-1 md:grid-cols-2 xlg:grid-cols-3 gap-4 overflow-x-hidden">
-                        { isLoaded
-                            ? <>
+                        {isLoaded ? (
+                            <>
                                 <AutomodPreset
                                     serverId={serverConfig.serverId}
                                     presetName="profanity"
                                     title="Profanity"
                                     description="Basic swear words such as 'shit' and 'bitch'."
                                     preset={presets.find((x) => x.preset === "profanity")}
-                                    />
+                                />
                                 <AutomodPreset
                                     serverId={serverConfig.serverId}
                                     presetName="slurs"
                                     title="Slurs"
                                     description="Racial and slurs targetted towards groups of individuals."
                                     preset={presets.find((x) => x.preset === "slurs")}
-                                    />
+                                />
                                 <AutomodPreset
                                     serverId={serverConfig.serverId}
                                     presetName="sexual"
                                     title="Sexual"
                                     description="Words relating to sexual activity or objects."
                                     preset={presets.find((x) => x.preset === "sexual")}
-                                    />
+                                />
                                 <AutomodPreset
                                     serverId={serverConfig.serverId}
                                     presetName="sexual-links"
                                     title="Sexual Links"
                                     description="Link of websites relating to sexual activity."
                                     preset={presets.find((x) => x.preset === "sexual-links")}
-                                    />
+                                />
                             </>
-                            : <>
+                        ) : (
+                            <>
                                 <PresetSkeleton />
                                 <PresetSkeleton />
                                 <PresetSkeleton />
                                 <PresetSkeleton />
                             </>
-                        }
+                        )}
                     </Box>
                 </Box>
             </>
@@ -145,32 +150,24 @@ function PresetSkeleton() {
                 <Box sx={{ mb: 2 }}>
                     <Stack direction="row" gap={4}>
                         <Typography component="span" className="grow" fontWeight="md" level="title-md">
-                            <Skeleton animation="wave">
-                                Preset name
-                            </Skeleton>
+                            <Skeleton animation="wave">Preset name</Skeleton>
                         </Typography>
                         <Skeleton animation="wave" width="48px" height="24px" />
                     </Stack>
                     <Typography level="body-md">
-                        <Skeleton animation="wave">
-                            Loading preset description... This should take a second.
-                        </Skeleton>
+                        <Skeleton animation="wave">Loading preset description... This should take a second.</Skeleton>
                     </Typography>
                 </Box>
                 <Stack gap={2} direction="row">
                     <Box>
                         <Typography level="title-md" component="div" sx={{ mb: 1 }}>
-                            <Skeleton animation="wave">
-                                Severity
-                            </Skeleton>
+                            <Skeleton animation="wave">Severity</Skeleton>
                         </Typography>
                         <Skeleton animation="wave" width="132px" height="40px" />
                     </Box>
                     <Box>
                         <Typography level="title-md" component="div" sx={{ mb: 1 }}>
-                            <Skeleton animation="wave">
-                                Infraction points
-                            </Skeleton>
+                            <Skeleton animation="wave">Infraction points</Skeleton>
                         </Typography>
                         <Skeleton animation="wave" width="261px" height="40px" />
                     </Box>

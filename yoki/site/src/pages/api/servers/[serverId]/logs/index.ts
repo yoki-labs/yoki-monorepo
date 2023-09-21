@@ -3,12 +3,11 @@ import createServerRoute from "../../../../../utils/route";
 
 const serverLogsRoute = createServerRoute({
     async GET(_req, res, _session, server, _member) {
-        const logChannels = await prisma.logChannel
-            .findMany({
-                where: {
-                    serverId: server.serverId,
-                }
-            });
+        const logChannels = await prisma.logChannel.findMany({
+            where: {
+                serverId: server.serverId,
+            },
+        });
 
         return res.status(200).json({
             // To get rid of things like tokens and useless information
@@ -17,7 +16,7 @@ const serverLogsRoute = createServerRoute({
                 channelId,
                 type,
                 createdAt,
-            }))
+            })),
         });
     },
 });

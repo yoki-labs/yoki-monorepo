@@ -15,7 +15,11 @@ export function LabsUserCard({ userId }: Props) {
             <Typography fontWeight="bolder" textColor="text.secondary">
                 {isYoki ? "Yoki" : userId}
             </Typography>
-            { isYoki && <Chip variant="outlined" color="primary" size="sm">Automod</Chip> }
+            {isYoki && (
+                <Chip variant="outlined" color="primary" size="sm">
+                    Automod
+                </Chip>
+            )}
         </Stack>
-    )
+    );
 }
