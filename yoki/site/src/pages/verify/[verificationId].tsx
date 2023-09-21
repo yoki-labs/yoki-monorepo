@@ -2,7 +2,7 @@ import type { GetServerSideProps, NextPage } from "next";
 import { useState } from "react";
 import Turnstile from "react-turnstile";
 
-import { LandingPage } from "../../components/landing/LandingPage";
+import LandingPage from "../../components/landing/LandingPage";
 import prisma from "../../prisma";
 
 export interface Props {

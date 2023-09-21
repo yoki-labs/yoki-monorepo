@@ -1,15 +1,15 @@
+import { isHashId } from "@yokilabs/utils";
 import { GetServerSideProps, NextPage } from "next";
 import { getServerSession } from "next-auth";
 import React from "react";
 
+import AppealsPageDisplay from "../../components/appeals/AppealsPageDisplay";
+import LandingPage from "../../components/landing/LandingPage";
+import rest from "../../guilded";
+import prisma from "../../prisma";
+import { AppealsSessionProps, appealWaitingTime } from "../../utils/appealUtil";
 // import WelcomeBanner from "../../partials/WelcomeBanner";
 import { authOptions } from "../api/auth/[...nextauth]";
-import prisma from "../../prisma";
-import rest from "../../guilded";
-import { isHashId } from "@yokilabs/utils";
-import { AppealsSessionProps, appealWaitingTime } from "../../utils/appealUtil";
-import { LandingPage } from "../../components/landing/LandingPage";
-import AppealsPageDisplay from "../../components/appeals/AppealsPageDisplay";
 
 export const getServerSideProps: GetServerSideProps<AppealsSessionProps> = async (ctx) => {
     const session = await getServerSession(ctx.req, ctx.res, authOptions);
@@ -30,7 +30,7 @@ export const getServerSideProps: GetServerSideProps<AppealsSessionProps> = async
             serverId,
         }
     }))[0];
-    
+
     const user = { name: session.user.name, avatar: session.user.avatar };
 
     // No server found
@@ -61,7 +61,7 @@ export const getServerSideProps: GetServerSideProps<AppealsSessionProps> = async
     const previousAppeals = (await prisma.appeal.findMany({
         orderBy: [{ createdAt: "desc" }],
         where: {
-            serverId: serverId,
+            serverId,
             creatorId: session.user.id!,
         },
     }));
