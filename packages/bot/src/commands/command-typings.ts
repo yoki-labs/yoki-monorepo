@@ -36,27 +36,8 @@ export interface BaseCommand<
     execute: (message: Message, args: Record<string, ResolvedArgs>, ctx: TClient, raw: CommandContext<TServer>) => unknown;
 }
 
-<<<<<<< HEAD
 export interface CommandArgument extends CommandArgumentInfo {
     // resolver?: (...content: any[]) => any;
-=======
-export interface CommandArgument {
-    // In-code basics
-    name: string;
-    type: CommandArgType;
-    optional?: boolean;
-
-    // Display
-    display?: string;
-
-    // Type-based
-    separator?: string;
-    max?: number;
-    min?: number;
-    allowDecimal?: boolean;
-    values?: any;
-    resolver?: (...content: any[]) => any;
->>>>>>> main
 }
 export type CommandArgType = "string" | "UUID" | "member" | "number" | "boolean" | "enum" | "time" | "rest" | "enumList" | "channel" | "emote" | "role";
 export type CommandArgValidator = [
