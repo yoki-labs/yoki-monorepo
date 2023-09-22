@@ -1,7 +1,6 @@
 import { Collection } from "@discordjs/collection";
 
 import { Category, Command } from "../commands";
-import Add from "./Add.command";
 import List from "./List.command";
 import Remove from "./Remove.command";
 
@@ -13,7 +12,7 @@ const Tag: Command = {
     aliases: ["snippets", "customcommands", "tags"],
     category: Category.Info,
     parentCommand: true,
-    subCommands: new Collection<string, Command>().set("add", Add).set("remove", Remove).set("list", List),
+    subCommands: new Collection<string, Command>().set("remove", Remove).set("list", List),
     execute: () => void 0,
 };
 
