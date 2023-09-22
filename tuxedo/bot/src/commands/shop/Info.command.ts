@@ -10,7 +10,6 @@ const Info: Command = {
     subName: "info",
     subCommand: true,
     category: Category.Economy,
-    requiredRole: RoleType.ADMIN,
     args: [
         {
             name: "number",

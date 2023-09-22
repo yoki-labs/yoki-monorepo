@@ -14,7 +14,6 @@ const Shop: Command = {
     examples: [],
     parentCommand: true,
     category: Category.Economy,
-    requiredRole: RoleType.ADMIN,
     subCommands: new Collection<string, Command>().set("buy", Buy).set("sell", Sell).set("list", List).set("info", Info),
     execute: () => void 0,
 };

@@ -92,12 +92,10 @@ export function createCommandHandler<
                         user_id: message.createdById,
                         event_properties: { serverId: message.serverId, command: command.name },
                     });
-                    const subCommandName = command.subCommands.firstKey();
-                    const subCommand = command.subCommands.get(subCommandName as string)!;
 
                     // Don't show operator commands to non-operators
                     if (!command.devOnly || ctx.operators.includes(message.createdById)) {
-                        const fields = [...ctx.messageUtil.createSubCommandFields(command.subCommands), ctx.messageUtil.createExampleField(subCommand, prefix)];
+                        const fields = [...ctx.messageUtil.createSubCommandFields(command.subCommands), ctx.messageUtil.createExampleField(command, prefix)];
                         if (module_info) fields.unshift({ name: "Module Status", value: module_info });
 
                         await ctx.messageUtil.replyWithInfo(message, `${inlineCode(command.name.split("-").join(" "))} command`, command.description, {

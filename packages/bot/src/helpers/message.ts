@@ -65,7 +65,7 @@ export class MessageUtil<
             name: "Example",
             value: stripIndents`
                         \`\`\`md
-                        ${prefix}${commandPath ?? command.name.split("-").join(" ")} ${command.examples ? command.examples[0] : ""}
+                        ${prefix}${commandPath ?? command.name.split("-").join(" ")} ${command.examples?.[0] ?? ""}
                         \`\`\`
                     `,
         };

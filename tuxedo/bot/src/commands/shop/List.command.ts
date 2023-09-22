@@ -9,7 +9,6 @@ const List: Command = {
     subName: "list",
     subCommand: true,
     category: Category.Economy,
-    requiredRole: RoleType.ADMIN,
     args: [
         {
             name: "page",

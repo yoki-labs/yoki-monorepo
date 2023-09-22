@@ -12,7 +12,6 @@ const Sell: Command = {
     subName: "sell",
     subCommand: true,
     category: Category.Economy,
-    requiredRole: RoleType.ADMIN,
     args: [
         {
             name: "number",
