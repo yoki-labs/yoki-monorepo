@@ -1,10 +1,4 @@
-import type { ModmailThread } from "@prisma/client";
-import { Colors } from "@yokilabs/utils";
-import { stripIndents } from "common-tags";
-
-import type Client from "../../Client";
-import { LogChannelType, RoleType, Server } from "../../typings";
-import { uploadS3 } from "../../utils/s3";
+import { RoleType } from "../../typings";
 import { Category, Command } from "../commands";
 
 const Close: Command = {
@@ -24,88 +18,21 @@ const Close: Command = {
             optional: true,
         },
     ],
-    execute: async (message, args, ctx, commandCtx) => {
+    execute: async (message, args, ctx, { server }) => {
         const userId = args.userId as string | null;
 
-        const modmailChannel = userId
+        const ticket = userId
             ? await ctx.prisma.modmailThread.findFirst({ where: { serverId: message.serverId!, openerId: userId, closed: false } })
             : await ctx.prisma.modmailThread.findFirst({ where: { serverId: message.serverId!, modFacingChannelId: message.channelId, closed: false } });
-        if (!modmailChannel)
+        if (!ticket)
             return userId
                 ? ctx.messageUtil.replyWithError(message, "No open modmail ticket for user", "User does not have an open modmail ticket")
                 : ctx.messageUtil.replyWithError(message, `Not a modmail channel`, `This channel is not a modmail channel!`);
 
-        return closeModmailThread(commandCtx.server, message.authorId, ctx, modmailChannel!, "closed by a staff member");
+        await ctx.supportUtil.closeExistingThread(server, ticket, message.authorId);
+
+        return ctx.supportUtil.sendModmailCloseMessage(server, ticket, "closed by a staff member");
     },
 };
-
-// To be able to use it anywhere
-export async function closeModmailThread(server: Server, closedBy: string, ctx: Client, modmailThread: ModmailThread, closedState: string) {
-    const modmailLogChannel = await ctx.dbUtil.getLogChannel(server.serverId, LogChannelType.modmail_logs);
-    const modmailMessages = await ctx.prisma.modmailMessage.findMany({
-        where: { modmailThreadId: modmailThread.id },
-    });
-
-    if (modmailLogChannel) {
-        const formattedMessages = modmailMessages.map((x) => `[${x.authorId}][${server.formatTimezone(x.createdAt)}] ${x.content}`);
-        const uploadedLog = await uploadS3(
-            ctx,
-            `modmail/logs/${modmailThread.serverId}-${modmailThread.id}.txt`,
-            `
-                -------------
-                Opener: ${modmailThread.openerId}
-                Server: ${modmailThread.serverId}
-                Created At: ${server.formatTimezone(modmailThread.createdAt)}
-                -------------
-
-                ${formattedMessages.join("\n")}
-            `
-        ).catch((e) => (console.error("Error while uploading log:\n", e), { Location: "https://guilded.gg/" }));
-
-        await ctx.messageUtil.sendLog({
-            where: modmailLogChannel.channelId,
-            serverId: server.serverId,
-            title: `Thread Closed`,
-            description: `Thread \`#${modmailThread.id}\` created by <@${modmailThread.openerId}> has been ${closedState}.`,
-            color: Colors.green,
-            occurred: new Date().toISOString(),
-            fields: [
-                {
-                    name: `Chat Logs`,
-                    value: stripIndents`
-                            \`\`\`md
-                            ${formattedMessages
-                                .slice(0, 2)
-                                .map((x) => x.slice(0, 400))
-                                .join("\n")}
-                            ${formattedMessages.length > 2 ? "..." : ""}
-                            \`\`\`
-
-                            [Click here to view more](${uploadedLog.Location})
-                        `,
-                },
-            ],
-        });
-    }
-
-    await ctx.messageUtil
-        .sendInfoBlock(
-            modmailThread.userFacingChannelId,
-            "Ticket Closed",
-            `<@${modmailThread.openerId}>, the ticket that you have created has been closed by a moderator.`,
-            { timestamp: new Date().toISOString() },
-            { isPrivate: true }
-        )
-        .catch(() => void 0);
-
-    void ctx.amp.logEvent({
-        event_type: "MODMAIL_CLOSE",
-        user_id: closedBy,
-        event_properties: { server: server.serverId, threadAge: Date.now() - modmailThread.createdAt.getTime(), messageCount: modmailMessages.length },
-    });
-
-    await ctx.prisma.modmailThread.update({ where: { id: modmailThread.id }, data: { closed: true } });
-    return ctx.channels.delete(modmailThread.modFacingChannelId);
-}
 
 export default Close;

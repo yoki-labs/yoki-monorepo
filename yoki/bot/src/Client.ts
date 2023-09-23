@@ -22,6 +22,8 @@ import { LinkFilterUtil } from "./modules/link-filter";
 import { SpamFilterUtil } from "./modules/spam-filter";
 import type { Context, Server } from "./typings";
 import RoleDeleted from "./events/guilded/RoleDeleted.ignore";
+import SupportUtil from "./modules/support";
+import ChannelArchived from "./events/guilded/ChannelArchived.ignore";
 
 /**
  * Main class that stores utils, connections to various providers, and ws
@@ -47,6 +49,9 @@ export default class YokiClient extends AbstractClient<YokiClient, Server, Comma
     // utility methods for server interactions
     readonly roleUtil: RoleUtil<YokiClient> = new RoleUtil<YokiClient>(this);
 
+    // utility methods for server interactions
+    readonly supportUtil: SupportUtil = new SupportUtil(this);
+
     // utility methods for content filtering
     readonly contentFilterUtil = new ContentFilterUtil(this);
 
@@ -68,6 +73,7 @@ export default class YokiClient extends AbstractClient<YokiClient, Server, Comma
         DocCommentUpdated: DocCommentEvent,
         RoleDeleted,
         DocCommentDeleted,
+        ChannelArchived,
 
         CalendarEventCommentCreated: CalendarEventCommentEvent,
         CalendarEventCommentUpdated: CalendarEventCommentEvent,

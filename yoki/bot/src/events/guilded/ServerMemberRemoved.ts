@@ -2,7 +2,6 @@ import { LogChannelType } from "@prisma/client";
 import { inlineCode } from "@yokilabs/bot";
 import { Colors } from "@yokilabs/utils";
 
-import { closeModmailThread } from "../../commands/modmail/Close.command";
 import type { GEvent } from "../../typings";
 
 export default {
@@ -37,7 +36,31 @@ export default {
         const modmailThreads = await ctx.prisma.modmailThread.findMany({ where: { serverId, openerId: userId, closed: false } });
 
         await Promise.all(
-            modmailThreads.map((x) => closeModmailThread(server, ctx.user?.id || "Ann6LewA", ctx, x, "automatically closed, because member has left the server"))
+            modmailThreads
+                .map(async (x) => {
+                    await ctx.prisma.modmailThread.update({
+                        where: {
+                            id: x.id,
+                        },
+                        data: {
+                            closed: true,
+                        }
+                    });
+
+                    void ctx.amp.logEvent({
+                        event_type: "MODMAIL_CLOSE",
+                        user_id: ctx.user!.id,
+                        event_properties: { server: server.serverId, threadAge: Date.now() - x.createdAt.getTime() },
+                    });
+
+                    const modmailLogChannel = await ctx.dbUtil.getLogChannel(serverId, LogChannelType.modmail_logs);
+
+                    if (modmailLogChannel) {
+                        const historyMessage = await ctx.supportUtil.createModmailHistory(server, x);
+
+                        await ctx.supportUtil.sendModmailLog(serverId, x, modmailLogChannel, "automatically closed, because member has left the server", historyMessage);
+                    }
+                })
         ).catch((x) => console.error("Error while automatically closing modmail threads:\n", x));
     },
     name: "memberRemoved",

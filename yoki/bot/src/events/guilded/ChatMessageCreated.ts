@@ -44,59 +44,93 @@ export default {
         }
         // if the message wasn't sent in a server, or the person was a bot then don't do anything
         else if (message.createdByWebhookId || message.authorId === ctx.user!.id || message.authorId === "Ann6LewA") return;
-        void ctx.amp.logEvent({ event_type: "MESSAGE_CREATE", user_id: message.authorId, event_properties: { serverId: message.serverId! } });
 
-        const isModmailChannel = await ctx.prisma.modmailThread.findFirst({
-            where: { serverId: message.serverId!, userFacingChannelId: message.channelId, openerId: message.authorId, closed: false },
+        void ctx.amp.logEvent({ event_type: "MESSAGE_CREATE", user_id: message.authorId, event_properties: { serverId: message.serverId! } });
+        
+        const server = await ctx.dbUtil.getServer(message.serverId!);
+
+        const ticket = await ctx.prisma.modmailThread.findFirst({
+            where: { serverId: message.serverId!, userFacingChannelId: message.channelId, closed: false },
         });
 
         const member = await ctx.members.fetch(message.serverId!, message.authorId).catch(() => null);
         // Can't do much
         if (!member || member.user?.type === UserType.Bot) return;
 
-        if (isModmailChannel) {
-            void ctx.amp.logEvent({ event_type: "MODMAIL_MESSAGE", user_id: message.authorId, event_properties: { serverId: message.serverId!, modmailId: isModmailChannel.id } });
-            void ctx.messages.delete(message.channelId, message.id);
-
-            const newModmailMessage = await ctx.messages.send(
-                isModmailChannel.modFacingChannelId,
-                new Embed()
-                    .setDescription(message.content)
-                    .setAuthor(`${member.user!.name} (${member.user!.id})`, member.user!.avatar)
-                    .setColor(Colors.blockBackground)
-                    .setFooter("User's message")
-                    .setTimestamp()
-            );
-            void ctx.messages.send(isModmailChannel.userFacingChannelId, {
-                embeds: [
+        if (ticket) {
+            // Old modmail threads are still allowed
+            if (ticket.modFacingChannelId !== ticket.userFacingChannelId) {
+                void ctx.amp.logEvent({ event_type: "MODMAIL_MESSAGE", user_id: message.authorId, event_properties: { serverId: message.serverId!, modmailId: ticket.id } });
+                void ctx.messages.delete(message.channelId, message.id);
+    
+                const newModmailMessage = await ctx.messages.send(
+                    ticket.modFacingChannelId,
                     new Embed()
-                        .setDescription(
-                            stripIndents`
-                                <@${message.authorId}>, you said:
-
-                                ${message.content}
-                            `
-                        )
-                        .setAuthor("You", member.user!.avatar)
+                        .setDescription(message.content)
+                        .setAuthor(`${member.user!.name} (${member.user!.id})`, member.user!.avatar)
                         .setColor(Colors.blockBackground)
-                        .setFooter("Your message")
-                        .setTimestamp(),
-                ],
-                isPrivate: true,
-            });
-            return ctx.prisma.modmailMessage.create({
+                        .setFooter("User's message")
+                        .setTimestamp()
+                );
+                void ctx.messages.send(ticket.userFacingChannelId, {
+                    embeds: [
+                        new Embed()
+                            .setDescription(
+                                stripIndents`
+                                    <@${message.authorId}>, you said:
+    
+                                    ${message.content}
+                                `
+                            )
+                            .setAuthor("You", member.user!.avatar)
+                            .setColor(Colors.blockBackground)
+                            .setFooter("Your message")
+                            .setTimestamp(),
+                    ],
+                    isPrivate: true,
+                });
+                return ctx.prisma.modmailMessage.create({
+                    data: {
+                        authorId: message.authorId,
+                        channelId: message.channelId,
+                        content: message.content,
+                        originalMessageId: message.id,
+                        sentMessageId: newModmailMessage.id,
+                        modmailThreadId: ticket.id,
+                    },
+                });
+            }
+
+            const messageModerated = await moderateMessage(ctx, server, message, member);
+
+            // Do not include moderated messages in the logs
+            if (messageModerated)
+                return;
+
+            // The new stuff
+            await ctx.prisma.modmailMessage.create({
                 data: {
                     authorId: message.authorId,
                     channelId: message.channelId,
                     content: message.content,
                     originalMessageId: message.id,
-                    sentMessageId: newModmailMessage.id,
-                    modmailThreadId: isModmailChannel.id,
+                    sentMessageId: message.id,
+                    modmailThreadId: ticket.id,
                 },
             });
+
+            // Add handling moderators
+            if (message.authorId !== ticket.openerId && !ticket.handlingModerators.includes(message.authorId))
+                await ctx.prisma.modmailThread.update({
+                    where: {
+                        id: ticket.id,
+                    },
+                    data: {
+                        handlingModerators: ticket.handlingModerators.concat(message.authorId),
+                    },
+                });
         }
 
-        const server = await ctx.dbUtil.getServer(message.serverId!);
         const prefix = fetchPrefix(server);
 
         // if the message does not start with the prefix

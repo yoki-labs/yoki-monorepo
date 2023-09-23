@@ -23,21 +23,26 @@ const Reply: Command = {
     ],
     execute: async (message, args, ctx, { member }) => {
         const content = (args.content as string).slice(0, 2000);
-        const isCurrentChannelModmail = await ctx.prisma.modmailThread.findFirst({ where: { serverId: message.serverId!, modFacingChannelId: message.channelId, closed: false } });
-        if (!isCurrentChannelModmail) return ctx.messageUtil.replyWithError(message, `Not a modmail channel`, `This channel is not a modmail channel!`);
+
+        const ticket = await ctx.prisma.modmailThread.findFirst({ where: { serverId: message.serverId!, modFacingChannelId: message.channelId, closed: false } });
+
+        if (!ticket) return ctx.messageUtil.replyWithError(message, `Not a modmail channel`, `This channel is not a modmail channel!`);
+        // Since it's going to error out on originalMessageId constraint not being unique
+        else if (ticket.userFacingChannelId === ticket.modFacingChannelId)
+            return ctx.messageUtil.replyWithError(message, `Not available`, `This command is only available for older modmail tickets before migration to threads.`);
 
         const embed: Embed = new Embed()
             .setAuthor(member.user!.name, member.user!.avatar)
             .setColor(Colors.blockBackground)
             .setTimestamp()
             .setDescription(
-                stripIndents`<@${isCurrentChannelModmail.openerId}>
+                stripIndents`<@${ticket.openerId}>
                 ${content}
             `
             )
             .setFooter("Moderator's message");
 
-        const newSentMessage = await message.client.messages.send(isCurrentChannelModmail.userFacingChannelId, {
+        const newSentMessage = await message.client.messages.send(ticket.userFacingChannelId, {
             embeds: [embed],
             isPrivate: true,
         });
@@ -47,7 +52,7 @@ const Reply: Command = {
                 authorId: message.authorId,
                 channelId: message.channelId,
                 content,
-                modmailThreadId: isCurrentChannelModmail.id,
+                modmailThreadId: ticket.id,
                 sentMessageId: newSentMessage.id,
                 originalMessageId: message.id,
             },
@@ -55,7 +60,7 @@ const Reply: Command = {
         void message.delete().catch(() => null);
 
         embed.setDescription(content);
-        embed.setFooter(`Ticket ${isCurrentChannelModmail.id}`);
+        embed.setFooter(`Ticket ${ticket.id}`);
         return message.send({
             embeds: [embed],
         });

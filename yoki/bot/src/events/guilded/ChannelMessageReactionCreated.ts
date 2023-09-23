@@ -1,92 +1,91 @@
 import { ReactionActionType } from "@prisma/client";
-import { inlineCode, summarizeRolesOrUsers } from "@yokilabs/bot";
-import { stripIndents } from "common-tags";
-import { nanoid } from "nanoid";
-
 import type { GEvent } from "../../typings";
-import { errorLoggerS3 } from "../../utils/s3";
 
 export default {
     execute: async ([reaction, ctx]) => {
         const { serverId, channelId, messageId, emote, createdBy } = reaction;
+
         const server = await ctx.dbUtil.getServer(serverId, false);
         if (!server) return;
 
         // Ignore client's own reactions
         if (createdBy === ctx.user!.id) return;
 
-        console.log("Received reaction. Now lookup");
         const lookupReaction = await ctx.prisma.reactionAction.findFirst({
             where: { messageId, channelId, serverId, emoteId: emote.id },
         });
-        console.log("Reaction lookup done");
 
-        if (!lookupReaction) return;
+        if (!lookupReaction)
+            return;
 
         switch (lookupReaction.actionType) {
             case ReactionActionType.MODMAIL: {
-                console.log("Doing modmail. No message afterwards");
-                if (!server.modmailGroupId && !server.modmailCategoryId) return;
-                const userAlreadyHasChannel = await ctx.prisma.modmailThread.findFirst({ where: { openerId: createdBy, serverId, closed: false } });
-                if (userAlreadyHasChannel) return;
+                if (!server.modmailEnabled)
+                    return;
 
-                void ctx.amp.logEvent({ event_type: "MODMAIL_THREAD_CREATE", user_id: createdBy, event_properties: { serverId } });
-                const member = await ctx.members.fetch(serverId, createdBy, true);
-                const newChannel = await ctx.channels
-                    .create({
-                        serverId,
-                        type: "chat",
-                        name: `${member.user!.name.slice(0, 12)}-${createdBy}`,
-                        topic: `Modmail thread for ${createdBy}`,
-                        groupId: server.modmailGroupId ?? undefined,
-                        categoryId: server.modmailCategoryId ?? undefined,
-                    })
-                    .catch((err) => {
-                        void errorLoggerS3(ctx, "MODMAIL_THREAD_CREATE", err as Error, { serverId, createdBy });
-                        return null;
-                    });
+                return ctx.supportUtil.createModmailThread(server, channelId, createdBy);
+                // if (!server.modmailGroupId && !server.modmailCategoryId) return;
 
-                if (!newChannel) return;
+                // const userAlreadyHasChannel = await ctx.prisma.modmailThread.findFirst({ where: { openerId: createdBy, serverId, closed: false } });
+                // if (userAlreadyHasChannel) return;
 
-                const newModmailThread = await ctx.prisma.modmailThread.create({
-                    data: {
-                        id: nanoid(13),
-                        modFacingChannelId: newChannel.id,
-                        userFacingChannelId: channelId,
-                        serverId,
-                        handlingModerators: [],
-                        openerId: createdBy,
-                    },
-                });
+                // void ctx.amp.logEvent({ event_type: "MODMAIL_THREAD_CREATE", user_id: createdBy, event_properties: { serverId } });
+                // const member = await ctx.members.fetch(serverId, createdBy, true);
+                // const newChannel = await ctx.channels
+                //     .create({
+                //         serverId,
+                //         type: "chat",
+                //         name: `${member.user!.name.slice(0, 12)}-${createdBy}`,
+                //         topic: `Modmail thread for ${createdBy}`,
+                //         groupId: server.modmailGroupId ?? undefined,
+                //         categoryId: server.modmailCategoryId ?? undefined,
+                //     })
+                //     .catch((err) => {
+                //         void errorLoggerS3(ctx, "MODMAIL_THREAD_CREATE", err as Error, { serverId, createdBy });
+                //         return null;
+                //     });
 
-                const modmailPingRole = server.modmailPingRoleId ? `<@${server.modmailPingRoleId}> ` : "";
-                await ctx.messageUtil.sendInfoBlock(
-                    newChannel.id,
-                    `New modmail thread opened`,
-                    `${modmailPingRole}A new modmail thread by ID ${inlineCode(newModmailThread.id)} has been opened by <@${member.user!.id}> (${inlineCode(
-                        member.user!.id
-                    )}). You can send messages to this user by doing \`${server.prefix ?? ctx.prefix}reply the text contents here\``,
-                    {
-                        fields: [
-                            {
-                                name: `Roles`,
-                                value: summarizeRolesOrUsers(member.roleIds),
-                            },
-                            {
-                                name: `Additional Info`,
-                                value: stripIndents`
-                                    **Account Created:** ${server.formatTimezone(member.user!.createdAt!)} EST
-                                    **Joined at:** ${server.formatTimezone(member.joinedAt!)} EST
-                                `,
-                            },
-                        ],
-                    }
-                );
+                // if (!newChannel) return;
 
-                await ctx.messageUtil.sendSuccessBlock(channelId, "Successfully opened Modmail thread!", `<@${createdBy}>, a moderator will be with you shortly!`, undefined, {
-                    isPrivate: true,
-                });
-                break;
+                // const newModmailThread = await ctx.prisma.modmailThread.create({
+                //     data: {
+                //         id: nanoid(13),
+                //         modFacingChannelId: newChannel.id,
+                //         userFacingChannelId: channelId,
+                //         serverId,
+                //         handlingModerators: [],
+                //         openerId: createdBy,
+                //     },
+                // });
+
+                // const modmailPingRole = server.modmailPingRoleId ? `<@${server.modmailPingRoleId}> ` : "";
+                // await ctx.messageUtil.sendInfoBlock(
+                //     newChannel.id,
+                //     `New modmail thread opened`,
+                //     `${modmailPingRole}A new modmail thread by ID ${inlineCode(newModmailThread.id)} has been opened by <@${member.user!.id}> (${inlineCode(
+                //         member.user!.id
+                //     )}). You can send messages to this user by doing \`${server.prefix ?? ctx.prefix}reply the text contents here\``,
+                //     {
+                //         fields: [
+                //             {
+                //                 name: `Roles`,
+                //                 value: summarizeRolesOrUsers(member.roleIds),
+                //             },
+                //             {
+                //                 name: `Additional Info`,
+                //                 value: stripIndents`
+                //                     **Account Created:** ${server.formatTimezone(member.user!.createdAt!)} EST
+                //                     **Joined at:** ${server.formatTimezone(member.joinedAt!)} EST
+                //                 `,
+                //             },
+                //         ],
+                //     }
+                // );
+
+                // await ctx.messageUtil.sendSuccessBlock(channelId, "Successfully opened Modmail thread!", `<@${createdBy}>, a moderator will be with you shortly!`, undefined, {
+                //     isPrivate: true,
+                // });
+                // break;
             }
         }
     },
