@@ -48,88 +48,10 @@ export default {
         void ctx.amp.logEvent({ event_type: "MESSAGE_CREATE", user_id: message.authorId, event_properties: { serverId: message.serverId! } });
         
         const server = await ctx.dbUtil.getServer(message.serverId!);
-
-        const ticket = await ctx.prisma.modmailThread.findFirst({
-            where: { serverId: message.serverId!, userFacingChannelId: message.channelId, closed: false },
-        });
-
+        
         const member = await ctx.members.fetch(message.serverId!, message.authorId).catch(() => null);
         // Can't do much
         if (!member || member.user?.type === UserType.Bot) return;
-
-        if (ticket) {
-            // Old modmail threads are still allowed
-            if (ticket.modFacingChannelId !== ticket.userFacingChannelId) {
-                void ctx.amp.logEvent({ event_type: "MODMAIL_MESSAGE", user_id: message.authorId, event_properties: { serverId: message.serverId!, modmailId: ticket.id } });
-                void ctx.messages.delete(message.channelId, message.id);
-    
-                const newModmailMessage = await ctx.messages.send(
-                    ticket.modFacingChannelId,
-                    new Embed()
-                        .setDescription(message.content)
-                        .setAuthor(`${member.user!.name} (${member.user!.id})`, member.user!.avatar)
-                        .setColor(Colors.blockBackground)
-                        .setFooter("User's message")
-                        .setTimestamp()
-                );
-                void ctx.messages.send(ticket.userFacingChannelId, {
-                    embeds: [
-                        new Embed()
-                            .setDescription(
-                                stripIndents`
-                                    <@${message.authorId}>, you said:
-    
-                                    ${message.content}
-                                `
-                            )
-                            .setAuthor("You", member.user!.avatar)
-                            .setColor(Colors.blockBackground)
-                            .setFooter("Your message")
-                            .setTimestamp(),
-                    ],
-                    isPrivate: true,
-                });
-                return ctx.prisma.modmailMessage.create({
-                    data: {
-                        authorId: message.authorId,
-                        channelId: message.channelId,
-                        content: message.content,
-                        originalMessageId: message.id,
-                        sentMessageId: newModmailMessage.id,
-                        modmailThreadId: ticket.id,
-                    },
-                });
-            }
-
-            const messageModerated = await moderateMessage(ctx, server, message, member);
-
-            // Do not include moderated messages in the logs
-            if (messageModerated)
-                return;
-
-            // The new stuff
-            await ctx.prisma.modmailMessage.create({
-                data: {
-                    authorId: message.authorId,
-                    channelId: message.channelId,
-                    content: message.content,
-                    originalMessageId: message.id,
-                    sentMessageId: message.id,
-                    modmailThreadId: ticket.id,
-                },
-            });
-
-            // Add handling moderators
-            if (message.authorId !== ticket.openerId && !ticket.handlingModerators.includes(message.authorId))
-                await ctx.prisma.modmailThread.update({
-                    where: {
-                        id: ticket.id,
-                    },
-                    data: {
-                        handlingModerators: ticket.handlingModerators.concat(message.authorId),
-                    },
-                });
-        }
 
         const prefix = fetchPrefix(server);
 
@@ -138,7 +60,7 @@ export default {
             // store the message in the database
             await ctx.dbUtil.storeMessage(message).catch(console.log);
 
-            return moderateMessage(ctx, server, message, member);
+            return handleNonCommandMesssage(ctx, server, member, message);
         }
 
         const parsed = await parseCommand([message, ctx], prefix);
@@ -146,7 +68,8 @@ export default {
         let { command, commandName, args: parsedArgs } = parsed;
 
         if (!command) {
-            await moderateMessage(ctx, server, message, member);
+            // await moderateMessage(ctx, server, message, member);
+            await handleNonCommandMesssage(ctx, server, member, message);
 
             const customCommand = await ctx.prisma.customTag.findFirst({ where: { serverId: message.serverId!, name: commandName } });
 
@@ -192,6 +115,88 @@ export default {
     },
     name: "messageCreated",
 } satisfies GEvent<"messageCreated">;
+
+const handleNonCommandMesssage = async (ctx: YokiClient, server: Server, member: Member, message: Message) => {
+    const messageModerated = await moderateMessage(ctx, server, message, member);
+
+    // Do not include moderated messages in the modmail logs and such
+    if (messageModerated)
+        return;
+
+    const ticket = await ctx.prisma.modmailThread.findFirst({
+        where: { serverId: message.serverId!, userFacingChannelId: message.channelId, closed: false },
+    });
+
+    // Nothing else to do with non-command message
+    if (!ticket)
+        return;
+
+    // Old modmail threads are still allowed
+    if (ticket.modFacingChannelId !== ticket.userFacingChannelId) {
+        void ctx.amp.logEvent({ event_type: "MODMAIL_MESSAGE", user_id: message.authorId, event_properties: { serverId: message.serverId!, modmailId: ticket.id } });
+        void ctx.messages.delete(message.channelId, message.id);
+
+        const newModmailMessage = await ctx.messages.send(
+            ticket.modFacingChannelId,
+            new Embed()
+                .setDescription(message.content)
+                .setAuthor(`${member.user!.name} (${member.user!.id})`, member.user!.avatar)
+                .setColor(Colors.blockBackground)
+                .setFooter("User's message")
+                .setTimestamp()
+        );
+        void ctx.messages.send(ticket.userFacingChannelId, {
+            embeds: [
+                new Embed()
+                    .setDescription(
+                        stripIndents`
+                            <@${message.authorId}>, you said:
+
+                            ${message.content}
+                        `
+                    )
+                    .setAuthor("You", member.user!.avatar)
+                    .setColor(Colors.blockBackground)
+                    .setFooter("Your message")
+                    .setTimestamp(),
+            ],
+            isPrivate: true,
+        });
+        return ctx.prisma.modmailMessage.create({
+            data: {
+                authorId: message.authorId,
+                channelId: message.channelId,
+                content: message.content,
+                originalMessageId: message.id,
+                sentMessageId: newModmailMessage.id,
+                modmailThreadId: ticket.id,
+            },
+        });
+    }
+
+    // Add handling moderators
+    if (message.authorId !== ticket.openerId && !ticket.handlingModerators.includes(message.authorId))
+        await ctx.prisma.modmailThread.update({
+            where: {
+                id: ticket.id,
+            },
+            data: {
+                handlingModerators: ticket.handlingModerators.concat(message.authorId),
+            },
+        });
+
+    // The new stuff
+    return ctx.prisma.modmailMessage.create({
+        data: {
+            authorId: message.authorId,
+            channelId: message.channelId,
+            content: message.content,
+            originalMessageId: message.id,
+            sentMessageId: message.id,
+            modmailThreadId: ticket.id,
+        },
+    });
+};
 
 const moderateMessage = (ctx: YokiClient, server: Server, message: Message, member: Member) =>
     moderateContent(ctx, server, message.channelId, ContentIgnoreType.MESSAGE, FilteredContent.Message, member.id, member.roleIds, message.content, message.mentions, () =>
