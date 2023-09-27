@@ -11,10 +11,10 @@ const allowedTypes = ["MINIMOD", "MOD", "ADMIN"];
 
 const Staff: Command = {
     name: "role-staff",
-    description: "Adds moderator/staff roles.",
+    description: "Moderator/staff roles for using mod commands.",
     subCommand: true,
     // usage: "[role] [minimod/mod/admin/remove]",
-    examples: ["@admin admin", "12345678 admin", "12345678 remove"],
+    examples: ["@mod", "12345678 admin", "@mod remove"],
     subName: "staff",
     category: Category.Settings,
     requiredRole: RoleType.ADMIN,

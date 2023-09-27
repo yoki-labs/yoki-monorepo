@@ -5,7 +5,7 @@ const Close: Command = {
     name: "close",
     subName: "close",
     description:
-        "Close a modmail thread. If ran in a modmail channel, it will close the thread associated with that channel. If a user is mentioned, it will force close the open thread for that user.",
+        "Closes the current or specific user's modmail ticket.",
     examples: [""],
     subCommand: true,
     forceShow: true,

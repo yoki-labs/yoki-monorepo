@@ -7,9 +7,9 @@ import { Category, Command } from "../commands";
 
 const Member: Command = {
     name: "role-member",
-    description: "Set or view the member role for this server.",
+    description: "The role for people who get verified by Yoki.",
     // usage: "[role mention or ID/remove]",
-    examples: ["12345678", ""],
+    examples: ["12345678", "@Verified"],
     category: Category.Settings,
     subCommand: true,
     subName: "member",

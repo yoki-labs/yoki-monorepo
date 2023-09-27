@@ -3,6 +3,7 @@ import { inlineCode } from "@yokilabs/bot";
 
 import { RoleType } from "../../typings";
 import { Category, Command } from "../commands";
+import { Member } from "guilded.js";
 
 const History: Command = {
     name: "modmail-history",
@@ -15,9 +16,8 @@ const History: Command = {
     category: Category.Modmail,
     args: [
         {
-            name: "userId",
-            display: "user",
-            type: "string",
+            name: "member",
+            type: "member",
         },
         {
             name: "page",
@@ -25,14 +25,15 @@ const History: Command = {
             optional: true,
         },
     ],
-    execute: async (message, args, ctx) => {
-        const userId = args.userId as string;
+    execute: async (message, args, ctx, { server }) => {
+        const member = args.member as Member;
         const page = args.page ? Math.floor((args.page as number) - 1) : 0;
 
         const threads = await ctx.prisma.modmailThread.findMany({
+            orderBy: [{ closed: "asc" }, { createdAt: "desc" }],
             where: {
                 serverId: message.serverId!,
-                openerId: userId,
+                openerId: member.id,
             },
         });
 
@@ -42,8 +43,8 @@ const History: Command = {
         return ctx.messageUtil.replyWithPaginatedContent<ModmailThread>({
             replyTo: message,
             items: threads,
-            title: `<@${userId}>'s History`,
-            itemMapping: (x) => inlineCode(x.id),
+            title: `<@${member.id}>'s (${inlineCode(member.id)}) History`,
+            itemMapping: (x) => `${x.closed ? ":red_circle:" : ":large_green_circle:"} [${inlineCode(x.id)}] ${server.formatTimezone(x.createdAt)}`,
             itemsPerPage: 10,
             page,
             message: { isSilent: true },

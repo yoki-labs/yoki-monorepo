@@ -2,14 +2,13 @@ import { Collection } from "@discordjs/collection";
 import { RoleType } from "@prisma/client";
 
 import { Category, Command } from "../commands";
-import CategoryCommand from "./Category.command";
+// import CategoryCommand from "./Category.command";
 import Close from "./Close.command";
 import Edit from "./Edit.command";
-import Group from "./Group.command";
+// import Group from "./Group.command";
 import History from "./History.command";
-import PingRole from "./PingRole.command";
 import Reply from "./Reply.command";
-import SelectTrigger from "./SelectTrigger.command";
+import SetTrigger from "./SetTrigger.command";
 import SendTrigger from "./SendTrigger.command";
 
 const Modmail: Command = {
@@ -26,11 +25,11 @@ const Modmail: Command = {
         .set("close", Close)
         .set("edit", Edit)
         .set("history", History)
-        .set("selecttrigger", SelectTrigger)
-        .set("sendtrigger", SendTrigger)
-        .set("category", CategoryCommand)
-        .set("group", Group)
-        .set("pingrole", PingRole),
+        .set("settrigger", SetTrigger)
+        .set("sendtrigger", SendTrigger),
+        // .set("category", CategoryCommand)
+        // .set("group", Group)
+        // .set("pingrole", PingRole),
     execute: () => void 0,
 };
 

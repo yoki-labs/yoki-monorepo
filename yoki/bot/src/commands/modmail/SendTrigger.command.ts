@@ -9,9 +9,9 @@ const SendTrigger: Command = {
     name: "modmail-sendtrigger",
     aliases: ["sendtrigger"],
     subName: "sendtrigger",
-    description: "Send a modmail thread trigger.",
+    description: "Sends a message with which people can create a modmail ticket.",
     // usage: "<channel-id> <emoji>",
-    examples: ["17bce2fd-1a95-44b5-abc3-b2ff115c62fb :smile:"],
+    examples: ["#Modmail :smile:"],
     subCommand: true,
     requiredRole: RoleType.MOD,
     category: Category.Modmail,
@@ -26,16 +26,14 @@ const SendTrigger: Command = {
             type: "emote",
         },
     ],
-    execute: async (message, args, ctx, commandCtx) => {
-        if (!commandCtx.server.modmailGroupId && !commandCtx.server.modmailCategoryId)
-            return ctx.messageUtil.replyWithError(message, `No modmail group or category set`, "You can set either by using the `?modmail group` or `?modmail category` command.");
+    execute: async (message, args, ctx) => {
         const targetChannel = args.targetChannel as Channel;
         const reaction = args.emoji as ReactionInfo;
 
         const sentMessage = await ctx.messageUtil.sendInfoBlock(
             targetChannel.id,
             `React here for help!`,
-            `React with the :${reaction.name}: emoji on this message to create a support ticket and receive help from server staff.`
+            `React with the :${reaction.name}: emoji on this message to create a support ticket and receive help from the server staff.`
         );
         void ctx.amp.logEvent({
             event_type: "MODMAIL_SEND_TRIGGER",
@@ -53,7 +51,11 @@ const SendTrigger: Command = {
             },
         });
 
-        return ctx.messageUtil.replyWithSuccess(message, "Success!", `Users will now be able to open a modmail thread by reacting with the :${reaction.name}: emoji.`);
+        return ctx.messageUtil.replyWithSuccess(
+            message,
+            "Modmail trigger selected",
+            `Users will now be able to open a modmail ticket by reacting with a reaction :${reaction.name}:.`
+        );
     },
 };
 

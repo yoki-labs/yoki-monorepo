@@ -7,7 +7,7 @@ import { Category, Command } from "../commands";
 
 const Mute: Command = {
     name: "role-mute",
-    description: "Set or view the mute role for this server.",
+    description: "The role given when user is muted.",
     // usage: "[role mention or ID/remove]",
     examples: ["@muted", "12345678", "@muted remove"],
     category: Category.Settings,

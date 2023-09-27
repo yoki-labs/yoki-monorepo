@@ -55,8 +55,7 @@ export const removeSettingKeys = ["remove", "null"];
 export const isInputRemoveSetting = (str: string) => removeSettingKeys.some((x) => str === x);
 export const removeGroupMessage = (prefix: string) => `*You can unset the modmail group by doing:* \`${prefix}modmail group remove\``;
 export const removeCategoryMessage = (prefix: string) => `*You can unset the modmail category by doing:* \`${prefix}modmail category remove\``;
-export const removePingRole = (prefix: string) => `*You can unset the ping role by doing:* \`${prefix}modmail pingrole remove\``;
 export const addOrRemoveStaffRoleMessage = (prefix: string) =>
     `*Add mod role:* \`${prefix}role staff <role> <mod/admin/remove>\`\n*Remove mod role:* \`${prefix}role staff <role> remove\``;
-export const addOrRemoveMuteRoleMessage = (prefix: string) => `Set mute role: \`${prefix}role mute <role>\`.\nYou can remove by putting "remove" instead of role`;
-export const addOrRemoveMemberRoleMessage = (prefix: string) => `Set member role: \`${prefix}role member <role>\`.\nYou can remove by putting "remove" instead of role`;
+export const addOrRemoveMuteRoleMessage = (prefix: string) => `Set mute role: \`${prefix}role mute <role>\`.\nYou can remove it by writing \`${prefix}role member <role> remove\``;
+export const addOrRemoveMemberRoleMessage = (prefix: string) => `Set member role: \`${prefix}role member <role>\`.\nYou can remove it by writing \`${prefix}role member <role> remove\``;
