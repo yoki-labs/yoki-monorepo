@@ -16,7 +16,7 @@ const Modmail: Command = {
     description: "Parent command for modmail related commands.",
     aliases: ["m"],
     module: "modmail",
-    examples: ["modmail reply Hi, what can I help you with?"],
+    examples: ["reply Hi, what can I help you with?"],
     parentCommand: true,
     category: Category.Modmail,
     requiredRole: RoleType.MINIMOD,
