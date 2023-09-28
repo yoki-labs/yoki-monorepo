@@ -85,6 +85,12 @@ export class DatabaseUtil extends Util<TuxoClient> {
                     currencyId: currency.id,
                 },
             }),
+            this.client.prisma.itemValue.deleteMany({
+                where: {
+                    serverId: currency.serverId,
+                    currencyId: currency.id,
+                },
+            }),
         ]);
     }
 
