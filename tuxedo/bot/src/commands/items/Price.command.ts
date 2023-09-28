@@ -11,7 +11,7 @@ type ItemValueChange = Pick<ItemValue, "currencyId" | "serverId" | "amount">;
 
 const SetPrice: Command = {
     name: "items-price",
-    description: "Changes the required price of a command.",
+    description: "Changes the required price of an item.",
     subName: "price",
     subCommand: true,
     category: Category.Economy,

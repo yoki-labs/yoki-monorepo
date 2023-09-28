@@ -10,6 +10,8 @@ import Info from "./Info.command";
 import List from "./List.command";
 import Maximum from "./Max.command";
 import Starting from "./Starting.command";
+import Name from "./Name.command";
+import Tag from "./Tag.command";
 
 const Currency: Command = {
     name: "currency",
@@ -23,6 +25,8 @@ const Currency: Command = {
         .set("list", List)
         .set("info", Info)
         .set("delete", Delete)
+        .set("name", Name)
+        .set("tag", Tag)
         .set("maximum", Maximum)
         .set("starting", Starting)
         .set("emote", Emote)

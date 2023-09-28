@@ -8,6 +8,8 @@ import SetGiveRole from "./GiveRole.command";
 import Info from "./Info.command";
 import List from "./List.command";
 import SetPrice from "./Price.command";
+import SetName from "./Name.command";
+import SetCanBuy from "./CanBuy.command";
 
 const Items: Command = {
     name: "items",
@@ -21,6 +23,8 @@ const Items: Command = {
         .set("create", Create)
         .set("list", List)
         .set("info", Info)
+        .set("name", SetName)
+        .set("canbuy", SetCanBuy)
         .set("price", SetPrice)
         .set("giverole", SetGiveRole)
         .set("delete", Delete),
