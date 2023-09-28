@@ -41,7 +41,7 @@ export default function LandingProfileCard({ serverCount }: Props) {
                 <Avatar sx={{ "--Avatar-size": "80px", position: "absolute", left: 30, bottom: 0, transform: "translateY(60%)" }} size="lg" src="/icon.png" />
             </CardOverflow>
             <CardContent>
-                <Box sx={{ mt: 6, py: 0.5, px: 1.5 }}>
+                <Box sx={{ mt: 7.5, py: 0.5, px: 1.5 }}>
                     <Box>
                         <BotRole />
                         <Stack direction="row" alignItems="center" sx={{ my: 1 }}>

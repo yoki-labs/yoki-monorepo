@@ -1,7 +1,7 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ListItemButton, ListItemDecorator, Typography } from "@mui/joy";
 import { DashboardPageItem } from "../pages";
-import Link from "next/link";
+import { useRouter } from "next/router";
 
 interface Prop {
     item: DashboardPageItem;
@@ -15,16 +15,17 @@ interface Prop {
  * @returns {Element} Rendered component
  */
 export default function LayoutSidebarTab({ item, serverId, isActive }: Prop) {
+    const router = useRouter();
+    const href = `/dashboard/${serverId}/${item.id}`;
+
     return (
-        <Link href={`/dashboard/${serverId}/${item.id}`} style={{ textDecoration: "none" }}>
-            <ListItemButton sx={{ borderRadius: 6 }} color={item.color} selected={isActive}>
-                <ListItemDecorator>
-                    <FontAwesomeIcon icon={item.icon} />
-                </ListItemDecorator>
-                <Typography sx={{ color: "inherit" }} component="span">
-                    {item.name}
-                </Typography>
-            </ListItemButton>
-        </Link>
+        <ListItemButton sx={{ borderRadius: 6 }} color={item.color} selected={isActive} onClick={() => router.push(href)}>
+            <ListItemDecorator>
+                <FontAwesomeIcon icon={item.icon} />
+            </ListItemDecorator>
+            <Typography sx={{ color: "inherit" }} component="span">
+                {item.name}
+            </Typography>
+        </ListItemButton>
     );
 }

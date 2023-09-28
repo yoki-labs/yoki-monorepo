@@ -119,7 +119,7 @@ function DashboardProfileCardForm(props: { onSubmit: (values: LabsFormFieldValue
                                 name: "Timezone",
                                 type: LabsFormFieldType.Select,
                                 defaultValue: serverConfig.timezone ?? "america/new_york",
-                                selectableValues: timezones.map((timezone) => ({ name: timezone, value: timezone })),
+                                selectableValues: timezones.map((timezone) => ({ name: normalizeTimezoneName(timezone), value: timezone })),
                                 description: "The timezone Yoki displays time in.",
                             },
                         ],
@@ -129,3 +129,12 @@ function DashboardProfileCardForm(props: { onSubmit: (values: LabsFormFieldValue
         </Box>
     );
 }
+
+const normalizeTimezoneName = (timezone: string): string => {
+    const [region, place] = timezone.split("/");
+
+    return `${place.split("_").map((x) => normalizeTimezonePart(x)).join(" ")}, ${normalizeTimezonePart(region)}`;
+}
+
+const normalizeTimezonePart = (timezoneWord: string) =>
+    timezoneWord[0].toUpperCase() + timezoneWord.slice(1);
