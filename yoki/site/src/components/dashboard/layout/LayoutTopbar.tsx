@@ -17,7 +17,7 @@ type Props = {
 
 export function LayoutTopbar({ children, onServerChange, currentServer, servers, user }: Props) {
     return (
-        <Box sx={{ display: "flex", flexDirection: "row", gap: 2 }} className="px-2 py-4 md:px-10 md:py-8">
+        <Box sx={{ display: "flex", flexDirection: "row", gap: 2, alignItems: "center" }} className="px-5 py-4 md:px-10 md:py-8">
             {children}
             <Breadcrumbs
                 sx={{ p: 0, "--Breadcrumbs-gap": "20px", display: "flex", alignItems: "center" }}

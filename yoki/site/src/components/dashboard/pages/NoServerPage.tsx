@@ -12,8 +12,8 @@ type Props = {
 
 export default function NoServerPage({ currentServer }: Props) {
     return (
-        <Stack alignItems="center" direction="row" className="grow shrink-0">
-            <Stack alignItems="center" direction="column" gap={3} sx={{ flex: "1", mb: 20 }}>
+        <Stack alignItems="center" direction="row" className="grow shrink-0" sx={{ width: "100%" }}>
+            <Stack className="px-5" alignItems="center" direction="column" gap={3} sx={{ flex: "1", mb: 20 }}>
                 <PagePlaceholder
                     icon={PagePlaceholderIcon.NoPermission}
                     title="Uh oh! Yoki isn't in this server"

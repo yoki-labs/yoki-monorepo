@@ -17,6 +17,7 @@ import LabsToast from "../components/LabsToast";
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import "../styles/globals.css";
 import "../styles/animations.css";
+import "../styles/scrollbar.css";
 
 // Fonts
 import "@fontsource/montserrat";

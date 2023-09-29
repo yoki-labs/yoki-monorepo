@@ -1,0 +1,13 @@
+.MuiBox-root, .MuiStack-root, .MuiSelect-listbox {
+    scrollbar-color: #66576f77 transparent;
+}
+.MuiBox-root::-webkit-scrollbar, .MuiStack-root::-webkit-scrollbar, .MuiSelect-listbox::-webkit-scrollbar {
+    width: 5px;
+}
+.MuiBox-root::-webkit-scrollbar-track, .MuiStack-root::-webkit-scrollbar-track, .MuiSelect-listbox::-webkit-scrollbar-track {
+    background: transparent;
+}
+.MuiBox-root::-webkit-scrollbar-thumb, .MuiStack-root::-webkit-scrollbar-thumb, .MuiSelect-listbox::-webkit-scrollbar-thumb {
+    background: #66576f77;
+    border-radius: 10px;
+}

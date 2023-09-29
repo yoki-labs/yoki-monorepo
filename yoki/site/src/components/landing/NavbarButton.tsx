@@ -17,10 +17,10 @@ export function NavbarButtonList() {
 
     return (
         <>
-            <NavbarButton text="Supercharge" onClick={router.push.bind(null, "/premium")} icon={faBolt} color="warning" />
-            <NavbarButton text="Dashboard" onClick={router.push.bind(null, "/dashboard")} color="neutral" />
-            <NavbarButton text="Commands" onClick={router.push.bind(null, "/commands/general")} color="neutral" />
-            <NavbarButton text="Docs" onClick={router.push.bind(null, "/docs")} color="neutral" />
+            <NavbarButton text="Supercharge" onClick={() => router.push("/premium")} icon={faBolt} color="warning" />
+            <NavbarButton text="Dashboard" onClick={() => router.push("/dashboard")} color="neutral" />
+            <NavbarButton text="Commands" onClick={() => router.push("/commands/general")} color="neutral" />
+            <NavbarButton text="Docs" onClick={() => router.push("/docs")} color="neutral" />
         </>
     );
 }
