@@ -1,5 +1,6 @@
 import {
     faBan,
+    faCircleXmark,
     faClipboardUser,
     faCommentDots,
     faCrown,
@@ -31,6 +32,7 @@ import OverviewPage from "./overview/Overview";
 import ConfigPage from "./overview/Premium";
 import RolesPage from "./overview/Roles";
 import { SanitizedServer } from "../../lib/@types/db";
+import IgnoresPage from "./automod/Ignores";
 
 export interface DashboardPageItem {
     id: string;
@@ -59,6 +61,7 @@ export const dashboardPageList: DashboardPageItem[] = [
     { id: "urls", name: "URL Filter", icon: faLink, component: LinksPage, category: DashboardPageCategory.Automod },
     { id: "invites", name: "Invite Filter", icon: faTicket, component: InvitesPage, category: DashboardPageCategory.Automod },
     { id: "spam", name: "Anti-spam", icon: faPoo, component: SpamPage, category: DashboardPageCategory.Automod },
+    { id: "ignore", name: "Filter Ignoring", icon: faCircleXmark, component: IgnoresPage, category: DashboardPageCategory.Automod },
     { id: "modmail", name: "Modmail", icon: faEnvelope, component: ModmailPage, category: DashboardPageCategory.Entry },
     { id: "antiraid", name: "Antiraid", icon: faShieldHalved, component: AntiraidPage, category: DashboardPageCategory.Entry },
     { id: "appeals", name: "Appeals", icon: faPrayingHands, component: AppealsPage, category: DashboardPageCategory.Entry },
