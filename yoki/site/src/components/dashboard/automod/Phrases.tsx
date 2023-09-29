@@ -12,6 +12,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { severityToIcon } from "../../../utils/actionUtil";
 import { formatDate } from "@yokilabs/utils";
 import { FilterMatching } from "@prisma/client";
+import { PhraseCard, PhraseRow } from "./PhrasesItem";
 
 export default class PhrasesPage extends React.Component<DashboardPageProps> {
     constructor(props: DashboardPageProps) {
@@ -78,64 +79,10 @@ export default class PhrasesPage extends React.Component<DashboardPageProps> {
                         getItems={this.fetchPhrases.bind(this)}
                         deleteItems={this.deletePhrases.bind(this)}
                         ItemRenderer={PhraseRow}
+                        ItemMobileRenderer={PhraseCard}
                     />
                 </Stack>
             </>
         );
     }
-}
-
-function PhraseRow({ item: phrase, columnCount, timezone, isSelected, onSelected }: ItemProps<SanitizedContentFilter>) {
-    return (
-        <DataTableRow
-            id={`phrase-${phrase.id}`}
-            columnCount={columnCount}
-            isSelected={isSelected}
-            onSelected={onSelected}
-            expandedInfo={() => (
-                <Stack gap={3}>
-                    <InfoText icon={faDroplet} name="Infraction points">
-                        {phrase.infractionPoints}
-                    </InfoText>
-                </Stack>
-            )}
-        >
-            <td>
-                <PhraseContentDisplay content={phrase.content} matching={phrase.matching} />
-            </td>
-            <td>
-                <Typography startDecorator={<FontAwesomeIcon icon={severityToIcon[phrase.severity]} />} fontWeight="lg" textColor="text.secondary">
-                    {phrase.severity}
-                </Typography>
-            </td>
-            <td>
-                <LabsUserCard userId={phrase.creatorId} />
-            </td>
-            <td>
-                <Typography level="body-md">{formatDate(new Date(phrase.createdAt), timezone)}</Typography>
-            </td>
-        </DataTableRow>
-    );
-}
-const prefixed: FilterMatching[] = [FilterMatching.PREFIX, FilterMatching.INFIX];
-const suffixed: FilterMatching[] = [FilterMatching.POSTFIX, FilterMatching.INFIX];
-
-function PhraseContentDisplay({ content, matching }: { content: string; matching: FilterMatching }) {
-    return (
-        <Stack direction="row" gap={0.5} alignItems="center">
-            {prefixed.includes(matching) && (
-                <Typography level="body-md" textColor="text.tertiary" fontSize="lg" fontWeight="bolder" sx={{ userSelect: "none" }}>
-                    {"*"}
-                </Typography>
-            )}
-            <Typography level="body-md" textColor="text.secondary">
-                {content.length > 32 ? `${content.slice(0, 32)}...` : content}
-            </Typography>
-            {suffixed.includes(matching) && (
-                <Typography level="body-md" textColor="text.tertiary" fontSize="lg" fontWeight="bolder" sx={{ userSelect: "none" }}>
-                    {"*"}
-                </Typography>
-            )}
-        </Stack>
-    );
 }

@@ -1,12 +1,15 @@
-.MuiBox-root, .MuiStack-root, .MuiSelect-listbox {
+html, body, .__next, #main, .MuiBox-root, .MuiStack-root, .MuiSelect-listbox {
     scrollbar-color: #66576f77 transparent;
 }
+html::-webkit-scrollbar, body::-webkit-scrollbar, .__next::-webkit-scrollbar, #main::-webkit-scrollbar,
 .MuiBox-root::-webkit-scrollbar, .MuiStack-root::-webkit-scrollbar, .MuiSelect-listbox::-webkit-scrollbar {
     width: 5px;
 }
+html::-webkit-scrollbar-track, body::-webkit-scrollbar-track, .__next::-webkit-scrollbar-track, #main::-webkit-scrollbar-track,
 .MuiBox-root::-webkit-scrollbar-track, .MuiStack-root::-webkit-scrollbar-track, .MuiSelect-listbox::-webkit-scrollbar-track {
     background: transparent;
 }
+html::-webkit-scrollbar-thumb, body::-webkit-scrollbar-thumb, .__next::-webkit-scrollbar-thumb, #main::-webkit-scrollbar-thumb,
 .MuiBox-root::-webkit-scrollbar-thumb, .MuiStack-root::-webkit-scrollbar-thumb, .MuiSelect-listbox::-webkit-scrollbar-thumb {
     background: #66576f77;
     border-radius: 10px;

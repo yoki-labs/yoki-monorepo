@@ -1,6 +1,6 @@
-import { faMagnifyingGlass, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faMagnifyingGlass, faSliders, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Button, ButtonGroup, Checkbox, CircularProgress, Grid, Input, ListItemDecorator, MenuItem, Modal, Stack, Table } from "@mui/joy";
+import { Box, Button, ButtonGroup, Card, Checkbox, CircularProgress, Divider, Grid, IconButton, Input, ListItemDecorator, MenuItem, Modal, Stack, Table, Typography } from "@mui/joy";
 import React, { ReactNode } from "react";
 
 import PagePlaceholder, { PagePlaceholderIcon } from "./PagePlaceholder";
@@ -49,6 +49,7 @@ type Props<TItem extends { id: TItemId }, TItemId> = {
     getItems: (page: number, search?: string) => Promise<FetchedItems<TItem>>;
     deleteItems: (items: TItemId[], page: number, search?: string) => Promise<FetchedItems<TItem>>;
     ItemRenderer: (props: ItemProps<TItem>) => JSX.Element;
+    ItemMobileRenderer: (props: ItemProps<TItem>) => JSX.Element;
 };
 
 export default class DataTable<TItem extends { id: TItemId }, TItemId> extends React.Component<Props<TItem, TItemId>, State<TItem, TItemId>> {
@@ -110,6 +111,40 @@ export default class DataTable<TItem extends { id: TItemId }, TItemId> extends R
         });
     }
 
+    DataTableToggleCheckbox() {
+        return (
+            <Checkbox checked={this.allSelected} variant="soft" size="lg" onChange={({ target }) => (this.allSelected = target.checked)} />
+        );
+    }
+
+    DataTableOverflow() {
+        return (
+            <HistoryOverflow itemType={this.props.itemType} selectedItems={this.state.selectedItems} onCaseDeletion={this.deleteSelectedItems.bind(this)} />
+        );
+    }
+
+    renderItems() {
+        const { items, selectedItems } = this.state;
+        const { timezone, columns, ItemRenderer, ItemMobileRenderer } = this.props;
+
+        return items.map((item) => [
+            <ItemRenderer
+                item={item}
+                timezone={timezone}
+                columnCount={columns.length}
+                isSelected={selectedItems.includes(item.id)}
+                onSelected={this.toggleSelection.bind(this, item)}
+            />,
+            <ItemMobileRenderer
+                item={item}
+                timezone={timezone}
+                columnCount={columns.length}
+                isSelected={selectedItems.includes(item.id)}
+                onSelected={this.toggleSelection.bind(this, item)}
+                />
+        ]);
+    }
+
     render() {
         // Still loading the items
         if (this.state.error)
@@ -127,50 +162,59 @@ export default class DataTable<TItem extends { id: TItemId }, TItemId> extends R
                 </Stack>
             );
 
-        const { items, page, search, maxPages, selectedItems } = this.state;
-        const { columns, itemType, timezone, ItemRenderer } = this.props;
+        const { items, page, search, maxPages } = this.state;
+        const { columns, itemType } = this.props;
+        const renderedItems = this.renderItems();
 
         return (
             <Stack direction="column" gap={3}>
-                <Grid container spacing={5}>
-                    <Grid xs={4}>
-                        <Input
-                            onChange={({ target }) => this.fetchItems(page, target.value)}
-                            variant="outlined"
-                            placeholder={`Search ${itemType}`}
-                            startDecorator={<FontAwesomeIcon icon={faMagnifyingGlass} />}
-                        />
-                    </Grid>
-                </Grid>
+                <Stack gap={2} direction="row">
+                    <Input
+                        className="flex-1"
+                        onChange={({ target }) => this.fetchItems(page, target.value)}
+                        variant="outlined"
+                        placeholder={`Search ${itemType}`}
+                        startDecorator={<FontAwesomeIcon icon={faMagnifyingGlass} />}
+                    />
+                    {/* <ButtonGroup>
+                        <IconButton variant="outlined" disabled>
+                            <FontAwesomeIcon icon={faSliders} />
+                        </IconButton>
+                    </ButtonGroup> */}
+                </Stack>
 
                 {items.length ? (
                     <>
-                        <Table size="lg" variant="plain" sx={{ borderRadius: 8, overflow: "hidden" }}>
+                        <Box className="block md:hidden">
+                            <Stack direction="row" gap={2}>
+                                {this.DataTableToggleCheckbox()}
+                                <Typography className="flex-1" level="title-md">
+                                    Select all
+                                </Typography>
+                                {this.DataTableOverflow()}
+                            </Stack>
+                            <Stack sx={{ mt: 3 }} direction="column" gap={2}>
+                                {renderedItems.map(([, item]) => item)}
+                            </Stack>
+                        </Box>
+                        <Table className="hidden md:table" size="lg" variant="plain" sx={{ borderRadius: 8, overflow: "hidden" }}>
                             <thead>
                                 <tr>
                                     {/* Select corner */}
                                     <th style={{ width: 30 }}>
-                                        <Checkbox checked={this.allSelected} variant="soft" size="lg" onChange={({ target }) => (this.allSelected = target.checked)} />
+                                        {this.DataTableToggleCheckbox()}
                                     </th>
                                     {columns.map((column) => (
                                         <th>{column}</th>
                                     ))}
                                     {/* Expand corner */}
                                     <th style={{ width: 60 }}>
-                                        <HistoryOverflow itemType={itemType} selectedItems={this.state.selectedItems} onCaseDeletion={this.deleteSelectedItems.bind(this)} />
+                                        {this.DataTableOverflow()}
                                     </th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {items.map((item) => (
-                                    <ItemRenderer
-                                        item={item}
-                                        timezone={timezone}
-                                        columnCount={columns.length}
-                                        isSelected={selectedItems.includes(item.id)}
-                                        onSelected={this.toggleSelection.bind(this, item)}
-                                    />
-                                ))}
+                                {renderedItems.map(([item]) => item)}
                             </tbody>
                         </Table>
 

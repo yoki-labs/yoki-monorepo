@@ -15,6 +15,7 @@ import LabsForm from "../../LabsForm";
 import { LabsFormFieldType } from "../../form";
 import { Severity } from "@prisma/client";
 import { notifyFetchError } from "../../../utils/errorUtil";
+import { UrlCard, UrlRow } from "./UrlItem";
 
 export default class UrlsPage extends React.Component<DashboardPageProps> {
     constructor(props: DashboardPageProps) {
@@ -133,60 +134,18 @@ export default class UrlsPage extends React.Component<DashboardPageProps> {
                     </Card>
                 </Box>
                 <Stack direction="column" gap={3}>
-                    <Typography level="h4">Blacklisted or whitelisted URLs/domains</Typography>
+                    <Typography level="h4">Blacklisted or whitelisted URLs</Typography>
                     <DataTable<SanitizedUrlFilter, number>
                         itemType="filter list URLs"
                         timezone={serverConfig.timezone}
                         columns={["Content", "Severity", "Created by", "Created at"]}
                         getItems={this.fetchUrls.bind(this)}
                         deleteItems={this.deleteUrls.bind(this)}
-                        ItemRenderer={LinkRow}
+                        ItemRenderer={UrlRow}
+                        ItemMobileRenderer={UrlCard}
                     />
                 </Stack>
             </>
         );
     }
-}
-
-function LinkRow({ item: link, columnCount, timezone, isSelected, onSelected }: ItemProps<SanitizedUrlFilter>) {
-    return (
-        <DataTableRow
-            id={`link-${link.id}`}
-            columnCount={columnCount}
-            isSelected={isSelected}
-            onSelected={onSelected}
-            expandedInfo={() => (
-                <Stack gap={3}>
-                    <InfoText icon={faDroplet} name="Infraction points">
-                        {link.infractionPoints}
-                    </InfoText>
-                </Stack>
-            )}
-        >
-            <td>
-                <UrlContentDisplay subdomain={link.subdomain} domain={link.domain} route={link.route} />
-            </td>
-            <td>
-                <Typography startDecorator={<FontAwesomeIcon icon={severityToIcon[link.severity]} />} fontWeight="lg" textColor="text.secondary">
-                    {link.severity}
-                </Typography>
-            </td>
-            <td>
-                <LabsUserCard userId={link.creatorId} />
-            </td>
-            <td>
-                <Typography level="body-md">{formatDate(new Date(link.createdAt), timezone)}</Typography>
-            </td>
-        </DataTableRow>
-    );
-}
-
-function UrlContentDisplay({ subdomain, domain, route }: { subdomain: string | null; domain: string; route: string | null }) {
-    return (
-        <Typography level="body-md" textColor="text.secondary">
-            {subdomain}
-            {domain}
-            {route}
-        </Typography>
-    );
 }

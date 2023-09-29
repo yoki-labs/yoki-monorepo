@@ -39,6 +39,8 @@ const generateColourScheme = (typicalColour: string) => ({
     outlinedDisabledBorder: mixHexColours(typicalColour, mostDark, 0.7),
     // Soft
     softBg: mixHexColours(typicalColour, mostDark, 0.8),
+    // Transparency
+    "sm-opacity": `${typicalColour}55`,
 });
 
 const dark = {

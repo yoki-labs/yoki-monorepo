@@ -8,7 +8,7 @@ type Props = {
     id: string;
     children: ReactNode | ReactNode[];
     columnCount: number;
-    expandedInfo: () => ReactNode | ReactNode[];
+    ExpandedInfoRenderer: () => ReactNode | ReactNode[];
     isSelected: boolean;
     onSelected: (state: boolean) => unknown;
 };
@@ -31,7 +31,7 @@ export default class DataTableRow extends React.Component<Props, State> {
     }
 
     renderInfoRow() {
-        const { id, expandedInfo, isSelected, columnCount } = this.props;
+        const { id, ExpandedInfoRenderer: expandedInfo, isSelected, columnCount } = this.props;
 
         return (
             <tr style={{ "--TableCell-dataBackground": isSelected ? "var(--labs-palette-primary-950)" : "transparent" } as unknown as CSSProperties} data-id={`${id}:expansion`}>

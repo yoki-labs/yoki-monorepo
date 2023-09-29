@@ -1,4 +1,4 @@
-import { Avatar, Chip, Stack, Typography } from "@mui/joy";
+import { Avatar, Checkbox, Chip, Stack, Typography } from "@mui/joy";
 
 type Props = {
     userId: string;
