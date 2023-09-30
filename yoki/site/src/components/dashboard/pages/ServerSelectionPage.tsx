@@ -2,12 +2,12 @@ import { Box, CircularProgress, Stack, Typography } from "@mui/joy";
 import Link from "next/link";
 import React from "react";
 
-import { GuildedServer } from "../../../lib/@types/guilded";
+import { GuildedClientServer } from "../../../lib/@types/guilded";
 import ServerDisplay from "../ServerDisplay";
 import PagePlaceholder, { PagePlaceholderIcon } from "../../PagePlaceholder";
 
 interface Props {
-    servers: GuildedServer[];
+    servers: GuildedClientServer[];
 }
 interface State {
     clicked: boolean;
@@ -38,7 +38,9 @@ export default class ServerSelectionPage extends React.Component<Props, State> {
                         {servers.map((server) => (
                             <Link key={server.id} style={{ textDecoration: "none" }} href={`/dashboard/${server.id}/overview`}>
                                 <ServerDisplay
-                                    server={server}
+                                    name={server.name}
+                                    avatar={server.profilePicture}
+                                    url={server.subdomain}
                                     onClick={this.onClick.bind(this)}
                                     sx={{ cursor: "pointer", bgcolor: "background.level1", "&:hover": { boxShadow: "md", bgcolor: "background.level2" } }}
                                 />

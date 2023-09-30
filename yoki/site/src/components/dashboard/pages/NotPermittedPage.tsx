@@ -1,5 +1,5 @@
 import { Alert, Box, Link, Stack, Typography } from "@mui/joy";
-import { GuildedServer } from "../../../lib/@types/guilded";
+import { GuildedClientServer, GuildedServer } from "../../../lib/@types/guilded";
 import ServerDisplay from "../ServerDisplay";
 import LabsButton from "../../LabsButton";
 import PagePlaceholder, { PagePlaceholderIcon } from "../../PagePlaceholder";
@@ -17,7 +17,7 @@ export default function NotPermittedPage({ currentServer }: Props) {
                 <PagePlaceholder icon={PagePlaceholderIcon.NoPermission} title="Not permitted">
                     Unfortunately, you do not have a role that is configured as ADMIN or you are not the owner of this server.
                 </PagePlaceholder>
-                <ServerDisplay server={currentServer} />
+                <ServerDisplay name={currentServer.name} avatar={currentServer.avatar} url={currentServer.url} />
                 <Alert color="primary" variant="soft" startDecorator={<FontAwesomeIcon icon={faInfoCircle} />} sx={{ mt: 8 }}>
                     <Box sx={{ alignItems: "baseline" }}>
                         <Typography fontSize="md" sx={{ color: "inherit" }}>

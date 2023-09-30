@@ -1,11 +1,11 @@
-import { GuildedServer } from "../../../lib/@types/guilded";
+import { GuildedClientServer, GuildedServer } from "../../../lib/@types/guilded";
 import { Box } from "@mui/joy";
 import React from "react";
 import { LayoutTopbar } from "./LayoutTopbar";
 import { useRouter } from "next/router";
 
 type LayoutProps = {
-    servers: GuildedServer[];
+    servers: GuildedClientServer[];
     currentServer?: GuildedServer;
     user: Partial<{
         name: string | null;

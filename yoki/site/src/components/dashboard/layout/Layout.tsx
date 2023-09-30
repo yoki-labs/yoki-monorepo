@@ -1,4 +1,4 @@
-import { GuildedServer } from "../../../lib/@types/guilded";
+import { GuildedClientServer, GuildedServer } from "../../../lib/@types/guilded";
 import { LayoutSidebar } from "./LayoutSidebar";
 import { Box, IconButton } from "@mui/joy";
 import React from "react";
@@ -8,7 +8,7 @@ import { faBars } from "@fortawesome/free-solid-svg-icons";
 import { SanitizedServer } from "../../../lib/@types/db";
 
 type LayoutProps = {
-    servers: GuildedServer[];
+    servers: GuildedClientServer[];
     currentServer?: GuildedServer;
     serverConfig: SanitizedServer;
     user: Partial<{

@@ -2,7 +2,7 @@ import { GetServerSideProps, GetServerSidePropsResult } from "next";
 import { getServerSession } from "next-auth";
 import React from "react";
 
-import { GuildedServer } from "../../lib/@types/guilded";
+import { GuildedClientServer } from "../../lib/@types/guilded";
 import { methods } from "../../lib/Fetcher";
 // import WelcomeBanner from "../../partials/WelcomeBanner";
 import { authOptions } from "../api/auth/[...nextauth]";
@@ -11,7 +11,7 @@ import ServerSelectionPage from "../../components/dashboard/pages/ServerSelectio
 import { useRouter } from "next/router";
 
 type SessionProps = {
-    servers: GuildedServer[];
+    servers: GuildedClientServer[];
     user: Partial<{
         name: string | null;
         avatar: string | null;
@@ -25,7 +25,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx): Promise<GetSe
 
     console.log("Session user", session.user);
 
-    const servers = await methods(session.user.access_token).get<GuildedServer[]>("https://authlink.app/api/v1/users/@me/servers");
+    const servers = await methods(session.user.access_token).get<GuildedClientServer[]>("https://authlink.app/api/v1/users/@me/servers");
     console.log("Server list", { servers });
     if (!servers?.length) return { redirect: { destination: "/auth/signin", permanent: false } };
 

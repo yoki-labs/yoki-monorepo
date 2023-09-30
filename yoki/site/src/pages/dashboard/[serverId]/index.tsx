@@ -4,13 +4,14 @@ import { getServerSession } from "next-auth";
 import React from "react";
 
 import LayoutWrapper from "../../../components/dashboard/layout/LayoutWrapper";
-import { GuildedServer } from "../../../lib/@types/guilded";
+import { GuildedClientServer } from "../../../lib/@types/guilded";
 import { methods } from "../../../lib/Fetcher";
 // import WelcomeBanner from "../../partials/WelcomeBanner";
 import { authOptions } from "../../api/auth/[...nextauth]";
+import rest from "../../../guilded";
 
 interface SessionProps {
-    servers: GuildedServer[];
+    servers: GuildedClientServer[];
     user: Partial<{
         name: string | null;
         avatar: string | null;
@@ -23,14 +24,18 @@ export const getServerSideProps: GetServerSideProps = async (ctx): Promise<GetSe
 
     console.log("Session user", session.user);
 
-    const servers = await methods(session.user.access_token).get<GuildedServer[]>("https://authlink.app/api/v1/users/@me/servers");
+    const servers = await methods(session.user.access_token).get<GuildedClientServer[]>("https://authlink.app/api/v1/users/@me/servers");
     if (!servers?.length) return { redirect: { destination: "/auth/signin", permanent: false } };
 
     // /dashboard/:serverId
     const { serverId } = ctx.query;
 
+    if (!serverId)
+        return { redirect: { destination: "/dashboard", permanent: false } };
+
     // If this user isn't in that server, redirect them back to dashboard server selection
-    const destination = servers.find((x) => x.id === serverId) ? `/dashboard/${serverId}/overview` : `/dashboard`;
+    const referencedServer = servers.find((x) => x.id === serverId) ?? await rest.router.servers.serverRead({ serverId: serverId as string }).catch(() => null);
+    const destination = referencedServer ? `/dashboard/${serverId}/overview` : `/dashboard`;
 
     return { redirect: { destination, permanent: false } };
 };

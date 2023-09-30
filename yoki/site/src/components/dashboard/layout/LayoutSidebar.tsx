@@ -1,17 +1,14 @@
-import { useAtom } from "jotai";
-
-import { navbarAtom } from "../../../state/navbar";
 import LayoutSidebarTab from "./LayoutSidebarTab";
 import { Box, List, Typography } from "@mui/joy";
 import { DashboardPageCategory, dashboardPageList } from "../pages";
 import { SanitizedServer } from "../../../lib/@types/db";
 import { ServerSelector } from "./ServerSelector";
-import { GuildedServer } from "../../../lib/@types/guilded";
+import { GuildedClientServer, GuildedServer } from "../../../lib/@types/guilded";
 
 type Props = {
     menuToggled: boolean;
     serverConfig: SanitizedServer;
-    servers: GuildedServer[];
+    servers: GuildedClientServer[];
     currentServer: GuildedServer | undefined;
     page: string;
     onServerChange: (serverId: string) => void;
@@ -38,7 +35,7 @@ export function LayoutSidebar({ page, serverConfig, menuToggled, currentServer, 
     return (
         <Box sx={{ fontSize: 14, pb: 5 }} className={`px-5 w-full pt-4 md:pt-0 md:px-7 md:max-w-80 md:w-80 h-full overflow-y-auto overflow-x-hidden ${showStateClass}`}>
             <Box sx={{ mb: 5 }} className="block md:hidden">
-                <ServerSelector onChange={onServerChange} defaultValue={currentServer} servers={servers} />
+                <ServerSelector onChange={onServerChange} defaultValue={currentServer?.id} servers={servers} />
             </Box>
             {categorizedPages.map(({ category, items }) => (
                 <section className="pb-5" key={`sidebar-category-${category}`}>

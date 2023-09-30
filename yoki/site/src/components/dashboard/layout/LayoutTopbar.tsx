@@ -1,11 +1,11 @@
 import { Box, Breadcrumbs, Typography } from "@mui/joy";
 import { ServerSelector } from "./ServerSelector";
-import { GuildedServer } from "../../../lib/@types/guilded";
+import { GuildedClientServer, GuildedServer } from "../../../lib/@types/guilded";
 import UserManager from "./UserManager";
 import Branding from "../../Branding";
 
 type Props = {
-    servers: GuildedServer[];
+    servers: GuildedClientServer[];
     currentServer?: GuildedServer;
     onServerChange: (serverId: string) => unknown | Promise<unknown>;
     user: Partial<{
@@ -32,7 +32,7 @@ export function LayoutTopbar({ children, onServerChange, currentServer, servers,
                     <Branding />
                 </Box>
                 <Box className="hidden md:block">
-                    <ServerSelector onChange={onServerChange} defaultValue={currentServer} servers={servers} />
+                    <ServerSelector onChange={onServerChange} defaultValue={currentServer?.id} servers={servers} />
                 </Box>
             </Breadcrumbs>
             <UserManager user={user} />

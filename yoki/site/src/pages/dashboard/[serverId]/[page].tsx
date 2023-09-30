@@ -3,7 +3,7 @@ import { getServerSession } from "next-auth";
 import React from "react";
 
 import DashForm from "../../../components/dashboard/DashForm";
-import { GuildedServer } from "../../../lib/@types/guilded";
+import { GuildedClientServer, GuildedServer } from "../../../lib/@types/guilded";
 import { methods } from "../../../lib/Fetcher";
 // import WelcomeBanner from "../../partials/WelcomeBanner";
 import { authOptions } from "../../api/auth/[...nextauth]";
@@ -17,13 +17,14 @@ import { RoleType } from "@prisma/client";
 import NotPermittedPage from "../../../components/dashboard/pages/NotPermittedPage";
 import NoEarlyAccessPage from "../../../components/dashboard/pages/NoEarlyAccessPage";
 import { useRouter } from "next/router";
+import { transformFoundServer } from "../../../utils/route";
 
 type BaseSessionProps = {
     user: Partial<{
         name: string | null;
         avatar: string | null;
     }>;
-    servers: GuildedServer[];
+    servers: GuildedClientServer[];
     currentServer: GuildedServer;
 };
 type SessionProps =
@@ -42,13 +43,13 @@ export const getServerSideProps: GetServerSideProps = async (ctx): Promise<GetSe
 
     console.log("Session user", session.user);
 
-    const servers = await methods(session.user.access_token).get<GuildedServer[]>("https://authlink.guildedapi.com/api/v1/users/@me/servers");
+    const servers = await methods(session.user.access_token).get<GuildedClientServer[]>("https://authlink.guildedapi.com/api/v1/users/@me/servers");
     if (!servers?.length) return { redirect: { destination: "/auth/signin", permanent: false } };
 
     // /dashboard/:serverId/:page
     const { serverId, page } = ctx.query;
 
-    const referencedServer = servers.find((x) => x.id === serverId);
+    const referencedServer = transformFoundServer(servers.find((x) => x.id === serverId)) ?? (await rest.router.servers.serverRead({ serverId: serverId as string }).catch(() => null))?.server;
 
     // Not in that server; cannot manage it
     if (!referencedServer) return { redirect: { destination: `/dashboard`, permanent: false } };
