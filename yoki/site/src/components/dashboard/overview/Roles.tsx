@@ -179,8 +179,15 @@ function RolesPageSkeleton() {
                         <Skeleton animation="wave">Member role</Skeleton>
                     </Typography>
                     <Skeleton animation="wave" width="100%" height={40} sx={{ position: "initial" }} />
-                    <Typography level="body-sm">
+                    <Typography level="body-sm" sx={{ mb: 2 }}>
                         <Skeleton animation="wave">The role that will be assigned when user gets muted.</Skeleton>
+                    </Typography>
+                    <Typography level="body-sm" sx={{ mb: 1 }}>
+                        <Skeleton animation="wave">Modmail support role</Skeleton>
+                    </Typography>
+                    <Skeleton animation="wave" width="100%" height={40} sx={{ position: "initial" }} />
+                    <Typography level="body-sm">
+                        <Skeleton animation="wave">The role that will be mentioned privately and silently when a new modmail ticket is created by a user.</Skeleton>
                     </Typography>
                 </CardContent>
             </Card>

@@ -8,6 +8,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faRocket } from "@fortawesome/free-solid-svg-icons";
 import { toast } from "react-hot-toast";
 import { notifyFetchError } from "../../../utils/errorUtil";
+import { PremiumType } from "@prisma/client";
+import { TextColor } from "@mui/joy/styles/types";
 
 export type Props = {
     serverConfig: SanitizedServer;
@@ -16,16 +18,6 @@ export type Props = {
 export default class DashboardProfileCard extends React.Component<Props> {
     constructor(props: Props) {
         super(props);
-    }
-
-    BotTier() {
-        const { premium } = this.props.serverConfig;
-
-        return (
-            <Typography level="body-md" textColor="text.primary" fontWeight="bolder">
-                {premium?.toString() ?? "Free"} tier
-            </Typography>
-        );
     }
 
     onServerUpdate(prefix: string | null, timezone: string | null) {
@@ -39,7 +31,6 @@ export default class DashboardProfileCard extends React.Component<Props> {
     }
 
     render() {
-        const BotTier = this.BotTier.bind(this);
         const { serverConfig } = this.props;
 
         return (
@@ -60,11 +51,11 @@ export default class DashboardProfileCard extends React.Component<Props> {
                     </Stack>
                     <Box sx={{ mt: 3, py: 0.5, px: 1.5 }}>
                         <Box>
-                            <BotTier />
+                            <BotTier tier={serverConfig.premium} />
                             <Stack direction="row" alignItems="center">
                                 <Typography level="h2">Yoki</Typography>
                                 <Typography sx={{ ml: 1, px: 1 }} level="h3" fontSize="md" color="neutral" variant="solid">
-                                    Bot
+                                    BOT
                                 </Typography>
                             </Stack>
                             <Typography level="body-md">Meet Yoki, your moderation companion and the biggest moderation bot on Guilded.</Typography>
@@ -78,6 +69,19 @@ export default class DashboardProfileCard extends React.Component<Props> {
             </Card>
         );
     }
+}
+
+const tierToColour: Record<PremiumType, TextColor> = {
+    [PremiumType.Gold]: "warning.300",
+    [PremiumType.Silver]: "primary.300",
+};
+
+function BotTier({ tier }: { tier: PremiumType | null }) {
+    return (
+        <Typography level="body-lg" textColor={tier ? tierToColour[tier] : "text.primary"} fontWeight="bolder">
+            {tier?.toString() ?? "Free"} tier
+        </Typography>
+    );
 }
 
 function DashboardProfileCardForm(props: { onSubmit: (values: LabsFormFieldValueMap) => unknown | Promise<unknown>; serverConfig: SanitizedServer }) {
