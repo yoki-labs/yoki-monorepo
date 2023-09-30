@@ -63,6 +63,12 @@ export async function roleExistsInServer(serverId: string, roleId: number) {
     return serverRoles.find((x) => x.id === roleId);
 }
 
+export const channelExistsInServer = async (channelId: string) =>
+    rest.router.channels
+        .channelRead({ channelId })
+        .then(() => true)
+        .catch(() => false);
+
 export const transformFoundServer = (server: GuildedClientServer | undefined): GuildedServer | undefined =>
     server && transformServer(server);
 

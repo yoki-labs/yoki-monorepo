@@ -65,6 +65,16 @@ export default class UrlsPage extends React.Component<DashboardPageProps> {
         }).catch(notifyFetchError.bind(null, "Error while creating role data"));
     }
 
+    async modifyServerConfig(urlFilterIsWhitelist: boolean | undefined | null, linkSeverity: Severity | undefined | null, linkInfractionPoints: number | undefined | null) {
+        const { serverId } = this.props.serverConfig;
+
+        return fetch(`/api/servers/${serverId}`, {
+            method: "PATCH",
+            headers: { "content-type": "application/json" },
+            body: JSON.stringify({ urlFilterIsWhitelist, linkSeverity, linkInfractionPoints }),
+        }).catch(notifyFetchError.bind(null, "Error while updating server data for role changes"));
+    }
+
     render() {
         const { serverConfig } = this.props;
 
@@ -78,7 +88,6 @@ export default class UrlsPage extends React.Component<DashboardPageProps> {
                         activeClassName="from-red-500 to-pink-500"
                         serverConfig={serverConfig}
                         prop="filterEnabled"
-                        iconAspectRatio={0.8}
                         hideBadges
                         largeHeader
                     />
@@ -128,7 +137,7 @@ export default class UrlsPage extends React.Component<DashboardPageProps> {
                                         ],
                                     },
                                 ]}
-                                onSubmit={(values) => console.log("Values", { values })}
+                                onSubmit={({ urlFilterIsWhitelist, linkSeverity, linkInfractionPoints }) => this.modifyServerConfig(urlFilterIsWhitelist as boolean | undefined | null, linkSeverity as Severity | undefined | null, linkInfractionPoints as number | undefined | null)}
                             />
                         </CardContent>
                     </Card>

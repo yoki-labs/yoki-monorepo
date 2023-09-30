@@ -3,7 +3,8 @@ import { timezones } from "@yokilabs/utils";
 import { NextApiResponse } from "next";
 
 import prisma from "../../../../prisma";
-import createServerRoute from "../../../../utils/route";
+import createServerRoute, { channelExistsInServer } from "../../../../utils/route";
+import rest from "../../../../guilded";
 
 const DEFAULT_PREFIX = process.env.DEFAULT_PREFIX as string;
 const MAP_DEFAULT_PREFIXES = [DEFAULT_PREFIX, null, ""];
@@ -25,6 +26,11 @@ const BOOLEAN_PROPERTIES: (keyof Server)[] = [
     "filterOnMods",
     "urlFilterIsWhitelist",
 ];
+const ROLE_PROPERTIES: (keyof Server)[] = [
+    "muteRoleId",
+    "memberRoleId",
+    "modmailPingRoleId",
+];
 
 const availableSeverity = Object.keys(Severity);
 
@@ -33,7 +39,7 @@ const serverConfigRoute = createServerRoute({
         // Type-check body
         const { body } = req;
 
-        // ///// Body validity check
+        /////// Body validity check
         // Prefix can be string or unset
         if (isUnsettablePropertyTypeInvalid(body.prefix, "string")) return getErrorResponse(res, "prefix", "null or string");
         // Timezones can be valid timezones or unset
@@ -49,7 +55,11 @@ const serverConfigRoute = createServerRoute({
         else if (isPropertyTypeInvalid(body.linkInfractionPoints, "number") || body.linkInfractionPoints < 0 || body.linkInfractionPoints > 10000)
             return getErrorResponse(res, "linkInfractionPoints", "number between 0 and 10'000");
         // Severity
-        else if (isEnumPropertyInvalid(body.linkSeverity, availableSeverity)) return getErrorResponse(res, "linkSeverity", "severity");
+        else if (isEnumPropertyInvalid(body.linkSeverity, availableSeverity))
+            return getErrorResponse(res, "linkSeverity", "severity");
+        // Channels
+        else if (!await isChannelPropertyInvalid(body.appealChannelId))
+            return getErrorResponse(res, "appealChannelId", "null or channel");
 
         // Modules
         const data: Partial<Server> = {
@@ -63,6 +73,8 @@ const serverConfigRoute = createServerRoute({
             spamInfractionPoints: body.spamInfractionPoints,
             linkInfractionPoints: body.linkInfractionPoints,
             linkSeverity: MAP_DEFAULT_SEVERITY.includes(body.linkSeverity) ? null : body.linkSeverity ?? server.linkSeverity,
+            // Channels
+            appealChannelId: typeof body.appealChannelId === "undefined" ? server.appealChannelId : body.appealChannelId,
         };
 
         // Remove repetition
@@ -71,6 +83,21 @@ const serverConfigRoute = createServerRoute({
 
             // It is fine
             data[moduleProp] = body[moduleProp];
+        }
+
+        // Since it may not be necessary to fetch all the roles and all
+        if (ROLE_PROPERTIES.some((x) => Object.hasOwn(body, x))) {
+            const roleIds = (await rest.router.roles.roleReadMany({ serverId: server.serverId })).roles.map((x) => x.id);
+
+            for (const roleProp of ROLE_PROPERTIES) {
+                const value = body[roleProp];
+
+                if (!(value === null || typeof value === "undefined" || (typeof value === "number" && roleIds.includes(value!))))
+                    return res.status(400).json({ error: true, message: `Provided role from property ${roleProp} does not exist in the Guilded server.` });
+
+                // It is fine
+                data[roleProp] = value;
+            }
         }
 
         await prisma.server.update({
@@ -99,5 +126,8 @@ function isPropertyTypeInvalid<T>(value: T, expectedType: AllowedValues) {
 const isUnsettablePropertyTypeInvalid = <T>(value: T, expectedType: AllowedValues) => value !== null && isPropertyTypeInvalid(value, expectedType);
 
 const isEnumPropertyInvalid = <T extends string>(value: unknown, expectedValues: T[]) => value !== null && typeof value !== "undefined" && !expectedValues.includes(value as T);
+
+const isChannelPropertyInvalid = async <T>(channelId: T) =>
+    typeof channelId === "undefined" || channelId === null || (typeof channelId === "string" && await channelExistsInServer(channelId));
 
 export default serverConfigRoute;

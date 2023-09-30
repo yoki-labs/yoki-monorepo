@@ -3,7 +3,7 @@ import { isUUID } from "@yokilabs/utils";
 
 import rest from "../../../../../guilded";
 import prisma from "../../../../../prisma";
-import createServerRoute from "../../../../../utils/route";
+import createServerRoute, { channelExistsInServer } from "../../../../../utils/route";
 
 const serverLogsRoute = createServerRoute({
     async DELETE(req, res, _session, { serverId }, _member) {
@@ -69,7 +69,7 @@ const serverLogsRoute = createServerRoute({
         // This check is exclusively to ditch DELETE route and allow us to just do it all in PUT
         else if (!(existingLogs.length || logsToAdd.length)) return res.status(404).json({ error: true, message: "Any log by this channel ID does not exist." });
         // Make sure channel exists
-        else if (!existingLogs.length && !(await channelExists(logId)))
+        else if (!existingLogs.length && !(await channelExistsInServer(logId)))
             return res.status(404).json({ error: true, message: "Channel by that ID does not exist, bot has no permission to see it or there was an error while fetching it." });
 
         await Promise.all([
@@ -111,11 +111,5 @@ const serverLogsRoute = createServerRoute({
         });
     },
 });
-
-const channelExists = async (channelId: string) =>
-    rest.router.channels
-        .channelRead({ channelId })
-        .then(() => true)
-        .catch(() => false);
 
 export default serverLogsRoute;

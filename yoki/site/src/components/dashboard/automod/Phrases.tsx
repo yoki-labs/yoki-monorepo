@@ -65,7 +65,6 @@ export default class PhrasesPage extends React.Component<DashboardPageProps> {
                         activeClassName="from-red-500 to-pink-500"
                         serverConfig={serverConfig}
                         prop="filterEnabled"
-                        iconAspectRatio={0.8}
                         hideBadges
                         largeHeader
                     />

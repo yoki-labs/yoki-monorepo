@@ -48,10 +48,9 @@ export default class HistoryPage extends React.Component<DashboardPageProps> {
 
         return (
             <Stack direction="column" gap={3}>
-                <Typography level="h4" gutterBottom>
+                <Typography level="h4">
                     Server history
                 </Typography>
-
                 <DataTable<SanitizedAction, string>
                     itemType="cases"
                     timezone={serverConfig.timezone}
