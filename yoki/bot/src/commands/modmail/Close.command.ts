@@ -4,8 +4,7 @@ import { Category, Command } from "../commands";
 const Close: Command = {
     name: "close",
     subName: "close",
-    description:
-        "Closes the current or specific user's modmail ticket.",
+    description: "Closes the current or specific user's modmail ticket.",
     examples: [""],
     subCommand: true,
     forceShow: true,
@@ -31,10 +30,8 @@ const Close: Command = {
 
         await ctx.supportUtil.closeExistingThread(server, ticket, message.authorId);
 
-        if (ticket.modFacingChannelId === ticket.userFacingChannelId)
-            await ctx.rest.put(`/channels/${message.channelId}/archive`);
-        else
-            await ctx.channels.delete(message.channelId);
+        if (ticket.modFacingChannelId === ticket.userFacingChannelId) await ctx.rest.put(`/channels/${message.channelId}/archive`);
+        else await ctx.channels.delete(message.channelId);
 
         return ctx.supportUtil.sendModmailCloseMessage(server, ticket, "closed by a staff member");
     },

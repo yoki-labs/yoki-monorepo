@@ -137,7 +137,13 @@ export default class UrlsPage extends React.Component<DashboardPageProps> {
                                         ],
                                     },
                                 ]}
-                                onSubmit={({ urlFilterIsWhitelist, linkSeverity, linkInfractionPoints }) => this.modifyServerConfig(urlFilterIsWhitelist as boolean | undefined | null, linkSeverity as Severity | undefined | null, linkInfractionPoints as number | undefined | null)}
+                                onSubmit={({ urlFilterIsWhitelist, linkSeverity, linkInfractionPoints }) =>
+                                    this.modifyServerConfig(
+                                        urlFilterIsWhitelist as boolean | undefined | null,
+                                        linkSeverity as Severity | undefined | null,
+                                        linkInfractionPoints as number | undefined | null
+                                    )
+                                }
                             />
                         </CardContent>
                     </Card>

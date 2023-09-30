@@ -106,11 +106,12 @@ export default class RolesPage extends React.Component<DashboardPageProps, State
         const { error, isLoaded, roles, serverRoles } = this.state;
 
         // Server-side error
-        if (error) return (
-            <PagePlaceholder icon={PagePlaceholderIcon.Unexpected} title={`Error while fetching data (${error.code})`}>
-                {error.message}
-            </PagePlaceholder>
-        );
+        if (error)
+            return (
+                <PagePlaceholder icon={PagePlaceholderIcon.Unexpected} title={`Error while fetching data (${error.code})`}>
+                    {error.message}
+                </PagePlaceholder>
+            );
         // Still fetching data
         else if (!isLoaded) return <RolesPageSkeleton />;
 

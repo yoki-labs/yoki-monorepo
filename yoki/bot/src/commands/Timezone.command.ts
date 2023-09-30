@@ -22,13 +22,14 @@ const Timezone: Command = {
     execute: async (message, args, ctx, commandCtx) => {
         const newTimezone = (args.newTimezone as string | null)?.toLowerCase();
 
-        if (!newTimezone)
-            return ctx.messageUtil.replyWithInfo(message, "Timezone", `The timezone for this server is ${inlineQuote(commandCtx.server.getTimezone())}`);
+        if (!newTimezone) return ctx.messageUtil.replyWithInfo(message, "Timezone", `The timezone for this server is ${inlineQuote(commandCtx.server.getTimezone())}`);
         else if (!timezones.includes(newTimezone))
             return ctx.messageUtil.replyWithError(
                 message,
                 "Invalid timezone",
-                `The timezone ${inlineQuote(newTimezone)} is invalid. The only acceptable timezones are the ones from this [list](https://www.guilded.gg/Yoki/groups/2dXLMBPd/channels/0a2069b9-2e7d-45da-9121-ab3b463f9af2/docs).`
+                `The timezone ${inlineQuote(
+                    newTimezone
+                )} is invalid. The only acceptable timezones are the ones from this [list](https://www.guilded.gg/Yoki/groups/2dXLMBPd/channels/0a2069b9-2e7d-45da-9121-ab3b463f9af2/docs).`
             );
 
         await ctx.prisma.server.update({ where: { id: commandCtx.server.id }, data: { timezone: newTimezone } });

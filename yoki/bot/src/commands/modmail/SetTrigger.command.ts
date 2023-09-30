@@ -1,10 +1,10 @@
 import { ReactionActionType } from "@prisma/client";
+import { channelName, inlineQuote } from "@yokilabs/bot";
+import { ReactionInfo } from "@yokilabs/utils";
 import type { Channel } from "guilded.js";
 
 import { RoleType } from "../../typings";
 import { Category, Command } from "../commands";
-import { ReactionInfo } from "@yokilabs/utils";
-import { channelName, inlineQuote } from "@yokilabs/bot";
 
 const SetTrigger: Command = {
     name: "modmail-settrigger",
@@ -36,7 +36,17 @@ const SetTrigger: Command = {
         const sentMessageId = args.sentMessageId as string;
 
         const sentMessage = await ctx.messages.fetch(targetChannel.id, sentMessageId).catch(() => null);
-        if (!sentMessage) return ctx.messageUtil.replyWithError(message, `Invalid message`, `No such message by ID ${inlineQuote(sentMessageId)} exists in channel ${channelName(targetChannel.name, targetChannel.serverId, targetChannel.groupId, targetChannel.id)}.`);
+        if (!sentMessage)
+            return ctx.messageUtil.replyWithError(
+                message,
+                `Invalid message`,
+                `No such message by ID ${inlineQuote(sentMessageId)} exists in channel ${channelName(
+                    targetChannel.name,
+                    targetChannel.serverId,
+                    targetChannel.groupId,
+                    targetChannel.id
+                )}.`
+            );
 
         const emote = args.emote as ReactionInfo;
 
@@ -54,10 +64,13 @@ const SetTrigger: Command = {
             },
         });
 
-        if (!reactionTrigger)
-            await ctx.prisma.reactionAction.create({
-                data: {
+        if (reactionTrigger)
+            await ctx.prisma.reactionAction.updateMany({
+                where: {
                     actionType: ReactionActionType.MODMAIL,
+                    serverId: message.serverId!,
+                },
+                data: {
                     channelId: targetChannel.id,
                     emoteId: emote.id,
                     messageId: sentMessage.id,
@@ -65,12 +78,9 @@ const SetTrigger: Command = {
                 },
             });
         else
-            await ctx.prisma.reactionAction.updateMany({
-                where: {
-                    actionType: ReactionActionType.MODMAIL,
-                    serverId: message.serverId!,
-                },
+            await ctx.prisma.reactionAction.create({
                 data: {
+                    actionType: ReactionActionType.MODMAIL,
                     channelId: targetChannel.id,
                     emoteId: emote.id,
                     messageId: sentMessage.id,

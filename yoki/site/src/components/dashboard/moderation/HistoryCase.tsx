@@ -21,9 +21,7 @@ export function HistoryCaseRow({ item: action, columnCount, timezone, isSelected
             columnCount={columnCount}
             isSelected={isSelected}
             onSelected={onSelected}
-            ExpandedInfoRenderer={() => (
-                <CaseExpandedInfo action={action} timezone={timezone} />
-            )}
+            ExpandedInfoRenderer={() => <CaseExpandedInfo action={action} timezone={timezone} />}
         >
             <td>
                 <LabsUserCard userId={action.targetId} />
@@ -55,13 +53,13 @@ export function HistoryCaseCard({ item: action, columnCount, timezone, isSelecte
             TitleRenderer={() => (
                 <>
                     <LabsUserCard userId={action.targetId} />
-                    <Typography level="body-lg" textColor="text.tertiary">{"\u2022"}</Typography>
+                    <Typography level="body-lg" textColor="text.tertiary">
+                        {"\u2022"}
+                    </Typography>
                     <CaseType action={action} />
                 </>
             )}
-            ExpandedInfoRenderer={() => (
-                <CaseExpandedInfo action={action} timezone={timezone} includeExecutor />
-            )}
+            ExpandedInfoRenderer={() => <CaseExpandedInfo action={action} timezone={timezone} includeExecutor />}
         >
             <Stack mt={2} gap={2} direction="column">
                 <Typography level="body-md">{reason && reason.length > 32 ? `${reason?.slice(0, 32)}...` : reason}</Typography>
@@ -70,7 +68,7 @@ export function HistoryCaseCard({ item: action, columnCount, timezone, isSelecte
     );
 }
 
-function CaseType({ action }: { action: SanitizedAction; }) {
+function CaseType({ action }: { action: SanitizedAction }) {
     return (
         <Typography startDecorator={<FontAwesomeIcon icon={severityToIcon[action.type]} />} fontWeight="lg" textColor="text.secondary">
             {action.type}
@@ -78,15 +76,17 @@ function CaseType({ action }: { action: SanitizedAction; }) {
     );
 }
 
-function CaseExpandedInfo({ action, timezone, includeExecutor }: { action: SanitizedAction; timezone: string | null; includeExecutor?: boolean; }) {
+function CaseExpandedInfo({ action, timezone, includeExecutor }: { action: SanitizedAction; timezone: string | null; includeExecutor?: boolean }) {
     return (
         <Stack gap={3}>
-            {includeExecutor && <Box>
-                <Typography level="h2" fontSize="md" gutterBottom>
-                    Moderator
-                </Typography>
-                <LabsUserCard userId={action.executorId} />
-            </Box>}
+            {includeExecutor && (
+                <Box>
+                    <Typography level="h2" fontSize="md" gutterBottom>
+                        Moderator
+                    </Typography>
+                    <LabsUserCard userId={action.executorId} />
+                </Box>
+            )}
             <Box>
                 <Typography level="h2" fontSize="md" gutterBottom>
                     Reason

@@ -4,9 +4,9 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { Session, unstable_getServerSession } from "next-auth";
 
 import rest from "../guilded";
+import { GuildedClientServer, GuildedServer } from "../lib/@types/guilded";
 import { authOptions } from "../pages/api/auth/[...nextauth]";
 import prisma from "../prisma";
-import { GuildedClientServer, GuildedServer } from "../lib/@types/guilded";
 
 type RouteFunction = (req: NextApiRequest, res: NextApiResponse, session: Session | null, server: Server, member: ServerMember) => Promise<unknown>;
 
@@ -69,8 +69,7 @@ export const channelExistsInServer = async (channelId: string) =>
         .then(() => true)
         .catch(() => false);
 
-export const transformFoundServer = (server: GuildedClientServer | undefined): GuildedServer | undefined =>
-    server && transformServer(server);
+export const transformFoundServer = (server: GuildedClientServer | undefined): GuildedServer | undefined => server && transformServer(server);
 
 export function transformServer({ id, name, subdomain, profilePicture }: GuildedClientServer): GuildedServer {
     return { id, name, url: subdomain, avatar: profilePicture ?? undefined };

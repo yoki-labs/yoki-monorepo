@@ -16,9 +16,7 @@ export function AppealRow({ item: appeal, columnCount, timezone, isSelected, onS
             columnCount={columnCount}
             isSelected={isSelected}
             onSelected={onSelected}
-            ExpandedInfoRenderer={() => (
-                <AppealExpandedInfo appeal={appeal} timezone={timezone} />
-            )}
+            ExpandedInfoRenderer={() => <AppealExpandedInfo appeal={appeal} timezone={timezone} />}
         >
             <td>
                 <LabsUserCard userId={appeal.creatorId} />
@@ -47,13 +45,13 @@ export function AppealCard({ item: appeal, timezone, isSelected, onSelected }: I
             TitleRenderer={() => (
                 <>
                     <LabsUserCard userId={appeal.creatorId} />
-                    <Typography level="body-lg" textColor="text.tertiary">{"\u2022"}</Typography>
+                    <Typography level="body-lg" textColor="text.tertiary">
+                        {"\u2022"}
+                    </Typography>
                     <AppealStatus appeal={appeal} />
                 </>
             )}
-            ExpandedInfoRenderer={() => (
-                <AppealExpandedInfo appeal={appeal} timezone={timezone} />
-            )}
+            ExpandedInfoRenderer={() => <AppealExpandedInfo appeal={appeal} timezone={timezone} />}
         >
             <Stack mt={2} gap={2} direction="column">
                 <Typography level="body-md">{content && content.length > 50 ? `${content?.slice(0, 50)}...` : content}</Typography>
@@ -62,13 +60,15 @@ export function AppealCard({ item: appeal, timezone, isSelected, onSelected }: I
     );
 }
 
-function AppealStatus({ appeal }: { appeal: SanitizedAppeal; }) {
+function AppealStatus({ appeal }: { appeal: SanitizedAppeal }) {
     return (
-        <Chip color="warning" variant="outlined">Awaiting</Chip>
+        <Chip color="warning" variant="outlined">
+            Awaiting
+        </Chip>
     );
 }
 
-function AppealExpandedInfo({ appeal }: { appeal: SanitizedAppeal; timezone: string | null; }) {
+function AppealExpandedInfo({ appeal }: { appeal: SanitizedAppeal; timezone: string | null }) {
     return (
         <Stack gap={3}>
             <Box>

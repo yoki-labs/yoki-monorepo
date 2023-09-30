@@ -1,5 +1,4 @@
 import { Collection } from "@discordjs/collection";
-import { RoleType } from "@prisma/client";
 
 import { Category, Command } from "../commands";
 import Buy from "./Buy.command";

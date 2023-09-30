@@ -1,5 +1,6 @@
 import { RoleType } from "@prisma/client";
 import { inlineQuote } from "@yokilabs/bot";
+
 import { Category, Command } from "../commands";
 
 const SetCanBuy: Command = {
@@ -26,13 +27,17 @@ const SetCanBuy: Command = {
 
         const item = await ctx.dbUtil.getItem(message.serverId!, itemId);
 
-        if (!item) return ctx.messageUtil.replyWithError(message, "No such item", `Item with ID ${inlineQuote(itemId)} does not exist.`);;
+        if (!item) return ctx.messageUtil.replyWithError(message, "No such item", `Item with ID ${inlineQuote(itemId)} does not exist.`);
 
         await ctx.dbUtil.updateItem(item, {
             canBuy: buyable,
         });
 
-        return ctx.messageUtil.replyWithSuccess(message, buyable ? `Item added to the shop` : `Item removed from the shop`, `The item ${inlineQuote(item.name)} can ${buyable ? "now be bought at the shop" : "no longer be bought at the shop"}.`);
+        return ctx.messageUtil.replyWithSuccess(
+            message,
+            buyable ? `Item added to the shop` : `Item removed from the shop`,
+            `The item ${inlineQuote(item.name)} can ${buyable ? "now be bought at the shop" : "no longer be bought at the shop"}.`
+        );
     },
 };
 

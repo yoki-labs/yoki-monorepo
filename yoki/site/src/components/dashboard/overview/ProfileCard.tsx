@@ -137,8 +137,10 @@ function DashboardProfileCardForm(props: { onSubmit: (values: LabsFormFieldValue
 const normalizeTimezoneName = (timezone: string): string => {
     const [region, place] = timezone.split("/");
 
-    return `${place.split("_").map((x) => normalizeTimezonePart(x)).join(" ")}, ${normalizeTimezonePart(region)}`;
-}
+    return `${place
+        .split("_")
+        .map((x) => normalizeTimezonePart(x))
+        .join(" ")}, ${normalizeTimezonePart(region)}`;
+};
 
-const normalizeTimezonePart = (timezoneWord: string) =>
-    timezoneWord[0].toUpperCase() + timezoneWord.slice(1);
+const normalizeTimezonePart = (timezoneWord: string) => timezoneWord[0].toUpperCase() + timezoneWord.slice(1);

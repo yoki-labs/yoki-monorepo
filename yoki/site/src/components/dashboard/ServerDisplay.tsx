@@ -23,9 +23,11 @@ export default function ServerDisplay({ name, avatar, url, onClick, sx }: Props)
                 <Typography component="span" level="title-sm">
                     {name}
                 </Typography>
-                {url && <Stack sx={{ alignItems: "start", flexGrow: "1" }} spacing={2} direction="row">
-                    <Typography level="body-md">/{url}</Typography>
-                </Stack>}
+                {url && (
+                    <Stack sx={{ alignItems: "start", flexGrow: "1" }} spacing={2} direction="row">
+                        <Typography level="body-md">/{url}</Typography>
+                    </Stack>
+                )}
             </CardContent>
         </Card>
     );

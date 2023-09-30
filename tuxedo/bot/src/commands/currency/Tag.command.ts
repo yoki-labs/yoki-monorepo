@@ -34,7 +34,9 @@ const Tag: Command = {
             return ctx.messageUtil.replyWithError(
                 message,
                 "Incorrect format",
-                `The format of the currency's __${oldTagCorrect ? "new" : "old"}__ tag has incorrect symbols. Only letters part of English alphabet, numbers, \`-\` and \`_\` are allowed.`
+                `The format of the currency's __${
+                    oldTagCorrect ? "new" : "old"
+                }__ tag has incorrect symbols. Only letters part of English alphabet, numbers, \`-\` and \`_\` are allowed.`
             );
 
         const currency = await ctx.dbUtil.getCurrency(message.serverId!, tag);
@@ -42,12 +44,7 @@ const Tag: Command = {
         // Currency needs to exist for it to be edited
         if (!currency) return ctx.messageUtil.replyWithError(message, "Doesn't exist", `The currency with tag ${inlineQuote(tag)} does not exist and cannot be edited.`);
         // No reason to do changes in the database
-        else if (currency.tag === newTag)
-            return ctx.messageUtil.replyWithError(
-                message,
-                "Already set",
-                `The tag of the currency has already been set to ${inlineQuote(tag)}.`
-            );
+        else if (currency.tag === newTag) return ctx.messageUtil.replyWithError(message, "Already set", `The tag of the currency has already been set to ${inlineQuote(tag)}.`);
 
         await ctx.dbUtil.updateCurrency(currency, { tag: newTag });
 

@@ -27,7 +27,7 @@
 //                       "Modmail category",
 //                       stripIndents`
 // 					  	This server's modmail category has been set as the ID ${inlineCode(commandCtx.server.modmailCategoryId)}.
-					
+
 // 						${unsetCategoryMessage}
 // 					`
 //                   )
@@ -71,7 +71,7 @@
 //                     commandCtx.server.modmailEnabled
 //                         ? ""
 //                         : `Note that modmail is currently disabled. To enable it, use the \`${commandCtx.server.getPrefix()}module enable modmail\` command.`
-//                 }		
+//                 }
 //   		${endValue ? `${unsetCategoryMessage}` : ""}
 //                 ${commandCtx.server.modmailGroupId ? "" : removeGroupMessage(commandCtx.server.getPrefix())}
 //             `

@@ -5,8 +5,7 @@ import { useEffect } from "react";
 
 import LandingPage from "../../components/landing/LandingPage";
 
-
-const Commands: NextPage<{}> = ({ }) => {
+const Commands: NextPage<{}> = ({}) => {
     const router = useRouter();
 
     useEffect(() => {

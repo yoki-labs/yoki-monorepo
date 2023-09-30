@@ -15,7 +15,12 @@ export default function BaseRolesForm({ serverConfig, serverRoleOptions }: { ser
     return (
         <LabsForm
             onSubmit={({ muteRoleId, memberRoleId, modmailPingRoleId }) =>
-                onBaseRoleChanges(serverConfig.serverId, muteRoleId as number | null | undefined, memberRoleId as number | null | undefined, modmailPingRoleId as number | null | undefined)
+                onBaseRoleChanges(
+                    serverConfig.serverId,
+                    muteRoleId as number | null | undefined,
+                    memberRoleId as number | null | undefined,
+                    modmailPingRoleId as number | null | undefined
+                )
             }
             sections={[
                 {

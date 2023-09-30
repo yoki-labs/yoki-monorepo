@@ -3,9 +3,9 @@ import { RoleType } from "@prisma/client";
 
 import { Category, Command } from "../commands";
 import Member from "./Member.command";
+import ModmailSupport from "./ModmailSupport.command";
 import Mute from "./Mute.command";
 import Staff from "./Staff.command";
-import ModmailSupport from "./ModmailSupport.command";
 
 const Role: Command = {
     name: "role",
@@ -16,11 +16,7 @@ const Role: Command = {
     category: Category.Settings,
     requiredRole: RoleType.ADMIN,
     parentCommand: true,
-    subCommands: new Collection<string, Command>()
-        .set("staff", Staff)
-        .set("mute", Mute)
-        .set("member", Member)
-        .set("modmail", ModmailSupport),
+    subCommands: new Collection<string, Command>().set("staff", Staff).set("mute", Mute).set("member", Member).set("modmail", ModmailSupport),
     execute: () => void 0,
 };
 

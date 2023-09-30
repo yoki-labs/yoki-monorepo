@@ -49,7 +49,8 @@ export const getServerSideProps: GetServerSideProps = async (ctx): Promise<GetSe
     // /dashboard/:serverId/:page
     const { serverId, page } = ctx.query;
 
-    const referencedServer = transformFoundServer(servers.find((x) => x.id === serverId)) ?? (await rest.router.servers.serverRead({ serverId: serverId as string }).catch(() => null))?.server;
+    const referencedServer =
+        transformFoundServer(servers.find((x) => x.id === serverId)) ?? (await rest.router.servers.serverRead({ serverId: serverId as string }).catch(() => null))?.server;
 
     // Not in that server; cannot manage it
     if (!referencedServer) return { redirect: { destination: `/dashboard`, permanent: false } };

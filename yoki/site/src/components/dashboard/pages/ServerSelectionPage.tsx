@@ -48,7 +48,11 @@ export default class ServerSelectionPage extends React.Component<Props, State> {
                         ))}
                     </Box>
                     <PagePlaceholder icon={PagePlaceholderIcon.Unexpected} title="Can't find the server">
-                        Private servers may not show up in the dashboard server list due to restrictions in Guilded. Considering using <Typography component="span" level="code">?dashboard</Typography> in the server to open its dashboard.
+                        Private servers may not show up in the dashboard server list due to restrictions in Guilded. Considering using{" "}
+                        <Typography component="span" level="code">
+                            ?dashboard
+                        </Typography>{" "}
+                        in the server to open its dashboard.
                     </PagePlaceholder>
                 </Box>
             </>

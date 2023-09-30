@@ -1,9 +1,9 @@
 import type { ModmailThread } from "@prisma/client";
 import { inlineCode } from "@yokilabs/bot";
+import { Member } from "guilded.js";
 
 import { RoleType } from "../../typings";
 import { Category, Command } from "../commands";
-import { Member } from "guilded.js";
 
 const History: Command = {
     name: "modmail-history",

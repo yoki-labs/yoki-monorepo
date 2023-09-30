@@ -7,10 +7,12 @@ import type TypedEmitter from "typed-emitter";
 import type { Command } from "./commands/commands";
 import CalendarEventCommentDeleted from "./events/guilded/CalendarEventCommentDeleted.ignore";
 import CalendarEventCommentEvent from "./events/guilded/CalendarEventCommentEvent.ignore";
+import ChannelArchived from "./events/guilded/ChannelArchived.ignore";
 import DocCommentDeleted from "./events/guilded/DocCommentDeleted.ignore";
 import DocCommentEvent from "./events/guilded/DocCommentEvent.ignore";
 import ForumTopicCommentDeleted from "./events/guilded/ForumTopicCommentDeleted.ignore";
 import ForumTopicCommentEvent from "./events/guilded/ForumTopicCommentEvent.ignore";
+import RoleDeleted from "./events/guilded/RoleDeleted.ignore";
 import ActionIssued from "./events/other/ActionIssued";
 import { DatabaseUtil } from "./helpers/database";
 import { MessageUtil } from "./helpers/message";
@@ -20,10 +22,8 @@ import { MuteScheduler } from "./jobs/MuteScheduler";
 import { ContentFilterUtil } from "./modules/content-filter";
 import { LinkFilterUtil } from "./modules/link-filter";
 import { SpamFilterUtil } from "./modules/spam-filter";
-import type { Context, Server } from "./typings";
-import RoleDeleted from "./events/guilded/RoleDeleted.ignore";
 import SupportUtil from "./modules/support";
-import ChannelArchived from "./events/guilded/ChannelArchived.ignore";
+import type { Context, Server } from "./typings";
 
 /**
  * Main class that stores utils, connections to various providers, and ws

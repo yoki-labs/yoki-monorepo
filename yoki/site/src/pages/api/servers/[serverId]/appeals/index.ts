@@ -1,4 +1,4 @@
-import { Action, Appeal, Server } from "@prisma/client";
+import { Appeal, Server } from "@prisma/client";
 import { NextApiRequest, NextApiResponse } from "next";
 
 import prisma from "../../../../../prisma";
@@ -14,8 +14,7 @@ const serverAppealsRoute = createServerRoute({
         const { appealIds } = req.body;
 
         // Check query
-        if (!Array.isArray(appealIds) || appealIds.some((x) => typeof x !== "number"))
-            return res.status(400).json({ error: true, message: "appealIds must be a number array" });
+        if (!Array.isArray(appealIds) || appealIds.some((x) => typeof x !== "number")) return res.status(400).json({ error: true, message: "appealIds must be a number array" });
 
         // Just delete all of them
         await prisma.appeal.deleteMany({

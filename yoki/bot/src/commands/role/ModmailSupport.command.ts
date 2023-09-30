@@ -1,7 +1,7 @@
 import { RoleType } from "@prisma/client";
+import { Role } from "guilded.js";
 
 import { Category, Command } from "../commands";
-import { Role } from "guilded.js";
 
 const ModmailSupport: Command = {
     name: "role-modmail",
@@ -25,13 +25,7 @@ const ModmailSupport: Command = {
             const modmailRole = commandCtx.server.modmailPingRoleId;
 
             return modmailRole
-                ? ctx.messageUtil.replyWithInfo(
-                      message,
-                      `Modmail support role`,
-                      `The modmail support role is set to role <@${modmailRole}>.`,
-                      undefined,
-                      { isSilent: true }
-                  )
+                ? ctx.messageUtil.replyWithInfo(message, `Modmail support role`, `The modmail support role is set to role <@${modmailRole}>.`, undefined, { isSilent: true })
                 : ctx.messageUtil.replyWithNullState(message, `No modmail support role`, `There is no modmail support role set.`);
         }
 
@@ -39,13 +33,19 @@ const ModmailSupport: Command = {
             // The ability to delete modmail support roles
             await ctx.prisma.server.updateMany({ data: { modmailPingRoleId: null }, where: { serverId: message.serverId! } });
 
-            return ctx.messageUtil.replyWithSuccess(message, `Modmail support role removed`, `<@${commandCtx.server.modmailPingRoleId}> is no longer the mute role.`, undefined, { isSilent: true });
+            return ctx.messageUtil.replyWithSuccess(message, `Modmail support role removed`, `<@${commandCtx.server.modmailPingRoleId}> is no longer the mute role.`, undefined, {
+                isSilent: true,
+            });
         }
 
         // This could be merged back with `if (!role)`, but I am too lazy to handle it well with
         // `REMOVE` + it is better to tell someone they are wrong than just make them confused
         if (Number.isNaN(role.id))
-            return ctx.messageUtil.replyWithError(message, `Provide role`, `Provide the mention or ID of the role you want to set as a modmail support role or pass \`remove\` to remove it.`);
+            return ctx.messageUtil.replyWithError(
+                message,
+                `Provide role`,
+                `Provide the mention or ID of the role you want to set as a modmail support role or pass \`remove\` to remove it.`
+            );
 
         await ctx.prisma.server.updateMany({ data: { muteRoleId: role.id }, where: { serverId: message.serverId! } });
         return ctx.messageUtil.replyWithSuccess(message, `Modmail support role set`, `Successfully set <@${role.id}> as the modmail support role`, undefined, { isSilent: true });

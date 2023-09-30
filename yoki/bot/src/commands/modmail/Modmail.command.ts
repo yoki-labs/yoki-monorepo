@@ -8,8 +8,8 @@ import Edit from "./Edit.command";
 // import Group from "./Group.command";
 import History from "./History.command";
 import Reply from "./Reply.command";
-import SetTrigger from "./SetTrigger.command";
 import SendTrigger from "./SendTrigger.command";
+import SetTrigger from "./SetTrigger.command";
 
 const Modmail: Command = {
     name: "modmail",
@@ -27,9 +27,9 @@ const Modmail: Command = {
         .set("history", History)
         .set("settrigger", SetTrigger)
         .set("sendtrigger", SendTrigger),
-        // .set("category", CategoryCommand)
-        // .set("group", Group)
-        // .set("pingrole", PingRole),
+    // .set("category", CategoryCommand)
+    // .set("group", Group)
+    // .set("pingrole", PingRole),
     execute: () => void 0,
 };
 

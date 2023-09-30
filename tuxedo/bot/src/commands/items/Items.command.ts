@@ -2,14 +2,14 @@ import { Collection } from "@discordjs/collection";
 import { RoleType } from "@prisma/client";
 
 import { Category, Command } from "../commands";
+import SetCanBuy from "./CanBuy.command";
 import Create from "./Create.command";
 import Delete from "./Delete.command";
 import SetGiveRole from "./GiveRole.command";
 import Info from "./Info.command";
 import List from "./List.command";
-import SetPrice from "./Price.command";
 import SetName from "./Name.command";
-import SetCanBuy from "./CanBuy.command";
+import SetPrice from "./Price.command";
 
 const Items: Command = {
     name: "items",

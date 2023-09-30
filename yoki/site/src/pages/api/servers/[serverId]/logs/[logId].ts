@@ -1,7 +1,6 @@
 import { LogChannelType } from "@prisma/client";
 import { isUUID } from "@yokilabs/utils";
 
-import rest from "../../../../../guilded";
 import prisma from "../../../../../prisma";
 import createServerRoute, { channelExistsInServer } from "../../../../../utils/route";
 

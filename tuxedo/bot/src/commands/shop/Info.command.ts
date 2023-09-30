@@ -1,4 +1,4 @@
-import { ModuleName, RoleType } from "@prisma/client";
+import { ModuleName } from "@prisma/client";
 import { inlineCode, inlineQuote } from "@yokilabs/bot";
 
 import { Category, Command } from "../commands";

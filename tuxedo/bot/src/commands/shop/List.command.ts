@@ -1,4 +1,4 @@
-import { Currency, ItemValue, ModuleName, RoleType } from "@prisma/client";
+import { Currency, ItemValue, ModuleName } from "@prisma/client";
 import { inlineQuote } from "@yokilabs/bot";
 
 import { Category, Command } from "../commands";

@@ -52,8 +52,12 @@ export function UrlCard({ item: link, timezone, isSelected, onSelected }: ItemPr
             onSelected={onSelected}
             TitleRenderer={() => (
                 <>
-                    <Typography level="body-md" textColor="text.secondary">{link.domain}</Typography>
-                    <Typography level="body-lg" textColor="text.tertiary">{"\u2022"}</Typography>
+                    <Typography level="body-md" textColor="text.secondary">
+                        {link.domain}
+                    </Typography>
+                    <Typography level="body-lg" textColor="text.tertiary">
+                        {"\u2022"}
+                    </Typography>
                     <Typography startDecorator={<FontAwesomeIcon icon={severityToIcon[link.severity]} />} fontWeight="lg" textColor="text.secondary">
                         {link.severity}
                     </Typography>
@@ -89,8 +93,7 @@ export function UrlCard({ item: link, timezone, isSelected, onSelected }: ItemPr
                     </Box>
                 </Stack>
             )}
-        >
-        </DataTableCard>
+        ></DataTableCard>
     );
 }
 

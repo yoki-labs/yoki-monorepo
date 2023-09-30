@@ -1,4 +1,5 @@
 import { RolePayload } from "guilded.js";
+
 import type { Context, Server } from "../../typings";
 
 export default async (packet: { d: { serverId: string; role: RolePayload } }, ctx: Context, { muteRoleId, memberRoleId }: Server) => {
@@ -13,7 +14,7 @@ export default async (packet: { d: { serverId: string; role: RolePayload } }, ct
             data: {
                 muteRoleId: muteRoleId === role.id ? null : undefined,
                 memberRoleId: memberRoleId === role.id ? null : undefined,
-            }
+            },
         });
 
     // Delete logs that have the deleted channel; there is no way for them to log anymore

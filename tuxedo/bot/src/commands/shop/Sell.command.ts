@@ -1,4 +1,4 @@
-import { Currency, MemberBalance, ModuleName, RoleType } from "@prisma/client";
+import { Currency, MemberBalance, ModuleName } from "@prisma/client";
 import { inlineCode, inlineQuote } from "@yokilabs/bot";
 
 import { displayCurrencyAmount } from "../../util/text";

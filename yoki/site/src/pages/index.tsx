@@ -83,7 +83,10 @@ const Home: NextPage = () => {
                                             <GuildedEmbedField
                                                 title={
                                                     <>
-                                                        <FontAwesomeIcon icon={faExclamation} style={{ color: `#${Colors.yellow.toString(16)}`, width: "1em", height: "1em", marginRight: 12 }} />
+                                                        <FontAwesomeIcon
+                                                            icon={faExclamation}
+                                                            style={{ color: `#${Colors.yellow.toString(16)}`, width: "1em", height: "1em", marginRight: 12 }}
+                                                        />
                                                         Cannot use that word
                                                     </>
                                                 }
@@ -152,7 +155,10 @@ const Home: NextPage = () => {
                                             <GuildedEmbedField
                                                 title={
                                                     <>
-                                                        <FontAwesomeIcon icon={faExclamation} style={{ color: `#${Colors.yellow.toString(16)}`, width: "1em", height: "1em", marginRight: 12 }} />
+                                                        <FontAwesomeIcon
+                                                            icon={faExclamation}
+                                                            style={{ color: `#${Colors.yellow.toString(16)}`, width: "1em", height: "1em", marginRight: 12 }}
+                                                        />
                                                         Halt! Please complete this captcha
                                                     </>
                                                 }

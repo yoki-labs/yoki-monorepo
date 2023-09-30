@@ -1,4 +1,5 @@
 import { ReactionActionType } from "@prisma/client";
+
 import type { GEvent } from "../../typings";
 
 export default {
@@ -15,13 +16,11 @@ export default {
             where: { messageId, channelId, serverId, emoteId: emote.id },
         });
 
-        if (!lookupReaction)
-            return;
+        if (!lookupReaction) return;
 
         switch (lookupReaction.actionType) {
             case ReactionActionType.MODMAIL: {
-                if (!server.modmailEnabled)
-                    return;
+                if (!server.modmailEnabled) return;
 
                 return ctx.supportUtil.createModmailThread(server, channelId, createdBy);
                 // if (!server.modmailGroupId && !server.modmailCategoryId) return;

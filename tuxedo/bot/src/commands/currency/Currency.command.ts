@@ -9,8 +9,8 @@ import Emote from "./Emote.command";
 import Info from "./Info.command";
 import List from "./List.command";
 import Maximum from "./Max.command";
-import Starting from "./Starting.command";
 import Name from "./Name.command";
+import Starting from "./Starting.command";
 import Tag from "./Tag.command";
 
 const Currency: Command = {

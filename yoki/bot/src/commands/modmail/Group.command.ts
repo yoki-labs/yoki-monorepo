@@ -27,7 +27,7 @@
 //                       "Modmail group",
 //                       stripIndents`
 // 					  This server's modmail group has been set as the ID ${inlineCode(commandCtx.server.modmailGroupId)}.
-					  
+
 // 					  ${unsetGroupMessage}
 // 					  `
 //                   )
@@ -53,7 +53,7 @@
 // 					This group either doesn't exist, ${
 //                         commandCtx.server.modmailCategoryId ? "the modmail category you have already set doesn't exist in this group, " : ""
 //                     }or the bot does not the permissions to create/delete channels in it.
-				
+
 // 					${removeCategoryMessage(commandCtx.server.getPrefix())}
 // 				`
 //                 );

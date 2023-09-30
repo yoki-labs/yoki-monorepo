@@ -41,11 +41,7 @@ const Name: Command = {
         if (!currency) return ctx.messageUtil.replyWithError(message, "Doesn't exist", `The currency with tag ${inlineQuote(tag)} does not exist and cannot be edited.`);
         // No reason to do changes in the database
         else if (currency.name === newName)
-            return ctx.messageUtil.replyWithError(
-                message,
-                "Already set",
-                `The name for the currency with tag ${inlineQuote(tag)} has already been set to ${inlineCode(newName)}.`
-            );
+            return ctx.messageUtil.replyWithError(message, "Already set", `The name for the currency with tag ${inlineQuote(tag)} has already been set to ${inlineCode(newName)}.`);
 
         await ctx.dbUtil.updateCurrency(currency, { name: newName });
 

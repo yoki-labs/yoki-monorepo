@@ -1,6 +1,23 @@
 import { faMagnifyingGlass, faSliders, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Box, Button, ButtonGroup, Card, Checkbox, CircularProgress, Divider, Grid, IconButton, Input, ListItemDecorator, MenuItem, Modal, Stack, Table, Typography } from "@mui/joy";
+import {
+    Box,
+    Button,
+    ButtonGroup,
+    Card,
+    Checkbox,
+    CircularProgress,
+    Divider,
+    Grid,
+    IconButton,
+    Input,
+    ListItemDecorator,
+    MenuItem,
+    Modal,
+    Stack,
+    Table,
+    Typography,
+} from "@mui/joy";
 import React, { ReactNode } from "react";
 
 import PagePlaceholder, { PagePlaceholderIcon } from "./PagePlaceholder";
@@ -112,15 +129,11 @@ export default class DataTable<TItem extends { id: TItemId }, TItemId> extends R
     }
 
     DataTableToggleCheckbox() {
-        return (
-            <Checkbox checked={this.allSelected} variant="soft" size="lg" onChange={({ target }) => (this.allSelected = target.checked)} />
-        );
+        return <Checkbox checked={this.allSelected} variant="soft" size="lg" onChange={({ target }) => (this.allSelected = target.checked)} />;
     }
 
     DataTableOverflow() {
-        return (
-            <HistoryOverflow itemType={this.props.itemType} selectedItems={this.state.selectedItems} onCaseDeletion={this.deleteSelectedItems.bind(this)} />
-        );
+        return <HistoryOverflow itemType={this.props.itemType} selectedItems={this.state.selectedItems} onCaseDeletion={this.deleteSelectedItems.bind(this)} />;
     }
 
     renderItems() {
@@ -141,7 +154,7 @@ export default class DataTable<TItem extends { id: TItemId }, TItemId> extends R
                 columnCount={columns.length}
                 isSelected={selectedItems.includes(item.id)}
                 onSelected={this.toggleSelection.bind(this, item)}
-                />
+            />,
         ]);
     }
 
@@ -199,21 +212,15 @@ export default class DataTable<TItem extends { id: TItemId }, TItemId> extends R
                             <thead>
                                 <tr>
                                     {/* Select corner */}
-                                    <th style={{ width: 30 }}>
-                                        {this.DataTableToggleCheckbox()}
-                                    </th>
+                                    <th style={{ width: 30 }}>{this.DataTableToggleCheckbox()}</th>
                                     {columns.map((column) => (
                                         <th>{column}</th>
                                     ))}
                                     {/* Expand corner */}
-                                    <th style={{ width: 60 }}>
-                                        {this.DataTableOverflow()}
-                                    </th>
+                                    <th style={{ width: 60 }}>{this.DataTableOverflow()}</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                {renderedItems.map(([item]) => item)}
-                            </tbody>
+                            <tbody>{renderedItems.map(([item]) => item)}</tbody>
                         </Table>
 
                         {maxPages > 1 && (

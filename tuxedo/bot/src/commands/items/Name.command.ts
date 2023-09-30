@@ -1,5 +1,6 @@
 import { RoleType } from "@prisma/client";
 import { inlineQuote } from "@yokilabs/bot";
+
 import { Category, Command } from "../commands";
 
 const SetName: Command = {
@@ -27,7 +28,7 @@ const SetName: Command = {
 
         const item = await ctx.dbUtil.getItem(message.serverId!, itemId);
 
-        if (!item) return ctx.messageUtil.replyWithError(message, "No such item", `Item with ID ${inlineQuote(itemId)} does not exist.`);;
+        if (!item) return ctx.messageUtil.replyWithError(message, "No such item", `Item with ID ${inlineQuote(itemId)} does not exist.`);
 
         await ctx.dbUtil.updateItem(item, {
             name: newName,

@@ -36,31 +36,30 @@ export default {
         const modmailThreads = await ctx.prisma.modmailThread.findMany({ where: { serverId, openerId: userId, closed: false } });
 
         await Promise.all(
-            modmailThreads
-                .map(async (x) => {
-                    await ctx.prisma.modmailThread.update({
-                        where: {
-                            id: x.id,
-                        },
-                        data: {
-                            closed: true,
-                        }
-                    });
+            modmailThreads.map(async (x) => {
+                await ctx.prisma.modmailThread.update({
+                    where: {
+                        id: x.id,
+                    },
+                    data: {
+                        closed: true,
+                    },
+                });
 
-                    void ctx.amp.logEvent({
-                        event_type: "MODMAIL_CLOSE",
-                        user_id: ctx.user!.id,
-                        event_properties: { server: server.serverId, threadAge: Date.now() - x.createdAt.getTime() },
-                    });
+                void ctx.amp.logEvent({
+                    event_type: "MODMAIL_CLOSE",
+                    user_id: ctx.user!.id,
+                    event_properties: { server: server.serverId, threadAge: Date.now() - x.createdAt.getTime() },
+                });
 
-                    const modmailLogChannel = await ctx.dbUtil.getLogChannel(serverId, LogChannelType.modmail_logs);
+                const modmailLogChannel = await ctx.dbUtil.getLogChannel(serverId, LogChannelType.modmail_logs);
 
-                    if (modmailLogChannel) {
-                        const historyMessage = await ctx.supportUtil.createModmailHistory(server, x);
+                if (modmailLogChannel) {
+                    const historyMessage = await ctx.supportUtil.createModmailHistory(server, x);
 
-                        await ctx.supportUtil.sendModmailLog(serverId, x, modmailLogChannel, "automatically closed, because member has left the server", historyMessage);
-                    }
-                })
+                    await ctx.supportUtil.sendModmailLog(serverId, x, modmailLogChannel, "automatically closed, because member has left the server", historyMessage);
+                }
+            })
         ).catch((x) => console.error("Error while automatically closing modmail threads:\n", x));
     },
     name: "memberRemoved",

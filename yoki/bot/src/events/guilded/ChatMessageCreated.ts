@@ -46,9 +46,9 @@ export default {
         else if (message.createdByWebhookId || message.authorId === ctx.user!.id || message.authorId === "Ann6LewA") return;
 
         void ctx.amp.logEvent({ event_type: "MESSAGE_CREATE", user_id: message.authorId, event_properties: { serverId: message.serverId! } });
-        
+
         const server = await ctx.dbUtil.getServer(message.serverId!);
-        
+
         const member = await ctx.members.fetch(message.serverId!, message.authorId).catch(() => null);
         // Can't do much
         if (!member || member.user?.type === UserType.Bot) return;
@@ -120,16 +120,14 @@ const handleNonCommandMesssage = async (ctx: YokiClient, server: Server, member:
     const messageModerated = await moderateMessage(ctx, server, message, member);
 
     // Do not include moderated messages in the modmail logs and such
-    if (messageModerated)
-        return;
+    if (messageModerated) return;
 
     const ticket = await ctx.prisma.modmailThread.findFirst({
         where: { serverId: message.serverId!, userFacingChannelId: message.channelId, closed: false },
     });
 
     // Nothing else to do with non-command message
-    if (!ticket)
-        return;
+    if (!ticket) return;
 
     // Old modmail threads are still allowed
     if (ticket.modFacingChannelId !== ticket.userFacingChannelId) {
