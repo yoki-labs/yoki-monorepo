@@ -19,7 +19,9 @@ export default function DashForm({ serverConfig, page }: Props) {
                 <PageComponent serverConfig={serverConfig} />
             ) : (
                 <Box sx={{ pt: 8 }}>
-                    <PagePlaceholder icon={PagePlaceholderIcon.NotFound} title="Page not found" description="This dashboard page does not seem to exist." />
+                    <PagePlaceholder icon={PagePlaceholderIcon.NotFound} title="Page not found">
+                        This dashboard page does not seem to exist.
+                    </PagePlaceholder>
                 </Box>
             )}
         </Box>

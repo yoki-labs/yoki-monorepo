@@ -10,7 +10,9 @@ export default class IgnoresPage extends React.Component<DashboardPageProps> {
     render() {
         return (
             <>
-                <PagePlaceholder icon={PagePlaceholderIcon.Wip} title="Work in progress" description="This section has not been done yet. Come back later!" />
+                <PagePlaceholder icon={PagePlaceholderIcon.Wip} title="Work in progress">
+                    This section has not been done yet. Come back later!
+                </PagePlaceholder>
             </>
         );
     }

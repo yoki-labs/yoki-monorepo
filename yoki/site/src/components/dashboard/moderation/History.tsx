@@ -46,10 +46,6 @@ export default class HistoryPage extends React.Component<DashboardPageProps> {
     render() {
         const { serverConfig } = this.props;
 
-        // // No cases to display
-        // if (!cases.length)
-        //     return <PagePlaceholder icon={PagePlaceholderIcon.NotFound} title="Squeaky clean history!" description="There are no moderation cases." />
-
         return (
             <Stack direction="column" gap={3}>
                 <Typography level="h4" gutterBottom>

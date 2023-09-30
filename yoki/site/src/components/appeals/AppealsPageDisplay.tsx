@@ -80,7 +80,9 @@ function AppealsPagePlaceholder({ icon, title, description }: { icon: PagePlaceh
     return (
         <Stack direction="row" alignItems="center" sx={{ flex: "1" }}>
             <Stack direction="column" alignItems="center" sx={{ flex: "1", mb: 40 }}>
-                <PagePlaceholder icon={icon} title={title} description={description} />
+                <PagePlaceholder icon={icon} title={title}>
+                    {description}
+                </PagePlaceholder>
             </Stack>
         </Stack>
     );

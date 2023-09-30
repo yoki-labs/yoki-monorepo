@@ -1,6 +1,6 @@
 import React from "react";
 import { SanitizedLogChannel } from "../../../lib/@types/db";
-import { Alert, Box, Card, CircularProgress, Skeleton, Stack } from "@mui/joy";
+import { Alert, Box, Card, Skeleton, Stack } from "@mui/joy";
 import DashboardLogChannel, { LogItemCreationForm } from "./LogItem";
 import { toLookup } from "@yokilabs/utils";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -8,7 +8,6 @@ import { faExclamationTriangle } from "@fortawesome/free-solid-svg-icons";
 import { DashboardPageProps } from "../pages";
 import PagePlaceholder, { PagePlaceholderIcon } from "../../PagePlaceholder";
 import { LogChannelType } from "@prisma/client";
-import { toast } from "react-hot-toast";
 import { notifyFetchError } from "../../../utils/errorUtil";
 
 type State = {
@@ -72,7 +71,11 @@ export default class LogsPage extends React.Component<DashboardPageProps, State>
         const { error, isLoaded, logs } = this.state;
 
         // Server-side error
-        if (error) return <PagePlaceholder icon={PagePlaceholderIcon.Unexpected} title={`Error while fetching data (${error.code})`} description={error.message} />;
+        if (error) return (
+            <PagePlaceholder icon={PagePlaceholderIcon.Unexpected} title={`Error while fetching data (${error.code})`}>
+                {error.message}
+            </PagePlaceholder>
+        );
         // Still fetching data
         else if (!isLoaded) return <LogsPageSkeleton />;
 

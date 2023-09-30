@@ -14,11 +14,9 @@ export default function NotPermittedPage({ currentServer }: Props) {
     return (
         <Stack alignItems="center" direction="row" className="grow shrink-0" sx={{ width: "100%" }}>
             <Stack className="px-5" alignItems="center" direction="column" gap={3} sx={{ flex: "1", mb: 20 }}>
-                <PagePlaceholder
-                    icon={PagePlaceholderIcon.NoPermission}
-                    title="Not permitted"
-                    description="Unfortunately, you do not have a role that is configured as ADMIN or you are not the owner of this server."
-                />
+                <PagePlaceholder icon={PagePlaceholderIcon.NoPermission} title="Not permitted">
+                    Unfortunately, you do not have a role that is configured as ADMIN or you are not the owner of this server.
+                </PagePlaceholder>
                 <ServerDisplay server={currentServer} />
                 <Alert color="primary" variant="soft" startDecorator={<FontAwesomeIcon icon={faInfoCircle} />} sx={{ mt: 8 }}>
                     <Box sx={{ alignItems: "baseline" }}>

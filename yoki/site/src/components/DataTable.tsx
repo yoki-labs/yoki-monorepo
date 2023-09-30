@@ -149,11 +149,9 @@ export default class DataTable<TItem extends { id: TItemId }, TItemId> extends R
         // Still loading the items
         if (this.state.error)
             return (
-                <PagePlaceholder
-                    icon={PagePlaceholderIcon.Unexpected}
-                    title={`Error while fetching ${this.props.itemType} (${this.state.error.code})`}
-                    description={this.state.error.message}
-                />
+                <PagePlaceholder icon={PagePlaceholderIcon.Unexpected} title={`Error while fetching ${this.props.itemType} (${this.state.error.code})`}>
+                    {this.state.error.message}
+                </PagePlaceholder>
             );
         else if (!this.state.isLoaded)
             return (
@@ -229,7 +227,9 @@ export default class DataTable<TItem extends { id: TItemId }, TItemId> extends R
                         )}
                     </>
                 ) : (
-                    <PagePlaceholder icon={PagePlaceholderIcon.NotFound} title={`No ${itemType}`} description={`There are no ${itemType} to be found.`} />
+                    <PagePlaceholder icon={PagePlaceholderIcon.NotFound} title={`No ${itemType}`}>
+                        There are no {itemType} to be found.
+                    </PagePlaceholder>
                 )}
             </Stack>
         );

@@ -2,25 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Additional styles */
-/* @import 'additional-styles/utility-patterns.css';
-@import 'additional-styles/range-slider.css';
-@import 'additional-styles/toggle-switch.css';
-@import 'additional-styles/flatpickr.css';
-@import 'additional-styles/theme.css'; */
-
-:root {
-    --primary: #191B1F;
-    --grey: #202227;
-    --off-grey: rgb(39, 41, 52);
-    --grey-bg: #191B1F;
-    --light-grey: #dcdcdc;
-    --grey-fade: #8080802a;
-    --guilded-yellow: #F5C400;
-
-    --status-bg: url("../../public/status-bg.png");
-}
-
 html {
     scroll-behavior: smooth;
 }
@@ -62,6 +43,11 @@ input[type=number] {
     -webkit-appearance: textfield;
     -moz-appearance: textfield; /* Firefox */
     appearance: textfield;
+}
+
+::selection {
+    background-color: #8a6fef;
+    color: black;
 }
 
 /* For Firefox Browser */

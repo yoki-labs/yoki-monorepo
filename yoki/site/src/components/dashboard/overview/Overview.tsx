@@ -44,6 +44,7 @@ export default function OverviewPage(props: DashboardPageProps) {
                         serverConfig={serverConfig}
                         prop="scanNSFW"
                         requiresPremium
+                        disabled={!serverConfig.premium}
                     />
                     <DashboardModule
                         name="Anti-raid"

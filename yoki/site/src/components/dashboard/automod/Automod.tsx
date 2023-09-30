@@ -66,6 +66,7 @@ export default class AutomodPage extends React.Component<DashboardPageProps, Sta
                         serverConfig={serverConfig}
                         prop="scanNSFW"
                         requiresPremium
+                        disabled={!serverConfig.premium}
                     />
                     <DashboardModule
                         name="Auto-mod"

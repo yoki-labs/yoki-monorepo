@@ -1,5 +1,5 @@
 import { Stack, Typography } from "@mui/joy";
-import React from "react";
+import React, { ReactNode } from "react";
 
 export enum PagePlaceholderIcon {
     NotFound,
@@ -18,7 +18,7 @@ const icons: Record<PagePlaceholderIcon, string> = {
 type Props = {
     icon: PagePlaceholderIcon;
     title: string;
-    description: string;
+    children: ReactNode | ReactNode[];
 };
 
 export default class PagePlaceholder extends React.Component<Props> {
@@ -27,7 +27,7 @@ export default class PagePlaceholder extends React.Component<Props> {
     }
 
     render() {
-        const { icon, title, description } = this.props;
+        const { icon, title, children } = this.props;
 
         return (
             <Stack direction="column" alignItems="center">
@@ -38,7 +38,7 @@ export default class PagePlaceholder extends React.Component<Props> {
                     {title}
                 </Typography>
                 <Typography level="body-md" textColor="text.secondary">
-                    {description}
+                    {children}
                 </Typography>
             </Stack>
         );

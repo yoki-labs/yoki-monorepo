@@ -16,9 +16,9 @@ export type Props = {
     prop: keyof SanitizedServer;
     serverConfig: SanitizedServer;
 
-    iconAspectRatio?: number;
     hideBadges?: boolean;
     requiresPremium?: boolean;
+    disabled?: boolean;
     largeHeader?: boolean;
 };
 
@@ -41,7 +41,7 @@ export default class DashboardModule extends React.Component<Props, { isActive: 
     }
 
     render() {
-        const { name, description, icon, activeClassName, requiresPremium, hideBadges, iconAspectRatio, largeHeader } = this.props;
+        const { name, description, icon, activeClassName, requiresPremium, hideBadges, disabled, largeHeader } = this.props;
         const { isActive } = this.state;
 
         return (
@@ -51,7 +51,7 @@ export default class DashboardModule extends React.Component<Props, { isActive: 
                         <Typography className="grow" fontWeight="md" level={largeHeader ? "title-lg" : "title-md"}>
                             {name}
                         </Typography>
-                        <Switch className="toggle justify-end" defaultChecked={this.state.isActive} onChange={({ target }) => this.onToggle(target.checked)} />
+                        <Switch className="toggle justify-end" disabled={disabled} defaultChecked={this.state.isActive} onChange={({ target }) => this.onToggle(target.checked)} />
                     </Stack>
                     <Typography level="body-md">{description}</Typography>
                 </Box>
