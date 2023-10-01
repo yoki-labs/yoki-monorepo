@@ -6,7 +6,7 @@ import { CSSProperties } from "styled-components";
 
 type Props = {
     id: string;
-    children: ReactNode | ReactNode[];
+    children?: ReactNode | ReactNode[];
     ExpandedInfoRenderer: () => ReactNode | ReactNode[];
     TitleRenderer: () => JSX.Element;
     isSelected: boolean;
@@ -55,7 +55,7 @@ export default class DataTableCard extends React.Component<Props, State> {
                         </Stack>
                         <Checkbox checked={isSelected} onChange={({ target }) => onSelected(target.checked)} variant="soft" size="lg" />
                     </Stack>
-                    {children}
+                    {Boolean(children) && children}
                     <Box mt={2} mb={1}>
                         <Link onClick={this.toggleExpanded.bind(this)} sx={{ userSelect: "none" }}>
                             {isExpanded ? "See less" : "See more"}
