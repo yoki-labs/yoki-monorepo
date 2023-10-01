@@ -6,7 +6,7 @@ import { CSSProperties } from "styled-components";
 
 type Props = {
     id: string;
-    children: ReactNode | ReactNode[];
+    children?: ReactNode | ReactNode[];
     columnCount: number;
     ExpandedInfoRenderer: () => ReactNode | ReactNode[];
     isSelected: boolean;
@@ -62,7 +62,7 @@ export default class DataTableRow extends React.Component<Props, State> {
                     <td>
                         <Checkbox checked={isSelected} onChange={({ target }) => onSelected(target.checked)} variant="soft" size="lg" />
                     </td>
-                    {children}
+                    {Boolean(children) && children}
                     <td>
                         <IconButton onClick={this.toggleExpanded.bind(this)} color="neutral" variant="soft" aria-label="More button">
                             <FontAwesomeIcon icon={isExpanded ? faChevronDown : faChevronRight} />
