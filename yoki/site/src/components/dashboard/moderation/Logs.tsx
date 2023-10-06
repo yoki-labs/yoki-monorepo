@@ -83,6 +83,8 @@ export default class LogsPage extends React.Component<DashboardPageProps, State>
         const channelLookup = toLookup(logs, (log) => log.channelId);
         // There is no fetch many channels route on Guilded
         const possibleChannels = Object.keys(channelLookup);
+        // To reinforce not allowing duplicates
+        const existingTypes = logs.map((x) => x.type);
 
         return (
             <Box>
@@ -91,7 +93,10 @@ export default class LogsPage extends React.Component<DashboardPageProps, State>
                     select channels.
                 </Alert>
                 <Card sx={{ mb: 2 }}>
-                    <LogItemCreationForm onCreate={this.onLogsUpdate.bind(this)} />
+                    <LogItemCreationForm
+                        onCreate={this.onLogsUpdate.bind(this)}
+                        existingTypes={existingTypes}
+                    />
                 </Card>
                 <Stack sx={{ mb: 4 }} gap={2} direction="column">
                     {Object.keys(channelLookup).map((channelId) => {
@@ -104,6 +109,7 @@ export default class LogsPage extends React.Component<DashboardPageProps, State>
                                 serverChannels={possibleChannels}
                                 createdAt={channelTypeInfos[0].createdAt}
                                 types={channelTypeInfos.map((x) => x.type)}
+                                existingTypes={existingTypes}
                                 timezone={serverConfig.timezone}
                                 onUpdate={this.onLogsUpdate.bind(this, channelId)}
                             />

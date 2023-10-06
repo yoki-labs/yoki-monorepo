@@ -43,7 +43,7 @@ export default class AntiraidPage extends React.Component<DashboardPageProps> {
             body: JSON.stringify({ antiRaidChallengeChannel, antiRaidResponse, antiRaidAgeFilter }),
         })
             .then(errorifyResponseError)
-            .catch((errorResponse) => (console.log("Error response", errorResponse), notifyFetchError("Error while updating server data for antiraid", errorResponse)));
+            .catch((errorResponse) => notifyFetchError("Error while updating server data for antiraid", errorResponse));
     }
 
     render() {

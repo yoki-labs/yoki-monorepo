@@ -5,6 +5,7 @@ import DashboardModule from "../DashboardModule";
 import { Alert, Box, Link, Stack, Typography } from "@mui/joy";
 import { DashboardPageProps } from "../pages";
 import DashboardProfileCard from "./ProfileCard";
+import { PremiumType } from "@prisma/client";
 
 export default function OverviewPage(props: DashboardPageProps) {
     const { serverConfig } = props;
@@ -43,7 +44,7 @@ export default function OverviewPage(props: DashboardPageProps) {
                         activeClassName="from-pink-500 to-purple-500"
                         serverConfig={serverConfig}
                         prop="scanNSFW"
-                        requiresPremium
+                        requiresPremium={PremiumType.Silver}
                         disabled={!serverConfig.premium}
                     />
                     <DashboardModule

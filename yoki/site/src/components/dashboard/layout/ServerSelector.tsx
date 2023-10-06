@@ -1,4 +1,4 @@
-import { Avatar, ListItemDecorator, Option, SelectOption } from "@mui/joy";
+import { Avatar, Box, ListItemDecorator, Option, SelectOption, Typography } from "@mui/joy";
 import React from "react";
 
 import { GuildedClientServer } from "../../../lib/@types/guilded";
@@ -27,7 +27,9 @@ export class ServerSelector extends React.Component<Props> {
                 <ListItemDecorator>
                     <Avatar size="sm" src={server.profilePicture ?? void 0} />
                 </ListItemDecorator>
-                {server.name}
+                <Typography fontWeight="bolder" textColor="text.secondary">
+                    {server.name}
+                </Typography>
             </>
         );
     }
@@ -44,7 +46,13 @@ export class ServerSelector extends React.Component<Props> {
             >
                 {servers.map((server) => (
                     <Option key={server.id} value={server.id} label={server.name}>
-                        {this.renderOption(server)}
+                        <ListItemDecorator>
+                            <Avatar size="sm" src={server.profilePicture ?? void 0} />
+                        </ListItemDecorator>
+                        <Box>
+                            <Typography fontWeight="bolder">{server.name}</Typography>
+                            <Typography textColor="text.tertiary">/{server.subdomain}</Typography>
+                        </Box>
                     </Option>
                 ))}
             </LabsDropdown>

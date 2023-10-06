@@ -55,7 +55,7 @@ export default class DashboardProfileCard extends React.Component<Props> {
                             <BotTier tier={serverConfig.premium} />
                             <Stack direction="row" alignItems="center">
                                 <Typography level="h2">Yoki</Typography>
-                                <Typography sx={{ ml: 1, px: 1 }} level="h3" fontSize="md" color="neutral" variant="solid">
+                                <Typography sx={{ ml: 1, px: 1, borderRadius: 6 }} level="h3" fontSize="md" color="neutral" variant="solid">
                                     BOT
                                 </Typography>
                             </Stack>

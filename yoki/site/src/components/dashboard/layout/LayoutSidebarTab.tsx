@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { ListItemButton, ListItemDecorator, Typography } from "@mui/joy";
+import { Chip, ListItemButton, ListItemDecorator, Typography } from "@mui/joy";
 import { DashboardPageItem } from "../pages";
 import { useRouter } from "next/router";
 

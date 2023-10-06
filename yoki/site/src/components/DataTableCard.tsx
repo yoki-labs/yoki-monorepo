@@ -1,8 +1,5 @@
-import { faChevronDown, faChevronRight } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Box, Checkbox, Divider, IconButton, Link, Sheet, Stack, styled } from "@mui/joy";
+import { Box, Checkbox, Divider, Link, Sheet, Stack } from "@mui/joy";
 import React, { ReactNode } from "react";
-import { CSSProperties } from "styled-components";
 
 type Props = {
     id: string;

@@ -7,6 +7,7 @@ import PagePlaceholder, { PagePlaceholderIcon } from "../../PagePlaceholder";
 import AutomodPreset from "./AutomodPreset";
 import { SanitizedPreset } from "../../../lib/@types/db";
 import { notifyFetchError } from "../../../utils/errorUtil";
+import { PremiumType } from "@prisma/client";
 
 type State = {
     isLoaded: boolean;
@@ -65,7 +66,7 @@ export default class AutomodPage extends React.Component<DashboardPageProps, Sta
                         activeClassName="from-pink-500 to-purple-500"
                         serverConfig={serverConfig}
                         prop="scanNSFW"
-                        requiresPremium
+                        requiresPremium={PremiumType.Silver}
                         disabled={!serverConfig.premium}
                     />
                     <DashboardModule

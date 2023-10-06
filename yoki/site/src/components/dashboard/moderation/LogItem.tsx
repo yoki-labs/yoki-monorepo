@@ -15,6 +15,7 @@ type Props = {
     serverChannels: string[];
     createdAt: string;
     types: LogChannelType[];
+    existingTypes: LogChannelType[];
     timezone: string | null;
 
     onUpdate: (types: LogChannelType[]) => Promise<unknown>;
@@ -109,8 +110,9 @@ export default class DashboardLogChannel extends React.Component<Props, State> {
     }
 
     LogChannelEditMode() {
-        const { serverChannels, channelId, types, createdAt, timezone } = this.props;
+        const { serverChannels, channelId, types, existingTypes, createdAt, timezone } = this.props;
         const onSubmit = this.onLogChannelEdit.bind(this);
+        const otherUsedTypes = existingTypes.filter((x) => !types.includes(x));
 
         return (
             <LabsForm
@@ -136,7 +138,7 @@ export default class DashboardLogChannel extends React.Component<Props, State> {
                             {
                                 type: LabsFormFieldType.MultiSelect,
                                 prop: "types",
-                                selectableValues: typeOptions,
+                                selectableValues: typeOptions.map((x) => ({ ...x, disabled: otherUsedTypes.includes(x.value) })),
                                 defaultValue: types,
                                 placeholder: "Select log types",
                             },
@@ -174,7 +176,7 @@ export default class DashboardLogChannel extends React.Component<Props, State> {
     }
 }
 
-export function LogItemCreationForm({ onCreate: onCreated }: { onCreate: (channelId: string, types: LogChannelType[]) => Promise<unknown> }) {
+export function LogItemCreationForm({ existingTypes, onCreate: onCreated }: { existingTypes: LogChannelType[]; onCreate: (channelId: string, types: LogChannelType[]) => Promise<unknown> }) {
     return (
         <LabsForm
             sections={[
@@ -194,13 +196,14 @@ export function LogItemCreationForm({ onCreate: onCreated }: { onCreate: (channe
                         {
                             type: LabsFormFieldType.MultiSelect,
                             prop: "types",
-                            selectableValues: typeOptions,
+                            selectableValues: typeOptions.map((x) => ({ ...x, disabled: existingTypes.includes(x.value) })),
                             placeholder: "Select log types",
                         },
                     ],
                 },
             ]}
             onSubmit={({ channelId, types }) => onCreated(channelId as string, types as LogChannelType[])}
+            resetOnSubmission
         />
     );
 }

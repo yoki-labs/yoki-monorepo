@@ -1,9 +1,10 @@
 import { IconDefinition } from "@fortawesome/free-solid-svg-icons";
 import React from "react";
-import { Box, Chip, Stack, Switch, Typography } from "@mui/joy";
+import { Box, Chip, Stack, Switch, Tooltip, Typography } from "@mui/joy";
 import LabsIconCard from "../LabsIconCard";
 import { SanitizedServer } from "../../lib/@types/db";
 import { toggleModule } from "./modules";
+import { PremiumType } from "@prisma/client";
 
 export type Props = {
     name: string;
@@ -17,7 +18,7 @@ export type Props = {
     serverConfig: SanitizedServer;
 
     hideBadges?: boolean;
-    requiresPremium?: boolean;
+    requiresPremium?: PremiumType;
     disabled?: boolean;
     largeHeader?: boolean;
 };
@@ -41,26 +42,39 @@ export default class DashboardModule extends React.Component<Props, { isActive: 
     }
 
     render() {
-        const { name, description, icon, activeClassName, requiresPremium, hideBadges, disabled, largeHeader } = this.props;
+        const { name, description, icon, activeClassName, requiresPremium, hideBadges: titleBarBadges, disabled, largeHeader } = this.props;
         const { isActive } = this.state;
 
         return (
             <LabsIconCard icon={icon} iconSize={80} iconClassName={isActive ? activeClassName : ""}>
                 <Box className="grow">
                     <Stack direction="row" gap={4}>
-                        <Typography className="grow" fontWeight="md" level={largeHeader ? "title-lg" : "title-md"}>
+                        <Typography
+                            className="grow"
+                            fontWeight="md"
+                            level={largeHeader ? "title-lg" : "title-md"}
+                            endDecorator={requiresPremium && titleBarBadges && <ModulePremiumBadge premium={requiresPremium} />}
+                        >
                             {name}
                         </Typography>
                         <Switch className="toggle justify-end" disabled={disabled} defaultChecked={this.state.isActive} onChange={({ target }) => this.onToggle(target.checked)} />
                     </Stack>
                     <Typography level="body-md">{description}</Typography>
                 </Box>
-                {!hideBadges && (
+                {!titleBarBadges && (
                     <Box mt={2}>
-                        <Chip color={requiresPremium ? "warning" : "neutral"}>{requiresPremium ? "Premium" : "Free"}</Chip>
+                        <ModulePremiumBadge premium={requiresPremium} />
                     </Box>
                 )}
             </LabsIconCard>
         );
     }
+}
+
+function ModulePremiumBadge({ premium }: { premium: PremiumType | undefined | null; }) {
+    return (
+        <Tooltip title={premium ? `This module requires ${premium} tier subscription of Yoki Labs.` : `This module is available for everyone to use for free.`}>
+            <Chip color={premium ? "warning" : "neutral"}>{premium ? "Premium" : "Free"}</Chip>
+        </Tooltip>
+    );
 }

@@ -57,6 +57,7 @@ export default function BaseRolesForm({ serverConfig, serverRoleOptions }: { ser
                     ],
                 },
             ]}
+            resetOnSubmission
         />
     );
 }

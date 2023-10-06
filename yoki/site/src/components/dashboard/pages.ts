@@ -7,6 +7,7 @@ import {
     faEnvelope,
     faHashtag,
     faHeart,
+    faImage,
     faLayerGroup,
     faLink,
     faPoo,
@@ -33,6 +34,7 @@ import OverviewPage from "./overview/Overview";
 import ConfigPage from "./overview/Premium";
 import RolesPage from "./overview/Roles";
 import { SanitizedServer } from "../../lib/@types/db";
+import ImagesPage from "./automod/Images";
 
 export interface DashboardPageItem {
     id: string;
@@ -60,6 +62,7 @@ export const dashboardPageList: DashboardPageItem[] = [
     { id: "phrases", name: "Phrase Filter", icon: faCommentDots, component: PhrasesPage, category: DashboardPageCategory.Automod },
     { id: "urls", name: "URL Filter", icon: faLink, component: LinksPage, category: DashboardPageCategory.Automod },
     { id: "invites", name: "Invite Filter", icon: faTicket, component: InvitesPage, category: DashboardPageCategory.Automod },
+    { id: "images", name: "Image Filter", icon: faImage, component: ImagesPage, category: DashboardPageCategory.Automod },
     { id: "spam", name: "Anti-spam", icon: faPoo, component: SpamPage, category: DashboardPageCategory.Automod },
     { id: "ignore", name: "Filter Ignoring", icon: faCircleXmark, component: IgnoresPage, category: DashboardPageCategory.Automod },
     { id: "modmail", name: "Modmail", icon: faEnvelope, component: ModmailPage, category: DashboardPageCategory.Entry },

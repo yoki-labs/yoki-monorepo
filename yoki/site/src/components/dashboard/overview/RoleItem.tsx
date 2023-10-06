@@ -205,6 +205,7 @@ export function RoleItemCreationForm({ serverRoleOptions, onCreate }: EditorProp
                 ].filter(Boolean) as LabsFormSection[]
             }
             onSubmit={({ roleId, type }) => onCreate(roleId as number, type as RoleType)}
+            resetOnSubmission
         />
     );
 }

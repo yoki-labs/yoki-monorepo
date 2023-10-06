@@ -120,6 +120,8 @@ export default class RolesPage extends React.Component<DashboardPageProps, State
         else if (!isLoaded) return <RolesPageSkeleton />;
 
         const roleOptions = optionifyRoles(serverRoles);
+        const existingRoleIds = roles.map((x) => x.roleId);
+        const staffRoleOptions = roleOptions.map((x) => ({ ...x, disabled: existingRoleIds.includes(x.value) }))
 
         return (
             <Box>
@@ -138,7 +140,7 @@ export default class RolesPage extends React.Component<DashboardPageProps, State
                     Staff roles
                 </Typography>
                 <Card sx={{ mb: 2 }}>
-                    <RoleItemCreationForm serverRoleOptions={roleOptions} onCreate={this.onRoleCreate.bind(this)} />
+                    <RoleItemCreationForm serverRoleOptions={staffRoleOptions} onCreate={this.onRoleCreate.bind(this)} />
                 </Card>
                 <Stack direction="column" gap={2}>
                     {roles.map((role) => (
@@ -146,7 +148,7 @@ export default class RolesPage extends React.Component<DashboardPageProps, State
                             serverId={serverConfig.serverId}
                             role={role}
                             serverRoles={serverRoles}
-                            serverRoleOptions={roleOptions}
+                            serverRoleOptions={staffRoleOptions}
                             timezone={serverConfig.timezone}
                             onDelete={this.onRoleDelete.bind(this, role)}
                             onUpdate={this.onRoleUpdate.bind(this, role)}

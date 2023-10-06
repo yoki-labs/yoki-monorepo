@@ -18,6 +18,7 @@ export type LabsFormProps = {
 
     // Actions
     alwaysDisplayActions?: boolean;
+    resetOnSubmission?: boolean;
 
     onSubmit: (values: LabsFormFieldValueMap) => unknown;
     submitText?: string;
@@ -44,11 +45,15 @@ export default class LabsForm extends React.Component<LabsFormProps, LabsFormSta
 
         this.formId = Math.floor(Math.random() * 75 + 25);
 
-        this.fieldValues = this.fields.reduce<Record<string, LabsFormFieldValue>>((mapped, field) => ((mapped[field.prop] = field.defaultValue ?? null), mapped), {});
+        this.fieldValues = this.defaultFieldValues;
     }
-
+    
     get fields() {
         return this.props.sections.flatMap((x) => x.fields);
+    }
+    
+    get defaultFieldValues() {
+        return this.fields.reduce<Record<string, LabsFormFieldValue>>((mapped, field) => ((mapped[field.prop] = field.defaultValue ?? null), mapped), {});
     }
 
     get displayActions() {
@@ -61,10 +66,16 @@ export default class LabsForm extends React.Component<LabsFormProps, LabsFormSta
     onSubmit(event: FormEvent<HTMLFormElement>) {
         event.preventDefault();
 
+        const oldValues = this.fieldValues;
+
+        // For things like log channel creations
+        if (this.props.resetOnSubmission)
+            this.fieldValues = this.defaultFieldValues;
+
         // To not be able to save again
         this.setState({ changed: false });
 
-        return this.props.onSubmit(this.fieldValues);
+        return this.props.onSubmit(oldValues);
     }
 
     onCancel(event: FormEvent<HTMLButtonElement>) {
