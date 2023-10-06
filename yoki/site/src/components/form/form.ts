@@ -2,6 +2,14 @@ import { IconDefinition } from "@fortawesome/free-solid-svg-icons";
 import { DefaultColorPalette, VariantProp } from "@mui/joy/styles/types";
 import { ReactNode } from "react";
 
+// Enums
+export enum TimeStep {
+    Seconds = 0,
+    Minutes = 1,
+    Hours = 2,
+    Days = 3,
+}
+
 // #region Interfaces Form basic info structure
 export interface LabsFormSection {
     name?: string;
@@ -37,6 +45,7 @@ interface StyledLabsFormField {
 
 export interface LabsFormFieldOption<T> {
     name: string;
+    description?: string;
     value: T;
     icon?: IconDefinition;
     color?: number;
@@ -72,24 +81,41 @@ interface LabsFormFieldMultiSelection<TType extends LabsFormFieldType>
         StyledLabsFormField,
         PlaceholdableLabsFormField {}
 
-export type LabsFormFieldByType<T extends LabsFormFieldType> = T extends LabsFormFieldType.Text
+interface LabsFormFieldTimed<TType extends LabsFormFieldType> extends BaseLabsFormField<TType, number>, StyledLabsFormField {
+    step?: TimeStep;
+    max?: number;
+    min?: number;
+}
+
+export type LabsFormFieldByType<T extends LabsFormFieldType> =
+    // Text-based inputs
+    T extends LabsFormFieldType.Text
     ? LabsFormFieldInput<LabsFormFieldType.Text, string>
     : T extends LabsFormFieldType.TextArea
     ? LabsFormFieldInputLarge<LabsFormFieldType.TextArea, string>
     : T extends LabsFormFieldType.Number
     ? LabsFormFieldInput<LabsFormFieldType.Number, number>
+    // Navigatable/semi text-based inputs
+    : T extends LabsFormFieldType.Time
+    ? LabsFormFieldTimed<LabsFormFieldType.Time>
+    // Selection
     : T extends LabsFormFieldType.Select
     ? LabsFormFieldSelectable<LabsFormFieldType.Select>
     : T extends LabsFormFieldType.Toggle
     ? BaseLabsFormField<LabsFormFieldType.Toggle, boolean>
     : T extends LabsFormFieldType.MultiSelect
     ? LabsFormFieldMultiSelection<LabsFormFieldType.MultiSelect>
+    // Never
     : never;
 
 export type LabsFormField =
+    // Text-based inputs
     | LabsFormFieldByType<LabsFormFieldType.Text>
     | LabsFormFieldByType<LabsFormFieldType.TextArea>
     | LabsFormFieldByType<LabsFormFieldType.Number>
+    // Navigatable/semi text-based inputs
+    | LabsFormFieldByType<LabsFormFieldType.Time>
+    // Selection
     | LabsFormFieldByType<LabsFormFieldType.Select>
     | LabsFormFieldByType<LabsFormFieldType.Toggle>
     | LabsFormFieldByType<LabsFormFieldType.MultiSelect>;
@@ -101,4 +127,5 @@ export enum LabsFormFieldType {
     Select,
     Toggle,
     MultiSelect,
+    Time,
 }

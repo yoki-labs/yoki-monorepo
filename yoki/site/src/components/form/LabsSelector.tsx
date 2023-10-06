@@ -1,6 +1,6 @@
 import React from "react";
 import LabsForm, { FormFieldHeader } from "./LabsForm";
-import { Avatar, ListItemDecorator, Option, Select, SelectOption, Typography } from "@mui/joy";
+import { Avatar, Box, ListItemDecorator, Option, Select, SelectOption, Typography } from "@mui/joy";
 import { LabsFormFieldByType, LabsFormFieldOption, LabsFormFieldType } from "./form";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleDown } from "@fortawesome/free-solid-svg-icons";
@@ -35,12 +35,12 @@ export default class LabsSelector extends React.Component<Props, State> {
         return (
             <>
                 {(value.icon || value.avatarIcon) && (
-                    <ListItemDecorator sx={{ width: 40 }}>
+                    <ListItemDecorator sx={{ width: 28 }}>
                         {value.icon && <FontAwesomeIcon icon={value.icon} />}
                         {value.avatarIcon && <Avatar size="sm" src={value.avatarIcon} />}
                     </ListItemDecorator>
                 )}
-                <Typography sx={{ color: value.color ? `#${value.color.toString(16)}` : "inherit" }}>{value.name}</Typography>
+                <Typography fontWeight="bolder" sx={{ color: value.color ? `#${value.color.toString(16)}` : "inherit" }}>{value.name}</Typography>
             </>
         );
     }
@@ -77,7 +77,16 @@ export default class LabsSelector extends React.Component<Props, State> {
                 >
                     {field.selectableValues?.map((value) => (
                         <Option disabled={value.disabled} value={value.value}>
-                            {this.renderValue(value)}
+                            {(value.icon || value.avatarIcon) && (
+                                <ListItemDecorator sx={{ width: 40 }}>
+                                    {value.icon && <FontAwesomeIcon icon={value.icon} />}
+                                    {value.avatarIcon && <Avatar size="sm" src={value.avatarIcon} />}
+                                </ListItemDecorator>
+                            )}
+                            <Box>
+                                <Typography fontWeight="bolder" sx={{ color: value.color ? `#${value.color.toString(16)}` : "inherit" }}>{value.name}</Typography>
+                                { value.description && <Typography textColor="text.tertiary">{value.description}</Typography> }
+                            </Box>
                         </Option>
                     ))}
                 </Select>

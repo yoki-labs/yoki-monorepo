@@ -6,8 +6,8 @@ import { formatDate } from "@yokilabs/utils";
 import LabsIconWrapper from "../../LabsIconWrapper";
 import LabsOverflowButton from "../../LabsOverflowButton";
 import React from "react";
-import LabsForm, { LabsFormFieldValueMap } from "../../LabsForm";
-import { LabsFormFieldOption, LabsFormFieldType, LabsFormSection } from "../../form";
+import LabsForm, { LabsFormFieldValueMap } from "../../form/LabsForm";
+import { LabsFormFieldOption, LabsFormFieldType, LabsFormSection } from "../../form/form";
 import { RolePayload } from "@guildedjs/api";
 import { RoleType } from "@prisma/client";
 

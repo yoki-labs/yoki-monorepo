@@ -2,11 +2,11 @@ import { Box, Stack, Typography } from "@mui/joy";
 import PagePlaceholder, { PagePlaceholderIcon } from "../PagePlaceholder";
 import { AppealsSessionProps, BaseAppealsSessionProps, appealWaitingTime } from "../../utils/appealUtil";
 import { ServerPayload } from "@guildedjs/api";
-import LabsForm from "../LabsForm";
-import { LabsFormFieldType } from "../form";
+import LabsForm from "../form/LabsForm";
+import { LabsFormFieldType } from "../form/form";
 import { checkServerIdentity } from "tls";
 import ms from "ms";
-import { notifyFetchError } from "../../utils/errorUtil";
+import { errorifyResponseError, notifyFetchError } from "../../utils/errorUtil";
 
 export default function AppealsPageDisplay(props: AppealsSessionProps) {
     const { code } = props;
@@ -73,7 +73,9 @@ async function sendAppeal(serverId: string, content: string) {
         method: "POST",
         body: JSON.stringify({ content }),
         headers: { "content-type": "application/json" },
-    }).catch(notifyFetchError.bind(null, "Error while sending an appeal"));
+    })
+        .then(errorifyResponseError)
+        .catch(notifyFetchError.bind(null, "Error while sending an appeal"));
 }
 
 function AppealsPagePlaceholder({ icon, title, description }: { icon: PagePlaceholderIcon; title: string; description: string }) {

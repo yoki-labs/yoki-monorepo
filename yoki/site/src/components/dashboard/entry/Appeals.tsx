@@ -2,13 +2,13 @@ import { Box, Card, CardContent, Stack, Typography } from "@mui/joy";
 import React from "react";
 import DashboardModule from "../DashboardModule";
 import { DashboardPageProps } from "../pages";
-import { faPrayingHands } from "@fortawesome/free-solid-svg-icons";
+import { faHashtag, faPrayingHands } from "@fortawesome/free-solid-svg-icons";
 import DataTable from "../../DataTable";
 import { SanitizedAppeal } from "../../../lib/@types/db";
 import { AppealCard, AppealRow } from "./AppealItem";
-import LabsForm from "../../LabsForm";
-import { LabsFormFieldType } from "../../form";
-import { notifyFetchError } from "../../../utils/errorUtil";
+import LabsForm from "../../form/LabsForm";
+import { LabsFormFieldType } from "../../form/form";
+import { errorifyResponseError, notifyFetchError } from "../../../utils/errorUtil";
 
 export default class AppealsPage extends React.Component<DashboardPageProps> {
     constructor(props: DashboardPageProps) {
@@ -55,7 +55,9 @@ export default class AppealsPage extends React.Component<DashboardPageProps> {
             method: "PATCH",
             headers: { "content-type": "application/json" },
             body: JSON.stringify({ appealChannelId }),
-        }).catch(notifyFetchError.bind(null, "Error while updating server data for role changes"));
+        })
+            .then(errorifyResponseError)
+            .catch(notifyFetchError.bind(null, "Error while updating server data for appeals"));
     }
 
     render() {
@@ -92,6 +94,7 @@ export default class AppealsPage extends React.Component<DashboardPageProps> {
                                                 name: "Appeal Channel",
                                                 description: "The ID of the channel where appeals will be posted and managed.",
                                                 defaultValue: serverConfig.appealChannelId,
+                                                prefixIcon: faHashtag,
                                             },
                                         ],
                                     },

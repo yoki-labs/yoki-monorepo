@@ -2,7 +2,7 @@ import { Avatar, ListItemDecorator, Option, SelectOption } from "@mui/joy";
 import React from "react";
 
 import { GuildedClientServer } from "../../../lib/@types/guilded";
-import LabsDropdown from "../../LabsDropdown";
+import LabsDropdown from "../../form/LabsDropdown";
 
 interface Props {
     servers: GuildedClientServer[];

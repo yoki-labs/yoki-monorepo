@@ -1,14 +1,16 @@
 import { SanitizedServer } from "../../../lib/@types/db";
-import { notifyFetchError } from "../../../utils/errorUtil";
-import LabsForm from "../../LabsForm";
-import { LabsFormFieldOption, LabsFormFieldType } from "../../form";
+import { errorifyResponseError, notifyFetchError } from "../../../utils/errorUtil";
+import LabsForm from "../../form/LabsForm";
+import { LabsFormFieldOption, LabsFormFieldType } from "../../form/form";
 
 async function onBaseRoleChanges(serverId: string, muteRoleId: number | undefined | null, memberRoleId: number | undefined | null, modmailPingRoleId: number | undefined | null) {
     return fetch(`/api/servers/${serverId}`, {
         method: "PATCH",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ muteRoleId, memberRoleId, modmailPingRoleId }),
-    }).catch(notifyFetchError.bind(null, "Error while updating server data for role changes"));
+    })
+        .then(errorifyResponseError)
+        .catch(notifyFetchError.bind(null, "Error while updating server data for role changes"));
 }
 
 export default function BaseRolesForm({ serverConfig, serverRoleOptions }: { serverConfig: SanitizedServer; serverRoleOptions: LabsFormFieldOption<number>[] }) {

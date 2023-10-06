@@ -1,4 +1,4 @@
-import { Server, Severity } from "@prisma/client";
+import { ResponseType, Server, Severity } from "@prisma/client";
 import { timezones } from "@yokilabs/utils";
 import { NextApiResponse } from "next";
 
@@ -11,6 +11,8 @@ const MAP_DEFAULT_PREFIXES = [DEFAULT_PREFIX, null, ""];
 const DEFAULT_TIMEZONE = "america/new_york";
 const MAP_DEFAULT_TIMEZONE = [DEFAULT_TIMEZONE, null];
 const MAP_DEFAULT_SEVERITY = [Severity.WARN, null];
+const MIN_ANTIRAID_TIME = 10 * 60 * 1000;
+const MAX_ANTIRAID_TIME = 14 * 24 * 60 * 60 * 1000;
 
 const BOOLEAN_PROPERTIES: (keyof Server)[] = [
     // Modules Automod
@@ -29,6 +31,7 @@ const BOOLEAN_PROPERTIES: (keyof Server)[] = [
 const ROLE_PROPERTIES: (keyof Server)[] = ["muteRoleId", "memberRoleId", "modmailPingRoleId"];
 
 const availableSeverity = Object.keys(Severity);
+const availableResponse = Object.keys(ResponseType);
 
 const serverConfigRoute = createServerRoute({
     async PATCH(req, res, _session, server, _member) {
@@ -44,16 +47,21 @@ const serverConfigRoute = createServerRoute({
         else if (isPropertyTypeInvalid(body.spamFrequency, "number") || body.spamFrequency < 2 || body.spamFrequency > 100)
             return getErrorResponse(res, "spamFrequency", "number between 2 and 100");
         else if (isPropertyTypeInvalid(body.spamMentionFrequency, "number") || body.spamMentionFrequency < 2 || body.spamMentionFrequency > 100)
-            return getErrorResponse(res, "spamMentionFrequency", "number between 2 and 100");
+        return getErrorResponse(res, "spamMentionFrequency", "number between 2 and 100");
         // Infractions can be negative in notes and whatever, but here it isn't allowed.
         else if (isPropertyTypeInvalid(body.spamInfractionPoints, "number") || body.spamInfractionPoints < 0 || body.spamInfractionPoints > 10000)
             return getErrorResponse(res, "spamInfractionPoints", "number between 0 and 10'000");
         else if (isPropertyTypeInvalid(body.linkInfractionPoints, "number") || body.linkInfractionPoints < 0 || body.linkInfractionPoints > 10000)
             return getErrorResponse(res, "linkInfractionPoints", "number between 0 and 10'000");
-        // Severity
+        // Enums
         else if (isEnumPropertyInvalid(body.linkSeverity, availableSeverity)) return getErrorResponse(res, "linkSeverity", "severity");
+        else if (isEnumPropertyInvalid(body.antiRaidResponse, availableResponse)) return getErrorResponse(res, "antiRaidResponse", "response type");
         // Channels
-        else if (!(await isChannelPropertyInvalid(body.appealChannelId))) return getErrorResponse(res, "appealChannelId", "null or channel");
+        else if (!(await isChannelPropertyValid(body.appealChannelId))) return getErrorResponse(res, "appealChannelId", "null or channel");
+        else if (!(await isChannelPropertyValid(body.antiRaidChallengeChannel))) return getErrorResponse(res, "antiRaidChallengeChannel", "null or channel");
+        // Misc numbers
+        else if (isPropertyTypeInvalid(body.antiRaidAgeFilter, "number") || body.antiRaidAgeFilter < MIN_ANTIRAID_TIME || body.antiRaidAgeFilter > MAX_ANTIRAID_TIME)
+            return getErrorResponse(res, "antiRaidAgeFilter", "time between 10 minutes and 14 days");
 
         // Modules
         const data: Partial<Server> = {
@@ -69,6 +77,7 @@ const serverConfigRoute = createServerRoute({
             linkSeverity: MAP_DEFAULT_SEVERITY.includes(body.linkSeverity) ? null : body.linkSeverity ?? server.linkSeverity,
             // Channels
             appealChannelId: typeof body.appealChannelId === "undefined" ? server.appealChannelId : body.appealChannelId,
+            antiRaidChallengeChannel: typeof body.antiRaidChallengeChannel === "undefined" ? server.antiRaidChallengeChannel : body.antiRaidChallengeChannel,
         };
 
         // Remove repetition
@@ -121,7 +130,7 @@ const isUnsettablePropertyTypeInvalid = <T>(value: T, expectedType: AllowedValue
 
 const isEnumPropertyInvalid = <T extends string>(value: unknown, expectedValues: T[]) => value !== null && typeof value !== "undefined" && !expectedValues.includes(value as T);
 
-const isChannelPropertyInvalid = async <T>(channelId: T) =>
+const isChannelPropertyValid = async <T>(channelId: T) =>
     typeof channelId === "undefined" || channelId === null || (typeof channelId === "string" && channelExistsInServer(channelId));
 
 export default serverConfigRoute;

@@ -11,10 +11,10 @@ import { LabsUserCard } from "../../LabsUserCard";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { severityOptions, severityToIcon } from "../../../utils/actionUtil";
 import { formatDate } from "@yokilabs/utils";
-import LabsForm from "../../LabsForm";
-import { LabsFormFieldType } from "../../form";
+import LabsForm from "../../form/LabsForm";
+import { LabsFormFieldType } from "../../form/form";
 import { Severity } from "@prisma/client";
-import { notifyFetchError } from "../../../utils/errorUtil";
+import { errorifyResponseError, notifyFetchError } from "../../../utils/errorUtil";
 import { UrlCard, UrlRow } from "./UrlItem";
 
 export default class UrlsPage extends React.Component<DashboardPageProps> {
@@ -62,7 +62,9 @@ export default class UrlsPage extends React.Component<DashboardPageProps> {
             method: "PATCH",
             headers: { "content-type": "application/json" },
             body: JSON.stringify({ urlFilterIsWhitelist, linkSeverity, linkInfractionPoints }),
-        }).catch(notifyFetchError.bind(null, "Error while creating role data"));
+        })
+            .then(errorifyResponseError)
+            .catch(notifyFetchError.bind(null, "Error while creating role data"));
     }
 
     async modifyServerConfig(urlFilterIsWhitelist: boolean | undefined | null, linkSeverity: Severity | undefined | null, linkInfractionPoints: number | undefined | null) {
@@ -72,7 +74,9 @@ export default class UrlsPage extends React.Component<DashboardPageProps> {
             method: "PATCH",
             headers: { "content-type": "application/json" },
             body: JSON.stringify({ urlFilterIsWhitelist, linkSeverity, linkInfractionPoints }),
-        }).catch(notifyFetchError.bind(null, "Error while updating server data for role changes"));
+        })
+            .then(errorifyResponseError)
+            .catch(notifyFetchError.bind(null, "Error while updating server data for role changes"));
     }
 
     render() {

@@ -6,8 +6,8 @@ import LabsIconWrapper from "../../LabsIconWrapper";
 import { LogChannelType } from "@prisma/client";
 import LabsOverflowButton from "../../LabsOverflowButton";
 import React from "react";
-import LabsForm, { LabsFormFieldValueMap } from "../../LabsForm";
-import { LabsFormFieldType } from "../../form";
+import LabsForm, { LabsFormFieldValueMap } from "../../form/LabsForm";
+import { LabsFormFieldType } from "../../form/form";
 
 type Props = {
     serverId: string;

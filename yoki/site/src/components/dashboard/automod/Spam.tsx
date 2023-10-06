@@ -1,11 +1,11 @@
 import { faAnglesDown, faBan } from "@fortawesome/free-solid-svg-icons";
-import { Box, Card, CardContent, Stack, Typography } from "@mui/joy";
+import { Box, Card, CardContent, Typography } from "@mui/joy";
 import React from "react";
 import DashboardModule from "../DashboardModule";
 import { DashboardPageProps } from "../pages";
-import LabsForm, { LabsFormFieldValueMap } from "../../LabsForm";
-import { LabsFormFieldType } from "../../form";
-import { notifyFetchError } from "../../../utils/errorUtil";
+import LabsForm, { LabsFormFieldValueMap } from "../../form/LabsForm";
+import { LabsFormFieldType } from "../../form/form";
+import { errorifyResponseError, notifyFetchError } from "../../../utils/errorUtil";
 
 export default class SpamPage extends React.Component<DashboardPageProps> {
     constructor(props: DashboardPageProps) {
@@ -20,7 +20,9 @@ export default class SpamPage extends React.Component<DashboardPageProps> {
             method: "PATCH",
             headers: { "content-type": "application/json" },
             body: JSON.stringify({ spamFrequency, spamMentionFrequency, spamInfractionPoints }),
-        }).catch(notifyFetchError.bind(null, "Error while updating server data for spam settings"));
+        })
+            .then(errorifyResponseError)
+            .catch(notifyFetchError.bind(null, "Error while updating server data for spam settings"));
     }
 
     render() {
@@ -36,7 +38,6 @@ export default class SpamPage extends React.Component<DashboardPageProps> {
                         activeClassName="from-red-500 to-pink-500"
                         serverConfig={serverConfig}
                         prop="filterEnabled"
-                        // iconAspectRatio={0.8}
                         hideBadges
                         largeHeader
                     />
@@ -47,7 +48,6 @@ export default class SpamPage extends React.Component<DashboardPageProps> {
                         activeClassName="from-orange-500 to-yellow-500"
                         serverConfig={serverConfig}
                         prop="antiHoistEnabled"
-                        // iconAspectRatio={0.8}
                         hideBadges
                         largeHeader
                     />

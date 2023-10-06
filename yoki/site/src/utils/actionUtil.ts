@@ -1,13 +1,13 @@
-import { faBroom, faCircleExclamation, faHammer, faNoteSticky, faShoePrints, faVolumeMute, IconDefinition } from "@fortawesome/free-solid-svg-icons";
+import { faBroom, faCircleExclamation, faDoorOpen, faHammer, faNoteSticky, faShoePrints, faVolumeMute, IconDefinition } from "@fortawesome/free-solid-svg-icons";
 import { Severity } from "@prisma/client";
 
-import { LabsFormFieldOption } from "../components/form";
+import { LabsFormFieldOption } from "../components/form/form";
 
 export const severityToIcon: Record<Severity, IconDefinition> = {
     NOTE: faNoteSticky,
     MUTE: faVolumeMute,
     BAN: faHammer,
-    KICK: faShoePrints,
+    KICK: faDoorOpen,
     WARN: faCircleExclamation,
     SOFTBAN: faBroom,
 };

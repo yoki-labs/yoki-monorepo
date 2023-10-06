@@ -5,6 +5,8 @@ import { BaseLabsFormField, LabsFormField, LabsFormFieldByType, LabsFormFieldTyp
 import LabsMultiSelector from "./LabsMultiSelector";
 import LabsSelector from "./LabsSelector";
 import NumberInput from "./NumberInput";
+import TimeInput from "./TimeInput";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 type LabsFormFieldValue = string | string[] | number | boolean | undefined | null;
 
@@ -152,6 +154,7 @@ export const fieldRenderers: FieldRendererRecord = {
                 disabled={field.disabled}
                 onChange={({ target }) => form.setValue(field, target.value)}
                 variant={field.variant ?? "outlined"}
+                startDecorator={field.prefixIcon && <FontAwesomeIcon icon={field.prefixIcon} />}
             />
         </>
     ),
@@ -171,6 +174,7 @@ export const fieldRenderers: FieldRendererRecord = {
         </>
     ),
     [LabsFormFieldType.Number]: (form, id, field) => <NumberInput id={id} form={form} field={field} />,
+    [LabsFormFieldType.Time]: (form, id, field) => <TimeInput id={id} form={form} field={field} />,
     [LabsFormFieldType.Select]: (form, id, field) => <LabsSelector id={id} form={form} field={field} />,
     [LabsFormFieldType.Toggle]: (form, id, field) => (
         <Stack spacing={2} direction="row">

@@ -7,3 +7,10 @@ export async function notifyFetchError(message: string, errorResponse: Response)
 
     toast.error(error.message);
 }
+
+export function errorifyResponseError(response: Response) {
+    if (!response.ok)
+        throw response;
+
+    return response;
+}

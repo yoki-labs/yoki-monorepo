@@ -1,13 +1,12 @@
 import React from "react";
 import { SanitizedServer } from "../../../lib/@types/db";
 import { AspectRatio, Avatar, Box, Card, CardContent, CardOverflow, Stack, Tooltip, Typography } from "@mui/joy";
-import LabsForm, { LabsFormFieldValueMap } from "../../LabsForm";
-import { LabsFormFieldType } from "../../form";
+import LabsForm, { LabsFormFieldValueMap } from "../../form/LabsForm";
+import { LabsFormFieldType } from "../../form/form";
 import { timezones } from "@yokilabs/utils";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faRocket } from "@fortawesome/free-solid-svg-icons";
-import { toast } from "react-hot-toast";
-import { notifyFetchError } from "../../../utils/errorUtil";
+import { errorifyResponseError, notifyFetchError } from "../../../utils/errorUtil";
 import { PremiumType } from "@prisma/client";
 import { TextColor } from "@mui/joy/styles/types";
 
@@ -27,7 +26,9 @@ export default class DashboardProfileCard extends React.Component<Props> {
             method: "PATCH",
             headers: { "content-type": "application/json" },
             body: JSON.stringify({ prefix, timezone }),
-        }).catch(notifyFetchError.bind(null, "Error while updating server data"));
+        })
+            .then(errorifyResponseError)
+            .catch(notifyFetchError.bind(null, "Error while updating server data"));
     }
 
     render() {

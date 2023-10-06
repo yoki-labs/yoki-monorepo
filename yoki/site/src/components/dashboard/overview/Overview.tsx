@@ -50,7 +50,7 @@ export default function OverviewPage(props: DashboardPageProps) {
                         name="Anti-raid"
                         description="Customize how the bot detects and handles suspicious accounts."
                         icon={faShieldHalved}
-                        activeClassName="from-green-500 to-blue-500"
+                        activeClassName="from-green-500 to-cyan-500"
                         serverConfig={serverConfig}
                         prop="antiRaidEnabled"
                     />

@@ -1,11 +1,11 @@
 import { Box, Card, CardContent, Stack, Switch, Typography } from "@mui/joy";
 import React from "react";
 import { SanitizedPreset } from "../../../lib/@types/db";
-import LabsForm from "../../LabsForm";
-import { LabsFormFieldType } from "../../form";
+import LabsForm from "../../form/LabsForm";
+import { LabsFormFieldType } from "../../form/form";
 import { severityOptions } from "../../../utils/actionUtil";
 import { Severity } from "@prisma/client";
-import { notifyFetchError } from "../../../utils/errorUtil";
+import { errorifyResponseError, notifyFetchError } from "../../../utils/errorUtil";
 
 type Props = {
     serverId: string;
@@ -38,7 +38,9 @@ export default class AutomodPreset extends React.Component<Props, State> {
         return fetch(`/api/servers/${serverId}/presets/${presetName}`, {
             method,
             headers: { "content-type": "application/json" },
-        }).catch(notifyFetchError.bind(null, "Error while toggling presets"));
+        })
+            .then(errorifyResponseError)
+            .catch(notifyFetchError.bind(null, "Error while toggling presets"));
     }
 
     async onPresetUpdate(severity: Severity, infractionPoints: number) {
@@ -48,7 +50,9 @@ export default class AutomodPreset extends React.Component<Props, State> {
             method: "PATCH",
             headers: { "content-type": "application/json" },
             body: JSON.stringify({ severity, infractionPoints }),
-        }).catch(notifyFetchError.bind(null, "Error while updating preset data"));
+        })
+            .then(errorifyResponseError)
+            .catch(notifyFetchError.bind(null, "Error while updating preset data"));
     }
 
     render() {
