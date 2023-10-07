@@ -9,12 +9,17 @@ export enum TimeStep {
     Hours = 2,
     Days = 3,
 }
+export enum LabsFormSectionOrder {
+    Column = 0,
+    Row = 1,
+    Grid = 2,
+}
 
 // #region Interfaces Form basic info structure
 export interface LabsFormSection {
     name?: string;
     description?: string;
-    row?: boolean;
+    order?: LabsFormSectionOrder;
     hideDivider?: boolean;
     gap?: number;
     start?: ReactNode;

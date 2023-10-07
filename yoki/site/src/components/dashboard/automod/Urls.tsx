@@ -12,7 +12,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { severityOptions, severityToIcon } from "../../../utils/actionUtil";
 import { formatDate } from "@yokilabs/utils";
 import LabsForm from "../../form/LabsForm";
-import { LabsFormFieldType } from "../../form/form";
+import { LabsFormFieldType, LabsFormSectionOrder } from "../../form/form";
 import { Severity } from "@prisma/client";
 import { errorifyResponseError, notifyFetchError } from "../../../utils/errorUtil";
 import { UrlCard, UrlRow } from "./UrlItem";
@@ -105,7 +105,7 @@ export default class UrlsPage extends React.Component<DashboardPageProps> {
                             <LabsForm
                                 sections={[
                                     {
-                                        row: true,
+                                        order: LabsFormSectionOrder.Grid,
                                         fields: [
                                             {
                                                 type: LabsFormFieldType.Toggle,
@@ -119,7 +119,7 @@ export default class UrlsPage extends React.Component<DashboardPageProps> {
                                     },
                                     {
                                         name: "Non-whitelisted link punishment",
-                                        row: true,
+                                        order: LabsFormSectionOrder.Grid,
                                         fields: [
                                             {
                                                 type: LabsFormFieldType.Select,

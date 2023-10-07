@@ -20,7 +20,7 @@ export function LayoutTopbar({ children, onServerChange, currentServer, servers,
         <Box sx={{ display: "flex", flexDirection: "row", gap: 2, alignItems: "center" }} className="px-5 py-4 md:px-10 md:py-8">
             {children}
             <Breadcrumbs
-                sx={{ p: 0, "--Breadcrumbs-gap": "20px", display: "flex", alignItems: "center" }}
+                sx={{ p: 0, "--Breadcrumbs-gap": "20px", display: "flex", alignItems: "center", userSelect: "none" }}
                 className="grow"
                 separator={
                     <Typography level="title-sm" textColor="text.secondary" className="hidden md:block">

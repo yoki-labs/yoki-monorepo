@@ -1,7 +1,7 @@
 import { Box, Button, Chip, Divider, FormControl, FormHelperText, FormLabel, Input, Stack, Switch, Textarea, Typography } from "@mui/joy";
 import React from "react";
 import { FormEvent } from "react";
-import { BaseLabsFormField, LabsFormField, LabsFormFieldByType, LabsFormFieldType, LabsFormSection } from "./form";
+import { BaseLabsFormField, LabsFormField, LabsFormFieldByType, LabsFormFieldType, LabsFormSection, LabsFormSectionOrder } from "./form";
 import LabsMultiSelector from "./LabsMultiSelector";
 import LabsSelector from "./LabsSelector";
 import NumberInput from "./NumberInput";
@@ -114,16 +114,16 @@ export default class LabsForm extends React.Component<LabsFormProps, LabsFormSta
                                 </Typography>
                             )}
                             {section.description && <Typography level="body-md">{section.description}</Typography>}
-                            <Stack direction={section.row ? "row" : "column"} gap={section.gap ?? 2} className={section.row ? `flex-col md:flex-row` : `flex-col`}>
+                            <Box gap={section.gap ?? 2} className={sectionOrderCss[section.order ?? LabsFormSectionOrder.Column]}>
                                 {section.start}
                                 {section.fields.map(this.generateField.bind(this))}
-                            </Stack>
+                            </Box>
                         </Box>
                     ))}
                 </Stack>
                 {displayActions && (
                     <Stack sx={{ mt: 2 }} direction="row" gap={1}>
-                        <Button disabled={!changed} variant="outlined" color="success" type="submit">
+                        <Button disabled={!changed} variant="outlined" color="primary" type="submit">
                             {submitText ?? "Save"}
                         </Button>
                         {onCancel && (
@@ -148,6 +148,12 @@ export default class LabsForm extends React.Component<LabsFormProps, LabsFormSta
         );
     }
 }
+
+const sectionOrderCss: Record<LabsFormSectionOrder, string> = {
+    [LabsFormSectionOrder.Column]: `flex flex-col`,
+    [LabsFormSectionOrder.Row]: `flex flex-col md:flex-row`,
+    [LabsFormSectionOrder.Grid]: `grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xlg:grid-cols-4`,
+};
 
 type FieldRendererRecord = {
     [T in LabsFormFieldType]: (form: LabsForm, id: string, field: LabsFormFieldByType<T>) => React.ReactElement;

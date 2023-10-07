@@ -1,4 +1,4 @@
-import { faClipboard } from "@fortawesome/free-solid-svg-icons";
+import { faCheck, faClipboard } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Button, Chip, IconButton, Input, InputProps, Stack, Typography } from "@mui/joy";
 import React from "react";
@@ -31,6 +31,8 @@ export class LabsCopyInput extends React.Component<Props, State> {
         const { text } = this.props;
         const { copied } = this.state;
 
+        const color = copied ? "success" : "neutral";
+
         return (
             <Input
                 slots={{
@@ -38,14 +40,7 @@ export class LabsCopyInput extends React.Component<Props, State> {
                 }}
                 slotProps={{
                     input: {
-                        children: [
-                            <Typography>{text}</Typography>,
-                            copied && (
-                                <Chip variant="outlined" color="success">
-                                    Copied!
-                                </Chip>
-                            ),
-                        ],
+                        children: <Typography>{text}</Typography>,
                         direction: "row",
                         alignItems: "center",
                         gap: 2,
@@ -54,17 +49,17 @@ export class LabsCopyInput extends React.Component<Props, State> {
                 endDecorator={
                     <Button
                         variant="plain"
-                        color="neutral"
+                        color={color}
                         sx={(theme) => ({
-                            backgroundColor: `${theme.vars.palette.neutral[600]} !important`,
+                            backgroundColor: `${theme.vars.palette[color][copied ? 900 : 700]} !important`,
                             ":hover": {
-                                backgroundColor: `${theme.vars.palette.neutral[500]} !important`,
+                                backgroundColor: `${theme.vars.palette[color][copied ? 800 : 600]} !important`,
                             },
                         })}
                         onClick={this.copyText.bind(this)}
-                        startDecorator={<FontAwesomeIcon icon={faClipboard} />}
+                        startDecorator={<FontAwesomeIcon icon={copied ? faCheck : faClipboard} />}
                     >
-                        Copy
+                        { copied ? "Copied!" : "Copy" }
                     </Button>
                 }
                 {...this.props}

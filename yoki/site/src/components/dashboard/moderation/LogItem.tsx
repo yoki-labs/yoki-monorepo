@@ -7,7 +7,7 @@ import { LogChannelType } from "@prisma/client";
 import LabsOverflowButton from "../../LabsOverflowButton";
 import React from "react";
 import LabsForm, { LabsFormFieldValueMap } from "../../form/LabsForm";
-import { LabsFormFieldType } from "../../form/form";
+import { LabsFormFieldType, LabsFormSectionOrder } from "../../form/form";
 
 type Props = {
     serverId: string;
@@ -118,7 +118,7 @@ export default class DashboardLogChannel extends React.Component<Props, State> {
             <LabsForm
                 sections={[
                     {
-                        row: true,
+                        order: LabsFormSectionOrder.Row,
                         start: (
                             <LabsIconWrapper className="hidden md:block">
                                 <FontAwesomeIcon style={{ width: "100%", height: "100%" }} icon={faHashtag} />
@@ -181,7 +181,7 @@ export function LogItemCreationForm({ existingTypes, onCreate: onCreated }: { ex
         <LabsForm
             sections={[
                 {
-                    row: true,
+                    order: LabsFormSectionOrder.Row,
                     start: (
                         <LabsIconWrapper className="hidden md:block">
                             <FontAwesomeIcon style={{ width: "100%", height: "100%" }} icon={faPlus} />

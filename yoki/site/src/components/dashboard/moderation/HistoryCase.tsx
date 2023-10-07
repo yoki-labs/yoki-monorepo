@@ -119,7 +119,7 @@ function CaseExpandedInfo({ action, timezone, includeExecutor }: { action: Sanit
                         </InfoText>
                     )}
                     {action.expiresAt && (
-                        <InfoText icon={faClock} name="Expires at">
+                        <InfoText icon={faClock} name="Expires">
                             {formatDate(new Date(action.expiresAt), timezone)}
                         </InfoText>
                     )}

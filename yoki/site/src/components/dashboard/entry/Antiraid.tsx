@@ -4,7 +4,7 @@ import DashboardModule from "../DashboardModule";
 import { DashboardPageProps } from "../pages";
 import { faCommentDots, faDoorOpen, faGlobe, faHashtag, faShieldHalved } from "@fortawesome/free-solid-svg-icons";
 import LabsForm from "../../form/LabsForm";
-import { LabsFormFieldOption, LabsFormFieldType, TimeStep } from "../../form/form";
+import { LabsFormFieldOption, LabsFormFieldType, LabsFormSectionOrder, TimeStep } from "../../form/form";
 import { ResponseType } from "@prisma/client";
 import { errorifyResponseError, notifyFetchError } from "../../../utils/errorUtil";
 
@@ -72,7 +72,7 @@ export default class AntiraidPage extends React.Component<DashboardPageProps> {
                             <LabsForm
                                 sections={[
                                     {
-                                        row: true,
+                                        order: LabsFormSectionOrder.Grid,
                                         fields: [
                                             {
                                                 type: LabsFormFieldType.Text,
@@ -86,7 +86,7 @@ export default class AntiraidPage extends React.Component<DashboardPageProps> {
                                             {
                                                 type: LabsFormFieldType.Select,
                                                 prop: "antiRaidResponse",
-                                                name: "Filtered Account Response",
+                                                name: "Anti-raid Response",
                                                 description: "How the recently created accounts will be dealt with.",
                                                 defaultValue: serverConfig.antiRaidResponse,
                                                 selectableValues: antiRaidResponseValues,

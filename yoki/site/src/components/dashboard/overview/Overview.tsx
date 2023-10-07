@@ -59,7 +59,7 @@ export default function OverviewPage(props: DashboardPageProps) {
                         name="Appeals"
                         description="Allows people to apply for an unban in your server."
                         icon={faPrayingHands}
-                        activeClassName="from-violet-500 to-cyan-500"
+                        activeClassName="from-violet-500 via-blue-500 to-cyan-500"
                         serverConfig={serverConfig}
                         prop="appealsEnabled"
                     />

@@ -53,7 +53,7 @@ export default class DashboardModule extends React.Component<Props, { isActive: 
                             className="grow"
                             fontWeight="md"
                             level={largeHeader ? "title-lg" : "title-md"}
-                            endDecorator={requiresPremium && titleBarBadges && <ModulePremiumBadge premium={requiresPremium} />}
+                            endDecorator={requiresPremium && titleBarBadges && <span className="hidden md:block"><ModulePremiumBadge size="sm" premium={requiresPremium} /></span>}
                         >
                             {name}
                         </Typography>
@@ -61,20 +61,18 @@ export default class DashboardModule extends React.Component<Props, { isActive: 
                     </Stack>
                     <Typography level="body-md">{description}</Typography>
                 </Box>
-                {!titleBarBadges && (
-                    <Box mt={2}>
-                        <ModulePremiumBadge premium={requiresPremium} />
-                    </Box>
-                )}
+                <Box mt={2} className={titleBarBadges ? `block md:hidden` : ``}>
+                    <ModulePremiumBadge premium={requiresPremium} />
+                </Box>
             </LabsIconCard>
         );
     }
 }
 
-function ModulePremiumBadge({ premium }: { premium: PremiumType | undefined | null; }) {
+function ModulePremiumBadge({ premium, size }: { premium: PremiumType | undefined | null; size?: "sm" | "md" | "lg" }) {
     return (
         <Tooltip title={premium ? `This module requires ${premium} tier subscription of Yoki Labs.` : `This module is available for everyone to use for free.`}>
-            <Chip color={premium ? "warning" : "neutral"}>{premium ? "Premium" : "Free"}</Chip>
+            <Chip size={size} color={premium ? "warning" : "neutral"}>{premium ? "Premium" : "Free"}</Chip>
         </Tooltip>
     );
 }

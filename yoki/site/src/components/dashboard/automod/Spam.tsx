@@ -4,7 +4,7 @@ import React from "react";
 import DashboardModule from "../DashboardModule";
 import { DashboardPageProps } from "../pages";
 import LabsForm, { LabsFormFieldValueMap } from "../../form/LabsForm";
-import { LabsFormFieldType } from "../../form/form";
+import { LabsFormFieldType, LabsFormSectionOrder } from "../../form/form";
 import { errorifyResponseError, notifyFetchError } from "../../../utils/errorUtil";
 
 export default class SpamPage extends React.Component<DashboardPageProps> {
@@ -62,7 +62,7 @@ export default class SpamPage extends React.Component<DashboardPageProps> {
                                 sections={[
                                     {
                                         name: "Spam detection",
-                                        row: true,
+                                        order: LabsFormSectionOrder.Grid,
                                         gap: 4,
                                         fields: [
                                             {
@@ -87,7 +87,7 @@ export default class SpamPage extends React.Component<DashboardPageProps> {
                                     },
                                     {
                                         name: "Spam punishment",
-                                        row: true,
+                                        order: LabsFormSectionOrder.Grid,
                                         fields: [
                                             {
                                                 type: LabsFormFieldType.Number,

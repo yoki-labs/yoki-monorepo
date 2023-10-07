@@ -7,7 +7,7 @@ import DataTable from "../../DataTable";
 import { SanitizedAppeal } from "../../../lib/@types/db";
 import { AppealCard, AppealRow } from "./AppealItem";
 import LabsForm from "../../form/LabsForm";
-import { LabsFormFieldType } from "../../form/form";
+import { LabsFormFieldType, LabsFormSectionOrder } from "../../form/form";
 import { errorifyResponseError, notifyFetchError } from "../../../utils/errorUtil";
 
 export default class AppealsPage extends React.Component<DashboardPageProps> {
@@ -70,7 +70,7 @@ export default class AppealsPage extends React.Component<DashboardPageProps> {
                         name="Appeals"
                         description="Allows people to apply for an unban in your server."
                         icon={faPrayingHands}
-                        activeClassName="from-violet-500 to-cyan-500"
+                        activeClassName="from-violet-400 via-blue-500 to-cyan-500"
                         serverConfig={serverConfig}
                         prop="appealsEnabled"
                         hideBadges
@@ -86,7 +86,7 @@ export default class AppealsPage extends React.Component<DashboardPageProps> {
                             <LabsForm
                                 sections={[
                                     {
-                                        row: true,
+                                        order: LabsFormSectionOrder.Grid,
                                         fields: [
                                             {
                                                 type: LabsFormFieldType.Text,

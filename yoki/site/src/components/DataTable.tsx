@@ -1,4 +1,4 @@
-import { faMagnifyingGlass, faSliders, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faMagnifyingGlass, faPlus, faSliders, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
     Box,
@@ -179,7 +179,7 @@ export default class DataTable<TItem extends { id: TItemId }, TItemId> extends R
 
         return (
             <Stack direction="column" gap={3}>
-                <Stack gap={2} direction="row">
+                <Stack gap={2} className="flex-col md:flex-row">
                     <Input
                         className="flex-1"
                         onChange={({ target }) => this.fetchItems(page, target.value)}
@@ -188,9 +188,12 @@ export default class DataTable<TItem extends { id: TItemId }, TItemId> extends R
                         startDecorator={<FontAwesomeIcon icon={faMagnifyingGlass} />}
                     />
                     {/* <ButtonGroup>
-                        <IconButton variant="outlined" disabled>
-                            <FontAwesomeIcon icon={faSliders} />
-                        </IconButton>
+                        <Button variant="outlined" startDecorator={<FontAwesomeIcon icon={faPlus} />} disabled>
+                            Create
+                        </Button>
+                        <Button variant="outlined" startDecorator={<FontAwesomeIcon icon={faSliders} />} disabled>
+                            Filter
+                        </Button>
                     </ButtonGroup> */}
                 </Stack>
 

@@ -20,7 +20,6 @@ import { ColorPaletteProp } from "@mui/joy";
 import React from "react";
 
 import AutomodPage from "./automod/Automod";
-import IgnoresPage from "./automod/Ignores";
 import InvitesPage from "./automod/Invites";
 import PhrasesPage from "./automod/Phrases";
 import SpamPage from "./automod/Spam";
@@ -64,7 +63,6 @@ export const dashboardPageList: DashboardPageItem[] = [
     { id: "invites", name: "Invite Filter", icon: faTicket, component: InvitesPage, category: DashboardPageCategory.Automod },
     { id: "images", name: "Image Filter", icon: faImage, component: ImagesPage, category: DashboardPageCategory.Automod },
     { id: "spam", name: "Anti-spam", icon: faPoo, component: SpamPage, category: DashboardPageCategory.Automod },
-    { id: "ignore", name: "Filter Ignoring", icon: faCircleXmark, component: IgnoresPage, category: DashboardPageCategory.Automod },
     { id: "modmail", name: "Modmail", icon: faEnvelope, component: ModmailPage, category: DashboardPageCategory.Entry },
     { id: "antiraid", name: "Antiraid", icon: faShieldHalved, component: AntiraidPage, category: DashboardPageCategory.Entry },
     { id: "appeals", name: "Appeals", icon: faPrayingHands, component: AppealsPage, category: DashboardPageCategory.Entry },

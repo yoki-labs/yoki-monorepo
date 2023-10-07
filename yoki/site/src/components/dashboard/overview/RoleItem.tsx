@@ -7,7 +7,7 @@ import LabsIconWrapper from "../../LabsIconWrapper";
 import LabsOverflowButton from "../../LabsOverflowButton";
 import React from "react";
 import LabsForm, { LabsFormFieldValueMap } from "../../form/LabsForm";
-import { LabsFormFieldOption, LabsFormFieldType, LabsFormSection } from "../../form/form";
+import { LabsFormFieldOption, LabsFormFieldType, LabsFormSection, LabsFormSectionOrder } from "../../form/form";
 import { RolePayload } from "@guildedjs/api";
 import { RoleType } from "@prisma/client";
 
@@ -178,7 +178,7 @@ export function RoleItemCreationForm({ serverRoleOptions, onCreate }: EditorProp
             sections={
                 [
                     {
-                        row: true,
+                        order: LabsFormSectionOrder.Row,
                         start: (
                             <LabsIconWrapper className="hidden md:block">
                                 <FontAwesomeIcon style={{ width: "100%", height: "100%" }} icon={faPlus} />

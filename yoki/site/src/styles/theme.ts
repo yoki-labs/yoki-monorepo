@@ -217,5 +217,20 @@ export const theme = extendTheme({
                 `,
             },
         },
+        JoyOption: {
+            styleOverrides: {
+                root: {
+                    maxWidth: "90vw",
+                },
+            },
+        },
+        JoyFormLabel: {
+            styleOverrides: {
+                root: {
+                    userSelect: "inherit",
+                    cursor: "text",
+                },
+            },
+        },
     },
 });
