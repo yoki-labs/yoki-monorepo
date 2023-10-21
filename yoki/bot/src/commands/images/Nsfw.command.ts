@@ -1,6 +1,7 @@
 import { stripIndents } from "common-tags";
 import { RoleType } from "../../typings";
 import { Category, Command } from "../commands";
+import { premiumTierValues } from "../../utils/premium";
 
 const Nsfw: Command = {
     name: "nsfw",
@@ -32,7 +33,7 @@ const Nsfw: Command = {
         const hentaiConfidence = args.hentaiConfidence as number | null;
         const pornConfidence = args.pornConfidence as number | null;
 
-        if (!server.premium)
+        if (!server.premium || premiumTierValues[server.premium] < premiumTierValues.Silver)
             return ctx.messageUtil.replyWithUnpermitted(message, `This server doesn't have the required **Silver** premium tier to use this function.`);
         // 2 or 0 arguments allowed
         else if (hentaiConfidence !== null && pornConfidence === null)

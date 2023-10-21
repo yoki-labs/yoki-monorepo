@@ -336,6 +336,7 @@ enum ReactionActionType {
 enum PremiumType {
     Gold
     Silver
+    Copper
 }
 
 enum ResponseType {

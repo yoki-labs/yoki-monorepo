@@ -6,6 +6,7 @@ import { stripIndents } from "common-tags";
 
 import type { FilteredContent } from "../modules/content-filter";
 import type { Context, Server } from "../typings";
+import { premiumTierValues } from "./premium";
 
 const numberCharCodeStart = 48;
 const numberCharCodeEnd = 57;
@@ -62,7 +63,7 @@ export async function moderateContent(
 
     const canFilter = server.filterEnabled && !channelIgnores.find((x) => x.type === "AUTOMOD");
     const canFilterLinks = (server.filterInvites && !channelIgnores.find((x) => x.type === "INVITE")) || (server.filterEnabled && !channelIgnores.find((x) => x.type === "URL"));
-    const canScanImages = server.scanNSFW && server.premium && !channelIgnores.find((x) => x.type === "NSFW");
+    const canScanImages = server.scanNSFW && server.premium && premiumTierValues[server.premium] > premiumTierValues.Copper && !channelIgnores.find((x) => x.type === "NSFW");
 
     return Promise.any(
         [
