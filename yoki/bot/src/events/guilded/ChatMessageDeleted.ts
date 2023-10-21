@@ -36,7 +36,7 @@ export default {
 
         const server = await ctx.dbUtil.getServer(message.serverId!);
 
-        const member = await ctx.members.fetch(deletedMessage.serverId!, deletedMessage.createdBy).catch(() => null);        
+        const member = await ctx.members.fetch(deletedMessage.serverId!, deletedMessage.createdBy).catch(() => null);
 
         // It's a bot, bot messages don't matter
         if (member?.user?.type === UserType.Bot)

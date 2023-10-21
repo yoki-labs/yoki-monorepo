@@ -39,7 +39,7 @@ export function getInfractionsFrom(args: Record<string, any>): [string | null, n
     const infractionPointsArg = Number(args.infractionPoints);
 
     const reason = Number.isNaN(infractionPointsArg) && args.infractionPoints ? `${args.infractionPoints as string} ${reasonArg ?? ""}`.trimEnd() : reasonArg;
-    const infractionPoints = infractionPointsArg || 5;
+    const infractionPoints = Number.isNaN(infractionPointsArg) ? 5 : Math.floor(infractionPointsArg);
 
     return [reason, infractionPoints];
 }
@@ -121,19 +121,19 @@ export async function moderateContent(
 
 export const describeAction = (data: Action): string[] =>
     ({
-        [Severity.NOTE]: ["Moderation Note Added", "had a moderation note placed on them"],
-        [Severity.WARN]: ["User Warned", "has been warned"],
-        [Severity.MUTE]: ["User Muted", "has been muted"],
-        [Severity.SOFTBAN]: ["User Softbanned", "has been softbanned and their content has been cleared"],
-        [Severity.BAN]: ["User Banned", "has been banned"],
-        [Severity.KICK]: ["User Kicked", "has been kicked"],
+        [Severity.NOTE]: ["Moderation note added", "had a moderation note placed on them"],
+        [Severity.WARN]: ["User warned", "has been warned"],
+        [Severity.MUTE]: ["User muted", "has been muted"],
+        [Severity.SOFTBAN]: ["User flushed", "has been softbanned and their content has been cleared"],
+        [Severity.BAN]: ["User banned", "has been banned"],
+        [Severity.KICK]: ["User kicked", "has been kicked"],
     }[data.type]);
 
-export function getActionInfo(ctx: Context, data: Action & { isAutomod?: boolean }): [string, string] {
+export function getActionInfo(data: Action & { isAutomod?: boolean }): [string, string] {
     const [title, description] = describeAction(data);
 
     return [
-        `${data.executorId === ctx.user!.id ? ":gear: " : ""} ${title}`,
+        title,
         `<@${data.targetId}> (${inlineCode(data.targetId)}) ${description} by <@${data.executorId}> (${inlineCode(data.executorId)})`,
     ];
 }
@@ -154,7 +154,7 @@ export const getActionFields = (data: Action): EmbedField[] =>
 
 export const getActionAdditionalInfo = (data: Action, timezone: string): string =>
     stripIndents`
-        **Infraction points:** ${inlineCode(data.infractionPoints)}
+        ${data.infractionPoints ? `**Infraction points:** ${inlineCode(data.infractionPoints)}` : ""}
         **Case ID:** ${inlineCode(data.id)}
-        ${data.expiresAt ? `**Expiration:** ${formatDate(data.expiresAt, timezone)} EST` : ""}
+        ${data.expiresAt ? `**Expiration:** ${formatDate(data.expiresAt, timezone)}` : ""}
     `;
