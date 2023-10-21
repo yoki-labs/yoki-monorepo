@@ -36,7 +36,8 @@ const Staff: Command = {
         const defaultRole = roles.find((x) => x.isBase);
 
         // Doesn't make sense for all users to be staff automatically
-        if (modrole.id === defaultRole?.id) return ctx.messageUtil.replyWithError(message, `Cannot set member as staff role`, `You cannot set the member role as a staff role.`);
+        if (modrole.id === defaultRole?.id)
+            return ctx.messageUtil.replyWithError(message, `Cannot set member as staff role`, `You cannot set the member role as a staff role.`);
 
         const existing = await ctx.prisma.role.findMany({ where: { serverId: message.serverId!, roleId: modrole.id, type: staffLevel } });
 
@@ -87,7 +88,8 @@ async function showStaffRoles(ctx: YokiClient, commandCtx: CommandContext, messa
               message,
               `Staff roles`,
               stripIndents`
-                Here are the staff roles for this server:\n- ${modRoles.map((modRole) => `<@${modRole.roleId}> (${inlineCode(modRole.type)})`).join("\n- ")}
+                Here are the staff roles for this server:
+                - ${modRoles.map((modRole) => `<@${modRole.roleId}> (${inlineCode(modRole.type)})`).join("\n- ")}
     
                 ${addOrRemoveStaffRoleMessage(commandCtx.server.getPrefix())}
             `,

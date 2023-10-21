@@ -1,4 +1,4 @@
-import { faBroom, faCircleExclamation, faDoorOpen, faHammer, faNoteSticky, faShoePrints, faVolumeMute, IconDefinition } from "@fortawesome/free-solid-svg-icons";
+import { faBroom, faCircleExclamation, faDoorOpen, faHammer, faNoteSticky, faVolumeMute, IconDefinition } from "@fortawesome/free-solid-svg-icons";
 import { Severity } from "@prisma/client";
 
 import { LabsFormFieldOption } from "../components/form/form";

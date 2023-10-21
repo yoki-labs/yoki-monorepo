@@ -1,6 +1,5 @@
 import {
     faBan,
-    faCircleXmark,
     faClipboardUser,
     faCommentDots,
     faCrown,
@@ -20,6 +19,7 @@ import { ColorPaletteProp } from "@mui/joy";
 import React from "react";
 
 import AutomodPage from "./automod/Automod";
+import ImagesPage from "./automod/Images";
 import InvitesPage from "./automod/Invites";
 import PhrasesPage from "./automod/Phrases";
 import SpamPage from "./automod/Spam";
@@ -33,7 +33,6 @@ import OverviewPage from "./overview/Overview";
 import ConfigPage from "./overview/Premium";
 import RolesPage from "./overview/Roles";
 import { SanitizedServer } from "../../lib/@types/db";
-import ImagesPage from "./automod/Images";
 
 export interface DashboardPageItem {
     id: string;
