@@ -53,7 +53,7 @@ const Privacy: Command = {
         return ctx.messageUtil.sendEmbed(
             message.channelId,
             {
-                title: "Server's Content Privacy",
+                title: "Server's content privacy",
                 description: stripIndents`
                 <@${message.authorId}>, here's a report about server's content privacy:
                 ${localNoIssue.map(formatNoIssue).join("\n")}

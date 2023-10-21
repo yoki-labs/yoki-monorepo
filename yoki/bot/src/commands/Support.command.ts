@@ -10,9 +10,15 @@ const Support: Command = {
             user_id: message.authorId,
             event_properties: { serverId: message.serverId! },
         });
-        return ctx.messageUtil.replyWithInfo(message, `Support server`, `[**Click here**](https://yoki.gg/support) to join our support server.`, undefined, {
-            isPrivate: true,
-        });
+        return ctx.messageUtil.replyWithInfo(
+            message,
+            `:link: Join support server`,
+            `If you are having issues, bugs, have any suggestions or want to send feedback, be sure to [join the Yoki support server](https://yoki.gg/support).`,
+            { url: `https://yoki.gg/support` },
+            {
+                isPrivate: true,
+            }
+        );
     },
 };
 

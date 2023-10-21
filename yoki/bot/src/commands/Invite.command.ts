@@ -12,9 +12,9 @@ const Invite: Command = {
         });
         return ctx.messageUtil.replyWithInfo(
             message,
-            `Invite the bot`,
-            `[**Click here**](https://www.guilded.gg/b/7af0dd87-f6c8-43b1-b1bb-8917c82d5cfd) to invite Yoki to your server.`,
-            undefined,
+            `:link: Invite Yoki`,
+            `Yoki is available for all servers to invite. [Click here](https://www.guilded.gg/b/7af0dd87-f6c8-43b1-b1bb-8917c82d5cfd) to invite Yoki to your server.`,
+            { url: `https://www.guilded.gg/b/7af0dd87-f6c8-43b1-b1bb-8917c82d5cfd` },
             {
                 isPrivate: true,
             }
