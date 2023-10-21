@@ -71,7 +71,7 @@ export default abstract class BaseFilterUtil<TFilterType = null> extends Util<Yo
         await this.client.dbUtil.emitAction(
             {
                 type: actionType,
-                reason: `[AUTOMOD] ${reason}.${memberExceeds ? ` ${memberExceeds} threshold exceeded.` : ""}`,
+                reason: `${reason}.${memberExceeds ? ` ${memberExceeds} threshold exceeded.` : ""}`,
                 serverId: server.serverId,
                 channelId,
                 targetId: userId,

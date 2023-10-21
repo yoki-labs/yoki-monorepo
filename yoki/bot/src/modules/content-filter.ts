@@ -2,11 +2,9 @@ import { ContentFilter, FilterMatching, Preset } from "@prisma/client";
 import { Colors } from "@yokilabs/utils";
 
 import { ContentFilterScan, Server, Severity } from "../typings";
-import { IMAGE_REGEX } from "../utils/matching";
 import { wordPresets } from "../utils/presets";
 import { errorLoggerS3 } from "../utils/s3";
 import BaseFilterUtil from "./base-filter";
-import { ImageFilterUtil } from "./image-filter";
 
 export const transformSeverityStringToEnum = (str: string): Severity | undefined => Severity[str.toUpperCase()];
 export enum FilteredContent {
@@ -17,49 +15,7 @@ export enum FilteredContent {
 }
 
 export class ContentFilterUtil extends BaseFilterUtil {
-    readonly imageFilterUtil = new ImageFilterUtil(this.client);
-
     readonly presets = wordPresets;
-
-    async scanMessageMedia(serverId: string, channelId: string, content: string, userId: string, onDelete: () => Promise<unknown>): Promise<boolean> {
-        // const { serverId, channelId, content, authorId: userId, id: messageId } = message;
-        const matches = [...content.matchAll(IMAGE_REGEX)];
-        if (!matches.length) return false;
-
-        void this.client.amp.logEvent({
-            event_type: "MESSAGE_MEDIA_SCAN",
-            user_id: userId,
-            event_properties: { serverId },
-        });
-
-        for (const [_, url] of matches) {
-            const result = await this.imageFilterUtil.scanImage(url).catch(() => void 0);
-
-            if (result) {
-                void this.client.amp.logEvent({
-                    event_type: "MESSAGE_MEDIA_ACTION",
-                    user_id: userId,
-                    event_properties: { serverId },
-                });
-
-                try {
-                    await onDelete();
-
-                    await this.client.messageUtil.sendWarningBlock(
-                        channelId,
-                        "Inappropriate Image!",
-                        `<@${userId}>, our filters have detected that an image attached to your message is inappropriate and has been deleted.`,
-                        undefined,
-                        { isPrivate: true }
-                    );
-                } catch (e) {}
-
-                return true;
-            }
-        }
-
-        return false;
-    }
 
     // This will scan any content that is piped into it for breaking the content filter or preset list and will apply the associated punishment in the final param as a callback
     async scanContent({
@@ -155,7 +111,7 @@ export class ContentFilterUtil extends BaseFilterUtil {
             type: exceededThreshold ?? triggeredWord.severity,
             // Since it's an automod, we set it as the client did it
             executorId: this.client.user!.id,
-            reason: `[AUTOMOD] Content filter tripped.${exceededThreshold ? ` ${exceededThreshold} threshold exceeded.` : ""}`,
+            reason: `Content filter tripped.${exceededThreshold ? ` ${exceededThreshold} threshold exceeded.` : ""}`,
             // The offending content
             triggerContent: triggeredWord.content,
             // The place where unmute messages will happen

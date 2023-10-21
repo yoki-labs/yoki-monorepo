@@ -7,6 +7,8 @@ export const ChannelIgnoreTypeMap: Record<string, ChannelIgnoreType> = {
     AUTOMOD: "AUTOMOD",
     WORD: "AUTOMOD",
     PHRASE: "AUTOMOD",
+    NSFW: "NSFW",
+    IMAGE: "NSFW",
 };
 export enum ChannelIgnoreSettingAction {
     REMOVE = "REMOVE",

@@ -24,6 +24,7 @@ import { LinkFilterUtil } from "./modules/link-filter";
 import { SpamFilterUtil } from "./modules/spam-filter";
 import SupportUtil from "./modules/support";
 import type { Context, Server } from "./typings";
+import { ImageFilterUtil } from "./modules/image-filter";
 
 /**
  * Main class that stores utils, connections to various providers, and ws
@@ -57,6 +58,9 @@ export default class YokiClient extends AbstractClient<YokiClient, Server, Comma
 
     // utility methods for preventing spam
     readonly spamFilterUtil = new SpamFilterUtil(this);
+
+    // utility methods for preventing NSFW images
+    readonly imageFilterUtil = new ImageFilterUtil(this);
 
     // utility methods for filtering invites and blacklisted domains
     readonly linkFilterUtil = new LinkFilterUtil(this);

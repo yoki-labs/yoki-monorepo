@@ -62,7 +62,7 @@ export async function moderateContent(
 
     const canFilter = server.filterEnabled && !channelIgnores.find((x) => x.type === "AUTOMOD");
     const canFilterLinks = (server.filterInvites && !channelIgnores.find((x) => x.type === "INVITE")) || (server.filterEnabled && !channelIgnores.find((x) => x.type === "URL"));
-    const canScanImages = server.scanNSFW && server.premium;
+    const canScanImages = server.scanNSFW && server.premium && !channelIgnores.find((x) => x.type === "NSFW");
 
     return Promise.any(
         [
@@ -108,7 +108,7 @@ export async function moderateContent(
                         if (!success) throw 0;
                     }),
             canScanImages &&
-                ctx.contentFilterUtil.scanMessageMedia(serverId, channelId, content, userId, resultingAction).then((success) => {
+                ctx.imageFilterUtil.scanMessageMedia(server, channelId, content, userId, resultingAction).then((success) => {
                     // To be ignored in Promise.any
                     if (!success) throw 0;
                 }),

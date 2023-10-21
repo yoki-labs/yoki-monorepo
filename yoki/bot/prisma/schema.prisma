@@ -63,6 +63,8 @@ model Server {
     antiHoistEnabled     Boolean @default(false)
     urlFilterIsWhitelist Boolean @default(false)
     scanNSFW             Boolean @default(false)
+    nsfwPornConfidence   Float?
+    nsfwHentaiConfidence Float?
     // Per 5s
     spamFrequency        Int     @default(9)
     spamMentionFrequency Int     @default(5)
@@ -275,6 +277,7 @@ enum ChannelIgnoreType {
     AUTOMOD
     URL
     INVITE
+    NSFW
 }
 
 enum ContentIgnoreType {

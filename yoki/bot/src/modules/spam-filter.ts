@@ -47,7 +47,7 @@ export class SpamFilterUtil extends BaseFilterUtil<SpamType> {
                 channelId,
                 FilteredContent.Message,
                 resultingAction,
-                `Spam filter tripped.`,
+                `Spam filter tripped`,
                 server.spamInfractionPoints,
                 Severity.WARN,
                 null,
