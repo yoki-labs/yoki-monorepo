@@ -47,11 +47,11 @@ export default class LabsForm extends React.Component<LabsFormProps, LabsFormSta
 
         this.fieldValues = this.defaultFieldValues;
     }
-    
+
     get fields() {
         return this.props.sections.flatMap((x) => x.fields);
     }
-    
+
     get defaultFieldValues() {
         return this.fields.reduce<Record<string, LabsFormFieldValue>>((mapped, field) => ((mapped[field.prop] = field.defaultValue ?? null), mapped), {});
     }
@@ -69,8 +69,7 @@ export default class LabsForm extends React.Component<LabsFormProps, LabsFormSta
         const oldValues = this.fieldValues;
 
         // For things like log channel creations
-        if (this.props.resetOnSubmission)
-            this.fieldValues = this.defaultFieldValues;
+        if (this.props.resetOnSubmission) this.fieldValues = this.defaultFieldValues;
 
         // To not be able to save again
         this.setState({ changed: false });

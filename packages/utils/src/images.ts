@@ -20,4 +20,4 @@ export const StateImages = {
 
 export const GuildedImages = {
     defaultAvatar: "https://img.guildedcdn.com/asset/DefaultUserAvatars/profile_1.png",
-}
+};

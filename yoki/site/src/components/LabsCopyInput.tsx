@@ -59,7 +59,7 @@ export class LabsCopyInput extends React.Component<Props, State> {
                         onClick={this.copyText.bind(this)}
                         startDecorator={<FontAwesomeIcon icon={copied ? faCheck : faClipboard} />}
                     >
-                        { copied ? "Copied!" : "Copy" }
+                        {copied ? "Copied!" : "Copy"}
                     </Button>
                 }
                 {...this.props}

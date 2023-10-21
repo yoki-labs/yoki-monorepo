@@ -1,23 +1,21 @@
 import { inlineCode, inlineQuote } from "@yokilabs/bot";
 import { Colors } from "@yokilabs/utils";
+import { GuildedImages } from "@yokilabs/utils/dist/src/images";
 import { UserType } from "guilded.js";
 
 import { FilteredContent } from "../../modules/content-filter";
 import { GEvent, LogChannelType } from "../../typings";
 import { trimHoistingSymbols } from "../../utils/moderation";
-import { GuildedImages } from "@yokilabs/utils/dist/src/images";
 
 export default {
     execute: async ([event, ctx]) => {
         const { nickname, userId, oldMember, serverId } = event;
 
         const server = await ctx.dbUtil.getServer(serverId, false);
-        if (!server)
-            return;
+        if (!server) return;
 
         const member = await ctx.members.fetch(serverId, event.userId).catch(() => null);
-        if (member?.user?.type === UserType.Bot)
-            return;
+        if (member?.user?.type === UserType.Bot) return;
 
         const name = nickname ?? oldMember?.username;
 

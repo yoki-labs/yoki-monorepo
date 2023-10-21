@@ -1,7 +1,8 @@
 import { stripIndents } from "common-tags";
+
 import { RoleType } from "../../typings";
-import { Category, Command } from "../commands";
 import { premiumTierValues } from "../../utils/premium";
+import { Category, Command } from "../commands";
 
 const Nsfw: Command = {
     name: "nsfw",
@@ -50,20 +51,20 @@ const Nsfw: Command = {
             );
 
         await ctx.prisma.server.update({
-            where: { 
+            where: {
                 id: server.id,
             },
             data: {
                 nsfwHentaiConfidence: hentaiConfidence === ctx.imageFilterUtil.defaultHentaiConfidence ? null : hentaiConfidence,
                 nsfwPornConfidence: pornConfidence === ctx.imageFilterUtil.defaultPornConfidence ? null : pornConfidence,
-            }
+            },
         });
 
         return ctx.messageUtil.replyWithSuccess(
             message,
             "NSFW detection confidence changed",
             `The NSFW image filter will now require porn confidence of \`${pornConfidence! * 100}%\` and hentai confidence of \`${hentaiConfidence! * 100}%\`.`
-        )
+        );
     },
 };
 

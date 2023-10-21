@@ -176,7 +176,13 @@ export default class DashboardLogChannel extends React.Component<Props, State> {
     }
 }
 
-export function LogItemCreationForm({ existingTypes, onCreate: onCreated }: { existingTypes: LogChannelType[]; onCreate: (channelId: string, types: LogChannelType[]) => Promise<unknown> }) {
+export function LogItemCreationForm({
+    existingTypes,
+    onCreate: onCreated,
+}: {
+    existingTypes: LogChannelType[];
+    onCreate: (channelId: string, types: LogChannelType[]) => Promise<unknown>;
+}) {
     return (
         <LabsForm
             sections={[

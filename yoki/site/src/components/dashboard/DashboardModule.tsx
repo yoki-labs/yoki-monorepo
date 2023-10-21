@@ -53,7 +53,14 @@ export default class DashboardModule extends React.Component<Props, { isActive: 
                             className="grow"
                             fontWeight="md"
                             level={largeHeader ? "title-lg" : "title-md"}
-                            endDecorator={requiresPremium && titleBarBadges && <span className="hidden md:block"><ModulePremiumBadge size="sm" premium={requiresPremium} /></span>}
+                            endDecorator={
+                                requiresPremium &&
+                                titleBarBadges && (
+                                    <span className="hidden md:block">
+                                        <ModulePremiumBadge size="sm" premium={requiresPremium} />
+                                    </span>
+                                )
+                            }
                         >
                             {name}
                         </Typography>
@@ -72,7 +79,9 @@ export default class DashboardModule extends React.Component<Props, { isActive: 
 function ModulePremiumBadge({ premium, size }: { premium: PremiumType | undefined | null; size?: "sm" | "md" | "lg" }) {
     return (
         <Tooltip title={premium ? `This module requires ${premium} tier subscription of Yoki Labs.` : `This module is available for everyone to use for free.`}>
-            <Chip size={size} color={premium ? "warning" : "neutral"}>{premium ? "Premium" : "Free"}</Chip>
+            <Chip size={size} color={premium ? "warning" : "neutral"}>
+                {premium ? "Premium" : "Free"}
+            </Chip>
         </Tooltip>
     );
 }

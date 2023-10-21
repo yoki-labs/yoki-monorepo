@@ -16,7 +16,18 @@ export type State = {
     isInvalid: boolean;
 };
 
-function TimeInputShellMiniInput({ value, color, suffix, onChange }: { value: number | undefined; color: ColorPaletteProp; max?: number; suffix: string; onChange: ChangeEventHandler<HTMLInputElement>; }) {
+function TimeInputShellMiniInput({
+    value,
+    color,
+    suffix,
+    onChange,
+}: {
+    value: number | undefined;
+    color: ColorPaletteProp;
+    max?: number;
+    suffix: string;
+    onChange: ChangeEventHandler<HTMLInputElement>;
+}) {
     return (
         <Input
             placeholder="00"
@@ -30,7 +41,7 @@ function TimeInputShellMiniInput({ value, color, suffix, onChange }: { value: nu
             slotProps={{
                 input: {
                     style: { width: "2em" },
-                }
+                },
             }}
             value={value || ""}
             onChange={onChange}
@@ -38,21 +49,23 @@ function TimeInputShellMiniInput({ value, color, suffix, onChange }: { value: nu
     );
 }
 
-function TimeInputShell({ value, color, timeStep, onChange }: { value: number | undefined; color: ColorPaletteProp; timeStep: TimeStep; onChange: (value: number) => unknown; }) {
+function TimeInputShell({ value, color, timeStep, onChange }: { value: number | undefined; color: ColorPaletteProp; timeStep: TimeStep; onChange: (value: number) => unknown }) {
     const secondStep = (timeStep - 1) as TimeStep;
 
     return (
         <Stack direction="row" alignItems="center" sx={{ flex: "1" }}>
             <TimeInputShellMiniInput
-                value={value && (Math.floor(value / unitToMs[timeStep]))}
+                value={value && Math.floor(value / unitToMs[timeStep])}
                 suffix={ascendingTimeUnits[timeStep]}
                 color={color}
                 onChange={({ target }) => onModifiedSubInput(target, value, timeStep, onChange)}
                 max={maxValues[timeStep]}
-                />
-            <Typography level="body-lg" textColor={`${color}.300`} sx={{ userSelect: "none" }}>:</Typography>
+            />
+            <Typography level="body-lg" textColor={`${color}.300`} sx={{ userSelect: "none" }}>
+                :
+            </Typography>
             <TimeInputShellMiniInput
-                value={value && (Math.floor((value % unitToMs[timeStep]) / unitToMs[secondStep]))}
+                value={value && Math.floor((value % unitToMs[timeStep]) / unitToMs[secondStep])}
                 suffix={ascendingTimeUnits[secondStep]}
                 color={color}
                 onChange={({ target }) => onModifiedSubInput(target, value, secondStep, onChange)}
@@ -63,18 +76,13 @@ function TimeInputShell({ value, color, timeStep, onChange }: { value: number | 
 }
 
 function onModifiedSubInput(target: EventTarget & HTMLInputElement, existingValue: number | undefined, step: TimeStep, onChange: (value: number) => unknown) {
-    if (isNaN(target.value as unknown as number))
-        return onChange(NaN);
+    if (isNaN(target.value as unknown as number)) return onChange(NaN);
 
     // To allow validating text inputs, since invalid type="number" doesn't allow making the input red, for instance
     const parsed = parseInt(target.value, 10) || 0;
     const maxValue = maxValues[step];
 
-    return (
-        parsed < maxValue
-            ? onChange(insertTime(existingValue ?? 0, parsed, step))
-            : onChange(insertTime(existingValue ?? 0, maxValue - 1, step))
-    );
+    return parsed < maxValue ? onChange(insertTime(existingValue ?? 0, parsed, step)) : onChange(insertTime(existingValue ?? 0, maxValue - 1, step));
 }
 
 export default class TimeInput extends React.Component<Props, State> {
@@ -122,12 +130,7 @@ export default class TimeInput extends React.Component<Props, State> {
             <>
                 <FormFieldHeader field={field} />
                 <InputWrapper color={color}>
-                    <TimeInputShell
-                        timeStep={field.step ?? TimeStep.Minutes}
-                        value={currentValue}
-                        color={color}
-                        onChange={this.setValue.bind(this)}
-                    />
+                    <TimeInputShell timeStep={field.step ?? TimeStep.Minutes} value={currentValue} color={color} onChange={this.setValue.bind(this)} />
                     <FontAwesomeIcon icon={faClock} style={{ marginRight: 12 }} />
                 </InputWrapper>
             </>

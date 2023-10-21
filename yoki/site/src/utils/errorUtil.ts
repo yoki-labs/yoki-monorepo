@@ -9,8 +9,7 @@ export async function notifyFetchError(message: string, errorResponse: Response)
 }
 
 export function errorifyResponseError(response: Response) {
-    if (!response.ok)
-        throw response;
+    if (!response.ok) throw response;
 
     return response;
 }

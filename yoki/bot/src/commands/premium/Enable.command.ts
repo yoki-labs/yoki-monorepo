@@ -1,7 +1,7 @@
 import { PremiumType } from "@prisma/client";
+import { ResolvedEnum } from "@yokilabs/bot";
 
 import type { Command } from "../commands";
-import { ResolvedEnum } from "@yokilabs/bot";
 
 const Enable: Command = {
     name: "premium-enable",
@@ -26,8 +26,7 @@ const Enable: Command = {
         const tier = (args.tier as ResolvedEnum).resolved as PremiumType;
 
         const server = await ctx.prisma.server.findFirst({ where: { serverId } });
-        if (!server)
-            return ctx.messageUtil.replyWithError(message, `No server`, "That server does not exist!");
+        if (!server) return ctx.messageUtil.replyWithError(message, `No server`, "That server does not exist!");
 
         await ctx.prisma.server.update({ where: { id: server.id }, data: { premium: tier } });
 

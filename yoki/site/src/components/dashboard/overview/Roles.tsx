@@ -121,7 +121,7 @@ export default class RolesPage extends React.Component<DashboardPageProps, State
 
         const roleOptions = optionifyRoles(serverRoles);
         const existingRoleIds = roles.map((x) => x.roleId);
-        const staffRoleOptions = roleOptions.map((x) => ({ ...x, disabled: existingRoleIds.includes(x.value) }))
+        const staffRoleOptions = roleOptions.map((x) => ({ ...x, disabled: existingRoleIds.includes(x.value) }));
 
         return (
             <Box>

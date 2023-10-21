@@ -47,7 +47,7 @@ const serverConfigRoute = createServerRoute({
         else if (isPropertyTypeInvalid(body.spamFrequency, "number") || body.spamFrequency < 2 || body.spamFrequency > 100)
             return getErrorResponse(res, "spamFrequency", "number between 2 and 100");
         else if (isPropertyTypeInvalid(body.spamMentionFrequency, "number") || body.spamMentionFrequency < 2 || body.spamMentionFrequency > 100)
-        return getErrorResponse(res, "spamMentionFrequency", "number between 2 and 100");
+            return getErrorResponse(res, "spamMentionFrequency", "number between 2 and 100");
         // Infractions can be negative in notes and whatever, but here it isn't allowed.
         else if (isPropertyTypeInvalid(body.spamInfractionPoints, "number") || body.spamInfractionPoints < 0 || body.spamInfractionPoints > 10000)
             return getErrorResponse(res, "spamInfractionPoints", "number between 0 and 10'000");

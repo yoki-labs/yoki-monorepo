@@ -2,11 +2,11 @@ import type { EmbedField } from "@guildedjs/guilded-api-typings";
 import { MessageUtil as BaseMessageUtil } from "@yokilabs/bot";
 import { Colors } from "@yokilabs/utils";
 import { stripIndents } from "common-tags";
+import { EmbedAuthor, EmbedFooter } from "guilded.js";
 
 import type YokiClient from "../Client";
 import type { Command } from "../commands/commands";
 import type { Server } from "../typings";
-import { ChatEmbedPayload, EmbedAuthor, EmbedFooter } from "guilded.js";
 
 export class MessageUtil extends BaseMessageUtil<YokiClient, Server, Command> {
     readonly logchannelErrCounter: Record<string, number> = {};

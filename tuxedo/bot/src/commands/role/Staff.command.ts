@@ -35,8 +35,7 @@ const Staff: Command = {
         const defaultRole = roles.find((x) => x.isBase);
 
         // Doesn't make sense for all users to be staff automatically
-        if (modrole.id === defaultRole?.id)
-            return ctx.messageUtil.replyWithError(message, `Cannot set member as staff role`, `You cannot set the member role as a staff role.`);
+        if (modrole.id === defaultRole?.id) return ctx.messageUtil.replyWithError(message, `Cannot set member as staff role`, `You cannot set the member role as a staff role.`);
 
         const existing = await ctx.prisma.role.findMany({ where: { serverId: message.serverId!, roleId: modrole.id, type: staffLevel } });
         if (existing.find((x) => x.roleId === modrole.id))
@@ -54,8 +53,8 @@ const Staff: Command = {
             message,
             `Staff role added`,
             levelArg
-            ? `Successfully added <@${modrole.id}> as a ${staffLevel} role.`
-            : stripIndents`
+                ? `Successfully added <@${modrole.id}> as a ${staffLevel} role.`
+                : stripIndents`
                 Successfully added <@${modrole.id}> as a ${staffLevel} role.
 
                 **NOTE:** You can set a staff role as admin or minimod by adding \`admin\` or \`minimod\` at the end of the command.

@@ -95,23 +95,23 @@ interface LabsFormFieldTimed<TType extends LabsFormFieldType> extends BaseLabsFo
 export type LabsFormFieldByType<T extends LabsFormFieldType> =
     // Text-based inputs
     T extends LabsFormFieldType.Text
-    ? LabsFormFieldInput<LabsFormFieldType.Text, string>
-    : T extends LabsFormFieldType.TextArea
-    ? LabsFormFieldInputLarge<LabsFormFieldType.TextArea, string>
-    : T extends LabsFormFieldType.Number
-    ? LabsFormFieldInput<LabsFormFieldType.Number, number>
-    // Navigatable/semi text-based inputs
-    : T extends LabsFormFieldType.Time
-    ? LabsFormFieldTimed<LabsFormFieldType.Time>
-    // Selection
-    : T extends LabsFormFieldType.Select
-    ? LabsFormFieldSelectable<LabsFormFieldType.Select>
-    : T extends LabsFormFieldType.Toggle
-    ? BaseLabsFormField<LabsFormFieldType.Toggle, boolean>
-    : T extends LabsFormFieldType.MultiSelect
-    ? LabsFormFieldMultiSelection<LabsFormFieldType.MultiSelect>
-    // Never
-    : never;
+        ? LabsFormFieldInput<LabsFormFieldType.Text, string>
+        : T extends LabsFormFieldType.TextArea
+        ? LabsFormFieldInputLarge<LabsFormFieldType.TextArea, string>
+        : T extends LabsFormFieldType.Number
+        ? LabsFormFieldInput<LabsFormFieldType.Number, number>
+        : // Navigatable/semi text-based inputs
+        T extends LabsFormFieldType.Time
+        ? LabsFormFieldTimed<LabsFormFieldType.Time>
+        : // Selection
+        T extends LabsFormFieldType.Select
+        ? LabsFormFieldSelectable<LabsFormFieldType.Select>
+        : T extends LabsFormFieldType.Toggle
+        ? BaseLabsFormField<LabsFormFieldType.Toggle, boolean>
+        : T extends LabsFormFieldType.MultiSelect
+        ? LabsFormFieldMultiSelection<LabsFormFieldType.MultiSelect>
+        : // Never
+          never;
 
 export type LabsFormField =
     // Text-based inputs

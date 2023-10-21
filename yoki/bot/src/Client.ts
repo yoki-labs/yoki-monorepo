@@ -20,11 +20,11 @@ import { MessageUtil } from "./helpers/message";
 // import { RoleUtil } from "./helpers/role";
 import { MuteScheduler } from "./jobs/MuteScheduler";
 import { ContentFilterUtil } from "./modules/content-filter";
+import { ImageFilterUtil } from "./modules/image-filter";
 import { LinkFilterUtil } from "./modules/link-filter";
 import { SpamFilterUtil } from "./modules/spam-filter";
 import SupportUtil from "./modules/support";
 import type { Context, Server } from "./typings";
-import { ImageFilterUtil } from "./modules/image-filter";
 
 /**
  * Main class that stores utils, connections to various providers, and ws

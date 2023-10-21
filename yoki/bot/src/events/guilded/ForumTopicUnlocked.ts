@@ -1,26 +1,24 @@
 import { inlineCode, inlineQuote } from "@yokilabs/bot";
 import { Colors } from "@yokilabs/utils";
+import { GuildedImages } from "@yokilabs/utils/dist/src/images";
+import { stripIndents } from "common-tags";
+import { UserType } from "guilded.js";
 
 import { GEvent, LogChannelType } from "../../typings";
-import { GuildedImages } from "@yokilabs/utils/dist/src/images";
-import { UserType } from "guilded.js";
-import { stripIndents } from "common-tags";
 
 export default {
     execute: async ([forumTopic, ctx]) => {
         const { serverId } = forumTopic;
 
         // Ignore own forum topic unlocks
-        if (forumTopic.createdBy === ctx.user!.id)
-            return;
+        if (forumTopic.createdBy === ctx.user!.id) return;
 
         // check if there's a log channel channel for message deletions
         const lockedTopicLogChannel = await ctx.dbUtil.getLogChannel(serverId, LogChannelType.topic_locks);
         if (!lockedTopicLogChannel) return;
 
         const member = await ctx.members.fetch(serverId, forumTopic.createdBy).catch(() => null);
-        if (member?.user?.type === UserType.Bot)
-            return;
+        if (member?.user?.type === UserType.Bot) return;
 
         const channel = await ctx.channels.fetch(forumTopic.channelId).catch();
 

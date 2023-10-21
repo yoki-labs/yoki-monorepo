@@ -1,20 +1,19 @@
 import { LogChannelType } from "@prisma/client";
 import { codeBlock, inlineCode } from "@yokilabs/bot";
 import { Colors } from "@yokilabs/utils";
+import { GuildedImages } from "@yokilabs/utils/dist/src/images";
 import { stripIndents } from "common-tags";
 import { ChatMessagePayload, UserType } from "guilded.js";
 
 import type { GEvent } from "../../typings";
 import { uploadS3 } from "../../utils/s3";
-import { GuildedImages } from "@yokilabs/utils/dist/src/images";
 
 export default {
     execute: async ([message, ctx]) => {
         // check if there's a log channel channel for message deletions
         const deletedMessageLogChannel = await ctx.dbUtil.getLogChannel(message.serverId!, LogChannelType.message_deletions);
 
-        if (!deletedMessageLogChannel)
-            return;
+        if (!deletedMessageLogChannel) return;
 
         const deletedMessage = message as unknown as ChatMessagePayload;
         await ctx.prisma.message.deleteMany({ where: { serverId: message.serverId!, channelId: message.channelId, messageId: message.id } });
@@ -31,16 +30,14 @@ export default {
         // const oldMember = deletedMessage ? await ctx.members.fetch(deletedMessage.serverId!, deletedMessage.authorId).catch(() => null) : null;
 
         // Don't even fetch the member at all
-        if (deletedMessage.createdBy === ctx.user!.id || deletedMessage.createdByWebhookId)
-            return;
+        if (deletedMessage.createdBy === ctx.user!.id || deletedMessage.createdByWebhookId) return;
 
         const server = await ctx.dbUtil.getServer(message.serverId!);
 
         const member = await ctx.members.fetch(deletedMessage.serverId!, deletedMessage.createdBy).catch(() => null);
 
         // It's a bot, bot messages don't matter
-        if (member?.user?.type === UserType.Bot)
-            return;
+        if (member?.user?.type === UserType.Bot) return;
 
         const channel = await ctx.channels.fetch(message.channelId).catch();
 

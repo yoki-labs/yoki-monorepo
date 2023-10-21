@@ -103,7 +103,13 @@ export default class AntiraidPage extends React.Component<DashboardPageProps> {
                                         ],
                                     },
                                 ]}
-                                onSubmit={({ antiRaidChallengeChannel, antiRaidResponse, antiRaidAgeFilter }) => this.modifyServerConfig(antiRaidChallengeChannel as string | undefined | null, antiRaidResponse as ResponseType | undefined | null, antiRaidAgeFilter as number | undefined | null)}
+                                onSubmit={({ antiRaidChallengeChannel, antiRaidResponse, antiRaidAgeFilter }) =>
+                                    this.modifyServerConfig(
+                                        antiRaidChallengeChannel as string | undefined | null,
+                                        antiRaidResponse as ResponseType | undefined | null,
+                                        antiRaidAgeFilter as number | undefined | null
+                                    )
+                                }
                             />
                         </CardContent>
                     </Card>

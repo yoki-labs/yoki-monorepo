@@ -1,17 +1,16 @@
 import { LogChannelType } from "@prisma/client";
 import { codeBlock, inlineCode } from "@yokilabs/bot";
 import { Colors } from "@yokilabs/utils";
+import { stripIndents } from "common-tags";
 
 import type { GEvent } from "../../typings";
-import { stripIndents } from "common-tags";
 
 export default {
     execute: async ([memberBan, ctx]) => {
         const { serverId, reason } = memberBan;
 
         const server = await ctx.dbUtil.getServer(serverId, false);
-        if (!server)
-            return;
+        if (!server) return;
 
         const userId = memberBan.user.id;
         const authorId = memberBan.createdBy;

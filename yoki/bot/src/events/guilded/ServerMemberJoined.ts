@@ -1,6 +1,7 @@
 import { LogChannelType, Severity } from "@prisma/client";
 import { codeBlock, inlineCode } from "@yokilabs/bot";
 import { Colors } from "@yokilabs/utils";
+import { GuildedImages } from "@yokilabs/utils/dist/src/images";
 import { stripIndents } from "common-tags";
 import { UserType } from "guilded.js";
 import { nanoid } from "nanoid";
@@ -9,7 +10,6 @@ import type { GEvent } from "../../typings";
 import { generateCaptcha } from "../../utils/antiraid";
 import { trimHoistingSymbols } from "../../utils/moderation";
 import { suspicious as sus } from "../../utils/util";
-import { GuildedImages } from "@yokilabs/utils/dist/src/images";
 
 export default {
     execute: async ([member, ctx]) => {

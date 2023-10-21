@@ -1,15 +1,14 @@
 import { Action, LogChannelType, Severity } from "@prisma/client";
 import { Colors } from "@yokilabs/utils";
+import { GuildedImages } from "@yokilabs/utils/dist/src/images";
 
 import type Client from "../../Client";
 import type { Server } from "../../typings";
 import { getActionAdditionalInfo, getActionFields, getActionInfo } from "../../utils/moderation";
-import { GuildedImages } from "@yokilabs/utils/dist/src/images";
 
 export default async (data: Action, server: Server, client: Client) => {
     const modLogChannel = await client.dbUtil.getLogChannel(data.serverId, LogChannelType.mod_actions);
-    if (!modLogChannel)
-        return;
+    if (!modLogChannel) return;
 
     const member = await client.members.fetch(server.serverId, data.targetId).catch(() => null);
 

@@ -93,10 +93,7 @@ export default class LogsPage extends React.Component<DashboardPageProps, State>
                     select channels.
                 </Alert>
                 <Card sx={{ mb: 2 }}>
-                    <LogItemCreationForm
-                        onCreate={this.onLogsUpdate.bind(this)}
-                        existingTypes={existingTypes}
-                    />
+                    <LogItemCreationForm onCreate={this.onLogsUpdate.bind(this)} existingTypes={existingTypes} />
                 </Card>
                 <Stack sx={{ mb: 4 }} gap={2} direction="column">
                     {Object.keys(channelLookup).map((channelId) => {

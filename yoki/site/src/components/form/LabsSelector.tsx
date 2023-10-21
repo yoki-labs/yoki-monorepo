@@ -40,7 +40,9 @@ export default class LabsSelector extends React.Component<Props, State> {
                         {value.avatarIcon && <Avatar size="sm" src={value.avatarIcon} />}
                     </ListItemDecorator>
                 )}
-                <Typography fontWeight="bolder" sx={{ color: value.color ? `#${value.color.toString(16)}` : "inherit" }}>{value.name}</Typography>
+                <Typography fontWeight="bolder" sx={{ color: value.color ? `#${value.color.toString(16)}` : "inherit" }}>
+                    {value.name}
+                </Typography>
             </>
         );
     }
@@ -84,8 +86,10 @@ export default class LabsSelector extends React.Component<Props, State> {
                                 </ListItemDecorator>
                             )}
                             <Box>
-                                <Typography fontWeight="bolder" sx={{ color: value.color ? `#${value.color.toString(16)}` : "inherit" }}>{value.name}</Typography>
-                                { value.description && <Typography textColor="text.tertiary">{value.description}</Typography> }
+                                <Typography fontWeight="bolder" sx={{ color: value.color ? `#${value.color.toString(16)}` : "inherit" }}>
+                                    {value.name}
+                                </Typography>
+                                {value.description && <Typography textColor="text.tertiary">{value.description}</Typography>}
                             </Box>
                         </Option>
                     ))}

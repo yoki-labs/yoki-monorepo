@@ -1,10 +1,10 @@
+import { Colors } from "@yokilabs/utils";
 import fetch from "node-fetch";
 
+import { Server, Severity } from "../typings";
 import { IMAGE_REGEX } from "../utils/matching";
 import BaseFilterUtil from "./base-filter";
 import { FilteredContent } from "./content-filter";
-import { Colors } from "@yokilabs/utils";
-import { Server, Severity } from "../typings";
 
 interface ImageScanResult {
     hentai: number;
@@ -33,13 +33,10 @@ export class ImageFilterUtil extends BaseFilterUtil {
 
         const nsfwDetected = await Promise.any(
             matches.map(async ([_, url]) =>
-                this
-                    .scanImage(url, server.nsfwHentaiConfidence, server.nsfwPornConfidence)
-                    .then((nsfw) => {
-                        // Fail and ignore in `Promise.any`, let others continue do their job
-                        if (!nsfw)
-                            throw nsfw;
-                    })
+                this.scanImage(url, server.nsfwHentaiConfidence, server.nsfwPornConfidence).then((nsfw) => {
+                    // Fail and ignore in `Promise.any`, let others continue do their job
+                    if (!nsfw) throw nsfw;
+                })
             )
         )
             .then(() => true)
@@ -48,16 +45,7 @@ export class ImageFilterUtil extends BaseFilterUtil {
         if (nsfwDetected) {
             try {
                 // Warn/mute/kick/ban
-                await this.dealWithUser(
-                    userId,
-                    server,
-                    channelId,
-                    FilteredContent.Message,
-                    onDelete,
-                    `NSFW image filter tripped`,
-                    server.spamInfractionPoints,
-                    Severity.WARN,
-                );
+                await this.dealWithUser(userId, server, channelId, FilteredContent.Message, onDelete, `NSFW image filter tripped`, server.spamInfractionPoints, Severity.WARN);
             } catch (e) {}
         }
 

@@ -56,7 +56,7 @@ const serverLogsRoute = createServerRoute({
         });
 
         const existingLogs = logChannels.filter((x) => x.channelId === logId);
-        
+
         const existingLogTypes = existingLogs.map((x) => x.type);
         const otherLogTypes = logChannels.filter((x) => x.channelId !== logId).map((x) => x.type);
 
@@ -72,8 +72,7 @@ const serverLogsRoute = createServerRoute({
         else if (!existingLogs.length && !(await channelExistsInServer(logId)))
             return res.status(404).json({ error: true, message: "Channel by that ID does not exist, bot has no permission to see it or there was an error while fetching it." });
         // Do not create more than 1 log channel per type
-        else if (logsToAdd.some((x) => otherLogTypes.includes(x)))
-            return res.status(400).json({ error: true, message: "Channel by that type already exists." });
+        else if (logsToAdd.some((x) => otherLogTypes.includes(x))) return res.status(400).json({ error: true, message: "Channel by that type already exists." });
 
         await Promise.all([
             logsToAdd.length &&

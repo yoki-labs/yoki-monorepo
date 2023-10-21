@@ -132,10 +132,7 @@ export const describeAction = (data: Action): string[] =>
 export function getActionInfo(data: Action & { isAutomod?: boolean }): [string, string] {
     const [title, description] = describeAction(data);
 
-    return [
-        title,
-        `<@${data.targetId}> (${inlineCode(data.targetId)}) ${description} by <@${data.executorId}> (${inlineCode(data.executorId)})`,
-    ];
+    return [title, `<@${data.targetId}> (${inlineCode(data.targetId)}) ${description} by <@${data.executorId}> (${inlineCode(data.executorId)})`];
 }
 
 export const getActionFields = (data: Action): EmbedField[] =>

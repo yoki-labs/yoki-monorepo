@@ -1,25 +1,23 @@
 import { inlineCode, inlineQuote } from "@yokilabs/bot";
 import { Colors } from "@yokilabs/utils";
+import { GuildedImages } from "@yokilabs/utils/dist/src/images";
+import { stripIndents } from "common-tags";
 import type { EmbedField } from "guilded.js";
 
 import { FilteredContent } from "../../modules/content-filter";
 import { GEvent, LogChannelType } from "../../typings";
 import { quoteChangedContent } from "../../utils/messages";
 import { moderateContent } from "../../utils/moderation";
-import { GuildedImages } from "@yokilabs/utils/dist/src/images";
-import { stripIndents } from "common-tags";
 
 export default {
     execute: async ([forumTopic, _oldForumTopic, ctx]) => {
         const { serverId } = forumTopic;
 
         // Ignore own forum topic updates
-        if (forumTopic.createdBy === ctx.user!.id)
-            return;
+        if (forumTopic.createdBy === ctx.user!.id) return;
 
         const server = await ctx.dbUtil.getServer(serverId, false);
-        if (!server)
-            return;
+        if (!server) return;
 
         // get the old message from the database if we logged it before
         const oldContent = await ctx.dbUtil.getForumTopic(forumTopic.channelId, forumTopic.id);

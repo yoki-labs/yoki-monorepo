@@ -33,7 +33,10 @@ export function LayoutSidebar({ page, serverConfig, menuToggled, currentServer, 
         }));
 
     return (
-        <Box sx={{ fontSize: 14, pb: 5, userSelect: "none" }} className={`px-5 w-full pt-4 md:pt-0 md:px-7 md:max-w-80 md:w-80 h-full overflow-y-auto overflow-x-hidden ${showStateClass}`}>
+        <Box
+            sx={{ fontSize: 14, pb: 5, userSelect: "none" }}
+            className={`px-5 w-full pt-4 md:pt-0 md:px-7 md:max-w-80 md:w-80 h-full overflow-y-auto overflow-x-hidden ${showStateClass}`}
+        >
             <Box sx={{ mb: 5 }} className="block md:hidden">
                 <ServerSelector onChange={onServerChange} defaultValue={currentServer?.id} servers={servers} />
             </Box>

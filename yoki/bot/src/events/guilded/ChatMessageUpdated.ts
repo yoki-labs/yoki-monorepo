@@ -1,6 +1,7 @@
 import { LogChannelType } from "@prisma/client";
 import { inlineCode, quoteMarkdown } from "@yokilabs/bot";
 import { Colors } from "@yokilabs/utils";
+import { GuildedImages } from "@yokilabs/utils/dist/src/images";
 import { stripIndents } from "common-tags";
 import { Message, UserType } from "guilded.js";
 
@@ -9,7 +10,6 @@ import { FilteredContent } from "../../modules/content-filter";
 import type { GEvent } from "../../typings";
 import { moderateContent } from "../../utils/moderation";
 import { uploadS3 } from "../../utils/s3";
-import { GuildedImages } from "@yokilabs/utils/dist/src/images";
 
 export default {
     execute: async ([message, _oldMessage, ctx]) => {

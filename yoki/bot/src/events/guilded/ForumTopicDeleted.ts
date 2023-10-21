@@ -1,34 +1,30 @@
 import { inlineCode, inlineQuote } from "@yokilabs/bot";
 import { Colors } from "@yokilabs/utils";
+import { GuildedImages } from "@yokilabs/utils/dist/src/images";
+import { stripIndents } from "common-tags";
+import { UserType } from "guilded.js";
 
 import { GEvent, LogChannelType } from "../../typings";
 import { quoteChangedContent } from "../../utils/messages";
-import { GuildedImages } from "@yokilabs/utils/dist/src/images";
-import { UserType } from "guilded.js";
-import { stripIndents } from "common-tags";
 
 export default {
     execute: async ([forumTopic, ctx]) => {
         const { serverId } = forumTopic;
 
         // Ignore own comment deletions
-        if (forumTopic.createdBy === ctx.user!.id)
-            return;
+        if (forumTopic.createdBy === ctx.user!.id) return;
 
         const server = await ctx.dbUtil.getServer(serverId, false);
-        if (!server)
-            return;
+        if (!server) return;
 
         await ctx.prisma.forumTopic.deleteMany({ where: { serverId, channelId: forumTopic.channelId, forumTopicId: forumTopic.id } });
 
         // check if there's a log channel channel for message deletions
         const deletedTopicLogChannel = await ctx.dbUtil.getLogChannel(serverId, LogChannelType.topic_deletions);
-        if (!deletedTopicLogChannel)
-            return;
+        if (!deletedTopicLogChannel) return;
 
         const member = await ctx.members.fetch(serverId, forumTopic.createdBy).catch(() => null);
-        if (member?.user?.type === UserType.Bot)
-            return;
+        if (member?.user?.type === UserType.Bot) return;
 
         const channel = await ctx.channels.fetch(forumTopic.channelId).catch();
 

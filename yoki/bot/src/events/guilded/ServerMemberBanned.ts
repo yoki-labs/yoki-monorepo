@@ -13,8 +13,7 @@ export default {
         const createdBy = memberBan.createdById;
 
         const server = await ctx.dbUtil.getServer(serverId, false);
-        if (!server)
-            return;
+        if (!server) return;
 
         // check if there's a log channel channel for member leaves
         const memberBanLogChannel = await ctx.dbUtil.getLogChannel(serverId!, LogChannelType.member_bans);
