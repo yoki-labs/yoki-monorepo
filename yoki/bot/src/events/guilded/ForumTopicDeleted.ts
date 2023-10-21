@@ -3,16 +3,32 @@ import { Colors } from "@yokilabs/utils";
 
 import { GEvent, LogChannelType } from "../../typings";
 import { quoteChangedContent } from "../../utils/messages";
+import { GuildedImages } from "@yokilabs/utils/dist/src/images";
+import { UserType } from "guilded.js";
+import { stripIndents } from "common-tags";
 
 export default {
     execute: async ([forumTopic, ctx]) => {
         const { serverId } = forumTopic;
 
+        // Ignore own comment deletions
+        if (forumTopic.createdBy === ctx.user!.id)
+            return;
+
+        const server = await ctx.dbUtil.getServer(serverId, false);
+        if (!server)
+            return;
+
         await ctx.prisma.forumTopic.deleteMany({ where: { serverId, channelId: forumTopic.channelId, forumTopicId: forumTopic.id } });
 
         // check if there's a log channel channel for message deletions
         const deletedTopicLogChannel = await ctx.dbUtil.getLogChannel(serverId, LogChannelType.topic_deletions);
-        if (!deletedTopicLogChannel) return;
+        if (!deletedTopicLogChannel)
+            return;
+
+        const member = await ctx.members.fetch(serverId, forumTopic.createdBy).catch(() => null);
+        if (member?.user?.type === UserType.Bot)
+            return;
 
         const channel = await ctx.channels.fetch(forumTopic.channelId).catch();
 
@@ -22,16 +38,21 @@ export default {
         await ctx.messageUtil.sendLog({
             where: deletedTopicLogChannel.channelId,
             serverId,
-            title: "Forum Topic Removed",
-            description: `A topic ${inlineQuote(forumTopic.title)} from <@${forumTopic.createdBy}> (${inlineCode(forumTopic.createdBy)}) was deleted in [#${
+            author: {
+                icon_url: member?.user?.avatar ?? GuildedImages.defaultAvatar,
+                name: `Forum topic deleted \u2022 ${member?.displayName ?? "Unknown user"}`,
+            },
+            // title: "Forum Topic Removed",
+            description: `A forum topic ${inlineQuote(forumTopic.title)} by <@${forumTopic.createdBy}> (${inlineCode(forumTopic.createdBy)}) was deleted in [#${
                 channel.name
-            }](${channelURL})
-
-			Topic ID: ${inlineCode(forumTopic.id)}
-			Channel ID: ${inlineCode(forumTopic.channelId)}
-		`,
+            }](${channelURL}).`,
+            additionalInfo: stripIndents`
+                **When:** ${server.formatTimezone(forumTopic.deletedAt ?? new Date())}
+                **Topic ID:** ${inlineCode(forumTopic.id)}
+                **Channel ID:** ${inlineCode(forumTopic.channelId)}
+            `,
             color: Colors.red,
-            occurred: new Date().toISOString(),
+            // occurred: new Date().toISOString(),
             fields: [
                 {
                     name: "Content",

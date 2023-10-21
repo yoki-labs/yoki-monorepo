@@ -9,6 +9,7 @@ import type { GEvent } from "../../typings";
 import { generateCaptcha } from "../../utils/antiraid";
 import { trimHoistingSymbols } from "../../utils/moderation";
 import { suspicious as sus } from "../../utils/util";
+import { GuildedImages } from "@yokilabs/utils/dist/src/images";
 
 export default {
     execute: async ([member, ctx]) => {
@@ -151,15 +152,19 @@ export default {
         // send the log channel message with the content/data of the deleted message
         await ctx.messageUtil.sendLog({
             where: memberJoinLogChannel.channelId,
-            title: `${member.user!.type === UserType.Bot ? "Bot Added" : "User Joined"}`,
+            author: {
+                icon_url: member?.user?.avatar ?? GuildedImages.defaultAvatar,
+                name: `${member.user!.type === UserType.Bot ? "Bot added" : "User joined"} \u2022 ${member?.displayName ?? "Unknown user"}`,
+            },
+            // title: `${member.user!.type === UserType.Bot ? "Bot Added" : "User Joined"}`,
             serverId: server.serverId,
             description: `<@${userId}> (${inlineCode(userId)}) has joined the server.`,
             color: suspicious ? Colors.yellow : Colors.green,
-            occurred: member.joinedAt!.toISOString(),
+            // occurred: member.joinedAt!.toISOString(),
             additionalInfo: stripIndents`
-                                **Account Created:** ${server.formatTimezone(creationDate)} EST ${suspicious ? "(:warning: recent)" : ""}
-                                **Joined at:** ${server.formatTimezone(member.joinedAt!)} EST
-                            `,
+                **Account created:** ${server.formatTimezone(creationDate)} ${suspicious ? "(:warning: recent)" : ""}
+                **Joined:** ${server.formatTimezone(member.joinedAt!)}
+            `,
         });
     },
     name: "memberJoined",

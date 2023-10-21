@@ -9,6 +9,7 @@ import { FilteredContent } from "../../modules/content-filter";
 import type { GEvent } from "../../typings";
 import { moderateContent } from "../../utils/moderation";
 import { uploadS3 } from "../../utils/s3";
+import { GuildedImages } from "@yokilabs/utils/dist/src/images";
 
 export default {
     execute: async ([message, _oldMessage, ctx]) => {
@@ -48,18 +49,21 @@ export default {
         // send embed in log channel
         await ctx.messageUtil.sendLog({
             where: updatedMessageLogChannel.channelId,
-            title: `Message Edited`,
+            author: {
+                icon_url: member?.user?.avatar ?? GuildedImages.defaultAvatar,
+                name: `Message edited \u2022 ${member?.displayName ?? "Unknown user"}`,
+            },
+            // title: `Message Edited`,
             serverId: server.serverId,
             description: stripIndents`
-                ${author} has edited a message in the channel [#${channel.name}](${channelURL}).
-                
-                [Jump to the message](${channelURL}?messageId=${message.id})
-                `,
+                ${author} has edited [**a message**](${channelURL}?messageId=${message.id}) in the channel [#${channel.name}](${channelURL}).
+            `,
             color: Colors.yellow,
-            occurred: message.updatedAt?.toISOString() ?? new Date().toISOString(),
+            // occurred: message.updatedAt?.toISOString() ?? new Date().toISOString(),
             fields: contentFields.concat({
                 name: "Additional Info",
                 value: stripIndents`
+                        **When:** ${server.formatTimezone(message.updatedAt!)}
                         **Message ID:** ${inlineCode(message.id)}
                         **Channel ID:** ${inlineCode(message.channelId)}
                     `,

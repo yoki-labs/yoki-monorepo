@@ -166,7 +166,7 @@ export default class SupportUtil extends Util<YokiClient> {
         if (modmailReaction?.channelId)
             await this.client.messageUtil.sendInfoBlock(
                 modmailReaction.channelId,
-                `Thread closed`,
+                `Ticket closed`,
                 `<@${ticket.openerId}>, your thread has been ${closedState}.`,
                 {
                     fields: [
@@ -187,9 +187,9 @@ export default class SupportUtil extends Util<YokiClient> {
         return this.client.messageUtil.sendLog({
             where: modmailLogChannel.channelId,
             serverId,
-            title: `Thread closed`,
+            title: `Ticket closed`,
             description: `Thread \`#${ticket.id}\` created by <@${ticket.openerId}> has been ${closedState}.`,
-            color: Colors.green,
+            color: Colors.blockBackground,
             occurred: new Date().toISOString(),
             fields: [
                 {

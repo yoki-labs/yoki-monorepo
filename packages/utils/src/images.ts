@@ -17,3 +17,7 @@ export const StateImages = {
     notFound: "https://img.guildedcdn.com/asset/GenericMessages/not-found.png",
     search: "https://img.guildedcdn.com/asset/GenericMessages/empty-search.png",
 };
+
+export const GuildedImages = {
+    defaultAvatar: "https://img.guildedcdn.com/asset/DefaultUserAvatars/profile_1.png",
+}

@@ -34,11 +34,11 @@ export default {
             // send the log channel message with the content/data of the deleted message
             await ctx.messageUtil.sendLog({
                 where: roleUpdateLogChannel.channelId,
-                title: `Member Roles Changed`,
+                title: `Member roles changed`,
                 serverId,
                 description: `${modifiedUsers} had their roles changed.`,
-                color: Colors.blue,
-                occurred: new Date().toISOString(),
+                color: Colors.blockBackground,
+                // occurred: new Date().toISOString(),
                 fields: roleDifferences.map((obj) => {
                     const { userId, addedRoles, removedRoles, roleIds } = obj;
 

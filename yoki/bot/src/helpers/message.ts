@@ -6,6 +6,7 @@ import { stripIndents } from "common-tags";
 import type YokiClient from "../Client";
 import type { Command } from "../commands/commands";
 import type { Server } from "../typings";
+import { ChatEmbedPayload, EmbedAuthor, EmbedFooter } from "guilded.js";
 
 export class MessageUtil extends BaseMessageUtil<YokiClient, Server, Command> {
     readonly logchannelErrCounter: Record<string, number> = {};
@@ -19,24 +20,30 @@ export class MessageUtil extends BaseMessageUtil<YokiClient, Server, Command> {
         occurred,
         additionalInfo,
         fields,
+        author,
+        footer,
     }: {
         where: string;
         serverId: string;
-        title: string;
+        title?: string;
         description: string;
         color: number;
-        occurred: string;
+        occurred?: string;
         additionalInfo?: string;
-        fields?: EmbedField[];
+        fields?: Array<EmbedField>;
+        author?: EmbedAuthor | null;
+        footer?: EmbedFooter | null;
     }) {
         return this.client.messages
             .send(where, {
                 embeds: [
                     {
-                        title,
+                        author,
+                        footer,
+                        title: title ?? null,
                         description,
                         color,
-                        fields: additionalInfo ? (fields ?? []).concat({ name: "Additional Info", value: additionalInfo }) : fields,
+                        fields: additionalInfo ? (fields ?? []).concat({ name: "Additional Info", value: additionalInfo, inline: null }) : fields,
                         timestamp: occurred,
                     },
                 ],

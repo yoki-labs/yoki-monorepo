@@ -23,11 +23,11 @@ export default {
                 // send the log channel message with the content/data of the deleted message
                 await ctx.messageUtil.sendLog({
                     where: memberLeaveLogChannel.channelId,
-                    title: `User Left`,
+                    title: `User left`,
                     serverId,
                     description: `<@${userId}> (${inlineCode(userId)}) has ${action} the server.`,
                     color: Colors.red,
-                    occurred: new Date().toISOString(),
+                    // occurred: new Date().toISOString(),
                 });
             }
         }

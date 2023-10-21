@@ -1,7 +1,7 @@
 import { LogChannelType } from "@prisma/client";
 import { inlineCode } from "@yokilabs/bot";
 import { Colors } from "@yokilabs/utils";
-import { codeBlock } from "common-tags";
+import { codeBlock, stripIndents } from "common-tags";
 
 import type { GEvent } from "../../typings";
 
@@ -10,8 +10,11 @@ export default {
         const { serverId } = memberBan;
         const targetId = memberBan.target.id;
         const { reason } = memberBan;
-        const createdAt = memberBan.createdAt.toISOString();
         const createdBy = memberBan.createdById;
+
+        const server = await ctx.dbUtil.getServer(serverId, false);
+        if (!server)
+            return;
 
         // check if there's a log channel channel for member leaves
         const memberBanLogChannel = await ctx.dbUtil.getLogChannel(serverId!, LogChannelType.member_bans);
@@ -19,17 +22,20 @@ export default {
             // send the log channel message with the content/data of the deleted message
             await ctx.messageUtil.sendLog({
                 where: memberBanLogChannel.channelId,
-                title: `User Banned`,
+                title: `User banned`,
                 serverId,
                 description: `<@${targetId}> (${inlineCode(targetId)}) has been banned from the server by <@${createdBy}>.`,
                 color: Colors.red,
+                additionalInfo: stripIndents`
+                    **Banned:** ${server.formatTimezone(memberBan.createdAt)}
+                `,
                 fields: [
                     {
                         name: "Reason",
                         value: reason ? codeBlock(reason) : "No reason provided.",
                     },
                 ],
-                occurred: createdAt,
+                // occurred: createdAt,
             });
         }
     },

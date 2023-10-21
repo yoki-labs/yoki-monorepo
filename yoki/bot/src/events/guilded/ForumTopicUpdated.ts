@@ -6,12 +6,20 @@ import { FilteredContent } from "../../modules/content-filter";
 import { GEvent, LogChannelType } from "../../typings";
 import { quoteChangedContent } from "../../utils/messages";
 import { moderateContent } from "../../utils/moderation";
+import { GuildedImages } from "@yokilabs/utils/dist/src/images";
+import { stripIndents } from "common-tags";
 
 export default {
     execute: async ([forumTopic, _oldForumTopic, ctx]) => {
         const { serverId } = forumTopic;
+
+        // Ignore own forum topic updates
+        if (forumTopic.createdBy === ctx.user!.id)
+            return;
+
         const server = await ctx.dbUtil.getServer(serverId, false);
-        if (!server) return;
+        if (!server)
+            return;
 
         // get the old message from the database if we logged it before
         const oldContent = await ctx.dbUtil.getForumTopic(forumTopic.channelId, forumTopic.id);
@@ -51,28 +59,33 @@ export default {
         // send the log channel message with the content/data of the deleted message
         await ctx.messageUtil.sendLog({
             where: editedTopicLogChannel.channelId,
-            title: "Forum Topic Edited",
+            author: {
+                icon_url: member?.user?.avatar ?? GuildedImages.defaultAvatar,
+                name: `Forum topic edited \u2022 ${member?.displayName ?? "Unknown user"}`,
+            },
+            // title: "Forum Topic Edited",
             serverId: server.serverId,
-            description: `A topic ${inlineQuote(forumTopic.title)} from <@${forumTopic.createdBy}> (${inlineCode(forumTopic.createdBy)}) has been edited in [#${
+            description: `A forum topic ${inlineQuote(forumTopic.title)} by <@${forumTopic.createdBy}> (${inlineCode(forumTopic.createdBy)}) has been edited in [#${
                 channel.name
-            }](${channelURL})
-
-			Topic ID: ${inlineCode(forumTopic.id)}
-			Channel ID: ${inlineCode(forumTopic.channelId)}
-		`,
+            }](${channelURL}).`,
             color: Colors.yellow,
-            occurred: new Date().toISOString(),
+            additionalInfo: stripIndents`
+                **When:** ${server.formatTimezone(forumTopic.updatedAt!)}
+                **Topic ID:** ${inlineCode(forumTopic.id)}
+                **Channel ID:** ${inlineCode(forumTopic.channelId)}
+            `,
+            // occurred: new Date().toISOString(),
             fields: [
                 oldContent?.title !== forumTopic.title && {
-                    name: "Title Changes",
+                    name: "Title changes",
                     value: `${oldContent?.title ? inlineQuote(oldContent?.title) : "Unknown title"} -> ${inlineQuote(forumTopic.title)}`,
                 },
                 contentChanged && {
-                    name: "Old Content",
+                    name: "Old content",
                     value: await quoteChangedContent(ctx, serverId, forumTopic.id, "forums", forumTopic.content),
                 },
                 contentChanged && {
-                    name: "New Content",
+                    name: "New content",
                     value: await quoteChangedContent(ctx, serverId, forumTopic.id, "forums", oldContent?.content),
                 },
             ].filter(Boolean) as EmbedField[],
