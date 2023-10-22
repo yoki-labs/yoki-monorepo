@@ -4,7 +4,7 @@ import { RoleType } from "../../typings";
 import { Category, Command } from "../commands";
 
 const SpamFrequency: Command = {
-    name: "antiraid-spamfrequency",
+    name: "filter-spamfrequency",
     description: "Sets required message count to activate the spam filter.",
     // usage: "[messages per 5 secs]",
     examples: ["9"],

@@ -4,7 +4,7 @@ import { RoleType } from "../../typings";
 import { Category, Command } from "../commands";
 
 const SpamInfractions: Command = {
-    name: "antiraid-spaminfractions",
+    name: "filter-spaminfractions",
     description: "Set how many infraction points a user will get if they spam.",
     // usage: "[infraction points]",
     examples: ["5"],

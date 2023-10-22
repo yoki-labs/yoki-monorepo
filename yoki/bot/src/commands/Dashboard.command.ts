@@ -1,6 +1,7 @@
 import { stripIndents } from "common-tags";
 
 import { Category, Command } from "./commands";
+import { RoleType } from "@prisma/client";
 
 const Dashboard: Command = {
     name: "dashboard",
@@ -8,6 +9,7 @@ const Dashboard: Command = {
     // usage: "",
     aliases: ["db"],
     category: Category.Info,
+    requiredRole: RoleType.MINIMOD,
     execute: (message, _args, ctx, { prefix, server }) => {
         if (!server.flags.includes("EARLY_ACCESS"))
             return ctx.messageUtil.replyWithUnpermitted(message, "Unfortunately, this command is only available to servers with early access.");
