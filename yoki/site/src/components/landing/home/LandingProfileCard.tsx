@@ -1,9 +1,9 @@
+import { AspectRatio, Avatar, Box, Card, CardContent, CardOverflow, Chip, Stack, styled,Typography } from "@mui/joy";
 import React, { ReactNode } from "react";
-import { AspectRatio, Avatar, Box, Card, CardContent, CardOverflow, Chip, Stack, Typography, styled } from "@mui/joy";
 
-export type Props = {
+export interface Props {
     serverCount: ReactNode;
-};
+}
 
 function BotRole() {
     return (
@@ -33,7 +33,7 @@ function ProfileCardSection({ title, children }: { title: string; children: Reac
 
 export default function LandingProfileCard({ serverCount }: Props) {
     return (
-        <Card sx={{ maxWidth: 650, minWidth: 600 }} className="hidden md:block">
+        <Card sx={{ maxWidth: 650 }} className="hidden md:block">
             <CardOverflow>
                 <AspectRatio ratio="5">
                     <img src="/banner.png" alt="Yoki's Banner" />
