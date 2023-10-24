@@ -39,8 +39,8 @@ const Home: NextPage = () => {
                             </List>
                             <Typography textColor="text.primary">... and much more!</Typography>
                             <Stack sx={{ my: 2 }} gap={2} className="flex-col md:flex-row">
-                                <LabsButton size="lg" startDecorator={<FontAwesomeIcon icon={faGuilded} className="h-5" />}>
-                                    <a href="/invite">Add to Guilded</a>
+                                <LabsButton onClick={() => window.open("/invite", "_blank")} size="lg" startDecorator={<FontAwesomeIcon icon={faGuilded} className="h-5" />}>
+                                    Add to Guilded
                                 </LabsButton>
                                 <Button variant="outlined" color="primary" size="lg" onClick={() => window.scrollTo(0, 1200)}>
                                     See all features
