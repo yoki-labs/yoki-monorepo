@@ -183,7 +183,7 @@ export default class SupportUtil extends Util<YokiClient> {
         if (modmailLogChannel) await this.sendModmailLog(serverId, ticket, modmailLogChannel, closedState, historyMessage);
     }
 
-    async sendModmailLog(serverId: string, ticket: ModmailThread, modmailLogChannel: LogChannel, closedState: string, historyMessage: string) {
+    sendModmailLog(serverId: string, ticket: ModmailThread, modmailLogChannel: LogChannel, closedState: string, historyMessage: string) {
         return this.client.messageUtil.sendLog({
             where: modmailLogChannel.channelId,
             serverId,

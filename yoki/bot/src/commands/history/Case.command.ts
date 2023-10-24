@@ -47,7 +47,7 @@ const Case: Command = {
             return ctx.messageUtil.replyWithSuccess(message, `Case deleted`, `Case ${inlineCode(caseId)} has been successfully deleted.`);
         }
 
-        const [title, description] = getActionInfo(ctx, fetchedCase);
+        const [title, description] = getActionInfo(fetchedCase);
 
         // View
         return ctx.messageUtil.replyWithInfo(

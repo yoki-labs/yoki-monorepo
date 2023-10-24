@@ -1,22 +1,22 @@
+import { faGuilded } from "@fortawesome/free-brands-svg-icons";
+import { faEnvelope, faExclamation, faHashtag, faRobot, faShieldHalved } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Box, Button, Chip, Link, List, Stack, Typography } from "@mui/joy";
+import { Colors } from "@yokilabs/utils";
 import type { NextPage } from "next";
 
-import LandingPage from "../components/landing/LandingPage";
-import { Box, Button, Card, Chip, Link, List, Stack, Typography } from "@mui/joy";
-import LandingFeature from "../components/landing/home/LandingFeature";
-import LabsButton from "../components/LabsButton";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faGuilded } from "@fortawesome/free-brands-svg-icons";
-import LandingProfileCard from "../components/landing/home/LandingProfileCard";
-import LandingStat from "../components/landing/home/LandingStat";
-import FeaturePreview from "../components/landing/home/FeaturePreview";
-import { faEnvelope, faExclamation, faHashtag, faRobot, faShieldHalved } from "@fortawesome/free-solid-svg-icons";
-import GuildedContentWrapper from "../components/guilded/GuildedContent";
 import GuildedChatWrapper, { GuildedChatMasked } from "../components/guilded/GuildedChat";
-import GuildedMessage from "../components/guilded/GuildedMessage";
+import GuildedContentWrapper from "../components/guilded/GuildedContent";
 import GuildedEmbed, { GuildedEmbedField } from "../components/guilded/GuildedEmbed";
 import GuildedMention from "../components/guilded/GuildedMention";
-import { Colors } from "@yokilabs/utils";
+import GuildedMessage from "../components/guilded/GuildedMessage";
+import LabsButton from "../components/LabsButton";
+import FeaturePreview from "../components/landing/home/FeaturePreview";
 import FinalSection from "../components/landing/home/FinalSection";
+import LandingFeature from "../components/landing/home/LandingFeature";
+import LandingProfileCard from "../components/landing/home/LandingProfileCard";
+import LandingStat from "../components/landing/home/LandingStat";
+import LandingPage from "../components/landing/LandingPage";
 
 const Home: NextPage = () => {
     return (
@@ -39,11 +39,9 @@ const Home: NextPage = () => {
                             </List>
                             <Typography textColor="text.primary">... and much more!</Typography>
                             <Stack sx={{ my: 2 }} gap={2} className="flex-col md:flex-row">
-                                <a href="/invite">
-                                    <LabsButton size="lg" startDecorator={<FontAwesomeIcon icon={faGuilded} className="h-5" />}>
-                                         Add to Guilded
-                                    </LabsButton>
-                                </a>
+                                <LabsButton size="lg" startDecorator={<FontAwesomeIcon icon={faGuilded} className="h-5" />}>
+                                    <a href="/invite">Add to Guilded</a>
+                                </LabsButton>
                                 <Button variant="outlined" color="primary" size="lg" onClick={() => window.scrollTo(0, 1200)}>
                                     See all features
                                 </Button>
