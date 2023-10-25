@@ -17,7 +17,6 @@ export class MessageUtil extends BaseMessageUtil<YokiClient, Server, Command> {
         title,
         description,
         color,
-        occurred,
         additionalInfo,
         fields,
         author,
@@ -41,7 +40,7 @@ export class MessageUtil extends BaseMessageUtil<YokiClient, Server, Command> {
                         author: {
                             iconURL: author?.icon_url ?? null,
                             name: author?.name ?? null,
-                            url: author?.url ?? null,
+                            // url: author?.url ?? null,
                         },
                         footer: {
                             iconURL: footer?.icon_url ?? null,
@@ -51,7 +50,7 @@ export class MessageUtil extends BaseMessageUtil<YokiClient, Server, Command> {
                         description,
                         color,
                         fields: additionalInfo ? (fields ?? []).concat({ name: "Additional Info", value: additionalInfo, inline: false }) : (fields ?? []),
-                        timestamp: Number.isInteger(occurred) ? Number(occurred) : null,
+                        // timestamp: Number.isInteger(occurred) ? Number(occurred) : null,
                     },
                 ],
                 isSilent: true,
