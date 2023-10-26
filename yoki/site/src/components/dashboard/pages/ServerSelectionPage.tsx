@@ -30,10 +30,10 @@ export default class ServerSelectionPage extends React.Component<Props, State> {
 
         return (
             <>
-                <Typography level="h3" color="neutral" sx={{ textAlign: "center" }}>
+                <Typography level="h3" color="neutral" sx={{ textAlign: "center", mb: 4 }}>
                     Select a server
                 </Typography>
-                <Box className="grow h-full overflow-y-auto px-5 py-10 md:px-40 md:py-10" sx={{ mb: 8 }}>
+                <Box className="grow h-full overflow-y-auto px-5 md:px-40" sx={{ pb: 8 }}>
                     <Box className="grid mb-8 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                         {servers.map((server) => (
                             <Link key={server.id} style={{ textDecoration: "none" }} href={`/dashboard/${server.id}/overview`}>

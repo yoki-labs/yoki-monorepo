@@ -71,6 +71,11 @@ interface LabsFormFieldInput<TType extends LabsFormFieldType, TValue> extends Ba
     min?: number;
     max?: number;
 }
+
+interface LabsFormFieldNumberInput<TType extends LabsFormFieldType> extends LabsFormFieldInput<TType, number> {
+    step?: number;
+    allowFloating?: boolean;
+}
 interface LabsFormFieldInputLarge<TType extends LabsFormFieldType, TValue> extends LabsFormFieldInput<TType, TValue> {
     minRows?: number;
 }
@@ -99,7 +104,7 @@ export type LabsFormFieldByType<T extends LabsFormFieldType> =
         : T extends LabsFormFieldType.TextArea
         ? LabsFormFieldInputLarge<LabsFormFieldType.TextArea, string>
         : T extends LabsFormFieldType.Number
-        ? LabsFormFieldInput<LabsFormFieldType.Number, number>
+        ? LabsFormFieldNumberInput<LabsFormFieldType.Number>
         : // Navigatable/semi text-based inputs
         T extends LabsFormFieldType.Time
         ? LabsFormFieldTimed<LabsFormFieldType.Time>

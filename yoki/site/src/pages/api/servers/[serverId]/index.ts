@@ -48,6 +48,11 @@ const serverConfigRoute = createServerRoute({
             return getErrorResponse(res, "spamFrequency", "number between 2 and 100");
         else if (isPropertyTypeInvalid(body.spamMentionFrequency, "number") || body.spamMentionFrequency < 2 || body.spamMentionFrequency > 100)
             return getErrorResponse(res, "spamMentionFrequency", "number between 2 and 100");
+        // Expect % (0>x>1)
+        else if (isPropertyTypeInvalid(body.nsfwHentaiConfidence, "number") || body.nsfwHentaiConfidence < 0 || body.nsfwHentaiConfidence > 1)
+            return getErrorResponse(res, "nsfwHentaiConfidence", "number between 0 and 1");
+        else if (isPropertyTypeInvalid(body.nsfwPornConfidence, "number") || body.nsfwPornConfidence < 0 || body.nsfwPornConfidence > 1)
+            return getErrorResponse(res, "nsfwPornConfidence", "number between 0 and 1");
         // Infractions can be negative in notes and whatever, but here it isn't allowed.
         else if (isPropertyTypeInvalid(body.spamInfractionPoints, "number") || body.spamInfractionPoints < 0 || body.spamInfractionPoints > 10000)
             return getErrorResponse(res, "spamInfractionPoints", "number between 0 and 10'000");
@@ -68,9 +73,11 @@ const serverConfigRoute = createServerRoute({
             // Server config
             prefix: MAP_DEFAULT_PREFIXES.includes(body.prefix) ? null : body.prefix ?? server.prefix,
             timezone: MAP_DEFAULT_TIMEZONE.includes(body.timezone) ? null : body.timezone ?? server.timezone,
-            // Spam
+            // Spam & Filters
             spamFrequency: body.spamFrequency,
             spamMentionFrequency: body.spamMentionFrequency,
+            nsfwHentaiConfidence: body.nsfwHentaiConfidence,
+            nsfwPornConfidence: body.nsfwPornConfidence,
             // Infractions
             spamInfractionPoints: body.spamInfractionPoints,
             linkInfractionPoints: body.linkInfractionPoints,

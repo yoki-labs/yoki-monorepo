@@ -73,7 +73,7 @@ function AppealExpandedInfo({ appeal }: { appeal: SanitizedAppeal; timezone: str
         <Stack gap={3}>
             <Box>
                 <Typography level="h2" fontSize="md" gutterBottom>
-                    Reason for applying
+                    Reason for appealing
                 </Typography>
                 <CodeWrapper>
                     <Typography textColor="text.secondary">{appeal.content}</Typography>

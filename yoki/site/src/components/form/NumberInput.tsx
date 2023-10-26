@@ -32,9 +32,10 @@ export default class NumberInput extends React.Component<Props, State> {
         const { max, min } = field;
 
         if (target.validity.badInput) return this.setState({ isInvalid: true });
-
+        // Don't allow 0.1, 1.1, etc. if it's not set as floating
+        else if(!field.allowFloating && target.valueAsNumber % 1) return this.setState({ isInvalid: true });
         // Just set the valid value instead of erroring out
-        if (typeof max === "number" && target.valueAsNumber > max) form.setValue(field, max);
+        else if (typeof max === "number" && target.valueAsNumber > max) form.setValue(field, max);
         else if (typeof min === "number" && target.valueAsNumber < min) form.setValue(field, min);
         else form.setValue(field, target.valueAsNumber);
 
@@ -53,6 +54,7 @@ export default class NumberInput extends React.Component<Props, State> {
         const { id, form, field } = this.props;
         const { max, min } = field;
         const { currentValue } = this;
+        const step = field.step ?? 1;
 
         return (
             <>
@@ -87,7 +89,7 @@ export default class NumberInput extends React.Component<Props, State> {
                                     variant="outlined"
                                     color="neutral"
                                     size="sm"
-                                    onClick={() => this.addValue(1)}
+                                    onClick={() => this.addValue(step)}
                                 >
                                     <FontAwesomeIcon icon={faChevronUp} style={{ width: 10, height: 10 }} />
                                 </IconButton>
@@ -97,7 +99,7 @@ export default class NumberInput extends React.Component<Props, State> {
                                     variant="outlined"
                                     color="neutral"
                                     size="sm"
-                                    onClick={() => this.addValue(-1)}
+                                    onClick={() => this.addValue(-step)}
                                 >
                                     <FontAwesomeIcon icon={faChevronDown} style={{ width: 10, height: 10 }} />
                                 </IconButton>
