@@ -254,11 +254,13 @@ model RoleState {
 }
 
 model Appeal {
-    id        Int      @id @default(autoincrement())
-    content   String   @db.Text
-    createdAt DateTime @default(now())
-    serverId  String   @db.VarChar(255)
-    creatorId String   @db.VarChar(255)
+    id        Int            @id @default(autoincrement())
+    content   String         @db.Text
+    staffNote String?        @db.Text
+    status    AppealStatus?
+    createdAt DateTime       @default(now())
+    serverId  String         @db.VarChar(255)
+    creatorId String         @db.VarChar(255)
 }
 
 model ChannelIgnore {
@@ -343,4 +345,9 @@ enum ResponseType {
     TEXT_CAPTCHA
     SITE_CAPTCHA
     KICK
+}
+
+enum AppealStatus {
+    ACCEPTED
+    DECLINED
 }

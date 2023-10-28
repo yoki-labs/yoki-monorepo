@@ -1,16 +1,14 @@
-import { faMagnifyingGlass, faPlus, faSliders, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faMagnifyingGlass, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
     Box,
     Button,
     ButtonGroup,
-    Card,
     Checkbox,
     CircularProgress,
-    Divider,
-    Grid,
-    IconButton,
     Input,
+    List,
+    ListItem,
     ListItemDecorator,
     MenuItem,
     Modal,
@@ -18,12 +16,11 @@ import {
     Table,
     Typography,
 } from "@mui/joy";
-import React, { ReactNode } from "react";
+import React from "react";
 
 import PagePlaceholder, { PagePlaceholderIcon } from "./PagePlaceholder";
 import LabsOverflowButton from "./LabsOverflowButton";
 import { DeletionConfirmationModal } from "./DeletionConfirmationModal";
-import { toast } from "react-hot-toast";
 import { notifyFetchError } from "../utils/errorUtil";
 
 // type State = {
@@ -46,6 +43,12 @@ export type ItemProps<TItem> = {
     timezone: string | null;
     isSelected: boolean;
     onSelected: (checked: boolean) => void;
+};
+
+export type OverflowProps<TItem> = {
+    itemType: string;
+    selectedItems: TItem[];
+    onItemDeletion: () => unknown;
 };
 
 type State<TItem extends { id: TItemId }, TItemId> = {
@@ -133,7 +136,14 @@ export default class DataTable<TItem extends { id: TItemId }, TItemId> extends R
     }
 
     DataTableOverflow() {
-        return <HistoryOverflow itemType={this.props.itemType} selectedItems={this.state.selectedItems} onCaseDeletion={this.deleteSelectedItems.bind(this)} />;
+        return (
+            <DataTableOverflow<TItemId>
+                itemType={this.props.itemType}
+                selectedItems={this.state.selectedItems}
+                onItemDeletion={this.deleteSelectedItems.bind(this)}
+            />
+        );
+        // return <DataTableOverflow itemType={this.props.itemType} selectedItems={this.state.selectedItems} onCaseDeletion={this.deleteSelectedItems.bind(this)} />;
     }
 
     renderItems() {
@@ -246,7 +256,7 @@ export default class DataTable<TItem extends { id: TItemId }, TItemId> extends R
     }
 }
 
-function HistoryOverflow<TItem>({ itemType, selectedItems, onCaseDeletion }: { itemType: string; selectedItems: TItem[]; onCaseDeletion: () => Promise<unknown> }) {
+export function DataTableOverflow<TItem>({ itemType, selectedItems, onItemDeletion }: OverflowProps<TItem>) {
     const [openDeletePrompt, setOpenDeletePrompt] = React.useState(false);
 
     return (
@@ -263,7 +273,7 @@ function HistoryOverflow<TItem>({ itemType, selectedItems, onCaseDeletion }: { i
                 <DeletionConfirmationModal
                     itemType={`${selectedItems.length} ${itemType}`}
                     onClose={() => setOpenDeletePrompt(false)}
-                    onConfirm={() => (setOpenDeletePrompt(false), onCaseDeletion())}
+                    onConfirm={() => (setOpenDeletePrompt(false), onItemDeletion())}
                 />
             </Modal>
         </>
