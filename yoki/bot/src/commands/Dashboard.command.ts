@@ -1,7 +1,7 @@
+import { RoleType } from "@prisma/client";
 import { stripIndents } from "common-tags";
 
 import { Category, Command } from "./commands";
-import { RoleType } from "@prisma/client";
 
 const Dashboard: Command = {
     name: "dashboard",

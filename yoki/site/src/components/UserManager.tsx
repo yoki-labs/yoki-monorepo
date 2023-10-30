@@ -36,9 +36,20 @@ export default function UserManager({ user, displayName }: Props) {
                 <Avatar src={user.avatar ?? void 0} alt="Your profile picture">
                     {user.name?.[0] ?? ""}
                 </Avatar>
-                { displayName && <Typography ml={2} component="span" level="body-md" fontWeight="bolder">{user.name}</Typography> }
+                {displayName && (
+                    <Typography ml={2} component="span" level="body-md" fontWeight="bolder">
+                        {user.name}
+                    </Typography>
+                )}
             </Button>
-            <Menu id="user-manager-menu" anchorEl={userManagerRef.current} open={menuOpen} onClose={setMenuOpen.bind(null, false)} placement="bottom" sx={{ "--ListItemDecorator-size": "3.2rem", }}>
+            <Menu
+                id="user-manager-menu"
+                anchorEl={userManagerRef.current}
+                open={menuOpen}
+                onClose={setMenuOpen.bind(null, false)}
+                placement="bottom"
+                sx={{ "--ListItemDecorator-size": "3.2rem" }}
+            >
                 <ClickAwayListener onClickAway={setMenuOpen.bind(null, false)}>
                     <>
                         <Link href="/profile/overview" style={{ textDecoration: "none" }}>
@@ -49,9 +60,7 @@ export default function UserManager({ user, displayName }: Props) {
                                     </Avatar>
                                 </ListItemDecorator>
                                 <Stack direction="column">
-                                    <Typography level="title-md">
-                                        {user.name}
-                                    </Typography>
+                                    <Typography level="title-md">{user.name}</Typography>
                                     <Typography level="body-md" textColor="text.tertiary">
                                         Click to view profile
                                     </Typography>

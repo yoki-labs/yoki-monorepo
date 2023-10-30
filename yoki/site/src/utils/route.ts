@@ -3,12 +3,11 @@ import { RoleType, Server } from "@prisma/client";
 import { NextApiRequest, NextApiResponse } from "next";
 import { Session, unstable_getServerSession } from "next-auth";
 
+import { LabsSessionUser } from "./pageUtil";
 import rest from "../guilded";
 import { GuildedClientServer, GuildedServer } from "../lib/@types/guilded";
 import { authOptions } from "../pages/api/auth/[...nextauth]";
 import prisma from "../prisma";
-import { LabsSessionUser } from "./pageUtil";
-import { userAgent } from "next/server";
 
 type ServerRouteFunction = (req: NextApiRequest, res: NextApiResponse, session: Session | null, server: Server, member: ServerMember) => Promise<unknown>;
 type ServerRouteInfo = Record<string, ServerRouteFunction>;

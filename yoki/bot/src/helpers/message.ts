@@ -49,7 +49,7 @@ export class MessageUtil extends BaseMessageUtil<YokiClient, Server, Command> {
                         title: title ?? null,
                         description,
                         color,
-                        fields: additionalInfo ? (fields ?? []).concat({ name: "Additional Info", value: additionalInfo, inline: false }) : (fields ?? []),
+                        fields: additionalInfo ? (fields ?? []).concat({ name: "Additional Info", value: additionalInfo, inline: false }) : fields ?? [],
                         // timestamp: Number.isInteger(occurred) ? Number(occurred) : null,
                     },
                 ],

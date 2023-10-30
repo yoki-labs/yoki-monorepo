@@ -1,19 +1,6 @@
 import { faMagnifyingGlass, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-    Box,
-    Button,
-    ButtonGroup,
-    Checkbox,
-    CircularProgress,
-    Input,
-    ListItemDecorator,
-    MenuItem,
-    Modal,
-    Stack,
-    Table,
-    Typography,
-} from "@mui/joy";
+import { Box, Button, ButtonGroup, Checkbox, CircularProgress, Input, ListItemDecorator, MenuItem, Modal, Stack, Table, Typography } from "@mui/joy";
 import React from "react";
 
 import PagePlaceholder, { PagePlaceholderIcon } from "./PagePlaceholder";
@@ -134,13 +121,7 @@ export default class DataTable<TItem extends { id: TItemId }, TItemId> extends R
     }
 
     DataTableOverflow() {
-        return (
-            <DataTableOverflow<TItemId>
-                itemType={this.props.itemType}
-                selectedItems={this.state.selectedItems}
-                onItemDeletion={this.deleteSelectedItems.bind(this)}
-            />
-        );
+        return <DataTableOverflow<TItemId> itemType={this.props.itemType} selectedItems={this.state.selectedItems} onItemDeletion={this.deleteSelectedItems.bind(this)} />;
         // return <DataTableOverflow itemType={this.props.itemType} selectedItems={this.state.selectedItems} onCaseDeletion={this.deleteSelectedItems.bind(this)} />;
     }
 

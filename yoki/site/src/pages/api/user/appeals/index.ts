@@ -1,4 +1,4 @@
-import { Appeal, Server } from "@prisma/client";
+import { Appeal } from "@prisma/client";
 import { NextApiRequest, NextApiResponse } from "next";
 
 import prisma from "../../../../prisma";

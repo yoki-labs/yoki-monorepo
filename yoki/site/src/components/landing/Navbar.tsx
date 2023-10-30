@@ -56,9 +56,7 @@ export default function Navbar({ user, menuToggled, onMenuToggle }: Props) {
             </Stack>
             <Stack direction="row" gap={2} className="hidden md:flex">
                 <NavbarButtonList />
-                { user
-                    ? <UserManager user={user} />
-                    : <NavbarButton text="Login" color="primary" href="/auth/signin?callbackUrl=%2F" /> }
+                {user ? <UserManager user={user} /> : <NavbarButton text="Login" color="primary" href="/auth/signin?callbackUrl=%2F" />}
             </Stack>
             <div className="block md:hidden">
                 <IconButton variant="plain" color="neutral" onClick={() => onMenuToggle(!menuToggled)}>

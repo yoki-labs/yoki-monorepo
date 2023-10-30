@@ -75,7 +75,7 @@ export default class DashboardProfileCard extends React.Component<Props> {
 const tierToColour: Record<PremiumType, TextColor> = {
     [PremiumType.Gold]: "warning.300",
     [PremiumType.Silver]: "primary.300",
-    [PremiumType.Copper]: "warning.500"
+    [PremiumType.Copper]: "warning.500",
 };
 
 function BotTier({ tier }: { tier: PremiumType | null }) {

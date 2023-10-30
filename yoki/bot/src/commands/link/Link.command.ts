@@ -1,11 +1,11 @@
 import { Collection } from "@discordjs/collection";
+import { RoleType } from "@prisma/client";
 
 import { Category, Command } from "../commands";
 import Invite from "./invite/Invite.command";
 import List from "./List.command";
 import Severity from "./Severity.command";
 import Url from "./url/Url.command";
-import { RoleType } from "@prisma/client";
 
 const Link: Command = {
     name: "link",

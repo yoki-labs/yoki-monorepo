@@ -2,16 +2,9 @@ import { Box, Stack, Typography } from "@mui/joy";
 import React from "react";
 import DashboardModule from "../DashboardModule";
 import { DashboardPageProps } from "../pages";
-import { faBan, faDroplet } from "@fortawesome/free-solid-svg-icons";
-import DataTable, { ItemProps } from "../../DataTable";
+import { faBan } from "@fortawesome/free-solid-svg-icons";
+import DataTable from "../../DataTable";
 import { SanitizedContentFilter } from "../../../lib/@types/db";
-import DataTableRow from "../../DataTableRow";
-import InfoText from "../../InfoText";
-import { LabsUserCard } from "../../LabsUserCard";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { severityToIcon } from "../../../utils/actionUtil";
-import { formatDate } from "@yokilabs/utils";
-import { FilterMatching } from "@prisma/client";
 import { PhraseCard, PhraseRow } from "./PhrasesItem";
 
 export default class PhrasesPage extends React.Component<DashboardPageProps> {

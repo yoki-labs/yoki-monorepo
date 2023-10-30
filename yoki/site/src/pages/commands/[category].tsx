@@ -42,8 +42,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx): Promise<GetSe
     const user = (session && { id: session.user.id, name: session.user.name, avatar: session.user.avatar }) ?? void 0;
 
     // Can do hard cache if user isn't logged in
-    if (!user)
-        ctx.res.setHeader("Cache-Control", "public, s-maxage=10, stale-while-revalidate=59");
+    if (!user) ctx.res.setHeader("Cache-Control", "public, s-maxage=10, stale-while-revalidate=59");
 
     // Doesn't exist
     if (!categoryKeys.includes(category)) return { redirect: { destination: "/commands/general", permanent: false } };

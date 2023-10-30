@@ -50,9 +50,7 @@ export default class LandingPage extends React.Component<Props, State> {
                 <Box className={isMenuToggled ? `h-full block md:hidden` : `hidden`}>
                     <Stack direction="column" gap={2} sx={{ my: 4, mx: 4 }} alignItems="stretch">
                         <NavbarButtonList />
-                        { user
-                            ? <UserManager user={user} displayName />
-                            : <NavbarButton text="Login" color="primary" href="/auth/signin?callbackUrl=%2F" /> }
+                        {user ? <UserManager user={user} displayName /> : <NavbarButton text="Login" color="primary" href="/auth/signin?callbackUrl=%2F" />}
                     </Stack>
                 </Box>
             </PageWrapper>

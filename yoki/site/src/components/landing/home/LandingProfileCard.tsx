@@ -1,4 +1,4 @@
-import { AspectRatio, Avatar, Box, Card, CardContent, CardOverflow, Chip, Stack, styled,Typography } from "@mui/joy";
+import { AspectRatio, Avatar, Box, Card, CardContent, CardOverflow, Chip, Stack, styled, Typography } from "@mui/joy";
 import React, { ReactNode } from "react";
 
 export interface Props {

@@ -1,15 +1,10 @@
-import {
-    faPrayingHands,
-    faUser,
-    faUserCircle,
-    IconDefinition,
-} from "@fortawesome/free-solid-svg-icons";
+import { faPrayingHands, faUserCircle, IconDefinition } from "@fortawesome/free-solid-svg-icons";
 import { ColorPaletteProp } from "@mui/joy";
-
 import React from "react";
-import { LabsSessionUser } from "../../utils/pageUtil";
-import ProfileOverviewPage from "./ProfileOverviewPage";
+
 import ProfileAppealPage from "./ProfileAppealPage";
+import ProfileOverviewPage from "./ProfileOverviewPage";
+import { LabsSessionUser } from "../../utils/pageUtil";
 
 export interface ProfilePageItem {
     id: string;
@@ -28,4 +23,3 @@ export const profilePageList: ProfilePageItem[] = [
     { id: "overview", name: "Overview", icon: faUserCircle, component: ProfileOverviewPage },
     { id: "appeals", name: "Appeals", icon: faPrayingHands, component: ProfileAppealPage },
 ];
-

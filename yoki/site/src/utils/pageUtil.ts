@@ -1,6 +1,7 @@
 import { GetServerSideProps } from "next";
-import { authOptions } from "../pages/api/auth/[...nextauth]";
 import { getServerSession } from "next-auth";
+
+import { authOptions } from "../pages/api/auth/[...nextauth]";
 
 export type LabsSessionUser = { id: string } & Partial<{
     name: string | null;

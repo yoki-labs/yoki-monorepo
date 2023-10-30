@@ -32,14 +32,16 @@ export function AppealExpandedInfo({ appeal }: { appeal: SanitizedAppeal; timezo
                     <Typography textColor="text.secondary">{appeal.content}</Typography>
                 </CodeWrapper>
             </Box>
-            { appeal.staffNote && <Box>
-                <Typography level="h2" fontSize="md" gutterBottom>
-                    Staff note
-                </Typography>
-                <CodeWrapper>
-                    <Typography textColor="text.secondary">{appeal.staffNote}</Typography>
-                </CodeWrapper>
-            </Box> }
+            {appeal.staffNote && (
+                <Box>
+                    <Typography level="h2" fontSize="md" gutterBottom>
+                        Staff note
+                    </Typography>
+                    <CodeWrapper>
+                        <Typography textColor="text.secondary">{appeal.staffNote}</Typography>
+                    </CodeWrapper>
+                </Box>
+            )}
         </Stack>
     );
 }

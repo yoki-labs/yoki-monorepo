@@ -33,7 +33,7 @@ export default class NumberInput extends React.Component<Props, State> {
 
         if (target.validity.badInput) return this.setState({ isInvalid: true });
         // Don't allow 0.1, 1.1, etc. if it's not set as floating
-        else if(!field.allowFloating && target.valueAsNumber % 1) return this.setState({ isInvalid: true });
+        else if (!field.allowFloating && target.valueAsNumber % 1) return this.setState({ isInvalid: true });
         // Just set the valid value instead of erroring out
         else if (typeof max === "number" && target.valueAsNumber > max) form.setValue(field, max);
         else if (typeof min === "number" && target.valueAsNumber < min) form.setValue(field, min);

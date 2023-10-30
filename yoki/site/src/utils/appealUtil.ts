@@ -1,5 +1,6 @@
 import { ServerPayload } from "@guildedjs/api";
-import { LabsSessionUser, LandingPageSessionProps } from "./pageUtil";
+
+import { LabsSessionUser } from "./pageUtil";
 
 export const appealWaitingTime = 5 * 24 * 60 * 60 * 1000;
 
