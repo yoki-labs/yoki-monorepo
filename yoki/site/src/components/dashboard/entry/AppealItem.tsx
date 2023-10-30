@@ -5,7 +5,8 @@ import { formatDate } from "@yokilabs/utils";
 import { ItemProps } from "../../DataTable";
 import { SanitizedAppeal } from "../../../lib/@types/db";
 import DataTableCard from "../../DataTableCard";
-import { AppealExpandedInfo, AppealStatusBadge } from "../../common/AppealItemInfo";
+import AppealExpandedInfo from "../../common/AppealExpandedInfo";
+import AppealStatusBadge from "../../common/AppealStatusBadge";
 
 export function AppealRow({ item: appeal, columnCount, timezone, isSelected, onSelected }: ItemProps<SanitizedAppeal>) {
     const { content } = appeal;

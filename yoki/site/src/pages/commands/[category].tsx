@@ -17,7 +17,7 @@ type CommandProps = {
     commandByCategory: GroupedCommands;
     commandCategories: Record<string, string>;
     category: string;
-    user?: LabsSessionUser;
+    user: LabsSessionUser | null;
 };
 
 const commandByCategory = commands.reduce<GroupedCommands>((group, command) => {
@@ -39,7 +39,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx): Promise<GetSe
     const category = ctx.query.category as string;
     const session = await getServerSession(ctx.req, ctx.res, authOptions);
 
-    const user = (session && { id: session.user.id, name: session.user.name, avatar: session.user.avatar }) ?? void 0;
+    const user = (session?.user.id && { id: session.user.id, name: session.user.name, avatar: session.user.avatar }) || null;
 
     // Can do hard cache if user isn't logged in
     if (!user) ctx.res.setHeader("Cache-Control", "public, s-maxage=10, stale-while-revalidate=59");
