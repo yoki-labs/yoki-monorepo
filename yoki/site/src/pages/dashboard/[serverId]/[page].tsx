@@ -18,12 +18,10 @@ import NotPermittedPage from "../../../components/dashboard/pages/NotPermittedPa
 import NoEarlyAccessPage from "../../../components/dashboard/pages/NoEarlyAccessPage";
 import { useRouter } from "next/router";
 import { transformFoundServer } from "../../../utils/route";
+import { LabsSessionUser } from "../../../utils/pageUtil";
 
 type BaseSessionProps = {
-    user: Partial<{
-        name: string | null;
-        avatar: string | null;
-    }>;
+    user: LabsSessionUser;
     servers: GuildedClientServer[];
     currentServer: GuildedServer;
 };
@@ -63,7 +61,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx): Promise<GetSe
         })
     )[0];
 
-    const user = { name: session.user.name, avatar: session.user.avatar };
+    const user = { id: session.user.id, name: session.user.name, avatar: session.user.avatar };
 
     // No server found
     if (!serverInDb) return { props: { code: "NOT_FOUND", servers, user, currentServer: referencedServer } };

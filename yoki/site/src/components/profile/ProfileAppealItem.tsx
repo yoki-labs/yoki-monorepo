@@ -1,25 +1,25 @@
 import { Stack, Typography } from "@mui/joy";
-import DataTableRow from "../../DataTableRow";
-import { LabsUserCard } from "../../LabsUserCard";
+import DataTableRow from "../DataTableRow";
 import { formatDate } from "@yokilabs/utils";
-import { ItemProps } from "../../DataTable";
-import { SanitizedAppeal } from "../../../lib/@types/db";
-import DataTableCard from "../../DataTableCard";
-import { AppealExpandedInfo, AppealStatusBadge } from "../../common/AppealItemInfo";
+import { ItemProps } from "../DataTable";
+import { SanitizedAppeal } from "../../lib/@types/db";
+import DataTableCard from "../DataTableCard";
+import { AppealExpandedInfo, AppealStatusBadge } from "../common/AppealItemInfo";
+import { LabsServerCard } from "../LabsServerCard";
 
-export function AppealRow({ item: appeal, columnCount, timezone, isSelected, onSelected }: ItemProps<SanitizedAppeal>) {
+export function ProfileAppealRow({ item: appeal, columnCount, timezone, isSelected, onSelected }: ItemProps<SanitizedAppeal>) {
     const { content } = appeal;
 
     return (
         <DataTableRow
-            id={`appeal-row-${appeal.id}`}
+            id={`userappeal-row-${appeal.id}`}
             columnCount={columnCount}
             isSelected={isSelected}
             onSelected={onSelected}
             ExpandedInfoRenderer={() => <AppealExpandedInfo appeal={appeal} timezone={timezone} />}
         >
             <td>
-                <LabsUserCard userId={appeal.creatorId} />
+                <LabsServerCard serverId={appeal.serverId} />
             </td>
             <td>
                 <Typography level="body-md">{content && content.length > 50 ? `${content?.slice(0, 50)}...` : content}</Typography>
@@ -34,17 +34,17 @@ export function AppealRow({ item: appeal, columnCount, timezone, isSelected, onS
     );
 }
 
-export function AppealCard({ item: appeal, timezone, isSelected, onSelected }: ItemProps<SanitizedAppeal>) {
+export function ProfileAppealCard({ item: appeal, timezone, isSelected, onSelected }: ItemProps<SanitizedAppeal>) {
     const { content } = appeal;
 
     return (
         <DataTableCard
-            id={`appeal-card-${appeal.id}`}
+            id={`userappeal-card-${appeal.id}`}
             isSelected={isSelected}
             onSelected={onSelected}
             TitleRenderer={() => (
                 <>
-                    <LabsUserCard userId={appeal.creatorId} />
+                    <LabsServerCard serverId={appeal.serverId} />
                     <Typography level="body-lg" textColor="text.tertiary">
                         {"\u2022"}
                     </Typography>

@@ -1,11 +1,10 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ListItemButton, ListItemDecorator, Typography } from "@mui/joy";
-import { DashboardPageItem } from "../pages";
 import { useRouter } from "next/router";
+import { ProfilePageItem } from "./pages";
 
 interface Prop {
-    item: DashboardPageItem;
-    serverId: string;
+    item: ProfilePageItem;
     isActive: boolean;
 }
 
@@ -14,9 +13,9 @@ interface Prop {
  * @param props The component properties.
  * @returns {Element} Rendered component
  */
-export default function LayoutSidebarTab({ item, serverId, isActive }: Prop) {
+export default function ProfileSidebarTab({ item, isActive }: Prop) {
     const router = useRouter();
-    const href = `/dashboard/${serverId}/${item.id}`;
+    const href = `/profile/${item.id}`;
 
     return (
         <ListItemButton sx={{ borderRadius: 6 }} color={item.color} selected={isActive} onClick={() => router.push(href)}>

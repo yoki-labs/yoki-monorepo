@@ -7,8 +7,6 @@ import {
     Checkbox,
     CircularProgress,
     Input,
-    List,
-    ListItem,
     ListItemDecorator,
     MenuItem,
     Modal,

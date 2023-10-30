@@ -5,6 +5,9 @@ import commands from "../../../commands.json";
 import { Box, Stack, Typography } from "@mui/joy";
 import CommandSidebar from "../../components/landing/commands/CommandSidebar";
 import CommandDisplay from "../../components/landing/commands/CommandDisplay";
+import { authOptions } from "../api/auth/[...nextauth]";
+import { getServerSession } from "next-auth";
+import { LabsSessionUser } from "../../utils/pageUtil";
 
 interface GroupedCommands {
     [x: string]: Command[];
@@ -14,6 +17,7 @@ type CommandProps = {
     commandByCategory: GroupedCommands;
     commandCategories: Record<string, string>;
     category: string;
+    user?: LabsSessionUser;
 };
 
 const commandByCategory = commands.reduce<GroupedCommands>((group, command) => {
@@ -33,14 +37,20 @@ const categoryKeys = Object.keys(commandCategories);
 
 export const getServerSideProps: GetServerSideProps = async (ctx): Promise<GetServerSidePropsResult<CommandProps>> => {
     const category = ctx.query.category as string;
+    const session = await getServerSession(ctx.req, ctx.res, authOptions);
 
-    ctx.res.setHeader("Cache-Control", "public, s-maxage=10, stale-while-revalidate=59");
+    const user = (session && { id: session.user.id, name: session.user.name, avatar: session.user.avatar }) ?? void 0;
+
+    // Can do hard cache if user isn't logged in
+    if (!user)
+        ctx.res.setHeader("Cache-Control", "public, s-maxage=10, stale-while-revalidate=59");
 
     // Doesn't exist
     if (!categoryKeys.includes(category)) return { redirect: { destination: "/commands/general", permanent: false } };
 
     return {
         props: {
+            user,
             commandByCategory,
             commandCategories,
             category,
@@ -48,11 +58,11 @@ export const getServerSideProps: GetServerSideProps = async (ctx): Promise<GetSe
     };
 };
 
-const Commands: NextPage<CommandProps> = ({ commandByCategory, commandCategories, category }) => {
+const Commands: NextPage<CommandProps> = ({ user, commandByCategory, commandCategories, category }) => {
     const commands = commandByCategory[commandCategories[category]];
 
     return (
-        <LandingPage>
+        <LandingPage user={user}>
             <div className="flex w-full px-5 py-12 flex-col md:flex-row md:px-40">
                 <CommandSidebar categories={commandCategories} activeCategory={category} />
                 <div className="grow md:px-16">

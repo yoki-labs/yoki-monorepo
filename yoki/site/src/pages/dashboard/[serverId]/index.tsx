@@ -9,13 +9,11 @@ import { methods } from "../../../lib/Fetcher";
 // import WelcomeBanner from "../../partials/WelcomeBanner";
 import { authOptions } from "../../api/auth/[...nextauth]";
 import rest from "../../../guilded";
+import { LabsSessionUser } from "../../../utils/pageUtil";
 
 interface SessionProps {
     servers: GuildedClientServer[];
-    user: Partial<{
-        name: string | null;
-        avatar: string | null;
-    }>;
+    user: LabsSessionUser;
 }
 
 export const getServerSideProps: GetServerSideProps = async (ctx): Promise<GetServerSidePropsResult<SessionProps>> => {

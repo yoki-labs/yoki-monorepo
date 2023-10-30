@@ -1,17 +1,15 @@
 import { Box, Breadcrumbs, Typography } from "@mui/joy";
 import { ServerSelector } from "./ServerSelector";
 import { GuildedClientServer, GuildedServer } from "../../../lib/@types/guilded";
-import UserManager from "./UserManager";
+import UserManager from "../../UserManager";
 import Branding from "../../Branding";
+import { LabsSessionUser } from "../../../utils/pageUtil";
 
 type Props = {
     servers: GuildedClientServer[];
     currentServer?: GuildedServer;
     onServerChange: (serverId: string) => unknown | Promise<unknown>;
-    user: Partial<{
-        name: string | null;
-        avatar: string | null;
-    }>;
+    user: LabsSessionUser;
     children?: React.ReactNode | React.ReactNode[];
 };
 

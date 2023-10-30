@@ -2,15 +2,12 @@ import { GuildedClientServer, GuildedServer } from "../../../lib/@types/guilded"
 import { Box } from "@mui/joy";
 import React from "react";
 import { LayoutTopbar } from "./LayoutTopbar";
-import { useRouter } from "next/router";
+import { LabsSessionUser } from "../../../utils/pageUtil";
 
 type LayoutProps = {
     servers: GuildedClientServer[];
     currentServer?: GuildedServer;
-    user: Partial<{
-        name: string | null;
-        avatar: string | null;
-    }>;
+    user: LabsSessionUser;
     topbarPrefix?: React.ReactNode | React.ReactNode[];
     children: React.ReactNode;
     onServerChange: (serverId: string) => void;

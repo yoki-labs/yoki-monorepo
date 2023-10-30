@@ -3,8 +3,10 @@ import Footer from "./Footer";
 import Navbar from "./Navbar";
 import React from "react";
 import { NavbarButtonList } from "./NavbarButton";
+import { LabsSessionUser } from "../../utils/pageUtil";
 
 type Props = {
+    user?: LabsSessionUser | null;
     children: React.ReactNode;
 };
 type State = {
@@ -30,13 +32,13 @@ export default class LandingPage extends React.Component<Props, State> {
     }
 
     render() {
-        const { children } = this.props;
+        const { user, children } = this.props;
         const { isMenuToggled } = this.state;
 
         return (
             <PageWrapper>
                 {/* Anything here will be fixed */}
-                <Navbar onMenuToggle={this.onMenuToggle.bind(this)} menuToggled={isMenuToggled} />
+                <Navbar onMenuToggle={this.onMenuToggle.bind(this)} menuToggled={isMenuToggled} user={user} />
                 {/* Scrollable item */}
                 <Box className={isMenuToggled ? `hidden md:block` : ``}>
                     <Box sx={{ minHeight: "100vh", display: "flex" }} component="article">

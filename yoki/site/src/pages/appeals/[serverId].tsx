@@ -32,7 +32,7 @@ export const getServerSideProps: GetServerSideProps<AppealsSessionProps> = async
         })
     )[0];
 
-    const user = { name: session.user.name, avatar: session.user.avatar };
+    const user = { id: session.user.id, name: session.user.name, avatar: session.user.avatar };
 
     // No server found
     if (!serverInDb) return { props: { code: "NOT_FOUND", user } };
@@ -73,7 +73,7 @@ export const getServerSideProps: GetServerSideProps<AppealsSessionProps> = async
 
 const AppealPage: NextPage<AppealsSessionProps> = (props) => {
     return (
-        <LandingPage>
+        <LandingPage user={props.user}>
             <AppealsPageDisplay {...props} />
         </LandingPage>
     );

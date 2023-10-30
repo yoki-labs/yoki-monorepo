@@ -9,13 +9,11 @@ import { authOptions } from "../api/auth/[...nextauth]";
 import LayoutWrapper from "../../components/dashboard/layout/LayoutWrapper";
 import ServerSelectionPage from "../../components/dashboard/pages/ServerSelectionPage";
 import { useRouter } from "next/router";
+import { LabsSessionUser } from "../../utils/pageUtil";
 
 type SessionProps = {
     servers: GuildedClientServer[];
-    user: Partial<{
-        name: string | null;
-        avatar: string | null;
-    }>;
+    user: LabsSessionUser;
 };
 
 export const getServerSideProps: GetServerSideProps = async (ctx): Promise<GetServerSidePropsResult<SessionProps>> => {
@@ -29,7 +27,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx): Promise<GetSe
     console.log("Server list", { servers });
     if (!servers?.length) return { redirect: { destination: "/auth/signin", permanent: false } };
 
-    const user = { name: session.user.name, avatar: session.user.avatar };
+    const user = { id: session.user.id, name: session.user.name, avatar: session.user.avatar };
 
     return { props: { servers, user } };
 };

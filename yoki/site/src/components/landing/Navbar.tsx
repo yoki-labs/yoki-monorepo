@@ -5,11 +5,14 @@ import Branding from "../Branding";
 import { faBars } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { NavbarButtonList } from "./NavbarButton";
+import UserManager from "../UserManager";
+import { LabsSessionUser } from "../../utils/pageUtil";
 // import { Hamburger, NavbarItemList, NavbarWrapper, SideNavbar, SideNavbarBg, SideNavbarBody, SideNavbarFooter, SideNavbarHeader, SideNavbarItem } from "./styles";
 
 type Props = {
     menuToggled: boolean;
     onMenuToggle: (enabled: boolean) => unknown;
+    user?: LabsSessionUser | null;
 };
 
 const NavbarWrapper = styled(Stack)(({ theme }) => ({
@@ -23,7 +26,7 @@ const NavbarWrapper = styled(Stack)(({ theme }) => ({
     backgroundColor: theme.vars.palette.background.backdrop,
 }));
 
-export default function Navbar({ menuToggled, onMenuToggle }: Props) {
+export default function Navbar({ user, menuToggled, onMenuToggle }: Props) {
     // const [scrollY, setScrollY] = useState(0);
     // const [sidebarOpen, setSidebarOpen] = useState(false);
 
@@ -52,6 +55,7 @@ export default function Navbar({ menuToggled, onMenuToggle }: Props) {
             </Stack>
             <Stack direction="row" gap={2} className="hidden md:flex">
                 <NavbarButtonList />
+                { user && <UserManager user={user} /> }
             </Stack>
             <div className="block md:hidden">
                 <IconButton variant="plain" color="neutral" onClick={() => onMenuToggle(!menuToggled)}>

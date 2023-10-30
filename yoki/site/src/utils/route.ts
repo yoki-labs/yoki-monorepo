@@ -7,12 +7,16 @@ import rest from "../guilded";
 import { GuildedClientServer, GuildedServer } from "../lib/@types/guilded";
 import { authOptions } from "../pages/api/auth/[...nextauth]";
 import prisma from "../prisma";
+import { LabsSessionUser } from "./pageUtil";
+import { userAgent } from "next/server";
 
-type RouteFunction = (req: NextApiRequest, res: NextApiResponse, session: Session | null, server: Server, member: ServerMember) => Promise<unknown>;
+type ServerRouteFunction = (req: NextApiRequest, res: NextApiResponse, session: Session | null, server: Server, member: ServerMember) => Promise<unknown>;
+type ServerRouteInfo = Record<string, ServerRouteFunction>;
 
-type RouteInfo = Record<string, RouteFunction>;
+type UserRouteFunction = (req: NextApiRequest, res: NextApiResponse, session: Session | null, user: LabsSessionUser) => Promise<unknown>;
+type UserRouteInfo = Record<string, UserRouteFunction>;
 
-export default function createServerRoute(methodToFunction: RouteInfo) {
+export default function createServerRoute(methodToFunction: ServerRouteInfo) {
     return async function onRequest(req: NextApiRequest, res: NextApiResponse) {
         // Has to be allowed method; this is the only method available
         if (!(req.method && Object.hasOwn(methodToFunction, req.method))) return res.status(405).send("");
@@ -52,6 +56,19 @@ export default function createServerRoute(methodToFunction: RouteInfo) {
             return res.status(403).json({ error: true, code: "NOT_STAFF", message: "User does not have ADMIN access level." });
 
         return methodToFunction[req.method](req, res, session, server, member);
+    };
+}
+
+export function createUserRoute(methodToFunction: UserRouteInfo) {
+    return async function onRequest(req: NextApiRequest, res: NextApiResponse) {
+        // Has to be allowed method; this is the only method available
+        if (!(req.method && Object.hasOwn(methodToFunction, req.method))) return res.status(405).send("");
+
+        // Don't know who is appealing (need a Guilded login)
+        const session = await unstable_getServerSession(req, res, authOptions);
+        if (!session?.user.id) return res.status(401).json({ error: true, message: "Must be logged in to use this function." });
+
+        return methodToFunction[req.method](req, res, session, { id: session.user.id!, name: session.user.name, avatar: session.user.avatar });
     };
 }
 

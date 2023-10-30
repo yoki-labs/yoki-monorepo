@@ -3,7 +3,7 @@ import { faEnvelope, faExclamation, faHashtag, faRobot, faShieldHalved } from "@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Box, Button, Chip, Link, List, Stack, Typography } from "@mui/joy";
 import { Colors } from "@yokilabs/utils";
-import type { NextPage } from "next";
+import type { GetServerSideProps, NextPage } from "next";
 
 import GuildedChatWrapper, { GuildedChatMasked } from "../components/guilded/GuildedChat";
 import GuildedContentWrapper from "../components/guilded/GuildedContent";
@@ -17,10 +17,13 @@ import LandingFeature from "../components/landing/home/LandingFeature";
 import LandingProfileCard from "../components/landing/home/LandingProfileCard";
 import LandingStat from "../components/landing/home/LandingStat";
 import LandingPage from "../components/landing/LandingPage";
+import { getLandingPagePageProps, LandingPageSessionProps } from "../utils/pageUtil";
 
-const Home: NextPage = () => {
+export const getServerSideProps: GetServerSideProps<LandingPageSessionProps> = getLandingPagePageProps;
+
+const Home: NextPage<LandingPageSessionProps> = ({ user }) => {
     return (
-        <LandingPage>
+        <LandingPage user={user}>
             <Stack direction="column" alignItems="stretch" sx={{ width: "100%" }}>
                 <div className="py-20 px-5 md:py-32 md:px-40">
                     <Stack direction="row">
