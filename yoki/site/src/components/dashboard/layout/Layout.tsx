@@ -6,15 +6,13 @@ import LayoutWrapper from "./LayoutWrapper";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars } from "@fortawesome/free-solid-svg-icons";
 import { SanitizedServer } from "../../../lib/@types/db";
+import { LabsSessionUser } from "../../../utils/pageUtil";
 
 type LayoutProps = {
     servers: GuildedClientServer[];
     currentServer?: GuildedServer;
     serverConfig: SanitizedServer;
-    user: Partial<{
-        name: string | null;
-        avatar: string | null;
-    }>;
+    user: LabsSessionUser;
     page: string;
     children: React.ReactNode;
     onServerChange: (serverId: string) => void;

@@ -7,6 +7,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "../api/auth/[...nextauth]";
 import { ProfileSidebar } from "../../components/profile/ProfileSidebar";
 import ProfileForm from "../../components/profile/ProfileForm";
+import { Box } from "@mui/joy";
 
 interface ProfilePageSessionProps {
     user: LabsSessionUser;
@@ -44,9 +45,11 @@ export const getServerSideProps: GetServerSideProps<ProfilePageSessionProps> = a
 const Profile: NextPage<ProfilePageSessionProps> = ({ page, user, totalAppealCount, awaitingAppealCount }) => {
     return (
         <LandingPage user={user}>
-            <div className="flex w-full px-5 py-12 flex-col md:flex-row md:px-36">
+            <div className="flex w-full px-0 py-12 flex-col md:flex-row md:px-36">
                 <ProfileSidebar page={page} menuToggled={false} />
-                <ProfileForm page={page} user={user} totalAppealCount={totalAppealCount} awaitingAppealCount={awaitingAppealCount} />
+                <Box className="grow flex w-full">
+                    <ProfileForm page={page} user={user} totalAppealCount={totalAppealCount} awaitingAppealCount={awaitingAppealCount} />
+                </Box>
             </div>
         </LandingPage>
     );

@@ -16,7 +16,7 @@ export default function ProfileForm({ user, page, totalAppealCount, awaitingAppe
     const PageComponent = pageInfo?.component;
 
     return (
-        <Box sx={{ width: "100%", pt: 1, pb: 6, px: 5.6 }} className="grow px-4 md:px-12 w-full overflow-y-auto flex flex-col space-y-8 scrollbar">
+        <Box className="grow px-4 md:px-12 overflow-y-auto flex flex-col space-y-8 scrollbar">
             {PageComponent ? (
                 <PageComponent user={user} appealCount={totalAppealCount} />
             ) : (

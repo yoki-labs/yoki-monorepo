@@ -54,15 +54,12 @@ export default class ImagesPage extends React.Component<DashboardPageProps> {
                     />
                 </Box>
                 <Box>
-                    <Typography level="h4" gutterBottom>
-                        Explicit image filter
-                    </Typography>
                     <Card>
                         <CardContent>
                             <LabsForm
                                 sections={[
                                     {
-                                        name: "NSFW image detection confidence",
+                                        name: "Explicit image detection confidence",
                                         order: LabsFormSectionOrder.Grid,
                                         gap: 4,
                                         fields: [

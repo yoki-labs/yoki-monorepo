@@ -8,9 +8,10 @@ import { ClickAwayListener } from "@mui/base";
 
 type Props = {
     user: LabsSessionUser;
+    displayName?: boolean;
 };
 
-export default function UserManager({ user }: Props) {
+export default function UserManager({ user, displayName }: Props) {
     const userManagerRef = React.useRef(null);
     const [menuOpen, setMenuOpen] = React.useState(false);
 
@@ -35,6 +36,7 @@ export default function UserManager({ user }: Props) {
                 <Avatar src={user.avatar ?? void 0} alt="Your profile picture">
                     {user.name?.[0] ?? ""}
                 </Avatar>
+                { displayName && <Typography ml={2} component="span" level="body-md" fontWeight="bolder">{user.name}</Typography> }
             </Button>
             <Menu id="user-manager-menu" anchorEl={userManagerRef.current} open={menuOpen} onClose={setMenuOpen.bind(null, false)} placement="bottom" sx={{ "--ListItemDecorator-size": "3.2rem", }}>
                 <ClickAwayListener onClickAway={setMenuOpen.bind(null, false)}>

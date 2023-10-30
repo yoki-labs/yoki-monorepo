@@ -4,9 +4,10 @@ import { Box, IconButton, Stack, styled } from "@mui/joy";
 import Branding from "../Branding";
 import { faBars } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { NavbarButtonList } from "./NavbarButton";
+import NavbarButton, { NavbarButtonList } from "./NavbarButton";
 import UserManager from "../UserManager";
 import { LabsSessionUser } from "../../utils/pageUtil";
+import { NextRouter, useRouter } from "next/router";
 // import { Hamburger, NavbarItemList, NavbarWrapper, SideNavbar, SideNavbarBg, SideNavbarBody, SideNavbarFooter, SideNavbarHeader, SideNavbarItem } from "./styles";
 
 type Props = {
@@ -55,7 +56,9 @@ export default function Navbar({ user, menuToggled, onMenuToggle }: Props) {
             </Stack>
             <Stack direction="row" gap={2} className="hidden md:flex">
                 <NavbarButtonList />
-                { user && <UserManager user={user} /> }
+                { user
+                    ? <UserManager user={user} />
+                    : <NavbarButton text="Login" color="primary" href="/auth/signin?callbackUrl=%2F" /> }
             </Stack>
             <div className="block md:hidden">
                 <IconButton variant="plain" color="neutral" onClick={() => onMenuToggle(!menuToggled)}>
