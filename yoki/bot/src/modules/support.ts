@@ -63,6 +63,11 @@ export default class SupportUtil extends Util<YokiClient> {
                 return null;
             });
 
+        try {
+            const temp = await this.client.messages.send(channelId, `Adding <@${server.modmailPingRoleId}> to the thread`);
+            await temp.delete();
+        } catch {}
+        
         // If messages can't be created, just don't create the modmail thread
         if (!modmailMessage) return;
 
