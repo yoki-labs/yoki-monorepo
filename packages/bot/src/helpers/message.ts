@@ -9,6 +9,7 @@ import type { BaseCommand, CommandArgument } from "../commands/command-typings";
 import type { IServer } from "../db-types";
 import { inlineCode, listInlineCode } from "../utils/formatting";
 import { Util } from "./util";
+import { RichMarkupBlockElement } from "../utils/rich-types";
 
 type MessageBody = Omit<RestBody<RestPath<"/channels/{channelId}/messages">["post"]>, "embeds" | "content"> & { embeds?: Embed[]; content?: string };
 
@@ -118,6 +119,21 @@ export class MessageUtil<
 
     replyWithEmbed(message: Message, embed: EmbedPayload, messagePartial?: Partial<MessageBody>) {
         return this.sendEmbed(message.channelId, embed, { replyMessageIds: [message.id], ...messagePartial });
+    }
+    
+    replyWithRichMessage(message: Message, content: RichMarkupBlockElement[], messagePartial?: Partial<MessageBody>) {
+        return this.send(message.channelId, {
+            replyMessageIds: [message.id],
+            content: {
+                object: "value",
+                document: {
+                    object: "document",
+                    data: {},
+                    nodes: content,
+                },
+            } as unknown as string,
+            ...messagePartial,
+        });
     }
     // #endregion
 

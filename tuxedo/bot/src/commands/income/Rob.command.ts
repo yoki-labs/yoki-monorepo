@@ -1,11 +1,12 @@
 import { Currency, DefaultIncomeType, MemberBalance, ModuleName, Reward, ServerMember } from "@prisma/client";
-import { inlineCode } from "@yokilabs/bot";
+import { checkmarkEmoteNode, createTextElement, createUserMentionElement, exclamationmarkEmoteNode } from "@yokilabs/bot";
 import { Member, Message } from "guilded.js";
 import ms from "ms";
 
 import { TuxoClient } from "../../Client";
 import { Category, Command } from "../commands";
 import { defaultIncomes } from "./income-defaults";
+import { displayCurrencyAmountRichMarkup } from "../../util/text";
 
 const defaultConfig = defaultIncomes[DefaultIncomeType.ROB];
 const [defaultMin, defaultAdditionalMax] = defaultConfig.reward;
@@ -107,7 +108,7 @@ const Rob: Command = {
         if ((serverConfig?.failChance ?? defaultConfig.failChance!) > Math.random())
             return handleFailState(ctx, message, executorInfo, serverConfig?.failSubtractCut ?? defaultConfig.failCut!, newBalance);
 
-        return handleSuccessState(ctx, message, targetInfo!, executorInfo, newBalance);
+        return handleSuccessState(ctx, message, target, targetInfo!, executorInfo, newBalance);
     },
 };
 
@@ -127,16 +128,25 @@ async function handleFailState(ctx: TuxoClient, message: Message, executorInfo: 
         })
     );
 
-    return ctx.messageUtil.replyWithWarning(
-        message,
-        "Robbery failed",
-        `You were caught and you were fined ${newBalance.map((x) => `:${x.currency.emote}: ${Math.floor(x.change * failCut)} ${x.currency.name}`).join(", ")}.`
-    );
+    return ctx.messageUtil.replyWithRichMessage(message, [
+        {
+            object: "block",
+            type: "paragraph",
+            data: {},
+            nodes: [
+                exclamationmarkEmoteNode,
+                createTextElement(` You were caught trying to pickpocket and you were fined `),
+                ...newBalance.flatMap((x, i) => displayCurrencyAmountRichMarkup(x.currency, x.change, i < (newBalance.length - 1))),
+                createTextElement(" as a result."),
+            ]
+        }
+    ]);
 }
 
 async function handleSuccessState(
     ctx: TuxoClient,
     message: Message,
+    target: Member,
     targetInfo: ServerMember & { balances: MemberBalance[] },
     executorInfo: ServerMember & { balances: MemberBalance[] },
     newBalance: BalanceChange[]
@@ -170,11 +180,29 @@ async function handleSuccessState(
         ),
     ]);
 
-    return ctx.messageUtil.replyWithSuccess(
-        message,
-        "Robbery was successful",
-        `You stole ${newBalance.map((x) => `:${x.currency.emote}: ${x.change} ${x.currency.name}`).join(", ")} from <@${targetInfo.userId}> (${inlineCode(targetInfo.userId)}).`
-    );
+    return ctx.messageUtil.replyWithRichMessage(message, [
+        {
+            object: "block",
+            type: "paragraph",
+            data: {},
+            nodes: [
+                checkmarkEmoteNode,
+                createTextElement(` You pickpocketed `),
+                createUserMentionElement(target),
+                createTextElement(" ("),
+                createTextElement(target.id, [
+                    {
+                        object: "mark",
+                        type: "inline-code-v2",
+                        data: {},
+                    }
+                ]),
+                createTextElement(") and stole "),
+                ...newBalance.flatMap((x, i) => displayCurrencyAmountRichMarkup(x.currency, x.change, i < (newBalance.length - 1))),
+                createTextElement(" from them."),
+            ]
+        }
+    ]);
 }
 
 export default Rob;

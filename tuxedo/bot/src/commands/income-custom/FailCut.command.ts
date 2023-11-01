@@ -1,5 +1,5 @@
 import { DefaultIncomeType, RoleType } from "@prisma/client";
-import { inlineCode } from "@yokilabs/bot";
+import { inlineCode, inlineQuote } from "@yokilabs/bot";
 
 import { Category, Command } from "../commands";
 import { defaultIncomes } from "../income/income-defaults";
@@ -37,7 +37,9 @@ const SetFailCut: Command = {
 
         const incomeOverride = await ctx.dbUtil.getIncomeOverride(message.serverId!, incomeType, command);
 
-        if (failCut === null) {
+        if (!incomeType && !incomeOverride)
+            return ctx.messageUtil.replyWithError(message, "No such income", `The income command ${inlineQuote(command)} does not exist.`);
+        else if (failCut === null) {
             const currentFailCut = incomeOverride?.failSubtractCut ?? (incomeType ? defaultIncomes[incomeType].failCut : 0);
 
             return ctx.messageUtil.replyWithInfo(message, `Fail cut for ${command}`, `The current fail cut for ${inlineCode(command)} is ${currentFailCut * 100}%.`);

@@ -1,11 +1,14 @@
 import { DefaultIncomeType } from "@prisma/client";
 
-export const defaultIncomes: Record<DefaultIncomeType, { reward: [number, number]; cooldown: number; action: string; failChance: number; failCut: number }> = {
+export const defaultIncomes: Record<DefaultIncomeType, { reward: [number, number]; cooldown: number; action: string[]; failChance: number; failCut: number }> = {
     [DefaultIncomeType.DAILY]: {
         // 1000-10000
         reward: [1000, 9000],
         cooldown: 24 * 60 * 60 * 1000,
-        action: "Claimed a daily reward",
+        action: [
+            "You have claimed a daily reward, which had {}.",
+            "You have received a mail from stranger that had {}.",
+        ],
         failChance: 0,
         failCut: 0,
     },
@@ -13,7 +16,11 @@ export const defaultIncomes: Record<DefaultIncomeType, { reward: [number, number
         // 1000-6000
         reward: [1000, 5000],
         cooldown: 8 * 60 * 60 * 1000,
-        action: "Claimed your wage",
+        action: [
+            "After long working hours, you claimed {}.",
+            "You have worked overtime and received {}.",
+            "You did some work as a freelancer and got {}.",
+        ],
         failChance: 0,
         failCut: 0,
     },
@@ -21,7 +28,12 @@ export const defaultIncomes: Record<DefaultIncomeType, { reward: [number, number
         // 500-3000
         reward: [500, 2500],
         cooldown: 40 * 60 * 1000,
-        action: "Received some hobby donations",
+        action: [
+            "You have received some hobby donations, which were {}.",
+            "You have sold your creations you've done and received {}.",
+            "You have commissioned some art and received {}.",
+            "After long hours of stream, you have collected {} from donations.",
+        ],
         failChance: 0,
         failCut: 0,
     },
@@ -29,7 +41,10 @@ export const defaultIncomes: Record<DefaultIncomeType, { reward: [number, number
         // 100-1000
         reward: [100, 900],
         cooldown: 10 * 60 * 1000,
-        action: "Done house chores",
+        action: [
+            "You did some house chores and stumbled upon {}.",
+            "You mowed neighbour's lawn and were given {}."
+        ],
         failChance: 0,
         failCut: 0,
     },
@@ -37,7 +52,9 @@ export const defaultIncomes: Record<DefaultIncomeType, { reward: [number, number
         // 250-3000
         reward: [250, 2750],
         cooldown: 20 * 60 * 1000,
-        action: "Done community/public chores",
+        action: [
+            "You raked some leaves off the street and received {}.",
+        ],
         failChance: 0,
         failCut: 0,
     },
@@ -45,7 +62,9 @@ export const defaultIncomes: Record<DefaultIncomeType, { reward: [number, number
         // 1000-3000
         reward: [1000, 2000],
         cooldown: 2 * 60 * 60 * 1000,
-        action: "Robbed",
+        action: [
+            "Robbed",
+        ],
         failChance: 0.5,
         failCut: 1,
     },
@@ -53,7 +72,9 @@ export const defaultIncomes: Record<DefaultIncomeType, { reward: [number, number
         // 1'000-1'000'000, it doesn't add 1'000 to the max
         reward: [1000, 1000000],
         cooldown: 60 * 1000,
-        action: "Played blackjack",
+        action: [
+            "Played blackjack",
+        ],
         failChance: 0,
         failCut: 0,
     },

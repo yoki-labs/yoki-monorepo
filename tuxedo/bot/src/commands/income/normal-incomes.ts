@@ -1,11 +1,13 @@
 import { Currency, DefaultIncomeType, IncomeCommand, MemberBalance, ModuleName, Reward, ServerMember } from "@prisma/client";
-import { CommandContext, inlineQuote, ResolvedArgs } from "@yokilabs/bot";
+import { checkmarkEmoteNode, CommandContext, createTextElement, exclamationmarkEmoteNode, inlineQuote, ResolvedArgs } from "@yokilabs/bot";
 import { Message } from "guilded.js";
 import ms from "ms";
 
 import { TuxoClient } from "../../Client";
 import { Server } from "../../typings";
 import { defaultCreatedCooldown, defaultCreatedReceivedCurrency, defaultIncomes } from "./income-defaults";
+import { RichMarkupInlineElement, RichMarkupText } from "@yokilabs/bot/dist/src/utils/rich-types";
+import { displayCurrencyAmountRichMarkup } from "../../util/text";
 
 type BalanceChange = Pick<MemberBalance, "currencyId" | "pocket" | "bank"> & { currency: Currency; added: number; lost?: number };
 type FailedBalanceChange = Pick<MemberBalance, "currencyId" | "pocket" | "bank"> & { currency: Currency; change: number };
@@ -51,7 +53,7 @@ export async function useCustomIncomeCommand(ctx: TuxoClient, message: Message, 
 
     return useIncomeCommand(
         income.name!,
-        `Used ${income.name}`,
+        [`You have used ${income.name}, which gave you {}.`],
         defaultCreatedCooldown,
         defaultCreatedReceivedCurrency[0],
         defaultCreatedReceivedCurrency[1],
@@ -64,7 +66,7 @@ export async function useCustomIncomeCommand(ctx: TuxoClient, message: Message, 
 
 async function useIncomeCommand(
     commandName: string,
-    defaultAction: string,
+    defaultAction: string[],
     defaultCooldown: number,
     defaultAdditionalMax: number,
     defaultMin: number,
@@ -94,12 +96,24 @@ async function useIncomeCommand(
         : [{ currencyId: currencies[0].id, maxAmount: defaultAdditionalMax + defaultMin, minAmount: defaultMin }];
 
     const userInfo = await ctx.dbUtil.getServerMember(message.serverId!, message.createdById);
-
-    const newBalance: BalanceChange[] = [];
-
+    
     // Since it can fail too; the loop below is a little different and does additional calculations
     // that are unnecessary
     if (income?.failChance && income.failChance > Math.random()) return onIncomeFail(commandName, income!, rewards, userInfo, currencies, ctx, message);
+
+    return onIncomeSuccess(income, defaultAction, rewards, userInfo, currencies, ctx, message);
+}
+
+async function onIncomeSuccess(
+    income: IncomeCommand & { rewards: Reward[] } | undefined,
+    defaultAction: string[],
+    rewards: Pick<Reward, "currencyId" | "minAmount" | "maxAmount">[],
+    userInfo: (ServerMember & { balances: MemberBalance[] }) | undefined,
+    currencies: Currency[],
+    ctx: TuxoClient,
+    message: Message
+) {
+    const newBalance: BalanceChange[] = [];
 
     for (const reward of rewards) {
         // The opposite could be done, but this means adding additional `continue` if reward for that currency
@@ -137,20 +151,51 @@ async function useIncomeCommand(
 
     await ctx.dbUtil.updateMemberBalance(message.serverId!, message.createdById, userInfo, newBalance);
 
-    const addedCurrencies = newBalance.filter((x) => x.added).map((x) => `:${x.currency.emote}: ${x.added} ${x.currency.name}`);
-    const lostCurrencies = newBalance.filter((x) => x.lost).map((x) => `:${x.currency.emote}: ${x.lost} ${x.currency.name}`);
+    const addedCurrencies = newBalance.filter((x) => x.added);
+    const lostCurrencies = newBalance.filter((x) => x.lost);
 
-    const actionDescription = (income?.action ?? defaultAction).toLowerCase();
+    // There can be multiple action messages
+    const actionDescriptionTemplates = (income?.action?.split("\n") ?? defaultAction);
+    const randomActionTemplate = actionDescriptionTemplates[Math.floor(Math.random() * actionDescriptionTemplates.length)];
 
-    return lostCurrencies.length
-        ? ctx.messageUtil.replyWithWarning(
-              message,
-              income?.action ?? defaultAction,
-              `You have ${actionDescription}, which gave you ${addedCurrencies.join(
-                  ", "
-              )}. However, some of the rewards went over the maximum currency limit, so you lost additional ${lostCurrencies.join(", ")}`
-          )
-        : ctx.messageUtil.replyWithSuccess(message, income?.action ?? defaultAction, `You have ${actionDescription}, which had ${addedCurrencies.join(", ")}.`);
+    // Template the action message
+    // const addedCurrenciesList = addedCurrencies.join(", ");
+    const actionDescription = randomActionTemplate.split("{}", 2);
+
+    return ctx.messageUtil.replyWithRichMessage(message, [
+        {
+            object: "block",
+            type: "paragraph",
+            data: {},
+            nodes: [
+                // Icon of the content; if it went over the limit, use exclamation mark
+                lostCurrencies.length ? exclamationmarkEmoteNode : checkmarkEmoteNode,
+                // It might start with currency rewards
+                actionDescription[0] && createTextElement(` ${actionDescription[0]}`),
+                // No reason to add additional text if it has no {} template
+                ...(actionDescription.length > 1
+                    ?
+                        // It might look rather empty if everything went over the limit
+                        addedCurrencies.length
+                        ? addedCurrencies.flatMap((x, i) => displayCurrencyAmountRichMarkup(x.currency, x.added, i < (addedCurrencies.length - 1)))
+                        : [createTextElement(`some rewards`)]
+                    : []
+                ),
+                // If there is any text after the reward, add the text afterwards
+                // There may be some currency that went over the limit, so add the `However, ...` text too
+                (actionDescription[1] || lostCurrencies.length) && createTextElement(
+                    lostCurrencies.length
+                        ? `${actionDescription[1]} However, some of the rewards went over the limit, so you lost additional `
+                        : actionDescription[1]
+                ),
+                // Add some lost currencies that went over the limit if there were any
+                ...(lostCurrencies.length
+                    ? lostCurrencies.flatMap((x, i) => displayCurrencyAmountRichMarkup(x.currency, x.lost!, i < (lostCurrencies.length - 1)))
+                    : []
+                ),
+            ].filter(Boolean) as (RichMarkupText | RichMarkupInlineElement)[]
+        }
+    ]);
 }
 
 async function onIncomeFail(
@@ -190,7 +235,17 @@ async function onIncomeFail(
 
     await ctx.dbUtil.updateMemberBalance(message.serverId!, message.createdById, userInfo, newBalance);
 
-    const failedCurrencies = newBalance.map((x) => `:${x.currency.emote}: ${x.change} ${x.currency.name}`);
-
-    return ctx.messageUtil.replyWithWarning(message, `${commandName} failed`, `You failed while doing ${commandName} and lost ${failedCurrencies.join(", ")}.`);
+    return ctx.messageUtil.replyWithRichMessage(message, [
+        {
+            object: "block",
+            type: "paragraph",
+            data: {},
+            nodes: [
+                exclamationmarkEmoteNode,
+                createTextElement(` You have failed while doing ${commandName.toLowerCase()} and lost `),
+                // It might look rather empty if everything went over the limit
+                ...newBalance.flatMap((x, i) => displayCurrencyAmountRichMarkup(x.currency, x.change, i < (newBalance.length - 1))),
+            ]
+        }
+    ]);
 }

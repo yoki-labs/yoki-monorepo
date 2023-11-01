@@ -1,5 +1,5 @@
 import { DefaultIncomeType, RoleType } from "@prisma/client";
-import { inlineCode } from "@yokilabs/bot";
+import { inlineCode, inlineQuote } from "@yokilabs/bot";
 
 import { Category, Command } from "../commands";
 import { defaultIncomes } from "../income/income-defaults";
@@ -37,7 +37,9 @@ const SetFailChance: Command = {
 
         const incomeOverride = await ctx.dbUtil.getIncomeOverride(message.serverId!, incomeType, command);
 
-        if (failChance === null) {
+        if (!incomeType && !incomeOverride)
+            return ctx.messageUtil.replyWithError(message, "No such income", `The income command ${inlineQuote(command)} does not exist.`);
+        else if (failChance === null) {
             const currentFailChance = incomeOverride?.failChance ?? (incomeType ? defaultIncomes[incomeType].failChance : 0);
 
             return ctx.messageUtil.replyWithInfo(message, `Fail chance for ${command}`, `The current fail chance for ${inlineCode(command)} is ${currentFailChance * 100}%.`);
