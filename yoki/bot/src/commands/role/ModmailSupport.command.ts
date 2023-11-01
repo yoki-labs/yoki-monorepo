@@ -47,7 +47,7 @@ const ModmailSupport: Command = {
                 `Provide the mention or ID of the role you want to set as a modmail support role or pass \`remove\` to remove it.`
             );
 
-        await ctx.prisma.server.updateMany({ data: { muteRoleId: role.id }, where: { serverId: message.serverId! } });
+        await ctx.prisma.server.updateMany({ data: { modmailPingRoleId: role.id }, where: { serverId: message.serverId! } });
         return ctx.messageUtil.replyWithSuccess(message, `Modmail support role set`, `Successfully set <@${role.id}> as the modmail support role`, undefined, { isSilent: true });
     },
 };
