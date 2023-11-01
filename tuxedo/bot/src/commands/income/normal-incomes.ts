@@ -155,7 +155,7 @@ async function onIncomeSuccess(
     const lostCurrencies = newBalance.filter((x) => x.lost);
 
     // There can be multiple action messages
-    const actionDescriptionTemplates = (income?.action?.split("\n") ?? defaultAction);
+    const actionDescriptionTemplates = (income?.action?.split("|") ?? defaultAction);
     const randomActionTemplate = actionDescriptionTemplates[Math.floor(Math.random() * actionDescriptionTemplates.length)];
 
     // Template the action message
@@ -172,14 +172,10 @@ async function onIncomeSuccess(
                 lostCurrencies.length ? exclamationmarkEmoteNode : checkmarkEmoteNode,
                 // It might start with currency rewards
                 actionDescription[0] && createTextElement(` ${actionDescription[0]}`),
-                // No reason to add additional text if it has no {} template
-                ...(actionDescription.length > 1
-                    ?
-                        // It might look rather empty if everything went over the limit
-                        addedCurrencies.length
-                        ? addedCurrencies.flatMap((x, i) => displayCurrencyAmountRichMarkup(x.currency, x.added, i < (addedCurrencies.length - 1)))
-                        : [createTextElement(`some rewards`)]
-                    : []
+                // It might look rather empty if everything went over the limit
+                ...(addedCurrencies.length
+                    ? addedCurrencies.flatMap((x, i) => displayCurrencyAmountRichMarkup(x.currency, x.added, i < (addedCurrencies.length - 1)))
+                    : [createTextElement(`some rewards`)]
                 ),
                 // If there is any text after the reward, add the text afterwards
                 // There may be some currency that went over the limit, so add the `However, ...` text too

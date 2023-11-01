@@ -4,6 +4,7 @@ import { inlineCode, inlineQuote } from "@yokilabs/bot";
 import { Category, Command } from "../commands";
 import { defaultIncomes } from "../income/income-defaults";
 import { DefaultIncomeTypeMap, defaultOrCustomIncomeDisplay } from "./income-util";
+import { stripIndents } from "common-tags";
 
 const SetMessage: Command = {
     name: "income-message",
@@ -44,12 +45,17 @@ const SetMessage: Command = {
             );
         }
 
-        await ctx.dbUtil.createOrUpdateIncome(message.serverId!, message.createdById, incomeType, command, incomeOverride, { action });
+        await ctx.dbUtil.createOrUpdateIncome(message.serverId!, message.createdById, incomeType, command, incomeOverride, { action: action.split("|").map((x) => x.trim()).join("|") });
 
         return ctx.messageUtil.replyWithSuccess(
             message,
-            `Changed ${command.toLowerCase()}'s action message`,
-            `The action message for ${command.toLowerCase()} has been changed to ${inlineQuote(action)}.`
+            `Changed ${command.toLowerCase()}'s action messages`,
+            stripIndents`
+                The possible action messages for ${command.toLowerCase()} have been changed to:
+                \`\`\`md
+                ${action.replaceAll("```", "'''").split("|").map((x) => x.trim()).join("\n")}
+                \`\`\`${action.split("{}").length === 1 ? `\n\u2022 **NOTE:** You can add rewards anywhere in the message by adding {}` : ""}${action.split("|").length === 1 ? `\n\u2022 **NOTE:** You can have multiple action messages by using | between each message variant` : ""}
+            `
         );
     },
 };
