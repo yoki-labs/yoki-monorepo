@@ -125,7 +125,7 @@ export default class RolesPage extends React.Component<DashboardPageProps, State
 
         return (
             <Box>
-                <Typography level="h2" sx={{ mb: 2 }}>
+                <Typography level="h3" sx={{ mb: 2 }}>
                     Roles
                 </Typography>
                 <Typography level="title-md" gutterBottom>
@@ -167,7 +167,7 @@ export default class RolesPage extends React.Component<DashboardPageProps, State
 function RolesPageSkeleton() {
     return (
         <Box sx={{ overflow: "hidden" }}>
-            <Typography level="h2" sx={{ mb: 2 }}>
+            <Typography level="h3" sx={{ mb: 2 }}>
                 <Skeleton animation="wave">Roles</Skeleton>
             </Typography>
             <Typography level="title-md" gutterBottom>

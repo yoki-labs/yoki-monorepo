@@ -1,18 +1,20 @@
 import { Box, Card, CardContent, Chip, ListItemDecorator, MenuItem, Stack, Typography } from "@mui/joy";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { IconDefinition, faHashtag, faPen, faPlus, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { IconDefinition, faBroadcastTower, faHashtag, faPen, faPlus, faTrash, faVolumeLow } from "@fortawesome/free-solid-svg-icons";
 import { formatDate } from "@yokilabs/utils";
 import LabsIconWrapper from "../../LabsIconWrapper";
 import { LogChannelType } from "@prisma/client";
 import LabsOverflowButton from "../../LabsOverflowButton";
 import React from "react";
 import LabsForm, { LabsFormFieldValueMap } from "../../form/LabsForm";
-import { LabsFormFieldType, LabsFormSectionOrder } from "../../form/form";
+import { LabsFormFieldOption, LabsFormFieldType, LabsFormSectionOrder } from "../../form/form";
+import { GuildedSanitizedChannel } from "../../../lib/@types/guilded";
 
 type Props = {
     serverId: string;
     channelId: string;
-    serverChannels: string[];
+    serverChannels: GuildedSanitizedChannel[];
+    channelOptions: LabsFormFieldOption<string>[];
     createdAt: string;
     types: LogChannelType[];
     existingTypes: LogChannelType[];
@@ -45,13 +47,26 @@ const typeDisplayNames: Record<LogChannelType, string> = {
     [LogChannelType.comment_deletions]: "Content comment deletions",
 };
 
+export const channelTypeToIcon: Record<"chat" | "voice" | "stream", IconDefinition> = {
+    ["chat"]: faHashtag,
+    ["voice"]: faVolumeLow,
+    ["stream"]: faBroadcastTower,
+};
+
 const typeOptions = Object.values(LogChannelType).map((type) => ({ value: type, name: typeDisplayNames[type] }));
 
 export default class DashboardLogChannel extends React.Component<Props, State> {
+    private _serverChannel: GuildedSanitizedChannel | undefined;
+    private _icon: IconDefinition;
+
     constructor(props: Props) {
         super(props);
 
         this.state = { inEditMode: false };
+        this._serverChannel = props.serverChannels.find((x) => x.id === props.channelId);
+        this._icon = this._serverChannel?.contentType
+            ? channelTypeToIcon[this._serverChannel.contentType as "chat" | "voice" | "stream"]
+            : faHashtag;
     }
 
     toggleEditMode(inEditMode: boolean) {
@@ -66,11 +81,11 @@ export default class DashboardLogChannel extends React.Component<Props, State> {
                 {/* The hashtag icon (kind of useless, but there should be indication that it is a channel), channel ID */}
                 <Stack component="header" gap={2} direction="row" alignItems="center">
                     <LabsIconWrapper className="hidden md:block">
-                        <FontAwesomeIcon style={{ width: "100%", height: "100%" }} icon={faHashtag} />
+                        <FontAwesomeIcon style={{ width: "100%", height: "100%" }} icon={this._icon} />
                     </LabsIconWrapper>
                     {/* TODO: Replace it with proper channel name */}
                     <Typography level="h1" fontSize="md" fontWeight="bolder">
-                        {channelId}
+                        {this._serverChannel?.name ?? channelId}
                     </Typography>
                     <Stack sx={{ flex: "1" }} direction="row" gap={1} alignItems="center" className="hidden md:flex">
                         {types.map((type) => (
@@ -110,7 +125,7 @@ export default class DashboardLogChannel extends React.Component<Props, State> {
     }
 
     LogChannelEditMode() {
-        const { serverChannels, channelId, types, existingTypes, createdAt, timezone } = this.props;
+        const { channelOptions, channelId, types, existingTypes, createdAt, timezone } = this.props;
         const onSubmit = this.onLogChannelEdit.bind(this);
         const otherUsedTypes = existingTypes.filter((x) => !types.includes(x));
 
@@ -121,7 +136,7 @@ export default class DashboardLogChannel extends React.Component<Props, State> {
                         order: LabsFormSectionOrder.Row,
                         start: (
                             <LabsIconWrapper className="hidden md:block">
-                                <FontAwesomeIcon style={{ width: "100%", height: "100%" }} icon={faHashtag} />
+                                <FontAwesomeIcon style={{ width: "100%", height: "100%" }} icon={this._icon} />
                             </LabsIconWrapper>
                         ),
                         fields: [
@@ -129,11 +144,7 @@ export default class DashboardLogChannel extends React.Component<Props, State> {
                                 type: LabsFormFieldType.Select,
                                 prop: "channelId",
                                 defaultValue: channelId,
-                                selectableValues: serverChannels.map((chatChannelId) => ({
-                                    name: chatChannelId,
-                                    value: chatChannelId,
-                                    icon: faHashtag,
-                                })),
+                                selectableValues: channelOptions,
                             },
                             {
                                 type: LabsFormFieldType.MultiSelect,
@@ -179,9 +190,11 @@ export default class DashboardLogChannel extends React.Component<Props, State> {
 export function LogItemCreationForm({
     existingTypes,
     onCreate: onCreated,
+    channelOptions,
 }: {
     existingTypes: LogChannelType[];
     onCreate: (channelId: string, types: LogChannelType[]) => Promise<unknown>;
+    channelOptions: LabsFormFieldOption<string>[];
 }) {
     return (
         <LabsForm
@@ -195,9 +208,10 @@ export function LogItemCreationForm({
                     ),
                     fields: [
                         {
-                            type: LabsFormFieldType.Text,
+                            type: LabsFormFieldType.Select,
                             prop: "channelId",
-                            placeholder: "Type in the ID of a channel",
+                            placeholder: "Select server channel",
+                            selectableValues: channelOptions,
                         },
                         {
                             type: LabsFormFieldType.MultiSelect,
@@ -213,3 +227,4 @@ export function LogItemCreationForm({
         />
     );
 }
+
