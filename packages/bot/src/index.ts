@@ -25,14 +25,13 @@ export {
     listInlineQuote,
     quoteMarkdown,
 } from "./utils/formatting";
-
 export {
-    createUserMentionElement,
+    checkmarkEmoteNode,
     createChannelMentionElement,
     createDefaultEmoteNode,
     createEmoteNode,
     createTextElement,
-    checkmarkEmoteNode,
+    createUserMentionElement,
     crossmarkEmoteNode,
     exclamationmarkEmoteNode,
 } from "./utils/rich";

@@ -37,8 +37,7 @@ const SetFailChance: Command = {
 
         const incomeOverride = await ctx.dbUtil.getIncomeOverride(message.serverId!, incomeType, command);
 
-        if (!incomeType && !incomeOverride)
-            return ctx.messageUtil.replyWithError(message, "No such income", `The income command ${inlineQuote(command)} does not exist.`);
+        if (!incomeType && !incomeOverride) return ctx.messageUtil.replyWithError(message, "No such income", `The income command ${inlineQuote(command)} does not exist.`);
         else if (failChance === null) {
             const currentFailChance = incomeOverride?.failChance ?? (incomeType ? defaultIncomes[incomeType].failChance : 0);
 

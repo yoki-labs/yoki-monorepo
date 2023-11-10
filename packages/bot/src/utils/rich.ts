@@ -1,4 +1,5 @@
 import { Channel, Member, UserType } from "guilded.js";
+
 import { RichMarkupChannelMention, RichMarkupEmote, RichMarkupMark, RichMarkupText, RichMarkupUserMention } from "./rich-types";
 
 export const createUserMentionElement = (member: Member): RichMarkupUserMention => ({
@@ -10,7 +11,7 @@ export const createUserMentionElement = (member: Member): RichMarkupUserMention 
             matcher: `${member.nickname ? `@${member.nickname}` : " "} @${member.username}`,
             name: member.displayName ?? "",
             id: member.id,
-            nickname: !!member.nickname,
+            nickname: Boolean(member.nickname),
             sortOrder: 0,
             mentionedUser: {
                 id: member.id,
@@ -79,10 +80,10 @@ export const createDefaultEmoteNode = (id: number, name: string): RichMarkupEmot
                     object: "leaf",
                     text: `:${name}:`,
                     marks: [],
-                }
-            ]
-        }
-    ]
+                },
+            ],
+        },
+    ],
 });
 
 export const createEmoteNode = (id: number, name: string, serverId: string, url: string): RichMarkupEmote => ({
@@ -110,10 +111,10 @@ export const createEmoteNode = (id: number, name: string, serverId: string, url:
                     object: "leaf",
                     text: `:${name}:`,
                     marks: [],
-                }
-            ]
-        }
-    ]
+                },
+            ],
+        },
+    ],
 });
 
 export const createTextElement = (text: string, marks: RichMarkupMark[] = []): RichMarkupText => ({
@@ -127,6 +128,21 @@ export const createTextElement = (text: string, marks: RichMarkupMark[] = []): R
     ],
 });
 
-export const checkmarkEmoteNode = createEmoteNode(2119401, "YokiLabsCheckbox", "4R56dNkl", "https://img.guildedcdn.com/CustomReaction/ff4c6438f22d607b10847f6789c3d7a3-Full.webp?w=120&h=120");
-export const crossmarkEmoteNode = createEmoteNode(2119402, "YokiLabsCrossbox", "4R56dNkl", "https://img.guildedcdn.com/CustomReaction/5a3b1072f550296eff57bbe96406d5f9-Full.webp?w=120&h=120");
-export const exclamationmarkEmoteNode = createEmoteNode(2119403, "YokiLabsExclamationbox", "4R56dNkl", "https://img.guildedcdn.com/CustomReaction/62307461393ae8e5788aa0f40ebf9485-Full.webp?w=120&h=120");
+export const checkmarkEmoteNode = createEmoteNode(
+    2119401,
+    "YokiLabsCheckbox",
+    "4R56dNkl",
+    "https://img.guildedcdn.com/CustomReaction/ff4c6438f22d607b10847f6789c3d7a3-Full.webp?w=120&h=120"
+);
+export const crossmarkEmoteNode = createEmoteNode(
+    2119402,
+    "YokiLabsCrossbox",
+    "4R56dNkl",
+    "https://img.guildedcdn.com/CustomReaction/5a3b1072f550296eff57bbe96406d5f9-Full.webp?w=120&h=120"
+);
+export const exclamationmarkEmoteNode = createEmoteNode(
+    2119403,
+    "YokiLabsExclamationbox",
+    "4R56dNkl",
+    "https://img.guildedcdn.com/CustomReaction/62307461393ae8e5788aa0f40ebf9485-Full.webp?w=120&h=120"
+);

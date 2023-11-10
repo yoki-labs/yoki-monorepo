@@ -4,9 +4,9 @@ import { Member, Message } from "guilded.js";
 import ms from "ms";
 
 import { TuxoClient } from "../../Client";
+import { displayCurrencyAmountRichMarkup } from "../../util/text";
 import { Category, Command } from "../commands";
 import { defaultIncomes } from "./income-defaults";
-import { displayCurrencyAmountRichMarkup } from "../../util/text";
 
 const defaultConfig = defaultIncomes[DefaultIncomeType.ROB];
 const [defaultMin, defaultAdditionalMax] = defaultConfig.reward;
@@ -136,10 +136,10 @@ async function handleFailState(ctx: TuxoClient, message: Message, executorInfo: 
             nodes: [
                 exclamationmarkEmoteNode,
                 createTextElement(` You were caught trying to pickpocket and you were fined `),
-                ...newBalance.flatMap((x, i) => displayCurrencyAmountRichMarkup(x.currency, x.change, i < (newBalance.length - 1))),
+                ...newBalance.flatMap((x, i) => displayCurrencyAmountRichMarkup(x.currency, x.change, i < newBalance.length - 1)),
                 createTextElement(" as a result."),
-            ]
-        }
+            ],
+        },
     ]);
 }
 
@@ -195,13 +195,13 @@ async function handleSuccessState(
                         object: "mark",
                         type: "inline-code-v2",
                         data: {},
-                    }
+                    },
                 ]),
                 createTextElement(") and stole "),
-                ...newBalance.flatMap((x, i) => displayCurrencyAmountRichMarkup(x.currency, x.change, i < (newBalance.length - 1))),
+                ...newBalance.flatMap((x, i) => displayCurrencyAmountRichMarkup(x.currency, x.change, i < newBalance.length - 1)),
                 createTextElement(" from them."),
-            ]
-        }
+            ],
+        },
     ]);
 }
 

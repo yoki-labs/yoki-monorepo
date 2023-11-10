@@ -37,8 +37,7 @@ const SetFailCut: Command = {
 
         const incomeOverride = await ctx.dbUtil.getIncomeOverride(message.serverId!, incomeType, command);
 
-        if (!incomeType && !incomeOverride)
-            return ctx.messageUtil.replyWithError(message, "No such income", `The income command ${inlineQuote(command)} does not exist.`);
+        if (!incomeType && !incomeOverride) return ctx.messageUtil.replyWithError(message, "No such income", `The income command ${inlineQuote(command)} does not exist.`);
         else if (failCut === null) {
             const currentFailCut = incomeOverride?.failSubtractCut ?? (incomeType ? defaultIncomes[incomeType].failCut : 0);
 

@@ -1,9 +1,9 @@
 import { ResponseType } from "@prisma/client";
 import { inlineCode } from "@yokilabs/bot";
+import ms from "ms";
 
 import { RoleType } from "../../typings";
 import { Category, Command } from "../commands";
-import ms from "ms";
 
 const minDuration = 10 * 60 * 1000;
 const maxDuration = 30 * 24 * 60 * 60 * 1000;
@@ -43,18 +43,19 @@ const Age: Command = {
 
         void ctx.amp.logEvent({ event_type: "ANTIRAID_AGE_SET", user_id: message.authorId, event_properties: { serverId: message.serverId!, age: duration } });
         await ctx.prisma.server.update({ where: { id: commandCtx.server.id }, data: { antiRaidAgeFilter: duration || null, antiRaidResponse: ResponseType.TEXT_CAPTCHA } });
-        
-        if (duration === 0) return ctx.messageUtil.replyWithSuccess(
+
+        if (duration === 0)
+            return ctx.messageUtil.replyWithSuccess(
+                message,
+                "Successfully set age filter",
+                `All accounts will now be caught in the filter unless the antiraid challenge is a kick.\n\nBy default, the bot will present them with a captcha to solve, but you can configure this using the \`antiraid response\` command.`
+            );
+        return ctx.messageUtil.replyWithSuccess(
             message,
             "Successfully set age filter",
-            `All accounts will now be caught in the filter unless the antiraid challenge is a kick.\n\nBy default, the bot will present them with a captcha to solve, but you can configure this using the \`antiraid response\` command.`
-        )
-        else return ctx.messageUtil.replyWithSuccess(
-            message,
-            "Successfully set age filter",
-            `Accounts younger than ${
-                ms(duration, { long: true })
-            } will be caught in the filter.\n\nBy default, the bot will present them with a captcha to solve, but you can configure this using the \`antiraid response\` command.`
+            `Accounts younger than ${ms(duration, {
+                long: true,
+            })} will be caught in the filter.\n\nBy default, the bot will present them with a captcha to solve, but you can configure this using the \`antiraid response\` command.`
         );
     },
 };

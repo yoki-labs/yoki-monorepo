@@ -14,7 +14,7 @@ export interface RichMarkupNodeHasData<T> {
     data: T;
 }
 
-export interface RichMarkupMark extends RichMarkupNode<"mark">, RichMarkupNodeHasData<{}> {
+export interface RichMarkupMark extends RichMarkupNode<"mark">, RichMarkupNodeHasData<unknown> {
     type: RichMarkupMarkType;
 }
 
@@ -27,59 +27,77 @@ export interface RichMarkupText extends RichMarkupNode<"text"> {
     leaves: RichMarkupLeaf[];
 }
 
-export interface RichMarkupElement<TObject extends RichMarkupObject, TType extends RichMarkupElementType, TSubNode extends RichMarkupNode<RichMarkupObject>, TData> extends RichMarkupNode<TObject>, RichMarkupNodeHasData<TData> {
+export interface RichMarkupElement<TObject extends RichMarkupObject, TType extends RichMarkupElementType, TSubNode extends RichMarkupNode<RichMarkupObject>, TData>
+    extends RichMarkupNode<TObject>,
+        RichMarkupNodeHasData<TData> {
     type: TType;
     nodes: TSubNode[];
 }
 
-export interface RichMarkupParagraph extends RichMarkupElement<"block", "paragraph", RichMarkupText | RichMarkupInlineElement, {}> { }
+export interface RichMarkupParagraph extends RichMarkupElement<"block", "paragraph", RichMarkupText | RichMarkupInlineElement, unknown> {}
 
 export type RichMarkupBlockElement = RichMarkupParagraph;
 
-export interface RichMarkupEmote extends RichMarkupElement<"inline", "reaction", RichMarkupText, {
-    reaction: {
-        id: number;
-        customReactionId: number;
-        customReaction?: {
-            id: number;
-            name: string;
-            png: string | null;
-            webp: string | null;
-            apng: string | null;
-            teamId: string;
-        };
-    };
-}> {}
-
-export interface RichMarkupUserMention extends RichMarkupElement<"inline", "mention", RichMarkupText, {
-    mention: {
-        type: "person";
-        matcher: string;
-        name: string;
-        id: string;
-        nickname: boolean;
-        sortOrder: number;
-        mentionedUser: {
-            id: string;
-            userInfo: {
-                id: string;
-                name: string;
-                nickname: string | null;
-                profilePicture?: string;
-                type: "user" | "bot";
+export interface RichMarkupEmote
+    extends RichMarkupElement<
+        "inline",
+        "reaction",
+        RichMarkupText,
+        {
+            reaction: {
+                id: number;
+                customReactionId: number;
+                customReaction?: {
+                    id: number;
+                    name: string;
+                    png: string | null;
+                    webp: string | null;
+                    apng: string | null;
+                    teamId: string;
+                };
             };
-        };
-    };
-}> {}
+        }
+    > {}
 
-export interface RichMarkupChannelMention extends RichMarkupElement<"inline", "channel", RichMarkupText, {
-    channel: {
-        matcher: string;
-        name: string;
-        id: string;
-    };
-}> {}
+export interface RichMarkupUserMention
+    extends RichMarkupElement<
+        "inline",
+        "mention",
+        RichMarkupText,
+        {
+            mention: {
+                type: "person";
+                matcher: string;
+                name: string;
+                id: string;
+                nickname: boolean;
+                sortOrder: number;
+                mentionedUser: {
+                    id: string;
+                    userInfo: {
+                        id: string;
+                        name: string;
+                        nickname: string | null;
+                        profilePicture?: string;
+                        type: "user" | "bot";
+                    };
+                };
+            };
+        }
+    > {}
 
-export type RichMarkupInlineElement
-    = RichMarkupElement<"inline", "reaction", RichMarkupText, {}>
-    | RichMarkupUserMention;
+export interface RichMarkupChannelMention
+    extends RichMarkupElement<
+        "inline",
+        "channel",
+        RichMarkupText,
+        {
+            channel: {
+                matcher: string;
+                name: string;
+                id: string;
+            };
+        }
+    > {}
+
+export type RichMarkupInlineElement = RichMarkupEmote | RichMarkupUserMention | RichMarkupChannelMention;

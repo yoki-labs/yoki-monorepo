@@ -35,7 +35,12 @@ export default {
 
         console.log(`${userId} joined ${server.serverId}, with account age of ${Date.now() - new Date(member.user!.createdAt!).getTime()}`);
 
-        if (server.antiRaidEnabled && ((!server.antiRaidAgeFilter && server.antiRaidResponse !== ResponseType.KICK) || (Date.now() - new Date(member.user!.createdAt!).getTime() <= (server.antiRaidAgeFilter ?? 0) || !member.user!.avatar))) {
+        if (
+            server.antiRaidEnabled &&
+            ((!server.antiRaidAgeFilter && server.antiRaidResponse !== ResponseType.KICK) ||
+                Date.now() - new Date(member.user!.createdAt!).getTime() <= (server.antiRaidAgeFilter ?? 0) ||
+                !member.user!.avatar)
+        ) {
             console.log(`User ${userId} tripped antiraid in server ${server.serverId}, response ${server.antiRaidResponse}`);
             void ctx.amp.logEvent({ event_type: "FRESH_ACCOUNT_JOIN", user_id: userId, event_properties: { serverId } });
             switch (server.antiRaidResponse) {

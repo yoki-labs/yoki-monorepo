@@ -64,9 +64,7 @@ export default class DashboardLogChannel extends React.Component<Props, State> {
 
         this.state = { inEditMode: false };
         this._serverChannel = props.serverChannels.find((x) => x.id === props.channelId);
-        this._icon = this._serverChannel?.contentType
-            ? channelTypeToIcon[this._serverChannel.contentType as "chat" | "voice" | "stream"]
-            : faHashtag;
+        this._icon = this._serverChannel?.contentType ? channelTypeToIcon[this._serverChannel.contentType as "chat" | "voice" | "stream"] : faHashtag;
     }
 
     toggleEditMode(inEditMode: boolean) {
@@ -227,4 +225,3 @@ export function LogItemCreationForm({
         />
     );
 }
-
