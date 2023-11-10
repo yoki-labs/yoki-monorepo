@@ -1,4 +1,4 @@
-import { LogChannelType, Severity } from "@prisma/client";
+import { LogChannelType, ResponseType, Severity } from "@prisma/client";
 import { codeBlock, inlineCode } from "@yokilabs/bot";
 import { Colors } from "@yokilabs/utils";
 import { GuildedImages } from "@yokilabs/utils/dist/src/images";
@@ -35,7 +35,7 @@ export default {
 
         console.log(`${userId} joined ${server.serverId}, with account age of ${Date.now() - new Date(member.user!.createdAt!).getTime()}`);
 
-        if (server.antiRaidEnabled && server.antiRaidAgeFilter && (Date.now() - new Date(member.user!.createdAt!).getTime() <= server.antiRaidAgeFilter || !member.user!.avatar)) {
+        if (server.antiRaidEnabled && ((!server.antiRaidAgeFilter && server.antiRaidResponse !== ResponseType.KICK) || (Date.now() - new Date(member.user!.createdAt!).getTime() <= (server.antiRaidAgeFilter ?? 0) || !member.user!.avatar))) {
             console.log(`User ${userId} tripped antiraid in server ${server.serverId}, response ${server.antiRaidResponse}`);
             void ctx.amp.logEvent({ event_type: "FRESH_ACCOUNT_JOIN", user_id: userId, event_properties: { serverId } });
             switch (server.antiRaidResponse) {

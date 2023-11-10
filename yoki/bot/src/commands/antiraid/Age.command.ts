@@ -3,6 +3,10 @@ import { inlineCode } from "@yokilabs/bot";
 
 import { RoleType } from "../../typings";
 import { Category, Command } from "../commands";
+import ms from "ms";
+
+const minDuration = 10 * 60 * 1000;
+const maxDuration = 30 * 24 * 60 * 60 * 1000;
 
 const Age: Command = {
     name: "antiraid-age",
@@ -22,7 +26,8 @@ const Age: Command = {
     ],
     execute: async (message, args, ctx, commandCtx) => {
         const duration = args.duration as number;
-        if (!args.duration) {
+
+        if (args.duration === null) {
             return ctx.messageUtil.replyWithInfo(
                 message,
                 "Current Antiraid Age",
@@ -33,17 +38,23 @@ const Age: Command = {
         }
 
         // const duration = ms(args.duration as string);
-        if (!duration || duration < 600000 || duration > 1209600000)
-            return ctx.messageUtil.replyWithError(message, `Invalid Duration`, `Your duration must be between 10m and 2w.`);
+        if (duration !== 0 && (duration < minDuration || duration > maxDuration))
+            return ctx.messageUtil.replyWithError(message, `Invalid Duration`, `Your duration must be between 10 minutes (\`10m\`) and 30 days (\`30d\`) or 0 to catch anyone.`);
 
         void ctx.amp.logEvent({ event_type: "ANTIRAID_AGE_SET", user_id: message.authorId, event_properties: { serverId: message.serverId!, age: duration } });
-        await ctx.prisma.server.update({ where: { id: commandCtx.server.id }, data: { antiRaidAgeFilter: duration, antiRaidResponse: ResponseType.TEXT_CAPTCHA } });
-        return ctx.messageUtil.replyWithSuccess(
+        await ctx.prisma.server.update({ where: { id: commandCtx.server.id }, data: { antiRaidAgeFilter: duration || null, antiRaidResponse: ResponseType.TEXT_CAPTCHA } });
+        
+        if (duration === 0) return ctx.messageUtil.replyWithSuccess(
+            message,
+            "Successfully set age filter",
+            `All accounts will now be caught in the filter unless the antiraid challenge is a kick.\n\nBy default, the bot will present them with a captcha to solve, but you can configure this using the \`antiraid response\` command.`
+        )
+        else return ctx.messageUtil.replyWithSuccess(
             message,
             "Successfully set age filter",
             `Accounts younger than ${
-                duration / 60 / 1000
-            } minutes will be caught in the filter. By default, the bot will present them with a captcha to solve, but you can configure this using the \`antiraid response\` command.`
+                ms(duration, { long: true })
+            } will be caught in the filter.\n\nBy default, the bot will present them with a captcha to solve, but you can configure this using the \`antiraid response\` command.`
         );
     },
 };
