@@ -1,7 +1,7 @@
 import { escapeInlineCodeText, inlineCode } from "@yokilabs/bot";
 import { Colors } from "@yokilabs/utils";
 import { stripIndents } from "common-tags";
-import { Embed, EmbedField } from "guilded.js";
+import { Embed, EmbedField, ServerPayload } from "guilded.js";
 
 import { Category, Command } from "../commands";
 
@@ -12,9 +12,7 @@ const ServerInfo: Command = {
     aliases: ["server", "si"],
     args: [],
     execute: async (message, _args, ctx, { server }) => {
-        const guildedServer = await ctx.servers.fetch(message.serverId!);
-
-        const memberCount = (await ctx.members.fetchMany(message.serverId!)).size;
+        const { server: guildedServer, serverMemberCount: memberCount } = (await ctx.rest.router.servers.serverRead({ serverId: message.serverId! })) as unknown as { server: ServerPayload; serverMemberCount: number; };
 
         return ctx.messageUtil.send(message.channelId, {
             embeds: [
@@ -41,21 +39,21 @@ const ServerInfo: Command = {
                                 `,
                                 inline: true,
                             },
-                            guildedServer.description && {
+                            guildedServer.about && {
                                 name: "Description",
-                                value: guildedServer.description,
+                                value: guildedServer.about,
                             },
                             {
                                 name: "Additional Info",
                                 value: stripIndents`
-                                    ${guildedServer.isVerified ? ":white_check_mark: **Is verified.**\n" : ""}**URL:** \`/${guildedServer.shortURL}\`
+                                    ${guildedServer.isVerified ? ":white_check_mark: **Is verified.**\n" : ""}**URL:** \`/${guildedServer.url}\`
                                     **Timezone:** ${inlineCode(guildedServer.timezone)}
-                                    **Server created:** ${server.formatTimezone(guildedServer.createdAt)} EST
+                                    **Server created:** ${server.formatTimezone(new Date(guildedServer.createdAt))} EST
                                 `,
                             },
                         ].filter(Boolean) as EmbedField[]
                     )
-                    .setThumbnail(guildedServer.iconURL ?? void 0)
+                    .setThumbnail(guildedServer.avatar ?? void 0)
                     .toJSON(),
             ],
             isSilent: true,

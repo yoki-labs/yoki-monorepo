@@ -37,16 +37,16 @@ export class MessageUtil extends BaseMessageUtil<YokiClient, Server, Command> {
             .send(where, {
                 embeds: [
                     {
-                        author: {
-                            iconURL: author?.icon_url ?? null,
-                            name: author?.name ?? null,
+                        author: author?.name ? {
+                            icon_url: author?.icon_url ?? undefined,
+                            name: author?.name ?? undefined,
                             // url: author?.url ?? null,
-                        },
-                        footer: {
-                            iconURL: footer?.icon_url ?? null,
-                            text: footer?.text ?? null,
-                        },
-                        title: title ?? null,
+                        } : undefined,
+                        footer: footer?.text ? {
+                            icon_url: footer?.icon_url ?? undefined,
+                            text: footer?.text ?? undefined,
+                        } : undefined,
+                        title: title ?? undefined,
                         description,
                         color,
                         fields: additionalInfo ? (fields ?? []).concat({ name: "Additional Info", value: additionalInfo, inline: false }) : fields ?? [],

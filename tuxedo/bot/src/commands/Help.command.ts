@@ -36,9 +36,9 @@ const Help: Command = {
         const commandCategoryMap = getAllCommands(ctx.commands, categories);
 
         const embed = new Embed()
-            .setTitle("Tuxo Command List")
+            .setTitle("Tuxo Command list")
             .setColor(Colors.blockBackground)
-            .setDescription(":link: [Join server](https://yoki.gg/support) • [Invite bot](https://yoki.gg/invite)")
+            .setDescription(":link: [Join server](https://yoki.gg/support) \u2022 [Invite bot](https://guilded.gg/b/deabc4d2-ad06-44dd-a053-da4970229b28) \u2022 [Auto-mod](https://www.guilded.gg/b/7af0dd87-f6c8-43b1-b1bb-8917c82d5cfd)")
             .setFooter(`For additional info on a command, type ${inlineCode(`${commandCtx.server.prefix ?? ctx.prefix}help [command]`)}`);
 
         commandCategoryMap.forEach((value, key) => {
@@ -49,10 +49,10 @@ const Help: Command = {
 
         if (customIncomes.length) embed.addField(":small_orange_diamond: Server Incomes", listInlineCode(customIncomes.map((x) => x.name) as string[])!);
 
-        embed.addField(
-            ":exclamation: NOTE!!!",
-            "Tuxo is still in early stages. Be sure to join [Yoki Labs server](https://yoki.gg/support) and report any issues you find or to submit feedback. :heart_gil:"
-        );
+        // embed.addField(
+        //     ":exclamation: NOTE!!!",
+        //     "Tuxo is still in early stages. Be sure to join [Yoki Labs server](https://yoki.gg/support) and report any issues you find or to submit feedback. :heart_gil:"
+        // );
 
         return ctx.messageUtil.reply(message, { embeds: [embed] });
     },
