@@ -293,6 +293,10 @@ enum ContentIgnoreType {
 enum LogChannelType {
     all
     mod_actions
+    role_creations
+    role_deletions
+    channel_creations
+    channel_deletions
     member_roles_updates
     member_updates
     member_joins

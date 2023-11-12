@@ -25,6 +25,7 @@ import { LinkFilterUtil } from "./modules/link-filter";
 import { SpamFilterUtil } from "./modules/spam-filter";
 import SupportUtil from "./modules/support";
 import type { Context, Server } from "./typings";
+import RoleCreated from "./events/guilded/RoleCreated.ignore";
 
 /**
  * Main class that stores utils, connections to various providers, and ws
@@ -75,6 +76,7 @@ export default class YokiClient extends AbstractClient<YokiClient, Server, Comma
         ForumTopicCommentDeleted,
         DocCommentCreated: DocCommentEvent,
         DocCommentUpdated: DocCommentEvent,
+        RoleCreated,
         RoleDeleted,
         DocCommentDeleted,
         ChannelArchived,

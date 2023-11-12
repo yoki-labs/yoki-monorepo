@@ -24,6 +24,7 @@ export {
     listInlineCode,
     listInlineQuote,
     quoteMarkdown,
+    channelTypeToDisplay,
 } from "./utils/formatting";
 export {
     checkmarkEmoteNode,
@@ -35,3 +36,7 @@ export {
     crossmarkEmoteNode,
     exclamationmarkEmoteNode,
 } from "./utils/rich";
+export {
+    channelTypeToGreenIcon,
+    channelTypeToRedIcon,
+} from "./utils/images";

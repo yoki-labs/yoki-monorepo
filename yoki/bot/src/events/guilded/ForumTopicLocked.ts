@@ -25,7 +25,7 @@ export default {
         const channelURL = `https://guilded.gg/teams/${serverId}/channels/${forumTopic.channelId}/forums`;
 
         // send the log channel message with the content/data of the deleted message
-        await ctx.messageUtil.sendLog({
+        return ctx.messageUtil.sendLog({
             where: lockedTopicLogChannel.channelId,
             author: {
                 icon_url: member?.user?.avatar ?? GuildedImages.defaultAvatar,
