@@ -58,7 +58,7 @@ export class MessageUtil extends BaseMessageUtil<YokiClient, Server, Command> {
             .catch(async (e) => {
                 const existing = this.logchannelErrCounter[where] ?? 0;
 
-                if (existing > 3) {
+                /*if (existing > 3) {
                     const server = await this.client.servers.fetch(serverId).catch(() => null);
                     if (!server) return;
 
@@ -87,14 +87,14 @@ export class MessageUtil extends BaseMessageUtil<YokiClient, Server, Command> {
                             })
                             .catch(() => null);
                     delete this.logchannelErrCounter[where];
-                } else {
+                } else {*/
                     await this.client.errorHandler.send(stripIndents`
 					Log channel err. ${e.message}
 					Channel: \`${where}\`
 					Count: \`${existing}\`
 				`);
                     this.logchannelErrCounter[where] = existing + 1;
-                }
+                // }
                 return null;
             });
     }
