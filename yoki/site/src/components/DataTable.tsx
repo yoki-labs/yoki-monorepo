@@ -96,7 +96,7 @@ export default class DataTable<TItem extends { id: TItemId }, TItemId> extends R
 
         return this.props
             .deleteItems(selectedItems, page, search)
-            .then(({ items, maxPages }) => this.setState({ items, maxPages, page, search }))
+            .then(({ items, maxPages }) => this.setState({ items, maxPages, page, search, selectedItems: [] }))
             .catch(notifyFetchError.bind(null, `Error while deleting data table item`));
     }
 

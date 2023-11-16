@@ -4,7 +4,7 @@ import { NextApiResponse } from "next";
 
 import rest from "../../../../guilded";
 import prisma from "../../../../prisma";
-import createServerRoute, { channelExistsInServer } from "../../../../utils/route";
+import createServerRoute, { channelExistsInServer } from "../../../../utils/routes/route";
 
 const DEFAULT_PREFIX = process.env.DEFAULT_PREFIX as string;
 const MAP_DEFAULT_PREFIXES = [DEFAULT_PREFIX, null, ""];

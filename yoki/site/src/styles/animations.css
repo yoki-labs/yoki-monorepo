@@ -6,3 +6,12 @@
         left: 2000px;
     }
 }
+
+.hoverAbove {
+    transform: translateY(0);
+    transition: transform 0.2s ease-out;
+}
+
+.hoverAbove:hover {
+    transform: translateY(-8px);
+}

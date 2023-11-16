@@ -1,21 +1,16 @@
 import { ServerMember } from "@guildedjs/api/types/generated/router/models/ServerMember";
-import { RoleType, Server } from "@prisma/client";
+import { Prisma, PrismaClient, RoleType, Server } from "@prisma/client";
 import { NextApiRequest, NextApiResponse } from "next";
 import { Session, unstable_getServerSession } from "next-auth";
 
-import { LabsSessionUser } from "./pageUtil";
-import rest from "../guilded";
-import { GuildedClientServer, GuildedServer } from "../lib/@types/guilded";
-import { authOptions } from "../pages/api/auth/[...nextauth]";
-import prisma from "../prisma";
+import rest from "../../guilded";
+import { authOptions } from "../../pages/api/auth/[...nextauth]";
+import prisma from "../../prisma";
 
 type ServerRouteFunction = (req: NextApiRequest, res: NextApiResponse, session: Session | null, server: Server, member: ServerMember) => Promise<unknown>;
 type ServerRouteInfo = Record<string, ServerRouteFunction>;
 
-type UserRouteFunction = (req: NextApiRequest, res: NextApiResponse, session: Session | null, user: LabsSessionUser) => Promise<unknown>;
-type UserRouteInfo = Record<string, UserRouteFunction>;
-
-export default function createServerRoute(methodToFunction: ServerRouteInfo) {
+export function createServerRoute(methodToFunction: ServerRouteInfo) {
     return async function onRequest(req: NextApiRequest, res: NextApiResponse) {
         // Has to be allowed method; this is the only method available
         if (!(req.method && Object.hasOwn(methodToFunction, req.method))) return res.status(405).send("");
@@ -58,35 +53,54 @@ export default function createServerRoute(methodToFunction: ServerRouteInfo) {
     };
 }
 
-export function createUserRoute(methodToFunction: UserRouteInfo) {
-    return async function onRequest(req: NextApiRequest, res: NextApiResponse) {
-        // Has to be allowed method; this is the only method available
-        if (!(req.method && Object.hasOwn(methodToFunction, req.method))) return res.status(405).send("");
+interface DataRouteInfo<TItem extends { id: TId }, TId> {
+    type: string;
+    searchFilter: (value: TItem, search: string, index: number, array: TItem[]) => boolean;
+    fetchMany: (serverId: string) => Promise<TItem[]>;
+    deleteMany: (serverId: string, ids: TId[]) => Promise<unknown>;
+};
 
-        // Don't know who is appealing (need a Guilded login)
-        const session = await unstable_getServerSession(req, res, authOptions);
-        if (!session?.user.id) return res.status(401).json({ error: true, message: "Must be logged in to use this function." });
+export function createServerDataRoute<TItem extends { id: TId }, TId>({ type, searchFilter, fetchMany, deleteMany }: DataRouteInfo<TItem, TId>) {
+    async function fetch(req: NextApiRequest, res: NextApiResponse, server: Server) {
+        const { page: pageStr, search } = req.query;
 
-        return methodToFunction[req.method](req, res, session, { id: session.user.id!, name: session.user.name, avatar: session.user.avatar });
-    };
+        // Check query
+        if (typeof pageStr !== "string") return res.status(400).json({ error: true, message: "Expected page single query" });
+
+        const page = parseInt(pageStr, 10);
+
+        if (typeof page !== "number" || page < 0) return res.status(400).json({ error: true, message: "Expected page to be a number that is at least 0." });
+        else if (typeof search !== "undefined" && typeof search !== "string") return res.status(400).json({ error: true, message: "Expected search query to be a string." });
+
+        const items: TItem[] = await fetchMany(server.serverId);
+        const foundItems = search ? items.filter((value, index, array) => searchFilter(value, search, index, array)) : items;
+
+        const startIndex = page * 50;
+        const endIndex = (page + 1) * 50;
+
+        return res.status(200).json({
+            // To get rid of useless information
+            items: foundItems.slice(startIndex, endIndex),
+            count: foundItems.length,
+        });
+    }
+
+    return createServerRoute({
+        async GET(req, res, _session, server, _member) {
+            return fetch(req, res, server);
+        },
+        async DELETE(req, res, _session, server, _member) {
+            const { ids } = req.body;
+    
+            // Check query
+            if (!Array.isArray(ids) || ids.some((x) => typeof x !== type)) return res.status(400).json({ error: true, message: `ids must be a ${type} array` });
+    
+            // Just delete all of them
+            await deleteMany(server.serverId, ids);
+    
+            // To update the state
+            return fetch(req, res, server);
+        },
+    })
 }
 
-export const allowedRoleTypes = [RoleType.ADMIN, RoleType.MOD, RoleType.MINIMOD];
-
-export async function roleExistsInServer(serverId: string, roleId: number) {
-    const { roles: serverRoles } = await rest.router.roles.roleReadMany({ serverId });
-
-    return serverRoles.find((x) => x.id === roleId);
-}
-
-export const channelExistsInServer = async (channelId: string) =>
-    rest.router.channels
-        .channelRead({ channelId })
-        .then(() => true)
-        .catch(() => false);
-
-export const transformFoundServer = (server: GuildedClientServer | undefined): GuildedServer | undefined => server && transformServer(server);
-
-export function transformServer({ id, name, subdomain, profilePicture }: GuildedClientServer): GuildedServer {
-    return { id, name, url: subdomain, avatar: profilePicture ?? undefined };
-}

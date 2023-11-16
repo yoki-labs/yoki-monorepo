@@ -1,7 +1,8 @@
 import { Role } from "@prisma/client";
 
 import prisma from "../../../../../prisma";
-import createServerRoute, { allowedRoleTypes, roleExistsInServer } from "../../../../../utils/route";
+import { allowedRoleTypes, roleExistsInServer } from "../../../../../utils/routes/route";
+import { createServerRoute } from "../../../../../utils/routes/servers";
 
 const serverRolesRoute = createServerRoute({
     async PATCH(req, res, _session, { serverId }, _member) {

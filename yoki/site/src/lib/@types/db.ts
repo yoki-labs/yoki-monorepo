@@ -1,4 +1,4 @@
-import { Action, Appeal, ContentFilter, LogChannel, Preset, ReactionAction, Role, Server, UrlFilter } from "@prisma/client";
+import { Action, Appeal, ContentFilter, LogChannel, ModmailThread, Preset, ReactionAction, Role, Server, UrlFilter } from "@prisma/client";
 
 export type SanitizedServer = Omit<Server, "id" | "flags" | "blacklisted" | "botJoinedAt" | "createdAt" | "updatedAt"> & { earlyaccess: boolean };
 
@@ -10,6 +10,7 @@ export type SanitizedAction = Omit<Action, "logChannelId" | "logChannelMessage" 
     expiresAt: string | null;
 };
 export type SanitizedAppeal = Omit<Appeal, "createdAt"> & { createdAt: string };
+export type SanitizedModmailThread = Omit<ModmailThread, "createdAt" | "updatedAt"> & { createdAt: string, updatedAt: string | null };
 export type SanitizedRole = Omit<Role, "id"> & { createdAt: string };
 
 export type SanitizedPreset = Omit<Preset, "id">;

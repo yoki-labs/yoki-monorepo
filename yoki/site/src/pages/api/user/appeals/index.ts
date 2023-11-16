@@ -2,7 +2,7 @@ import { Appeal } from "@prisma/client";
 import { NextApiRequest, NextApiResponse } from "next";
 
 import prisma from "../../../../prisma";
-import { createUserRoute } from "../../../../utils/route";
+import { createUserRoute } from "../../../../utils/routes/route";
 
 const appealsPerPage = 50;
 

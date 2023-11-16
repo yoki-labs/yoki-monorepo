@@ -1,16 +1,15 @@
 import React from "react";
 import { SanitizedLogChannel } from "../../../lib/@types/db";
-import { Alert, Box, Card, Skeleton, Stack, Typography } from "@mui/joy";
-import DashboardLogChannel, { LogItemCreationForm, channelTypeToIcon } from "./LogItem";
+import { Box, Card, Skeleton, Stack, Typography } from "@mui/joy";
+import DashboardLogChannel, { LogItemCreationForm } from "./LogItem";
 import { toLookup } from "@yokilabs/utils";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faExclamationTriangle } from "@fortawesome/free-solid-svg-icons";
 import { DashboardPageProps } from "../pages";
 import PagePlaceholder, { PagePlaceholderIcon } from "../../PagePlaceholder";
 import { LogChannelType } from "@prisma/client";
 import { notifyFetchError } from "../../../utils/errorUtil";
 import { GuildedSanitizedChannel } from "../../../lib/@types/guilded";
 import { LabsFormFieldOption } from "../../form/form";
+import { channelsToSelectionOptions } from "../channels";
 
 type State = {
     isLoaded: boolean;
@@ -27,11 +26,7 @@ export default class LogsPage extends React.Component<DashboardPageProps, State>
     }
 
     get channelSelectionOptions(): LabsFormFieldOption<string>[] {
-        return this.state.serverChannels.map((x) => ({
-            value: x.id,
-            name: x.name,
-            icon: channelTypeToIcon[x.contentType as "chat" | "voice" | "stream"],
-        }));
+        return channelsToSelectionOptions(this.state.serverChannels);
     }
 
     async componentDidMount(): Promise<void> {

@@ -32,20 +32,20 @@ export default class AppealsPage extends React.Component<DashboardPageProps> {
                 if (!response.ok) throw response;
                 return response.json();
             })
-            .then(({ appeals, count }) => ({ items: appeals, maxPages: Math.ceil(count / 50) }));
+            .then(({ items, count }) => ({ items, maxPages: Math.ceil(count / 50) }));
     }
 
-    async deleteAppeals(appealIds: number[], page: number, search?: string) {
+    async deleteAppeals(ids: number[], page: number, search?: string) {
         return fetch(this.getAppealsRoute(page, search), {
             method: "DELETE",
             headers: { "content-type": "application/json" },
-            body: JSON.stringify({ appealIds }),
+            body: JSON.stringify({ ids }),
         })
             .then((response) => {
                 if (!response.ok) throw response;
                 return response.json();
             })
-            .then(({ appeals, count }) => ({ items: appeals, maxPages: Math.ceil(count / 50) }));
+            .then(({ items, count }) => ({ items, maxPages: Math.ceil(count / 50) }));
     }
 
     async modifyServerConfig(appealChannelId: string | null | undefined) {
@@ -91,7 +91,7 @@ export default class AppealsPage extends React.Component<DashboardPageProps> {
                                             {
                                                 type: LabsFormFieldType.Text,
                                                 prop: "appealChannelId",
-                                                name: "Appeal Channel",
+                                                name: "Appeal channel",
                                                 description: "The ID of the channel where appeals will be posted and managed.",
                                                 defaultValue: serverConfig.appealChannelId,
                                                 prefixIcon: faHashtag,

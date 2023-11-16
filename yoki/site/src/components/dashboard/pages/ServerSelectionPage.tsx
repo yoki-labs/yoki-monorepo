@@ -40,6 +40,7 @@ export default class ServerSelectionPage extends React.Component<Props, State> {
                                 <ServerDisplay
                                     name={server.name}
                                     avatar={server.profilePicture}
+                                    banner={server.teamDashImage}
                                     url={server.subdomain}
                                     onClick={this.onClick.bind(this)}
                                     sx={{ cursor: "pointer", bgcolor: "background.level1", "&:hover": { boxShadow: "md", bgcolor: "background.level2" } }}

@@ -1,7 +1,7 @@
 import { Preset, Severity } from "@prisma/client";
 
 import prisma from "../../../../../prisma";
-import createServerRoute from "../../../../../utils/route";
+import { createServerRoute } from "../../../../../utils/routes/servers";
 
 const allowedPresets = ["profanity", "sexual", "slurs", "sexual-links"];
 const allowedSeverities = Object.keys(Severity);

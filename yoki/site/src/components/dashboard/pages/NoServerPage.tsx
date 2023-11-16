@@ -1,5 +1,5 @@
 import { Alert, Box, Link, Stack, Typography } from "@mui/joy";
-import { GuildedClientServer, GuildedServer } from "../../../lib/@types/guilded";
+import { GuildedServer } from "../../../lib/@types/guilded";
 import ServerDisplay from "../ServerDisplay";
 import LabsButton from "../../LabsButton";
 import PagePlaceholder, { PagePlaceholderIcon } from "../../PagePlaceholder";
@@ -17,7 +17,7 @@ export default function NoServerPage({ currentServer }: Props) {
                 <PagePlaceholder icon={PagePlaceholderIcon.NoPermission} title="Uh oh! Yoki isn't in this server">
                     Yoki hasn't been in this server yet. Invite Yoki to protect the server and be able to manage it through this dashboard.
                 </PagePlaceholder>
-                <ServerDisplay name={currentServer.name} avatar={currentServer.avatar} url={currentServer.url} />
+                <ServerDisplay name={currentServer.name} avatar={currentServer.avatar} banner={currentServer.banner} url={currentServer.url} />
                 <LabsButton>Invite Yoki</LabsButton>
                 <Alert color="primary" variant="soft" startDecorator={<FontAwesomeIcon icon={faInfoCircle} />} sx={{ mt: 8 }}>
                     <Box sx={{ alignItems: "baseline" }}>

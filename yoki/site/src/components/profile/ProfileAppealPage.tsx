@@ -42,7 +42,7 @@ export default class ProfileAppealPage extends React.Component<ProfilePageProps>
     render() {
         return (
             <Stack direction="column" gap={2}>
-                <Typography level="h2">Your server ban appeals</Typography>
+                <Typography level="h3">Your server ban appeals</Typography>
                 <DataTable<SanitizedAppeal, number>
                     itemType="ban appeals"
                     timezone="America/New_York"

@@ -1,6 +1,6 @@
 import { Box, Card, CardContent, Chip, ListItemDecorator, MenuItem, Stack, Typography } from "@mui/joy";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { IconDefinition, faBroadcastTower, faHashtag, faPen, faPlus, faTrash, faVolumeLow } from "@fortawesome/free-solid-svg-icons";
+import { IconDefinition, faHashtag, faPen, faPlus, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { formatDate } from "@yokilabs/utils";
 import LabsIconWrapper from "../../LabsIconWrapper";
 import { LogChannelType } from "@prisma/client";
@@ -9,6 +9,7 @@ import React from "react";
 import LabsForm, { LabsFormFieldValueMap } from "../../form/LabsForm";
 import { LabsFormFieldOption, LabsFormFieldType, LabsFormSectionOrder } from "../../form/form";
 import { GuildedSanitizedChannel } from "../../../lib/@types/guilded";
+import { channelTypeToIcon } from "../channels";
 
 type Props = {
     serverId: string;
@@ -34,6 +35,10 @@ const typeDisplayNames: Record<LogChannelType, string> = {
     [LogChannelType.notifications]: "Yoki notifications",
     [LogChannelType.mod_actions]: "Yoki mod logs",
     [LogChannelType.modmail_logs]: "Yoki Modmail logs",
+    [LogChannelType.role_creations]: "Server role created",
+    [LogChannelType.role_deletions]: "Server role deleted",
+    [LogChannelType.channel_creations]: "Server channel created",
+    [LogChannelType.channel_deletions]: "Server channel deleted",
     [LogChannelType.member_joins]: "Member joins",
     [LogChannelType.member_updates]: "Member nickname changes",
     [LogChannelType.member_roles_updates]: "Member's role changes",
@@ -45,12 +50,6 @@ const typeDisplayNames: Record<LogChannelType, string> = {
     [LogChannelType.topic_deletions]: "Forum topic deletions",
     [LogChannelType.topic_locks]: "Forum topic locks/unlocks",
     [LogChannelType.comment_deletions]: "Content comment deletions",
-};
-
-export const channelTypeToIcon: Record<"chat" | "voice" | "stream", IconDefinition> = {
-    ["chat"]: faHashtag,
-    ["voice"]: faVolumeLow,
-    ["stream"]: faBroadcastTower,
 };
 
 const typeOptions = Object.values(LogChannelType).map((type) => ({ value: type, name: typeDisplayNames[type] }));
@@ -166,7 +165,7 @@ export default class DashboardLogChannel extends React.Component<Props, State> {
         );
     }
 
-    async onLogChannelEdit({ types, channelId }: LabsFormFieldValueMap) {
+    async onLogChannelEdit({ types }: LabsFormFieldValueMap) {
         this.toggleEditMode(false);
 
         return this.props.onUpdate(types as LogChannelType[]);

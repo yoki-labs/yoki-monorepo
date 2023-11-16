@@ -77,7 +77,7 @@ export default class AntiraidPage extends React.Component<DashboardPageProps> {
                                             {
                                                 type: LabsFormFieldType.Text,
                                                 prop: "antiRaidChallengeChannel",
-                                                name: "Challenge Channel",
+                                                name: "Challenge channel",
                                                 description: "For text captchas, this is the channel where text captchas will be sent to.",
                                                 placeholder: "Channel ID",
                                                 defaultValue: serverConfig.antiRaidChallengeChannel,
@@ -86,7 +86,7 @@ export default class AntiraidPage extends React.Component<DashboardPageProps> {
                                             {
                                                 type: LabsFormFieldType.Select,
                                                 prop: "antiRaidResponse",
-                                                name: "Anti-raid Response",
+                                                name: "Anti-raid response",
                                                 description: "How the recently created accounts will be dealt with.",
                                                 defaultValue: serverConfig.antiRaidResponse,
                                                 selectableValues: antiRaidResponseValues,
@@ -94,7 +94,7 @@ export default class AntiraidPage extends React.Component<DashboardPageProps> {
                                             {
                                                 type: LabsFormFieldType.Time,
                                                 prop: "antiRaidAgeFilter",
-                                                name: "Filtered Account Age",
+                                                name: "Filtered account age",
                                                 description: "The amount of time that account should exist before it's considered recently created and is dealt with anti-raid.",
                                                 defaultValue: serverConfig.antiRaidAgeFilter,
                                                 step: TimeStep.Days,

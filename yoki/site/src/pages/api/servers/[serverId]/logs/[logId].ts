@@ -2,7 +2,8 @@ import { LogChannelType } from "@prisma/client";
 import { isUUID } from "@yokilabs/utils";
 
 import prisma from "../../../../../prisma";
-import createServerRoute, { channelExistsInServer } from "../../../../../utils/route";
+import { channelExistsInServer } from "../../../../../utils/routes/route";
+import { createServerRoute } from "../../../../../utils/routes/servers";
 
 const serverLogsRoute = createServerRoute({
     async DELETE(req, res, _session, { serverId }, _member) {

@@ -38,4 +38,4 @@ export interface GuildedClientChannel {
 
 export type GuildedSanitizedChannel = Pick<GuildedClientChannel, "id" | "contentType" | "name" | "description" | "priority" | "groupId" | "isPublic" | "createdBy">;
 
-export type GuildedServer = Pick<Server, "id" | "name" | "avatar" | "url"> | Server;
+export type GuildedServer = Pick<Server, "id" | "name" | "avatar" | "banner" | "url"> | Server;

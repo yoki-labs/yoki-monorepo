@@ -2,7 +2,8 @@ import { Role } from "@prisma/client";
 
 import rest from "../../../../../guilded";
 import prisma from "../../../../../prisma";
-import createServerRoute, { allowedRoleTypes, roleExistsInServer } from "../../../../../utils/route";
+import { allowedRoleTypes, roleExistsInServer } from "../../../../../utils/routes/route";
+import { createServerRoute } from "../../../../../utils/routes/servers";
 
 const serverRolesRoute = createServerRoute({
     async GET(_req, res, _session, { serverId }, _member) {

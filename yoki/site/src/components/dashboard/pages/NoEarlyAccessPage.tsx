@@ -16,7 +16,7 @@ export default function NoEarlyAccessPage({ currentServer }: Props) {
                 <PagePlaceholder icon={PagePlaceholderIcon.NoPermission} title="Not permitted">
                     Unfortunately, this server does not have early access to use the dashboard.
                 </PagePlaceholder>
-                <ServerDisplay name={currentServer.name} avatar={currentServer.avatar} url={currentServer.url} />
+                <ServerDisplay name={currentServer.name} avatar={currentServer.avatar} banner={currentServer.banner} url={currentServer.url} />
                 <Alert color="primary" variant="soft" startDecorator={<FontAwesomeIcon icon={faInfoCircle} />} sx={{ mt: 8 }}>
                     <Box sx={{ alignItems: "baseline" }}>
                         <Typography fontSize="md" sx={{ color: "inherit" }}>

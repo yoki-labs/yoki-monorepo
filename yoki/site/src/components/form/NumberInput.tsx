@@ -79,6 +79,9 @@ export default class NumberInput extends React.Component<Props, State> {
                     size={field.size}
                     error={this.state.isInvalid}
                     variant={field.variant ?? "outlined"}
+                    startDecorator={
+                        field.prefixIcon && <FontAwesomeIcon icon={field.prefixIcon} />
+                    }
                     endDecorator={
                         <>
                             <Divider orientation="vertical" />

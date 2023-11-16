@@ -2,7 +2,7 @@ import { ContentFilter, Server } from "@prisma/client";
 import { NextApiRequest, NextApiResponse } from "next";
 
 import prisma from "../../../../../prisma";
-import createServerRoute from "../../../../../utils/route";
+import { createServerRoute } from "../../../../../utils/routes/servers";
 
 const casesPerPage = 50;
 
