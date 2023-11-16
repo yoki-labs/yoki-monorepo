@@ -2,11 +2,18 @@ import { Box, Card, CardContent, Typography } from "@mui/joy";
 import React from "react";
 import DashboardModule from "../DashboardModule";
 import { DashboardPageProps } from "../pages";
-import { faCommentDots, faDoorOpen, faGlobe, faHashtag, faShieldHalved } from "@fortawesome/free-solid-svg-icons";
+import { faCommentDots, faDoorOpen, faGlobe, faShieldHalved } from "@fortawesome/free-solid-svg-icons";
 import LabsForm from "../../form/LabsForm";
 import { LabsFormFieldOption, LabsFormFieldType, LabsFormSectionOrder, TimeStep } from "../../form/form";
 import { ResponseType } from "@prisma/client";
 import { errorifyResponseError, notifyFetchError } from "../../../utils/errorUtil";
+import { channelsToSelectionOptions } from "../channels";
+import { GuildedSanitizedChannel } from "../../../lib/@types/guilded";
+
+type State = {
+    isMounted: boolean;
+    serverChannels: GuildedSanitizedChannel[];
+};
 
 const antiRaidResponseValues: LabsFormFieldOption<ResponseType>[] = [
     {
@@ -29,9 +36,20 @@ const antiRaidResponseValues: LabsFormFieldOption<ResponseType>[] = [
     },
 ];
 
-export default class AntiraidPage extends React.Component<DashboardPageProps> {
+export default class AntiraidPage extends React.Component<DashboardPageProps, State> {
     constructor(props: DashboardPageProps) {
         super(props);
+
+        this.state = { isMounted: false, serverChannels: [] };
+    }
+
+    componentDidMount(): unknown {
+        // To not re-mount
+        if (this.state.isMounted) return;
+
+        this.setState({ isMounted: true });
+
+        return this.fetchAntiraidInfo();
     }
 
     async modifyServerConfig(antiRaidChallengeChannel: string | undefined | null, antiRaidResponse: ResponseType | undefined | null, antiRaidAgeFilter: number | undefined | null) {
@@ -46,8 +64,22 @@ export default class AntiraidPage extends React.Component<DashboardPageProps> {
             .catch((errorResponse) => notifyFetchError("Error while updating server data for antiraid", errorResponse));
     }
 
+    async fetchAntiraidInfo() {
+        const { serverId } = this.props.serverConfig;
+
+        return fetch(`/api/servers/${serverId}/channels`, {
+            method: "GET",
+            headers: { "content-type": "application/json" },
+        })
+            .then(errorifyResponseError)
+            .then((response) => response.json())
+            .then(({ serverChannels }) => this.setState({ serverChannels }))
+            .catch(notifyFetchError.bind(null, "Error while fetching channel data for anti-raid"));
+    }
+
     render() {
         const { serverConfig } = this.props;
+        const { serverChannels } = this.state;
 
         return (
             <>
@@ -75,13 +107,12 @@ export default class AntiraidPage extends React.Component<DashboardPageProps> {
                                         order: LabsFormSectionOrder.Grid,
                                         fields: [
                                             {
-                                                type: LabsFormFieldType.Text,
+                                                type: LabsFormFieldType.Select,
                                                 prop: "antiRaidChallengeChannel",
                                                 name: "Challenge channel",
                                                 description: "For text captchas, this is the channel where text captchas will be sent to.",
-                                                placeholder: "Channel ID",
                                                 defaultValue: serverConfig.antiRaidChallengeChannel,
-                                                prefixIcon: faHashtag,
+                                                selectableValues: channelsToSelectionOptions(serverChannels),
                                             },
                                             {
                                                 type: LabsFormFieldType.Select,

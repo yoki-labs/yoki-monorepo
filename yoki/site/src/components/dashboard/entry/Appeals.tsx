@@ -9,10 +9,28 @@ import { AppealCard, AppealRow } from "./AppealItem";
 import LabsForm from "../../form/LabsForm";
 import { LabsFormFieldType, LabsFormSectionOrder } from "../../form/form";
 import { errorifyResponseError, notifyFetchError } from "../../../utils/errorUtil";
+import { GuildedSanitizedChannel } from "../../../lib/@types/guilded";
+import { channelsToSelectionOptions } from "../channels";
 
-export default class AppealsPage extends React.Component<DashboardPageProps> {
+type State = {
+    isMounted: boolean;
+    serverChannels: GuildedSanitizedChannel[];
+};
+
+export default class AppealsPage extends React.Component<DashboardPageProps, State> {
     constructor(props: DashboardPageProps) {
         super(props);
+
+        this.state = { isMounted: false, serverChannels: [] };
+    }
+
+    componentDidMount(): unknown {
+        // To not re-mount
+        if (this.state.isMounted) return;
+
+        this.setState({ isMounted: true });
+
+        return this.fetchAppealInfo();
     }
 
     getAppealsRoute(page: number, search?: string) {
@@ -48,6 +66,19 @@ export default class AppealsPage extends React.Component<DashboardPageProps> {
             .then(({ items, count }) => ({ items, maxPages: Math.ceil(count / 50) }));
     }
 
+    async fetchAppealInfo() {
+        const { serverId } = this.props.serverConfig;
+
+        return fetch(`/api/servers/${serverId}/channels`, {
+            method: "GET",
+            headers: { "content-type": "application/json" },
+        })
+            .then(errorifyResponseError)
+            .then((response) => response.json())
+            .then(({ serverChannels }) => this.setState({ serverChannels }))
+            .catch(notifyFetchError.bind(null, "Error while fetching channel data for appeals"));
+    }
+
     async modifyServerConfig(appealChannelId: string | null | undefined) {
         const { serverId } = this.props.serverConfig;
 
@@ -62,6 +93,7 @@ export default class AppealsPage extends React.Component<DashboardPageProps> {
 
     render() {
         const { serverConfig } = this.props;
+        const { serverChannels } = this.state;
 
         return (
             <>
@@ -89,12 +121,12 @@ export default class AppealsPage extends React.Component<DashboardPageProps> {
                                         order: LabsFormSectionOrder.Grid,
                                         fields: [
                                             {
-                                                type: LabsFormFieldType.Text,
+                                                type: LabsFormFieldType.Select,
                                                 prop: "appealChannelId",
                                                 name: "Appeal channel",
-                                                description: "The ID of the channel where appeals will be posted and managed.",
+                                                description: "The channel where appeals will be posted and managed.",
                                                 defaultValue: serverConfig.appealChannelId,
-                                                prefixIcon: faHashtag,
+                                                selectableValues: channelsToSelectionOptions(serverChannels),
                                             },
                                         ],
                                     },
