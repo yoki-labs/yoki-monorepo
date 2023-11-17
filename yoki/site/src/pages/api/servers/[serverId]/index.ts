@@ -4,7 +4,9 @@ import { NextApiResponse } from "next";
 
 import rest from "../../../../guilded";
 import prisma from "../../../../prisma";
-import createServerRoute, { channelExistsInServer } from "../../../../utils/routes/route";
+import { channelExistsInServer } from "../../../../utils/routes/route";
+import { getBodyErrorResponse, isBodyChannelPropertyValid, isBodyEnumPropertyInvalid, isBodyPropertyTypeInvalid, isRemovableBodyPropertyTypeInvalid } from "../../../../utils/routes/body";
+import { createServerRoute } from "../../../../utils/routes/servers";
 
 const DEFAULT_PREFIX = process.env.DEFAULT_PREFIX as string;
 const MAP_DEFAULT_PREFIXES = [DEFAULT_PREFIX, null, ""];
@@ -40,33 +42,33 @@ const serverConfigRoute = createServerRoute({
 
         // ///// Body validity check
         // Prefix can be string or unset
-        if (isUnsettablePropertyTypeInvalid(body.prefix, "string")) return getErrorResponse(res, "prefix", "null or string");
+        if (isRemovableBodyPropertyTypeInvalid(body.prefix, "string")) return getBodyErrorResponse(res, "prefix", "null or string");
         // Timezones can be valid timezones or unset
-        else if (isEnumPropertyInvalid(body.timezone, timezones)) return getErrorResponse(res, "timezone", "null or string");
+        else if (isBodyEnumPropertyInvalid(body.timezone, timezones)) return getBodyErrorResponse(res, "timezone", "null or string");
         // Expect number between 2-100
-        else if (isPropertyTypeInvalid(body.spamFrequency, "number") || body.spamFrequency < 2 || body.spamFrequency > 100)
-            return getErrorResponse(res, "spamFrequency", "number between 2 and 100");
-        else if (isPropertyTypeInvalid(body.spamMentionFrequency, "number") || body.spamMentionFrequency < 2 || body.spamMentionFrequency > 100)
-            return getErrorResponse(res, "spamMentionFrequency", "number between 2 and 100");
+        else if (isBodyPropertyTypeInvalid(body.spamFrequency, "number") || body.spamFrequency < 2 || body.spamFrequency > 100)
+            return getBodyErrorResponse(res, "spamFrequency", "number between 2 and 100");
+        else if (isBodyPropertyTypeInvalid(body.spamMentionFrequency, "number") || body.spamMentionFrequency < 2 || body.spamMentionFrequency > 100)
+            return getBodyErrorResponse(res, "spamMentionFrequency", "number between 2 and 100");
         // Expect % (0>x>1)
-        else if (isPropertyTypeInvalid(body.nsfwHentaiConfidence, "number") || body.nsfwHentaiConfidence < 0 || body.nsfwHentaiConfidence > 1)
-            return getErrorResponse(res, "nsfwHentaiConfidence", "number between 0 and 1");
-        else if (isPropertyTypeInvalid(body.nsfwPornConfidence, "number") || body.nsfwPornConfidence < 0 || body.nsfwPornConfidence > 1)
-            return getErrorResponse(res, "nsfwPornConfidence", "number between 0 and 1");
+        else if (isBodyPropertyTypeInvalid(body.nsfwHentaiConfidence, "number") || body.nsfwHentaiConfidence < 0 || body.nsfwHentaiConfidence > 1)
+            return getBodyErrorResponse(res, "nsfwHentaiConfidence", "number between 0 and 1");
+        else if (isBodyPropertyTypeInvalid(body.nsfwPornConfidence, "number") || body.nsfwPornConfidence < 0 || body.nsfwPornConfidence > 1)
+            return getBodyErrorResponse(res, "nsfwPornConfidence", "number between 0 and 1");
         // Infractions can be negative in notes and whatever, but here it isn't allowed.
-        else if (isPropertyTypeInvalid(body.spamInfractionPoints, "number") || body.spamInfractionPoints < 0 || body.spamInfractionPoints > 10000)
-            return getErrorResponse(res, "spamInfractionPoints", "number between 0 and 10'000");
-        else if (isPropertyTypeInvalid(body.linkInfractionPoints, "number") || body.linkInfractionPoints < 0 || body.linkInfractionPoints > 10000)
-            return getErrorResponse(res, "linkInfractionPoints", "number between 0 and 10'000");
+        else if (isBodyPropertyTypeInvalid(body.spamInfractionPoints, "number") || body.spamInfractionPoints < 0 || body.spamInfractionPoints > 10000)
+            return getBodyErrorResponse(res, "spamInfractionPoints", "number between 0 and 10'000");
+        else if (isBodyPropertyTypeInvalid(body.linkInfractionPoints, "number") || body.linkInfractionPoints < 0 || body.linkInfractionPoints > 10000)
+            return getBodyErrorResponse(res, "linkInfractionPoints", "number between 0 and 10'000");
         // Enums
-        else if (isEnumPropertyInvalid(body.linkSeverity, availableSeverity)) return getErrorResponse(res, "linkSeverity", "severity");
-        else if (isEnumPropertyInvalid(body.antiRaidResponse, availableResponse)) return getErrorResponse(res, "antiRaidResponse", "response type");
+        else if (isBodyEnumPropertyInvalid(body.linkSeverity, availableSeverity)) return getBodyErrorResponse(res, "linkSeverity", "severity");
+        else if (isBodyEnumPropertyInvalid(body.antiRaidResponse, availableResponse)) return getBodyErrorResponse(res, "antiRaidResponse", "response type");
         // Channels
-        else if (!(await isChannelPropertyValid(body.appealChannelId))) return getErrorResponse(res, "appealChannelId", "null or channel");
-        else if (!(await isChannelPropertyValid(body.antiRaidChallengeChannel))) return getErrorResponse(res, "antiRaidChallengeChannel", "null or channel");
+        else if (!(await isBodyChannelPropertyValid(body.appealChannelId))) return getBodyErrorResponse(res, "appealChannelId", "null or channel");
+        else if (!(await isBodyChannelPropertyValid(body.antiRaidChallengeChannel))) return getBodyErrorResponse(res, "antiRaidChallengeChannel", "null or channel");
         // Misc numbers
-        else if (isPropertyTypeInvalid(body.antiRaidAgeFilter, "number") || body.antiRaidAgeFilter < MIN_ANTIRAID_TIME || body.antiRaidAgeFilter > MAX_ANTIRAID_TIME)
-            return getErrorResponse(res, "antiRaidAgeFilter", "time between 10 minutes and 14 days");
+        else if (isBodyPropertyTypeInvalid(body.antiRaidAgeFilter, "number") || body.antiRaidAgeFilter < MIN_ANTIRAID_TIME || body.antiRaidAgeFilter > MAX_ANTIRAID_TIME)
+            return getBodyErrorResponse(res, "antiRaidAgeFilter", "time between 10 minutes and 14 days");
 
         // Modules
         const data: Partial<Server> = {
@@ -89,7 +91,7 @@ const serverConfigRoute = createServerRoute({
 
         // Remove repetition
         for (const moduleProp of BOOLEAN_PROPERTIES) {
-            if (isPropertyTypeInvalid(body[moduleProp], "boolean")) return getErrorResponse(res, moduleProp, "boolean");
+            if (isBodyPropertyTypeInvalid(body[moduleProp], "boolean")) return getBodyErrorResponse(res, moduleProp, "boolean");
 
             // It is fine
             data[moduleProp] = body[moduleProp];
@@ -120,24 +122,5 @@ const serverConfigRoute = createServerRoute({
         return res.status(200).json({});
     },
 });
-
-const getErrorResponse = (res: NextApiResponse, name: string, type: string) => res.status(400).json({ error: true, message: `Invalid ${name}. Expected ${type}` });
-
-type AllowedValues = "string" | "number" | "boolean" | "object";
-
-// Can only be set; no default
-function isPropertyTypeInvalid<T>(value: T, expectedType: AllowedValues) {
-    const valueType = typeof value;
-
-    return valueType !== "undefined" && valueType !== expectedType;
-}
-
-// Null is set back to default
-const isUnsettablePropertyTypeInvalid = <T>(value: T, expectedType: AllowedValues) => value !== null && isPropertyTypeInvalid(value, expectedType);
-
-const isEnumPropertyInvalid = <T extends string>(value: unknown, expectedValues: T[]) => value !== null && typeof value !== "undefined" && !expectedValues.includes(value as T);
-
-const isChannelPropertyValid = async <T>(channelId: T) =>
-    typeof channelId === "undefined" || channelId === null || (typeof channelId === "string" && channelExistsInServer(channelId));
 
 export default serverConfigRoute;

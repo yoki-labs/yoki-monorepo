@@ -85,7 +85,7 @@ export default class ModmailPage extends React.Component<DashboardPageProps, Sta
         const { serverId } = this.props.serverConfig;
 
         return fetch(`/api/servers/${serverId}/reactions/MODMAIL`, {
-            method: "PATCH",
+            method: "PUT",
             headers: { "content-type": "application/json" },
             body: JSON.stringify({ channelId, messageId, emoteId }),
         })
