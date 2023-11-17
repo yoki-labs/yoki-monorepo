@@ -12,6 +12,15 @@ export const severityToIcon: Record<Severity, IconDefinition> = {
     SOFTBAN: faBroom,
 };
 
+export const severityToName: Record<Severity, string> = {
+    NOTE: "Note",
+    MUTE: "Mute",
+    BAN: "Ban",
+    KICK: "Kick",
+    WARN: "Warning",
+    SOFTBAN: "Flush",
+};
+
 export const severityOptions: LabsFormFieldOption<Severity>[] = [
     {
         name: "Note",

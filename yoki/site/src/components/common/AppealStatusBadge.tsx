@@ -13,7 +13,7 @@ export default function AppealStatusBadge({ status }: { status: AppealStatus | n
     const [icon, color, text] = status ? appealStatusToDisplay[status] : defaultAppealStatusDisplay;
 
     return (
-        <Chip color={color} variant="outlined" startDecorator={<FontAwesomeIcon icon={icon} />}>
+        <Chip color={color} variant="soft" startDecorator={<FontAwesomeIcon icon={icon} />}>
             {text}
         </Chip>
     );

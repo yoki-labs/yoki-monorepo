@@ -54,7 +54,7 @@ export function ModmailTicketCard({ item: ticket, timezone, isSelected, onSelect
 
 function TicketStatusBadge({ closed }: { closed: boolean; }) {
     return (
-        <Chip color={closed ? "danger" : "success"} variant="outlined" startDecorator={<FontAwesomeIcon icon={closed ? faLock : faLockOpen} />}>
+        <Chip color={closed ? "danger" : "success"} variant="soft" startDecorator={<FontAwesomeIcon icon={closed ? faLock : faLockOpen} />}>
             {closed ? "Closed" : "Open"}
         </Chip>
     );

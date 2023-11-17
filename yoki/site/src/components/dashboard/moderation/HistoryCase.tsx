@@ -6,7 +6,7 @@ import InfoText from "../../InfoText";
 import { faClock, faDroplet } from "@fortawesome/free-solid-svg-icons";
 import { LabsUserCard } from "../../LabsUserCard";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { severityToIcon } from "../../../utils/actionUtil";
+import { severityToIcon, severityToName } from "../../../utils/actionUtil";
 import { formatDate } from "@yokilabs/utils";
 import { ItemProps } from "../../DataTable";
 import { SanitizedAction } from "../../../lib/@types/db";
@@ -71,7 +71,7 @@ export function HistoryCaseCard({ item: action, columnCount, timezone, isSelecte
 function CaseType({ action }: { action: SanitizedAction }) {
     return (
         <Typography startDecorator={<FontAwesomeIcon icon={severityToIcon[action.type]} />} fontWeight="lg" textColor="text.secondary">
-            {action.type}
+            {severityToName[action.type]}
         </Typography>
     );
 }

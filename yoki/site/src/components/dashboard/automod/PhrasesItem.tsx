@@ -6,7 +6,7 @@ import { Box, Stack, Typography } from "@mui/joy";
 import InfoText from "../../InfoText";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { LabsUserCard } from "../../LabsUserCard";
-import { severityToIcon } from "../../../utils/actionUtil";
+import { severityToIcon, severityToName } from "../../../utils/actionUtil";
 import { formatDate } from "@yokilabs/utils";
 import { FilterMatching } from "@prisma/client";
 import DataTableCard from "../../DataTableCard";
@@ -31,7 +31,7 @@ export function PhraseRow({ item: phrase, columnCount, timezone, isSelected, onS
             </td>
             <td>
                 <Typography startDecorator={<FontAwesomeIcon icon={severityToIcon[phrase.severity]} />} fontWeight="lg" textColor="text.secondary">
-                    {phrase.severity}
+                    {severityToName[phrase.severity]}
                 </Typography>
             </td>
             <td>

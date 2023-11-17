@@ -6,7 +6,7 @@ import { faClock, faDroplet } from "@fortawesome/free-solid-svg-icons";
 import { ItemProps } from "../../DataTable";
 import { SanitizedUrlFilter } from "../../../lib/@types/db";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { severityToIcon } from "../../../utils/actionUtil";
+import { severityToIcon, severityToName } from "../../../utils/actionUtil";
 import DataTableRow from "../../DataTableRow";
 import DataTableCard from "../../DataTableCard";
 import CodeWrapper from "../../CodeWrapper";
@@ -31,7 +31,7 @@ export function UrlRow({ item: link, columnCount, timezone, isSelected, onSelect
             </td>
             <td>
                 <Typography startDecorator={<FontAwesomeIcon icon={severityToIcon[link.severity]} />} fontWeight="lg" textColor="text.secondary">
-                    {link.severity}
+                    {severityToName[link.severity]}
                 </Typography>
             </td>
             <td>

@@ -1,4 +1,4 @@
-import { Action, Appeal, ContentFilter, LogChannel, ModmailThread, Preset, ReactionAction, Role, Server, UrlFilter } from "@prisma/client";
+import { Action, Appeal, ContentFilter, InviteFilter, LogChannel, ModmailThread, Preset, ReactionAction, Role, Server, UrlFilter } from "@prisma/client";
 
 export type SanitizedServer = Omit<Server, "id" | "flags" | "blacklisted" | "botJoinedAt" | "createdAt" | "updatedAt"> & { earlyaccess: boolean };
 
@@ -18,3 +18,4 @@ export type SanitizedReactionAction = Omit<ReactionAction, "id">;
 
 export type SanitizedContentFilter = ContentFilter;
 export type SanitizedUrlFilter = UrlFilter;
+export type SanitizedInviteFilter = InviteFilter;

@@ -9,9 +9,9 @@
 
 .hoverAbove {
     transform: translateY(0);
-    transition: transform 0.2s ease-out;
+    transition: transform 0.15s ease-out;
 }
 
 .hoverAbove:hover {
-    transform: translateY(-8px);
+    transform: translateY(-4px);
 }

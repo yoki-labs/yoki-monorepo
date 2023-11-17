@@ -8,7 +8,7 @@ type Props = {
     id: string;
     children?: ReactNode | ReactNode[];
     columnCount: number;
-    ExpandedInfoRenderer: () => ReactNode | ReactNode[];
+    ExpandedInfoRenderer?: () => ReactNode | ReactNode[];
     isSelected: boolean;
     onSelected: (state: boolean) => unknown;
 };
@@ -33,6 +33,9 @@ export default class DataTableRow extends React.Component<Props, State> {
     renderInfoRow() {
         const { id, ExpandedInfoRenderer: expandedInfo, isSelected, columnCount } = this.props;
 
+        if (!expandedInfo)
+            return <></>;
+
         return (
             <tr style={{ "--TableCell-dataBackground": isSelected ? "var(--labs-palette-primary-950)" : "transparent" } as unknown as CSSProperties} data-id={`${id}:expansion`}>
                 <td style={{ height: 0, padding: 0 }} colSpan={columnCount + 2}>
@@ -45,7 +48,7 @@ export default class DataTableRow extends React.Component<Props, State> {
     }
 
     render() {
-        const { id, children, onSelected, isSelected } = this.props;
+        const { id, children, onSelected, isSelected, ExpandedInfoRenderer: expandedInfo } = this.props;
         const { isExpanded } = this.state;
 
         return (
@@ -64,9 +67,9 @@ export default class DataTableRow extends React.Component<Props, State> {
                     </td>
                     {Boolean(children) && children}
                     <td>
-                        <IconButton onClick={this.toggleExpanded.bind(this)} color="neutral" variant="soft" aria-label="More button">
+                        {expandedInfo && <IconButton onClick={this.toggleExpanded.bind(this)} color="neutral" variant="soft" aria-label="More button">
                             <FontAwesomeIcon icon={isExpanded ? faChevronDown : faChevronRight} />
-                        </IconButton>
+                        </IconButton>}
                     </td>
                 </tr>
                 {/* isExpanded is modified by arrow button. This is for showing IDs and whatnot */}

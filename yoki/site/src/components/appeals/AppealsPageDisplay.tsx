@@ -4,7 +4,6 @@ import { AppealsSessionProps, BaseAppealsSessionProps, appealWaitingTime } from 
 import { ServerPayload } from "@guildedjs/api";
 import LabsForm from "../form/LabsForm";
 import { LabsFormFieldType } from "../form/form";
-import { checkServerIdentity } from "tls";
 import ms from "ms";
 import { errorifyResponseError, notifyFetchError } from "../../utils/errorUtil";
 

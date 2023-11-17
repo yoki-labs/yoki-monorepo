@@ -172,7 +172,7 @@ export default class DataTable<TItem extends { id: TItemId }, TItemId> extends R
                     <Input
                         className="flex-1"
                         onChange={({ target }) => this.fetchItems(page, target.value)}
-                        variant="outlined"
+                        variant="plain"
                         placeholder={`Search ${itemType}`}
                         startDecorator={<FontAwesomeIcon icon={faMagnifyingGlass} />}
                     />

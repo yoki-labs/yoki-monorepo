@@ -1,13 +1,48 @@
 import { faLink } from "@fortawesome/free-solid-svg-icons";
-import { Box } from "@mui/joy";
+import { Box, Stack, Typography } from "@mui/joy";
 import React from "react";
 import DashboardModule from "../DashboardModule";
 import { DashboardPageProps } from "../pages";
-import PagePlaceholder, { PagePlaceholderIcon } from "../../PagePlaceholder";
+import DataTable from "../../DataTable";
+import { SanitizedInviteFilter } from "../../../lib/@types/db";
+import { InviteCard, InviteRow } from "./InviteFilter";
 
 export default class InvitesPage extends React.Component<DashboardPageProps> {
     constructor(props: DashboardPageProps) {
         super(props);
+    }
+
+    getInvitesRoute(page: number, search?: string) {
+        const {
+            serverConfig: { serverId },
+        } = this.props;
+
+        return `/api/servers/${serverId}/invites?page=${page}${search ? `&search=${encodeURIComponent(search)}` : ""}`;
+    }
+
+    async fetchInvites(page: number, search?: string) {
+        return fetch(this.getInvitesRoute(page, search), {
+            method: "GET",
+            headers: { "content-type": "application/json" },
+        })
+            .then((response) => {
+                if (!response.ok) throw response;
+                return response.json();
+            })
+            .then(({ items, count }) => ({ items, maxPages: Math.ceil(count / 50) }));
+    }
+
+    async deleteInvites(urlIds: number[], page: number, search?: string) {
+        return fetch(this.getInvitesRoute(page, search), {
+            method: "DELETE",
+            headers: { "content-type": "application/json" },
+            body: JSON.stringify({ urlIds }),
+        })
+            .then((response) => {
+                if (!response.ok) throw response;
+                return response.json();
+            })
+            .then(({ items, count }) => ({ items, maxPages: Math.ceil(count / 50) }));
     }
 
     render() {
@@ -27,9 +62,18 @@ export default class InvitesPage extends React.Component<DashboardPageProps> {
                         largeHeader
                     />
                 </Box>
-                <PagePlaceholder icon={PagePlaceholderIcon.Wip} title="Work in progress">
-                    This section has not been done yet. Come back later!
-                </PagePlaceholder>
+                <Stack direction="column" gap={3}>
+                    <Typography level="h4">Invite whitelisted servers</Typography>
+                    <DataTable<SanitizedInviteFilter, number>
+                        itemType="whitelisted server"
+                        timezone={serverConfig.timezone}
+                        columns={["Server", "By", "When"]}
+                        getItems={this.fetchInvites.bind(this)}
+                        deleteItems={this.deleteInvites.bind(this)}
+                        ItemRenderer={InviteRow}
+                        ItemMobileRenderer={InviteCard}
+                    />
+                </Stack>
             </>
         );
     }

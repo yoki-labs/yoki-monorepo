@@ -2,15 +2,10 @@ import { Box, Card, CardContent, Stack, Typography } from "@mui/joy";
 import React from "react";
 import DashboardModule from "../DashboardModule";
 import { DashboardPageProps } from "../pages";
-import { faBan, faDroplet, faLink } from "@fortawesome/free-solid-svg-icons";
-import DataTable, { ItemProps } from "../../DataTable";
+import { faBan } from "@fortawesome/free-solid-svg-icons";
+import DataTable from "../../DataTable";
 import { SanitizedUrlFilter } from "../../../lib/@types/db";
-import DataTableRow from "../../DataTableRow";
-import InfoText from "../../InfoText";
-import { LabsUserCard } from "../../LabsUserCard";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { severityOptions, severityToIcon } from "../../../utils/actionUtil";
-import { formatDate } from "@yokilabs/utils";
+import { severityOptions } from "../../../utils/actionUtil";
 import LabsForm from "../../form/LabsForm";
 import { LabsFormFieldType, LabsFormSectionOrder } from "../../form/form";
 import { Severity } from "@prisma/client";
@@ -22,7 +17,7 @@ export default class UrlsPage extends React.Component<DashboardPageProps> {
         super(props);
     }
 
-    getPhrasesRoute(page: number, search?: string) {
+    getUrlsRoute(page: number, search?: string) {
         const {
             serverConfig: { serverId },
         } = this.props;
@@ -31,7 +26,7 @@ export default class UrlsPage extends React.Component<DashboardPageProps> {
     }
 
     async fetchUrls(page: number, search?: string) {
-        return fetch(this.getPhrasesRoute(page, search), {
+        return fetch(this.getUrlsRoute(page, search), {
             method: "GET",
             headers: { "content-type": "application/json" },
         })
@@ -43,7 +38,7 @@ export default class UrlsPage extends React.Component<DashboardPageProps> {
     }
 
     async deleteUrls(urlIds: number[], page: number, search?: string) {
-        return fetch(this.getPhrasesRoute(page, search), {
+        return fetch(this.getUrlsRoute(page, search), {
             method: "DELETE",
             headers: { "content-type": "application/json" },
             body: JSON.stringify({ urlIds }),
