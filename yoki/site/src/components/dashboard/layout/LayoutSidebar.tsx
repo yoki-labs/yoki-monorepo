@@ -18,7 +18,7 @@ const categoryNames: Record<DashboardPageCategory, string> = {
     [DashboardPageCategory.Bot]: "Yoki",
     [DashboardPageCategory.Moderation]: "Moderation",
     [DashboardPageCategory.Automod]: "Automod",
-    [DashboardPageCategory.Entry]: "Server entry & support",
+    [DashboardPageCategory.Entry]: "Server members & support",
 };
 
 export function LayoutSidebar({ page, serverConfig, menuToggled, currentServer, servers, onServerChange }: Props) {

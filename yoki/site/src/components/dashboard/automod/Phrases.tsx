@@ -67,7 +67,7 @@ export default class PhrasesPage extends React.Component<DashboardPageProps> {
                     <DataTable<SanitizedContentFilter, number>
                         itemType="banned phrases"
                         timezone={serverConfig.timezone}
-                        columns={["Content", "Severity", "Created by", "Created at"]}
+                        columns={["Content", "Severity", "By", "When"]}
                         getItems={this.fetchPhrases.bind(this)}
                         deleteItems={this.deletePhrases.bind(this)}
                         ItemRenderer={PhraseRow}

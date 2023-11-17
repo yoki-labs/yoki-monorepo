@@ -112,9 +112,7 @@ export default class ModmailPage extends React.Component<DashboardPageProps, Sta
                     />
                 </Box>
                 <Box>
-                    <Typography level="h4" gutterBottom>
-                        Modmail configuration
-                    </Typography>
+                    <Typography level="h4" gutterBottom>Modmail configuration</Typography>
                     <Card>
                         <CardContent>
                             <LabsForm

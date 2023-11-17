@@ -37,6 +37,8 @@ export class ServerSelector extends React.Component<Props> {
     render() {
         const { servers, defaultValue } = this.props;
 
+        const sortedServers = servers.sort((a, b) => a.name > b.name ? 1 : a.name < b.name ? -1 : 0);
+
         return (
             <LabsDropdown
                 placeholder="Select server"
@@ -44,7 +46,7 @@ export class ServerSelector extends React.Component<Props> {
                 renderValue={this.renderValue.bind(this)}
                 onChange={async (_, serverId) => serverId && (await this.props.onChange(serverId))}
             >
-                {servers.map((server) => (
+                {sortedServers.map((server) => (
                     <Option key={server.id} value={server.id} label={server.name}>
                         <ListItemDecorator>
                             <Avatar size="sm" src={server.profilePicture ?? void 0} />
