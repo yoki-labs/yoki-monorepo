@@ -11,8 +11,9 @@ import { formatDate } from "@yokilabs/utils";
 import { ItemProps } from "../../DataTable";
 import { SanitizedAction } from "../../../lib/@types/db";
 import DataTableCard from "../../DataTableCard";
+import { GuildedSanitizedUserDetail } from "../../../lib/@types/guilded";
 
-export function HistoryCaseRow({ item: action, columnCount, timezone, isSelected, onSelected }: ItemProps<SanitizedAction>) {
+export function HistoryCaseRow({ item: action, users, columnCount, timezone, isSelected, onSelected }: ItemProps<SanitizedAction>) {
     const { reason } = action;
 
     return (
@@ -24,13 +25,13 @@ export function HistoryCaseRow({ item: action, columnCount, timezone, isSelected
             ExpandedInfoRenderer={() => <CaseExpandedInfo action={action} timezone={timezone} />}
         >
             <td>
-                <LabsUserCard userId={action.targetId} />
+                <LabsUserCard userId={action.targetId} user={users?.[action.targetId]} />
             </td>
             <td>
                 <CaseType action={action} />
             </td>
             <td>
-                <LabsUserCard userId={action.executorId} />
+                <LabsUserCard userId={action.executorId} user={users?.[action.executorId]} />
             </td>
             <td>
                 <Typography level="body-md">{reason && reason.length > 32 ? `${reason?.slice(0, 32)}...` : reason}</Typography>
@@ -42,7 +43,7 @@ export function HistoryCaseRow({ item: action, columnCount, timezone, isSelected
     );
 }
 
-export function HistoryCaseCard({ item: action, columnCount, timezone, isSelected, onSelected }: ItemProps<SanitizedAction>) {
+export function HistoryCaseCard({ item: action, columnCount, users, timezone, isSelected, onSelected }: ItemProps<SanitizedAction>) {
     const { reason } = action;
 
     return (
@@ -52,14 +53,14 @@ export function HistoryCaseCard({ item: action, columnCount, timezone, isSelecte
             onSelected={onSelected}
             TitleRenderer={() => (
                 <>
-                    <LabsUserCard userId={action.targetId} />
+                    <LabsUserCard userId={action.targetId} user={users?.[action.targetId]} />
                     <Typography level="body-lg" textColor="text.tertiary">
                         {"\u2022"}
                     </Typography>
                     <CaseType action={action} />
                 </>
             )}
-            ExpandedInfoRenderer={() => <CaseExpandedInfo action={action} timezone={timezone} includeExecutor />}
+            ExpandedInfoRenderer={() => <CaseExpandedInfo action={action} timezone={timezone} executor={users?.[action.executorId]} includeExecutor />}
         >
             <Stack mt={2} gap={2} direction="column">
                 <Typography level="body-md">{reason && reason.length > 32 ? `${reason?.slice(0, 32)}...` : reason}</Typography>
@@ -76,7 +77,7 @@ function CaseType({ action }: { action: SanitizedAction }) {
     );
 }
 
-function CaseExpandedInfo({ action, timezone, includeExecutor }: { action: SanitizedAction; timezone: string | null; includeExecutor?: boolean }) {
+function CaseExpandedInfo({ action, timezone, includeExecutor, executor }: { action: SanitizedAction; timezone: string | null; includeExecutor?: boolean, executor?: GuildedSanitizedUserDetail; }) {
     return (
         <Stack gap={3}>
             {includeExecutor && (
@@ -84,7 +85,7 @@ function CaseExpandedInfo({ action, timezone, includeExecutor }: { action: Sanit
                     <Typography level="h2" fontSize="md" gutterBottom>
                         Moderator
                     </Typography>
-                    <LabsUserCard userId={action.executorId} />
+                    <LabsUserCard userId={action.executorId} user={executor} />
                 </Box>
             )}
             <Box>

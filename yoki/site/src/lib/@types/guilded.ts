@@ -36,6 +36,32 @@ export interface GuildedClientChannel {
     deletedAt: string | null;
 }
 
+export interface GuildedUserDetail {
+    id: string;
+    name: string;
+    nickname?: string;
+    subdomain: string;
+    profilePicture: string | null;
+    aboutInfo?: { tagLine?: string };
+    joinDate?: string;
+    lastOnline: string;
+    teamXp?: number;
+    stonks: number;
+    flairInfos?: Array<{
+        flair: "gil_gang" | "custom";
+        customFlairInfo: null | { iconUrl: string; name: string; id: number; };
+        amount: number;
+    }>;
+    socialLinks?: Array<{
+        handle: string;
+        serviceId: string;
+        type: "twitter";
+    }>;
+    membershipRole: "member" | "formerMember";
+    type?: "bot";
+}
+export type GuildedSanitizedUserDetail = Pick<GuildedUserDetail, "id" | "name" | "nickname" | "subdomain" | "profilePicture" | "aboutInfo" | "type">;
+
 export type GuildedSanitizedChannel = Pick<GuildedClientChannel, "id" | "contentType" | "name" | "description" | "priority" | "groupId" | "isPublic" | "createdBy">;
 
 export type GuildedServer = Pick<Server, "id" | "name" | "avatar" | "banner" | "url"> | Server;

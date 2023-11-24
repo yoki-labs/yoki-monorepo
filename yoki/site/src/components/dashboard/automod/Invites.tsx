@@ -29,7 +29,7 @@ export default class InvitesPage extends React.Component<DashboardPageProps> {
                 if (!response.ok) throw response;
                 return response.json();
             })
-            .then(({ items, count }) => ({ items, maxPages: Math.ceil(count / 50) }));
+            .then(({ items, count, users }) => ({ items, maxPages: Math.ceil(count / 50), users }));
     }
 
     async deleteInvites(urlIds: number[], page: number, search?: string) {
@@ -42,7 +42,7 @@ export default class InvitesPage extends React.Component<DashboardPageProps> {
                 if (!response.ok) throw response;
                 return response.json();
             })
-            .then(({ items, count }) => ({ items, maxPages: Math.ceil(count / 50) }));
+            .then(({ items, count, users }) => ({ items, maxPages: Math.ceil(count / 50), users }));
     }
 
     render() {

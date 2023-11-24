@@ -1,6 +1,7 @@
 import { Appeal } from "@prisma/client";
 import { createServerDataRoute } from "../../../../../utils/routes/servers";
 import prisma from "../../../../../prisma";
+import { clientRest } from "../../../../../guilded";
 
 const serverAppealsRoute = createServerDataRoute<Appeal, number>({
     type: "number",
@@ -22,6 +23,14 @@ const serverAppealsRoute = createServerDataRoute<Appeal, number>({
                     in: ids,
                 },
             },
+        });
+    },
+    async fetchUsers(serverId, appeals) {
+        const userIds = Array.from(new Set(appeals.map((x) => x.creatorId)));
+
+        return clientRest.post(`/teams/${serverId}/members/detail`, {
+            idsForBasicInfo: userIds,
+            userIds: [],
         });
     },
 });;

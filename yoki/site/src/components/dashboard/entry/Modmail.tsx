@@ -52,7 +52,7 @@ export default class ModmailPage extends React.Component<DashboardPageProps, Sta
                 if (!response.ok) throw response;
                 return response.json();
             })
-            .then(({ items, count }) => ({ items, maxPages: Math.ceil(count / 50) }));
+            .then(({ items, count, users }) => ({ items, maxPages: Math.ceil(count / 50), users }));
     }
 
     async deleteTickets(ids: string[], page: number, search?: string) {
@@ -65,7 +65,7 @@ export default class ModmailPage extends React.Component<DashboardPageProps, Sta
                 if (!response.ok) throw response;
                 return response.json();
             })
-            .then(({ items, count }) => ({ items, maxPages: Math.ceil(count / 50) }));
+            .then(({ items, count, users }) => ({ items, maxPages: Math.ceil(count / 50), users }));
     }
 
     async fetchModmailInfo() {

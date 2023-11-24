@@ -34,7 +34,7 @@ export default class UrlsPage extends React.Component<DashboardPageProps> {
                 if (!response.ok) throw response;
                 return response.json();
             })
-            .then(({ urls, count }) => ({ items: urls, maxPages: Math.ceil(count / 50) }));
+            .then(({ items, count, users }) => ({ items, maxPages: Math.ceil(count / 50), users }));
     }
 
     async deleteUrls(urlIds: number[], page: number, search?: string) {
@@ -47,7 +47,7 @@ export default class UrlsPage extends React.Component<DashboardPageProps> {
                 if (!response.ok) throw response;
                 return response.json();
             })
-            .then(({ urls, count }) => ({ items: urls, maxPages: Math.ceil(count / 50) }));
+            .then(({ items, count, users }) => ({ items, maxPages: Math.ceil(count / 50), users }));
     }
 
     async onServerUpdate(urlFilterIsWhitelist: boolean | null, linkSeverity: Severity | null, linkInfractionPoints: number | null) {

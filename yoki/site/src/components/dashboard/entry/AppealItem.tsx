@@ -8,7 +8,7 @@ import DataTableCard from "../../DataTableCard";
 import AppealExpandedInfo from "../../common/AppealExpandedInfo";
 import AppealStatusBadge from "../../common/AppealStatusBadge";
 
-export function AppealRow({ item: appeal, columnCount, timezone, isSelected, onSelected }: ItemProps<SanitizedAppeal>) {
+export function AppealRow({ item: appeal, users, columnCount, timezone, isSelected, onSelected }: ItemProps<SanitizedAppeal>) {
     const { content } = appeal;
 
     return (
@@ -20,7 +20,7 @@ export function AppealRow({ item: appeal, columnCount, timezone, isSelected, onS
             ExpandedInfoRenderer={() => <AppealExpandedInfo appeal={appeal} timezone={timezone} />}
         >
             <td>
-                <LabsUserCard userId={appeal.creatorId} />
+                <LabsUserCard userId={appeal.creatorId} user={users?.[appeal.creatorId]} />
             </td>
             <td>
                 <Typography level="body-md">{content && content.length > 50 ? `${content?.slice(0, 50)}...` : content}</Typography>
@@ -35,7 +35,7 @@ export function AppealRow({ item: appeal, columnCount, timezone, isSelected, onS
     );
 }
 
-export function AppealCard({ item: appeal, timezone, isSelected, onSelected }: ItemProps<SanitizedAppeal>) {
+export function AppealCard({ item: appeal, users, timezone, isSelected, onSelected }: ItemProps<SanitizedAppeal>) {
     const { content } = appeal;
 
     return (
@@ -45,7 +45,7 @@ export function AppealCard({ item: appeal, timezone, isSelected, onSelected }: I
             onSelected={onSelected}
             TitleRenderer={() => (
                 <>
-                    <LabsUserCard userId={appeal.creatorId} />
+                    <LabsUserCard userId={appeal.creatorId} user={users?.[appeal.creatorId]} />
                     <Typography level="body-lg" textColor="text.tertiary">
                         {"\u2022"}
                     </Typography>

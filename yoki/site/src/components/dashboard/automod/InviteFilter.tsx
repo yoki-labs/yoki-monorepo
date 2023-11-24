@@ -7,7 +7,7 @@ import DataTableRow from "../../DataTableRow";
 import DataTableCard from "../../DataTableCard";
 import { LabsServerCard } from "../../LabsServerCard";
 
-export function InviteRow({ item: invite, columnCount, timezone, isSelected, onSelected }: ItemProps<SanitizedInviteFilter>) {
+export function InviteRow({ item: invite, users, columnCount, timezone, isSelected, onSelected }: ItemProps<SanitizedInviteFilter>) {
     return (
         <DataTableRow
             id={`invite-row-${invite.id}`}
@@ -26,7 +26,7 @@ export function InviteRow({ item: invite, columnCount, timezone, isSelected, onS
                 <LabsServerCard serverId={invite.targetServerId} />
             </td>
             <td>
-                <LabsUserCard userId={invite.creatorId} />
+                <LabsUserCard userId={invite.creatorId} user={users?.[invite.creatorId]} />
             </td>
             <td>
                 <Typography level="body-md">{formatDate(new Date(invite.createdAt), timezone)}</Typography>
@@ -35,7 +35,7 @@ export function InviteRow({ item: invite, columnCount, timezone, isSelected, onS
     );
 }
 
-export function InviteCard({ item: invite, timezone, isSelected, onSelected }: ItemProps<SanitizedInviteFilter>) {
+export function InviteCard({ item: invite, users, timezone, isSelected, onSelected }: ItemProps<SanitizedInviteFilter>) {
     return (
         <DataTableCard
             id={`invite-card-${invite.id}`}
@@ -52,7 +52,7 @@ export function InviteCard({ item: invite, timezone, isSelected, onSelected }: I
                         <Typography level="h2" fontSize="md" gutterBottom>
                             Creator
                         </Typography>
-                        <LabsUserCard userId={invite.creatorId} />
+                        <LabsUserCard userId={invite.creatorId} user={users?.[invite.creatorId]} />
                     </Box>
                     <Box>
                         <Typography level="h2" fontSize="md" gutterBottom>

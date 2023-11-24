@@ -8,8 +8,9 @@ import DataTableCard from "../../DataTableCard";
 import { LabsCopyInput } from "../../LabsCopyInput";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLock, faLockOpen } from "@fortawesome/free-solid-svg-icons";
+import { GuildedUserDetail } from "../../../lib/@types/guilded";
 
-export function ModmailTicketRow({ item: ticket, columnCount, timezone, isSelected, onSelected }: ItemProps<SanitizedModmailThread>) {
+export function ModmailTicketRow({ item: ticket, users, columnCount, timezone, isSelected, onSelected }: ItemProps<SanitizedModmailThread>) {
     return (
         <DataTableRow
             id={`ticket-row-${ticket.id}`}
@@ -19,7 +20,7 @@ export function ModmailTicketRow({ item: ticket, columnCount, timezone, isSelect
             ExpandedInfoRenderer={() => <TicketExpandedInfo ticket={ticket} timezone={timezone} />}
         >
             <td>
-                <LabsUserCard userId={ticket.openerId} />
+                <LabsUserCard userId={ticket.openerId} user={users?.[ticket.openerId]} />
             </td>
             <td>
                 <TicketStatusBadge closed={ticket.closed} />
@@ -31,7 +32,7 @@ export function ModmailTicketRow({ item: ticket, columnCount, timezone, isSelect
     );
 }
 
-export function ModmailTicketCard({ item: ticket, timezone, isSelected, onSelected }: ItemProps<SanitizedModmailThread>) {
+export function ModmailTicketCard({ item: ticket, users, timezone, isSelected, onSelected }: ItemProps<SanitizedModmailThread>) {
     return (
         <DataTableCard
             id={`ticket-card-${ticket.id}`}
@@ -39,7 +40,7 @@ export function ModmailTicketCard({ item: ticket, timezone, isSelected, onSelect
             onSelected={onSelected}
             TitleRenderer={() => (
                 <>
-                    <LabsUserCard userId={ticket.openerId} />
+                    <LabsUserCard userId={ticket.openerId} user={users?.[ticket.openerId]} />
                     <Typography level="body-lg" textColor="text.tertiary">
                         {"\u2022"}
                     </Typography>
@@ -60,7 +61,7 @@ function TicketStatusBadge({ closed }: { closed: boolean; }) {
     );
 }
 
-function TicketExpandedInfo({ ticket }: { ticket: SanitizedModmailThread; timezone: string | null }) {
+function TicketExpandedInfo({ ticket, users }: { ticket: SanitizedModmailThread; timezone: string | null; users?: Record<string, GuildedUserDetail> }) {
     return (
         <Stack gap={3}>
             { ticket.handlingModerators.length
@@ -70,7 +71,7 @@ function TicketExpandedInfo({ ticket }: { ticket: SanitizedModmailThread; timezo
                     </Typography>
                     <Stack direction="column" gap={1}>
                         {ticket.handlingModerators.map((x) =>
-                            <LabsUserCard userId={x} />
+                            <LabsUserCard userId={x} user={users?.[x]} />
                         )}
                     </Stack>
                 </Box>

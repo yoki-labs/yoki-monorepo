@@ -7,6 +7,7 @@ import PagePlaceholder, { PagePlaceholderIcon } from "./PagePlaceholder";
 import LabsOverflowButton from "./LabsOverflowButton";
 import { DeletionConfirmationModal } from "./DeletionConfirmationModal";
 import { notifyFetchError } from "../utils/errorUtil";
+import { GuildedSanitizedUserDetail, GuildedUserDetail } from "../lib/@types/guilded";
 
 // type State = {
 //     isLoaded: boolean;
@@ -20,6 +21,7 @@ import { notifyFetchError } from "../utils/errorUtil";
 type FetchedItems<T> = {
     items: T[];
     maxPages: number;
+    users?: Record<string, GuildedSanitizedUserDetail>;
 };
 
 export type ItemProps<TItem> = {
@@ -28,6 +30,7 @@ export type ItemProps<TItem> = {
     timezone: string | null;
     isSelected: boolean;
     onSelected: (checked: boolean) => void;
+    users?: Record<string, GuildedSanitizedUserDetail>;
 };
 
 export type OverflowProps<TItem> = {
@@ -44,6 +47,7 @@ type State<TItem extends { id: TItemId }, TItemId> = {
     search?: string;
     selectedItems: TItemId[];
     maxPages: number;
+    users?: Record<string, GuildedUserDetail>;
     error?: { code: string; message: string };
 };
 
@@ -87,7 +91,7 @@ export default class DataTable<TItem extends { id: TItemId }, TItemId> extends R
     async fetchItems(page: number, search?: string) {
         return this.props
             .getItems(page, search)
-            .then(({ items, maxPages }) => this.setState({ isLoaded: true, items, maxPages, page, search }))
+            .then(({ items, maxPages, users }) => this.setState({ isLoaded: true, items, maxPages, page, search, users }))
             .catch(async (errorResponse) => this.onFetchError(errorResponse));
     }
 
@@ -96,7 +100,7 @@ export default class DataTable<TItem extends { id: TItemId }, TItemId> extends R
 
         return this.props
             .deleteItems(selectedItems, page, search)
-            .then(({ items, maxPages }) => this.setState({ items, maxPages, page, search, selectedItems: [] }))
+            .then(({ items, maxPages, users }) => this.setState({ items, maxPages, page, search, selectedItems: [], users }))
             .catch(notifyFetchError.bind(null, `Error while deleting data table item`));
     }
 
@@ -126,12 +130,13 @@ export default class DataTable<TItem extends { id: TItemId }, TItemId> extends R
     }
 
     renderItems() {
-        const { items, selectedItems } = this.state;
+        const { items, selectedItems, users } = this.state;
         const { timezone, columns, ItemRenderer, ItemMobileRenderer } = this.props;
 
         return items.map((item) => [
             <ItemRenderer
                 item={item}
+                users={users}
                 timezone={timezone}
                 columnCount={columns.length}
                 isSelected={selectedItems.includes(item.id)}
@@ -139,6 +144,7 @@ export default class DataTable<TItem extends { id: TItemId }, TItemId> extends R
             />,
             <ItemMobileRenderer
                 item={item}
+                users={users}
                 timezone={timezone}
                 columnCount={columns.length}
                 isSelected={selectedItems.includes(item.id)}

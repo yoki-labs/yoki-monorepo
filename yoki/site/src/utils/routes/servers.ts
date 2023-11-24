@@ -6,6 +6,8 @@ import { Session, unstable_getServerSession } from "next-auth";
 import rest from "../../guilded";
 import { authOptions } from "../../pages/api/auth/[...nextauth]";
 import prisma from "../../prisma";
+import { GuildedUserDetail } from "../../lib/@types/guilded";
+import { sanitizeUserDetails } from "./transform";
 
 type ServerRouteFunction = (req: NextApiRequest, res: NextApiResponse, session: Session | null, server: Server, member: ServerMember) => Promise<unknown>;
 type ServerRouteInfo = Record<string, ServerRouteFunction>;
@@ -58,9 +60,10 @@ interface DataRouteInfo<TItem extends { id: TId }, TId> {
     searchFilter: (value: TItem, search: string, index: number, array: TItem[]) => boolean;
     fetchMany: (serverId: string) => Promise<TItem[]>;
     deleteMany: (serverId: string, ids: TId[]) => Promise<unknown>;
+    fetchUsers?: (serverId: string, items: TItem[]) => Promise<Record<string, GuildedUserDetail>>;
 };
 
-export function createServerDataRoute<TItem extends { id: TId }, TId>({ type, searchFilter, fetchMany, deleteMany }: DataRouteInfo<TItem, TId>) {
+export function createServerDataRoute<TItem extends { id: TId }, TId>({ type, searchFilter, fetchMany, deleteMany, fetchUsers }: DataRouteInfo<TItem, TId>) {
     async function fetch(req: NextApiRequest, res: NextApiResponse, server: Server) {
         const { page: pageStr, search } = req.query;
 
@@ -78,10 +81,13 @@ export function createServerDataRoute<TItem extends { id: TId }, TId>({ type, se
         const startIndex = page * 50;
         const endIndex = (page + 1) * 50;
 
+        const users = foundItems.length && fetchUsers ? sanitizeUserDetails(await fetchUsers(server.serverId, foundItems)) : undefined;
+
         return res.status(200).json({
             // To get rid of useless information
             items: foundItems.slice(startIndex, endIndex),
             count: foundItems.length,
+            users,
         });
     }
 

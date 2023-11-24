@@ -11,7 +11,7 @@ import { formatDate } from "@yokilabs/utils";
 import { FilterMatching } from "@prisma/client";
 import DataTableCard from "../../DataTableCard";
 
-export function PhraseRow({ item: phrase, columnCount, timezone, isSelected, onSelected }: ItemProps<SanitizedContentFilter>) {
+export function PhraseRow({ item: phrase, users, columnCount, timezone, isSelected, onSelected }: ItemProps<SanitizedContentFilter>) {
     return (
         <DataTableRow
             id={`phrase-row-${phrase.id}`}
@@ -35,7 +35,7 @@ export function PhraseRow({ item: phrase, columnCount, timezone, isSelected, onS
                 </Typography>
             </td>
             <td>
-                <LabsUserCard userId={phrase.creatorId} />
+                <LabsUserCard userId={phrase.creatorId} user={users?.[phrase.creatorId]} />
             </td>
             <td>
                 <Typography level="body-md">{formatDate(new Date(phrase.createdAt), timezone)}</Typography>
@@ -44,7 +44,7 @@ export function PhraseRow({ item: phrase, columnCount, timezone, isSelected, onS
     );
 }
 
-export function PhraseCard({ item: phrase, timezone, isSelected, onSelected }: ItemProps<SanitizedContentFilter>) {
+export function PhraseCard({ item: phrase, users, timezone, isSelected, onSelected }: ItemProps<SanitizedContentFilter>) {
     return (
         <DataTableCard
             id={`phrase-card-${phrase.id}`}
@@ -67,7 +67,7 @@ export function PhraseCard({ item: phrase, timezone, isSelected, onSelected }: I
                         <Typography level="h2" fontSize="md" gutterBottom>
                             Creator
                         </Typography>
-                        <LabsUserCard userId={phrase.creatorId} />
+                        <LabsUserCard userId={phrase.creatorId} user={users?.[phrase.creatorId]} />
                     </Box>
                     <Box>
                         <InfoText icon={faDroplet} name="Infraction points">

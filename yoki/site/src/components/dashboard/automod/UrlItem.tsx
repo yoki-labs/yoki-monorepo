@@ -11,7 +11,7 @@ import DataTableRow from "../../DataTableRow";
 import DataTableCard from "../../DataTableCard";
 import CodeWrapper from "../../CodeWrapper";
 
-export function UrlRow({ item: link, columnCount, timezone, isSelected, onSelected }: ItemProps<SanitizedUrlFilter>) {
+export function UrlRow({ item: link, users, columnCount, timezone, isSelected, onSelected }: ItemProps<SanitizedUrlFilter>) {
     return (
         <DataTableRow
             id={`url-row-${link.id}`}
@@ -35,7 +35,7 @@ export function UrlRow({ item: link, columnCount, timezone, isSelected, onSelect
                 </Typography>
             </td>
             <td>
-                <LabsUserCard userId={link.creatorId} />
+                <LabsUserCard userId={link.creatorId} user={users?.[link.creatorId]} />
             </td>
             <td>
                 <Typography level="body-md">{formatDate(new Date(link.createdAt), timezone)}</Typography>
@@ -44,7 +44,7 @@ export function UrlRow({ item: link, columnCount, timezone, isSelected, onSelect
     );
 }
 
-export function UrlCard({ item: link, timezone, isSelected, onSelected }: ItemProps<SanitizedUrlFilter>) {
+export function UrlCard({ item: link, users, timezone, isSelected, onSelected }: ItemProps<SanitizedUrlFilter>) {
     return (
         <DataTableCard
             id={`url-card-${link.id}`}
@@ -81,7 +81,7 @@ export function UrlCard({ item: link, timezone, isSelected, onSelected }: ItemPr
                         <Typography level="h2" fontSize="md" gutterBottom>
                             Creator
                         </Typography>
-                        <LabsUserCard userId={link.creatorId} />
+                        <LabsUserCard userId={link.creatorId} user={users?.[link.creatorId]} />
                     </Box>
                     <Box>
                         <InfoText icon={faDroplet} name="Infraction points">

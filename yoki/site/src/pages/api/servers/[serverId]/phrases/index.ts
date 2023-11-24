@@ -1,62 +1,38 @@
-import { ContentFilter, Server } from "@prisma/client";
-import { NextApiRequest, NextApiResponse } from "next";
-
+import { ContentFilter } from "@prisma/client";
+import { createServerDataRoute } from "../../../../../utils/routes/servers";
 import prisma from "../../../../../prisma";
-import { createServerRoute } from "../../../../../utils/routes/servers";
+import { clientRest } from "../../../../../guilded";
 
-const casesPerPage = 50;
-
-const serverCasesRoute = createServerRoute({
-    async GET(req, res, _session, server, _member) {
-        return fetchPhrases(req, res, server);
+const serverPhrasesRoute = createServerDataRoute<ContentFilter, number>({
+    type: "number",
+    searchFilter(value, search) {
+        return value.content.includes(search);
     },
-    async DELETE(req, res, _session, server, _member) {
-        const { phraseIds } = req.body;
-
-        // Check query
-        if (!Array.isArray(phraseIds) || phraseIds.some((x) => typeof x !== "number")) return res.status(400).json({ error: true, message: "Phrase IDs must be a number array" });
-
-        // Just delete all of them
-        await prisma.contentFilter.deleteMany({
+    fetchMany(serverId) {
+        return prisma.contentFilter.findMany({
             where: {
-                serverId: server.serverId,
+                serverId,
+            },
+        });
+    },
+    deleteMany(serverId, ids) {
+        return prisma.contentFilter.deleteMany({
+            where: {
+                serverId,
                 id: {
-                    in: phraseIds,
+                    in: ids,
                 },
             },
         });
-
-        // To update the state
-        return fetchPhrases(req, res, server);
     },
-});
+    async fetchUsers(serverId, phrases) {
+        const userIds = Array.from(new Set(phrases.map((x) => x.creatorId)));
 
-async function fetchPhrases(req: NextApiRequest, res: NextApiResponse, server: Server) {
-    const { page: pageStr, search } = req.query;
+        return clientRest.post(`/teams/${serverId}/members/detail`, {
+            idsForBasicInfo: userIds,
+            userIds: [],
+        });
+    },
+});;
 
-    // Check query
-    if (typeof pageStr !== "string") return res.status(400).json({ error: true, message: "Expected page single query" });
-
-    const page = parseInt(pageStr, 10);
-
-    if (typeof page !== "number" || page < 0) return res.status(400).json({ error: true, message: "Expected page to be a number that is at least 0." });
-    else if (typeof search !== "undefined" && typeof search !== "string") return res.status(400).json({ error: true, message: "Expected search query to be a string." });
-
-    const phrases: ContentFilter[] = await prisma.contentFilter.findMany({
-        where: {
-            serverId: server.serverId,
-        },
-    });
-    const foundPhrases = search ? phrases.filter((x) => x.content?.includes(search)) : phrases;
-
-    const startIndex = page * casesPerPage;
-    const endIndex = (page + 1) * casesPerPage;
-
-    return res.status(200).json({
-        // To get rid of useless information
-        phrases: foundPhrases.slice(startIndex, endIndex),
-        count: foundPhrases.length,
-    });
-}
-
-export default serverCasesRoute;
+export default serverPhrasesRoute;

@@ -27,7 +27,7 @@ export default class HistoryPage extends React.Component<DashboardPageProps> {
                 if (!response.ok) throw response;
                 return response.json();
             })
-            .then(({ cases, count }) => ({ items: cases, maxPages: Math.ceil(count / 50) }));
+            .then(({ items, count, users }) => (console.log("Users", users), { items, maxPages: Math.ceil(count / 50), users }));
     }
 
     async deleteCases(caseIds: string[], page: number, search?: string) {

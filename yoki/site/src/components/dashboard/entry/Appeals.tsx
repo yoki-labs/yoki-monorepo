@@ -50,7 +50,7 @@ export default class AppealsPage extends React.Component<DashboardPageProps, Sta
                 if (!response.ok) throw response;
                 return response.json();
             })
-            .then(({ items, count }) => ({ items, maxPages: Math.ceil(count / 50) }));
+            .then(({ items, count, users }) => ({ items, maxPages: Math.ceil(count / 50), users }));
     }
 
     async deleteAppeals(ids: number[], page: number, search?: string) {
@@ -63,7 +63,7 @@ export default class AppealsPage extends React.Component<DashboardPageProps, Sta
                 if (!response.ok) throw response;
                 return response.json();
             })
-            .then(({ items, count }) => ({ items, maxPages: Math.ceil(count / 50) }));
+            .then(({ items, count, users }) => ({ items, maxPages: Math.ceil(count / 50), users }));
     }
 
     async fetchAppealInfo() {

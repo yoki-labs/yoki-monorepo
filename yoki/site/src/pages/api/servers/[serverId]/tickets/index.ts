@@ -2,6 +2,7 @@ import { ModmailThread } from "@prisma/client";
 
 import { createServerDataRoute } from "../../../../../utils/routes/servers";
 import prisma from "../../../../../prisma";
+import { clientRest } from "../../../../../guilded";
 
 const serverTicketsRoute = createServerDataRoute<ModmailThread, string>({
     type: "string",
@@ -45,6 +46,14 @@ const serverTicketsRoute = createServerDataRoute<ModmailThread, string>({
                 },
             })
         ]);
+    },
+    async fetchUsers(serverId, tickets) {
+        const userIds = Array.from(new Set([...tickets.map((x) => x.openerId), ...tickets.flatMap((x) => x.handlingModerators)]));
+
+        return clientRest.post(`/teams/${serverId}/members/detail`, {
+            idsForBasicInfo: userIds,
+            userIds: [],
+        });
     },
 });
 
