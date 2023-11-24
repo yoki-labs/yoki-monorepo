@@ -1,11 +1,15 @@
 import { ResponseType, Server, Severity } from "@prisma/client";
 import { timezones } from "@yokilabs/utils";
-import { NextApiResponse } from "next";
 
 import rest from "../../../../guilded";
 import prisma from "../../../../prisma";
-import { channelExistsInServer } from "../../../../utils/routes/route";
-import { getBodyErrorResponse, isBodyChannelPropertyValid, isBodyEnumPropertyInvalid, isBodyPropertyTypeInvalid, isRemovableBodyPropertyTypeInvalid } from "../../../../utils/routes/body";
+import {
+    getBodyErrorResponse,
+    isBodyChannelPropertyValid,
+    isBodyEnumPropertyInvalid,
+    isBodyPropertyTypeInvalid,
+    isRemovableBodyPropertyTypeInvalid,
+} from "../../../../utils/routes/body";
 import { createServerRoute } from "../../../../utils/routes/servers";
 
 const DEFAULT_PREFIX = process.env.DEFAULT_PREFIX as string;

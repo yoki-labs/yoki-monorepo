@@ -1,10 +1,10 @@
 import { ReactionAction, ReactionActionType } from "@prisma/client";
+import { getReactionById, isUUID } from "@yokilabs/utils";
 
 import prisma from "../../../../../prisma";
-import { createServerRoute } from "../../../../../utils/routes/servers";
-import { getServerTextChannels } from "../../../../../utils/routes/route";
 import { getBodyErrorResponse, isBodyChannelPropertyValid, isBodyPropertyTypeInvalid } from "../../../../../utils/routes/body";
-import { getReactionById, isUUID } from "@yokilabs/utils";
+import { getServerTextChannels } from "../../../../../utils/routes/route";
+import { createServerRoute } from "../../../../../utils/routes/servers";
 
 const serverReactionsRoute = createServerRoute({
     async GET(req, res, _session, server, _member) {
@@ -12,7 +12,7 @@ const serverReactionsRoute = createServerRoute({
 
         // Check query
         if (typeof typeStr !== "string") return res.status(400).json({ error: true, message: "Expected reaction action type to be a string" });
-        
+
         const actionType = (ReactionActionType as Record<string, ReactionActionType>)[typeStr];
 
         if (!actionType) return res.status(400).json({ error: true, message: "Expected reaction action type to be a valid reaction action type" });
@@ -52,8 +52,7 @@ const serverReactionsRoute = createServerRoute({
         // Check body
         if (isBodyPropertyTypeInvalid(body.emoteId, "number") || (typeof body.emoteId === "number" && !getReactionById(body.emoteId)))
             return getBodyErrorResponse(res, "emoteId", "emote ID");
-        else if (!(await isBodyChannelPropertyValid(body.channelId)))
-            return getBodyErrorResponse(res, "channelId", "channel ID");
+        else if (!(await isBodyChannelPropertyValid(body.channelId))) return getBodyErrorResponse(res, "channelId", "channel ID");
         else if (isBodyPropertyTypeInvalid(body.messageId, "string") || (typeof body.messageId === "string" && !isUUID(body.messageId)))
             return getBodyErrorResponse(res, "messageId", "message ID");
 

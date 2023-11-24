@@ -1,7 +1,8 @@
 import { Action } from "@prisma/client";
-import { createServerDataRoute } from "../../../../../utils/routes/servers";
-import prisma from "../../../../../prisma";
+
 import { clientRest } from "../../../../../guilded";
+import prisma from "../../../../../prisma";
+import { createServerDataRoute } from "../../../../../utils/routes/servers";
 
 const serverCasesRoute = createServerDataRoute<Action, string>({
     type: "string",
@@ -33,6 +34,6 @@ const serverCasesRoute = createServerDataRoute<Action, string>({
             userIds: [],
         });
     },
-});;
+});
 
 export default serverCasesRoute;

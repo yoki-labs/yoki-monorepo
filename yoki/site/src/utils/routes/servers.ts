@@ -1,13 +1,13 @@
 import { ServerMember } from "@guildedjs/api/types/generated/router/models/ServerMember";
-import { Prisma, PrismaClient, RoleType, Server } from "@prisma/client";
+import { RoleType, Server } from "@prisma/client";
 import { NextApiRequest, NextApiResponse } from "next";
 import { Session, unstable_getServerSession } from "next-auth";
 
+import { sanitizeUserDetails } from "./transform";
 import rest from "../../guilded";
+import { GuildedUserDetail } from "../../lib/@types/guilded";
 import { authOptions } from "../../pages/api/auth/[...nextauth]";
 import prisma from "../../prisma";
-import { GuildedUserDetail } from "../../lib/@types/guilded";
-import { sanitizeUserDetails } from "./transform";
 
 type ServerRouteFunction = (req: NextApiRequest, res: NextApiResponse, session: Session | null, server: Server, member: ServerMember) => Promise<unknown>;
 type ServerRouteInfo = Record<string, ServerRouteFunction>;
@@ -61,7 +61,7 @@ interface DataRouteInfo<TItem extends { id: TId }, TId> {
     fetchMany: (serverId: string) => Promise<TItem[]>;
     deleteMany: (serverId: string, ids: TId[]) => Promise<unknown>;
     fetchUsers?: (serverId: string, items: TItem[]) => Promise<Record<string, GuildedUserDetail>>;
-};
+}
 
 export function createServerDataRoute<TItem extends { id: TId }, TId>({ type, searchFilter, fetchMany, deleteMany, fetchUsers }: DataRouteInfo<TItem, TId>) {
     async function fetch(req: NextApiRequest, res: NextApiResponse, server: Server) {
@@ -97,16 +97,15 @@ export function createServerDataRoute<TItem extends { id: TId }, TId>({ type, se
         },
         async DELETE(req, res, _session, server, _member) {
             const { ids } = req.body;
-    
+
             // Check query
             if (!Array.isArray(ids) || ids.some((x) => typeof x !== type)) return res.status(400).json({ error: true, message: `ids must be a ${type} array` });
-    
+
             // Just delete all of them
             await deleteMany(server.serverId, ids);
-    
+
             // To update the state
             return fetch(req, res, server);
         },
-    })
+    });
 }
-

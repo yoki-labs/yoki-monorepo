@@ -12,12 +12,7 @@ const categorizedLogs: Collection<string, LogChannelType[]> = new Collection<str
         LogChannelType.topic_deletions,
         LogChannelType.comment_deletions,
     ])
-    .set("Server", [
-        LogChannelType.channel_creations,
-        LogChannelType.channel_deletions,
-        LogChannelType.role_creations,
-        LogChannelType.role_deletions,
-    ])
+    .set("Server", [LogChannelType.channel_creations, LogChannelType.channel_deletions, LogChannelType.role_creations, LogChannelType.role_deletions])
     .set("Members", [LogChannelType.member_joins, LogChannelType.member_leaves, LogChannelType.member_bans, LogChannelType.member_updates, LogChannelType.member_roles_updates])
     .set("Yoki Moderation", [LogChannelType.mod_actions, LogChannelType.modmail_logs])
     .set("Misc", [LogChannelType.all, LogChannelType.notifications]);

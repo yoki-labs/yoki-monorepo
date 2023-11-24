@@ -12,7 +12,10 @@ const ServerInfo: Command = {
     aliases: ["server", "si"],
     args: [],
     execute: async (message, _args, ctx, { server }) => {
-        const { server: guildedServer, serverMemberCount: memberCount } = (await ctx.rest.router.servers.serverRead({ serverId: message.serverId! })) as unknown as { server: ServerPayload; serverMemberCount: number; };
+        const { server: guildedServer, serverMemberCount: memberCount } = (await ctx.rest.router.servers.serverRead({ serverId: message.serverId! })) as unknown as {
+            server: ServerPayload;
+            serverMemberCount: number;
+        };
 
         return ctx.messageUtil.send(message.channelId, {
             embeds: [

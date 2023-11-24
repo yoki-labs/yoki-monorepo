@@ -47,7 +47,7 @@ type State<TItem extends { id: TItemId }, TItemId> = {
     search?: string;
     selectedItems: TItemId[];
     maxPages: number;
-    users?: Record<string, GuildedUserDetail>;
+    users?: Record<string, GuildedSanitizedUserDetail>;
     error?: { code: string; message: string };
 };
 

@@ -1,6 +1,5 @@
 import type { EmbedField } from "@guildedjs/guilded-api-typings";
 import { MessageUtil as BaseMessageUtil } from "@yokilabs/bot";
-import { Colors } from "@yokilabs/utils";
 import { stripIndents } from "common-tags";
 import { EmbedAuthor, EmbedFooter } from "guilded.js";
 
@@ -37,15 +36,19 @@ export class MessageUtil extends BaseMessageUtil<YokiClient, Server, Command> {
             .send(where, {
                 embeds: [
                     {
-                        author: author?.name ? {
-                            icon_url: author?.icon_url ?? undefined,
-                            name: author?.name ?? undefined,
-                            // url: author?.url ?? null,
-                        } : undefined,
-                        footer: footer?.text ? {
-                            icon_url: footer?.icon_url ?? undefined,
-                            text: footer?.text ?? undefined,
-                        } : undefined,
+                        author: author?.name
+                            ? {
+                                  icon_url: author?.icon_url ?? undefined,
+                                  name: author?.name ?? undefined,
+                                  // url: author?.url ?? null,
+                              }
+                            : undefined,
+                        footer: footer?.text
+                            ? {
+                                  icon_url: footer?.icon_url ?? undefined,
+                                  text: footer?.text ?? undefined,
+                              }
+                            : undefined,
                         title: title ?? undefined,
                         description,
                         color,
@@ -58,7 +61,7 @@ export class MessageUtil extends BaseMessageUtil<YokiClient, Server, Command> {
             .catch(async (e) => {
                 const existing = this.logchannelErrCounter[where] ?? 0;
 
-                /*if (existing > 3) {
+                /* if (existing > 3) {
                     const server = await this.client.servers.fetch(serverId).catch(() => null);
                     if (!server) return;
 
@@ -88,12 +91,12 @@ export class MessageUtil extends BaseMessageUtil<YokiClient, Server, Command> {
                             .catch(() => null);
                     delete this.logchannelErrCounter[where];
                 } else {*/
-                    await this.client.errorHandler.send(stripIndents`
+                await this.client.errorHandler.send(stripIndents`
 					Log channel err. ${e.message}
 					Channel: \`${where}\`
 					Count: \`${existing}\`
 				`);
-                    this.logchannelErrCounter[where] = existing + 1;
+                this.logchannelErrCounter[where] = existing + 1;
                 // }
                 return null;
             });

@@ -38,7 +38,9 @@ const Help: Command = {
         const embed = new Embed()
             .setTitle("Tuxo Command list")
             .setColor(Colors.blockBackground)
-            .setDescription(":link: [Join server](https://yoki.gg/support) \u2022 [Invite bot](https://guilded.gg/b/deabc4d2-ad06-44dd-a053-da4970229b28) \u2022 [Auto-mod](https://www.guilded.gg/b/7af0dd87-f6c8-43b1-b1bb-8917c82d5cfd)")
+            .setDescription(
+                ":link: [Join server](https://yoki.gg/support) \u2022 [Invite bot](https://guilded.gg/b/deabc4d2-ad06-44dd-a053-da4970229b28) \u2022 [Auto-mod](https://www.guilded.gg/b/7af0dd87-f6c8-43b1-b1bb-8917c82d5cfd)"
+            )
             .setFooter(`For additional info on a command, type ${inlineCode(`${commandCtx.server.prefix ?? ctx.prefix}help [command]`)}`);
 
         commandCategoryMap.forEach((value, key) => {

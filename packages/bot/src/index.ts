@@ -15,6 +15,7 @@ export { summarizeItems, summarizeRolesOrUsers } from "./utils/content";
 export {
     bold,
     channelName,
+    channelTypeToDisplay,
     codeBlock,
     errorEmbed,
     escapeInlineCodeText,
@@ -24,8 +25,8 @@ export {
     listInlineCode,
     listInlineQuote,
     quoteMarkdown,
-    channelTypeToDisplay,
 } from "./utils/formatting";
+export { channelTypeToGreenIcon, channelTypeToRedIcon } from "./utils/images";
 export {
     checkmarkEmoteNode,
     createChannelMentionElement,
@@ -36,7 +37,3 @@ export {
     crossmarkEmoteNode,
     exclamationmarkEmoteNode,
 } from "./utils/rich";
-export {
-    channelTypeToGreenIcon,
-    channelTypeToRedIcon,
-} from "./utils/images";

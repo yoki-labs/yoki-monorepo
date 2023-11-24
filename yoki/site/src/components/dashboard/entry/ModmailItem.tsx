@@ -48,12 +48,11 @@ export function ModmailTicketCard({ item: ticket, users, timezone, isSelected, o
                 </>
             )}
             ExpandedInfoRenderer={() => <TicketExpandedInfo ticket={ticket} timezone={timezone} />}
-        >
-        </DataTableCard>
+        ></DataTableCard>
     );
 }
 
-function TicketStatusBadge({ closed }: { closed: boolean; }) {
+function TicketStatusBadge({ closed }: { closed: boolean }) {
     return (
         <Chip color={closed ? "danger" : "success"} variant="soft" startDecorator={<FontAwesomeIcon icon={closed ? faLock : faLockOpen} />}>
             {closed ? "Closed" : "Open"}
@@ -64,23 +63,24 @@ function TicketStatusBadge({ closed }: { closed: boolean; }) {
 function TicketExpandedInfo({ ticket, users }: { ticket: SanitizedModmailThread; timezone: string | null; users?: Record<string, GuildedUserDetail> }) {
     return (
         <Stack gap={3}>
-            { ticket.handlingModerators.length
-                ? <Box>
+            {ticket.handlingModerators.length ? (
+                <Box>
                     <Typography level="h2" fontSize="md" gutterBottom>
                         Handling moderators
                     </Typography>
                     <Stack direction="column" gap={1}>
-                        {ticket.handlingModerators.map((x) =>
+                        {ticket.handlingModerators.map((x) => (
                             <LabsUserCard userId={x} user={users?.[x]} />
-                        )}
+                        ))}
                     </Stack>
                 </Box>
-                : <Box>
+            ) : (
+                <Box>
                     <Typography level="h2" fontSize="md" gutterBottom>
                         No handling moderators.
                     </Typography>
                 </Box>
-            }
+            )}
             <Box>
                 <Typography level="h3" fontSize="md" gutterBottom>
                     Identifier
@@ -90,4 +90,3 @@ function TicketExpandedInfo({ ticket, users }: { ticket: SanitizedModmailThread;
         </Stack>
     );
 }
-

@@ -77,7 +77,17 @@ function CaseType({ action }: { action: SanitizedAction }) {
     );
 }
 
-function CaseExpandedInfo({ action, timezone, includeExecutor, executor }: { action: SanitizedAction; timezone: string | null; includeExecutor?: boolean, executor?: GuildedSanitizedUserDetail; }) {
+function CaseExpandedInfo({
+    action,
+    timezone,
+    includeExecutor,
+    executor,
+}: {
+    action: SanitizedAction;
+    timezone: string | null;
+    includeExecutor?: boolean;
+    executor?: GuildedSanitizedUserDetail;
+}) {
     return (
         <Stack gap={3}>
             {includeExecutor && (

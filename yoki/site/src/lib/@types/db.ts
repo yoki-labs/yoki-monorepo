@@ -10,7 +10,7 @@ export type SanitizedAction = Omit<Action, "logChannelId" | "logChannelMessage" 
     expiresAt: string | null;
 };
 export type SanitizedAppeal = Omit<Appeal, "createdAt"> & { createdAt: string };
-export type SanitizedModmailThread = Omit<ModmailThread, "createdAt" | "updatedAt"> & { createdAt: string, updatedAt: string | null };
+export type SanitizedModmailThread = Omit<ModmailThread, "createdAt" | "updatedAt"> & { createdAt: string; updatedAt: string | null };
 export type SanitizedRole = Omit<Role, "id"> & { createdAt: string };
 
 export type SanitizedPreset = Omit<Preset, "id">;

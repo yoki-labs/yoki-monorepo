@@ -1,10 +1,11 @@
 import { ContentIgnoreType, LogChannelType } from "@prisma/client";
+import { channelTypeToDisplay, channelTypeToGreenIcon, inlineCode, inlineQuote } from "@yokilabs/bot";
+import { Colors } from "@yokilabs/utils";
+import { stripIndents } from "common-tags";
+
+import { FilteredContent } from "../../modules/content-filter";
 import type { GEvent } from "../../typings";
 import { moderateContent } from "../../utils/moderation";
-import { FilteredContent } from "../../modules/content-filter";
-import { channelTypeToDisplay, channelTypeToGreenIcon, inlineCode, inlineQuote } from "@yokilabs/bot";
-import { stripIndents } from "common-tags";
-import { Colors } from "@yokilabs/utils";
 
 export default {
     execute: async ([channel, ctx]) => {

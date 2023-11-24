@@ -1,7 +1,8 @@
 import { ContentIgnoreType } from "@prisma/client";
+
+import { FilteredContent } from "../../modules/content-filter";
 import type { GEvent } from "../../typings";
 import { moderateContent } from "../../utils/moderation";
-import { FilteredContent } from "../../modules/content-filter";
 
 export default {
     execute: async ([channel, _, ctx]) => {
@@ -28,8 +29,6 @@ export default {
                 () => ctx.channels.update(channel.id, { name: "Filtered thread name" })
             );
         }
-
-        return;
     },
     name: "channelUpdated",
 } satisfies GEvent<"channelUpdated">;

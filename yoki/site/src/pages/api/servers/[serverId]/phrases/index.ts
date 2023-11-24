@@ -1,7 +1,8 @@
 import { ContentFilter } from "@prisma/client";
-import { createServerDataRoute } from "../../../../../utils/routes/servers";
-import prisma from "../../../../../prisma";
+
 import { clientRest } from "../../../../../guilded";
+import prisma from "../../../../../prisma";
+import { createServerDataRoute } from "../../../../../utils/routes/servers";
 
 const serverPhrasesRoute = createServerDataRoute<ContentFilter, number>({
     type: "number",
@@ -33,6 +34,6 @@ const serverPhrasesRoute = createServerDataRoute<ContentFilter, number>({
             userIds: [],
         });
     },
-});;
+});
 
 export default serverPhrasesRoute;

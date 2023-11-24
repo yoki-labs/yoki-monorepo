@@ -49,7 +49,7 @@ export interface GuildedUserDetail {
     stonks: number;
     flairInfos?: Array<{
         flair: "gil_gang" | "custom";
-        customFlairInfo: null | { iconUrl: string; name: string; id: number; };
+        customFlairInfo: null | { iconUrl: string; name: string; id: number };
         amount: number;
     }>;
     socialLinks?: Array<{

@@ -1,7 +1,8 @@
 import { channelTypeToDisplay, channelTypeToRedIcon, inlineCode, inlineQuote } from "@yokilabs/bot";
-import { LogChannelType, type GEvent } from "../../typings";
-import { stripIndents } from "common-tags";
 import { Colors } from "@yokilabs/utils";
+import { stripIndents } from "common-tags";
+
+import { type GEvent, LogChannelType } from "../../typings";
 
 export default {
     execute: async ([channel, ctx]) => {
@@ -21,7 +22,7 @@ export default {
         });
 
         // Ignore threads going forward
-        if ((channel.raw as { id: string; parentId: string; }).parentId) return;
+        if ((channel.raw as { id: string; parentId: string }).parentId) return;
 
         // check if there's a log channel channel for message deletions
         const channelDeletedLogChannel = await ctx.dbUtil.getLogChannel(serverId, LogChannelType.channel_deletions);

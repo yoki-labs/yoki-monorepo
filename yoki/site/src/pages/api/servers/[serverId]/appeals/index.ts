@@ -1,7 +1,8 @@
 import { Appeal } from "@prisma/client";
-import { createServerDataRoute } from "../../../../../utils/routes/servers";
-import prisma from "../../../../../prisma";
+
 import { clientRest } from "../../../../../guilded";
+import prisma from "../../../../../prisma";
+import { createServerDataRoute } from "../../../../../utils/routes/servers";
 
 const serverAppealsRoute = createServerDataRoute<Appeal, number>({
     type: "number",
@@ -33,6 +34,6 @@ const serverAppealsRoute = createServerDataRoute<Appeal, number>({
             userIds: [],
         });
     },
-});;
+});
 
 export default serverAppealsRoute;

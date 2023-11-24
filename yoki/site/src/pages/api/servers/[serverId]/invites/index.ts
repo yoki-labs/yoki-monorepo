@@ -1,7 +1,8 @@
 import { InviteFilter } from "@prisma/client";
-import { createServerDataRoute } from "../../../../../utils/routes/servers";
-import prisma from "../../../../../prisma";
+
 import { clientRest } from "../../../../../guilded";
+import prisma from "../../../../../prisma";
+import { createServerDataRoute } from "../../../../../utils/routes/servers";
 
 const serverInvitesRoute = createServerDataRoute<InviteFilter, number>({
     type: "number",
@@ -33,6 +34,6 @@ const serverInvitesRoute = createServerDataRoute<InviteFilter, number>({
             userIds: [],
         });
     },
-});;
+});
 
 export default serverInvitesRoute;

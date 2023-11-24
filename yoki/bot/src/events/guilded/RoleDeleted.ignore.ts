@@ -1,9 +1,9 @@
+import { inlineCode, inlineQuote } from "@yokilabs/bot";
+import { Colors } from "@yokilabs/utils";
+import { stripIndents } from "common-tags";
 import { RolePayload } from "guilded.js";
 
-import { LogChannelType, type Context, type Server } from "../../typings";
-import { inlineCode, inlineQuote } from "@yokilabs/bot";
-import { stripIndents } from "common-tags";
-import { Colors } from "@yokilabs/utils";
+import { type Context, type Server, LogChannelType } from "../../typings";
 
 export default async (packet: { d: { serverId: string; role: RolePayload } }, ctx: Context, { muteRoleId, memberRoleId }: Server) => {
     const { serverId, role } = packet.d;

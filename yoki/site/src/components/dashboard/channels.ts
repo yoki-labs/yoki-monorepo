@@ -1,10 +1,11 @@
-import { IconDefinition, faBroadcastTower, faHashtag, faVolumeLow } from "@fortawesome/free-solid-svg-icons";
+import { faBroadcastTower, faHashtag, faVolumeLow, IconDefinition } from "@fortawesome/free-solid-svg-icons";
+
 import { GuildedSanitizedChannel } from "../../lib/@types/guilded";
 
 export const channelTypeToIcon: Record<"chat" | "voice" | "stream", IconDefinition> = {
-    ["chat"]: faHashtag,
-    ["voice"]: faVolumeLow,
-    ["stream"]: faBroadcastTower,
+    chat: faHashtag,
+    voice: faVolumeLow,
+    stream: faBroadcastTower,
 };
 
 export const channelsToSelectionOptions = (channels: GuildedSanitizedChannel[]) =>

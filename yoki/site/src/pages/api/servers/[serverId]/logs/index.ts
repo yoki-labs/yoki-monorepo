@@ -1,5 +1,3 @@
-import { clientRest } from "../../../../../guilded";
-import { GuildedClientChannel, GuildedSanitizedChannel } from "../../../../../lib/@types/guilded";
 import prisma from "../../../../../prisma";
 import { getServerTextChannels } from "../../../../../utils/routes/route";
 import { createServerRoute } from "../../../../../utils/routes/servers";

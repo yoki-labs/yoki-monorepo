@@ -12,6 +12,7 @@ import DocCommentDeleted from "./events/guilded/DocCommentDeleted.ignore";
 import DocCommentEvent from "./events/guilded/DocCommentEvent.ignore";
 import ForumTopicCommentDeleted from "./events/guilded/ForumTopicCommentDeleted.ignore";
 import ForumTopicCommentEvent from "./events/guilded/ForumTopicCommentEvent.ignore";
+import RoleCreated from "./events/guilded/RoleCreated.ignore";
 import RoleDeleted from "./events/guilded/RoleDeleted.ignore";
 import ActionIssued from "./events/other/ActionIssued";
 import { DatabaseUtil } from "./helpers/database";
@@ -25,7 +26,6 @@ import { LinkFilterUtil } from "./modules/link-filter";
 import { SpamFilterUtil } from "./modules/spam-filter";
 import SupportUtil from "./modules/support";
 import type { Context, Server } from "./typings";
-import RoleCreated from "./events/guilded/RoleCreated.ignore";
 
 /**
  * Main class that stores utils, connections to various providers, and ws

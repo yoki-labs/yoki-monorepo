@@ -33,8 +33,7 @@ export default class DataTableRow extends React.Component<Props, State> {
     renderInfoRow() {
         const { id, ExpandedInfoRenderer: expandedInfo, isSelected, columnCount } = this.props;
 
-        if (!expandedInfo)
-            return <></>;
+        if (!expandedInfo) return <></>;
 
         return (
             <tr style={{ "--TableCell-dataBackground": isSelected ? "var(--labs-palette-primary-950)" : "transparent" } as unknown as CSSProperties} data-id={`${id}:expansion`}>
@@ -67,9 +66,11 @@ export default class DataTableRow extends React.Component<Props, State> {
                     </td>
                     {Boolean(children) && children}
                     <td>
-                        {expandedInfo && <IconButton onClick={this.toggleExpanded.bind(this)} color="neutral" variant="soft" aria-label="More button">
-                            <FontAwesomeIcon icon={isExpanded ? faChevronDown : faChevronRight} />
-                        </IconButton>}
+                        {expandedInfo && (
+                            <IconButton onClick={this.toggleExpanded.bind(this)} color="neutral" variant="soft" aria-label="More button">
+                                <FontAwesomeIcon icon={isExpanded ? faChevronDown : faChevronRight} />
+                            </IconButton>
+                        )}
                     </td>
                 </tr>
                 {/* isExpanded is modified by arrow button. This is for showing IDs and whatnot */}
