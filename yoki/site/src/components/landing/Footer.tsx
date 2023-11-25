@@ -39,7 +39,7 @@ export default function Footer() {
                         <Typography level="title-md">Check us out</Typography>
                         <List>
                             <ListItem>
-                                <Link color="neutral" textColor="text.secondary" href="/guilded">
+                                <Link color="neutral" textColor="text.secondary" href="/support">
                                     <ListItemDecorator>
                                         <FontAwesomeIcon icon={faGuilded} />
                                     </ListItemDecorator>
