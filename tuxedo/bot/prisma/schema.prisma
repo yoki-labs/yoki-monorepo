@@ -73,7 +73,7 @@ model IncomeCommand {
     incomeType      DefaultIncomeType?
     name            String?            @db.VarChar(64)
     // Overrides
-    action          String?            @db.VarChar(200)
+    action          String?            @db.VarChar(750)
     cooldownMs      Int?
     rewards         Reward[]
     failChance      Float?

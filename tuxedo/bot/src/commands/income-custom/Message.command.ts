@@ -24,7 +24,7 @@ const SetMessage: Command = {
             name: "action",
             type: "rest",
             optional: true,
-            max: 50,
+            max: 750,
         },
     ],
     execute: async (message, args, ctx) => {

@@ -59,7 +59,7 @@ const SetPrice: Command = {
         if (!currency) return ctx.messageUtil.replyWithError(message, "No such currency", `There is no currency with tag ${inlineQuote(currencyTag)} in this server.`);
 
         // Only currencyTag is truly optional
-        if (typeof amount === "undefined")
+        if (typeof amount !== "number")
             return ctx.messageUtil.replyWithError(
                 message,
                 `Expected price amount`,

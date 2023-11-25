@@ -66,7 +66,7 @@ const SetCurrency: Command = {
 
         if (!currency) return ctx.messageUtil.replyWithError(message, "No such currency", `There is no currency with tag ${inlineQuote(currencyTag)} in this server.`);
 
-        if (typeof minAmount === "undefined" || typeof maxAmount === "undefined")
+        if (typeof minAmount !== "number" || typeof maxAmount !== "number")
             return ctx.messageUtil.replyWithError(
                 message,
                 `Expected minimum and maximum amount`,
