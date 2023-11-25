@@ -12,7 +12,7 @@ export class MessageUtil extends BaseMessageUtil<YokiClient, Server, Command> {
 
     sendLog({
         where,
-        serverId,
+        // serverId,
         title,
         description,
         color,
@@ -22,7 +22,7 @@ export class MessageUtil extends BaseMessageUtil<YokiClient, Server, Command> {
         footer,
     }: {
         where: string;
-        serverId: string;
+        // serverId: string;
         title?: string;
         description: string;
         color: number;
