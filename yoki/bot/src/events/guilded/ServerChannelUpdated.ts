@@ -6,7 +6,8 @@ import { moderateContent } from "../../utils/moderation";
 
 export default {
     execute: async ([channel, _, ctx]) => {
-
+        const { serverId } = channel;
+        
         const server = await ctx.dbUtil.getServer(serverId, false);
         if (!server) return;
 
@@ -28,6 +29,8 @@ export default {
                 () => ctx.channels.update(channel.id, { name: "Filtered thread name" })
             );
         }
+
+        return null;
     },
     name: "channelUpdated",
 } satisfies GEvent<"channelUpdated">;
