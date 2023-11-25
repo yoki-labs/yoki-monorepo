@@ -12,7 +12,7 @@ export class MessageUtil extends BaseMessageUtil<YokiClient, Server, Command> {
 
     sendLog({
         where,
-        // serverId,
+        serverId,
         title,
         description,
         color,
@@ -22,7 +22,7 @@ export class MessageUtil extends BaseMessageUtil<YokiClient, Server, Command> {
         footer,
     }: {
         where: string;
-        // serverId: string;
+        serverId: string;
         title?: string;
         description: string;
         color: number;
@@ -60,7 +60,7 @@ export class MessageUtil extends BaseMessageUtil<YokiClient, Server, Command> {
             })
             .catch(async (e) => {
                 const existing = this.logchannelErrCounter[where] ?? 0;
-
+		console.log(serverId);
                 /* if (existing > 3) {
                     const server = await this.client.servers.fetch(serverId).catch(() => null);
                     if (!server) return;
