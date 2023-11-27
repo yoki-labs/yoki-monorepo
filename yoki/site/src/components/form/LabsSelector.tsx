@@ -36,7 +36,7 @@ export default class LabsSelector extends React.Component<Props, State> {
         return (
             <>
                 {(value.icon || value.avatarIcon) && (
-                    <ListItemDecorator sx={{ width: 28, marginRight: "1rem" }}>
+                    <ListItemDecorator sx={{ width: 28, marginRight: ".75rem" }}>
                         {value.icon && <FontAwesomeIcon icon={value.icon} />}
                         {value.avatarIcon && <Avatar size="sm" src={value.avatarIcon} />}
                     </ListItemDecorator>
