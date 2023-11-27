@@ -1,19 +1,20 @@
-import React from "react";
-import LabsForm, { FormFieldHeader } from "./LabsForm";
-import { Avatar, Box, ListItemDecorator, Option, Select, SelectOption, Typography } from "@mui/joy";
-import { LabsFormFieldByType, LabsFormFieldOption, LabsFormFieldType } from "./form";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleDown } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Avatar, Box, ListItemDecorator, Option, Select, SelectOption, Typography } from "@mui/joy";
+import React from "react";
 
-type Props = {
+import { LabsFormFieldByType, LabsFormFieldOption, LabsFormFieldType } from "./form";
+import LabsForm, { FormFieldHeader } from "./LabsForm";
+
+interface Props {
     field: LabsFormFieldByType<LabsFormFieldType.Select>;
     form: LabsForm;
     id: string;
-};
+}
 
-type State = {
+interface State {
     value?: string | undefined | null;
-};
+}
 
 export default class LabsSelector extends React.Component<Props, State> {
     constructor(props: Props) {
@@ -35,7 +36,7 @@ export default class LabsSelector extends React.Component<Props, State> {
         return (
             <>
                 {(value.icon || value.avatarIcon) && (
-                    <ListItemDecorator sx={{ width: 28 }}>
+                    <ListItemDecorator sx={{ width: 28, marginRight: "1rem" }}>
                         {value.icon && <FontAwesomeIcon icon={value.icon} />}
                         {value.avatarIcon && <Avatar size="sm" src={value.avatarIcon} />}
                     </ListItemDecorator>
