@@ -1,25 +1,9 @@
 import { inlineCode, inlineQuote } from "@yokilabs/bot";
 import { Colors } from "@yokilabs/utils";
 import { stripIndents } from "common-tags";
-import { Embed, EmbedField } from "guilded.js";
+import { Embed, EmbedField, Role } from "guilded.js";
 
 import { Category, Command } from "../commands";
-
-export interface Role {
-    id: number;
-    serverId: string;
-    createdAt: string;
-    updatedAt?: string;
-    name: string;
-    isDisplayedSeparately?: boolean;
-    isSelfAssignable?: boolean;
-    isMentionable?: boolean;
-    permissions: string[];
-    colors?: number[];
-    icon?: string;
-    position: number;
-    isBase?: boolean;
-}
 
 const RoleInfo: Command = {
     name: "roleinfo",
@@ -29,20 +13,15 @@ const RoleInfo: Command = {
     args: [
         {
             name: "role",
-            type: "string",
+            type: "role",
         },
     ],
     execute: async (message, args, ctx, { server }) => {
-        const roleArg = args.role as string;
-
-        if ((roleArg.startsWith("@") && !message.mentions?.roles?.[0]) || (!roleArg.startsWith("@") && !parseInt(roleArg, 10)))
-            return ctx.messageUtil.replyWithError(message, `Expected role mention or ID`, `In order to get information about a role, provide its mention or ID as an argument.`);
-
-        const roleId = (message.mentions?.roles?.[0].id as number) ?? parseInt(roleArg, 10);
+        const role = args.role as Role;
 
         // Get all the roles to display neighbouring roles
         const serverRoles = (await ctx.rest.get(`/servers/${message.serverId!}/roles`)).roles as Role[];
-        const currentRoleIndex = serverRoles.findIndex((x) => x.id === roleId);
+        const currentRoleIndex = serverRoles.findIndex((x) => x.id === role.id);
 
         // The role with the provided ID might not exist
         if (currentRoleIndex < 0) return ctx.messageUtil.replyWithError(message, `Role doesn't exist`, `The provided role does not exist.`);

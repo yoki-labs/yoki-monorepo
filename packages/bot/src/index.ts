@@ -26,7 +26,7 @@ export {
     listInlineQuote,
     quoteMarkdown,
 } from "./utils/formatting";
-export { channelTypeToGreenIcon, channelTypeToRedIcon } from "./utils/images";
+export { channelTypeToGreenIcon, channelTypeToRedIcon, channelTypeToGreyIcon } from "./utils/images";
 export {
     checkmarkEmoteNode,
     createChannelMentionElement,
@@ -37,3 +37,8 @@ export {
     crossmarkEmoteNode,
     exclamationmarkEmoteNode,
 } from "./utils/rich";
+export {
+    Permission,
+    ChannelRolePermission,
+    ChannelUserPermission,
+} from "./guilded-types";

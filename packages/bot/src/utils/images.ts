@@ -26,3 +26,16 @@ export const channelTypeToRedIcon: Record<ChannelType, string> = {
     [ChannelType.Stream]: IconImages.streamRed,
     [ChannelType.Voice]: IconImages.voiceRed,
 };
+
+export const channelTypeToGreyIcon: Record<ChannelType, string> = {
+    [ChannelType.Announcements]: IconImages.announcementsGrey,
+    [ChannelType.Calendar]: IconImages.calendarGrey,
+    [ChannelType.Chat]: IconImages.chatGrey,
+    [ChannelType.Docs]: IconImages.docsGrey,
+    [ChannelType.Forums]: IconImages.forumsGrey,
+    [ChannelType.List]: IconImages.listGrey,
+    [ChannelType.Media]: IconImages.mediaGrey,
+    [ChannelType.Scheduling]: IconImages.schedulingGrey,
+    [ChannelType.Stream]: IconImages.streamGrey,
+    [ChannelType.Voice]: IconImages.voiceGrey,
+};
