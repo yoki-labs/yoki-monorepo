@@ -43,13 +43,15 @@ const Help: Command = {
             .setTitle("Command list")
             .setColor(Colors.blockBackground)
             .setDescription(
-                ":link: [Join server](https://yoki.gg/support) \u2022 [Invite bot](https://yoki.gg/invite) \u2022 [Economy & giveaway](https://guilded.gg/b/deabc4d2-ad06-44dd-a053-da4970229b28)"
+                ":link: [Join server](https://yoki.gg/support) \u2022 [Invite bot](https://yoki.gg/invite)"
             )
             .setFooter(`For additional info on a command, type ${inlineCode(`${commandCtx.server.getPrefix()}help [command]`)}`);
 
         commandCategoryMap.forEach((value, key) => {
             embed.addField(key in Category ? Category[key] : key, listInlineCode(value.map((x) => x.name))!, value.length < 5);
         });
+
+        embed.addField(":star: **__Other features__**", `\u2022 [**Add multi-currency economy, giveaways and mini-games**](https://guilded.gg/b/deabc4d2-ad06-44dd-a053-da4970229b28)`);
 
         return ctx.messageUtil.reply(message, { embeds: [embed] });
     },

@@ -35,8 +35,6 @@ const Leaderboard: Command = {
 
         const start = page * 10 + 1;
 
-        console.log("Member count", balances.length, "of server", JSON.stringify(message.serverId));
-
         return ctx.messageUtil.replyWithPaginatedContent({
             replyTo: message,
             title: ":trophy: Server Leaderboard",

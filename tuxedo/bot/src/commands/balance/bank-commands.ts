@@ -1,11 +1,13 @@
 import { Currency, MemberBalance, ModuleName, ServerMember } from "@prisma/client";
-import { inlineCode, ResolvedArgs } from "@yokilabs/bot";
+import { checkmarkEmoteNode, createTextElement, inlineCode, ResolvedArgs } from "@yokilabs/bot";
 import { Message } from "guilded.js";
 import ms from "ms";
 
 import { TuxoClient } from "../../Client";
 import { CommandContext } from "../../typings";
 import { bankCooldown } from "../income/income-defaults";
+import { RichMarkupInlineElement, RichMarkupText } from "@yokilabs/bot/dist/src/utils/rich-types";
+import { displayCurrencyAmountRichMarkup } from "../../util/text";
 
 export function generateBankCommand(
     balanceType: string,
@@ -88,9 +90,6 @@ async function depositAllCurrency(
 
         const balanceAmount = getBalanceAmount(depositingBalance, depositingCurrency.startingBalance);
 
-        // // Get the currency to display its name in the error
-        // const depositingCurrency = depositingCurrencies.find((x) => x.id === depositingBalance.currencyId)!;
-
         // Check if it can be deposited
         if (amount && balanceAmount < amount)
             return ctx.messageUtil.replyWithError(
@@ -108,8 +107,9 @@ async function depositAllCurrency(
         message,
         member,
         depositMap,
+        depositMultiplier,
         actionDone,
-        depositingCurrencies.map((x) => `:${x.emote}: ${depositMap[x.id] / depositMultiplier} ${x.name}`).join(", ")
+        depositingCurrencies,
     );
 }
 
@@ -143,8 +143,9 @@ async function depositOneCurrency(
         message,
         member,
         { [depositingCurrency.id]: (amount ?? balanceAmount) * depositMultiplier },
+        depositMultiplier,
         actionDone,
-        `:${depositingCurrency.emote}: ${amount ?? balanceAmount} ${depositingCurrency.name}`
+        [depositingCurrency],
     );
 }
 
@@ -153,8 +154,9 @@ async function depositToBank(
     message: Message,
     member: ServerMember & { balances: MemberBalance[] },
     depositMap: Record<string, number>,
+    depositMultiplier: number,
     actionDone: string,
-    depositedMessage: string
+    depositedCurrencies: Currency[],
 ) {
     ctx.balanceUtil.updateLastCommandUsage(message.serverId!, message.createdById, "bank");
 
@@ -162,5 +164,20 @@ async function depositToBank(
     await ctx.dbUtil.depositMemberBalance(member, depositMap);
 
     // Reply with success
-    return ctx.messageUtil.replyWithSuccess(message, `Balance ${actionDone}`, `You have successfully ${actionDone} ${depositedMessage}.`);
+    return ctx.messageUtil.replyWithRichMessage(message, [
+        {
+            object: "block",
+            type: "paragraph",
+            data: {},
+            nodes: [
+                // Icon of the content; if it went over the limit, use exclamation mark
+                checkmarkEmoteNode,
+                // It might start with currency rewards
+                createTextElement(` You have successfully ${actionDone}`),
+                // It might look rather empty if everything went over the limit
+                depositedCurrencies.flatMap((x, i) => displayCurrencyAmountRichMarkup(x, depositMap[x.id] / depositMultiplier, i < depositedCurrencies.length - 1)),
+                createTextElement(`.`),
+            ].filter(Boolean) as (RichMarkupText | RichMarkupInlineElement)[],
+        },
+    ]);
 }
