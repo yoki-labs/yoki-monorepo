@@ -21,7 +21,7 @@ export function LabsMultiSelectorShell({ children, valueDecorator, placeholder }
 
     return (
         <Dropdown disabled>
-            <MenuButton onClick={() => setMenuOpen(!menuOpen)} endDecorator={<FontAwesomeIcon width="14px" icon={faAngleDown} />}>
+            <MenuButton variant="outlined" onClick={() => setMenuOpen(!menuOpen)} endDecorator={<FontAwesomeIcon width="14px" icon={faAngleDown} />}>
                 {valueDecorator || (
                     <Typography fontWeight="normal" sx={{ opacity: "50%" }}>
                         {placeholder}

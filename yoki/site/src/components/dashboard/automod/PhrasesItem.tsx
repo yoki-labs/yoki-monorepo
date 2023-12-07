@@ -88,20 +88,22 @@ const suffixed: FilterMatching[] = [FilterMatching.POSTFIX, FilterMatching.INFIX
 
 function PhraseContentDisplay({ content, matching }: { content: string; matching: FilterMatching }) {
     return (
-        <Stack direction="row" gap={0.5} alignItems="center">
-            {prefixed.includes(matching) && (
-                <Typography level="body-md" textColor="text.tertiary" fontSize="lg" fontWeight="bolder" sx={{ userSelect: "none" }}>
-                    {"*"}
+        <Typography level="code" sx={(theme) => ({ backgroundColor: theme.vars.palette.background.level1, width: "max-content" })}>
+            <Stack direction="row" gap={0.5} alignItems="center">
+                {prefixed.includes(matching) && (
+                    <Typography level="body-md" fontSize="lg" fontWeight="bolder" sx={{ opacity: 0.6, color: "inherit", fontFamily: "inherit", userSelect: "none" }}>
+                        {"*"}
+                    </Typography>
+                )}
+                <Typography level="body-md" sx={{ color: "inherit", fontFamily: "inherit" }}>
+                    {content.length > 32 ? `${content.slice(0, 32)}...` : content}
                 </Typography>
-            )}
-            <Typography level="body-md" textColor="text.secondary">
-                {content.length > 32 ? `${content.slice(0, 32)}...` : content}
-            </Typography>
-            {suffixed.includes(matching) && (
-                <Typography level="body-md" textColor="text.tertiary" fontSize="lg" fontWeight="bolder" sx={{ userSelect: "none" }}>
-                    {"*"}
-                </Typography>
-            )}
-        </Stack>
+                {suffixed.includes(matching) && (
+                    <Typography level="body-md" fontSize="lg" fontWeight="bolder" sx={{ opacity: 0.6, color: "inherit", fontFamily: "inherit", userSelect: "none" }}>
+                        {"*"}
+                    </Typography>
+                )}
+            </Stack>
+        </Typography>
     );
 }

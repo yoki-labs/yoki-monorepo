@@ -140,14 +140,14 @@ export default class AutomodPage extends React.Component<DashboardPageProps, Sta
                         )}
                     </Box>
                 </Box>
-                <Box>
+                {/* <Box>
                     <Typography level="title-md" gutterBottom>
                         Auto-mod Ignoring
                     </Typography>
                     <PagePlaceholder icon={PagePlaceholderIcon.Wip} title="Work in progress">
                         This section has not been done yet. Come back later!
                     </PagePlaceholder>
-                </Box>
+                </Box> */}
             </>
         );
     }

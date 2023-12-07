@@ -21,11 +21,9 @@ export const getServerSideProps: GetServerSideProps = async (ctx): Promise<GetSe
     console.log(`Session user does not have access token:`, !session?.user.access_token);
     if (!session?.user.access_token || !session?.user.id) return { redirect: { destination: "/auth/signin", permanent: false } };
 
-    console.log("Session user", session.user);
-
     const servers = await methods(session.user.access_token).get<GuildedClientServer[]>("https://authlink.app/api/v1/users/@me/servers");
-    console.log("Server list", { servers });
-    if (!servers?.length) return { redirect: { destination: "/auth/signin", permanent: false } };
+
+    if (!servers) return { redirect: { destination: "/auth/signin", permanent: false } };
 
     const user = { id: session.user.id, name: session.user.name, avatar: session.user.avatar };
 

@@ -99,7 +99,7 @@ export function UrlCard({ item: link, users, timezone, isSelected, onSelected }:
 
 export function UrlContentDisplay({ subdomain, domain, route }: { subdomain: string | null; domain: string; route: string | null }) {
     return (
-        <Typography level="body-md" textColor="text.secondary">
+        <Typography level="code" sx={(theme) => ({ backgroundColor: theme.vars.palette.background.level1, width: "max-content" })}>
             {subdomain}
             {domain}
             {route}

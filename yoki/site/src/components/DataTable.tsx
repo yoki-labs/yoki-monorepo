@@ -181,6 +181,7 @@ export default class DataTable<TItem extends { id: TItemId }, TItemId> extends R
                         variant="plain"
                         placeholder={`Search ${itemType}`}
                         startDecorator={<FontAwesomeIcon icon={faMagnifyingGlass} />}
+                        sx={{ fontWeight: "bolder" }}
                     />
                     {/* <ButtonGroup>
                         <Button variant="outlined" startDecorator={<FontAwesomeIcon icon={faPlus} />} disabled>

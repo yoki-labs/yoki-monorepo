@@ -1,10 +1,12 @@
-import { Box, CircularProgress, Stack, Typography } from "@mui/joy";
+import { Alert, Box, CircularProgress, Stack, Typography } from "@mui/joy";
 import Link from "next/link";
 import React from "react";
 
 import { GuildedClientServer } from "../../../lib/@types/guilded";
 import ServerDisplay from "../ServerDisplay";
 import PagePlaceholder, { PagePlaceholderIcon } from "../../PagePlaceholder";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faExclamationCircle } from "@fortawesome/free-solid-svg-icons";
 
 interface Props {
     servers: GuildedClientServer[];
@@ -30,9 +32,18 @@ export default class ServerSelectionPage extends React.Component<Props, State> {
 
         return (
             <>
-                <Typography level="h3" color="neutral" sx={{ textAlign: "center", mb: 4 }}>
-                    Select a server
-                </Typography>
+                <Alert variant="soft" color="danger" startDecorator={<FontAwesomeIcon icon={faExclamationCircle} />}>
+                    Authlink can no longer fetch servers that user is in. As such, it's recommended to use
+                    <Typography component="span" level="code">
+                        ?dashboard
+                    </Typography>
+                    command in the server that you want to use dashboard of.
+                </Alert>
+                {servers.length &&
+                    <Typography level="h3" color="neutral" sx={{ textAlign: "center", mb: 4 }}>
+                        Select a server
+                    </Typography>
+                }
                 <Box className="grow h-full overflow-y-auto px-5 md:px-40" sx={{ pb: 8 }}>
                     <Box className="grid mb-8 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                         {servers.map((server) => (

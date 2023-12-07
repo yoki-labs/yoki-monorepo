@@ -32,7 +32,7 @@ function TimeInputShellMiniInput({
         <Input
             placeholder="00"
             color={color}
-            variant="soft"
+            variant="plain"
             endDecorator={
                 <Typography level="body-md" textColor={`${color}.200`} sx={{ userSelect: "none" }}>
                     {suffix}

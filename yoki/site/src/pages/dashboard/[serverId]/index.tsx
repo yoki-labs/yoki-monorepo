@@ -23,7 +23,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx): Promise<GetSe
     console.log("Session user", session.user);
 
     const servers = await methods(session.user.access_token).get<GuildedClientServer[]>("https://authlink.app/api/v1/users/@me/servers");
-    if (!servers?.length) return { redirect: { destination: "/auth/signin", permanent: false } };
+    if (!servers) return { redirect: { destination: "/auth/signin", permanent: false } };
 
     // /dashboard/:serverId
     const { serverId } = ctx.query;

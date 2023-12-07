@@ -77,6 +77,7 @@ export default class LabsSelector extends React.Component<Props, State> {
                     indicator={<FontAwesomeIcon width={14} height={14} icon={faAngleDown} />}
                     size={field.size ?? "md"}
                     renderValue={this.renderOption.bind(this)}
+                    variant="outlined"
                 >
                     {field.selectableValues?.map((value) => (
                         <Option disabled={value.disabled} value={value.value}>

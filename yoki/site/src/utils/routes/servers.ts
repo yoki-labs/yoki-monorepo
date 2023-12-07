@@ -5,7 +5,7 @@ import { Session, unstable_getServerSession } from "next-auth";
 
 import { sanitizeUserDetails } from "./transform";
 import rest from "../../guilded";
-import { GuildedUserDetail } from "../../lib/@types/guilded";
+import { GuildedClientServer, GuildedUserDetail } from "../../lib/@types/guilded";
 import { authOptions } from "../../pages/api/auth/[...nextauth]";
 import prisma from "../../prisma";
 

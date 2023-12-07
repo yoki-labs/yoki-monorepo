@@ -71,6 +71,10 @@ const dark = {
             plainColor: labsTheme.spacedark[300],
             plainHoverBg: labsTheme.spacedark[900],
             plainActiveBg: labsTheme.spacedark[800],
+            // // Soft components
+            // softBg: mixHexColours(labsTheme.spacedark[950], labsTheme.spacedark[900], 0.5),
+            // softHoverBg: labsTheme.spacedark[950],
+            // softActiveBg: labsTheme.spacedark[950],
             // Outlined components
             outlinedBorder: labsTheme.spacedark[700],
             outlinedColor: labsTheme.spacelight[600],
@@ -134,6 +138,13 @@ export const theme = extendTheme({
     },
     focus: {
         thickness: "1px",
+    },
+    radius: {
+        xs: "4px",
+        sm: "8px",
+        md: "12px",
+        lg: "16px",
+        xl: "20px",
     },
     colorSchemes: {
         light,

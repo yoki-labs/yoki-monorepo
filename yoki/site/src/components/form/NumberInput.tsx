@@ -82,7 +82,7 @@ export default class NumberInput extends React.Component<Props, State> {
                     startDecorator={field.prefixIcon && <FontAwesomeIcon icon={field.prefixIcon} />}
                     endDecorator={
                         <>
-                            <Divider orientation="vertical" />
+                            <Divider orientation="vertical" sx={(theme) => ({ "--Divider-lineColor": theme.vars.palette.background.body })} />
                             <Stack direction="column">
                                 <IconButton
                                     disabled={typeof field.max === "number" && currentValue >= field.max!}

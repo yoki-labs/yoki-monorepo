@@ -1,4 +1,4 @@
-import { Input, InputProps, Stack, styled } from "@mui/joy";
+import { InputProps, Stack, styled } from "@mui/joy";
 
 export const InputWrapper = styled(Stack, {
     name: "LabsInputWrapper",
