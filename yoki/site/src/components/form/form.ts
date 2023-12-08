@@ -111,6 +111,8 @@ export type LabsFormFieldByType<T extends LabsFormFieldType> =
         : // Selection
         T extends LabsFormFieldType.Select
         ? LabsFormFieldSelectable<LabsFormFieldType.Select>
+        : T extends LabsFormFieldType.Picker
+        ? LabsFormFieldSelectable<LabsFormFieldType.Picker>
         : T extends LabsFormFieldType.Toggle
         ? BaseLabsFormField<LabsFormFieldType.Toggle, boolean>
         : T extends LabsFormFieldType.MultiSelect
@@ -127,6 +129,7 @@ export type LabsFormField =
     | LabsFormFieldByType<LabsFormFieldType.Time>
     // Selection
     | LabsFormFieldByType<LabsFormFieldType.Select>
+    | LabsFormFieldByType<LabsFormFieldType.Picker>
     | LabsFormFieldByType<LabsFormFieldType.Toggle>
     | LabsFormFieldByType<LabsFormFieldType.MultiSelect>;
 
@@ -135,6 +138,7 @@ export enum LabsFormFieldType {
     TextArea,
     Number,
     Select,
+    Picker,
     Toggle,
     MultiSelect,
     Time,

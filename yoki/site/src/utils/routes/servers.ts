@@ -58,7 +58,7 @@ export function createServerRoute(methodToFunction: ServerRouteInfo) {
 interface DataRouteInfo<TItem extends { id: TId }, TId> {
     type: string;
     searchFilter: (value: TItem, search: string, index: number, array: TItem[]) => boolean;
-    fetchMany: (serverId: string) => Promise<TItem[]>;
+    fetchMany: (serverId: string, query: Partial<{ [key: string]: string | string[]; }>) => Promise<TItem[] | null>;
     deleteMany: (serverId: string, ids: TId[]) => Promise<unknown>;
     fetchUsers?: (serverId: string, items: TItem[]) => Promise<Record<string, GuildedUserDetail>>;
 }
@@ -75,7 +75,13 @@ export function createServerDataRoute<TItem extends { id: TId }, TId>({ type, se
         if (typeof page !== "number" || page < 0) return res.status(400).json({ error: true, message: "Expected page to be a number that is at least 0." });
         else if (typeof search !== "undefined" && typeof search !== "string") return res.status(400).json({ error: true, message: "Expected search query to be a string." });
 
-        const items: TItem[] = await fetchMany(server.serverId);
+        const items: TItem[] | null =
+            await fetchMany(server.serverId, req.query);
+
+        // To allow catching invalid filters
+        if (!items)
+            return res.status(400).json({ error: true, message: "Couldn't fetch items due to an error in one of the queries" });
+
         const foundItems = search ? items.filter((value, index, array) => searchFilter(value, search, index, array)) : items;
 
         const startIndex = page * 50;

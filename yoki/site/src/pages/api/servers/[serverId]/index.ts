@@ -4,6 +4,7 @@ import { timezones } from "@yokilabs/utils";
 import rest from "../../../../guilded";
 import prisma from "../../../../prisma";
 import {
+    availableSeverityValues,
     getBodyErrorResponse,
     isBodyChannelPropertyValid,
     isBodyEnumPropertyInvalid,
@@ -35,8 +36,6 @@ const BOOLEAN_PROPERTIES: (keyof Server)[] = [
     "urlFilterIsWhitelist",
 ];
 const ROLE_PROPERTIES: (keyof Server)[] = ["muteRoleId", "memberRoleId", "modmailPingRoleId"];
-
-const availableSeverity = Object.keys(Severity);
 const availableResponse = Object.keys(ResponseType);
 
 const serverConfigRoute = createServerRoute({
@@ -65,7 +64,7 @@ const serverConfigRoute = createServerRoute({
         else if (isBodyPropertyTypeInvalid(body.linkInfractionPoints, "number") || body.linkInfractionPoints < 0 || body.linkInfractionPoints > 10000)
             return getBodyErrorResponse(res, "linkInfractionPoints", "number between 0 and 10'000");
         // Enums
-        else if (isBodyEnumPropertyInvalid(body.linkSeverity, availableSeverity)) return getBodyErrorResponse(res, "linkSeverity", "severity");
+        else if (isBodyEnumPropertyInvalid(body.linkSeverity, availableSeverityValues)) return getBodyErrorResponse(res, "linkSeverity", "severity");
         else if (isBodyEnumPropertyInvalid(body.antiRaidResponse, availableResponse)) return getBodyErrorResponse(res, "antiRaidResponse", "response type");
         // Channels
         else if (!(await isBodyChannelPropertyValid(body.appealChannelId))) return getBodyErrorResponse(res, "appealChannelId", "null or channel");

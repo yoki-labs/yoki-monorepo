@@ -1,6 +1,9 @@
 import { NextApiResponse } from "next";
 
 import { channelExistsInServer } from "./route";
+import { Severity } from "@prisma/client";
+
+export const availableSeverityValues = Object.keys(Severity);
 
 export const getBodyErrorResponse = (res: NextApiResponse, name: string, type: string) => res.status(400).json({ error: true, message: `Invalid ${name}. Expected ${type}` });
 

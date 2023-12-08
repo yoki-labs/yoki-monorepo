@@ -1,13 +1,15 @@
-import { faMagnifyingGlass, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faMagnifyingGlass, faSliders, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Box, Button, ButtonGroup, Checkbox, CircularProgress, Input, ListItemDecorator, MenuItem, Modal, Stack, Table, Typography } from "@mui/joy";
+import { Box, Button, ButtonGroup, Checkbox, CircularProgress, Dropdown, Input, ListItem, ListItemDecorator, Menu, MenuButton, MenuItem, MenuList, Modal, Stack, Table, Typography } from "@mui/joy";
 import React from "react";
 
 import PagePlaceholder, { PagePlaceholderIcon } from "./PagePlaceholder";
 import LabsOverflowButton from "./LabsOverflowButton";
 import { DeletionConfirmationModal } from "./DeletionConfirmationModal";
 import { notifyFetchError } from "../utils/errorUtil";
-import { GuildedSanitizedUserDetail, GuildedUserDetail } from "../lib/@types/guilded";
+import { GuildedSanitizedUserDetail } from "../lib/@types/guilded";
+import LabsForm, { LabsFormFieldValueMap } from "./form/LabsForm";
+import { LabsFormField, LabsFormSectionOrder } from "./form/form";
 
 // type State = {
 //     isLoaded: boolean;
@@ -42,10 +44,14 @@ export type OverflowProps<TItem> = {
 type State<TItem extends { id: TItemId }, TItemId> = {
     isLoaded: boolean;
     isMounted: boolean;
+
     items: TItem[];
+    selectedItems: TItemId[];
+
     page: number;
     search?: string;
-    selectedItems: TItemId[];
+    filter?: LabsFormFieldValueMap;
+
     maxPages: number;
     users?: Record<string, GuildedSanitizedUserDetail>;
     error?: { code: string; message: string };
@@ -53,10 +59,15 @@ type State<TItem extends { id: TItemId }, TItemId> = {
 
 type Props<TItem extends { id: TItemId }, TItemId> = {
     itemType: string;
+
     timezone: string | null;
     columns: string[];
-    getItems: (page: number, search?: string) => Promise<FetchedItems<TItem>>;
+
+    filterFormFields: LabsFormField[];
+
+    getItems: (page: number, search?: string, filter?: LabsFormFieldValueMap) => Promise<FetchedItems<TItem>>;
     deleteItems: (items: TItemId[], page: number, search?: string) => Promise<FetchedItems<TItem>>;
+
     ItemRenderer: (props: ItemProps<TItem>) => JSX.Element;
     ItemMobileRenderer: (props: ItemProps<TItem>) => JSX.Element;
 };
@@ -88,10 +99,10 @@ export default class DataTable<TItem extends { id: TItemId }, TItemId> extends R
         return !items.some((item) => !selectedItems.includes(item.id));
     }
 
-    async fetchItems(page: number, search?: string) {
+    async fetchItems(page: number, search?: string, filter?: LabsFormFieldValueMap) {
         return this.props
-            .getItems(page, search)
-            .then(({ items, maxPages, users }) => this.setState({ isLoaded: true, items, maxPages, page, search, users }))
+            .getItems(page, search, filter)
+            .then(({ items, maxPages, users }) => this.setState({ isLoaded: true, items, maxPages, page, search, filter, users }))
             .catch(async (errorResponse) => this.onFetchError(errorResponse));
     }
 
@@ -117,6 +128,12 @@ export default class DataTable<TItem extends { id: TItemId }, TItemId> extends R
 
         this.setState({
             selectedItems: isChecked ? selectedItems.concat(item.id) : selectedItems.filter((x) => x !== item.id),
+        });
+    }
+
+    setFilter(filter: LabsFormFieldValueMap) {
+        this.setState({
+            filter,
         });
     }
 
@@ -168,8 +185,8 @@ export default class DataTable<TItem extends { id: TItemId }, TItemId> extends R
                 </Stack>
             );
 
-        const { items, page, search, maxPages } = this.state;
-        const { columns, itemType } = this.props;
+        const { items, page, search, filter, maxPages } = this.state;
+        const { columns, itemType, filterFormFields } = this.props;
         const renderedItems = this.renderItems();
 
         return (
@@ -177,20 +194,22 @@ export default class DataTable<TItem extends { id: TItemId }, TItemId> extends R
                 <Stack gap={2} className="flex-col md:flex-row">
                     <Input
                         className="flex-1"
-                        onChange={({ target }) => this.fetchItems(page, target.value)}
+                        onChange={({ target }) => this.fetchItems(page, target.value, filter)}
                         variant="plain"
                         placeholder={`Search ${itemType}`}
                         startDecorator={<FontAwesomeIcon icon={faMagnifyingGlass} />}
                         sx={{ fontWeight: "bolder" }}
                     />
-                    {/* <ButtonGroup>
-                        <Button variant="outlined" startDecorator={<FontAwesomeIcon icon={faPlus} />} disabled>
-                            Create
-                        </Button>
-                        <Button variant="outlined" startDecorator={<FontAwesomeIcon icon={faSliders} />} disabled>
-                            Filter
-                        </Button>
-                    </ButtonGroup> */}
+                    <ButtonGroup>
+                        {filterFormFields && <Dropdown variant="plain" startDecorator={<FontAwesomeIcon icon={faSliders} />}>
+                            <MenuButton startDecorator={<FontAwesomeIcon icon={faSliders} />}>Filter</MenuButton>
+                            <DataTableFilterMenu
+                                itemType={itemType}
+                                fields={filterFormFields}
+                                onChange={(filter) => this.fetchItems(page, search, filter)}
+                            />
+                        </Dropdown>}
+                    </ButtonGroup>
                 </Stack>
 
                 {items.length ? (
@@ -225,7 +244,7 @@ export default class DataTable<TItem extends { id: TItemId }, TItemId> extends R
                         {maxPages > 1 && (
                             <ButtonGroup>
                                 {[...(pagesToArray(maxPages) as unknown as number[])].map((buttonPage) => (
-                                    <Button disabled={page === buttonPage} onClick={this.fetchItems.bind(this, buttonPage, search)}>
+                                    <Button disabled={page === buttonPage} onClick={this.fetchItems.bind(this, buttonPage, search, filter)}>
                                         {buttonPage + 1}
                                     </Button>
                                 ))}
@@ -242,7 +261,9 @@ export default class DataTable<TItem extends { id: TItemId }, TItemId> extends R
     }
 }
 
-export function DataTableOverflow<TItem>({ itemType, selectedItems, onItemDeletion }: OverflowProps<TItem>) {
+export const querifyDataTableInfo = (search?: string, filter?: LabsFormFieldValueMap) => `${search ? `&search=${encodeURIComponent(search)}` : ""}${filter ? Object.keys(filter).map((x) => filter[x] ? `&${x}=${filter[x]}` : "").join("") : ""}`;
+
+function DataTableOverflow<TItem>({ itemType, selectedItems, onItemDeletion }: OverflowProps<TItem>) {
     const [openDeletePrompt, setOpenDeletePrompt] = React.useState(false);
 
     return (
@@ -263,6 +284,25 @@ export function DataTableOverflow<TItem>({ itemType, selectedItems, onItemDeleti
                 />
             </Modal>
         </>
+    );
+}
+
+function DataTableFilterMenu({ itemType, fields, onChange }: { itemType: string; fields: LabsFormField[]; onChange: (values: LabsFormFieldValueMap) => unknown; }) {
+    return (
+        <Menu sx={{ "--ListItem-paddingY": 0 }}>
+            <ListItem>
+                <LabsForm
+                    sections={[
+                        {
+                            order: LabsFormSectionOrder.Grid,
+                            fields,
+                        }
+                    ]}
+                    submitText={`Filter ${itemType}`}
+                    onSubmit={onChange}
+                />
+            </ListItem>
+        </Menu>
     );
 }
 

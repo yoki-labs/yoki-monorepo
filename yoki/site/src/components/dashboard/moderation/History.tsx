@@ -3,23 +3,27 @@ import React from "react";
 
 import { DashboardPageProps } from "../pages";
 import { SanitizedAction } from "../../../lib/@types/db";
-import DataTable from "../../DataTable";
+import DataTable, { querifyDataTableInfo } from "../../DataTable";
 import { HistoryCaseCard, HistoryCaseRow } from "./HistoryCase";
+import { LabsFormFieldType } from "../../form/form";
+import { severityOptions } from "../../../utils/actionUtil";
+import { LabsFormFieldValueMap } from "../../form/LabsForm";
+
 export default class HistoryPage extends React.Component<DashboardPageProps> {
     constructor(props: DashboardPageProps) {
         super(props);
     }
 
-    getCasesRoute(page: number, search?: string) {
+    getCasesRoute(page: number, search?: string, filter?: LabsFormFieldValueMap) {
         const {
             serverConfig: { serverId },
         } = this.props;
 
-        return `/api/servers/${serverId}/cases?page=${page}${search ? `&search=${encodeURIComponent(search)}` : ""}`;
+        return `/api/servers/${serverId}/cases?page=${page}${querifyDataTableInfo(search, filter)}`;
     }
 
-    async fetchCases(page: number, search?: string) {
-        return fetch(this.getCasesRoute(page, search), {
+    async fetchCases(page: number, search?: string, filter?: LabsFormFieldValueMap) {
+        return fetch(this.getCasesRoute(page, search, filter), {
             method: "GET",
             headers: { "content-type": "application/json" },
         })
@@ -27,7 +31,7 @@ export default class HistoryPage extends React.Component<DashboardPageProps> {
                 if (!response.ok) throw response;
                 return response.json();
             })
-            .then(({ items, count, users }) => (console.log("Users", users), { items, maxPages: Math.ceil(count / 50), users }));
+            .then(({ items, count, users }) => ({ items, maxPages: Math.ceil(count / 50), users }));
     }
 
     async deleteCases(caseIds: string[], page: number, search?: string) {
@@ -51,12 +55,25 @@ export default class HistoryPage extends React.Component<DashboardPageProps> {
                 <Typography level="h4">Server history</Typography>
                 <DataTable<SanitizedAction, string>
                     itemType="cases"
+
                     timezone={serverConfig.timezone}
                     columns={["User", "Action", "Moderator", "Reason", "When"]}
+
                     getItems={this.fetchCases.bind(this)}
                     deleteItems={this.deleteCases.bind(this)}
+
                     ItemRenderer={HistoryCaseRow}
                     ItemMobileRenderer={HistoryCaseCard}
+
+                    filterFormFields={[
+                        {
+                            type: LabsFormFieldType.Picker,
+                            name: "Severity",
+                            prop: "severity",
+                            selectableValues: severityOptions,
+                            optional: true,
+                        }
+                    ]}
                 />
             </Stack>
         );
