@@ -173,9 +173,9 @@ async function depositToBank(
                 // Icon of the content; if it went over the limit, use exclamation mark
                 checkmarkEmoteNode,
                 // It might start with currency rewards
-                createTextElement(` You have successfully ${actionDone}`),
+                createTextElement(` You have successfully ${actionDone} `),
                 // It might look rather empty if everything went over the limit
-                depositedCurrencies.flatMap((x, i) => displayCurrencyAmountRichMarkup(x, depositMap[x.id] / depositMultiplier, i < depositedCurrencies.length - 1)),
+                ...depositedCurrencies.flatMap((x, i) => displayCurrencyAmountRichMarkup(x, depositMap[x.id] / depositMultiplier, i < depositedCurrencies.length - 1)),
                 createTextElement(`.`),
             ].filter(Boolean) as (RichMarkupText | RichMarkupInlineElement)[],
         },
