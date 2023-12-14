@@ -6,7 +6,7 @@ import { stripIndents } from "common-tags";
 import type { GEvent } from "../../typings";
 
 export default {
-    execute: async ([event, _oldMembers, ctx]): Promise<void> => {
+    execute: async ([event, oldMembers, ctx]): Promise<void> => {
         const { serverId, members: newMembers } = event;
 
         // check if there's a log channel channel for message deletions
@@ -18,7 +18,7 @@ export default {
             const roleDifferences = cappedRoleChanges.map((member) => {
                 const { roleIds, userId } = member;
 
-                const previousState = ctx.members.cache.get(userId);
+                const previousState = oldMembers.find((x) => x.id === member.userId);
 
                 if (!previousState) return { userId, roleIds };
 

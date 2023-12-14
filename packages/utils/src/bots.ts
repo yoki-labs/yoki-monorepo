@@ -6,6 +6,7 @@ export interface CommandArgumentInfo {
     type: CommandArgType;
     optional?: boolean;
     allowDecimal?: boolean;
+    noLimit?: boolean;
 
     // Display
     display?: string;
