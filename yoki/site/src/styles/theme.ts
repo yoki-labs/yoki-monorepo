@@ -1,12 +1,13 @@
 import { extendTheme } from "@mui/joy";
-
-import labsTheme from "./themes/theme.json";
 import { themeFontCss } from "./themes/util";
 import { labsDarkTheme } from "./themes/dark";
 import { labsLightTheme } from "./themes/light";
 
 declare module "@mui/joy/styles" {
     interface TypographySystemOverrides {
+        code: true;
+    }
+    interface PaletteTextOverrides {
         code: true;
     }
     interface PaletteRangeOverrides {
@@ -26,6 +27,9 @@ export const theme = extendTheme({
         "body-sm": themeFontCss,
         "body-md": themeFontCss,
         "body-lg": themeFontCss,
+        "title-sm": themeFontCss,
+        "title-md": themeFontCss,
+        "title-lg": themeFontCss,
         code: {
             backgroundColor: `var(--labs-palette-background-body)`,
             color: `var(--labs-palette-text-code)`,

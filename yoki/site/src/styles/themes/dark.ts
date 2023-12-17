@@ -10,10 +10,10 @@ const brightest = labsTheme.spacedark.foreground[950];
 export const labsDarkTheme: ColorSystemOptions = {
     shadowRing: "#000",
     shadowChannel: "#000",
-    fontFamily: {
-        display: "Lexend",
-        body: "Montserrat",
-    },
+    // fontFamily: {
+    //     display: "Lexend",
+    //     body: "Montserrat",
+    // },
     palette: {
         divider: labsTheme.spacedark.background[800],
         neutral: {

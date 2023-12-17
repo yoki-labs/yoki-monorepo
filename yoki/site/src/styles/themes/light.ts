@@ -10,10 +10,10 @@ const darkest = labsTheme.spacelight.foreground[950];
 export const labsLightTheme: ColorSystemOptions = {
     shadowRing: "#000",
     shadowChannel: "#000",
-    fontFamily: {
-        display: "Lexend",
-        body: "Montserrat",
-    },
+    // fontFamily: {
+    //     display: "Lexend",
+    //     body: "Montserrat",
+    // },
     palette: {
         divider: labsTheme.spacelight.background[700],
         neutral: {
