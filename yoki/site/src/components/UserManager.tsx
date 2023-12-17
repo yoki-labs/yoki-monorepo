@@ -70,7 +70,7 @@ export default function UserManager({ user, displayName }: Props) {
                                     </Stack>
                                 </MenuItem>
                             </Link>
-                            : <Link href="/auth/signin" style={{ textDecoration: "none" }}>
+                            : <Link href="/auth/signin?callbackUrl=%2F" style={{ textDecoration: "none" }}>
                                 <MenuItem color="primary">
                                     <ListItemDecorator>
                                         <FontAwesomeIcon icon={faUserCircle} />
@@ -88,7 +88,7 @@ export default function UserManager({ user, displayName }: Props) {
                         </MenuItem>
                         {user && <>
                             <Divider />
-                            <Link href="/auth/signout" style={{ textDecoration: "none" }}>
+                            <Link href="/auth/signout?callbackUrl=%2F" style={{ textDecoration: "none" }}>
                                 <MenuItem color="danger">
                                     <ListItemDecorator>
                                         <FontAwesomeIcon icon={faRightFromBracket} />
