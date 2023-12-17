@@ -1,4 +1,4 @@
-import { Accordion, AccordionDetails, AccordionGroup, AccordionSummary, Box, Card, Chip, Grid, List, ListItem, ListItemDecorator, Stack, Typography, styled } from "@mui/joy";
+import { Accordion, AccordionDetails, AccordionGroup, AccordionSummary, Box, Card, Chip, Grid, List, ListItem, ListItemDecorator, Stack, Tooltip, Typography, styled } from "@mui/joy";
 import { Command } from "../../../lib/Command";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faShieldHalved } from "@fortawesome/free-solid-svg-icons";
@@ -50,9 +50,11 @@ const Line = styled(`div`, {
 
 export default function CommandDisplay({ command, isSubCommand }: Props) {
     const requiredRoleBadge = command.requiredRole && (
-        <Chip color="primary" startDecorator={<FontAwesomeIcon icon={faShieldHalved} />}>
-            {command.requiredRole}
-        </Chip>
+        <Tooltip title={`This command requires having a role that is set at ${command.requiredRole} level or higher`}>
+            <Chip variant="soft" color="primary" startDecorator={<FontAwesomeIcon icon={faShieldHalved} />}>
+                {command.requiredRole[0]}{command.requiredRole.substring(1).toLowerCase()}
+            </Chip>
+        </Tooltip>
     );
     const normalizedName = command.name.split("-").join(" ");
 
@@ -67,21 +69,21 @@ export default function CommandDisplay({ command, isSubCommand }: Props) {
                     {requiredRoleBadge}
                 </Stack>
                 <Typography level="body-md">{command.description}</Typography>
-                {command.args?.length ? <CommandDisplayArguments args={command.args} /> : null}
-                {command.examples?.length ? <CommandDisplayExamples name={normalizedName} examples={command.examples} /> : null}
+                {command.args?.length ? <CommandDisplayArguments command={command} /> : null}
+                {command.examples?.length ? <CommandDisplayExamples name={normalizedName} command={command} /> : null}
             </CommandCard>
-            {command.subCommands && <CommandDisplaySubCommands commands={command.subCommands} />}
+            {command.subCommands && <CommandDisplaySubCommands command={command} />}
         </Box>
     );
 }
 
-function CommandDisplayArguments({ args }: { args: Command["args"] }) {
+function CommandDisplayArguments({ command }: { command: Command }) {
     return (
         <Box>
             <Typography level="title-sm">Arguments</Typography>
             <List>
-                {args!.map((x) => (
-                    <ListItem sx={{ "margin-inline": 0, "--ListItemDecorator-size": "1.2rem" }}>
+                {command.args!.map((x, i) => (
+                    <ListItem key={`command.${command.name}.args.${i}`} sx={{ marginInline: 0, "--ListItemDecorator-size": "1.2rem" }}>
                         <ListItemDecorator>
                             <Typography fontWeight="bolder" textColor="text.tertiary" fontSize="lg">
                                 {"\u2022"}
@@ -114,7 +116,7 @@ function CommandDisplayArguments({ args }: { args: Command["args"] }) {
     );
 }
 
-function CommandDisplayExamples({ name, examples }: { name: string; examples: string[] }) {
+function CommandDisplayExamples({ name, command }: { name: string; command: Command }) {
     return (
         <Box>
             <Typography level="title-sm" gutterBottom>
@@ -122,8 +124,8 @@ function CommandDisplayExamples({ name, examples }: { name: string; examples: st
             </Typography>
             <CodeWrapper>
                 <Stack direction="column" gap={1}>
-                    {examples.map((x) => (
-                        <Typography level="code" textColor="text.secondary">
+                    {command.examples!.map((x, i) => (
+                        <Typography key={`commands.${command.name}.example.${i}`} level="code" textColor="text.secondary">
                             ?{name} {x}
                         </Typography>
                     ))}
@@ -133,17 +135,19 @@ function CommandDisplayExamples({ name, examples }: { name: string; examples: st
     );
 }
 
-function CommandDisplaySubCommands({ commands }: { commands: Command[] }) {
+function CommandDisplaySubCommands({ command }: { command: Command }) {
     return (
         <AccordionGroup size="lg">
-            <Accordion>
-                <AccordionSummary>Sub-commands</AccordionSummary>
+            <Accordion key={`commands.${command.name}.subcommands`}>
+                <AccordionSummary>
+                    <Typography level="title-md" fontWeight="bolder" textColor="text.tertiary">Sub-commands</Typography>
+                </AccordionSummary>
                 <AccordionDetails>
                     <Stack direction="row" alignItems="stretch" className="gap-3 md:gap-8">
                         <Line />
                         <Stack sx={{ pt: 2, flex: "1" }} gap={2} alignItems="stretch">
-                            {commands.map((subCommand) => (
-                                <CommandDisplay command={subCommand} isSubCommand />
+                            {command.subCommands!.map((subCommand) => (
+                                <CommandDisplay key={`commands.${command.name}.subcommands.${subCommand.name}`} command={subCommand} isSubCommand />
                             ))}
                         </Stack>
                     </Stack>

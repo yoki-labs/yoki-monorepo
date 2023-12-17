@@ -1,127 +1,31 @@
 import { extendTheme } from "@mui/joy";
 
-import labsTheme from "./theme.json";
-import { greyscaleHexColour, mixHexColours } from "../utils/colorUtil";
-
-const mostDark = labsTheme.spacedark[950];
-const mostLight = labsTheme.spacelight[950];
-
-export const labsSecondaryColour: [string, string] = ["#f87edd", "#715be9"];
-export const labsSecondaryColourHover: [string, string] = [mixHexColours(labsSecondaryColour[0], mostLight, 0.5), mixHexColours(labsSecondaryColour[1], mostLight, 0.5)];
-
-const bodyFont = {
-    fontFamily: [
-        `"Montserrat"`,
-        `"Public Sans"`,
-        `var(--labs-fontFamily-fallback, var(--labs--apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"))`,
-    ].join(", "),
-};
-
-const generateColourScheme = (typicalColour: string) => ({
-    950: mixHexColours(typicalColour, mostDark, 0.9),
-    900: mixHexColours(typicalColour, mostDark, 0.8),
-    800: mixHexColours(typicalColour, mostDark, 0.6),
-    700: mixHexColours(typicalColour, mostDark, 0.4),
-    600: mixHexColours(typicalColour, mostDark, 0.2),
-    500: typicalColour,
-    400: mixHexColours(typicalColour, mostLight, 0.2),
-    300: mixHexColours(typicalColour, mostLight, 0.4),
-    200: mixHexColours(typicalColour, mostLight, 0.6),
-    100: mixHexColours(typicalColour, mostLight, 0.8),
-    // Solid
-    solidBg: typicalColour,
-    solidHoverBg: mixHexColours(typicalColour, mostLight, 0.2),
-    // Plain
-    plainHoverBg: mixHexColours(typicalColour, mostDark, 0.9),
-    plainActiveBg: mixHexColours(typicalColour, mostDark, 0.7),
-    // Outlined
-    outlinedDisabledColor: mixHexColours(greyscaleHexColour(typicalColour, 0.7), mostDark, 0.5),
-    outlinedDisabledBorder: mixHexColours(typicalColour, mostDark, 0.7),
-    // Soft
-    softBg: mixHexColours(typicalColour, mostDark, 0.8),
-    // Transparency
-    "sm-opacity": `${typicalColour}55`,
-});
-
-const dark = {
-    shadowRing: "#000",
-    shadowChannel: "#000",
-    fontFamily: {
-        display: "Lexend",
-        body: "Montserrat",
-    },
-    palette: {
-        divider: labsTheme.spacedark[800],
-        neutral: {
-            900: labsTheme.spacedark[950],
-            800: labsTheme.spacedark[900],
-            700: labsTheme.spacedark[800],
-            600: labsTheme.spacedark[700],
-            500: labsTheme.spacedark[600],
-            400: labsTheme.spacedark[500],
-            300: labsTheme.spacedark[400],
-            200: labsTheme.spacedark[300],
-            100: labsTheme.spacedark[300],
-            50: labsTheme.spacedark[300],
-            // Solid components
-            solidBg: labsTheme.spacedark[600],
-            solidHoverBg: labsTheme.spacedark[500],
-            solidActiveBg: labsTheme.spacedark[400],
-            // Plain components
-            plainColor: labsTheme.spacedark[300],
-            plainHoverBg: labsTheme.spacedark[900],
-            plainActiveBg: labsTheme.spacedark[800],
-            // // Soft components
-            // softBg: mixHexColours(labsTheme.spacedark[950], labsTheme.spacedark[900], 0.5),
-            // softHoverBg: labsTheme.spacedark[950],
-            // softActiveBg: labsTheme.spacedark[950],
-            // Outlined components
-            outlinedBorder: labsTheme.spacedark[700],
-            outlinedColor: labsTheme.spacelight[600],
-
-            outlinedHoverBorder: labsTheme.spacedark[600],
-            outlinedHoverColor: labsTheme.spacelight[700],
-
-            outlinedDisabledBorder: labsTheme.spacedark[600],
-            outlinedDisabledColor: labsTheme.spacelight[500],
-        },
-        primary: generateColourScheme(labsTheme.primary),
-        danger: generateColourScheme(labsTheme.danger),
-        warning: generateColourScheme(labsTheme.warning),
-        success: generateColourScheme(labsTheme.success),
-        text: {
-            primary: labsTheme.spacelight[900],
-            secondary: labsTheme.spacelight[700],
-            tertiary: labsTheme.spacelight[500],
-            code: mixHexColours(labsTheme.spacelight[800], labsSecondaryColour[0], 0.75),
-        },
-        background: {
-            body: labsTheme.spacedark[950],
-            level1: labsTheme.spacedark[900],
-            level2: labsTheme.spacedark[800],
-            level3: labsTheme.spacedark[700],
-
-            surface: labsTheme.spacedark[900],
-            backdrop: `${mostDark}DF`,
-            popup: "#000",
-            tooltip: "#000",
-        },
-    },
-};
-const light = dark;
+import labsTheme from "./themes/theme.json";
+import { themeFontCss } from "./themes/util";
+import { labsDarkTheme } from "./themes/dark";
+import { labsLightTheme } from "./themes/light";
 
 declare module "@mui/joy/styles" {
     interface TypographySystemOverrides {
         code: true;
     }
+    interface PaletteRangeOverrides {
+        950: true;
+    }
+    interface PaletteBackgroundOverrides {
+        embedded: true;
+        embeddedfooter: true;
+        skeleton0: true;
+        skeleton1: true;
+    }
 }
 
 export const theme = extendTheme({
     typography: {
-        "body-xs": bodyFont,
-        "body-sm": bodyFont,
-        "body-md": bodyFont,
-        "body-lg": bodyFont,
+        "body-xs": themeFontCss,
+        "body-sm": themeFontCss,
+        "body-md": themeFontCss,
+        "body-lg": themeFontCss,
         code: {
             backgroundColor: `var(--labs-palette-background-body)`,
             color: `var(--labs-palette-text-code)`,
@@ -140,15 +44,15 @@ export const theme = extendTheme({
         thickness: "1px",
     },
     radius: {
-        xs: "4px",
-        sm: "8px",
-        md: "12px",
-        lg: "16px",
-        xl: "20px",
+        xs: "6px",
+        sm: "10px",
+        md: "16px",
+        lg: "20px",
+        xl: "24px",
     },
     colorSchemes: {
-        light,
-        dark,
+        light: labsLightTheme,
+        dark: labsDarkTheme,
     },
     components: {
         JoyLink: {
@@ -183,11 +87,11 @@ export const theme = extendTheme({
         },
         JoySwitch: {
             styleOverrides: {
-                thumb: {
-                    background: labsTheme.spacedark[950],
-                },
+                thumb: ({ theme }) => ({
+                    background: theme.vars.palette.background.body,
+                }),
                 // track: ({ ownerState, theme }) => ({
-                //     background: ownerState.checked ? "#FF0000" : labsTheme.spacedark[600],
+                //     background: ownerState.checked ? "#FF0000" : labsTheme.spacedark.background[600],
                 // })
             },
         },
@@ -222,10 +126,17 @@ export const theme = extendTheme({
         },
         JoySkeleton: {
             styleOverrides: {
-                root: `
-                    overflow: hidden;
-                    position: relative !important;
-                `,
+                root: ({ theme }) => ({
+                    overflow: "hidden",
+                    position: "relative !important" as "relative",
+                    background: theme.vars.palette.background.skeleton0,
+                    "::after": {
+                        background: theme.vars.palette.background.skeleton1,
+                    },
+                    "::before": {
+                        backgroundColor: theme.vars.palette.background.skeleton0,
+                    }
+                }),
             },
         },
         JoyOption: {
@@ -242,6 +153,24 @@ export const theme = extendTheme({
                     cursor: "text",
                 },
             },
+        },
+        JoyTooltip: {
+            defaultProps: {
+                variant: "outlined",
+                arrow: true,
+            },
+            styleOverrides: {
+                root: ({ theme }) => ({
+                    backgroundColor: theme.vars.palette.background.tooltip,
+                    padding: "8px 12px",
+                }),
+                arrow: ({ theme }) => ({
+                    "::before": {
+                        borderTopColor: theme.vars.palette.background.tooltip,
+                        borderRightColor: theme.vars.palette.background.tooltip,
+                    },
+                }),
+            }
         },
     },
 });

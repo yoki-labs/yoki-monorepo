@@ -1,14 +1,14 @@
 import { faGuilded } from "@fortawesome/free-brands-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Box, Button, Card, Link, Stack, Typography, styled } from "@mui/joy";
-import { labsSecondaryColour } from "../../../styles/theme";
+import { labsSecondaryColour } from "../../../styles/themes/secondary";
 import { CurvyMask } from "../masked";
-import { faStar } from "@fortawesome/free-solid-svg-icons";
 
 const FinalSectionCard = styled(Card)(({ theme }) => ({
     position: "relative",
     backgroundImage: `linear-gradient(to bottom right, ${labsSecondaryColour[0]}, ${labsSecondaryColour[1]})`,
     overflow: "hidden",
+    borderRadius: theme.vars.radius.xl
 }));
 
 const CardDecorationWrapper = styled(`div`)(({ theme }) => ({

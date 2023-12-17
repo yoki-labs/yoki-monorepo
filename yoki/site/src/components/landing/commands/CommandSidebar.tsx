@@ -15,7 +15,7 @@ export default function CommandSidebar({ categories, activeCategory }: Props) {
         <Box sx={{ width: 300, maxWidth: 300, minWidth: 300, fontSize: 14, pt: 0, pb: 5 }} className={`h-full overflow-y-auto overflow-x-hidden`}>
             <List variant="plain">
                 {Object.keys(categories).map((category) => (
-                    <ListItemButton onClick={() => router.push(`/commands/${category}`)} key={`command-category-${category}`} selected={category === activeCategory}>
+                    <ListItemButton onClick={() => router.push(`/commands/${category}`)} key={`command-category.${category}`} selected={category === activeCategory}>
                         {categories[category]}
                     </ListItemButton>
                 ))}

@@ -1,6 +1,6 @@
-import { Button, ButtonProps, styled } from "@mui/joy";
+import { Button, styled } from "@mui/joy";
 import { DefaultColorPalette } from "@mui/joy/styles/types";
-import { labsSecondaryColour, labsSecondaryColourHover } from "../styles/theme";
+import { labsSecondaryColour } from "../styles/themes/secondary";
 
 const buttonColours: Partial<Record<DefaultColorPalette, [string, string]>> = {
     primary: labsSecondaryColour,

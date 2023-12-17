@@ -8,7 +8,7 @@ export default function Branding({}: Props) {
     return (
         <Box>
             <Link href="/" style={{ textDecoration: "none" }}>
-                <Typography startDecorator={<YokiIcon className="fill-spacelight-700" width="32px" height="32px" />} level="h4" textColor="text.secondary" component="div">
+                <Typography startDecorator={<YokiIcon className="fill-spacedark_fore-400" width="32px" height="32px" />} level="h4" textColor="text.secondary" component="div">
                     Yoki
                 </Typography>
             </Link>

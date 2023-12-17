@@ -1,6 +1,6 @@
 const withMT = require("@material-tailwind/react/utils/withMT");
 const plugin = require("tailwindcss/plugin");
-const { spacelight, spacedark } = require("./src/styles/theme.json");
+const { spacedark } = require("./src/styles/themes/theme.json");
 
 const colors = require("tailwindcss/colors");
 delete colors["lightBlue"];
@@ -19,8 +19,8 @@ module.exports = withMT({
     theme: {
         colors: {
             ...colors,
-            spacedark,
-            spacelight,
+            spacedark: spacedark.background,
+            "spacedark_fore": spacedark.foreground,
         },
         extend: {
             boxShadow: {
@@ -43,18 +43,18 @@ module.exports = withMT({
                     guilded: "#F5C400",
                 },
             },
-            colors: {
-                custom: {
-                    "dark-gray": "#0e0816",
-                    gray: "#15101e",
-                    guildedGray: "#15171d",
-                    guilded: "#F5C400",
-                    black: "#111820",
-                    gilded: "#F5C400",
-                    slate: "#292B32",
-                    white: "#ececee",
-                },
-            },
+            // colors: {
+            //     custom: {
+            //         "dark-gray": "#0e0816",
+            //         gray: "#15101e",
+            //         guildedGray: "#15171d",
+            //         guilded: "#F5C400",
+            //         black: "#111820",
+            //         gilded: "#F5C400",
+            //         slate: "#292B32",
+            //         white: "#ececee",
+            //     },
+            // },
         },
     }
 });

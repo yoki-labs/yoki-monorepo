@@ -69,8 +69,8 @@ const Commands: NextPage<CommandProps> = ({ user, commandByCategory, commandCate
                         {commandCategories[category]}
                     </Typography>
                     <Stack gap={2} direction="column" alignItems="stretch">
-                        {commands.map((x) => (
-                            <CommandDisplay command={x} />
+                        {commands.map((x, i) => (
+                            <CommandDisplay key={`commands.${i}`} command={x} />
                         ))}
                     </Stack>
                 </div>

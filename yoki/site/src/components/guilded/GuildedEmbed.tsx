@@ -12,7 +12,7 @@ const EmbedWrapper = styled(Box, {
     name: "GuildedEmbed",
     slot: "root",
 })(({ theme }) => ({
-    background: `#0005`,
+    background: theme.vars.palette.background.embedded,
     borderRadius: theme.vars.radius.xs,
     //border: `solid 1px ${theme.vars.palette.background.level2}`,
     overflow: "hidden",
@@ -43,7 +43,7 @@ const EmbedFooter = styled(Stack, {
     flexDirection: "row",
     padding: `8px 16px`,
     gap: 4,
-    backgroundColor: `black`,
+    backgroundColor: theme.vars.palette.background.embeddedfooter,
 }));
 
 const EmbedContent = styled(Stack, {

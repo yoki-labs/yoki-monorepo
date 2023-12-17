@@ -9,7 +9,7 @@ type Props = {
     servers: GuildedClientServer[];
     currentServer?: GuildedServer;
     onServerChange: (serverId: string) => unknown | Promise<unknown>;
-    user: LabsSessionUser;
+    user?: LabsSessionUser | null;
     children?: React.ReactNode | React.ReactNode[];
 };
 
