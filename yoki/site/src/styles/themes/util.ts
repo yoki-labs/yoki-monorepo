@@ -7,8 +7,19 @@ export const bodyFontFamily = [
     `var(--labs-fontFamily-fallback, var(--labs--apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"))`,
 ].join(", ");
 
+export const titleFontFamily = [
+    `"Lexend"`,
+    `"Montserrat"`,
+    `"Public Sans"`,
+    `var(--labs-fontFamily-fallback, var(--labs--apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"))`,
+].join(", ");
+
 export const themeFontCss = {
     fontFamily: bodyFontFamily,
+};
+
+export const themeTitleFontCss = {
+    fontFamily: titleFontFamily,
 };
 
 export const generateColourScheme = (typicalColour: string, background: string, counter: string): Partial<PaletteOptions["primary" | "neutral" | "success" | "danger"]> => ({

@@ -72,6 +72,7 @@ export const labsLightTheme: ColorSystemOptions = {
         },
         background: {
             body: labsTheme.spacelight.background[800],
+            level0: mixHexColours(labsTheme.spacelight.background[800], labsTheme.spacelight.background[900], 0.5),
             level1: labsTheme.spacelight.background[900],
             level2: labsTheme.spacelight.background[950],
             level3: labsTheme.spacelight.background[900],

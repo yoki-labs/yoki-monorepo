@@ -14,7 +14,7 @@ const EmbedWrapper = styled(Box, {
 })(({ theme }) => ({
     background: theme.vars.palette.background.embedded,
     borderRadius: theme.vars.radius.xs,
-    //border: `solid 1px ${theme.vars.palette.background.level2}`,
+    border: `solid 1px ${theme.vars.palette.divider}`,
     overflow: "hidden",
 }));
 

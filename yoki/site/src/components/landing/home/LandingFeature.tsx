@@ -2,6 +2,7 @@ import { faCheck, faCheckSquare } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Alert, ListItem, ListItemDecorator, Stack, Typography } from "@mui/joy";
 import { ReactNode } from "react";
+import AlertIcon from "../../AlertIcon";
 
 type Props = {
     children: ReactNode | ReactNode[];
@@ -10,13 +11,9 @@ type Props = {
 
 export default function LandingFeature({ opacity, children }: Props) {
     return (
-        <ListItem color="primary" sx={{ opacity, "--ListItemDecorator-size": "2rem", "--ListItem-minHeight": "2rem" }}>
+        <ListItem color="primary" sx={{ opacity, "--ListItemDecorator-size": "2.5rem", "--ListItem-minHeight": "2.5rem" }}>
             <ListItemDecorator>
-                <Alert color="success" variant="soft" sx={{ width: 16, height: 16, p: 0.5, borderRadius: "100%" }}>
-                    <Stack direction="column" alignItems="center" sx={{ width: "100%" }}>
-                        <FontAwesomeIcon icon={faCheck} className="h-4" />
-                    </Stack>
-                </Alert>
+                <AlertIcon icon={faCheck} color="success" variant="soft" />
             </ListItemDecorator>
             <Typography textColor="text.primary">{children}</Typography>
         </ListItem>

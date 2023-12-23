@@ -1,4 +1,4 @@
-import { Box, Button, Chip, List, ListItem, ListItemDecorator, Stack, Typography } from "@mui/joy";
+import { Box, Button, Card, CardContent, Chip, List, ListItem, ListItemDecorator, Stack, Typography } from "@mui/joy";
 import { DashboardPageProps } from "../pages";
 import React from "react";
 import LabsIconCard from "../../LabsIconCard";
@@ -7,10 +7,12 @@ import { PremiumType } from "@prisma/client";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
 
-const tierPerks: Record<PremiumType | "Copper", string[]> = {
-    Copper: ["You allow us to continue doing what we love", "Faster & more responsive support"],
-    [PremiumType.Silver]: ["Copper tier perks", "Automatically delete NSFW images (if anti-NSFW module is enabled)", "Early access to features"],
-    [PremiumType.Gold]: ["Copper & Silver tier perks", "All the future premium perks"],
+const noPremiumColours = `var(--labs-palette-neutral-700), var(--labs-palette-neutral-500)`;
+
+const tierColours: Record<PremiumType, string> = {
+    [PremiumType.Copper]: `var(--labs-palette-warning-300), var(--labs-palette-warning-800)`,
+    [PremiumType.Silver]: `var(--labs-palette-primary-300), var(--labs-palette-primary-800)`,
+    [PremiumType.Gold]: `var(--labs-palette-warning-200), var(--labs-palette-warning-500)`,
 };
 
 export default class PremiumPage extends React.Component<DashboardPageProps> {
@@ -20,88 +22,57 @@ export default class PremiumPage extends React.Component<DashboardPageProps> {
 
     render() {
         const { serverConfig } = this.props;
+        const { premium } = serverConfig;
 
         return (
-            <>
-                {!serverConfig.premium && <Typography level="body-md">You have not subscribed yet.</Typography>}
-                <Box className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xlg:grid-cols-3 gap-7">
-                    <PremiumTier
-                        subscribedIconClassName="from-rose-500 to-orange-500"
-                        subscribed={serverConfig.premium !== null}
-                        tier={"Copper"}
-                        price={5}
-                        perks={tierPerks.Copper}
-                    />
-                    <PremiumTier
-                        subscribedIconClassName="from-cyan-500 to-purple-400"
-                        subscribed={serverConfig.premium !== null}
-                        tier={PremiumType.Silver}
-                        price={10}
-                        // perks={tierPerks.Copper.concat(...tierPerks.Silver)}
-                        perks={tierPerks.Silver}
-                    />
-                    <PremiumTier
-                        subscribedIconClassName="from-red-400 to-yellow-500"
-                        subscribed={serverConfig.premium === PremiumType.Gold}
-                        tier={PremiumType.Gold}
-                        price={20}
-                        // perks={tierPerks.Copper.concat(...tierPerks.Silver).concat(...tierPerks.Gold)}
-                        perks={tierPerks.Gold}
-                    />
+            <Box>
+                <Typography level="h3" textColor="warning.300" sx={{ mb: 1 }}>
+                    Premium
+                </Typography>
+                <Typography level="title-md" textColor="text.secondary" sx={{ mb: 4 }}>
+                    Premium allows you to receive additional perks and benefits in this server. Subscribe on Yoki Labs Guilded server and enjoy premium features.
+                </Typography>
+                <Box sx={(theme) => ({ borderRadius: theme.vars.radius.lg, background: `linear-gradient(to bottom right, ${premium ? tierColours[premium] : noPremiumColours})`, p: 0.5 })}>
+                    <Card>
+                        <CardContent>
+                            {
+                                premium === PremiumType.Gold
+                                ? <Box>
+                                        <Typography level="title-lg" gutterBottom>This server has the highest tier of Yoki Labs subscription (Gold)</Typography>
+                                        <Typography level="body-md">There is nothing to upgrade to.</Typography>
+                                </Box>
+                                : premium
+                                ? <>
+                                    <Box>
+                                        <Typography level="title-lg" gutterBottom>This server has {premium} tier of Yoki Labs subscription</Typography>
+                                        <Typography level="body-md">All the tier perks will be available for this. You can upgrade to receive even more.</Typography>
+                                    </Box>
+                                    <Box mt={2}>
+                                        <Link href="/premium">
+                                            <Button variant="soft" color="warning">
+                                                Upgrade
+                                            </Button>
+                                        </Link>
+                                    </Box>
+                                </>
+                                : <>
+                                    <Box>
+                                        <Typography level="title-lg" gutterBottom>This server does not have Yoki Labs subscription</Typography>
+                                        <Typography level="body-md">No additional perks will be received. You can upgrade to premium to receive more features and other perks.</Typography>
+                                    </Box>
+                                    <Box mt={2}>
+                                        <Link href="/premium">
+                                            <Button variant="soft" color="warning">
+                                                Subscribe
+                                            </Button>
+                                        </Link>
+                                    </Box>
+                                </>
+                            }
+                        </CardContent>
+                    </Card>
                 </Box>
-            </>
+            </Box>
         );
     }
-}
-
-type PremiumTierProps = {
-    tier: PremiumType | "Copper";
-    subscribedIconClassName: string;
-    subscribed: boolean;
-    price: number;
-    perks: string[];
-};
-
-export function PremiumTier(props: PremiumTierProps) {
-    const { price, perks, tier, subscribed, subscribedIconClassName } = props;
-
-    return (
-        <LabsIconCard iconSize={100} orientation="vertical" iconClassName={subscribed ? subscribedIconClassName : undefined} icon={faHeart}>
-            <Box>
-                <Stack direction="row" alignItems="center" gap={2}>
-                    <Typography level="h2">{tier?.toString() ?? "Free"}</Typography>
-                    {subscribed && (
-                        <Chip size="lg" variant="outlined" color="primary">
-                            Active
-                        </Chip>
-                    )}
-                </Stack>
-                <Typography level="h4" textColor="text.secondary">
-                    ${price.toFixed(2)}
-                </Typography>
-            </Box>
-            <Box sx={{ flex: "1", mt: 3 }}>
-                <Typography level="title-md">Tier perks</Typography>
-                <List sx={{ p: 0 }}>
-                    {perks.map((perk, i) => (
-                        <ListItem key={i.toString()} sx={{ "--ListItemDecorator-size": "30px" }}>
-                            <ListItemDecorator>
-                                <FontAwesomeIcon icon={faCheckCircle} />
-                            </ListItemDecorator>
-                            <Typography lineHeight={1.25} level="body-md">
-                                {perk}
-                            </Typography>
-                        </ListItem>
-                    ))}
-                </List>
-            </Box>
-            <Box sx={{ mt: 3, width: "100%" }}>
-                <Link href="/premium" style={{ textDecoration: "none" }}>
-                    <Button variant="outlined" disabled={subscribed} sx={{ width: "100%" }}>
-                        Subscribe
-                    </Button>
-                </Link>
-            </Box>
-        </LabsIconCard>
-    );
 }

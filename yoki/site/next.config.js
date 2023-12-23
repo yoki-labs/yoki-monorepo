@@ -16,7 +16,7 @@ const nextConfig = {
 			permanent: true,
 		},
 		{
-			source: "/premium",
+			source: "/subscribe",
 			destination: "https://www.guilded.gg/Yoki/subscriptions",
 			permanent: true,
 		},
