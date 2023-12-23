@@ -1,4 +1,4 @@
-import { AspectRatio, Avatar, Box, Card, CardContent, CardOverflow, Chip, Stack, styled, Typography } from "@mui/joy";
+import { AspectRatio, Avatar, Box, Card, CardContent, CardOverflow, Chip, Stack, styled, Theme, Typography } from "@mui/joy";
 import React, { ReactNode } from "react";
 
 export interface Props {
@@ -13,7 +13,9 @@ function BotRole() {
     );
 }
 
-const RoleDot = styled(`span`)<{ color?: string }>(({ theme, color }) => ({
+const RoleDot = styled(`span`, {
+    name: "RoleDot",
+})<{ color?: string }>(({ theme, color }) => ({
     width: 20,
     height: 20,
     borderRadius: "100%",
@@ -60,8 +62,8 @@ export default function LandingProfileCard({ serverCount }: Props) {
                         </ProfileCardSection>
                         <ProfileCardSection title="Roles">
                             <Stack direction="row" gap={1}>
-                                <Chip startDecorator={<RoleDot color="white" />} variant="outlined" sx={{ px: 1, borderStyle: "dashed", borderColor: "white", color: "white" }}>
-                                    <Typography component="span" textColor="white">
+                                <Chip startDecorator={<RoleDot color="var(--labs-palette-text-primary)" />} variant="outlined" sx={(theme) => ({ px: 1, borderStyle: "dashed", borderColor: theme.vars.palette.text.secondary })}>
+                                    <Typography component="span" textColor="text.primary">
                                         Admin
                                     </Typography>
                                 </Chip>

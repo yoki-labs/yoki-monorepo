@@ -1,7 +1,7 @@
 import { InputProps, Stack, styled } from "@mui/joy";
 
 export const InputWrapper = styled(Stack, {
-    name: "LabsInputWrapper",
+    name: "InputWrapper",
 })<{ color?: InputProps["color"] }>(({ theme, color }) => ({
     // Stack defaults
     flexDirection: "row",

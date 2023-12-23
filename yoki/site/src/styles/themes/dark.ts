@@ -63,6 +63,7 @@ export const labsDarkTheme: ColorSystemOptions = {
             secondary: labsTheme.spacedark.foreground[400],
             tertiary: labsTheme.spacedark.foreground[200],
             code: mixHexColours(labsTheme.spacedark.foreground[800], labsSecondaryColour[0], 0.75),
+            reverse: "#000",
         },
         background: {
             body: labsTheme.spacedark.background[950],

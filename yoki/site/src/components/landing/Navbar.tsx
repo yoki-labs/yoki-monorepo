@@ -16,7 +16,9 @@ type Props = {
     user?: LabsSessionUser | null;
 };
 
-const NavbarWrapper = styled(Stack)(({ theme }) => ({
+const NavbarWrapper = styled(Stack, {
+    name: "NavbarWrapper",
+})(({ theme }) => ({
     position: "sticky",
     top: 0,
     zIndex: "999",

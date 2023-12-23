@@ -14,7 +14,9 @@ type State = {
     isMenuToggled: boolean;
 };
 
-const PageWrapper = styled(Box)(({ theme }) => ({
+const PageWrapper = styled(Box, {
+    name: "PageWrapper"
+})(({ theme }) => ({
     backgroundColor: theme.vars.palette.background.body,
     minHeight: "100%",
 }));

@@ -1,7 +1,7 @@
 import { IconDefinition } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React from "react";
-import { AspectRatio, Box, Card, CardContent, CardOverflow, Typography, styled } from "@mui/joy";
+import { Box, Card, CardContent, CardOverflow, styled } from "@mui/joy";
 
 export type Props = {
     icon: IconDefinition;
@@ -28,7 +28,7 @@ export default function LabsIconCard(props: Props) {
                 </AspectRatio> */}
                 <Box sx={{ display: "flex", width: orientation === "vertical" ? "100%" : iconSize, height: orientation !== "vertical" ? "100%" : iconSize }}>
                     <IconCardIconWrapper
-                        sx={(theme) => ({ color: useFontColor ? theme.vars.palette.text.primary : "white"  })}
+                        sx={(theme) => ({ background: theme.vars.palette.background.level2, color: useFontColor ? theme.vars.palette.text.primary : "white"  })}
                         className={`flex grow w-full h-full items-center col-span-1 transition-all ease-in duration-300 bg-gradient-to-br from-0% via-50% to-100% ${
                             iconClassName ?? ""
                         }`}

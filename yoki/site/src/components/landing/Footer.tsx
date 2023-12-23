@@ -4,7 +4,9 @@ import { Box, List, ListItem, ListItemDecorator, Stack, Typography, styled } fro
 import Link from "../Link";
 import { faGuilded, faTwitter } from "@fortawesome/free-brands-svg-icons";
 
-const FooterWrapper = styled(Box)(({ theme }) => ({
+const FooterWrapper = styled(Box, {
+    name: "FooterWrapper",
+})(({ theme }) => ({
     backgroundColor: theme.vars.palette.background.body,
     borderTop: `solid 1px ${theme.vars.palette.divider}`,
 }));

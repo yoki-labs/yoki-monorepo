@@ -68,6 +68,7 @@ export const labsLightTheme: ColorSystemOptions = {
             secondary: labsTheme.spacelight.foreground[400],
             tertiary: labsTheme.spacelight.foreground[200],
             code: mixHexColours(labsTheme.spacelight.foreground[800], labsSecondaryColour[0], 0.75),
+            reverse: "#FFF",
         },
         background: {
             body: labsTheme.spacelight.background[800],
@@ -77,8 +78,8 @@ export const labsLightTheme: ColorSystemOptions = {
 
             surface: labsTheme.spacelight.background[950],
             backdrop: `${labsTheme.spacelight.background[800]}DF`,
-            embedded: labsTheme.spacelight.background[800],
-            embeddedfooter: labsTheme.spacelight.background[700],
+            embedded: mixHexColours(labsTheme.spacelight.background[900], labsTheme.spacelight.background[800], 0.7),
+            embeddedfooter: mixHexColours(labsTheme.spacelight.background[800], labsTheme.spacelight.background[700], 0.3),
             skeleton0: labsTheme.spacelight.background[700],
             skeleton1: `linear-gradient(90deg, transparent, ${labsTheme.spacelight.background[600]}, transparent)`,
             popup: "#FFFFFF",

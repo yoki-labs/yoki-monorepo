@@ -1,14 +1,16 @@
 import { extendTheme } from "@mui/joy";
-import { themeFontCss } from "./themes/util";
+import { bodyFontFamily, themeFontCss } from "./themes/util";
 import { labsDarkTheme } from "./themes/dark";
 import { labsLightTheme } from "./themes/light";
 
 declare module "@mui/joy/styles" {
     interface TypographySystemOverrides {
         code: true;
+        reverse: true;
     }
     interface PaletteTextOverrides {
         code: true;
+        reverse: true;
     }
     interface PaletteRangeOverrides {
         950: true;
@@ -22,6 +24,12 @@ declare module "@mui/joy/styles" {
 }
 
 export const theme = extendTheme({
+    fontFamily: {
+        body: bodyFontFamily,
+        display: bodyFontFamily,
+        fallback: bodyFontFamily,
+        code: "'Space Mono'",
+    },
     typography: {
         "body-xs": themeFontCss,
         "body-sm": themeFontCss,
@@ -30,6 +38,10 @@ export const theme = extendTheme({
         "title-sm": themeFontCss,
         "title-md": themeFontCss,
         "title-lg": themeFontCss,
+        h1: themeFontCss,
+        h2: themeFontCss,
+        h3: themeFontCss,
+        h4: themeFontCss,
         code: {
             backgroundColor: `var(--labs-palette-background-body)`,
             color: `var(--labs-palette-text-code)`,

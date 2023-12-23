@@ -1,12 +1,14 @@
 import { PaletteOptions } from "@mui/joy/styles/types";
 import { greyscaleHexColour, mixHexColours } from "../../utils/colorUtil";
 
+export const bodyFontFamily = [
+    `"Montserrat"`,
+    `"Public Sans"`,
+    `var(--labs-fontFamily-fallback, var(--labs--apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"))`,
+].join(", ");
+
 export const themeFontCss = {
-    fontFamily: [
-        `"Montserrat"`,
-        `"Public Sans"`,
-        `var(--labs-fontFamily-fallback, var(--labs--apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"))`,
-    ].join(", "),
+    fontFamily: bodyFontFamily,
 };
 
 export const generateColourScheme = (typicalColour: string, background: string, counter: string): Partial<PaletteOptions["primary" | "neutral" | "success" | "danger"]> => ({

@@ -5,9 +5,9 @@ import { getReactionByName } from "@yokilabs/utils";
 
 export const displayCurrencyAmount = (currency: Currency, amount: number) => `:${currency.emote}: ${amount} ${currency.name}`;
 
-export const displayCurrencyAmountRichMarkup = (currency: Currency, amount: number, addComma = false): (RichMarkupText | RichMarkupEmote)[] => [
+export const displayCurrencyAmountRichMarkup = (currency: Currency, amount: number, addComma = false, ending: string = ""): (RichMarkupText | RichMarkupEmote)[] => [
     createDefaultEmoteNode(getReactionByName(currency.emote)!.id, currency.emote),
-    createTextElement(` ${amount} ${currency.name}${addComma ? ", " : ""}`),
+    createTextElement(` ${amount} ${currency.name}${addComma ? ", " : ending}`),
 ];
 
 export const displayCurrency = (currency: Currency) => `:${currency.emote}: ${currency.name}`;

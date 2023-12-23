@@ -25,7 +25,9 @@ const argumentTypeToDisplay: Record<CommandArgType, string> = {
     role: "server role",
 };
 
-const SubCommandCard = styled(Card)(({ theme }) => ({
+const SubCommandCard = styled(Card, {
+    name: "SubCommandCard",
+})(({ theme }) => ({
     position: "relative",
     "::after": {
         content: "''",

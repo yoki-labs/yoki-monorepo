@@ -63,7 +63,7 @@ type Props<TItem extends { id: TItemId }, TItemId> = {
     timezone: string | null;
     columns: string[];
 
-    filterFormFields: LabsFormField[];
+    filterFormFields?: LabsFormField[];
 
     getItems: (page: number, search?: string, filter?: LabsFormFieldValueMap) => Promise<FetchedItems<TItem>>;
     deleteItems: (items: TItemId[], page: number, search?: string) => Promise<FetchedItems<TItem>>;

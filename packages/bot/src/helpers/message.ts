@@ -122,16 +122,18 @@ export class MessageUtil<
     }
 
     replyWithRichMessage(message: Message, content: RichMarkupBlockElement[], messagePartial?: Partial<MessageBody>) {
+        const text = {
+            object: "value",
+            document: {
+                object: "document",
+                data: {},
+                nodes: content,
+            },
+        } as unknown as string;
+
         return this.send(message.channelId, {
             replyMessageIds: [message.id],
-            content: {
-                object: "value",
-                document: {
-                    object: "document",
-                    data: {},
-                    nodes: content,
-                },
-            } as unknown as string,
+            content: text,
             ...messagePartial,
         });
     }
