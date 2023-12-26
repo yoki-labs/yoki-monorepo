@@ -15,7 +15,7 @@ module.exports = withMT({
     corePlugins: {
         preflight: false,
     },
-    important: "body",
+    important: "#__next",
     theme: {
         colors: {
             ...colors,
