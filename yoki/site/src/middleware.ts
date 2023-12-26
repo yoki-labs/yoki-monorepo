@@ -6,4 +6,4 @@ export default withAuth({
         signOut: "/auth/signout",
     },
 });
-export const config = { matcher: ["/dashboard/:path*", "/appeals/:path*", "/profile/:path*"] };
+export const config = { matcher: ["/dashboard/:path*", "/appeals/:path*"] };
