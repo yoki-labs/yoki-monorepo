@@ -2,8 +2,8 @@ import { ContentFilter, Severity } from "@prisma/client";
 
 import { clientRest } from "../../../../../guilded";
 import prisma from "../../../../../prisma";
-import { createServerDataRoute } from "../../../../../utils/routes/servers";
 import { querySeverityIsIncorrect, queryUserIsIncorrect } from "../../../../../utils/routes/body";
+import { createServerDataRoute } from "../../../../../utils/routes/servers";
 
 const serverPhrasesRoute = createServerDataRoute<ContentFilter, number>({
     type: "number",
@@ -11,8 +11,7 @@ const serverPhrasesRoute = createServerDataRoute<ContentFilter, number>({
         return value.content.includes(search);
     },
     async fetchMany(serverId, query) {
-        if (queryUserIsIncorrect(query.user) || querySeverityIsIncorrect(query.severity))
-            return null;
+        if (queryUserIsIncorrect(query.user) || querySeverityIsIncorrect(query.severity)) return null;
 
         const severity = query.severity ? Severity[query.severity as Severity] : undefined;
         const user = (query.user || undefined) as string | undefined;

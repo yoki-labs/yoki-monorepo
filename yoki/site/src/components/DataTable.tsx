@@ -1,6 +1,24 @@
 import { faMagnifyingGlass, faSliders, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Box, Button, ButtonGroup, Checkbox, CircularProgress, Dropdown, Input, ListItem, ListItemDecorator, Menu, MenuButton, MenuItem, MenuList, Modal, Stack, Table, Typography } from "@mui/joy";
+import {
+    Box,
+    Button,
+    ButtonGroup,
+    Checkbox,
+    CircularProgress,
+    Dropdown,
+    Input,
+    ListItem,
+    ListItemDecorator,
+    Menu,
+    MenuButton,
+    MenuItem,
+    MenuList,
+    Modal,
+    Stack,
+    Table,
+    Typography,
+} from "@mui/joy";
 import React from "react";
 
 import PagePlaceholder, { PagePlaceholderIcon } from "./PagePlaceholder";
@@ -203,16 +221,18 @@ export default class DataTable<TItem extends { id: TItemId }, TItemId> extends R
                         sx={{ fontWeight: "bolder" }}
                     />
                     <ButtonGroup>
-                        {(filterFormFields || getFilterFormFields) && <Dropdown variant="plain" startDecorator={<FontAwesomeIcon icon={faSliders} />}>
-                            <MenuButton startDecorator={<FontAwesomeIcon icon={faSliders} />}>Filter</MenuButton>
-                            <DataTableFilterMenu
-                                itemType={itemType}
-                                fields={filterFormFields}
-                                getFields={getFilterFormFields}
-                                users={this.state.users}
-                                onChange={(filter) => this.fetchItems(page, search, filter)}
-                            />
-                        </Dropdown>}
+                        {(filterFormFields || getFilterFormFields) && (
+                            <Dropdown variant="plain" startDecorator={<FontAwesomeIcon icon={faSliders} />}>
+                                <MenuButton startDecorator={<FontAwesomeIcon icon={faSliders} />}>Filter</MenuButton>
+                                <DataTableFilterMenu
+                                    itemType={itemType}
+                                    fields={filterFormFields}
+                                    getFields={getFilterFormFields}
+                                    users={this.state.users}
+                                    onChange={(filter) => this.fetchItems(page, search, filter)}
+                                />
+                            </Dropdown>
+                        )}
                     </ButtonGroup>
                 </Stack>
 
@@ -265,7 +285,14 @@ export default class DataTable<TItem extends { id: TItemId }, TItemId> extends R
     }
 }
 
-export const querifyDataTableInfo = (search?: string, filter?: LabsFormFieldValueMap) => `${search ? `&search=${encodeURIComponent(search)}` : ""}${filter ? Object.keys(filter).map((x) => filter[x] !== null ? `&${x}=${filter[x]}` : "").join("") : ""}`;
+export const querifyDataTableInfo = (search?: string, filter?: LabsFormFieldValueMap) =>
+    `${search ? `&search=${encodeURIComponent(search)}` : ""}${
+        filter
+            ? Object.keys(filter)
+                  .map((x) => (filter[x] !== null ? `&${x}=${filter[x]}` : ""))
+                  .join("")
+            : ""
+    }`;
 
 function DataTableOverflow<TItem>({ itemType, selectedItems, onItemDeletion }: OverflowProps<TItem>) {
     const [openDeletePrompt, setOpenDeletePrompt] = React.useState(false);
@@ -308,7 +335,7 @@ function DataTableFilterMenu({ itemType, users, fields, getFields, onChange }: F
                         {
                             order: LabsFormSectionOrder.GridSm,
                             fields: fields ?? getFields!(users),
-                        }
+                        },
                     ]}
                     submitText={`Filter ${itemType}`}
                     onSubmit={onChange}

@@ -25,7 +25,9 @@ export default function Footer() {
                 </Box>
                 <Stack sx={{ mt: 4 }} direction="row" gap={12} className="grid grid-cols-2 md:grid-cols-4">
                     <Box>
-                        <Typography level="title-md" textColor="text.tertiary">Legal</Typography>
+                        <Typography level="title-md" textColor="text.tertiary">
+                            Legal
+                        </Typography>
                         <List>
                             <ListItem>
                                 <Link color="neutral" textColor="text.secondary" href="/terms">
@@ -46,7 +48,9 @@ export default function Footer() {
                         </List>
                     </Box>
                     <Box>
-                        <Typography level="title-md" textColor="text.tertiary">Socials</Typography>
+                        <Typography level="title-md" textColor="text.tertiary">
+                            Socials
+                        </Typography>
                         <List>
                             <ListItem>
                                 <Link color="neutral" textColor="text.secondary" href="/support">
@@ -67,7 +71,9 @@ export default function Footer() {
                         </List>
                     </Box>
                     <Box>
-                        <Typography level="title-md" textColor="text.tertiary">Web applets</Typography>
+                        <Typography level="title-md" textColor="text.tertiary">
+                            Web applets
+                        </Typography>
                         <List>
                             <ListItem>
                                 <Link color="neutral" textColor="text.secondary" href="/dashboard">
@@ -80,7 +86,9 @@ export default function Footer() {
                         </List>
                     </Box>
                     <Box>
-                        <Typography level="title-md" textColor="text.tertiary">Documentation</Typography>
+                        <Typography level="title-md" textColor="text.tertiary">
+                            Documentation
+                        </Typography>
                         <List>
                             <ListItem>
                                 <Link color="neutral" textColor="text.secondary" href="/commands">

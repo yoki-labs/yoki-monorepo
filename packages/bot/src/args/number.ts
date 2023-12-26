@@ -13,5 +13,8 @@ export default [
         // if the argument is not undefined (and is a proper number), set the arg otherwise set to null cause it would be optional by then
         return castedNumber;
     },
-    (arg) => `I was expecting a whole number, but did not receive that. Make sure you do not include any decimals or letters${arg.noLimit ? "" : ` or the number isn't above int32 limit`}.`,
+    (arg) =>
+        `I was expecting a whole number, but did not receive that. Make sure you do not include any decimals or letters${
+            arg.noLimit ? "" : ` or the number isn't above int32 limit`
+        }.`,
 ] satisfies CommandArgValidator;

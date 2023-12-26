@@ -1,13 +1,13 @@
 import { Currency, MemberBalance, ModuleName, ServerMember } from "@prisma/client";
 import { checkmarkEmoteNode, createTextElement, inlineCode, ResolvedArgs } from "@yokilabs/bot";
+import { RichMarkupInlineElement, RichMarkupText } from "@yokilabs/bot/dist/src/utils/rich-types";
 import { Message } from "guilded.js";
 import ms from "ms";
 
 import { TuxoClient } from "../../Client";
 import { CommandContext } from "../../typings";
-import { bankCooldown } from "../income/income-defaults";
-import { RichMarkupInlineElement, RichMarkupText } from "@yokilabs/bot/dist/src/utils/rich-types";
 import { displayCurrencyAmountRichMarkup } from "../../util/text";
+import { bankCooldown } from "../income/income-defaults";
 
 export function generateBankCommand(
     balanceType: string,
@@ -102,15 +102,7 @@ async function depositAllCurrency(
         depositMap[depositingCurrency.id] = (amount ?? balanceAmount) * depositMultiplier;
     }
 
-    return depositToBank(
-        ctx,
-        message,
-        member,
-        depositMap,
-        depositMultiplier,
-        actionDone,
-        depositingCurrencies,
-    );
+    return depositToBank(ctx, message, member, depositMap, depositMultiplier, actionDone, depositingCurrencies);
 }
 
 async function depositOneCurrency(
@@ -138,15 +130,7 @@ async function depositOneCurrency(
             `You cannot ${action} ${inlineCode(amount)} ${depositingCurrency.name}, as your ${balanceType} balance only has ${balanceAmount} ${depositingCurrency.name}.`
         );
 
-    return depositToBank(
-        ctx,
-        message,
-        member,
-        { [depositingCurrency.id]: (amount ?? balanceAmount) * depositMultiplier },
-        depositMultiplier,
-        actionDone,
-        [depositingCurrency],
-    );
+    return depositToBank(ctx, message, member, { [depositingCurrency.id]: (amount ?? balanceAmount) * depositMultiplier }, depositMultiplier, actionDone, [depositingCurrency]);
 }
 
 async function depositToBank(
@@ -156,7 +140,7 @@ async function depositToBank(
     depositMap: Record<string, number>,
     depositMultiplier: number,
     actionDone: string,
-    depositedCurrencies: Currency[],
+    depositedCurrencies: Currency[]
 ) {
     ctx.balanceUtil.updateLastCommandUsage(message.serverId!, message.createdById, "bank");
 

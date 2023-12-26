@@ -1,7 +1,7 @@
 import { Box, styled } from "@mui/joy";
 
 const CodeWrapper = styled(Box, {
-    name: "CodeWrapper"
+    name: "CodeWrapper",
 })(({ theme }) => ({
     backgroundColor: theme.vars.palette.background.body,
     borderRadius: theme.vars.radius.sm,

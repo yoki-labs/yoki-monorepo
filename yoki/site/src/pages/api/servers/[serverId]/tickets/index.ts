@@ -2,9 +2,8 @@ import { ModmailThread } from "@prisma/client";
 
 import { clientRest } from "../../../../../guilded";
 import prisma from "../../../../../prisma";
-import { createServerDataRoute } from "../../../../../utils/routes/servers";
-import { isHashId } from "@yokilabs/utils";
 import { queryUserIsIncorrect } from "../../../../../utils/routes/body";
+import { createServerDataRoute } from "../../../../../utils/routes/servers";
 
 const availableCloseStatus = ["true", "false"];
 
@@ -15,10 +14,8 @@ const serverTicketsRoute = createServerDataRoute<ModmailThread, string>({
     },
     async fetchMany(serverId, query) {
         // Invalid close state filter
-        if (query.closed && (typeof query.closed !== "string" || !availableCloseStatus.includes(query.closed as string)))
-            return null;
-        else if (queryUserIsIncorrect(query.user))
-            return null;
+        if (query.closed && (typeof query.closed !== "string" || !availableCloseStatus.includes(query.closed as string))) return null;
+        else if (queryUserIsIncorrect(query.user)) return null;
 
         const closed = typeof query.closed === "string" ? query.closed !== "false" : undefined;
         const user = (query.user || undefined) as string | undefined;

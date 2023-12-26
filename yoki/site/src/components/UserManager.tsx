@@ -34,9 +34,11 @@ export default function UserManager({ user, displayName }: Props) {
                     },
                 }}
             >
-                {user && <Avatar src={user.avatar ?? void 0} alt="Your profile picture">
-                    {user.name?.[0] ?? ""}
-                </Avatar>}
+                {user && (
+                    <Avatar src={user.avatar ?? void 0} alt="Your profile picture">
+                        {user.name?.[0] ?? ""}
+                    </Avatar>
+                )}
                 {user && displayName && (
                     <Typography ml={2} component="span" level="body-md" fontWeight="bolder">
                         {user.name}
@@ -54,8 +56,8 @@ export default function UserManager({ user, displayName }: Props) {
             >
                 <ClickAwayListener onClickAway={setMenuOpen.bind(null, false)}>
                     <>
-                        {user
-                            ? <Link href="/profile/overview" style={{ textDecoration: "none" }}>
+                        {user ? (
+                            <Link href="/profile/overview" style={{ textDecoration: "none" }}>
                                 <MenuItem>
                                     <ListItemDecorator>
                                         <Avatar src={user.avatar ?? void 0} alt="Your profile picture">
@@ -70,14 +72,16 @@ export default function UserManager({ user, displayName }: Props) {
                                     </Stack>
                                 </MenuItem>
                             </Link>
-                            : <Link href="/auth/signin?callbackUrl=%2F" style={{ textDecoration: "none" }}>
+                        ) : (
+                            <Link href="/auth/signin?callbackUrl=%2F" style={{ textDecoration: "none" }}>
                                 <MenuItem color="primary">
                                     <ListItemDecorator>
                                         <FontAwesomeIcon icon={faUserCircle} />
                                     </ListItemDecorator>
                                     Sign in
                                 </MenuItem>
-                            </Link>}
+                            </Link>
+                        )}
                         <Divider />
                         <MenuItem color="neutral" onClick={() => setMode(mode === "light" ? "dark" : "light")}>
                             <ListItemDecorator>
@@ -86,17 +90,19 @@ export default function UserManager({ user, displayName }: Props) {
                             <Typography sx={{ color: "inherit" }}>Light theme</Typography>
                             <Switch sx={{ ml: 4 }} checked={(mode ?? "dark") === "light"} onChange={() => setMode(mode === "light" ? "dark" : "light")} />
                         </MenuItem>
-                        {user && <>
-                            <Divider />
-                            <Link href="/auth/signout?callbackUrl=%2F" style={{ textDecoration: "none" }}>
-                                <MenuItem color="danger">
-                                    <ListItemDecorator>
-                                        <FontAwesomeIcon icon={faRightFromBracket} />
-                                    </ListItemDecorator>
-                                    Sign out
-                                </MenuItem>
-                            </Link>
-                        </>}
+                        {user && (
+                            <>
+                                <Divider />
+                                <Link href="/auth/signout?callbackUrl=%2F" style={{ textDecoration: "none" }}>
+                                    <MenuItem color="danger">
+                                        <ListItemDecorator>
+                                            <FontAwesomeIcon icon={faRightFromBracket} />
+                                        </ListItemDecorator>
+                                        Sign out
+                                    </MenuItem>
+                                </Link>
+                            </>
+                        )}
                     </>
                 </ClickAwayListener>
             </Menu>

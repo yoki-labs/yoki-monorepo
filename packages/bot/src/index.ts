@@ -11,6 +11,7 @@ export * from "./run";
 export * from "./typings";
 
 // Utils
+export { ChannelRolePermission, ChannelUserPermission, Permission } from "./guilded-types";
 export { summarizeItems, summarizeRolesOrUsers } from "./utils/content";
 export {
     bold,
@@ -26,7 +27,7 @@ export {
     listInlineQuote,
     quoteMarkdown,
 } from "./utils/formatting";
-export { channelTypeToGreenIcon, channelTypeToRedIcon, channelTypeToGreyIcon } from "./utils/images";
+export { channelTypeToGreenIcon, channelTypeToGreyIcon, channelTypeToRedIcon } from "./utils/images";
 export {
     checkmarkEmoteNode,
     createChannelMentionElement,
@@ -37,8 +38,3 @@ export {
     crossmarkEmoteNode,
     exclamationmarkEmoteNode,
 } from "./utils/rich";
-export {
-    Permission,
-    ChannelRolePermission,
-    ChannelUserPermission,
-} from "./guilded-types";

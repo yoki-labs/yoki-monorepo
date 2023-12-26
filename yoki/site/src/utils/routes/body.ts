@@ -1,8 +1,8 @@
+import { Severity } from "@prisma/client";
+import { isHashId } from "@yokilabs/utils";
 import { NextApiResponse } from "next";
 
 import { channelExistsInServer } from "./route";
-import { Severity } from "@prisma/client";
-import { isHashId } from "@yokilabs/utils";
 
 export const availableSeverityValues = Object.keys(Severity);
 
@@ -26,8 +26,7 @@ export const isBodyEnumPropertyInvalid = <T extends string>(value: unknown, expe
 export const isBodyChannelPropertyValid = async <T>(channelId: T) =>
     typeof channelId === "undefined" || channelId === null || (typeof channelId === "string" && channelExistsInServer(channelId));
 
-export const queryUserIsIncorrect = (userId: string | string[] | undefined) =>
-    userId && (typeof userId !== "string" || !isHashId(userId as string));
+export const queryUserIsIncorrect = (userId: string | string[] | undefined) => userId && (typeof userId !== "string" || !isHashId(userId as string));
 
 export const querySeverityIsIncorrect = (severity: string | string[] | undefined) =>
     severity && (typeof severity !== "string" || !availableSeverityValues.includes(severity as string));

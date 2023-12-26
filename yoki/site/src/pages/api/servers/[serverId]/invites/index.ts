@@ -1,9 +1,9 @@
-import { InviteFilter, Severity } from "@prisma/client";
+import { InviteFilter } from "@prisma/client";
 
 import { clientRest } from "../../../../../guilded";
 import prisma from "../../../../../prisma";
+import { queryUserIsIncorrect } from "../../../../../utils/routes/body";
 import { createServerDataRoute } from "../../../../../utils/routes/servers";
-import { querySeverityIsIncorrect, queryUserIsIncorrect } from "../../../../../utils/routes/body";
 
 const serverInvitesRoute = createServerDataRoute<InviteFilter, number>({
     type: "number",
@@ -11,8 +11,7 @@ const serverInvitesRoute = createServerDataRoute<InviteFilter, number>({
         return value.targetServerId.includes(search);
     },
     async fetchMany(serverId, query) {
-        if (queryUserIsIncorrect(query.user))
-            return null;
+        if (queryUserIsIncorrect(query.user)) return null;
 
         const user = (query.user || undefined) as string | undefined;
 

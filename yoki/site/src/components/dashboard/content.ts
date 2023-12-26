@@ -1,6 +1,7 @@
 import { RolePayload } from "@guildedjs/api";
-import { GuildedSanitizedUserDetail } from "../../lib/@types/guilded";
+
 import { LabsFormFieldOption } from "../form/form";
+import { GuildedSanitizedUserDetail } from "../../lib/@types/guilded";
 
 export const optionifyRoles = (serverRoles: RolePayload[]) =>
     serverRoles
@@ -12,13 +13,12 @@ export const optionifyRoles = (serverRoles: RolePayload[]) =>
             color: serverRole.colors?.[0],
         }));
 export const optionifyUserDetails = (users: GuildedSanitizedUserDetail[]) =>
-    users
-        .map((x) => ({
-            value: x.id,
-            name: x.nickname ?? x.name,
-            description: x.subdomain && `/${x.subdomain}`,
-            avatarIcon: x.profilePicture,
-        }));
+    users.map((x) => ({
+        value: x.id,
+        name: x.nickname ?? x.name,
+        description: x.subdomain && `/${x.subdomain}`,
+        avatarIcon: x.profilePicture,
+    }));
 export const nullUserOption: LabsFormFieldOption<null> = {
     value: null,
     name: "No one",

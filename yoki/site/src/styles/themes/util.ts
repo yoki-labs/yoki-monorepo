@@ -1,4 +1,5 @@
 import { PaletteOptions } from "@mui/joy/styles/types";
+
 import { greyscaleHexColour, mixHexColours } from "../../utils/colorUtil";
 
 export const bodyFontFamily = [
@@ -46,7 +47,7 @@ export const generateColourScheme = (typicalColour: string, background: string, 
     outlinedHoverBg: mixHexColours(typicalColour, background, 0.9),
     outlinedHoverColor: mixHexColours(typicalColour, counter, 0.6),
     outlinedHoverBorder: mixHexColours(typicalColour, background, 0.45),
-    
+
     outlinedActiveBg: mixHexColours(typicalColour, background, 0.8),
     outlinedActiveColor: mixHexColours(typicalColour, counter, 0.7),
     outlinedActiveBorder: mixHexColours(typicalColour, background, 0.35),

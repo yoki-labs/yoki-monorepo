@@ -62,7 +62,11 @@ export default function LandingProfileCard({ serverCount }: Props) {
                         </ProfileCardSection>
                         <ProfileCardSection title="Roles">
                             <Stack direction="row" gap={1}>
-                                <Chip startDecorator={<RoleDot color="var(--labs-palette-text-primary)" />} variant="outlined" sx={(theme) => ({ px: 1, borderStyle: "dashed", borderColor: theme.vars.palette.text.secondary })}>
+                                <Chip
+                                    startDecorator={<RoleDot color="var(--labs-palette-text-primary)" />}
+                                    variant="outlined"
+                                    sx={(theme) => ({ px: 1, borderStyle: "dashed", borderColor: theme.vars.palette.text.secondary })}
+                                >
                                     <Typography component="span" textColor="text.primary">
                                         Admin
                                     </Typography>

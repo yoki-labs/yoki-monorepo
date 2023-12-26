@@ -32,19 +32,28 @@ export default class PremiumPage extends React.Component<DashboardPageProps> {
                 <Typography level="title-md" textColor="text.secondary" sx={{ mb: 4 }}>
                     Premium allows you to receive additional perks and benefits in this server. Subscribe on Yoki Labs Guilded server and enjoy premium features.
                 </Typography>
-                <Box sx={(theme) => ({ borderRadius: theme.vars.radius.lg, background: `linear-gradient(to bottom right, ${premium ? tierColours[premium] : noPremiumColours})`, p: 0.5 })}>
+                <Box
+                    sx={(theme) => ({
+                        borderRadius: theme.vars.radius.lg,
+                        background: `linear-gradient(to bottom right, ${premium ? tierColours[premium] : noPremiumColours})`,
+                        p: 0.5,
+                    })}
+                >
                     <Card>
                         <CardContent>
-                            {
-                                premium === PremiumType.Gold
-                                ? <Box>
-                                        <Typography level="title-lg" gutterBottom>This server has the highest tier of Yoki Labs subscription (Gold)</Typography>
-                                        <Typography level="body-md">There is nothing to upgrade to.</Typography>
+                            {premium === PremiumType.Gold ? (
+                                <Box>
+                                    <Typography level="title-lg" gutterBottom>
+                                        This server has the highest tier of Yoki Labs subscription (Gold)
+                                    </Typography>
+                                    <Typography level="body-md">There is nothing to upgrade to.</Typography>
                                 </Box>
-                                : premium
-                                ? <>
+                            ) : premium ? (
+                                <>
                                     <Box>
-                                        <Typography level="title-lg" gutterBottom>This server has {premium} tier of Yoki Labs subscription</Typography>
+                                        <Typography level="title-lg" gutterBottom>
+                                            This server has {premium} tier of Yoki Labs subscription
+                                        </Typography>
                                         <Typography level="body-md">All the tier perks will be available for this. You can upgrade to receive even more.</Typography>
                                     </Box>
                                     <Box mt={2}>
@@ -55,10 +64,15 @@ export default class PremiumPage extends React.Component<DashboardPageProps> {
                                         </Link>
                                     </Box>
                                 </>
-                                : <>
+                            ) : (
+                                <>
                                     <Box>
-                                        <Typography level="title-lg" gutterBottom>This server does not have Yoki Labs subscription</Typography>
-                                        <Typography level="body-md">No additional perks will be received. You can upgrade to premium to receive more features and other perks.</Typography>
+                                        <Typography level="title-lg" gutterBottom>
+                                            This server does not have Yoki Labs subscription
+                                        </Typography>
+                                        <Typography level="body-md">
+                                            No additional perks will be received. You can upgrade to premium to receive more features and other perks.
+                                        </Typography>
                                     </Box>
                                     <Box mt={2}>
                                         <Link href="/premium">
@@ -68,7 +82,7 @@ export default class PremiumPage extends React.Component<DashboardPageProps> {
                                         </Link>
                                     </Box>
                                 </>
-                            }
+                            )}
                         </CardContent>
                     </Card>
                 </Box>

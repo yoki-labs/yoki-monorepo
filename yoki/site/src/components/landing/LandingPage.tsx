@@ -15,7 +15,7 @@ type State = {
 };
 
 const PageWrapper = styled(Box, {
-    name: "PageWrapper"
+    name: "PageWrapper",
 })(({ theme }) => ({
     backgroundColor: theme.vars.palette.background.body,
     minHeight: "100%",

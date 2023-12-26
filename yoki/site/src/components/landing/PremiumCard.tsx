@@ -20,14 +20,19 @@ export default function PremiumCard({ tierName, cost, perks }: Props) {
         <Card>
             <CardContent>
                 <Box>
-                    <Typography level="h4" textColor="text.secondary">{tierName}</Typography>
+                    <Typography level="h4" textColor="text.secondary">
+                        {tierName}
+                    </Typography>
                     <Typography level="h2">${cost.toFixed(2)}/month</Typography>
                 </Box>
                 <Box sx={{ flex: "1", mt: 4 }}>
                     <Typography level="title-md">Tier perks</Typography>
                     <List sx={{ mb: 2 }}>
                         {perks.map((x, i) => (
-                            <ListItem key={`premium.${tierName}.perk-${i}`} sx={{ opacity: Number(i < 2) || 1 / i, "--ListItemDecorator-size": "2.5rem", "--ListItem-minHeight": "2.5rem" }}>
+                            <ListItem
+                                key={`premium.${tierName}.perk-${i}`}
+                                sx={{ opacity: Number(i < 2) || 1 / i, "--ListItemDecorator-size": "2.5rem", "--ListItem-minHeight": "2.5rem" }}
+                            >
                                 <ListItemDecorator>
                                     <AlertIcon variant="soft" icon={x.icon ?? faCheck} color={x.color ?? "success"} />
                                 </ListItemDecorator>

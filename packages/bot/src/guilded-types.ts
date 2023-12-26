@@ -1,6 +1,14 @@
-export type Permission
-    = "CanReadChats" | "CanReadEvents" | "CanReadForums" | "CanReadDocs" | "CanReadMedia" | "CanListenVoice" | "CanReadListItems"
-    | "CanReadSchedules" | "CanReadStreams" | "CanReadAnnouncements";
+export type Permission =
+    | "CanReadChats"
+    | "CanReadEvents"
+    | "CanReadForums"
+    | "CanReadDocs"
+    | "CanReadMedia"
+    | "CanListenVoice"
+    | "CanReadListItems"
+    | "CanReadSchedules"
+    | "CanReadStreams"
+    | "CanReadAnnouncements";
 
 interface ChannelPermission {
     channelId: string;

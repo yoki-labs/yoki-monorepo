@@ -7,7 +7,7 @@ import { moderateContent } from "../../utils/moderation";
 export default {
     execute: async ([channel, _, ctx]) => {
         const { serverId } = channel;
-        
+
         const server = await ctx.dbUtil.getServer(serverId, false);
         if (!server) return;
 

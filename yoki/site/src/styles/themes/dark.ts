@@ -1,8 +1,9 @@
 import { ColorSystemOptions } from "@mui/joy/styles/extendTheme";
-import { mixHexColours } from "../../utils/colorUtil";
+
 import { labsSecondaryColour } from "./secondary";
 import labsTheme from "./theme.json";
 import { generateColourScheme } from "./util";
+import { mixHexColours } from "../../utils/colorUtil";
 
 const darkest = labsTheme.spacedark.background[950];
 const brightest = labsTheme.spacedark.foreground[950];
@@ -44,7 +45,7 @@ export const labsDarkTheme: ColorSystemOptions = {
             // Outlined components
             outlinedBorder: labsTheme.spacedark.background[700],
             outlinedColor: labsTheme.spacedark.foreground[500],
-            
+
             outlinedActiveBorder: labsTheme.spacedark.background[600],
             outlinedActiveColor: labsTheme.spacedark.foreground[700],
 

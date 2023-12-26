@@ -86,7 +86,9 @@ export default class DashboardLogChannel extends React.Component<Props, State> {
                     </Typography>
                     <Stack sx={{ flex: "1" }} direction="row" gap={1} alignItems="center" className="hidden md:flex">
                         {types.map((type) => (
-                            <Chip variant="outlined" sx={{ fontWeight: "bolder" }}>{typeDisplayNames[type]}</Chip>
+                            <Chip variant="outlined" sx={{ fontWeight: "bolder" }}>
+                                {typeDisplayNames[type]}
+                            </Chip>
                         ))}
                     </Stack>
                     <LabsOverflowButton variant="outlined" id={`logs-${serverId}-${channelId}`}>

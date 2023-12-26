@@ -76,7 +76,6 @@ export default class PhrasesPage extends React.Component<DashboardPageProps> {
                         deleteItems={this.deletePhrases.bind(this)}
                         ItemRenderer={PhraseRow}
                         ItemMobileRenderer={PhraseCard}
-
                         getFilterFormFields={(users) => [
                             {
                                 type: LabsFormFieldType.Picker,

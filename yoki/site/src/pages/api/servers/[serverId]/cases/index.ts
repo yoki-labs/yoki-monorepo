@@ -2,8 +2,8 @@ import { Action, Severity } from "@prisma/client";
 
 import { clientRest } from "../../../../../guilded";
 import prisma from "../../../../../prisma";
-import { createServerDataRoute } from "../../../../../utils/routes/servers";
 import { querySeverityIsIncorrect, queryUserIsIncorrect } from "../../../../../utils/routes/body";
+import { createServerDataRoute } from "../../../../../utils/routes/servers";
 
 const serverCasesRoute = createServerDataRoute<Action, string>({
     type: "string",
@@ -12,8 +12,7 @@ const serverCasesRoute = createServerDataRoute<Action, string>({
     },
     async fetchMany(serverId, query) {
         // Invalid severity filter
-        if (querySeverityIsIncorrect(query.severity) || queryUserIsIncorrect(query.target))
-            return null;
+        if (querySeverityIsIncorrect(query.severity) || queryUserIsIncorrect(query.target)) return null;
 
         const severity = query.severity ? Severity[query.severity as Severity] : undefined;
         const targetUser = (query.target || undefined) as string | undefined;

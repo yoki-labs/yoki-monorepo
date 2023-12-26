@@ -75,7 +75,6 @@ export default class InvitesPage extends React.Component<DashboardPageProps> {
                         deleteItems={this.deleteInvites.bind(this)}
                         ItemRenderer={InviteRow}
                         ItemMobileRenderer={InviteCard}
-
                         getFilterFormFields={(users) => [
                             {
                                 type: LabsFormFieldType.Picker,

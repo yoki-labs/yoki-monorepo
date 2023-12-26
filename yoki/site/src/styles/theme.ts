@@ -1,7 +1,8 @@
 import { extendTheme } from "@mui/joy";
-import { bodyFontFamily, themeFontCss, themeTitleFontCss, titleFontFamily } from "./themes/util";
+
 import { labsDarkTheme } from "./themes/dark";
 import { labsLightTheme } from "./themes/light";
+import { bodyFontFamily, themeFontCss, themeTitleFontCss, titleFontFamily } from "./themes/util";
 
 declare module "@mui/joy/styles" {
     interface TypographySystemOverrides {
@@ -156,7 +157,7 @@ export const theme = extendTheme({
                     },
                     "::before": {
                         backgroundColor: theme.vars.palette.background.skeleton0,
-                    }
+                    },
                 }),
             },
         },
@@ -191,7 +192,7 @@ export const theme = extendTheme({
                         borderRightColor: theme.vars.palette.background.tooltip,
                     },
                 }),
-            }
+            },
         },
     },
 });

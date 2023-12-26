@@ -1,9 +1,9 @@
+import { faCheck, faClock, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { ServerPayload } from "@guildedjs/api";
+import { AppealStatus } from "@prisma/client";
 
 import { LabsSessionUser } from "./routes/pages";
 import { LabsFormFieldOption } from "../components/form/form";
-import { AppealStatus } from "@prisma/client";
-import { faCheck, faClock, faTimes } from "@fortawesome/free-solid-svg-icons";
 
 export const appealWaitingTime = 5 * 24 * 60 * 60 * 1000;
 

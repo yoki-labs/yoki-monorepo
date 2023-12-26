@@ -85,7 +85,7 @@ interface LabsFormFieldSelectable<TType extends LabsFormFieldType>
     extends BaseLabsFormField<TType, string | boolean | number | null>,
         OptionedLabsFormField<TType, string | boolean | number | null, string | boolean | number | null>,
         StyledLabsFormField,
-        PlaceholdableLabsFormField { }
+        PlaceholdableLabsFormField {}
 
 interface LabsFormFieldMultiSelection<TType extends LabsFormFieldType>
     extends BaseLabsFormField<TType, string[]>,

@@ -15,7 +15,11 @@ const Premium: NextPage<LandingPageSessionProps> = ({ user }) => {
             <Stack direction="column" alignItems="center" sx={{ width: "100%", pt: 16 }}>
                 <Box sx={{ textAlign: "center", mb: 16 }}>
                     <Typography level="h1">
-                        Power <Typography textColor="primary.500" sx={{ textDecoration: "underline" }}>all</Typography> Yoki Labs bots in your server
+                        Power{" "}
+                        <Typography textColor="primary.500" sx={{ textDecoration: "underline" }}>
+                            all
+                        </Typography>{" "}
+                        Yoki Labs bots in your server
                     </Typography>
                     <Typography level="h4" textColor="text.secondary">
                         Subscribe to Yoki Labs premium to receive additional perks and benefits
@@ -31,7 +35,7 @@ const Premium: NextPage<LandingPageSessionProps> = ({ user }) => {
                             { text: "Early access to new features" },
                             { text: "More currencies, items" },
                         ]}
-                        />
+                    />
                     <PremiumCard
                         tierName="Silver"
                         cost={10}
@@ -54,12 +58,21 @@ const Premium: NextPage<LandingPageSessionProps> = ({ user }) => {
                     />
                 </Box>
                 <Box sx={{ textAlign: "center", mt: 16, mb: 12 }}>
-                    <Typography level="h2">
-                        Premium feature comparison
-                    </Typography>
+                    <Typography level="h2">Premium feature comparison</Typography>
                 </Box>
                 <Box sx={{ mb: 20 }} className="px-2 md:px-40">
-                    <Table size="lg" variant="plain" stripe="even" sx={(theme) => ({ th: { textAlign: "center" }, td: { textAlign: "center" }, "--TableRow-stripeBackground": theme.vars.palette.background.level0, borderRadius: 16, overflow: "hidden" })}>
+                    <Table
+                        size="lg"
+                        variant="plain"
+                        stripe="even"
+                        sx={(theme) => ({
+                            th: { textAlign: "center" },
+                            td: { textAlign: "center" },
+                            "--TableRow-stripeBackground": theme.vars.palette.background.level0,
+                            borderRadius: 16,
+                            overflow: "hidden",
+                        })}
+                    >
                         <thead>
                             <tr>
                                 <th></th>
@@ -77,16 +90,24 @@ const Premium: NextPage<LandingPageSessionProps> = ({ user }) => {
                                     </Typography>
                                 </td>
                                 <td>
-                                    <Stack direction="column" alignItems="center"><AlertIcon icon={faCheck} color="success" variant="soft" /></Stack>
+                                    <Stack direction="column" alignItems="center">
+                                        <AlertIcon icon={faCheck} color="success" variant="soft" />
+                                    </Stack>
                                 </td>
                                 <td>
-                                    <Stack direction="column" alignItems="center"><AlertIcon icon={faCheck} color="success" variant="soft" /></Stack>
+                                    <Stack direction="column" alignItems="center">
+                                        <AlertIcon icon={faCheck} color="success" variant="soft" />
+                                    </Stack>
                                 </td>
                                 <td>
-                                    <Stack direction="column" alignItems="center"><AlertIcon icon={faCheck} color="success" variant="soft" /></Stack>
+                                    <Stack direction="column" alignItems="center">
+                                        <AlertIcon icon={faCheck} color="success" variant="soft" />
+                                    </Stack>
                                 </td>
                                 <td>
-                                    <Stack direction="column" alignItems="center"><AlertIcon icon={faCheck} color="success" variant="soft" /></Stack>
+                                    <Stack direction="column" alignItems="center">
+                                        <AlertIcon icon={faCheck} color="success" variant="soft" />
+                                    </Stack>
                                 </td>
                             </tr>
                             <tr>
@@ -96,16 +117,24 @@ const Premium: NextPage<LandingPageSessionProps> = ({ user }) => {
                                     </Typography>
                                 </td>
                                 <td>
-                                    <Stack direction="column" alignItems="center"><AlertIcon icon={faCheck} color="success" variant="soft" /></Stack>
+                                    <Stack direction="column" alignItems="center">
+                                        <AlertIcon icon={faCheck} color="success" variant="soft" />
+                                    </Stack>
                                 </td>
                                 <td>
-                                    <Stack direction="column" alignItems="center"><AlertIcon icon={faCheck} color="success" variant="soft" /></Stack>
+                                    <Stack direction="column" alignItems="center">
+                                        <AlertIcon icon={faCheck} color="success" variant="soft" />
+                                    </Stack>
                                 </td>
                                 <td>
-                                    <Stack direction="column" alignItems="center"><AlertIcon icon={faCheck} color="success" variant="soft" /></Stack>
+                                    <Stack direction="column" alignItems="center">
+                                        <AlertIcon icon={faCheck} color="success" variant="soft" />
+                                    </Stack>
                                 </td>
                                 <td>
-                                    <Stack direction="column" alignItems="center"><AlertIcon icon={faCheck} color="success" variant="soft" /></Stack>
+                                    <Stack direction="column" alignItems="center">
+                                        <AlertIcon icon={faCheck} color="success" variant="soft" />
+                                    </Stack>
                                 </td>
                             </tr>
                             <tr>
@@ -115,16 +144,26 @@ const Premium: NextPage<LandingPageSessionProps> = ({ user }) => {
                                     </Typography>
                                 </td>
                                 <td>
-                                    <Stack direction="column" alignItems="center"><Stack direction="column" alignItems="center"><AlertIcon icon={faCheck} color="success" variant="soft" /></Stack></Stack>
+                                    <Stack direction="column" alignItems="center">
+                                        <Stack direction="column" alignItems="center">
+                                            <AlertIcon icon={faCheck} color="success" variant="soft" />
+                                        </Stack>
+                                    </Stack>
                                 </td>
                                 <td>
-                                    <Stack direction="column" alignItems="center"><AlertIcon icon={faCheck} color="success" variant="soft" /></Stack>
+                                    <Stack direction="column" alignItems="center">
+                                        <AlertIcon icon={faCheck} color="success" variant="soft" />
+                                    </Stack>
                                 </td>
                                 <td>
-                                    <Stack direction="column" alignItems="center"><AlertIcon icon={faCheck} color="success" variant="soft" /></Stack>
+                                    <Stack direction="column" alignItems="center">
+                                        <AlertIcon icon={faCheck} color="success" variant="soft" />
+                                    </Stack>
                                 </td>
                                 <td>
-                                    <Stack direction="column" alignItems="center"><AlertIcon icon={faCheck} color="success" variant="soft" /></Stack>
+                                    <Stack direction="column" alignItems="center">
+                                        <AlertIcon icon={faCheck} color="success" variant="soft" />
+                                    </Stack>
                                 </td>
                             </tr>
                             <tr>
@@ -134,16 +173,24 @@ const Premium: NextPage<LandingPageSessionProps> = ({ user }) => {
                                     </Typography>
                                 </td>
                                 <td>
-                                    <Stack direction="column" alignItems="center"><AlertIcon icon={faCheck} color="success" variant="soft" /></Stack>
+                                    <Stack direction="column" alignItems="center">
+                                        <AlertIcon icon={faCheck} color="success" variant="soft" />
+                                    </Stack>
                                 </td>
                                 <td>
-                                    <Stack direction="column" alignItems="center"><AlertIcon icon={faCheck} color="success" variant="soft" /></Stack>
+                                    <Stack direction="column" alignItems="center">
+                                        <AlertIcon icon={faCheck} color="success" variant="soft" />
+                                    </Stack>
                                 </td>
                                 <td>
-                                    <Stack direction="column" alignItems="center"><AlertIcon icon={faCheck} color="success" variant="soft" /></Stack>
+                                    <Stack direction="column" alignItems="center">
+                                        <AlertIcon icon={faCheck} color="success" variant="soft" />
+                                    </Stack>
                                 </td>
                                 <td>
-                                    <Stack direction="column" alignItems="center"><AlertIcon icon={faCheck} color="success" variant="soft" /></Stack>
+                                    <Stack direction="column" alignItems="center">
+                                        <AlertIcon icon={faCheck} color="success" variant="soft" />
+                                    </Stack>
                                 </td>
                             </tr>
                             <tr>
@@ -153,16 +200,24 @@ const Premium: NextPage<LandingPageSessionProps> = ({ user }) => {
                                     </Typography>
                                 </td>
                                 <td>
-                                    <Stack direction="column" alignItems="center"><AlertIcon icon={faCheck} color="success" variant="soft" /></Stack>
+                                    <Stack direction="column" alignItems="center">
+                                        <AlertIcon icon={faCheck} color="success" variant="soft" />
+                                    </Stack>
                                 </td>
                                 <td>
-                                    <Stack direction="column" alignItems="center"><AlertIcon icon={faCheck} color="success" variant="soft" /></Stack>
+                                    <Stack direction="column" alignItems="center">
+                                        <AlertIcon icon={faCheck} color="success" variant="soft" />
+                                    </Stack>
                                 </td>
                                 <td>
-                                    <Stack direction="column" alignItems="center"><AlertIcon icon={faCheck} color="success" variant="soft" /></Stack>
+                                    <Stack direction="column" alignItems="center">
+                                        <AlertIcon icon={faCheck} color="success" variant="soft" />
+                                    </Stack>
                                 </td>
                                 <td>
-                                    <Stack direction="column" alignItems="center"><AlertIcon icon={faCheck} color="success" variant="soft" /></Stack>
+                                    <Stack direction="column" alignItems="center">
+                                        <AlertIcon icon={faCheck} color="success" variant="soft" />
+                                    </Stack>
                                 </td>
                             </tr>
                             <tr>
@@ -172,16 +227,24 @@ const Premium: NextPage<LandingPageSessionProps> = ({ user }) => {
                                     </Typography>
                                 </td>
                                 <td>
-                                    <Stack direction="column" alignItems="center"><AlertIcon icon={faSlash} color="warning" variant="soft" /></Stack>
+                                    <Stack direction="column" alignItems="center">
+                                        <AlertIcon icon={faSlash} color="warning" variant="soft" />
+                                    </Stack>
                                 </td>
                                 <td>
-                                    <Stack direction="column" alignItems="center"><AlertIcon icon={faCheck} color="success" variant="soft" /></Stack>
+                                    <Stack direction="column" alignItems="center">
+                                        <AlertIcon icon={faCheck} color="success" variant="soft" />
+                                    </Stack>
                                 </td>
                                 <td>
-                                    <Stack direction="column" alignItems="center"><AlertIcon icon={faCheck} color="success" variant="soft" /></Stack>
+                                    <Stack direction="column" alignItems="center">
+                                        <AlertIcon icon={faCheck} color="success" variant="soft" />
+                                    </Stack>
                                 </td>
                                 <td>
-                                    <Stack direction="column" alignItems="center"><AlertIcon icon={faCheck} color="success" variant="soft" /></Stack>
+                                    <Stack direction="column" alignItems="center">
+                                        <AlertIcon icon={faCheck} color="success" variant="soft" />
+                                    </Stack>
                                 </td>
                             </tr>
                             <tr>
@@ -191,16 +254,24 @@ const Premium: NextPage<LandingPageSessionProps> = ({ user }) => {
                                     </Typography>
                                 </td>
                                 <td>
-                                    <Stack direction="column" alignItems="center"><AlertIcon icon={faTimes} color="neutral" variant="soft" /></Stack>
+                                    <Stack direction="column" alignItems="center">
+                                        <AlertIcon icon={faTimes} color="neutral" variant="soft" />
+                                    </Stack>
                                 </td>
                                 <td>
-                                    <Stack direction="column" alignItems="center"><AlertIcon icon={faCheck} color="success" variant="soft" /></Stack>
+                                    <Stack direction="column" alignItems="center">
+                                        <AlertIcon icon={faCheck} color="success" variant="soft" />
+                                    </Stack>
                                 </td>
                                 <td>
-                                    <Stack direction="column" alignItems="center"><AlertIcon icon={faCheck} color="success" variant="soft" /></Stack>
+                                    <Stack direction="column" alignItems="center">
+                                        <AlertIcon icon={faCheck} color="success" variant="soft" />
+                                    </Stack>
                                 </td>
                                 <td>
-                                    <Stack direction="column" alignItems="center"><AlertIcon icon={faCheck} color="success" variant="soft" /></Stack>
+                                    <Stack direction="column" alignItems="center">
+                                        <AlertIcon icon={faCheck} color="success" variant="soft" />
+                                    </Stack>
                                 </td>
                             </tr>
                             <tr>
@@ -210,16 +281,24 @@ const Premium: NextPage<LandingPageSessionProps> = ({ user }) => {
                                     </Typography>
                                 </td>
                                 <td>
-                                    <Stack direction="column" alignItems="center"><AlertIcon icon={faTimes} color="neutral" variant="soft" /></Stack>
+                                    <Stack direction="column" alignItems="center">
+                                        <AlertIcon icon={faTimes} color="neutral" variant="soft" />
+                                    </Stack>
                                 </td>
                                 <td>
-                                    <Stack direction="column" alignItems="center"><AlertIcon icon={faTimes} color="neutral" variant="soft" /></Stack>
+                                    <Stack direction="column" alignItems="center">
+                                        <AlertIcon icon={faTimes} color="neutral" variant="soft" />
+                                    </Stack>
                                 </td>
                                 <td>
-                                    <Stack direction="column" alignItems="center"><AlertIcon icon={faCheck} color="success" variant="soft" /></Stack>
+                                    <Stack direction="column" alignItems="center">
+                                        <AlertIcon icon={faCheck} color="success" variant="soft" />
+                                    </Stack>
                                 </td>
                                 <td>
-                                    <Stack direction="column" alignItems="center"><AlertIcon icon={faCheck} color="success" variant="soft" /></Stack>
+                                    <Stack direction="column" alignItems="center">
+                                        <AlertIcon icon={faCheck} color="success" variant="soft" />
+                                    </Stack>
                                 </td>
                             </tr>
                             <tr>

@@ -1,4 +1,20 @@
-import { Accordion, AccordionDetails, AccordionGroup, AccordionSummary, Box, Card, Chip, Grid, List, ListItem, ListItemDecorator, Stack, Tooltip, Typography, styled } from "@mui/joy";
+import {
+    Accordion,
+    AccordionDetails,
+    AccordionGroup,
+    AccordionSummary,
+    Box,
+    Card,
+    Chip,
+    Grid,
+    List,
+    ListItem,
+    ListItemDecorator,
+    Stack,
+    Tooltip,
+    Typography,
+    styled,
+} from "@mui/joy";
 import { Command } from "../../../lib/Command";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faShieldHalved } from "@fortawesome/free-solid-svg-icons";
@@ -54,7 +70,8 @@ export default function CommandDisplay({ command, isSubCommand }: Props) {
     const requiredRoleBadge = command.requiredRole && (
         <Tooltip title={`This command requires having a role that is set at ${command.requiredRole} level or higher`}>
             <Chip variant="soft" color="primary" startDecorator={<FontAwesomeIcon icon={faShieldHalved} />}>
-                {command.requiredRole[0]}{command.requiredRole.substring(1).toLowerCase()}
+                {command.requiredRole[0]}
+                {command.requiredRole.substring(1).toLowerCase()}
             </Chip>
         </Tooltip>
     );
@@ -142,7 +159,9 @@ function CommandDisplaySubCommands({ command }: { command: Command }) {
         <AccordionGroup size="lg">
             <Accordion key={`commands.${command.name}.subcommands`}>
                 <AccordionSummary>
-                    <Typography level="title-md" fontWeight="bolder" textColor="text.tertiary">Sub-commands</Typography>
+                    <Typography level="title-md" fontWeight="bolder" textColor="text.tertiary">
+                        Sub-commands
+                    </Typography>
                 </AccordionSummary>
                 <AccordionDetails>
                     <Stack direction="row" alignItems="stretch" className="gap-3 md:gap-8">

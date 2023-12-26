@@ -44,7 +44,7 @@ export default class LabsPicker extends React.Component<Props, State> {
             <>
                 <FormFieldHeader field={field} />
                 <Box sx={{ overflowY: "scroll", maxHeight: field.height }}>
-                    <List sx={{ paddingBlock: 0, "--ListItem-paddingY": "0.25rem", "--List-gap": "0.5rem", }} key={id}>
+                    <List sx={{ paddingBlock: 0, "--ListItem-paddingY": "0.25rem", "--List-gap": "0.5rem" }} key={id}>
                         {field.selectableValues?.map((x) => (
                             <LabsPickerOption
                                 variant={field.variant}
@@ -62,33 +62,51 @@ export default class LabsPicker extends React.Component<Props, State> {
     }
 }
 
-function LabsPickerOption({ variant, color, option, rightSideCheck, selected, onClick }: { variant?: VariantProp | "indented"; color?: ColorPaletteProp; rightSideCheck?: boolean; option: LabsFormFieldOption<string | boolean | number | null>; selected: boolean; onClick: () => unknown; }) {
+function LabsPickerOption({
+    variant,
+    color,
+    option,
+    rightSideCheck,
+    selected,
+    onClick,
+}: {
+    variant?: VariantProp | "indented";
+    color?: ColorPaletteProp;
+    rightSideCheck?: boolean;
+    option: LabsFormFieldOption<string | boolean | number | null>;
+    selected: boolean;
+    onClick: () => unknown;
+}) {
     return (
         <ListItem>
             <ListItemButton variant={variant as VariantProp | undefined} color={color} onClick={onClick} sx={(theme) => ({ borderRadius: theme.vars.radius.sm })}>
                 <ListItemDecorator>
-                    {
-                        rightSideCheck
+                    {rightSideCheck ? (
                         // To allow null avatars
-                        ? typeof option.avatarIcon !== "undefined"
-                        ? <Avatar src={option.avatarIcon ?? undefined} size="sm" />
-                        : <FontAwesomeIcon icon={option.icon!} />
-                        : <LabsPickerOptionCheck selected={selected} />
-                    }
+                        typeof option.avatarIcon !== "undefined" ? (
+                            <Avatar src={option.avatarIcon ?? undefined} size="sm" />
+                        ) : (
+                            <FontAwesomeIcon icon={option.icon!} />
+                        )
+                    ) : (
+                        <LabsPickerOptionCheck selected={selected} />
+                    )}
                 </ListItemDecorator>
                 <ListItemContent>
                     <Typography level="title-md">{option.name}</Typography>
                     <Typography level="body-md">{option.description}</Typography>
                 </ListItemContent>
-                {rightSideCheck && <Box sx={{ ml: 1 }}>
-                    <LabsPickerOptionCheck selected={selected} />
-                </Box>}
+                {rightSideCheck && (
+                    <Box sx={{ ml: 1 }}>
+                        <LabsPickerOptionCheck selected={selected} />
+                    </Box>
+                )}
             </ListItemButton>
         </ListItem>
     );
 }
 
-function LabsPickerOptionCheck({ selected }: { selected: boolean; }) {
+function LabsPickerOptionCheck({ selected }: { selected: boolean }) {
     return (
         <Alert variant="soft" color={selected ? "success" : "neutral"} sx={{ width: 16, height: 16, p: 0.5, borderRadius: "100%" }}>
             <FontAwesomeIcon icon={faCheck} style={{ width: 16, height: 16, opacity: selected ? 1 : 0 }} />

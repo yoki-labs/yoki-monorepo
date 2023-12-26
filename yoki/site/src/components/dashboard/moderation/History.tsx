@@ -56,16 +56,12 @@ export default class HistoryPage extends React.Component<DashboardPageProps> {
                 <Typography level="h4">Server history</Typography>
                 <DataTable<SanitizedAction, string>
                     itemType="cases"
-
                     timezone={serverConfig.timezone}
                     columns={["User", "Action", "Moderator", "Reason", "When"]}
-
                     getItems={this.fetchCases.bind(this)}
                     deleteItems={this.deleteCases.bind(this)}
-
                     ItemRenderer={HistoryCaseRow}
                     ItemMobileRenderer={HistoryCaseCard}
-
                     getFilterFormFields={(users) => {
                         const userOptions = users ? optionifyUserDetails(Object.values(users)) : nullUserOptionList;
 
@@ -96,7 +92,7 @@ export default class HistoryPage extends React.Component<DashboardPageProps> {
                                 rightSideCheck: true,
                                 height: 250,
                             },
-                        ]
+                        ];
                     }}
                 />
             </Stack>

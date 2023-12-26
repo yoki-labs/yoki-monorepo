@@ -158,7 +158,6 @@ export default class UrlsPage extends React.Component<DashboardPageProps> {
                         deleteItems={this.deleteUrls.bind(this)}
                         ItemRenderer={UrlRow}
                         ItemMobileRenderer={UrlCard}
-
                         getFilterFormFields={(users) => [
                             {
                                 type: LabsFormFieldType.Picker,

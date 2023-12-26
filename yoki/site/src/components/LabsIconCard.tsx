@@ -28,7 +28,7 @@ export default function LabsIconCard(props: Props) {
                 </AspectRatio> */}
                 <Box sx={{ display: "flex", width: orientation === "vertical" ? "100%" : iconSize, height: orientation !== "vertical" ? "100%" : iconSize }}>
                     <IconCardIconWrapper
-                        sx={(theme) => ({ background: theme.vars.palette.background.level2, color: useFontColor ? theme.vars.palette.text.primary : "white"  })}
+                        sx={(theme) => ({ background: theme.vars.palette.background.level2, color: useFontColor ? theme.vars.palette.text.primary : "white" })}
                         className={`flex grow w-full h-full items-center col-span-1 transition-all ease-in duration-300 bg-gradient-to-br from-0% via-50% to-100% ${
                             iconClassName ?? ""
                         }`}

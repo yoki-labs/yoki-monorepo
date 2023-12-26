@@ -136,8 +136,8 @@ export default class AntiraidPage extends React.Component<DashboardPageProps, St
                                                 selectableValues: antiRaidResponseValues,
                                                 variant: "soft",
                                             },
-                                        ]
-                                    }
+                                        ],
+                                    },
                                 ]}
                                 onSubmit={({ antiRaidChallengeChannel, antiRaidResponse, antiRaidAgeFilter }) =>
                                     this.modifyServerConfig(

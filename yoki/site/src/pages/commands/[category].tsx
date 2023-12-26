@@ -16,12 +16,12 @@ interface GroupedCommands {
 
 type CommandProps = {
     commandByCategory: GroupedCommands;
-    commandCategories: Record<string, { icon: IconDefinition; name: string; url: string; }>;
+    commandCategories: Record<string, { icon: IconDefinition; name: string; url: string }>;
     category: string;
     user: LabsSessionUser | null;
 };
 
-const commandCategoryList: Array<{ icon: IconDefinition; name: string; url: string; }> = [
+const commandCategoryList: Array<{ icon: IconDefinition; name: string; url: string }> = [
     {
         name: "General",
         url: "general",
@@ -74,8 +74,8 @@ const commandByCategory = commands.reduce<GroupedCommands>((group, command) => {
     return group;
 }, {});
 // const commandCategories = Object.keys(commandByCategory);
-const commandCategories = commandCategoryList.reduce<Record<string, { name: string; url: string; icon: IconDefinition; }>>(
-    (categories, category) => (categories[category.url] = category, categories),
+const commandCategories = commandCategoryList.reduce<Record<string, { name: string; url: string; icon: IconDefinition }>>(
+    (categories, category) => ((categories[category.url] = category), categories),
     {}
 );
 const categoryKeys = commandCategoryList.map((x) => x.url);

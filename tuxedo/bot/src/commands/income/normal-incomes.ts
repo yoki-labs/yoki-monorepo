@@ -1,5 +1,6 @@
 import { Currency, DefaultIncomeType, IncomeCommand, MemberBalance, ModuleName, Reward, ServerMember } from "@prisma/client";
 import { checkmarkEmoteNode, CommandContext, createTextElement, exclamationmarkEmoteNode, inlineQuote, ResolvedArgs } from "@yokilabs/bot";
+import { emptyText } from "@yokilabs/bot/dist/src/utils/rich";
 import { RichMarkupInlineElement, RichMarkupText } from "@yokilabs/bot/dist/src/utils/rich-types";
 import { Message } from "guilded.js";
 import ms from "ms";
@@ -8,7 +9,6 @@ import { TuxoClient } from "../../Client";
 import { Server } from "../../typings";
 import { displayCurrencyAmountRichMarkup } from "../../util/text";
 import { defaultCreatedCooldown, defaultCreatedReceivedCurrency, defaultIncomes } from "./income-defaults";
-import { emptyText } from "@yokilabs/bot/dist/src/utils/rich";
 
 type BalanceChange = Pick<MemberBalance, "currencyId" | "pocket" | "bank"> & { currency: Currency; added: number; lost?: number };
 type FailedBalanceChange = Pick<MemberBalance, "currencyId" | "pocket" | "bank"> & { currency: Currency; change: number };
@@ -162,12 +162,10 @@ async function onIncomeSuccess(
     // Template the action message
     // const addedCurrenciesList = addedCurrencies.join(", ");
     const actionDescription = randomActionTemplate.split("{}", 2);
-    
+
     // If there is any text after the reward, add the text afterwards
     // There may be some currency that went over the limit, so add the `However, ...` text too
-    const afterCurrencies = lostCurrencies.length
-        ? `${actionDescription[1]} However, some of the rewards went over the limit, so you lost additional`
-        : actionDescription[1];
+    const afterCurrencies = lostCurrencies.length ? `${actionDescription[1]} However, some of the rewards went over the limit, so you lost additional` : actionDescription[1];
 
     return ctx.messageUtil.replyWithRichMessage(message, [
         {
@@ -215,11 +213,7 @@ async function onIncomeFail(
                 object: "block",
                 type: "paragraph",
                 data: {},
-                nodes: [
-                    emptyText,
-                    exclamationmarkEmoteNode,
-                    createTextElement(` You have failed while doing ${commandName.toLowerCase()}.`),
-                ],
+                nodes: [emptyText, exclamationmarkEmoteNode, createTextElement(` You have failed while doing ${commandName.toLowerCase()}.`)],
             },
         ]);
 

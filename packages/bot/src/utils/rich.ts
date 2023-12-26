@@ -137,19 +137,19 @@ export const createLeaf = (text: string, marks: RichMarkupMark[] = []): RichMark
 export const emptyText = createTextElement("");
 export const checkmarkEmoteNode = createEmoteNode(
     2119401,
-    "YokiLabsCheckbox",
+    "YokiLabsCheckbox"
     // "4R56dNkl",
     // "https://img2.guildedcdn.com/CustomReaction/ff4c6438f22d607b10847f6789c3d7a3-Full.webp?w=120&h=120"
 );
 export const crossmarkEmoteNode = createEmoteNode(
     2163778,
-    "YokiLabsCrossbox",
+    "YokiLabsCrossbox"
     // "4R56dNkl",
     // "https://img2.guildedcdn.com/CustomReaction/54156ebff8c70a013c06643aca92b551-Full.webp?w=120&h=120"
 );
 export const exclamationmarkEmoteNode = createEmoteNode(
     2119403,
-    "YokiLabsExclamationbox",
+    "YokiLabsExclamationbox"
     // "4R56dNkl",
     // "https://img2.guildedcdn.com/CustomReaction/62307461393ae8e5788aa0f40ebf9485-Full.webp?w=120&h=120"
 );

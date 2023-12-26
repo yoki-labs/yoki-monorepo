@@ -205,27 +205,25 @@ export const fieldRenderers: FieldRendererRecord = {
 };
 
 export function FormFieldHeader({ field }: { field: BaseLabsFormField<LabsFormFieldType, any> }) {
-    return <>
-        {(field.name || field.subtitle)
-        ? <Stack direction="column" sx={{ mb: 1 }}>
-            {field.name && (
-                <Stack spacing={1} direction="row">
-                    <FormLabel sx={{ fontWeight: "normal" }}>
-                        <Typography level="title-md">{field.name}</Typography>
-                    </FormLabel>
-                    {field.badge && (
-                        <Chip size="sm" variant="outlined" color={field.badge.color}>
-                            {field.badge.text}
-                        </Chip>
+    return (
+        <>
+            {field.name || field.subtitle ? (
+                <Stack direction="column" sx={{ mb: 1 }}>
+                    {field.name && (
+                        <Stack spacing={1} direction="row">
+                            <FormLabel sx={{ fontWeight: "normal" }}>
+                                <Typography level="title-md">{field.name}</Typography>
+                            </FormLabel>
+                            {field.badge && (
+                                <Chip size="sm" variant="outlined" color={field.badge.color}>
+                                    {field.badge.text}
+                                </Chip>
+                            )}
+                        </Stack>
                     )}
+                    {field.subtitle && <FormHelperText>{field.subtitle}</FormHelperText>}
                 </Stack>
-            )}
-            {field.subtitle && (
-                <FormHelperText>
-                    {field.subtitle}
-                </FormHelperText>
-            )}
-        </Stack>
-        : undefined}
-    </>;
+            ) : undefined}
+        </>
+    );
 }

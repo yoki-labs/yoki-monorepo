@@ -5,7 +5,7 @@ import { useRouter } from "next/router";
 
 type Props = {
     // ID to Display name
-    categories: Record<string, { icon: IconDefinition; name: string; url: string; }>;
+    categories: Record<string, { icon: IconDefinition; name: string; url: string }>;
     activeCategory: string;
 };
 

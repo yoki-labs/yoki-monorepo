@@ -1,8 +1,9 @@
 import { ColorSystemOptions } from "@mui/joy/styles/extendTheme";
-import { mixHexColours } from "../../utils/colorUtil";
+
 import { labsSecondaryColour } from "./secondary";
 import labsTheme from "./theme.json";
 import { generateColourScheme } from "./util";
+import { mixHexColours } from "../../utils/colorUtil";
 
 const brightest = labsTheme.spacelight.background[950];
 const darkest = labsTheme.spacelight.foreground[950];

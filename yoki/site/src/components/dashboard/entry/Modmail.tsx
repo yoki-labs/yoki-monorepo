@@ -186,7 +186,7 @@ export default class ModmailPage extends React.Component<DashboardPageProps, Sta
                                         icon: faLock,
                                         value: true,
                                         description: "The ticket has been handled.",
-                                    }
+                                    },
                                 ],
                                 optional: true,
                                 rightSideCheck: true,

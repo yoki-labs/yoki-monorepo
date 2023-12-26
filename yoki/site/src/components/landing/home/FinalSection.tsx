@@ -8,7 +8,7 @@ const FinalSectionCard = styled(Card)(({ theme }) => ({
     position: "relative",
     backgroundImage: `linear-gradient(to bottom right, ${labsSecondaryColour[0]}, ${labsSecondaryColour[1]})`,
     overflow: "hidden",
-    borderRadius: theme.vars.radius.xl
+    borderRadius: theme.vars.radius.xl,
 }));
 
 const CardDecorationWrapper = styled(`div`)(({ theme }) => ({
