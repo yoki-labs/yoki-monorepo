@@ -3,7 +3,7 @@ import Footer from "./Footer";
 import Navbar from "./Navbar";
 import React from "react";
 import NavbarButton, { NavbarButtonList } from "./NavbarButton";
-import { LabsSessionUser } from "../../utils/pageUtil";
+import { LabsSessionUser } from "../../utils/routes/pages";
 import UserManager from "../UserManager";
 
 type Props = {

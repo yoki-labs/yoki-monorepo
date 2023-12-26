@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { Session, unstable_getServerSession } from "next-auth";
 
-import { LabsSessionUser } from "../pageUtil";
+import { LabsSessionUser } from "./pages";
 import { GuildedClientServer, GuildedServer } from "../../lib/@types/guilded";
 import { authOptions } from "../../pages/api/auth/[...nextauth]";
 

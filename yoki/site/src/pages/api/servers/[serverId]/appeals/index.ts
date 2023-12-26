@@ -1,18 +1,32 @@
-import { Appeal } from "@prisma/client";
+import { Appeal, AppealStatus } from "@prisma/client";
 
 import { clientRest } from "../../../../../guilded";
 import prisma from "../../../../../prisma";
 import { createServerDataRoute } from "../../../../../utils/routes/servers";
+import { queryUserIsIncorrect } from "../../../../../utils/routes/body";
+
+const availableStatuses = [AppealStatus.ACCEPTED, "AWAITING", AppealStatus.DECLINED];
 
 const serverAppealsRoute = createServerDataRoute<Appeal, number>({
     type: "number",
     searchFilter(value, search) {
         return value.content?.includes(search);
     },
-    fetchMany(serverId) {
+    async fetchMany(serverId, query) {
+        // Invalid status filter
+        if (query.status && (typeof query.status !== "string" || !availableStatuses.includes(query.status as string)))
+            return null;
+        else if (queryUserIsIncorrect(query.user))
+            return null;
+
+        const status = query.status ? query.status === "AWAITING" ? null : AppealStatus[query.status as AppealStatus] : undefined;
+        const user = (query.user || undefined) as string | undefined;
+
         return prisma.appeal.findMany({
             where: {
                 serverId,
+                status,
+                creatorId: user,
             },
         });
     },

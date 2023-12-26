@@ -2,7 +2,7 @@ import { GuildedClientServer, GuildedServer } from "../../../lib/@types/guilded"
 import { Box, styled } from "@mui/joy";
 import React from "react";
 import { LayoutTopbar } from "./LayoutTopbar";
-import { LabsSessionUser } from "../../../utils/pageUtil";
+import { LabsSessionUser } from "../../../utils/routes/pages";
 
 type LayoutProps = {
     servers: GuildedClientServer[];

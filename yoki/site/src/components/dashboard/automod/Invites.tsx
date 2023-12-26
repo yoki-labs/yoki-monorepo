@@ -3,25 +3,28 @@ import { Box, Stack, Typography } from "@mui/joy";
 import React from "react";
 import DashboardModule from "../DashboardModule";
 import { DashboardPageProps } from "../pages";
-import DataTable from "../../DataTable";
+import DataTable, { querifyDataTableInfo } from "../../DataTable";
 import { SanitizedInviteFilter } from "../../../lib/@types/db";
 import { InviteCard, InviteRow } from "./InviteFilter";
+import { LabsFormFieldType } from "../../form/form";
+import { nullUserOptionList, optionifyUserDetails } from "../content";
+import { LabsFormFieldValueMap } from "../../form/LabsForm";
 
 export default class InvitesPage extends React.Component<DashboardPageProps> {
     constructor(props: DashboardPageProps) {
         super(props);
     }
 
-    getInvitesRoute(page: number, search?: string) {
+    getInvitesRoute(page: number, search?: string, filter?: LabsFormFieldValueMap) {
         const {
             serverConfig: { serverId },
         } = this.props;
 
-        return `/api/servers/${serverId}/invites?page=${page}${search ? `&search=${encodeURIComponent(search)}` : ""}`;
+        return `/api/servers/${serverId}/invites?page=${page}${querifyDataTableInfo(search, filter)}`;
     }
 
-    async fetchInvites(page: number, search?: string) {
-        return fetch(this.getInvitesRoute(page, search), {
+    async fetchInvites(page: number, search?: string, filter?: LabsFormFieldValueMap) {
+        return fetch(this.getInvitesRoute(page, search, filter), {
             method: "GET",
             headers: { "content-type": "application/json" },
         })
@@ -72,6 +75,18 @@ export default class InvitesPage extends React.Component<DashboardPageProps> {
                         deleteItems={this.deleteInvites.bind(this)}
                         ItemRenderer={InviteRow}
                         ItemMobileRenderer={InviteCard}
+
+                        getFilterFormFields={(users) => [
+                            {
+                                type: LabsFormFieldType.Picker,
+                                name: "Creator",
+                                prop: "user",
+                                selectableValues: users ? optionifyUserDetails(Object.values(users)) : nullUserOptionList,
+                                optional: true,
+                                rightSideCheck: true,
+                                height: 250,
+                            },
+                        ]}
                     />
                 </Stack>
             </>

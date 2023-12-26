@@ -64,6 +64,7 @@ type Props<TItem extends { id: TItemId }, TItemId> = {
     columns: string[];
 
     filterFormFields?: LabsFormField[];
+    getFilterFormFields?: (users?: Record<string, GuildedSanitizedUserDetail>) => LabsFormField[];
 
     getItems: (page: number, search?: string, filter?: LabsFormFieldValueMap) => Promise<FetchedItems<TItem>>;
     deleteItems: (items: TItemId[], page: number, search?: string) => Promise<FetchedItems<TItem>>;
@@ -100,6 +101,7 @@ export default class DataTable<TItem extends { id: TItemId }, TItemId> extends R
     }
 
     async fetchItems(page: number, search?: string, filter?: LabsFormFieldValueMap) {
+        console.log("Filter", filter);
         return this.props
             .getItems(page, search, filter)
             .then(({ items, maxPages, users }) => this.setState({ isLoaded: true, items, maxPages, page, search, filter, users }))
@@ -186,7 +188,7 @@ export default class DataTable<TItem extends { id: TItemId }, TItemId> extends R
             );
 
         const { items, page, search, filter, maxPages } = this.state;
-        const { columns, itemType, filterFormFields } = this.props;
+        const { columns, itemType, filterFormFields, getFilterFormFields } = this.props;
         const renderedItems = this.renderItems();
 
         return (
@@ -201,11 +203,13 @@ export default class DataTable<TItem extends { id: TItemId }, TItemId> extends R
                         sx={{ fontWeight: "bolder" }}
                     />
                     <ButtonGroup>
-                        {filterFormFields && <Dropdown variant="plain" startDecorator={<FontAwesomeIcon icon={faSliders} />}>
+                        {(filterFormFields || getFilterFormFields) && <Dropdown variant="plain" startDecorator={<FontAwesomeIcon icon={faSliders} />}>
                             <MenuButton startDecorator={<FontAwesomeIcon icon={faSliders} />}>Filter</MenuButton>
                             <DataTableFilterMenu
                                 itemType={itemType}
                                 fields={filterFormFields}
+                                getFields={getFilterFormFields}
+                                users={this.state.users}
                                 onChange={(filter) => this.fetchItems(page, search, filter)}
                             />
                         </Dropdown>}
@@ -261,7 +265,7 @@ export default class DataTable<TItem extends { id: TItemId }, TItemId> extends R
     }
 }
 
-export const querifyDataTableInfo = (search?: string, filter?: LabsFormFieldValueMap) => `${search ? `&search=${encodeURIComponent(search)}` : ""}${filter ? Object.keys(filter).map((x) => filter[x] ? `&${x}=${filter[x]}` : "").join("") : ""}`;
+export const querifyDataTableInfo = (search?: string, filter?: LabsFormFieldValueMap) => `${search ? `&search=${encodeURIComponent(search)}` : ""}${filter ? Object.keys(filter).map((x) => filter[x] !== null ? `&${x}=${filter[x]}` : "").join("") : ""}`;
 
 function DataTableOverflow<TItem>({ itemType, selectedItems, onItemDeletion }: OverflowProps<TItem>) {
     const [openDeletePrompt, setOpenDeletePrompt] = React.useState(false);
@@ -287,19 +291,28 @@ function DataTableOverflow<TItem>({ itemType, selectedItems, onItemDeletion }: O
     );
 }
 
-function DataTableFilterMenu({ itemType, fields, onChange }: { itemType: string; fields: LabsFormField[]; onChange: (values: LabsFormFieldValueMap) => unknown; }) {
+type FilterMenuProps = {
+    itemType: string;
+    users?: Record<string, GuildedSanitizedUserDetail>;
+    fields?: LabsFormField[];
+    getFields?: (users?: Record<string, GuildedSanitizedUserDetail>) => LabsFormField[];
+    onChange: (values: LabsFormFieldValueMap) => unknown;
+};
+
+function DataTableFilterMenu({ itemType, users, fields, getFields, onChange }: FilterMenuProps) {
     return (
-        <Menu sx={{ "--ListItem-paddingY": 0 }}>
+        <Menu placement="bottom-start" sx={{ "--ListItem-paddingY": 0 }}>
             <ListItem>
                 <LabsForm
                     sections={[
                         {
-                            order: LabsFormSectionOrder.Grid,
-                            fields,
+                            order: LabsFormSectionOrder.GridSm,
+                            fields: fields ?? getFields!(users),
                         }
                     ]}
                     submitText={`Filter ${itemType}`}
                     onSubmit={onChange}
+                    alwaysDisplayActions
                 />
             </ListItem>
         </Menu>

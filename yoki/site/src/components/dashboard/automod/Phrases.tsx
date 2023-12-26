@@ -3,25 +3,29 @@ import React from "react";
 import DashboardModule from "../DashboardModule";
 import { DashboardPageProps } from "../pages";
 import { faBan } from "@fortawesome/free-solid-svg-icons";
-import DataTable from "../../DataTable";
+import DataTable, { querifyDataTableInfo } from "../../DataTable";
 import { SanitizedContentFilter } from "../../../lib/@types/db";
 import { PhraseCard, PhraseRow } from "./PhrasesItem";
+import { LabsFormFieldType } from "../../form/form";
+import { nullUserOptionList, optionifyUserDetails } from "../content";
+import { severityOptions } from "../../../utils/actionUtil";
+import { LabsFormFieldValueMap } from "../../form/LabsForm";
 
 export default class PhrasesPage extends React.Component<DashboardPageProps> {
     constructor(props: DashboardPageProps) {
         super(props);
     }
 
-    getPhrasesRoute(page: number, search?: string) {
+    getPhrasesRoute(page: number, search?: string, filter?: LabsFormFieldValueMap) {
         const {
             serverConfig: { serverId },
         } = this.props;
 
-        return `/api/servers/${serverId}/phrases?page=${page}${search ? `&search=${encodeURIComponent(search)}` : ""}`;
+        return `/api/servers/${serverId}/phrases?page=${page}${querifyDataTableInfo(search, filter)}`;
     }
 
-    async fetchPhrases(page: number, search?: string) {
-        return fetch(this.getPhrasesRoute(page, search), {
+    async fetchPhrases(page: number, search?: string, filter?: LabsFormFieldValueMap) {
+        return fetch(this.getPhrasesRoute(page, search, filter), {
             method: "GET",
             headers: { "content-type": "application/json" },
         })
@@ -72,6 +76,27 @@ export default class PhrasesPage extends React.Component<DashboardPageProps> {
                         deleteItems={this.deletePhrases.bind(this)}
                         ItemRenderer={PhraseRow}
                         ItemMobileRenderer={PhraseCard}
+
+                        getFilterFormFields={(users) => [
+                            {
+                                type: LabsFormFieldType.Picker,
+                                name: "Creator",
+                                prop: "user",
+                                selectableValues: users ? optionifyUserDetails(Object.values(users)) : nullUserOptionList,
+                                optional: true,
+                                rightSideCheck: true,
+                                height: 250,
+                            },
+                            {
+                                type: LabsFormFieldType.Picker,
+                                name: "Severity",
+                                prop: "severity",
+                                selectableValues: severityOptions,
+                                optional: true,
+                                rightSideCheck: true,
+                                height: 250,
+                            },
+                        ]}
                     />
                 </Stack>
             </>

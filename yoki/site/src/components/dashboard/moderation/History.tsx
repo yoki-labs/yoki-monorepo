@@ -8,6 +8,7 @@ import { HistoryCaseCard, HistoryCaseRow } from "./HistoryCase";
 import { LabsFormFieldType } from "../../form/form";
 import { severityOptions } from "../../../utils/actionUtil";
 import { LabsFormFieldValueMap } from "../../form/LabsForm";
+import { nullUserOption, nullUserOptionList, optionifyUserDetails } from "../content";
 
 export default class HistoryPage extends React.Component<DashboardPageProps> {
     constructor(props: DashboardPageProps) {
@@ -65,15 +66,38 @@ export default class HistoryPage extends React.Component<DashboardPageProps> {
                     ItemRenderer={HistoryCaseRow}
                     ItemMobileRenderer={HistoryCaseCard}
 
-                    filterFormFields={[
-                        {
-                            type: LabsFormFieldType.Picker,
-                            name: "Severity",
-                            prop: "severity",
-                            selectableValues: severityOptions,
-                            optional: true,
-                        }
-                    ]}
+                    getFilterFormFields={(users) => {
+                        const userOptions = users ? optionifyUserDetails(Object.values(users)) : nullUserOptionList;
+
+                        return [
+                            {
+                                type: LabsFormFieldType.Picker,
+                                name: "Target",
+                                prop: "target",
+                                selectableValues: userOptions,
+                                optional: true,
+                                rightSideCheck: true,
+                                height: 250,
+                            },
+                            // {
+                            //     type: LabsFormFieldType.Picker,
+                            //     name: "Staff",
+                            //     prop: "executor",
+                            //     selectableValues: userOptions,
+                            //     optional: true,
+                            //     rightSideCheck: true,
+                            // },
+                            {
+                                type: LabsFormFieldType.Picker,
+                                name: "Severity",
+                                prop: "severity",
+                                selectableValues: severityOptions,
+                                optional: true,
+                                rightSideCheck: true,
+                                height: 250,
+                            },
+                        ]
+                    }}
                 />
             </Stack>
         );

@@ -1,17 +1,18 @@
-import { faCommentDots, faEnvelope, faSmile } from "@fortawesome/free-solid-svg-icons";
+import { faCommentDots, faEnvelope, faLock, faLockOpen, faSmile } from "@fortawesome/free-solid-svg-icons";
 import { Box, Card, CardContent, Stack, Typography } from "@mui/joy";
 import React from "react";
 import DashboardModule from "../DashboardModule";
 import { DashboardPageProps } from "../pages";
 import { errorifyResponseError, notifyFetchError } from "../../../utils/errorUtil";
-import DataTable from "../../DataTable";
+import DataTable, { querifyDataTableInfo } from "../../DataTable";
 import { SanitizedModmailThread } from "../../../lib/@types/db";
 import { ModmailTicketCard, ModmailTicketRow } from "./ModmailItem";
-import LabsForm from "../../form/LabsForm";
+import LabsForm, { LabsFormFieldValueMap } from "../../form/LabsForm";
 import { LabsFormFieldType, LabsFormSectionOrder } from "../../form/form";
 import { ReactionAction } from "@prisma/client";
 import { GuildedSanitizedChannel } from "../../../lib/@types/guilded";
 import { channelsToSelectionOptions } from "../channels";
+import { nullUserOptionList, optionifyUserDetails } from "../content";
 
 type State = {
     isMounted: boolean;
@@ -35,16 +36,16 @@ export default class ModmailPage extends React.Component<DashboardPageProps, Sta
         return this.fetchModmailInfo();
     }
 
-    getTicketsRoute(page: number, search?: string) {
+    getTicketsRoute(page: number, search?: string, filter?: LabsFormFieldValueMap) {
         const {
             serverConfig: { serverId },
         } = this.props;
 
-        return `/api/servers/${serverId}/tickets?page=${page}${search ? `&search=${encodeURIComponent(search)}` : ""}`;
+        return `/api/servers/${serverId}/tickets?page=${page}${querifyDataTableInfo(search, filter)}`;
     }
 
-    async fetchTickets(page: number, search?: string) {
-        return fetch(this.getTicketsRoute(page, search), {
+    async fetchTickets(page: number, search?: string, filter?: LabsFormFieldValueMap) {
+        return fetch(this.getTicketsRoute(page, search, filter), {
             method: "GET",
             headers: { "content-type": "application/json" },
         })
@@ -168,6 +169,38 @@ export default class ModmailPage extends React.Component<DashboardPageProps, Sta
                         deleteItems={this.deleteTickets.bind(this)}
                         ItemRenderer={ModmailTicketRow}
                         ItemMobileRenderer={ModmailTicketCard}
+                        getFilterFormFields={(users) => [
+                            {
+                                type: LabsFormFieldType.Picker,
+                                name: "Status",
+                                prop: "closed",
+                                selectableValues: [
+                                    {
+                                        name: "Open",
+                                        icon: faLockOpen,
+                                        value: false,
+                                        description: "The ticket is yet to be handled.",
+                                    },
+                                    {
+                                        name: "Closed",
+                                        icon: faLock,
+                                        value: true,
+                                        description: "The ticket has been handled.",
+                                    }
+                                ],
+                                optional: true,
+                                rightSideCheck: true,
+                            },
+                            {
+                                type: LabsFormFieldType.Picker,
+                                name: "User",
+                                prop: "user",
+                                selectableValues: users ? optionifyUserDetails(Object.values(users)) : nullUserOptionList,
+                                optional: true,
+                                rightSideCheck: true,
+                                height: 250,
+                            },
+                        ]}
                     />
                 </Stack>
             </>

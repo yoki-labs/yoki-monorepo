@@ -8,6 +8,10 @@ declare module "@mui/joy/styles" {
         code: true;
         reverse: true;
     }
+    interface ListItemButtonPropsVariantOverrides {
+        indented: true;
+    }
+
     interface PaletteTextOverrides {
         code: true;
         reverse: true;

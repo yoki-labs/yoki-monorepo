@@ -6,7 +6,7 @@ import { faBars } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import NavbarButton, { NavbarButtonList } from "./NavbarButton";
 import UserManager from "../UserManager";
-import { LabsSessionUser } from "../../utils/pageUtil";
+import { LabsSessionUser } from "../../utils/routes/pages";
 import { NextRouter, useRouter } from "next/router";
 // import { Hamburger, NavbarItemList, NavbarWrapper, SideNavbar, SideNavbarBg, SideNavbarBody, SideNavbarFooter, SideNavbarHeader, SideNavbarItem } from "./styles";
 

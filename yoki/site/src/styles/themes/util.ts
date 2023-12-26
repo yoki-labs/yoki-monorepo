@@ -40,7 +40,7 @@ export const generateColourScheme = (typicalColour: string, background: string, 
     plainHoverBg: mixHexColours(typicalColour, background, 0.9),
     plainActiveBg: mixHexColours(typicalColour, background, 0.7),
     // Outlined
-    outlinedColor: mixHexColours(typicalColour, counter, 0.4),
+    outlinedColor: mixHexColours(typicalColour, counter, 0.5),
     outlinedBorder: mixHexColours(typicalColour, background, 0.55),
 
     outlinedHoverBg: mixHexColours(typicalColour, background, 0.9),

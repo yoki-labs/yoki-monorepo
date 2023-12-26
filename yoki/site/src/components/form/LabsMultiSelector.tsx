@@ -5,6 +5,7 @@ import { Chip, Dropdown, ListItemDecorator, Menu, MenuButton, MenuItem, MenuList
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleDown, faCheck } from "@fortawesome/free-solid-svg-icons";
 import ClickAwayListener from "@mui/base/ClickAwayListener";
+import AlertIcon from "../AlertIcon";
 
 type Props = {
     field: LabsFormFieldByType<LabsFormFieldType.MultiSelect>;
@@ -63,7 +64,7 @@ export default class LabsMultiSelector extends React.Component<Props, State> {
 
             return (
                 <MenuItem disabled={disabled} onClick={() => this.setSelectedValues(isSelected ? selectedValues.filter((x) => x !== value) : selectedValues.concat(value))}>
-                    <ListItemDecorator>{isSelected && <FontAwesomeIcon icon={faCheck} />}</ListItemDecorator>
+                    <ListItemDecorator>{isSelected && <AlertIcon icon={faCheck} color="primary" variant="soft" />}</ListItemDecorator>
                     {name}
                 </MenuItem>
             );

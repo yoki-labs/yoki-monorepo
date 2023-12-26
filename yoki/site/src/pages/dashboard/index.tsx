@@ -9,7 +9,7 @@ import { authOptions } from "../api/auth/[...nextauth]";
 import LayoutWrapper from "../../components/dashboard/layout/LayoutWrapper";
 import ServerSelectionPage from "../../components/dashboard/pages/ServerSelectionPage";
 import { useRouter } from "next/router";
-import { LabsSessionUser } from "../../utils/pageUtil";
+import { LabsSessionUser } from "../../utils/routes/pages";
 
 type SessionProps = {
     servers: GuildedClientServer[];

@@ -17,7 +17,7 @@ import { RoleType } from "@prisma/client";
 import NotPermittedPage from "../../../components/dashboard/pages/NotPermittedPage";
 import NoEarlyAccessPage from "../../../components/dashboard/pages/NoEarlyAccessPage";
 import { useRouter } from "next/router";
-import { LabsSessionUser } from "../../../utils/pageUtil";
+import { LabsSessionUser } from "../../../utils/routes/pages";
 import { transformFoundServer } from "../../../utils/routes/users";
 
 type BaseSessionProps = {

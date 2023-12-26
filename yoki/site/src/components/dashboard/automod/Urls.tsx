@@ -3,30 +3,31 @@ import React from "react";
 import DashboardModule from "../DashboardModule";
 import { DashboardPageProps } from "../pages";
 import { faBan } from "@fortawesome/free-solid-svg-icons";
-import DataTable from "../../DataTable";
+import DataTable, { querifyDataTableInfo } from "../../DataTable";
 import { SanitizedUrlFilter } from "../../../lib/@types/db";
 import { severityOptions } from "../../../utils/actionUtil";
-import LabsForm from "../../form/LabsForm";
+import LabsForm, { LabsFormFieldValueMap } from "../../form/LabsForm";
 import { LabsFormFieldType, LabsFormSectionOrder } from "../../form/form";
 import { Severity } from "@prisma/client";
 import { errorifyResponseError, notifyFetchError } from "../../../utils/errorUtil";
 import { UrlCard, UrlRow } from "./UrlItem";
+import { nullUserOptionList, optionifyUserDetails } from "../content";
 
 export default class UrlsPage extends React.Component<DashboardPageProps> {
     constructor(props: DashboardPageProps) {
         super(props);
     }
 
-    getUrlsRoute(page: number, search?: string) {
+    getUrlsRoute(page: number, search?: string, filter?: LabsFormFieldValueMap) {
         const {
             serverConfig: { serverId },
         } = this.props;
 
-        return `/api/servers/${serverId}/urls?page=${page}${search ? `&search=${encodeURIComponent(search)}` : ""}`;
+        return `/api/servers/${serverId}/urls?page=${page}${querifyDataTableInfo(search, filter)}`;
     }
 
-    async fetchUrls(page: number, search?: string) {
-        return fetch(this.getUrlsRoute(page, search), {
+    async fetchUrls(page: number, search?: string, filter?: LabsFormFieldValueMap) {
+        return fetch(this.getUrlsRoute(page, search, filter), {
             method: "GET",
             headers: { "content-type": "application/json" },
         })
@@ -37,8 +38,8 @@ export default class UrlsPage extends React.Component<DashboardPageProps> {
             .then(({ items, count, users }) => ({ items, maxPages: Math.ceil(count / 50), users }));
     }
 
-    async deleteUrls(urlIds: number[], page: number, search?: string) {
-        return fetch(this.getUrlsRoute(page, search), {
+    async deleteUrls(urlIds: number[], page: number, search?: string, filter?: LabsFormFieldValueMap) {
+        return fetch(this.getUrlsRoute(page, search, filter), {
             method: "DELETE",
             headers: { "content-type": "application/json" },
             body: JSON.stringify({ urlIds }),
@@ -157,6 +158,27 @@ export default class UrlsPage extends React.Component<DashboardPageProps> {
                         deleteItems={this.deleteUrls.bind(this)}
                         ItemRenderer={UrlRow}
                         ItemMobileRenderer={UrlCard}
+
+                        getFilterFormFields={(users) => [
+                            {
+                                type: LabsFormFieldType.Picker,
+                                name: "Creator",
+                                prop: "user",
+                                selectableValues: users ? optionifyUserDetails(Object.values(users)) : nullUserOptionList,
+                                optional: true,
+                                rightSideCheck: true,
+                                height: 250,
+                            },
+                            {
+                                type: LabsFormFieldType.Picker,
+                                name: "Severity",
+                                prop: "severity",
+                                selectableValues: severityOptions,
+                                optional: true,
+                                rightSideCheck: true,
+                                height: 250,
+                            },
+                        ]}
                     />
                 </Stack>
             </>

@@ -12,7 +12,8 @@ export enum TimeStep {
 export enum LabsFormSectionOrder {
     Column = 0,
     Row = 1,
-    Grid = 2,
+    GridSm = 2,
+    Grid = 3,
 }
 
 // #region Interfaces Form basic info structure
@@ -33,6 +34,7 @@ export interface BaseLabsFormField<TType extends LabsFormFieldType, TValue> {
     defaultValue?: TValue | undefined | null;
     // Display
     name?: string;
+    subtitle?: string;
     description?: string;
     badge?: { text: string; color: DefaultColorPalette };
     // Config
@@ -54,7 +56,7 @@ export interface LabsFormFieldOption<T> {
     value: T;
     icon?: IconDefinition;
     color?: number;
-    avatarIcon?: string;
+    avatarIcon?: string | null;
     disabled?: boolean;
 }
 
@@ -80,16 +82,21 @@ interface LabsFormFieldInputLarge<TType extends LabsFormFieldType, TValue> exten
     minRows?: number;
 }
 interface LabsFormFieldSelectable<TType extends LabsFormFieldType>
-    extends BaseLabsFormField<TType, string | number>,
-        OptionedLabsFormField<TType, string | number, string | number>,
+    extends BaseLabsFormField<TType, string | boolean | number | null>,
+        OptionedLabsFormField<TType, string | boolean | number | null, string | boolean | number | null>,
         StyledLabsFormField,
-        PlaceholdableLabsFormField {}
+        PlaceholdableLabsFormField { }
 
 interface LabsFormFieldMultiSelection<TType extends LabsFormFieldType>
     extends BaseLabsFormField<TType, string[]>,
         OptionedLabsFormField<TType, string[], string>,
         StyledLabsFormField,
         PlaceholdableLabsFormField {}
+
+interface LabsFormFieldPicker<TType extends LabsFormFieldType> extends LabsFormFieldSelectable<TType> {
+    rightSideCheck?: boolean;
+    height?: number;
+}
 
 interface LabsFormFieldTimed<TType extends LabsFormFieldType> extends BaseLabsFormField<TType, number>, StyledLabsFormField {
     step?: TimeStep;
@@ -112,7 +119,7 @@ export type LabsFormFieldByType<T extends LabsFormFieldType> =
         T extends LabsFormFieldType.Select
         ? LabsFormFieldSelectable<LabsFormFieldType.Select>
         : T extends LabsFormFieldType.Picker
-        ? LabsFormFieldSelectable<LabsFormFieldType.Picker>
+        ? LabsFormFieldPicker<LabsFormFieldType.Picker>
         : T extends LabsFormFieldType.Toggle
         ? BaseLabsFormField<LabsFormFieldType.Toggle, boolean>
         : T extends LabsFormFieldType.MultiSelect

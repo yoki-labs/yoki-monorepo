@@ -115,14 +115,6 @@ export default class AntiraidPage extends React.Component<DashboardPageProps, St
                                                 selectableValues: channelsToSelectionOptions(serverChannels),
                                             },
                                             {
-                                                type: LabsFormFieldType.Select,
-                                                prop: "antiRaidResponse",
-                                                name: "Anti-raid response",
-                                                description: "How the recently created accounts will be dealt with.",
-                                                defaultValue: serverConfig.antiRaidResponse,
-                                                selectableValues: antiRaidResponseValues,
-                                            },
-                                            {
                                                 type: LabsFormFieldType.Time,
                                                 prop: "antiRaidAgeFilter",
                                                 name: "Filtered account age",
@@ -133,6 +125,19 @@ export default class AntiraidPage extends React.Component<DashboardPageProps, St
                                             },
                                         ],
                                     },
+                                    {
+                                        fields: [
+                                            {
+                                                type: LabsFormFieldType.Picker,
+                                                prop: "antiRaidResponse",
+                                                name: "Anti-raid response",
+                                                subtitle: "How the recently created accounts will be dealt with.",
+                                                defaultValue: serverConfig.antiRaidResponse,
+                                                selectableValues: antiRaidResponseValues,
+                                                variant: "soft",
+                                            },
+                                        ]
+                                    }
                                 ]}
                                 onSubmit={({ antiRaidChallengeChannel, antiRaidResponse, antiRaidAgeFilter }) =>
                                     this.modifyServerConfig(

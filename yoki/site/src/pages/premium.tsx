@@ -2,7 +2,7 @@ import type { GetServerSideProps, NextPage } from "next";
 
 import LandingPage from "../components/landing/LandingPage";
 import { Box, Stack, Table, Typography } from "@mui/joy";
-import { LandingPageSessionProps, getLandingPagePageProps } from "../utils/pageUtil";
+import { LandingPageSessionProps, getLandingPagePageProps } from "../utils/routes/pages";
 import PremiumCard from "../components/landing/PremiumCard";
 import { faCheck, faHeart, faSlash, faTimes } from "@fortawesome/free-solid-svg-icons";
 import AlertIcon from "../components/AlertIcon";

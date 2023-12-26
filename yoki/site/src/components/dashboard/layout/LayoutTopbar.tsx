@@ -3,7 +3,7 @@ import { ServerSelector } from "./ServerSelector";
 import { GuildedClientServer, GuildedServer } from "../../../lib/@types/guilded";
 import UserManager from "../../UserManager";
 import Branding from "../../Branding";
-import { LabsSessionUser } from "../../../utils/pageUtil";
+import { LabsSessionUser } from "../../../utils/routes/pages";
 
 type Props = {
     servers: GuildedClientServer[];

@@ -3,7 +3,7 @@ import { Action, Severity } from "@prisma/client";
 import { clientRest } from "../../../../../guilded";
 import prisma from "../../../../../prisma";
 import { createServerDataRoute } from "../../../../../utils/routes/servers";
-import { availableSeverityValues } from "../../../../../utils/routes/body";
+import { querySeverityIsIncorrect, queryUserIsIncorrect } from "../../../../../utils/routes/body";
 
 const serverCasesRoute = createServerDataRoute<Action, string>({
     type: "string",
@@ -12,15 +12,17 @@ const serverCasesRoute = createServerDataRoute<Action, string>({
     },
     async fetchMany(serverId, query) {
         // Invalid severity filter
-        if (query.severity && !availableSeverityValues.includes(query.severity as string))
+        if (querySeverityIsIncorrect(query.severity) || queryUserIsIncorrect(query.target))
             return null;
 
         const severity = query.severity ? Severity[query.severity as Severity] : undefined;
+        const targetUser = (query.target || undefined) as string | undefined;
 
         return prisma.action.findMany({
             where: {
                 serverId,
                 type: severity,
+                targetId: targetUser,
             },
         });
     },

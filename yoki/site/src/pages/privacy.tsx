@@ -3,7 +3,7 @@ import type { GetServerSideProps, NextPage } from "next";
 import LandingPage from "../components/landing/LandingPage";
 import { Stack } from "@mui/joy";
 import PagePlaceholder, { PagePlaceholderIcon } from "../components/PagePlaceholder";
-import { LandingPageSessionProps, getLandingPagePageProps } from "../utils/pageUtil";
+import { LandingPageSessionProps, getLandingPagePageProps } from "../utils/routes/pages";
 
 export const getServerSideProps: GetServerSideProps<LandingPageSessionProps> = getLandingPagePageProps;
 

@@ -7,7 +7,8 @@ import CommandSidebar from "../../components/landing/commands/CommandSidebar";
 import CommandDisplay from "../../components/landing/commands/CommandDisplay";
 import { authOptions } from "../api/auth/[...nextauth]";
 import { getServerSession } from "next-auth";
-import { LabsSessionUser } from "../../utils/pageUtil";
+import { LabsSessionUser } from "../../utils/routes/pages";
+import { IconDefinition, faBrush, faDoorOpen, faEnvelope, faFilterCircleXmark, faGlobeAmericas, faHammer, faInfoCircle, faShield } from "@fortawesome/free-solid-svg-icons";
 
 interface GroupedCommands {
     [x: string]: Command[];
@@ -15,13 +16,57 @@ interface GroupedCommands {
 
 type CommandProps = {
     commandByCategory: GroupedCommands;
-    commandCategories: Record<string, string>;
+    commandCategories: Record<string, { icon: IconDefinition; name: string; url: string; }>;
     category: string;
     user: LabsSessionUser | null;
 };
 
+const commandCategoryList: Array<{ icon: IconDefinition; name: string; url: string; }> = [
+    {
+        name: "General",
+        url: "general",
+        icon: faGlobeAmericas,
+    },
+    {
+        name: "Information",
+        url: "information",
+        icon: faInfoCircle,
+    },
+    {
+        name: "Customization",
+        url: "customization",
+        icon: faBrush,
+    },
+    {
+        name: "Moderation",
+        url: "moderation",
+        icon: faHammer,
+    },
+    {
+        name: "Automod",
+        url: "automod",
+        icon: faShield,
+    },
+    {
+        name: "Filter",
+        url: "filter",
+        icon: faFilterCircleXmark,
+    },
+    {
+        name: "Modmail",
+        url: "modmail",
+        icon: faEnvelope,
+    },
+    {
+        name: "Server Entry",
+        url: "serverentry",
+        icon: faDoorOpen,
+    },
+];
+
 const commandByCategory = commands.reduce<GroupedCommands>((group, command) => {
-    const category = command.category ?? "General";
+    const categoryName = command.category ?? "General";
+    const category = commandCategoryList.find((x) => x.name === categoryName)!.url;
 
     group[category] = group[category] ?? [];
     group[category].push(command as Command);
@@ -29,11 +74,11 @@ const commandByCategory = commands.reduce<GroupedCommands>((group, command) => {
     return group;
 }, {});
 // const commandCategories = Object.keys(commandByCategory);
-const commandCategories = Object.keys(commandByCategory).reduce<Record<string, string>>(
-    (categories, category) => ((categories[category.split(" ").join("").toLowerCase()] = category), categories),
+const commandCategories = commandCategoryList.reduce<Record<string, { name: string; url: string; icon: IconDefinition; }>>(
+    (categories, category) => (categories[category.url] = category, categories),
     {}
 );
-const categoryKeys = Object.keys(commandCategories);
+const categoryKeys = commandCategoryList.map((x) => x.url);
 
 export const getServerSideProps: GetServerSideProps = async (ctx): Promise<GetServerSidePropsResult<CommandProps>> => {
     const category = ctx.query.category as string;
@@ -58,7 +103,8 @@ export const getServerSideProps: GetServerSideProps = async (ctx): Promise<GetSe
 };
 
 const Commands: NextPage<CommandProps> = ({ user, commandByCategory, commandCategories, category }) => {
-    const commands = commandByCategory[commandCategories[category]];
+    const commands = commandByCategory[commandCategories[category].url];
+    console.log("Commands", commands);
 
     return (
         <LandingPage user={user}>
@@ -66,7 +112,7 @@ const Commands: NextPage<CommandProps> = ({ user, commandByCategory, commandCate
                 <CommandSidebar categories={commandCategories} activeCategory={category} />
                 <div className="grow md:px-16">
                     <Typography level="h2" sx={{ mb: 4 }}>
-                        {commandCategories[category]}
+                        {commandCategories[category].name}
                     </Typography>
                     <Stack gap={2} direction="column" alignItems="stretch">
                         {commands.map((x, i) => (

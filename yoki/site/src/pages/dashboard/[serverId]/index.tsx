@@ -9,7 +9,7 @@ import { methods } from "../../../lib/Fetcher";
 // import WelcomeBanner from "../../partials/WelcomeBanner";
 import { authOptions } from "../../api/auth/[...nextauth]";
 import rest from "../../../guilded";
-import { LabsSessionUser } from "../../../utils/pageUtil";
+import { LabsSessionUser } from "../../../utils/routes/pages";
 
 interface SessionProps {
     servers: GuildedClientServer[];

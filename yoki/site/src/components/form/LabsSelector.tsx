@@ -32,7 +32,7 @@ export default class LabsSelector extends React.Component<Props, State> {
         return value && this.renderValue(value);
     }
 
-    renderValue(value: LabsFormFieldOption<string | number>) {
+    renderValue(value: LabsFormFieldOption<string | boolean | number | null>) {
         return (
             <>
                 {(value.icon || value.avatarIcon) && (

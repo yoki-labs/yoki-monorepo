@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Avatar, Button, Divider, List, ListItemDecorator, Menu, MenuItem, Stack, Switch, Typography, buttonClasses, useColorScheme } from "@mui/joy";
 import Link from "next/link";
 import React from "react";
-import { LabsSessionUser } from "../utils/pageUtil";
+import { LabsSessionUser } from "../utils/routes/pages";
 import { ClickAwayListener } from "@mui/base";
 
 type Props = {

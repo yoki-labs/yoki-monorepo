@@ -1,7 +1,7 @@
 import { Box } from "@mui/joy";
 import { profilePageList } from "./pages";
 import PagePlaceholder, { PagePlaceholderIcon } from "../PagePlaceholder";
-import { LabsSessionUser } from "../../utils/pageUtil";
+import { LabsSessionUser } from "../../utils/routes/pages";
 
 type Props = {
     page: string;

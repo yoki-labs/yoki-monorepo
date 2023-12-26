@@ -153,6 +153,7 @@ const sectionOrderCss: Record<LabsFormSectionOrder, string> = {
     [LabsFormSectionOrder.Column]: `flex flex-col`,
     [LabsFormSectionOrder.Row]: `flex flex-col md:flex-row`,
     [LabsFormSectionOrder.Grid]: `grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xlg:grid-cols-4`,
+    [LabsFormSectionOrder.GridSm]: `grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xlg:grid-cols-3`,
 };
 
 type FieldRendererRecord = {
@@ -204,16 +205,27 @@ export const fieldRenderers: FieldRendererRecord = {
 };
 
 export function FormFieldHeader({ field }: { field: BaseLabsFormField<LabsFormFieldType, any> }) {
-    return field.name ? (
-        <Stack spacing={1} direction="row" sx={{ mb: 1 }}>
-            <FormLabel sx={{ fontWeight: "normal" }}>
-                <Typography level="title-md">{field.name}</Typography>
-            </FormLabel>
-            {field.badge && (
-                <Chip size="sm" variant="outlined" color={field.badge.color}>
-                    {field.badge.text}
-                </Chip>
+    return <>
+        {(field.name || field.subtitle)
+        ? <Stack direction="column" sx={{ mb: 1 }}>
+            {field.name && (
+                <Stack spacing={1} direction="row">
+                    <FormLabel sx={{ fontWeight: "normal" }}>
+                        <Typography level="title-md">{field.name}</Typography>
+                    </FormLabel>
+                    {field.badge && (
+                        <Chip size="sm" variant="outlined" color={field.badge.color}>
+                            {field.badge.text}
+                        </Chip>
+                    )}
+                </Stack>
+            )}
+            {field.subtitle && (
+                <FormHelperText>
+                    {field.subtitle}
+                </FormHelperText>
             )}
         </Stack>
-    ) : null;
+        : undefined}
+    </>;
 }

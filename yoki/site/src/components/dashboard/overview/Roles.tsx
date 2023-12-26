@@ -5,7 +5,7 @@ import { DashboardPageProps } from "../pages";
 import { RolePayload } from "@guildedjs/api";
 import DashboardRole, { RoleItemCreationForm } from "./RoleItem";
 import { RoleType } from "@prisma/client";
-import { optionifyRoles } from "./role";
+import { optionifyRoles } from "../content";
 import BaseRolesForm from "./BaseRoleForm";
 import PagePlaceholder, { PagePlaceholderIcon } from "../../PagePlaceholder";
 import { errorifyResponseError, notifyFetchError } from "../../../utils/errorUtil";

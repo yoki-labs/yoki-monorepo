@@ -1,7 +1,7 @@
 import React from "react";
 import LabsForm, { FormFieldHeader } from "./LabsForm";
 import { LabsFormFieldByType, LabsFormFieldType } from "./form";
-import { Button, ButtonGroup, Divider, IconButton, Input, Stack } from "@mui/joy";
+import { Button, ButtonGroup, Divider, IconButton, Input, Stack, VariantProp } from "@mui/joy";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronDown, faChevronUp } from "@fortawesome/free-solid-svg-icons";
 
@@ -78,7 +78,7 @@ export default class NumberInput extends React.Component<Props, State> {
                     // Display
                     size={field.size}
                     error={this.state.isInvalid}
-                    variant={field.variant ?? "outlined"}
+                    variant={(field.variant as VariantProp | undefined) ?? "outlined"}
                     startDecorator={field.prefixIcon && <FontAwesomeIcon icon={field.prefixIcon} />}
                     endDecorator={
                         <>

@@ -3,14 +3,16 @@ import React from "react";
 import DashboardModule from "../DashboardModule";
 import { DashboardPageProps } from "../pages";
 import { faHashtag, faPrayingHands } from "@fortawesome/free-solid-svg-icons";
-import DataTable from "../../DataTable";
+import DataTable, { querifyDataTableInfo } from "../../DataTable";
 import { SanitizedAppeal } from "../../../lib/@types/db";
 import { AppealCard, AppealRow } from "./AppealItem";
-import LabsForm from "../../form/LabsForm";
+import LabsForm, { LabsFormFieldValueMap } from "../../form/LabsForm";
 import { LabsFormFieldType, LabsFormSectionOrder } from "../../form/form";
 import { errorifyResponseError, notifyFetchError } from "../../../utils/errorUtil";
 import { GuildedSanitizedChannel } from "../../../lib/@types/guilded";
 import { channelsToSelectionOptions } from "../channels";
+import { appealStatusOptions } from "../../../utils/appealUtil";
+import { nullUserOptionList, optionifyUserDetails } from "../content";
 
 type State = {
     isMounted: boolean;
@@ -33,16 +35,16 @@ export default class AppealsPage extends React.Component<DashboardPageProps, Sta
         return this.fetchAppealInfo();
     }
 
-    getAppealsRoute(page: number, search?: string) {
+    getAppealsRoute(page: number, search?: string, filter?: LabsFormFieldValueMap | undefined) {
         const {
             serverConfig: { serverId },
         } = this.props;
 
-        return `/api/servers/${serverId}/appeals?page=${page}${search ? `&search=${encodeURIComponent(search)}` : ""}`;
+        return `/api/servers/${serverId}/appeals?page=${page}${querifyDataTableInfo(search, filter)}`;
     }
 
-    async fetchAppeals(page: number, search?: string) {
-        return fetch(this.getAppealsRoute(page, search), {
+    async fetchAppeals(page: number, search?: string, filter?: LabsFormFieldValueMap | undefined) {
+        return fetch(this.getAppealsRoute(page, search, filter), {
             method: "GET",
             headers: { "content-type": "application/json" },
         })
@@ -146,6 +148,25 @@ export default class AppealsPage extends React.Component<DashboardPageProps, Sta
                         deleteItems={this.deleteAppeals.bind(this)}
                         ItemRenderer={AppealRow}
                         ItemMobileRenderer={AppealCard}
+                        getFilterFormFields={(users) => [
+                            {
+                                type: LabsFormFieldType.Picker,
+                                name: "Status",
+                                prop: "status",
+                                selectableValues: appealStatusOptions,
+                                optional: true,
+                                rightSideCheck: true,
+                            },
+                            {
+                                type: LabsFormFieldType.Picker,
+                                name: "User",
+                                prop: "user",
+                                selectableValues: users ? optionifyUserDetails(Object.values(users)) : nullUserOptionList,
+                                optional: true,
+                                rightSideCheck: true,
+                                height: 250,
+                            },
+                        ]}
                     />
                 </Stack>
             </>

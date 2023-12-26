@@ -1,7 +1,7 @@
 import type { GetServerSideProps, NextPage } from "next";
 
 import LandingPage from "../../components/landing/LandingPage";
-import { LabsSessionUser } from "../../utils/pageUtil";
+import { LabsSessionUser } from "../../utils/routes/pages";
 import prisma from "../../prisma";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../api/auth/[...nextauth]";
