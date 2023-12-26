@@ -3,7 +3,6 @@ import { Box, Card, CardContent, Skeleton, Stack, Typography } from "@mui/joy";
 import React from "react";
 import DashboardModule from "../DashboardModule";
 import { DashboardPageProps } from "../pages";
-import PagePlaceholder, { PagePlaceholderIcon } from "../../PagePlaceholder";
 import AutomodPreset from "./AutomodPreset";
 import { SanitizedPreset } from "../../../lib/@types/db";
 import { notifyFetchError } from "../../../utils/errorUtil";

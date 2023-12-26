@@ -2,7 +2,7 @@ import { Box, Card, CardContent, Stack, Typography } from "@mui/joy";
 import React from "react";
 import DashboardModule from "../DashboardModule";
 import { DashboardPageProps } from "../pages";
-import { faHashtag, faPrayingHands } from "@fortawesome/free-solid-svg-icons";
+import { faPrayingHands } from "@fortawesome/free-solid-svg-icons";
 import DataTable, { querifyDataTableInfo } from "../../DataTable";
 import { SanitizedAppeal } from "../../../lib/@types/db";
 import { AppealCard, AppealRow } from "./AppealItem";

@@ -53,7 +53,7 @@ const Premium: NextPage<LandingPageSessionProps> = ({ user }) => {
                             { text: "You allow us to continue doing what we love", icon: faHeart, color: "danger" },
                             { text: "Faster & more responsive support" },
                             { text: "Yoki's NSFW image filter" },
-                            { text: "Unlimited items, currencies" },
+                            { text: "Virtually unlimited items, currencies" },
                         ]}
                     />
                 </Box>

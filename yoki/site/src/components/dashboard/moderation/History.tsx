@@ -8,7 +8,7 @@ import { HistoryCaseCard, HistoryCaseRow } from "./HistoryCase";
 import { LabsFormFieldType } from "../../form/form";
 import { severityOptions } from "../../../utils/actionUtil";
 import { LabsFormFieldValueMap } from "../../form/LabsForm";
-import { nullUserOption, nullUserOptionList, optionifyUserDetails } from "../content";
+import { nullUserOptionList, optionifyUserDetails } from "../content";
 
 export default class HistoryPage extends React.Component<DashboardPageProps> {
     constructor(props: DashboardPageProps) {

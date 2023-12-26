@@ -1,4 +1,4 @@
-import { faAnglesDown, faBan, faEnvelope, faExclamationTriangle, faHeart, faImage, faLink, faPrayingHands, faShieldHalved } from "@fortawesome/free-solid-svg-icons";
+import { faAnglesDown, faBan, faEnvelope, faExclamationTriangle, faImage, faLink, faPrayingHands, faShieldHalved } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import DashboardModule from "../DashboardModule";

@@ -1,9 +1,8 @@
-import { faImage, faLink } from "@fortawesome/free-solid-svg-icons";
-import { Box, Card, CardContent, Typography } from "@mui/joy";
+import { faImage } from "@fortawesome/free-solid-svg-icons";
+import { Box, Card, CardContent } from "@mui/joy";
 import React from "react";
 import DashboardModule from "../DashboardModule";
 import { DashboardPageProps } from "../pages";
-import PagePlaceholder, { PagePlaceholderIcon } from "../../PagePlaceholder";
 import { PremiumType } from "@prisma/client";
 import LabsForm, { LabsFormFieldValueMap } from "../../form/LabsForm";
 import { LabsFormFieldType, LabsFormSectionOrder } from "../../form/form";

@@ -1,7 +1,6 @@
 import { Alert, Box, Link, Stack, Typography } from "@mui/joy";
-import { GuildedClientServer, GuildedServer } from "../../../lib/@types/guilded";
+import { GuildedServer } from "../../../lib/@types/guilded";
 import ServerDisplay from "../ServerDisplay";
-import LabsButton from "../../LabsButton";
 import PagePlaceholder, { PagePlaceholderIcon } from "../../PagePlaceholder";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";

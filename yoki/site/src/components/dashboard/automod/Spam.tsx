@@ -1,5 +1,5 @@
 import { faAnglesDown, faBan } from "@fortawesome/free-solid-svg-icons";
-import { Box, Card, CardContent, Typography } from "@mui/joy";
+import { Box, Card, CardContent } from "@mui/joy";
 import React from "react";
 import DashboardModule from "../DashboardModule";
 import { DashboardPageProps } from "../pages";
