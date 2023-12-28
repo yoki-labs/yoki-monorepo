@@ -10,7 +10,7 @@ export enum PagePlaceholderIcon {
 
 const icons: Record<PagePlaceholderIcon, string> = {
     [PagePlaceholderIcon.NotFound]: "¯\\_ (ツ)_/¯",
-    [PagePlaceholderIcon.Wip]: "(｡-   ‿   -｡)💤",
+    [PagePlaceholderIcon.Wip]: "(｡- ‿ -｡)💤",
     [PagePlaceholderIcon.NoPermission]: "( •́ ‸ •̀ )",
     [PagePlaceholderIcon.Unexpected]: "( •́ _ •́ )?",
 };
@@ -31,7 +31,7 @@ export default class PagePlaceholder extends React.Component<Props> {
 
         return (
             <Stack direction="column" alignItems="center">
-                <Typography level="title-lg" textColor="text.secondary" fontSize="xlg" sx={{ fontSize: "2.5em" }} gutterBottom>
+                <Typography level="body-md" textColor="text.secondary" fontSize="xlg" sx={{ fontSize: "2.5em" }} gutterBottom>
                     {icons[icon]}
                 </Typography>
                 <Typography level="h1" fontSize="lg">
