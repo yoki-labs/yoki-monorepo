@@ -40,7 +40,7 @@ export default class PhrasesPage extends React.Component<DashboardPageProps> {
         return fetch(this.getPhrasesRoute(page, search), {
             method: "DELETE",
             headers: { "content-type": "application/json" },
-            body: JSON.stringify({ phraseIds }),
+            body: JSON.stringify({ ids: phraseIds }),
         })
             .then((response) => {
                 if (!response.ok) throw response;

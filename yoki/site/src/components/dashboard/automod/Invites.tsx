@@ -39,7 +39,7 @@ export default class InvitesPage extends React.Component<DashboardPageProps> {
         return fetch(this.getInvitesRoute(page, search), {
             method: "DELETE",
             headers: { "content-type": "application/json" },
-            body: JSON.stringify({ urlIds }),
+            body: JSON.stringify({ ids: urlIds }),
         })
             .then((response) => {
                 if (!response.ok) throw response;

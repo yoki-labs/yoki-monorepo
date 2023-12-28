@@ -42,7 +42,7 @@ export default class UrlsPage extends React.Component<DashboardPageProps> {
         return fetch(this.getUrlsRoute(page, search, filter), {
             method: "DELETE",
             headers: { "content-type": "application/json" },
-            body: JSON.stringify({ urlIds }),
+            body: JSON.stringify({ ids: urlIds }),
         })
             .then((response) => {
                 if (!response.ok) throw response;

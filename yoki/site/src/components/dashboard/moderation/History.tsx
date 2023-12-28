@@ -39,13 +39,13 @@ export default class HistoryPage extends React.Component<DashboardPageProps> {
         return fetch(this.getCasesRoute(page, search), {
             method: "DELETE",
             headers: { "content-type": "application/json" },
-            body: JSON.stringify({ caseIds }),
+            body: JSON.stringify({ ids: caseIds }),
         })
             .then((response) => {
                 if (!response.ok) throw response;
                 return response.json();
             })
-            .then(({ cases, count }) => ({ items: cases, maxPages: Math.ceil(count / 50) }));
+            .then(({ items, count, users }) => ({ items, maxPages: Math.ceil(count / 50), users }));
     }
 
     render() {
