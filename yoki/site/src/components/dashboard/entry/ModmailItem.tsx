@@ -10,11 +10,12 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLock, faLockOpen } from "@fortawesome/free-solid-svg-icons";
 import { GuildedUserDetail } from "../../../lib/@types/guilded";
 
-export function ModmailTicketRow({ item: ticket, users, columnCount, timezone, isSelected, onSelected }: ItemProps<SanitizedModmailThread>) {
+export function ModmailTicketRow({ item: ticket, users, columnCount, timezone, disableSelection, isSelected, onSelected }: ItemProps<SanitizedModmailThread>) {
     return (
         <DataTableRow
             id={`ticket-row-${ticket.id}`}
             columnCount={columnCount}
+            disableSelection={disableSelection}
             isSelected={isSelected}
             onSelected={onSelected}
             ExpandedInfoRenderer={() => <TicketExpandedInfo ticket={ticket} timezone={timezone} />}
@@ -32,10 +33,11 @@ export function ModmailTicketRow({ item: ticket, users, columnCount, timezone, i
     );
 }
 
-export function ModmailTicketCard({ item: ticket, users, timezone, isSelected, onSelected }: ItemProps<SanitizedModmailThread>) {
+export function ModmailTicketCard({ item: ticket, users, timezone, disableSelection, isSelected, onSelected }: ItemProps<SanitizedModmailThread>) {
     return (
         <DataTableCard
             id={`ticket-card-${ticket.id}`}
+            disableSelection={disableSelection}
             isSelected={isSelected}
             onSelected={onSelected}
             TitleRenderer={() => (

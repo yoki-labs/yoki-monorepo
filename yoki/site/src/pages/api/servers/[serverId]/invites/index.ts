@@ -1,4 +1,4 @@
-import { InviteFilter } from "@prisma/client";
+import { InviteFilter, RoleType } from "@prisma/client";
 
 import { clientRest } from "../../../../../guilded";
 import prisma from "../../../../../prisma";
@@ -7,6 +7,8 @@ import { createServerDataRoute } from "../../../../../utils/routes/servers";
 
 const serverInvitesRoute = createServerDataRoute<InviteFilter, number>({
     type: "number",
+    fetchRoleRequired: RoleType.MOD,
+    operationRoleRequired: RoleType.ADMIN,
     searchFilter(value, search) {
         return value.targetServerId.includes(search);
     },

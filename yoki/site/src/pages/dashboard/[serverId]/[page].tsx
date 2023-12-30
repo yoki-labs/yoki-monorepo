@@ -13,12 +13,13 @@ import LayoutWrapper from "../../../components/dashboard/layout/LayoutWrapper";
 import { SanitizedServer } from "../../../lib/@types/db";
 import Layout from "../../../components/dashboard/layout/Layout";
 import rest from "../../../guilded";
-import { RoleType } from "@prisma/client";
 import NotPermittedPage from "../../../components/dashboard/pages/NotPermittedPage";
 import NoEarlyAccessPage from "../../../components/dashboard/pages/NoEarlyAccessPage";
 import { useRouter } from "next/router";
 import { LabsSessionUser } from "../../../utils/routes/pages";
 import { transformFoundServer } from "../../../utils/routes/users";
+import { roleTypeLevels } from "../../../utils/routes/permissions";
+import { RoleType } from "@prisma/client";
 
 type BaseSessionProps = {
     user: LabsSessionUser;
@@ -30,6 +31,7 @@ type SessionProps =
           code: null;
           serverConfig: SanitizedServer;
           page: string;
+          highestRoleType: RoleType;
       })
     | (BaseSessionProps & {
           code: "NOT_FOUND" | "UNPERMITTED" | "NO_FLAG";
@@ -77,16 +79,19 @@ export const getServerSideProps: GetServerSideProps = async (ctx): Promise<GetSe
     if (!member) return { props: { code: "NOT_FOUND", servers, user, currentServer: referencedServer } };
     else if (!serverInDb.flags.includes("EARLY_ACCESS")) return { props: { code: "NO_FLAG", servers, user, currentServer: referencedServer } };
 
-    const adminRoles = await prisma.role
+    const roleLevels = await prisma.role
         .findMany({
             where: {
                 serverId: serverInDb.serverId,
-                type: RoleType.ADMIN,
+                // type: RoleType.ADMIN,
             },
         })
-        .then((roles) => roles.map((role) => role.roleId));
+    
+    const adminRoles = roleLevels.map((role) => role.roleId);
 
     if (!(member?.isOwner || member?.roleIds.find((x) => adminRoles.includes(x)))) return { props: { code: "UNPERMITTED", servers, user, currentServer: referencedServer! } };
+
+    const highestLevel = roleLevels.reduce((a, b) => roleTypeLevels[a.type] > roleTypeLevels[b.type] ? a : b).type;
 
     return {
         props: {
@@ -96,6 +101,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx): Promise<GetSe
             currentServer: referencedServer!,
             serverConfig: sanitizeServer(serverInDb),
             page: page as string,
+            highestRoleType: highestLevel,
         },
     };
 };
@@ -111,7 +117,7 @@ export default function Dashboard(props: SessionProps) {
     if (!props.code)
         return (
             <Layout {...props} onServerChange={onServerChange}>
-                <DashForm serverConfig={props.serverConfig} page={props.page} />
+                <DashForm serverConfig={props.serverConfig} page={props.page} highestRoleType={props.highestRoleType} />
             </Layout>
         );
     // No ADMIN code

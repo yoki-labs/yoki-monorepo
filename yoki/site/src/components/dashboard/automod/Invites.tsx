@@ -9,6 +9,7 @@ import { InviteCard, InviteRow } from "./InviteFilter";
 import { LabsFormFieldType } from "../../form/form";
 import { nullUserOptionList, optionifyUserDetails } from "../content";
 import { LabsFormFieldValueMap } from "../../form/LabsForm";
+import { RoleType } from "@prisma/client";
 
 export default class InvitesPage extends React.Component<DashboardPageProps> {
     constructor(props: DashboardPageProps) {
@@ -49,7 +50,7 @@ export default class InvitesPage extends React.Component<DashboardPageProps> {
     }
 
     render() {
-        const { serverConfig } = this.props;
+        const { serverConfig, highestRoleType } = this.props;
 
         return (
             <>
@@ -60,6 +61,7 @@ export default class InvitesPage extends React.Component<DashboardPageProps> {
                         icon={faLink}
                         activeClassName="from-red-500 to-orange-500"
                         serverConfig={serverConfig}
+                        disabled={highestRoleType !== RoleType.ADMIN}
                         prop="filterInvites"
                         hideBadges
                         largeHeader
@@ -75,6 +77,7 @@ export default class InvitesPage extends React.Component<DashboardPageProps> {
                         deleteItems={this.deleteInvites.bind(this)}
                         ItemRenderer={InviteRow}
                         ItemMobileRenderer={InviteCard}
+                        disableOperations={highestRoleType !== RoleType.ADMIN}
                         getFilterFormFields={(users) => [
                             {
                                 type: LabsFormFieldType.Picker,

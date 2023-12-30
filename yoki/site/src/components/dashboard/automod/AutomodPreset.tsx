@@ -13,6 +13,7 @@ type Props = {
     description: string;
     preset?: SanitizedPreset;
     presetName: string;
+    disabled: boolean;
 };
 
 type State = {
@@ -56,7 +57,7 @@ export default class AutomodPreset extends React.Component<Props, State> {
     }
 
     render() {
-        const { title, description, preset } = this.props;
+        const { title, description, preset, disabled } = this.props;
         const { isEnabled } = this.state;
 
         return (
@@ -73,7 +74,7 @@ export default class AutomodPreset extends React.Component<Props, State> {
                                         prop: "severity",
                                         selectableValues: severityOptions,
                                         defaultValue: preset?.severity ?? Severity.WARN,
-                                        disabled: !isEnabled,
+                                        disabled: disabled || !isEnabled,
                                     },
                                     {
                                         type: LabsFormFieldType.Number,
@@ -81,7 +82,7 @@ export default class AutomodPreset extends React.Component<Props, State> {
                                         prop: "infractionPoints",
                                         placeholder: "A whole number",
                                         defaultValue: preset?.infractionPoints ?? 5,
-                                        disabled: !isEnabled,
+                                        disabled: disabled || !isEnabled,
                                         min: 0,
                                         max: 10000,
                                     },
@@ -95,7 +96,7 @@ export default class AutomodPreset extends React.Component<Props, State> {
                                 <Typography className="grow" fontWeight="md" level="title-md">
                                     {title}
                                 </Typography>
-                                <Switch className="toggle justify-end" defaultChecked={isEnabled} checked={isEnabled} onChange={({ target }) => this.onToggle(target.checked)} />
+                                <Switch className="toggle justify-end" disabled={disabled} defaultChecked={isEnabled} checked={isEnabled} onChange={({ target }) => this.onToggle(target.checked)} />
                             </Stack>
                             <Typography level="body-md">{description}</Typography>
                         </Box>

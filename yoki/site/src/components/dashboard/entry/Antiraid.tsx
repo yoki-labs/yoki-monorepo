@@ -5,7 +5,7 @@ import { DashboardPageProps } from "../pages";
 import { faCommentDots, faDoorOpen, faGlobe, faShieldHalved } from "@fortawesome/free-solid-svg-icons";
 import LabsForm from "../../form/LabsForm";
 import { LabsFormFieldOption, LabsFormFieldType, LabsFormSectionOrder, TimeStep } from "../../form/form";
-import { ResponseType } from "@prisma/client";
+import { ResponseType, RoleType } from "@prisma/client";
 import { errorifyResponseError, notifyFetchError } from "../../../utils/errorUtil";
 import { channelsToSelectionOptions } from "../channels";
 import { GuildedSanitizedChannel } from "../../../lib/@types/guilded";
@@ -78,7 +78,7 @@ export default class AntiraidPage extends React.Component<DashboardPageProps, St
     }
 
     render() {
-        const { serverConfig } = this.props;
+        const { serverConfig, highestRoleType } = this.props;
         const { serverChannels } = this.state;
 
         return (

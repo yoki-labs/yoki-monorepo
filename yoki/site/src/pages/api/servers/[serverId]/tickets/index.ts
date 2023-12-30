@@ -1,4 +1,4 @@
-import { ModmailThread } from "@prisma/client";
+import { ModmailThread, RoleType } from "@prisma/client";
 
 import { clientRest } from "../../../../../guilded";
 import prisma from "../../../../../prisma";
@@ -9,6 +9,8 @@ const availableCloseStatus = ["true", "false"];
 
 const serverTicketsRoute = createServerDataRoute<ModmailThread, string>({
     type: "string",
+    fetchRoleRequired: RoleType.MINIMOD,
+    operationRoleRequired: RoleType.MOD,
     searchFilter(value, search) {
         return value.handlingModerators.some((x) => x.includes(search));
     },

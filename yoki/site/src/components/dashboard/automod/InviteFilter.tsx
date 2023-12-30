@@ -7,11 +7,12 @@ import DataTableRow from "../../DataTableRow";
 import DataTableCard from "../../DataTableCard";
 import { LabsServerCard } from "../../LabsServerCard";
 
-export function InviteRow({ item: invite, users, columnCount, timezone, isSelected, onSelected }: ItemProps<SanitizedInviteFilter>) {
+export function InviteRow({ item: invite, users, columnCount, timezone, disableSelection, isSelected, onSelected }: ItemProps<SanitizedInviteFilter>) {
     return (
         <DataTableRow
             id={`invite-row-${invite.id}`}
             columnCount={columnCount}
+            disableSelection={disableSelection}
             isSelected={isSelected}
             onSelected={onSelected}
             // ExpandedInfoRenderer={() => (
@@ -35,10 +36,11 @@ export function InviteRow({ item: invite, users, columnCount, timezone, isSelect
     );
 }
 
-export function InviteCard({ item: invite, users, timezone, isSelected, onSelected }: ItemProps<SanitizedInviteFilter>) {
+export function InviteCard({ item: invite, users, timezone, disableSelection, isSelected, onSelected }: ItemProps<SanitizedInviteFilter>) {
     return (
         <DataTableCard
             id={`invite-card-${invite.id}`}
+            disableSelection={disableSelection}
             isSelected={isSelected}
             onSelected={onSelected}
             TitleRenderer={() => (

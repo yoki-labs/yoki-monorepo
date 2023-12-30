@@ -4,6 +4,8 @@ import { DashboardPageCategory, dashboardPageList } from "../pages";
 import { SanitizedServer } from "../../../lib/@types/db";
 import { ServerSelector } from "./ServerSelector";
 import { GuildedClientServer, GuildedServer } from "../../../lib/@types/guilded";
+import { RoleType } from "@prisma/client";
+import { roleTypeLevels } from "../../../utils/routes/permissions";
 
 type Props = {
     menuToggled: boolean;
@@ -11,6 +13,7 @@ type Props = {
     servers: GuildedClientServer[];
     currentServer: GuildedServer | undefined;
     page: string;
+    highestRoleType: RoleType;
     onServerChange: (serverId: string) => void;
 };
 
@@ -21,7 +24,7 @@ const categoryNames: Record<DashboardPageCategory, string> = {
     [DashboardPageCategory.Entry]: "Server members & support",
 };
 
-export function LayoutSidebar({ page, serverConfig, menuToggled, currentServer, servers, onServerChange }: Props) {
+export function LayoutSidebar({ page, serverConfig, menuToggled, highestRoleType, currentServer, servers, onServerChange }: Props) {
     // const [currentPage, setModule] = useAtom(navbarAtom);
     const showStateClass = menuToggled ? "" : " md:block hidden";
 
@@ -32,6 +35,8 @@ export function LayoutSidebar({ page, serverConfig, menuToggled, currentServer, 
             items: dashboardPageList.filter((page) => page.category === category),
         }));
 
+    const highestRoleLevel = roleTypeLevels[highestRoleType];
+
     return (
         <Box
             sx={{ fontSize: 14, pb: 5, userSelect: "none" }}
@@ -40,18 +45,25 @@ export function LayoutSidebar({ page, serverConfig, menuToggled, currentServer, 
             <Box sx={{ mb: 5 }} className="block md:hidden">
                 <ServerSelector onChange={onServerChange} defaultValue={currentServer?.id} servers={servers} />
             </Box>
-            {categorizedPages.map(({ category, items }) => (
-                <section className="pb-5" key={`sidebar-category-${category}`}>
-                    <Typography level="h1" textColor="text.tertiary" fontSize="sm">
-                        {categoryNames[category]}
-                    </Typography>
-                    <List variant="plain">
-                        {items.map((item) => (
-                            <LayoutSidebarTab key={item.id} serverId={serverConfig.serverId} item={item} isActive={page === item.id} />
-                        ))}
-                    </List>
-                </section>
-            ))}
+            {categorizedPages.map(({ category, items }) => {
+                const filteredItems = items.filter((item) => highestRoleLevel >= roleTypeLevels[item.requiredRole]);
+
+                return (
+                    filteredItems.length
+                    ? <section className="pb-5" key={`sidebar-category-${category}`}>
+                        <Typography level="h1" textColor="text.tertiary" fontSize="sm">
+                            {categoryNames[category]}
+                        </Typography>
+                        <List variant="plain">
+                            {filteredItems
+                                .map((item) => (
+                                    <LayoutSidebarTab key={item.id} serverId={serverConfig.serverId} item={item} isActive={page === item.id} />
+                                ))}
+                        </List>
+                    </section>
+                    : null
+                );
+            })}
         </Box>
     );
 }

@@ -13,13 +13,14 @@ import { SanitizedAction } from "../../../lib/@types/db";
 import DataTableCard from "../../DataTableCard";
 import { GuildedSanitizedUserDetail } from "../../../lib/@types/guilded";
 
-export function HistoryCaseRow({ item: action, users, columnCount, timezone, isSelected, onSelected }: ItemProps<SanitizedAction>) {
+export function HistoryCaseRow({ item: action, users, columnCount, timezone, disableSelection, isSelected, onSelected }: ItemProps<SanitizedAction>) {
     const { reason } = action;
 
     return (
         <DataTableRow
             id={action.id}
             columnCount={columnCount}
+            disableSelection={disableSelection}
             isSelected={isSelected}
             onSelected={onSelected}
             ExpandedInfoRenderer={() => <CaseExpandedInfo action={action} timezone={timezone} />}
@@ -43,12 +44,13 @@ export function HistoryCaseRow({ item: action, users, columnCount, timezone, isS
     );
 }
 
-export function HistoryCaseCard({ item: action, columnCount, users, timezone, isSelected, onSelected }: ItemProps<SanitizedAction>) {
+export function HistoryCaseCard({ item: action, columnCount, users, timezone, disableSelection, isSelected, onSelected }: ItemProps<SanitizedAction>) {
     const { reason } = action;
 
     return (
         <DataTableCard
             id={action.id}
+            disableSelection={disableSelection}
             isSelected={isSelected}
             onSelected={onSelected}
             TitleRenderer={() => (

@@ -1,4 +1,4 @@
-import { Action, Severity } from "@prisma/client";
+import { Action, RoleType, Severity } from "@prisma/client";
 
 import { clientRest } from "../../../../../guilded";
 import prisma from "../../../../../prisma";
@@ -7,6 +7,8 @@ import { createServerDataRoute } from "../../../../../utils/routes/servers";
 
 const serverCasesRoute = createServerDataRoute<Action, string>({
     type: "string",
+    fetchRoleRequired: RoleType.MINIMOD,
+    operationRoleRequired: RoleType.MINIMOD,
     searchFilter(value, search) {
         return value.reason?.includes(search) || false;
     },

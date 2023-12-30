@@ -8,7 +8,7 @@ import { SanitizedUrlFilter } from "../../../lib/@types/db";
 import { severityOptions } from "../../../utils/actionUtil";
 import LabsForm, { LabsFormFieldValueMap } from "../../form/LabsForm";
 import { LabsFormFieldType, LabsFormSectionOrder } from "../../form/form";
-import { Severity } from "@prisma/client";
+import { RoleType, Severity } from "@prisma/client";
 import { errorifyResponseError, notifyFetchError } from "../../../utils/errorUtil";
 import { UrlCard, UrlRow } from "./UrlItem";
 import { nullUserOptionList, optionifyUserDetails } from "../content";
@@ -76,7 +76,7 @@ export default class UrlsPage extends React.Component<DashboardPageProps> {
     }
 
     render() {
-        const { serverConfig } = this.props;
+        const { serverConfig, highestRoleType } = this.props;
 
         return (
             <>
@@ -87,12 +87,13 @@ export default class UrlsPage extends React.Component<DashboardPageProps> {
                         icon={faBan}
                         activeClassName="from-red-500 to-pink-500"
                         serverConfig={serverConfig}
+                        disabled={highestRoleType !== RoleType.ADMIN}
                         prop="filterEnabled"
                         hideBadges
                         largeHeader
                     />
                 </Box>
-                <Box>
+                {highestRoleType === RoleType.ADMIN && <Box>
                     <Typography level="h4" gutterBottom>
                         URL filter list configuration
                     </Typography>
@@ -147,7 +148,7 @@ export default class UrlsPage extends React.Component<DashboardPageProps> {
                             />
                         </CardContent>
                     </Card>
-                </Box>
+                </Box>}
                 <Stack direction="column" gap={3}>
                     <Typography level="h4">Blacklisted or whitelisted URLs</Typography>
                     <DataTable<SanitizedUrlFilter, number>
@@ -158,6 +159,7 @@ export default class UrlsPage extends React.Component<DashboardPageProps> {
                         deleteItems={this.deleteUrls.bind(this)}
                         ItemRenderer={UrlRow}
                         ItemMobileRenderer={UrlCard}
+                        disableOperations={highestRoleType !== RoleType.ADMIN}
                         getFilterFormFields={(users) => [
                             {
                                 type: LabsFormFieldType.Picker,

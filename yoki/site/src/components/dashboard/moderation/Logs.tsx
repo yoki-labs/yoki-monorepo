@@ -5,7 +5,7 @@ import DashboardLogChannel, { LogItemCreationForm } from "./LogItem";
 import { toLookup } from "@yokilabs/utils";
 import { DashboardPageProps } from "../pages";
 import PagePlaceholder, { PagePlaceholderIcon } from "../../PagePlaceholder";
-import { LogChannelType } from "@prisma/client";
+import { LogChannelType, RoleType } from "@prisma/client";
 import { notifyFetchError } from "../../../utils/errorUtil";
 import { GuildedSanitizedChannel } from "../../../lib/@types/guilded";
 import { LabsFormFieldOption } from "../../form/form";
@@ -73,7 +73,7 @@ export default class LogsPage extends React.Component<DashboardPageProps, State>
     }
 
     render() {
-        const { serverConfig } = this.props;
+        const { serverConfig, highestRoleType } = this.props;
         const { error, isLoaded, logs, serverChannels } = this.state;
         const { channelSelectionOptions } = this;
 
@@ -96,9 +96,9 @@ export default class LogsPage extends React.Component<DashboardPageProps, State>
                 <Typography level="h3" sx={{ mb: 2 }}>
                     Log channels
                 </Typography>
-                <Card sx={{ mb: 2 }}>
+                {highestRoleType === RoleType.ADMIN && <Card sx={{ mb: 2 }}>
                     <LogItemCreationForm onCreate={this.onLogsUpdate.bind(this)} existingTypes={existingTypes} channelOptions={channelSelectionOptions} />
-                </Card>
+                </Card>}
                 <Stack sx={{ mb: 4 }} gap={2} direction="column">
                     {Object.keys(channelLookup).map((channelId) => {
                         const channelTypeInfos = channelLookup[channelId]!;
@@ -111,6 +111,7 @@ export default class LogsPage extends React.Component<DashboardPageProps, State>
                                 channelOptions={channelSelectionOptions}
                                 createdAt={channelTypeInfos[0].createdAt}
                                 types={channelTypeInfos.map((x) => x.type)}
+                                canEdit={highestRoleType === RoleType.ADMIN}
                                 existingTypes={existingTypes}
                                 timezone={serverConfig.timezone}
                                 onUpdate={this.onLogsUpdate.bind(this, channelId)}

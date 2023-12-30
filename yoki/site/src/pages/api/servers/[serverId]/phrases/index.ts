@@ -1,4 +1,4 @@
-import { ContentFilter, Severity } from "@prisma/client";
+import { ContentFilter, RoleType, Severity } from "@prisma/client";
 
 import { clientRest } from "../../../../../guilded";
 import prisma from "../../../../../prisma";
@@ -7,6 +7,8 @@ import { createServerDataRoute } from "../../../../../utils/routes/servers";
 
 const serverPhrasesRoute = createServerDataRoute<ContentFilter, number>({
     type: "number",
+    fetchRoleRequired: RoleType.MOD,
+    operationRoleRequired: RoleType.ADMIN,
     searchFilter(value, search) {
         return value.content.includes(search);
     },

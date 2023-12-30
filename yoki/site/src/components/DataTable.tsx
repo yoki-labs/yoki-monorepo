@@ -48,6 +48,7 @@ export type ItemProps<TItem> = {
     item: TItem;
     columnCount: number;
     timezone: string | null;
+    disableSelection?: boolean;
     isSelected: boolean;
     onSelected: (checked: boolean) => void;
     users?: Record<string, GuildedSanitizedUserDetail>;
@@ -84,6 +85,7 @@ type Props<TItem extends { id: TItemId }, TItemId> = {
     filterFormFields?: LabsFormField[];
     getFilterFormFields?: (users?: Record<string, GuildedSanitizedUserDetail>) => LabsFormField[];
 
+    disableOperations?: boolean;
     getItems: (page: number, search?: string, filter?: LabsFormFieldValueMap) => Promise<FetchedItems<TItem>>;
     deleteItems: (items: TItemId[], page: number, search?: string) => Promise<FetchedItems<TItem>>;
 
@@ -119,7 +121,6 @@ export default class DataTable<TItem extends { id: TItemId }, TItemId> extends R
     }
 
     async fetchItems(page: number, search?: string, filter?: LabsFormFieldValueMap) {
-        console.log("Filter", filter);
         return this.props
             .getItems(page, search, filter)
             .then(({ items, maxPages, users }) => this.setState({ isLoaded: true, items, maxPages, page, search, filter, users }))
@@ -168,7 +169,7 @@ export default class DataTable<TItem extends { id: TItemId }, TItemId> extends R
 
     renderItems() {
         const { items, selectedItems, users } = this.state;
-        const { timezone, columns, ItemRenderer, ItemMobileRenderer } = this.props;
+        const { timezone, columns, disableOperations, ItemRenderer, ItemMobileRenderer } = this.props;
 
         return items.map((item) => [
             <ItemRenderer
@@ -178,6 +179,7 @@ export default class DataTable<TItem extends { id: TItemId }, TItemId> extends R
                 columnCount={columns.length}
                 isSelected={selectedItems.includes(item.id)}
                 onSelected={this.toggleSelection.bind(this, item)}
+                disableSelection={disableOperations}
             />,
             <ItemMobileRenderer
                 item={item}
@@ -186,6 +188,7 @@ export default class DataTable<TItem extends { id: TItemId }, TItemId> extends R
                 columnCount={columns.length}
                 isSelected={selectedItems.includes(item.id)}
                 onSelected={this.toggleSelection.bind(this, item)}
+                disableSelection={disableOperations}
             />,
         ]);
     }
@@ -206,7 +209,7 @@ export default class DataTable<TItem extends { id: TItemId }, TItemId> extends R
             );
 
         const { items, page, search, filter, maxPages } = this.state;
-        const { columns, itemType, filterFormFields, getFilterFormFields } = this.props;
+        const { columns, itemType, disableOperations, filterFormFields, getFilterFormFields } = this.props;
         const renderedItems = this.renderItems();
 
         return (
@@ -239,13 +242,13 @@ export default class DataTable<TItem extends { id: TItemId }, TItemId> extends R
                 {items.length ? (
                     <>
                         <Box className="block md:hidden">
-                            <Stack direction="row" gap={2}>
+                            {!disableOperations && <Stack direction="row" gap={2}>
                                 {this.DataTableToggleCheckbox()}
                                 <Typography className="flex-1" level="title-md">
                                     Select all
                                 </Typography>
                                 {this.DataTableOverflow()}
-                            </Stack>
+                            </Stack>}
                             <Stack sx={{ mt: 3 }} direction="column" gap={2}>
                                 {renderedItems.map(([, item]) => item)}
                             </Stack>
@@ -254,12 +257,12 @@ export default class DataTable<TItem extends { id: TItemId }, TItemId> extends R
                             <thead>
                                 <tr>
                                     {/* Select corner */}
-                                    <th style={{ width: 30 }}>{this.DataTableToggleCheckbox()}</th>
+                                    {!disableOperations && <th style={{ width: 30 }}>{this.DataTableToggleCheckbox()}</th>}
                                     {columns.map((column) => (
                                         <th>{column}</th>
                                     ))}
                                     {/* Expand corner */}
-                                    <th style={{ width: 60 }}>{this.DataTableOverflow()}</th>
+                                    <th style={{ width: 60 }}>{!disableOperations && this.DataTableOverflow()}</th>
                                 </tr>
                             </thead>
                             <tbody>{renderedItems.map(([item]) => item)}</tbody>

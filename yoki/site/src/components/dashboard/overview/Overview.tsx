@@ -5,10 +5,10 @@ import DashboardModule from "../DashboardModule";
 import { Alert, Box, Link, Stack, Typography } from "@mui/joy";
 import { DashboardPageProps } from "../pages";
 import DashboardProfileCard from "./ProfileCard";
-import { PremiumType } from "@prisma/client";
+import { PremiumType, RoleType } from "@prisma/client";
 
 export default function OverviewPage(props: DashboardPageProps) {
-    const { serverConfig } = props;
+    const { serverConfig, highestRoleType } = props;
 
     return (
         <Stack direction="column" gap={4}>
@@ -23,7 +23,7 @@ export default function OverviewPage(props: DashboardPageProps) {
                 </Box>
             </Alert>
             {/* Maybe do vertical icon cards with 4 tiers in premium tab? */}
-            <DashboardProfileCard serverConfig={serverConfig} />
+            <DashboardProfileCard serverConfig={serverConfig} highestRoleType={highestRoleType} />
             <section>
                 <Typography level="h4" gutterBottom>
                     Modules
@@ -35,8 +35,9 @@ export default function OverviewPage(props: DashboardPageProps) {
                         icon={faEnvelope}
                         activeClassName="from-purple-500 to-blue-500"
                         serverConfig={serverConfig}
+                        disabled={highestRoleType !== RoleType.ADMIN}
                         prop="modmailEnabled"
-                    />
+                        />
                     <DashboardModule
                         name="NSFW Image Scan"
                         description="Removes any potentially NSFW images from chat and media."
@@ -45,7 +46,7 @@ export default function OverviewPage(props: DashboardPageProps) {
                         serverConfig={serverConfig}
                         prop="scanNSFW"
                         requiresPremium={PremiumType.Silver}
-                        disabled={!serverConfig.premium}
+                        disabled={!serverConfig.premium || highestRoleType !== RoleType.ADMIN}
                     />
                     <DashboardModule
                         name="Anti-raid"
@@ -53,38 +54,43 @@ export default function OverviewPage(props: DashboardPageProps) {
                         icon={faShieldHalved}
                         activeClassName="from-green-500 to-cyan-500"
                         serverConfig={serverConfig}
+                        disabled={highestRoleType !== RoleType.ADMIN}
                         prop="antiRaidEnabled"
-                    />
+                        />
                     <DashboardModule
                         name="Appeals"
                         description="Allows people to apply for an unban in your server."
                         icon={faPrayingHands}
                         activeClassName="from-violet-500 via-blue-500 to-cyan-500"
                         serverConfig={serverConfig}
+                        disabled={highestRoleType !== RoleType.ADMIN}
                         prop="appealsEnabled"
-                    />
+                        />
                     <DashboardModule
                         name="Filter"
                         description="Filters out spam and blacklisted phrases or links."
                         icon={faBan}
                         activeClassName="from-red-500 to-pink-500"
                         serverConfig={serverConfig}
+                        disabled={highestRoleType !== RoleType.ADMIN}
                         prop="filterEnabled"
-                    />
+                        />
                     <DashboardModule
                         name="Invite Filter"
                         description="Filters out invites to other non-whitelisted servers in chat."
                         icon={faLink}
                         activeClassName="from-red-500 to-orange-500"
                         serverConfig={serverConfig}
+                        disabled={highestRoleType !== RoleType.ADMIN}
                         prop="filterInvites"
-                    />
+                        />
                     <DashboardModule
                         name="Anti-hoist"
                         description="Prevents people from purposefully putting themselves from above everyone."
                         icon={faAnglesDown}
                         activeClassName="from-orange-500 to-yellow-500"
                         serverConfig={serverConfig}
+                        disabled={highestRoleType !== RoleType.ADMIN}
                         prop="antiHoistEnabled"
                     />
                 </Box>

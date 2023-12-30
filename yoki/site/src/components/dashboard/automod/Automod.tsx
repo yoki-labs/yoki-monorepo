@@ -6,7 +6,7 @@ import { DashboardPageProps } from "../pages";
 import AutomodPreset from "./AutomodPreset";
 import { SanitizedPreset } from "../../../lib/@types/db";
 import { notifyFetchError } from "../../../utils/errorUtil";
-import { PremiumType } from "@prisma/client";
+import { PremiumType, RoleType } from "@prisma/client";
 
 type State = {
     isLoaded: boolean;
@@ -49,7 +49,7 @@ export default class AutomodPage extends React.Component<DashboardPageProps, Sta
     }
 
     render() {
-        const { serverConfig } = this.props;
+        const { serverConfig, highestRoleType } = this.props;
         const { isLoaded, presets } = this.state;
 
         return (
@@ -64,9 +64,9 @@ export default class AutomodPage extends React.Component<DashboardPageProps, Sta
                         icon={faImage}
                         activeClassName="from-pink-500 to-purple-500"
                         serverConfig={serverConfig}
+                        disabled={!serverConfig.premium || highestRoleType !== RoleType.ADMIN}
                         prop="scanNSFW"
                         requiresPremium={PremiumType.Silver}
-                        disabled={!serverConfig.premium}
                     />
                     <DashboardModule
                         name="Auto-mod"
@@ -74,6 +74,7 @@ export default class AutomodPage extends React.Component<DashboardPageProps, Sta
                         icon={faBan}
                         activeClassName="from-red-500 to-pink-500"
                         serverConfig={serverConfig}
+                        disabled={highestRoleType !== RoleType.ADMIN}
                         prop="filterEnabled"
                     />
                     <DashboardModule
@@ -82,14 +83,16 @@ export default class AutomodPage extends React.Component<DashboardPageProps, Sta
                         icon={faLink}
                         activeClassName="from-red-500 to-orange-500"
                         serverConfig={serverConfig}
+                        disabled={highestRoleType !== RoleType.ADMIN}
                         prop="filterInvites"
-                    />
+                        />
                     <DashboardModule
                         name="Anti-hoist"
                         description="Prevents people from purposefully putting themselves from above everyone."
                         icon={faAnglesDown}
                         activeClassName="from-orange-500 to-yellow-500"
                         serverConfig={serverConfig}
+                        disabled={highestRoleType !== RoleType.ADMIN}
                         prop="antiHoistEnabled"
                     />
                 </Box>
@@ -106,27 +109,31 @@ export default class AutomodPage extends React.Component<DashboardPageProps, Sta
                                     title="Profanity"
                                     description="Basic swear words such as 'shit' and 'bitch'."
                                     preset={presets.find((x) => x.preset === "profanity")}
-                                />
+                                    disabled={highestRoleType !== RoleType.ADMIN}
+                                    />
                                 <AutomodPreset
                                     serverId={serverConfig.serverId}
                                     presetName="slurs"
                                     title="Slurs"
                                     description="Racial and slurs targetted towards groups of individuals."
                                     preset={presets.find((x) => x.preset === "slurs")}
-                                />
+                                    disabled={highestRoleType !== RoleType.ADMIN}
+                                    />
                                 <AutomodPreset
                                     serverId={serverConfig.serverId}
                                     presetName="sexual"
                                     title="Sexual"
                                     description="Words relating to sexual activity or objects."
                                     preset={presets.find((x) => x.preset === "sexual")}
-                                />
+                                    disabled={highestRoleType !== RoleType.ADMIN}
+                                    />
                                 <AutomodPreset
                                     serverId={serverConfig.serverId}
                                     presetName="sexual-links"
                                     title="Sexual Links"
                                     description="Link of websites relating to sexual activity."
                                     preset={presets.find((x) => x.preset === "sexual-links")}
+                                    disabled={highestRoleType !== RoleType.ADMIN}
                                 />
                             </>
                         ) : (

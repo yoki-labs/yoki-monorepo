@@ -6,6 +6,7 @@ type Props = {
     children?: ReactNode | ReactNode[];
     ExpandedInfoRenderer: () => ReactNode | ReactNode[];
     TitleRenderer: () => JSX.Element;
+    disableSelection?: boolean;
     isSelected: boolean;
     onSelected: (state: boolean) => unknown;
 };
@@ -40,7 +41,7 @@ export default class DataTableCard extends React.Component<Props, State> {
     }
 
     render() {
-        const { id, children, onSelected, isSelected, TitleRenderer } = this.props;
+        const { id, children, onSelected, disableSelection, isSelected, TitleRenderer } = this.props;
         const { isExpanded } = this.state;
 
         return (
@@ -50,7 +51,7 @@ export default class DataTableCard extends React.Component<Props, State> {
                         <Stack sx={{ flex: "1" }} direction="row" gap={2} alignItems="center">
                             <TitleRenderer />
                         </Stack>
-                        <Checkbox checked={isSelected} onChange={({ target }) => onSelected(target.checked)} variant="soft" size="lg" />
+                        {!disableSelection && <Checkbox checked={isSelected} onChange={({ target }) => onSelected(target.checked)} variant="soft" size="lg" />}
                     </Stack>
                     {Boolean(children) && children}
                     <Box mt={2} mb={1}>

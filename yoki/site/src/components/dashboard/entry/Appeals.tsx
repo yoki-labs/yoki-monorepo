@@ -13,6 +13,7 @@ import { GuildedSanitizedChannel } from "../../../lib/@types/guilded";
 import { channelsToSelectionOptions } from "../channels";
 import { appealStatusOptions } from "../../../utils/appealUtil";
 import { nullUserOptionList, optionifyUserDetails } from "../content";
+import { RoleType } from "@prisma/client";
 
 type State = {
     isMounted: boolean;
@@ -94,7 +95,7 @@ export default class AppealsPage extends React.Component<DashboardPageProps, Sta
     }
 
     render() {
-        const { serverConfig } = this.props;
+        const { serverConfig, highestRoleType } = this.props;
         const { serverChannels } = this.state;
 
         return (
@@ -111,7 +112,7 @@ export default class AppealsPage extends React.Component<DashboardPageProps, Sta
                         largeHeader
                     />
                 </Box>
-                <Box>
+                {highestRoleType === RoleType.ADMIN && <Box>
                     <Typography level="h4" gutterBottom>
                         Appeals configuration
                     </Typography>
@@ -137,7 +138,7 @@ export default class AppealsPage extends React.Component<DashboardPageProps, Sta
                             />
                         </CardContent>
                     </Card>
-                </Box>
+                </Box>}
                 <Stack direction="column" gap={3}>
                     <Typography level="h4">Appeals</Typography>
                     <DataTable<SanitizedAppeal, number>

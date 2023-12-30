@@ -1,4 +1,4 @@
-import { Appeal, AppealStatus } from "@prisma/client";
+import { Appeal, AppealStatus, RoleType } from "@prisma/client";
 
 import { clientRest } from "../../../../../guilded";
 import prisma from "../../../../../prisma";
@@ -9,6 +9,8 @@ const availableStatuses = [AppealStatus.ACCEPTED, "AWAITING", AppealStatus.DECLI
 
 const serverAppealsRoute = createServerDataRoute<Appeal, number>({
     type: "number",
+    fetchRoleRequired: RoleType.MOD,
+    operationRoleRequired: RoleType.MOD,
     searchFilter(value, search) {
         return value.content?.includes(search);
     },

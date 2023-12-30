@@ -1,4 +1,4 @@
-import { Severity, UrlFilter } from "@prisma/client";
+import { RoleType, Severity, UrlFilter } from "@prisma/client";
 
 import { clientRest } from "../../../../../guilded";
 import prisma from "../../../../../prisma";
@@ -7,6 +7,8 @@ import { createServerDataRoute } from "../../../../../utils/routes/servers";
 
 const serverUrlsRoute = createServerDataRoute<UrlFilter, number>({
     type: "number",
+    fetchRoleRequired: RoleType.MOD,
+    operationRoleRequired: RoleType.ADMIN,
     searchFilter(value, search) {
         return value.domain.includes(search) || value.route?.includes(search) || value.subdomain?.includes(search) || false;
     },

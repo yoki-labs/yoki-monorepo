@@ -11,11 +11,12 @@ import DataTableRow from "../../DataTableRow";
 import DataTableCard from "../../DataTableCard";
 import CodeWrapper from "../../CodeWrapper";
 
-export function UrlRow({ item: link, users, columnCount, timezone, isSelected, onSelected }: ItemProps<SanitizedUrlFilter>) {
+export function UrlRow({ item: link, users, columnCount, timezone, disableSelection, isSelected, onSelected }: ItemProps<SanitizedUrlFilter>) {
     return (
         <DataTableRow
             id={`url-row-${link.id}`}
             columnCount={columnCount}
+            disableSelection={disableSelection}
             isSelected={isSelected}
             onSelected={onSelected}
             ExpandedInfoRenderer={() => (
@@ -44,10 +45,11 @@ export function UrlRow({ item: link, users, columnCount, timezone, isSelected, o
     );
 }
 
-export function UrlCard({ item: link, users, timezone, isSelected, onSelected }: ItemProps<SanitizedUrlFilter>) {
+export function UrlCard({ item: link, users, timezone, disableSelection, isSelected, onSelected }: ItemProps<SanitizedUrlFilter>) {
     return (
         <DataTableCard
             id={`url-card-${link.id}`}
+            disableSelection={disableSelection}
             isSelected={isSelected}
             onSelected={onSelected}
             TitleRenderer={() => (

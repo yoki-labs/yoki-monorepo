@@ -8,13 +8,14 @@ import DataTableCard from "../../DataTableCard";
 import AppealExpandedInfo from "../../common/AppealExpandedInfo";
 import AppealStatusBadge from "../../common/AppealStatusBadge";
 
-export function AppealRow({ item: appeal, users, columnCount, timezone, isSelected, onSelected }: ItemProps<SanitizedAppeal>) {
+export function AppealRow({ item: appeal, users, columnCount, timezone, disableSelection, isSelected, onSelected }: ItemProps<SanitizedAppeal>) {
     const { content } = appeal;
 
     return (
         <DataTableRow
             id={`appeal-row-${appeal.id}`}
             columnCount={columnCount}
+            disableSelection={disableSelection}
             isSelected={isSelected}
             onSelected={onSelected}
             ExpandedInfoRenderer={() => <AppealExpandedInfo appeal={appeal} timezone={timezone} />}
@@ -35,12 +36,13 @@ export function AppealRow({ item: appeal, users, columnCount, timezone, isSelect
     );
 }
 
-export function AppealCard({ item: appeal, users, timezone, isSelected, onSelected }: ItemProps<SanitizedAppeal>) {
+export function AppealCard({ item: appeal, users, timezone, disableSelection, isSelected, onSelected }: ItemProps<SanitizedAppeal>) {
     const { content } = appeal;
 
     return (
         <DataTableCard
             id={`appeal-card-${appeal.id}`}
+            disableSelection={disableSelection}
             isSelected={isSelected}
             onSelected={onSelected}
             TitleRenderer={() => (

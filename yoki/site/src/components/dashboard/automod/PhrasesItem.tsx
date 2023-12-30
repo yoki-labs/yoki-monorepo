@@ -11,11 +11,12 @@ import { formatDate } from "@yokilabs/utils";
 import { FilterMatching } from "@prisma/client";
 import DataTableCard from "../../DataTableCard";
 
-export function PhraseRow({ item: phrase, users, columnCount, timezone, isSelected, onSelected }: ItemProps<SanitizedContentFilter>) {
+export function PhraseRow({ item: phrase, users, columnCount, timezone, disableSelection, isSelected, onSelected }: ItemProps<SanitizedContentFilter>) {
     return (
         <DataTableRow
             id={`phrase-row-${phrase.id}`}
             columnCount={columnCount}
+            disableSelection={disableSelection}
             isSelected={isSelected}
             onSelected={onSelected}
             ExpandedInfoRenderer={() => (
@@ -44,7 +45,7 @@ export function PhraseRow({ item: phrase, users, columnCount, timezone, isSelect
     );
 }
 
-export function PhraseCard({ item: phrase, users, timezone, isSelected, onSelected }: ItemProps<SanitizedContentFilter>) {
+export function PhraseCard({ item: phrase, users, timezone, disableSelection, isSelected, onSelected }: ItemProps<SanitizedContentFilter>) {
     return (
         <DataTableCard
             id={`phrase-card-${phrase.id}`}
@@ -59,6 +60,7 @@ export function PhraseCard({ item: phrase, users, timezone, isSelected, onSelect
                     </Typography>
                 </>
             )}
+            disableSelection={disableSelection}
             isSelected={isSelected}
             onSelected={onSelected}
             ExpandedInfoRenderer={() => (

@@ -1,6 +1,6 @@
 import { faChevronDown, faChevronRight } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Checkbox, IconButton, Sheet, styled } from "@mui/joy";
+import { Checkbox, IconButton, Sheet } from "@mui/joy";
 import React, { ReactNode } from "react";
 import { CSSProperties } from "styled-components";
 
@@ -9,6 +9,7 @@ type Props = {
     children?: ReactNode | ReactNode[];
     columnCount: number;
     ExpandedInfoRenderer?: () => ReactNode | ReactNode[];
+    disableSelection?: boolean;
     isSelected: boolean;
     onSelected: (state: boolean) => unknown;
 };
@@ -31,13 +32,13 @@ export default class DataTableRow extends React.Component<Props, State> {
     }
 
     renderInfoRow() {
-        const { id, ExpandedInfoRenderer: expandedInfo, isSelected, columnCount } = this.props;
+        const { id, ExpandedInfoRenderer: expandedInfo, disableSelection, isSelected, columnCount } = this.props;
 
         if (!expandedInfo) return <></>;
 
         return (
             <tr style={{ "--TableCell-dataBackground": isSelected ? "var(--labs-palette-primary-950)" : "transparent" } as unknown as CSSProperties} data-id={`${id}:expansion`}>
-                <td style={{ height: 0, padding: 0 }} colSpan={columnCount + 2}>
+                <td style={{ height: 0, padding: 0 }} colSpan={columnCount - Number(disableSelection) + 2}>
                     <Sheet color="neutral" sx={{ m: 1, borderRadius: 8, p: 2, pl: 4, pr: 4 }}>
                         {expandedInfo()}
                     </Sheet>
@@ -47,7 +48,7 @@ export default class DataTableRow extends React.Component<Props, State> {
     }
 
     render() {
-        const { id, children, onSelected, isSelected, ExpandedInfoRenderer: expandedInfo } = this.props;
+        const { id, children, disableSelection, onSelected, isSelected, ExpandedInfoRenderer: expandedInfo } = this.props;
         const { isExpanded } = this.state;
 
         return (
@@ -61,9 +62,9 @@ export default class DataTableRow extends React.Component<Props, State> {
                         } as unknown as CSSProperties
                     }
                 >
-                    <td>
+                    {!disableSelection && <td>
                         <Checkbox checked={isSelected} onChange={({ target }) => onSelected(target.checked)} variant="soft" size="lg" />
-                    </td>
+                    </td>}
                     {Boolean(children) && children}
                     <td>
                         {expandedInfo && (

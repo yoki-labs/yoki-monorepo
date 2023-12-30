@@ -9,7 +9,7 @@ import { SanitizedModmailThread } from "../../../lib/@types/db";
 import { ModmailTicketCard, ModmailTicketRow } from "./ModmailItem";
 import LabsForm, { LabsFormFieldValueMap } from "../../form/LabsForm";
 import { LabsFormFieldType, LabsFormSectionOrder } from "../../form/form";
-import { ReactionAction } from "@prisma/client";
+import { ReactionAction, RoleType } from "@prisma/client";
 import { GuildedSanitizedChannel } from "../../../lib/@types/guilded";
 import { channelsToSelectionOptions } from "../channels";
 import { nullUserOptionList, optionifyUserDetails } from "../content";
@@ -33,7 +33,8 @@ export default class ModmailPage extends React.Component<DashboardPageProps, Sta
 
         this.setState({ isMounted: true });
 
-        return this.fetchModmailInfo();
+        if (this.props.highestRoleType === RoleType.ADMIN)
+            return this.fetchModmailInfo();
     }
 
     getTicketsRoute(page: number, search?: string, filter?: LabsFormFieldValueMap) {
@@ -95,7 +96,7 @@ export default class ModmailPage extends React.Component<DashboardPageProps, Sta
     }
 
     render() {
-        const { serverConfig } = this.props;
+        const { serverConfig, highestRoleType } = this.props;
         const { reactionAction, serverChannels } = this.state;
 
         return (
@@ -107,12 +108,13 @@ export default class ModmailPage extends React.Component<DashboardPageProps, Sta
                         icon={faEnvelope}
                         activeClassName="from-purple-500 to-blue-500"
                         serverConfig={serverConfig}
+                        disabled={highestRoleType !== RoleType.ADMIN}
                         prop="modmailEnabled"
                         hideBadges
                         largeHeader
                     />
                 </Box>
-                <Box>
+                {highestRoleType === RoleType.ADMIN && <Box>
                     <Typography level="h4" gutterBottom>
                         Modmail configuration
                     </Typography>
@@ -158,13 +160,14 @@ export default class ModmailPage extends React.Component<DashboardPageProps, Sta
                             />
                         </CardContent>
                     </Card>
-                </Box>
+                </Box>}
                 <Stack direction="column" gap={3}>
                     <Typography level="h4">Modmail tickets</Typography>
                     <DataTable<SanitizedModmailThread, string>
                         itemType="tickets"
                         timezone={serverConfig.timezone}
                         columns={["User", "Status", "When"]}
+                        disableOperations={highestRoleType === RoleType.MINIMOD}
                         getItems={this.fetchTickets.bind(this)}
                         deleteItems={this.deleteTickets.bind(this)}
                         ItemRenderer={ModmailTicketRow}

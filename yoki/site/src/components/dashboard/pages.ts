@@ -33,6 +33,7 @@ import OverviewPage from "./overview/Overview";
 import ConfigPage from "./overview/Premium";
 import RolesPage from "./overview/Roles";
 import { SanitizedServer } from "../../lib/@types/db";
+import { RoleType } from "@prisma/client";
 
 export interface DashboardPageItem {
     id: string;
@@ -41,6 +42,7 @@ export interface DashboardPageItem {
     component: typeof React.Component | ((props: DashboardPageProps) => React.ReactElement);
     category: DashboardPageCategory;
     color?: ColorPaletteProp;
+    requiredRole: RoleType;
 }
 
 export enum DashboardPageCategory {
@@ -51,22 +53,23 @@ export enum DashboardPageCategory {
 }
 
 export const dashboardPageList: DashboardPageItem[] = [
-    { id: "overview", name: "Overview", icon: faLayerGroup, component: OverviewPage, category: DashboardPageCategory.Bot },
-    { id: "roles", name: "Roles", icon: faCrown, component: RolesPage, category: DashboardPageCategory.Bot },
-    { id: "premium", name: "Premium", icon: faHeart, color: "warning", component: ConfigPage, category: DashboardPageCategory.Bot },
-    { id: "logs", name: "Logging", icon: faHashtag, component: LogsPage, category: DashboardPageCategory.Moderation },
-    { id: "cases", name: "Cases", icon: faClipboardUser, component: HistoryPage, category: DashboardPageCategory.Moderation },
-    { id: "automod", name: "Automod", icon: faBan, component: AutomodPage, category: DashboardPageCategory.Automod },
-    { id: "phrases", name: "Phrase Filter", icon: faCommentDots, component: PhrasesPage, category: DashboardPageCategory.Automod },
-    { id: "urls", name: "URL Filter", icon: faLink, component: LinksPage, category: DashboardPageCategory.Automod },
-    { id: "invites", name: "Invite Filter", icon: faTicket, component: InvitesPage, category: DashboardPageCategory.Automod },
-    { id: "images", name: "Image Filter", icon: faImage, component: ImagesPage, category: DashboardPageCategory.Automod },
-    { id: "spam", name: "Anti-spam", icon: faPoo, component: SpamPage, category: DashboardPageCategory.Automod },
-    { id: "modmail", name: "Modmail", icon: faEnvelope, component: ModmailPage, category: DashboardPageCategory.Entry },
-    { id: "antiraid", name: "Antiraid", icon: faShieldHalved, component: AntiraidPage, category: DashboardPageCategory.Entry },
-    { id: "appeals", name: "Appeals", icon: faPrayingHands, component: AppealsPage, category: DashboardPageCategory.Entry },
+    { id: "overview", name: "Overview", icon: faLayerGroup, component: OverviewPage, category: DashboardPageCategory.Bot, requiredRole: RoleType.MINIMOD },
+    { id: "roles", name: "Roles", icon: faCrown, component: RolesPage, category: DashboardPageCategory.Bot, requiredRole: RoleType.ADMIN },
+    { id: "premium", name: "Premium", icon: faHeart, color: "warning", component: ConfigPage, category: DashboardPageCategory.Bot, requiredRole: RoleType.MINIMOD },
+    { id: "logs", name: "Logging", icon: faHashtag, component: LogsPage, category: DashboardPageCategory.Moderation, requiredRole: RoleType.MOD },
+    { id: "cases", name: "Cases", icon: faClipboardUser, component: HistoryPage, category: DashboardPageCategory.Moderation, requiredRole: RoleType.MINIMOD },
+    { id: "automod", name: "Automod", icon: faBan, component: AutomodPage, category: DashboardPageCategory.Automod, requiredRole: RoleType.MOD },
+    { id: "phrases", name: "Phrase Filter", icon: faCommentDots, component: PhrasesPage, category: DashboardPageCategory.Automod, requiredRole: RoleType.MOD },
+    { id: "urls", name: "URL Filter", icon: faLink, component: LinksPage, category: DashboardPageCategory.Automod, requiredRole: RoleType.MOD },
+    { id: "invites", name: "Invite Filter", icon: faTicket, component: InvitesPage, category: DashboardPageCategory.Automod, requiredRole: RoleType.MOD },
+    { id: "images", name: "Image Filter", icon: faImage, component: ImagesPage, category: DashboardPageCategory.Automod, requiredRole: RoleType.ADMIN },
+    { id: "spam", name: "Anti-spam", icon: faPoo, component: SpamPage, category: DashboardPageCategory.Automod, requiredRole: RoleType.ADMIN },
+    { id: "modmail", name: "Modmail", icon: faEnvelope, component: ModmailPage, category: DashboardPageCategory.Entry, requiredRole: RoleType.MINIMOD },
+    { id: "antiraid", name: "Antiraid", icon: faShieldHalved, component: AntiraidPage, category: DashboardPageCategory.Entry, requiredRole: RoleType.ADMIN },
+    { id: "appeals", name: "Appeals", icon: faPrayingHands, component: AppealsPage, category: DashboardPageCategory.Entry, requiredRole: RoleType.MOD },
 ];
 
 export interface DashboardPageProps {
     serverConfig: SanitizedServer;
+    highestRoleType: RoleType;
 }

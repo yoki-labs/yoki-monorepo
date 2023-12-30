@@ -17,6 +17,7 @@ type Props = {
     serverChannels: GuildedSanitizedChannel[];
     channelOptions: LabsFormFieldOption<string>[];
     createdAt: string;
+    canEdit: boolean;
     types: LogChannelType[];
     existingTypes: LogChannelType[];
     timezone: string | null;
@@ -71,7 +72,7 @@ export default class DashboardLogChannel extends React.Component<Props, State> {
     }
 
     LogChannelStaticMode() {
-        const { serverId, channelId, types, createdAt, timezone } = this.props;
+        const { serverId, channelId, canEdit, types, createdAt, timezone } = this.props;
 
         return (
             <>
@@ -91,7 +92,7 @@ export default class DashboardLogChannel extends React.Component<Props, State> {
                             </Chip>
                         ))}
                     </Stack>
-                    <LabsOverflowButton variant="outlined" id={`logs-${serverId}-${channelId}`}>
+                    {canEdit && <LabsOverflowButton variant="outlined" id={`logs-${serverId}-${channelId}`}>
                         <MenuItem onClick={() => this.toggleEditMode(true)}>
                             <ListItemDecorator>
                                 <FontAwesomeIcon icon={faPen} />
@@ -104,7 +105,7 @@ export default class DashboardLogChannel extends React.Component<Props, State> {
                             </ListItemDecorator>
                             Delete log channel
                         </MenuItem>
-                    </LabsOverflowButton>
+                    </LabsOverflowButton>}
                 </Stack>
                 <CardContent>
                     <Box sx={{ flex: "1", my: 1 }} className="block md:hidden">

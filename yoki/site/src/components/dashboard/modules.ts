@@ -1,18 +1,11 @@
-import { toast } from "react-hot-toast";
-
 import { SanitizedServer } from "../../lib/@types/db";
+import { errorifyResponseError, notifyFetchError } from "../../utils/errorUtil";
 
 export const toggleModule = (serverId: string, propType: keyof SanitizedServer, value: boolean) =>
     fetch(`/api/servers/${serverId}`, {
         method: "PATCH",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ [propType]: value }),
-    }).catch(async (errorResponse) => onError(errorResponse));
-
-async function onError(errorResponse: Response) {
-    const error = await errorResponse.json();
-
-    console.log("Error while toggling module:", error);
-
-    toast.error(error.message);
-}
+    })
+        .then(errorifyResponseError)
+        .catch(notifyFetchError.bind(null, "Error while toggling module"));

@@ -10,6 +10,7 @@ import { LabsFormFieldType } from "../../form/form";
 import { nullUserOptionList, optionifyUserDetails } from "../content";
 import { severityOptions } from "../../../utils/actionUtil";
 import { LabsFormFieldValueMap } from "../../form/LabsForm";
+import { RoleType } from "@prisma/client";
 
 export default class PhrasesPage extends React.Component<DashboardPageProps> {
     constructor(props: DashboardPageProps) {
@@ -50,7 +51,7 @@ export default class PhrasesPage extends React.Component<DashboardPageProps> {
     }
 
     render() {
-        const { serverConfig } = this.props;
+        const { serverConfig, highestRoleType } = this.props;
 
         return (
             <>
@@ -61,6 +62,7 @@ export default class PhrasesPage extends React.Component<DashboardPageProps> {
                         icon={faBan}
                         activeClassName="from-red-500 to-pink-500"
                         serverConfig={serverConfig}
+                        disabled={highestRoleType !== RoleType.ADMIN}
                         prop="filterEnabled"
                         hideBadges
                         largeHeader
@@ -72,6 +74,7 @@ export default class PhrasesPage extends React.Component<DashboardPageProps> {
                         itemType="banned phrases"
                         timezone={serverConfig.timezone}
                         columns={["Content", "Severity", "By", "When"]}
+                        disableOperations={highestRoleType !== RoleType.ADMIN}
                         getItems={this.fetchPhrases.bind(this)}
                         deleteItems={this.deletePhrases.bind(this)}
                         ItemRenderer={PhraseRow}

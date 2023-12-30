@@ -7,11 +7,13 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars } from "@fortawesome/free-solid-svg-icons";
 import { SanitizedServer } from "../../../lib/@types/db";
 import { LabsSessionUser } from "../../../utils/routes/pages";
+import { RoleType } from "@prisma/client";
 
 type LayoutProps = {
     servers: GuildedClientServer[];
     currentServer?: GuildedServer;
     serverConfig: SanitizedServer;
+    highestRoleType: RoleType;
     user: LabsSessionUser;
     page: string;
     children: React.ReactNode;
@@ -34,7 +36,7 @@ export default class Layout extends React.Component<LayoutProps, LayoutState> {
     }
 
     render() {
-        const { page, children, currentServer, serverConfig, servers, user, onServerChange } = this.props;
+        const { page, children, currentServer, serverConfig, servers, user,  highestRoleType, onServerChange } = this.props;
 
         return (
             <LayoutWrapper
@@ -53,6 +55,7 @@ export default class Layout extends React.Component<LayoutProps, LayoutState> {
                 <LayoutSidebar
                     menuToggled={this.state.menuEnabled}
                     serverConfig={serverConfig}
+                    highestRoleType={highestRoleType}
                     servers={servers}
                     currentServer={currentServer}
                     onServerChange={onServerChange}
