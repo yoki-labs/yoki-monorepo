@@ -8,7 +8,7 @@ import DataTableCard from "../../DataTableCard";
 import { LabsCopyInput } from "../../LabsCopyInput";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLock, faLockOpen } from "@fortawesome/free-solid-svg-icons";
-import { GuildedUserDetail } from "../../../lib/@types/guilded";
+import { GuildedSanitizedUserDetail } from "../../../lib/@types/guilded";
 
 export function ModmailTicketRow({ item: ticket, users, columnCount, timezone, disableSelection, isSelected, onSelected }: ItemProps<SanitizedModmailThread>) {
     return (
@@ -18,7 +18,7 @@ export function ModmailTicketRow({ item: ticket, users, columnCount, timezone, d
             disableSelection={disableSelection}
             isSelected={isSelected}
             onSelected={onSelected}
-            ExpandedInfoRenderer={() => <TicketExpandedInfo ticket={ticket} timezone={timezone} />}
+            ExpandedInfoRenderer={() => <TicketExpandedInfo ticket={ticket} timezone={timezone} users={users} />}
         >
             <td>
                 <LabsUserCard userId={ticket.openerId} user={users?.[ticket.openerId]} />
@@ -49,7 +49,7 @@ export function ModmailTicketCard({ item: ticket, users, timezone, disableSelect
                     <TicketStatusBadge closed={ticket.closed} />
                 </>
             )}
-            ExpandedInfoRenderer={() => <TicketExpandedInfo ticket={ticket} timezone={timezone} />}
+            ExpandedInfoRenderer={() => <TicketExpandedInfo ticket={ticket} timezone={timezone} users={users} />}
         ></DataTableCard>
     );
 }
@@ -62,7 +62,7 @@ function TicketStatusBadge({ closed }: { closed: boolean }) {
     );
 }
 
-function TicketExpandedInfo({ ticket, users }: { ticket: SanitizedModmailThread; timezone: string | null; users?: Record<string, GuildedUserDetail> }) {
+function TicketExpandedInfo({ ticket, users }: { ticket: SanitizedModmailThread; timezone: string | null; users?: Record<string, GuildedSanitizedUserDetail> }) {
     return (
         <Stack gap={3}>
             {ticket.handlingModerators.length ? (
