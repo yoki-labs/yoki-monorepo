@@ -153,7 +153,7 @@ const sectionOrderCss: Record<LabsFormSectionOrder, string> = {
     [LabsFormSectionOrder.Column]: `flex flex-col`,
     [LabsFormSectionOrder.Row]: `flex flex-col md:flex-row`,
     [LabsFormSectionOrder.Grid]: `grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xlg:grid-cols-4`,
-    [LabsFormSectionOrder.GridSm]: `grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xlg:grid-cols-3`,
+    [LabsFormSectionOrder.GridSm]: `grid grid-cols-1 lg:grid-cols-2 xlg:grid-cols-3`,
 };
 
 type FieldRendererRecord = {

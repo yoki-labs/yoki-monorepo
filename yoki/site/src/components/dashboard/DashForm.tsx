@@ -20,7 +20,7 @@ export default function DashForm({ serverConfig, page, highestRoleType }: Props)
     const pageRoleLevel = pageInfo ? roleTypeLevels[pageInfo.requiredRole] : null;
 
     return (
-        <Box sx={{ width: "100%", pt: 1, pb: 6, px: 5.6 }} className="px-4 md:px-12 w-full overflow-y-auto flex flex-col space-y-8 scrollbar">
+        <Box sx={{ width: "100%", pt: 1, pb: 6, px: 5.6 }} className="px-4 md:px-8 lg:px-12 w-full overflow-y-auto flex flex-col space-y-8 scrollbar">
             {PageComponent ? (
                 highestRoleLevel < pageRoleLevel! ? (
                     <Box sx={{ pt: 8 }}>

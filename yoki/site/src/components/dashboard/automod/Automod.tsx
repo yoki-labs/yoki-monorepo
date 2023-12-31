@@ -57,7 +57,7 @@ export default class AutomodPage extends React.Component<DashboardPageProps, Sta
                 <Typography level="h4" gutterBottom>
                     Auto-moderation
                 </Typography>
-                <Box className="grid sm:grid-cols-1 md:grid-cols-2 xlg:grid-cols-3 gap-4">
+                <Box className="grid grid-cols-1 lg:grid-cols-2 xlg:grid-cols-3 gap-4">
                     <DashboardModule
                         name="NSFW Image Scan"
                         description="Removes any potentially NSFW images from chat and media."

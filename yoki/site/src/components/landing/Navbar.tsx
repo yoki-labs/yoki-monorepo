@@ -51,7 +51,7 @@ export default function Navbar({ user, menuToggled, onMenuToggle }: Props) {
     // const isNavbarDetached = scrollY > 80;
 
     return (
-        <NavbarWrapper direction="row" className="py-4 px-8 md:py-6 md:px-40">
+        <NavbarWrapper direction="row" className="py-4 px-8 md:py-6 md:px-24 lg:px-40">
             {/* Branding */}
             <Stack sx={{ flex: "1" }} alignItems="center" direction="row">
                 <Branding />

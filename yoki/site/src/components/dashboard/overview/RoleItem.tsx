@@ -52,36 +52,36 @@ export default class DashboardRole extends React.Component<Props, State> {
 
         return (
             <>
-                {/* The hashtag icon (kind of useless, but there should be indication that it is a channel), channel ID */}
-                <Stack component="header" gap={2} direction="row" alignItems="center">
-                    <LabsIconWrapper className="hidden md:block">
-                        <FontAwesomeIcon style={{ width: "100%", height: "100%" }} icon={faShieldHalved} />
-                    </LabsIconWrapper>
-                    {/* TODO: Replace it with proper channel name */}
-                    <Typography level="h1" fontSize="md" fontWeight="bolder" className="grow md:grow-0">
-                        {serverRole?.name ?? role.roleId}
-                    </Typography>
-                    <Stack sx={{ flex: "1" }} direction="row" gap={1} alignItems="center" className="hidden md:flex">
-                        <Chip color="primary" variant="outlined" sx={{ flex: "1" }}>
-                            {role.type}
-                        </Chip>
-                    </Stack>
-                    <LabsOverflowButton variant="outlined" id={`logs-${serverId}-${role.roleId}`}>
-                        <MenuItem onClick={() => this.toggleEditMode(true)}>
-                            <ListItemDecorator>
-                                <FontAwesomeIcon icon={faPen} />
-                            </ListItemDecorator>
-                            Edit role
-                        </MenuItem>
-                        <MenuItem onClick={onDelete} color="danger">
-                            <ListItemDecorator>
-                                <FontAwesomeIcon icon={faTrash} />
-                            </ListItemDecorator>
-                            Delete role
-                        </MenuItem>
-                    </LabsOverflowButton>
-                </Stack>
                 <CardContent>
+                    {/* The hashtag icon (kind of useless, but there should be indication that it is a channel), channel ID */}
+                    <Stack component="header" gap={2} direction="row" alignItems="center">
+                        <LabsIconWrapper className="hidden md:block">
+                            <FontAwesomeIcon style={{ width: "100%", height: "100%" }} icon={faShieldHalved} />
+                        </LabsIconWrapper>
+                        {/* TODO: Replace it with proper channel name */}
+                        <Typography level="h1" fontSize="md" fontWeight="bolder" className="grow md:grow-0">
+                            {serverRole?.name ?? role.roleId}
+                        </Typography>
+                        <Stack sx={{ flex: "1" }} direction="row" gap={1} alignItems="center" className="hidden md:flex">
+                            <Chip color="primary" variant="outlined" sx={{ flex: "1" }}>
+                                {role.type}
+                            </Chip>
+                        </Stack>
+                        <LabsOverflowButton variant="outlined" id={`logs-${serverId}-${role.roleId}`}>
+                            <MenuItem onClick={() => this.toggleEditMode(true)}>
+                                <ListItemDecorator>
+                                    <FontAwesomeIcon icon={faPen} />
+                                </ListItemDecorator>
+                                Edit role
+                            </MenuItem>
+                            <MenuItem onClick={onDelete} color="danger">
+                                <ListItemDecorator>
+                                    <FontAwesomeIcon icon={faTrash} />
+                                </ListItemDecorator>
+                                Delete role
+                            </MenuItem>
+                        </LabsOverflowButton>
+                    </Stack>
                     <Box sx={{ flex: "1", my: 1 }} className="block md:hidden">
                         <Chip color="primary" variant="outlined" sx={{ flex: "1" }}>
                             {role.type}

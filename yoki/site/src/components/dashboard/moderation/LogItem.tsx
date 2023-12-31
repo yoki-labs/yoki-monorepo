@@ -76,24 +76,24 @@ export default class DashboardLogChannel extends React.Component<Props, State> {
 
         return (
             <>
-                {/* The hashtag icon (kind of useless, but there should be indication that it is a channel), channel ID */}
-                <Stack component="header" gap={2} direction="row" alignItems="center">
-                    <LabsIconWrapper className="hidden md:block">
-                        <FontAwesomeIcon style={{ width: "100%", height: "100%" }} icon={this._icon} />
-                    </LabsIconWrapper>
-                    {/* TODO: Replace it with proper channel name */}
-                    <Typography level="h1" fontSize="md" fontWeight="bolder">
-                        {this._serverChannel?.name ?? channelId}
-                    </Typography>
-                    <Stack sx={{ flex: "1" }} direction="row" gap={1} alignItems="center" className="hidden md:flex">
-                        {types.map((type) => (
-                            <Chip variant="outlined" sx={{ fontWeight: "bolder" }}>
-                                {typeDisplayNames[type]}
-                            </Chip>
-                        ))}
-                    </Stack>
-                    {canEdit && (
-                        <LabsOverflowButton variant="outlined" id={`logs-${serverId}-${channelId}`}>
+                <CardContent>
+                    {/* The hashtag icon (kind of useless, but there should be indication that it is a channel), channel ID */}
+                    <Stack component="header" gap={2} direction="row" alignItems="center">
+                        <LabsIconWrapper className="hidden md:block">
+                            <FontAwesomeIcon style={{ width: "100%", height: "100%" }} icon={this._icon} />
+                        </LabsIconWrapper>
+                        {/* TODO: Replace it with proper channel name */}
+                        <Typography level="h1" fontSize="md" fontWeight="bolder" className="sm:flex-1">
+                            {this._serverChannel?.name ?? channelId}
+                        </Typography>
+                        <Stack sx={{ flex: "1" }} direction="row" gap={1} alignItems="center" className="hidden md:flex">
+                            {types.map((type) => (
+                                <Chip variant="outlined" sx={{ fontWeight: "bolder" }}>
+                                    {typeDisplayNames[type]}
+                                </Chip>
+                            ))}
+                        </Stack>
+                        {canEdit && <LabsOverflowButton variant="outlined" id={`logs-${serverId}-${channelId}`}>
                             <MenuItem onClick={() => this.toggleEditMode(true)}>
                                 <ListItemDecorator>
                                     <FontAwesomeIcon icon={faPen} />
@@ -106,10 +106,8 @@ export default class DashboardLogChannel extends React.Component<Props, State> {
                                 </ListItemDecorator>
                                 Delete log channel
                             </MenuItem>
-                        </LabsOverflowButton>
-                    )}
-                </Stack>
-                <CardContent>
+                        </LabsOverflowButton>}
+                    </Stack>
                     <Box sx={{ flex: "1", my: 1 }} className="block md:hidden">
                         {types.map((type) => (
                             <Chip variant="outlined" sx={{ mr: 1 }}>

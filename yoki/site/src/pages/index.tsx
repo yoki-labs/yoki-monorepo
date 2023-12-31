@@ -25,8 +25,8 @@ const Home: NextPage<LandingPageSessionProps> = ({ user }) => {
     return (
         <LandingPage user={user}>
             <Stack direction="column" alignItems="stretch" sx={{ width: "100%" }}>
-                <div className="py-20 px-5 md:py-32 md:px-40">
-                    <Stack direction="row">
+                <div className="py-20 px-5 md:py-32 md:px-24 lg:px-40">
+                    <Stack direction="row" gap={8}>
                         <Box sx={{ flex: "1" }}>
                             <Typography level="h1" fontSize="xlg" className="text-5xl pb-4 md:text-7xl">
                                 Meet <Typography textColor="primary.500">Yoki</Typography>
@@ -41,7 +41,7 @@ const Home: NextPage<LandingPageSessionProps> = ({ user }) => {
                                 <LandingFeature opacity={0.2}>Ban appeals</LandingFeature>
                             </List>
                             <Typography textColor="text.primary">... and much more!</Typography>
-                            <Stack sx={{ my: 2 }} gap={2} className="flex-col md:flex-row">
+                            <Stack sx={{ my: 2 }} gap={2} className="flex-col lg:flex-row">
                                 <LabsButton onClick={() => window.open("/invite", "_blank")} size="lg" startDecorator={<FontAwesomeIcon icon={faGuilded} className="h-5" />}>
                                     Add to Guilded
                                 </LabsButton>
@@ -56,7 +56,7 @@ const Home: NextPage<LandingPageSessionProps> = ({ user }) => {
                 </div>
                 {/* TODO: Server carousel */}
                 {/* Statistics */}
-                <div className="pt-28 pb-40 px-5 md:px-40 grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-8">
+                <div className="pt-28 pb-40 px-5 md:px-24 lg:px-40 grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-8">
                     <LandingStat amount="20,000,000+" subtitle="Scanned" what="messages" />
                     <LandingStat amount="16,000+" subtitle="Actioned" what="cases" />
                     <LandingStat amount="3,000+" subtitle="Serving" what="servers" />
@@ -65,7 +65,7 @@ const Home: NextPage<LandingPageSessionProps> = ({ user }) => {
                     <LandingStat amount="7,000+" subtitle="Served" what="captchas" />
                 </div>
                 {/* Yoki's features */}
-                <div className="py-8 px-5 md:px-40">
+                <div className="py-8 px-5 md:px-24 lg:px-40">
                     <Box sx={{ textAlign: "center", mb: 24 }}>
                         <Typography level="h1">All the tools you need</Typography>
                         <Typography level="h4" textColor="text.secondary">

@@ -13,7 +13,7 @@ const FooterWrapper = styled(Box, {
 
 export default function Footer() {
     return (
-        <FooterWrapper component="footer" className="py-12 px-10 md:px-40">
+        <FooterWrapper component="footer" className="py-12 px-10 md:px-24 lg:px-40">
             <Stack className="direction-column gap-10 md:direction-row md:gap-0">
                 <Box sx={{ flex: "1" }}>
                     <Typography level="h1">
@@ -23,7 +23,7 @@ export default function Footer() {
                         Labs
                     </Typography>
                 </Box>
-                <Stack sx={{ mt: 4 }} direction="row" gap={12} className="grid grid-cols-2 md:grid-cols-4">
+                <Stack sx={{ mt: 4 }} direction="row" className="grid grid-cols-2 gap-8 lg:gap-10 md:grid-cols-3 lg:grid-cols-4">
                     <Box>
                         <Typography level="title-md" textColor="text.tertiary">
                             Legal

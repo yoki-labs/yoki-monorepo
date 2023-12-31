@@ -34,11 +34,15 @@ export default class ServerSelectionPage extends React.Component<Props, State> {
         return (
             <>
                 <Alert variant="soft" color="danger" startDecorator={<FontAwesomeIcon icon={faExclamationCircle} />}>
-                    Authlink can no longer fetch servers that user is in. As such, it's recommended to use
-                    <Typography component="span" level="code">
-                        ?dashboard
-                    </Typography>
-                    command in the server that you want to use dashboard of.
+                    <Box sx={{ alignItems: "baseline" }}>
+                        <Typography sx={{ color: "inherit" }}>
+                            Authlink can no longer fetch servers that user is in. As such, it's recommended to use{" "}
+                            <Typography component="span" level="code">
+                                ?dashboard
+                            </Typography>
+                            {" "}command in the server that you want to use dashboard of.
+                        </Typography>
+                    </Box>
                 </Alert>
                 {servers.length && (
                     <Typography level="h3" color="neutral" sx={{ textAlign: "center", mb: 4 }}>

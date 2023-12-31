@@ -28,7 +28,7 @@ export default function OverviewPage(props: DashboardPageProps) {
                 <Typography level="h4" gutterBottom>
                     Modules
                 </Typography>
-                <Box className="grid sm:grid-cols-1 md:grid-cols-2 xlg:grid-cols-3 gap-5">
+                <Box className="grid grid-cols-1 lg:grid-cols-2 xlg:grid-cols-3 gap-5">
                     <DashboardModule
                         name="Modmail"
                         description="Customize how your users interact with your moderators."

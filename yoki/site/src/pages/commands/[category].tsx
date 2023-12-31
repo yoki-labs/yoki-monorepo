@@ -108,9 +108,9 @@ const Commands: NextPage<CommandProps> = ({ user, commandByCategory, commandCate
 
     return (
         <LandingPage user={user}>
-            <div className="flex w-full px-5 py-12 flex-col md:flex-row md:px-40">
+            <div className="grid w-full px-5 py-12 md:gap-4 lg:gap-16 md:grid-cols-[190px,5fr] lg:grid-cols-[300px,5fr] md:px-24 lg:px-40">
                 <CommandSidebar categories={commandCategories} activeCategory={category} />
-                <div className="grow md:px-16">
+                <div>
                     <Typography level="h2" sx={{ mb: 4 }}>
                         {commandCategories[category].name}
                     </Typography>

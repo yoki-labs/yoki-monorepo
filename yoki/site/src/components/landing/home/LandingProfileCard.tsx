@@ -35,7 +35,7 @@ function ProfileCardSection({ title, children }: { title: string; children: Reac
 
 export default function LandingProfileCard({ serverCount }: Props) {
     return (
-        <Card sx={{ maxWidth: 500, width: 550, gap: "20px" }} className="hidden md:block">
+        <Card sx={{ gap: "20px" }} className="hidden md:block w-80 lg:w-[550px]">
             <CardOverflow>
                 <AspectRatio ratio="5">
                     <img src="/banner.png" alt="Yoki's Banner" />
@@ -61,7 +61,7 @@ export default function LandingProfileCard({ serverCount }: Props) {
                             </Typography>
                         </ProfileCardSection>
                         <ProfileCardSection title="Roles">
-                            <Stack direction="row" gap={1}>
+                            <Stack gap={1} className="flex-col lg:flex-row">
                                 <Chip
                                     startDecorator={<RoleDot color="var(--labs-palette-text-primary)" />}
                                     variant="outlined"

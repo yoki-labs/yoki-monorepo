@@ -66,7 +66,7 @@ export default class AutomodPreset extends React.Component<Props, State> {
                     <LabsForm
                         sections={[
                             {
-                                order: LabsFormSectionOrder.Row,
+                                order: LabsFormSectionOrder.GridSm,
                                 fields: [
                                     {
                                         type: LabsFormFieldType.Select,

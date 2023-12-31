@@ -11,7 +11,7 @@ type Props = {
 
 export default function LandingFeature({ opacity, children }: Props) {
     return (
-        <ListItem color="primary" sx={{ opacity, "--ListItemDecorator-size": "2.5rem", "--ListItem-minHeight": "2.5rem" }}>
+        <ListItem className="md:px-0 lg:px-4" color="primary" sx={{ opacity, "--ListItemDecorator-size": "2.5rem", "--ListItem-minHeight": "2.5rem" }}>
             <ListItemDecorator>
                 <AlertIcon icon={faCheck} color="success" variant="soft" />
             </ListItemDecorator>

@@ -1,4 +1,4 @@
-import { faChevronDown, faRightFromBracket, faSun, faUserCircle } from "@fortawesome/free-solid-svg-icons";
+import { faBolt, faChevronDown, faRightFromBracket, faSun, faTablet, faUserCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Avatar, Button, Divider, List, ListItemDecorator, Menu, MenuItem, Stack, Switch, Typography, buttonClasses, useColorScheme } from "@mui/joy";
 import Link from "next/link";
@@ -82,6 +82,23 @@ export default function UserManager({ user, displayName }: Props) {
                                 </MenuItem>
                             </Link>
                         )}
+                        <Divider />
+                        <Link href="/premium" style={{ textDecoration: "none" }}>
+                            <MenuItem color="warning">
+                                <ListItemDecorator>
+                                    <FontAwesomeIcon icon={faBolt} />
+                                </ListItemDecorator>
+                                Supercharge
+                            </MenuItem>
+                        </Link>
+                        <Link href="/dashboard" style={{ textDecoration: "none" }}>
+                            <MenuItem color="neutral">
+                                <ListItemDecorator>
+                                    <FontAwesomeIcon icon={faTablet} />
+                                </ListItemDecorator>
+                                Dashboard
+                            </MenuItem>
+                        </Link>
                         <Divider />
                         <MenuItem color="neutral" onClick={() => setMode(mode === "light" ? "dark" : "light")}>
                             <ListItemDecorator>
