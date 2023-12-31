@@ -104,7 +104,6 @@ export const getServerSideProps: GetServerSideProps = async (ctx): Promise<GetSe
 
 const Commands: NextPage<CommandProps> = ({ user, commandByCategory, commandCategories, category }) => {
     const commands = commandByCategory[commandCategories[category].url];
-    console.log("Commands", commands);
 
     return (
         <LandingPage user={user}>
