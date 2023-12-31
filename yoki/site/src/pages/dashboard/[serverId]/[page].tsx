@@ -14,7 +14,6 @@ import { SanitizedServer } from "../../../lib/@types/db";
 import Layout from "../../../components/dashboard/layout/Layout";
 import rest from "../../../guilded";
 import NotPermittedPage from "../../../components/dashboard/pages/NotPermittedPage";
-import NoEarlyAccessPage from "../../../components/dashboard/pages/NoEarlyAccessPage";
 import { useRouter } from "next/router";
 import { LabsSessionUser } from "../../../utils/routes/pages";
 import { transformFoundServer } from "../../../utils/routes/users";
@@ -34,7 +33,7 @@ type SessionProps =
           highestRoleType: RoleType;
       })
     | (BaseSessionProps & {
-          code: "NOT_FOUND" | "UNPERMITTED" | "NO_FLAG";
+          code: "NOT_FOUND" | "UNPERMITTED" ;
       });
 
 export const getServerSideProps: GetServerSideProps = async (ctx): Promise<GetServerSidePropsResult<SessionProps>> => {
@@ -77,7 +76,6 @@ export const getServerSideProps: GetServerSideProps = async (ctx): Promise<GetSe
     // Pretend server doesn't exist by also giving 404 instead of 403
     // Not much use for privacy, but just giving less info I guess
     if (!member) return { props: { code: "NOT_FOUND", servers, user, currentServer: referencedServer } };
-    else if (!serverInDb.flags.includes("EARLY_ACCESS")) return { props: { code: "NO_FLAG", servers, user, currentServer: referencedServer } };
 
     const roleLevels = await prisma.role
         .findMany({
@@ -125,13 +123,6 @@ export default function Dashboard(props: SessionProps) {
         return (
             <LayoutWrapper {...props} onServerChange={onServerChange}>
                 <NotPermittedPage currentServer={props.currentServer} />
-            </LayoutWrapper>
-        );
-    // No EARLY ACCESS
-    else if (props.code === "NO_FLAG")
-        return (
-            <LayoutWrapper {...props} onServerChange={onServerChange}>
-                <NoEarlyAccessPage currentServer={props.currentServer} />
             </LayoutWrapper>
         );
 

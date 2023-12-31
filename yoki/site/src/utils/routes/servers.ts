@@ -31,8 +31,6 @@ export function createServerRoute<T extends string>({ methods, requiredRoles }: 
         // Server needs to exist
         const server = await prisma.server.findFirst({ where: { serverId } });
         if (!server) return res.status(404).json({ error: true, message: "Invalid server ID." });
-        // Allow only given beta access
-        else if (!server.flags.includes("EARLY_ACCESS")) return res.status(403).json({ error: true, message: "Server does not have early access flag to use this." });
 
         // If they don't have a proper role to manage the server, then don't allow using dashboard functions
         const member = await rest.router.members
