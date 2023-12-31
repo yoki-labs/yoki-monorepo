@@ -45,11 +45,11 @@ export default class DashboardProfileCard extends React.Component<Props> {
                 </CardOverflow>
                 <CardContent>
                     <Stack sx={{ mt: 1, height: 24 }} direction="row-reverse">
-                        {serverConfig.earlyaccess && (
+                        {/* {serverConfig.earlyaccess && (
                             <Tooltip title="Yoki Early Access" color="neutral">
                                 <FontAwesomeIcon icon={faRocket} style={{ width: 24, height: 24 }} />
                             </Tooltip>
-                        )}
+                        )} */}
                     </Stack>
                     <Box sx={{ mt: 3, py: 0.5, px: 1.5 }}>
                         <Box>

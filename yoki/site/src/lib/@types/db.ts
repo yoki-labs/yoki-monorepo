@@ -1,6 +1,6 @@
 import { Action, Appeal, ContentFilter, InviteFilter, LogChannel, ModmailThread, Preset, ReactionAction, Role, Server, UrlFilter } from "@prisma/client";
 
-export type SanitizedServer = Omit<Server, "id" | "flags" | "blacklisted" | "botJoinedAt" | "createdAt" | "updatedAt"> & { earlyaccess: boolean };
+export type SanitizedServer = Omit<Server, "id" | "flags" | "blacklisted" | "botJoinedAt" | "createdAt" | "updatedAt">;
 
 export type SanitizedLogChannel = Pick<LogChannel, "serverId" | "channelId" | "type"> & { createdAt: string };
 
