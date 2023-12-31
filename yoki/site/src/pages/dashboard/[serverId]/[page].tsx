@@ -89,7 +89,12 @@ export const getServerSideProps: GetServerSideProps = async (ctx): Promise<GetSe
 
     if (!(member?.isOwner || member?.roleIds.find((x) => adminRoles.includes(x)))) return { props: { code: "UNPERMITTED", servers, user, currentServer: referencedServer! } };
 
-    const highestLevel = roleLevels.reduce((a, b) => roleTypeLevels[a.type] > roleTypeLevels[b.type] ? a : b).type;
+    // We likely do not need a check for whether it's an owner, but I'll keep it here
+    const highestLevel = roleLevels.length
+        ? roleLevels.reduce((a, b) => roleTypeLevels[a.type] > roleTypeLevels[b.type] ? a : b).type
+        : member?.isOwner
+        ? RoleType.ADMIN
+        : RoleType.MINIMOD;
 
     return {
         props: {
