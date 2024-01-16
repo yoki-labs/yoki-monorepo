@@ -58,10 +58,10 @@ const PostAppealRoute = async (req: NextApiRequest, res: NextApiResponse) => {
             requestBody: {
                 embeds: [
                     new WebhookEmbed()
-                        .setTitle("New appeal")
+                        .setAuthor(`${memberBan.user.name} \u2022 New appeal`, memberBan.user.avatar)
                         .setTimestamp()
                         .setColor(Colors.blockBackground)
-                        .setDescription(`${session.user.name} (\`${session.user.id}\`) has made an appeal for an unban.`)
+                        .setDescription(`<@${memberBan.user.id}> (\`${memberBan.user.id}\`) has made an appeal for an unban.`)
                         .addFields([
                             {
                                 name: "Appeal reason",

@@ -21,7 +21,7 @@ export function inlineQuote(text: any, maxLength?: number) {
 }
 export const listInlineCode = (str: string[] | number[] | undefined) => (typeof str === "undefined" ? null : str.map(inlineCode).join(", "));
 export const listInlineQuote = (str: string[] | undefined) => (typeof str === "undefined" ? null : str.map(inlineQuote).join(", "));
-export const codeBlock = (code: any, language?: string) => (language ? `\`\`\`${language}\n${code}\`\`\`` : `\`\`\`${code}\`\`\``);
+export const codeBlock = (code: any, language?: string) => (language ? `\`\`\`${language}\n${code.replaceAll("```", "'''")}\`\`\`` : `\`\`\`${code}\`\`\``);
 export const quoteMarkdown = (code: string, limit: number) => `\`\`\`md\n${code.length > limit ? `${code.substring(0, limit)}...` : code}\n\`\`\``;
 
 export const channelTypeToDisplay: Record<ChannelType, string> = {

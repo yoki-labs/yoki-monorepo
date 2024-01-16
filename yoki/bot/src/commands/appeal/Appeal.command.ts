@@ -3,6 +3,8 @@ import { RoleType } from "@prisma/client";
 
 import { Category, Command } from "../commands";
 import Channel from "./Channel.command";
+import List from "./List.command";
+import View from "./View.command";
 
 const Appeal: Command = {
     name: "appeal",
@@ -11,8 +13,11 @@ const Appeal: Command = {
     parentCommand: true,
     module: "appeals",
     category: Category.Entry,
-    requiredRole: RoleType.ADMIN,
-    subCommands: new Collection<string, Command>().set("channel", Channel),
+    requiredRole: RoleType.MOD,
+    subCommands: new Collection<string, Command>()
+        .set("list", List)
+        .set("view", View)
+        .set("channel", Channel),
     execute: () => void 0,
 };
 

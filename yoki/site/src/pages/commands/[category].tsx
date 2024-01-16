@@ -2,7 +2,7 @@ import type { GetServerSideProps, GetServerSidePropsResult, NextPage } from "nex
 import LandingPage from "../../components/landing/LandingPage";
 import { Command } from "../../lib/Command";
 import commands from "../../../commands.json";
-import { Box, Stack, Typography } from "@mui/joy";
+import { Stack, Typography } from "@mui/joy";
 import CommandSidebar from "../../components/landing/commands/CommandSidebar";
 import CommandDisplay from "../../components/landing/commands/CommandDisplay";
 import { authOptions } from "../api/auth/[...nextauth]";
