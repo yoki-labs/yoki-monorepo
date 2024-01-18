@@ -16,7 +16,6 @@ import rest from "../../../guilded";
 import NotPermittedPage from "../../../components/dashboard/pages/NotPermittedPage";
 import { useRouter } from "next/router";
 import { LabsSessionUser } from "../../../utils/routes/pages";
-import { transformFoundServer } from "../../../utils/routes/users";
 import { roleTypeLevels } from "../../../utils/routes/permissions";
 import { RoleType } from "@prisma/client";
 
@@ -27,14 +26,14 @@ type BaseSessionProps = {
 };
 type SessionProps =
     | (BaseSessionProps & {
-          code: null;
-          serverConfig: SanitizedServer;
-          page: string;
-          highestRoleType: RoleType;
-      })
+        code: null;
+        serverConfig: SanitizedServer;
+        page: string;
+        highestRoleType: RoleType;
+    })
     | (BaseSessionProps & {
-          code: "NOT_FOUND" | "UNPERMITTED" ;
-      });
+        code: "NOT_FOUND" | "UNPERMITTED";
+    });
 
 export const getServerSideProps: GetServerSideProps = async (ctx): Promise<GetServerSidePropsResult<SessionProps>> => {
     const session = await getServerSession(ctx.req, ctx.res, authOptions);
@@ -48,11 +47,10 @@ export const getServerSideProps: GetServerSideProps = async (ctx): Promise<GetSe
     // /dashboard/:serverId/:page
     const { serverId, page } = ctx.query;
 
-    const referencedServer =
-        transformFoundServer(servers.find((x) => x.id === serverId)) ?? (await rest.router.servers.serverRead({ serverId: serverId as string }).catch(() => null))?.server;
+    const referencedServer = (await rest.router.servers.serverRead({ serverId: serverId as string }).catch(() => null))?.server;
 
     // Not in that server; cannot manage it
-    if (!referencedServer) return { redirect: { destination: `/dashboard`, permanent: false } };
+    if (!referencedServer) return { redirect: { destination: "/dashboard", permanent: false } };
 
     const serverInDb = (
         await prisma.server.findMany({
@@ -84,7 +82,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx): Promise<GetSe
                 // type: RoleType.ADMIN,
             },
         })
-    
+
     const adminRoles = roleLevels.map((role) => role.roleId);
 
     if (!(member?.isOwner || member?.roleIds.find((x) => adminRoles.includes(x)))) return { props: { code: "UNPERMITTED", servers, user, currentServer: referencedServer! } };
@@ -93,8 +91,8 @@ export const getServerSideProps: GetServerSideProps = async (ctx): Promise<GetSe
     const highestLevel = roleLevels.length
         ? roleLevels.reduce((a, b) => roleTypeLevels[a.type] > roleTypeLevels[b.type] ? a : b).type
         : member?.isOwner
-        ? RoleType.ADMIN
-        : RoleType.MINIMOD;
+            ? RoleType.ADMIN
+            : RoleType.MINIMOD;
 
     return {
         props: {

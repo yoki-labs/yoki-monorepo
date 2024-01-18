@@ -31,8 +31,8 @@ export const getServerSideProps: GetServerSideProps = async (ctx): Promise<GetSe
     if (!serverId) return { redirect: { destination: "/dashboard", permanent: false } };
 
     // If this user isn't in that server, redirect them back to dashboard server selection
-    const referencedServer = servers.find((x) => x.id === serverId) ?? (await rest.router.servers.serverRead({ serverId: serverId as string }).catch(() => null));
-    const destination = referencedServer ? `/dashboard/${serverId}/overview` : `/dashboard`;
+    const referencedServer = await rest.router.servers.serverRead({ serverId: serverId as string }).catch(() => null);
+    const destination = referencedServer ? `/dashboard/${serverId}/overview` : "/dashboard";
 
     return { redirect: { destination, permanent: false } };
 };
