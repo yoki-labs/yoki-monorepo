@@ -1,5 +1,5 @@
 import { Box, Breadcrumbs, Typography } from "@mui/joy";
-import { ServerSelector } from "./ServerSelector";
+// import { ServerSelector } from "./ServerSelector";
 import { GuildedClientServer, GuildedServer } from "../../../lib/@types/guilded";
 import UserManager from "../../UserManager";
 import Branding from "../../Branding";
@@ -29,9 +29,9 @@ export function LayoutTopbar({ children, onServerChange, currentServer, servers,
                 <Box>
                     <Branding />
                 </Box>
-                <Box className="hidden md:block">
+                {/* <Box className="hidden md:block">
                     <ServerSelector onChange={onServerChange} defaultValue={currentServer?.id} servers={servers} />
-                </Box>
+                </Box> */}
             </Breadcrumbs>
             <UserManager user={user} />
         </Box>
