@@ -19,6 +19,7 @@ module.exports = {
         "react/no-unescaped-entities": "off",
         "no-param-reassign": "off",
         "import/prefer-default-export": "off",
+        "no-return-await": "off",
         "arrow-body-style": "off",
         "@typescript-eslint/no-non-null-assertion": "off",
         "@typescript-eslint/dot-notation": "off",
