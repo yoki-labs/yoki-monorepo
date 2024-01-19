@@ -37,7 +37,7 @@ export default class PagePlaceholder extends React.Component<Props> {
                 <Typography level="h1" fontSize="lg">
                     {title}
                 </Typography>
-                <Typography level="body-md" textColor="text.secondary">
+                <Typography level="body-md" textAlign="center" textColor="text.secondary">
                     {children}
                 </Typography>
             </Stack>
