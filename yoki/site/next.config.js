@@ -55,8 +55,8 @@ module.exports = withSentryConfig(
 
 		// Suppresses source map uploading logs during build
 		silent: true,
-		org: "yoki-labs-org",
-		project: "yoki-site",
+		org: "yoki-labs-er",
+		project: "yoki-dash",
 	},
 	{
 		// For all available options, see:
