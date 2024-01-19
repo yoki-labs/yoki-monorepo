@@ -5,4 +5,4 @@ export const roleTypeLevels: Record<RoleType, number> = {
     [RoleType.MOD]: 2,
     [RoleType.MINIMOD]: 1,
     [RoleType.REACT]: 0,
-}
+};

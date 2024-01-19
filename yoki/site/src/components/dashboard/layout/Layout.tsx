@@ -36,7 +36,7 @@ export default class Layout extends React.Component<LayoutProps, LayoutState> {
     }
 
     render() {
-        const { page, children, currentServer, serverConfig, servers, user,  highestRoleType, onServerChange } = this.props;
+        const { page, children, currentServer, serverConfig, servers, user, highestRoleType, onServerChange } = this.props;
 
         return (
             <LayoutWrapper

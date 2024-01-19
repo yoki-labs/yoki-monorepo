@@ -63,14 +63,14 @@ export default class DashboardProfileCard extends React.Component<Props> {
                             <Typography level="body-md">Meet Yoki, your moderation companion and the biggest moderation bot on Guilded.</Typography>
                         </Box>
                         <Box sx={{ mt: 2 }}>
-                            {highestRoleType === RoleType.ADMIN
-                                ? <DashboardProfileCardForm
+                            {highestRoleType === RoleType.ADMIN ? (
+                                <DashboardProfileCardForm
                                     serverConfig={serverConfig}
                                     onSubmit={({ prefix, timezone }) => this.onServerUpdate(prefix as string | null, timezone as string | null)}
-                                    />
-                                : <DashboardProfileCardInfo
-                                    serverConfig={serverConfig}
-                                    />}
+                                />
+                            ) : (
+                                <DashboardProfileCardInfo serverConfig={serverConfig} />
+                            )}
                         </Box>
                     </Box>
                 </CardContent>
@@ -97,19 +97,31 @@ function DashboardProfileCardInfo({ serverConfig }: { serverConfig: SanitizedSer
     return (
         <Stack direction="column" gap={2}>
             <Box>
-                <Typography level="title-md" gutterBottom>Bot prefix</Typography>
+                <Typography level="title-md" gutterBottom>
+                    Bot prefix
+                </Typography>
                 <Typography level="code">{serverConfig.prefix ?? "?"}</Typography>
-                <Typography level="body-md" textColor="text.tertiary">The prefix that Yoki uses to recognize commands.</Typography>
+                <Typography level="body-md" textColor="text.tertiary">
+                    The prefix that Yoki uses to recognize commands.
+                </Typography>
             </Box>
             <Box>
-                <Typography level="title-md" gutterBottom>Language</Typography>
+                <Typography level="title-md" gutterBottom>
+                    Language
+                </Typography>
                 <Typography level="code">English (US)</Typography>
-                <Typography level="body-md" textColor="text.tertiary">The language Yoki responds in.</Typography>
+                <Typography level="body-md" textColor="text.tertiary">
+                    The language Yoki responds in.
+                </Typography>
             </Box>
             <Box>
-                <Typography level="title-md" gutterBottom>Timezone</Typography>
+                <Typography level="title-md" gutterBottom>
+                    Timezone
+                </Typography>
                 <Typography level="code">{normalizeTimezoneName(serverConfig.timezone ?? "america/new_york")}</Typography>
-                <Typography level="body-md" textColor="text.tertiary">The timezone Yoki displays time in.</Typography>
+                <Typography level="body-md" textColor="text.tertiary">
+                    The timezone Yoki displays time in.
+                </Typography>
             </Box>
         </Stack>
     );

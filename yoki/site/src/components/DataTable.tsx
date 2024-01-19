@@ -242,13 +242,15 @@ export default class DataTable<TItem extends { id: TItemId }, TItemId> extends R
                 {items.length ? (
                     <>
                         <Box className="block md:hidden">
-                            {!disableOperations && <Stack direction="row" gap={2}>
-                                {this.DataTableToggleCheckbox()}
-                                <Typography className="flex-1" level="title-md">
-                                    Select all
-                                </Typography>
-                                {this.DataTableOverflow()}
-                            </Stack>}
+                            {!disableOperations && (
+                                <Stack direction="row" gap={2}>
+                                    {this.DataTableToggleCheckbox()}
+                                    <Typography className="flex-1" level="title-md">
+                                        Select all
+                                    </Typography>
+                                    {this.DataTableOverflow()}
+                                </Stack>
+                            )}
                             <Stack sx={{ mt: 3 }} direction="column" gap={2}>
                                 {renderedItems.map(([, item]) => item)}
                             </Stack>

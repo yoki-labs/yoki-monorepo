@@ -37,7 +37,7 @@ export default function OverviewPage(props: DashboardPageProps) {
                         serverConfig={serverConfig}
                         disabled={highestRoleType !== RoleType.ADMIN}
                         prop="modmailEnabled"
-                        />
+                    />
                     <DashboardModule
                         name="NSFW Image Scan"
                         description="Removes any potentially NSFW images from chat and media."
@@ -56,7 +56,7 @@ export default function OverviewPage(props: DashboardPageProps) {
                         serverConfig={serverConfig}
                         disabled={highestRoleType !== RoleType.ADMIN}
                         prop="antiRaidEnabled"
-                        />
+                    />
                     <DashboardModule
                         name="Appeals"
                         description="Allows people to apply for an unban in your server."
@@ -65,7 +65,7 @@ export default function OverviewPage(props: DashboardPageProps) {
                         serverConfig={serverConfig}
                         disabled={highestRoleType !== RoleType.ADMIN}
                         prop="appealsEnabled"
-                        />
+                    />
                     <DashboardModule
                         name="Filter"
                         description="Filters out spam and blacklisted phrases or links."
@@ -74,7 +74,7 @@ export default function OverviewPage(props: DashboardPageProps) {
                         serverConfig={serverConfig}
                         disabled={highestRoleType !== RoleType.ADMIN}
                         prop="filterEnabled"
-                        />
+                    />
                     <DashboardModule
                         name="Invite Filter"
                         description="Filters out invites to other non-whitelisted servers in chat."
@@ -83,7 +83,7 @@ export default function OverviewPage(props: DashboardPageProps) {
                         serverConfig={serverConfig}
                         disabled={highestRoleType !== RoleType.ADMIN}
                         prop="filterInvites"
-                        />
+                    />
                     <DashboardModule
                         name="Anti-hoist"
                         description="Prevents people from purposefully putting themselves from above everyone."

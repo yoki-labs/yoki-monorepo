@@ -46,7 +46,7 @@ const serverConfigRoute = createServerRoute({
         async PATCH(req, res, _session, server, _member) {
             // Type-check body
             const { body } = req;
-    
+
             // ///// Body validity check
             // Prefix can be string or unset
             if (isRemovableBodyPropertyTypeInvalid(body.prefix, "string")) return getBodyErrorResponse(res, "prefix", "null or string");
@@ -76,7 +76,7 @@ const serverConfigRoute = createServerRoute({
             // Misc numbers
             else if (isBodyPropertyTypeInvalid(body.antiRaidAgeFilter, "number") || body.antiRaidAgeFilter < MIN_ANTIRAID_TIME || body.antiRaidAgeFilter > MAX_ANTIRAID_TIME)
                 return getBodyErrorResponse(res, "antiRaidAgeFilter", "time between 10 minutes and 14 days");
-    
+
             // Modules
             const data: Partial<Server> = {
                 // Server config
@@ -95,37 +95,37 @@ const serverConfigRoute = createServerRoute({
                 appealChannelId: typeof body.appealChannelId === "undefined" ? server.appealChannelId : body.appealChannelId,
                 antiRaidChallengeChannel: typeof body.antiRaidChallengeChannel === "undefined" ? server.antiRaidChallengeChannel : body.antiRaidChallengeChannel,
             };
-    
+
             // Remove repetition
             for (const moduleProp of BOOLEAN_PROPERTIES) {
                 if (isBodyPropertyTypeInvalid(body[moduleProp], "boolean")) return getBodyErrorResponse(res, moduleProp, "boolean");
-    
+
                 // It is fine
                 data[moduleProp] = body[moduleProp];
             }
-    
+
             // Since it may not be necessary to fetch all the roles and all
             if (ROLE_PROPERTIES.some((x) => Object.hasOwn(body, x))) {
                 const roleIds = (await rest.router.roles.roleReadMany({ serverId: server.serverId })).roles.map((x) => x.id);
-    
+
                 for (const roleProp of ROLE_PROPERTIES) {
                     const value = body[roleProp];
-    
+
                     if (!(value === null || typeof value === "undefined" || (typeof value === "number" && roleIds.includes(value!))))
                         return res.status(400).json({ error: true, message: `Provided role from property ${roleProp} does not exist in the Guilded server.` });
-    
+
                     // It is fine
                     data[roleProp] = value;
                 }
             }
-    
+
             await prisma.server.update({
                 where: {
                     serverId: server.serverId,
                 },
                 data,
             });
-    
+
             return res.status(200).json({});
         },
     },

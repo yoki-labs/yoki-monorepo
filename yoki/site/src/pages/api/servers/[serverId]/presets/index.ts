@@ -20,7 +20,7 @@ const serverPresetsRoute = createServerRoute({
                 presets: presets.map(({ id: _, ...rest }) => rest),
             });
         },
-    }
+    },
 });
 
 export default serverPresetsRoute;

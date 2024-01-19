@@ -112,33 +112,35 @@ export default class AppealsPage extends React.Component<DashboardPageProps, Sta
                         largeHeader
                     />
                 </Box>
-                {highestRoleType === RoleType.ADMIN && <Box>
-                    <Typography level="h4" gutterBottom>
-                        Appeals configuration
-                    </Typography>
-                    <Card>
-                        <CardContent>
-                            <LabsForm
-                                sections={[
-                                    {
-                                        order: LabsFormSectionOrder.Grid,
-                                        fields: [
-                                            {
-                                                type: LabsFormFieldType.Select,
-                                                prop: "appealChannelId",
-                                                name: "Appeal channel",
-                                                description: "The channel where appeals will be posted and managed.",
-                                                defaultValue: serverConfig.appealChannelId,
-                                                selectableValues: channelsToSelectionOptions(serverChannels),
-                                            },
-                                        ],
-                                    },
-                                ]}
-                                onSubmit={({ appealChannelId }) => this.modifyServerConfig(appealChannelId as string | undefined | null)}
-                            />
-                        </CardContent>
-                    </Card>
-                </Box>}
+                {highestRoleType === RoleType.ADMIN && (
+                    <Box>
+                        <Typography level="h4" gutterBottom>
+                            Appeals configuration
+                        </Typography>
+                        <Card>
+                            <CardContent>
+                                <LabsForm
+                                    sections={[
+                                        {
+                                            order: LabsFormSectionOrder.Grid,
+                                            fields: [
+                                                {
+                                                    type: LabsFormFieldType.Select,
+                                                    prop: "appealChannelId",
+                                                    name: "Appeal channel",
+                                                    description: "The channel where appeals will be posted and managed.",
+                                                    defaultValue: serverConfig.appealChannelId,
+                                                    selectableValues: channelsToSelectionOptions(serverChannels),
+                                                },
+                                            ],
+                                        },
+                                    ]}
+                                    onSubmit={({ appealChannelId }) => this.modifyServerConfig(appealChannelId as string | undefined | null)}
+                                />
+                            </CardContent>
+                        </Card>
+                    </Box>
+                )}
                 <Stack direction="column" gap={3}>
                     <Typography level="h4">Appeals</Typography>
                     <DataTable<SanitizedAppeal, number>

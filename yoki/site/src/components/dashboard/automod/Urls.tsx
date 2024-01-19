@@ -93,62 +93,64 @@ export default class UrlsPage extends React.Component<DashboardPageProps> {
                         largeHeader
                     />
                 </Box>
-                {highestRoleType === RoleType.ADMIN && <Box>
-                    <Typography level="h4" gutterBottom>
-                        URL filter list configuration
-                    </Typography>
-                    <Card>
-                        <CardContent>
-                            <LabsForm
-                                sections={[
-                                    {
-                                        order: LabsFormSectionOrder.Grid,
-                                        fields: [
-                                            {
-                                                type: LabsFormFieldType.Toggle,
-                                                prop: "urlFilterIsWhitelist",
-                                                name: "URL Filter list is whitelist",
-                                                description:
-                                                    "Whether URLs added to the filter is a whitelist instead of a blacklist. Off \u2014 link blacklist, on \u2014 link whitelist.",
-                                                defaultValue: serverConfig.urlFilterIsWhitelist,
-                                            },
-                                        ],
-                                    },
-                                    {
-                                        name: "Non-whitelisted link punishment",
-                                        order: LabsFormSectionOrder.Grid,
-                                        fields: [
-                                            {
-                                                type: LabsFormFieldType.Select,
-                                                prop: "linkSeverity",
-                                                name: "Link severity",
-                                                description: "What will be done when someone posts a link that is not in the filter whitelist.",
-                                                selectableValues: severityOptions,
-                                                defaultValue: serverConfig.linkSeverity,
-                                            },
-                                            {
-                                                type: LabsFormFieldType.Number,
-                                                prop: "linkInfractionPoints",
-                                                name: "Link infraction points",
-                                                description: "The amount of infraction points to give when someone posts a link that is not in the filter whitelist.",
-                                                defaultValue: serverConfig.linkInfractionPoints,
-                                                min: 1,
-                                                max: 100,
-                                            },
-                                        ],
-                                    },
-                                ]}
-                                onSubmit={({ urlFilterIsWhitelist, linkSeverity, linkInfractionPoints }) =>
-                                    this.modifyServerConfig(
-                                        urlFilterIsWhitelist as boolean | undefined | null,
-                                        linkSeverity as Severity | undefined | null,
-                                        linkInfractionPoints as number | undefined | null
-                                    )
-                                }
-                            />
-                        </CardContent>
-                    </Card>
-                </Box>}
+                {highestRoleType === RoleType.ADMIN && (
+                    <Box>
+                        <Typography level="h4" gutterBottom>
+                            URL filter list configuration
+                        </Typography>
+                        <Card>
+                            <CardContent>
+                                <LabsForm
+                                    sections={[
+                                        {
+                                            order: LabsFormSectionOrder.Grid,
+                                            fields: [
+                                                {
+                                                    type: LabsFormFieldType.Toggle,
+                                                    prop: "urlFilterIsWhitelist",
+                                                    name: "URL Filter list is whitelist",
+                                                    description:
+                                                        "Whether URLs added to the filter is a whitelist instead of a blacklist. Off \u2014 link blacklist, on \u2014 link whitelist.",
+                                                    defaultValue: serverConfig.urlFilterIsWhitelist,
+                                                },
+                                            ],
+                                        },
+                                        {
+                                            name: "Non-whitelisted link punishment",
+                                            order: LabsFormSectionOrder.Grid,
+                                            fields: [
+                                                {
+                                                    type: LabsFormFieldType.Select,
+                                                    prop: "linkSeverity",
+                                                    name: "Link severity",
+                                                    description: "What will be done when someone posts a link that is not in the filter whitelist.",
+                                                    selectableValues: severityOptions,
+                                                    defaultValue: serverConfig.linkSeverity,
+                                                },
+                                                {
+                                                    type: LabsFormFieldType.Number,
+                                                    prop: "linkInfractionPoints",
+                                                    name: "Link infraction points",
+                                                    description: "The amount of infraction points to give when someone posts a link that is not in the filter whitelist.",
+                                                    defaultValue: serverConfig.linkInfractionPoints,
+                                                    min: 1,
+                                                    max: 100,
+                                                },
+                                            ],
+                                        },
+                                    ]}
+                                    onSubmit={({ urlFilterIsWhitelist, linkSeverity, linkInfractionPoints }) =>
+                                        this.modifyServerConfig(
+                                            urlFilterIsWhitelist as boolean | undefined | null,
+                                            linkSeverity as Severity | undefined | null,
+                                            linkInfractionPoints as number | undefined | null
+                                        )
+                                    }
+                                />
+                            </CardContent>
+                        </Card>
+                    </Box>
+                )}
                 <Stack direction="column" gap={3}>
                     <Typography level="h4">Blacklisted or whitelisted URLs</Typography>
                     <DataTable<SanitizedUrlFilter, number>

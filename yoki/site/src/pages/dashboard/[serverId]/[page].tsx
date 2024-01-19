@@ -26,14 +26,14 @@ type BaseSessionProps = {
 };
 type SessionProps =
     | (BaseSessionProps & {
-        code: null;
-        serverConfig: SanitizedServer;
-        page: string;
-        highestRoleType: RoleType;
-    })
+          code: null;
+          serverConfig: SanitizedServer;
+          page: string;
+          highestRoleType: RoleType;
+      })
     | (BaseSessionProps & {
-        code: "NOT_FOUND" | "UNPERMITTED";
-    });
+          code: "NOT_FOUND" | "UNPERMITTED";
+      });
 
 export const getServerSideProps: GetServerSideProps = async (ctx): Promise<GetServerSidePropsResult<SessionProps>> => {
     const session = await getServerSession(ctx.req, ctx.res, authOptions);
@@ -75,13 +75,12 @@ export const getServerSideProps: GetServerSideProps = async (ctx): Promise<GetSe
     // Not much use for privacy, but just giving less info I guess
     if (!member) return { props: { code: "NOT_FOUND", servers, user, currentServer: referencedServer } };
 
-    const roleLevels = await prisma.role
-        .findMany({
-            where: {
-                serverId: serverInDb.serverId,
-                // type: RoleType.ADMIN,
-            },
-        })
+    const roleLevels = await prisma.role.findMany({
+        where: {
+            serverId: serverInDb.serverId,
+            // type: RoleType.ADMIN,
+        },
+    });
 
     const adminRoles = roleLevels.map((role) => role.roleId);
 
@@ -89,10 +88,10 @@ export const getServerSideProps: GetServerSideProps = async (ctx): Promise<GetSe
 
     // We likely do not need a check for whether it's an owner, but I'll keep it here
     const highestLevel = roleLevels.length
-        ? roleLevels.reduce((a, b) => roleTypeLevels[a.type] > roleTypeLevels[b.type] ? a : b).type
+        ? roleLevels.reduce((a, b) => (roleTypeLevels[a.type] > roleTypeLevels[b.type] ? a : b)).type
         : member?.isOwner
-            ? RoleType.ADMIN
-            : RoleType.MINIMOD;
+        ? RoleType.ADMIN
+        : RoleType.MINIMOD;
 
     return {
         props: {

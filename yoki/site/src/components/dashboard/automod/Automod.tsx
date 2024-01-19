@@ -85,7 +85,7 @@ export default class AutomodPage extends React.Component<DashboardPageProps, Sta
                         serverConfig={serverConfig}
                         disabled={highestRoleType !== RoleType.ADMIN}
                         prop="filterInvites"
-                        />
+                    />
                     <DashboardModule
                         name="Anti-hoist"
                         description="Prevents people from purposefully putting themselves from above everyone."
@@ -110,7 +110,7 @@ export default class AutomodPage extends React.Component<DashboardPageProps, Sta
                                     description="Basic swear words such as 'shit' and 'bitch'."
                                     preset={presets.find((x) => x.preset === "profanity")}
                                     disabled={highestRoleType !== RoleType.ADMIN}
-                                    />
+                                />
                                 <AutomodPreset
                                     serverId={serverConfig.serverId}
                                     presetName="slurs"
@@ -118,7 +118,7 @@ export default class AutomodPage extends React.Component<DashboardPageProps, Sta
                                     description="Racial and slurs targetted towards groups of individuals."
                                     preset={presets.find((x) => x.preset === "slurs")}
                                     disabled={highestRoleType !== RoleType.ADMIN}
-                                    />
+                                />
                                 <AutomodPreset
                                     serverId={serverConfig.serverId}
                                     presetName="sexual"
@@ -126,7 +126,7 @@ export default class AutomodPage extends React.Component<DashboardPageProps, Sta
                                     description="Words relating to sexual activity or objects."
                                     preset={presets.find((x) => x.preset === "sexual")}
                                     disabled={highestRoleType !== RoleType.ADMIN}
-                                    />
+                                />
                                 <AutomodPreset
                                     serverId={serverConfig.serverId}
                                     presetName="sexual-links"

@@ -1,4 +1,5 @@
 import { RoleType } from "@prisma/client";
+
 import prisma from "../../../../../prisma";
 import { getServerTextChannels } from "../../../../../utils/routes/route";
 import { createServerRoute } from "../../../../../utils/routes/servers";
@@ -28,7 +29,7 @@ const serverLogsRoute = createServerRoute({
                 serverChannels: textChannels,
             });
         },
-    }
+    },
 });
 
 export default serverLogsRoute;

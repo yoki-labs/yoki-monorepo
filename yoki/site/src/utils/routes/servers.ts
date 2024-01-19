@@ -3,19 +3,19 @@ import { RoleType, Server } from "@prisma/client";
 import { NextApiRequest, NextApiResponse } from "next";
 import { Session, unstable_getServerSession } from "next-auth";
 
+import { roleTypeLevels } from "./permissions";
 import { sanitizeUserDetails } from "./transform";
 import rest from "../../guilded";
 import { GuildedUserDetail } from "../../lib/@types/guilded";
 import { authOptions } from "../../pages/api/auth/[...nextauth]";
 import prisma from "../../prisma";
-import { roleTypeLevels } from "./permissions";
 
 type ServerRouteFunction = (req: NextApiRequest, res: NextApiResponse, session: Session | null, server: Server, member: ServerMember) => Promise<unknown>;
 type ServerRouteInfo<T extends string> = Record<T, ServerRouteFunction>;
-type ServerRouteProps<T extends string> = {
+interface ServerRouteProps<T extends string> {
     methods: ServerRouteInfo<T>;
     requiredRoles: Record<T, RoleType>;
-};
+}
 
 export function createServerRoute<T extends string>({ methods, requiredRoles }: ServerRouteProps<T>) {
     return async function onRequest(req: NextApiRequest, res: NextApiResponse) {
@@ -70,7 +70,15 @@ interface DataRouteInfo<TItem extends { id: TId }, TId> {
     fetchUsers?: (serverId: string, items: TItem[]) => Promise<Record<string, GuildedUserDetail>>;
 }
 
-export function createServerDataRoute<TItem extends { id: TId }, TId>({ type, fetchRoleRequired, operationRoleRequired, searchFilter, fetchMany, deleteMany, fetchUsers }: DataRouteInfo<TItem, TId>) {
+export function createServerDataRoute<TItem extends { id: TId }, TId>({
+    type,
+    fetchRoleRequired,
+    operationRoleRequired,
+    searchFilter,
+    fetchMany,
+    deleteMany,
+    fetchUsers,
+}: DataRouteInfo<TItem, TId>) {
     async function fetch(req: NextApiRequest, res: NextApiResponse, server: Server) {
         const { page: pageStr, search } = req.query;
 
@@ -105,7 +113,7 @@ export function createServerDataRoute<TItem extends { id: TId }, TId>({ type, fe
     return createServerRoute({
         requiredRoles: {
             GET: fetchRoleRequired,
-            DELETE: operationRoleRequired
+            DELETE: operationRoleRequired,
         },
         methods: {
             async GET(req, res, _session, server, _member) {
@@ -125,6 +133,6 @@ export function createServerDataRoute<TItem extends { id: TId }, TId>({ type, fe
                 // To update the state
                 return fetch(req, res, server);
             },
-        }
+        },
     });
 }

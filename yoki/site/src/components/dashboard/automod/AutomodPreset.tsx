@@ -96,7 +96,13 @@ export default class AutomodPreset extends React.Component<Props, State> {
                                 <Typography className="grow" fontWeight="md" level="title-md">
                                     {title}
                                 </Typography>
-                                <Switch className="toggle justify-end" disabled={disabled} defaultChecked={isEnabled} checked={isEnabled} onChange={({ target }) => this.onToggle(target.checked)} />
+                                <Switch
+                                    className="toggle justify-end"
+                                    disabled={disabled}
+                                    defaultChecked={isEnabled}
+                                    checked={isEnabled}
+                                    onChange={({ target }) => this.onToggle(target.checked)}
+                                />
                             </Stack>
                             <Typography level="body-md">{description}</Typography>
                         </Box>

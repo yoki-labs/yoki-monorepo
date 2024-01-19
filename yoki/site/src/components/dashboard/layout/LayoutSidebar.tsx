@@ -48,21 +48,18 @@ export function LayoutSidebar({ page, serverConfig, menuToggled, highestRoleType
             {categorizedPages.map(({ category, items }) => {
                 const filteredItems = items.filter((item) => highestRoleLevel >= roleTypeLevels[item.requiredRole]);
 
-                return (
-                    filteredItems.length
-                        ? <section className="pb-5" key={`sidebar-category-${category}`}>
-                            <Typography level="h1" textColor="text.tertiary" fontSize="sm">
-                                {categoryNames[category]}
-                            </Typography>
-                            <List variant="plain">
-                                {filteredItems
-                                    .map((item) => (
-                                        <LayoutSidebarTab key={item.id} serverId={serverConfig.serverId} item={item} isActive={page === item.id} />
-                                    ))}
-                            </List>
-                        </section>
-                        : null
-                );
+                return filteredItems.length ? (
+                    <section className="pb-5" key={`sidebar-category-${category}`}>
+                        <Typography level="h1" textColor="text.tertiary" fontSize="sm">
+                            {categoryNames[category]}
+                        </Typography>
+                        <List variant="plain">
+                            {filteredItems.map((item) => (
+                                <LayoutSidebarTab key={item.id} serverId={serverConfig.serverId} item={item} isActive={page === item.id} />
+                            ))}
+                        </List>
+                    </section>
+                ) : null;
             })}
         </Box>
     );

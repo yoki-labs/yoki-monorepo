@@ -92,20 +92,22 @@ export default class DashboardLogChannel extends React.Component<Props, State> {
                             </Chip>
                         ))}
                     </Stack>
-                    {canEdit && <LabsOverflowButton variant="outlined" id={`logs-${serverId}-${channelId}`}>
-                        <MenuItem onClick={() => this.toggleEditMode(true)}>
-                            <ListItemDecorator>
-                                <FontAwesomeIcon icon={faPen} />
-                            </ListItemDecorator>
-                            Edit log channel
-                        </MenuItem>
-                        <MenuItem color="danger" onClick={() => this.onLogChannelDelete()}>
-                            <ListItemDecorator>
-                                <FontAwesomeIcon icon={faTrash} />
-                            </ListItemDecorator>
-                            Delete log channel
-                        </MenuItem>
-                    </LabsOverflowButton>}
+                    {canEdit && (
+                        <LabsOverflowButton variant="outlined" id={`logs-${serverId}-${channelId}`}>
+                            <MenuItem onClick={() => this.toggleEditMode(true)}>
+                                <ListItemDecorator>
+                                    <FontAwesomeIcon icon={faPen} />
+                                </ListItemDecorator>
+                                Edit log channel
+                            </MenuItem>
+                            <MenuItem color="danger" onClick={() => this.onLogChannelDelete()}>
+                                <ListItemDecorator>
+                                    <FontAwesomeIcon icon={faTrash} />
+                                </ListItemDecorator>
+                                Delete log channel
+                            </MenuItem>
+                        </LabsOverflowButton>
+                    )}
                 </Stack>
                 <CardContent>
                     <Box sx={{ flex: "1", my: 1 }} className="block md:hidden">

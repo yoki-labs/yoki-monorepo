@@ -62,9 +62,11 @@ export default class DataTableRow extends React.Component<Props, State> {
                         } as unknown as CSSProperties
                     }
                 >
-                    {!disableSelection && <td>
-                        <Checkbox checked={isSelected} onChange={({ target }) => onSelected(target.checked)} variant="soft" size="lg" />
-                    </td>}
+                    {!disableSelection && (
+                        <td>
+                            <Checkbox checked={isSelected} onChange={({ target }) => onSelected(target.checked)} variant="soft" size="lg" />
+                        </td>
+                    )}
                     {Boolean(children) && children}
                     <td>
                         {expandedInfo && (

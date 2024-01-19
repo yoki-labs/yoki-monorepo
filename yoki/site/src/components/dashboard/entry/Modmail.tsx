@@ -33,8 +33,7 @@ export default class ModmailPage extends React.Component<DashboardPageProps, Sta
 
         this.setState({ isMounted: true });
 
-        if (this.props.highestRoleType === RoleType.ADMIN)
-            return this.fetchModmailInfo();
+        if (this.props.highestRoleType === RoleType.ADMIN) return this.fetchModmailInfo();
     }
 
     getTicketsRoute(page: number, search?: string, filter?: LabsFormFieldValueMap) {
@@ -114,53 +113,55 @@ export default class ModmailPage extends React.Component<DashboardPageProps, Sta
                         largeHeader
                     />
                 </Box>
-                {highestRoleType === RoleType.ADMIN && <Box>
-                    <Typography level="h4" gutterBottom>
-                        Modmail configuration
-                    </Typography>
-                    <Card>
-                        <CardContent>
-                            <LabsForm
-                                sections={[
-                                    {
-                                        order: LabsFormSectionOrder.Grid,
-                                        fields: [
-                                            {
-                                                type: LabsFormFieldType.Select,
-                                                prop: "channelId",
-                                                name: "Modmail channel",
-                                                description: "The channel that will be used to create modmail ticket threads.",
-                                                defaultValue: reactionAction?.channelId,
-                                                selectableValues: channelsToSelectionOptions(serverChannels),
-                                            },
-                                            {
-                                                type: LabsFormFieldType.Text,
-                                                prop: "messageId",
-                                                name: "Modmail trigger message",
-                                                description: "The ID of the message that will be used to create modmail threads.",
-                                                placeholder: "Message ID",
-                                                defaultValue: reactionAction?.messageId,
-                                                prefixIcon: faCommentDots,
-                                            },
-                                            {
-                                                type: LabsFormFieldType.Number,
-                                                prop: "emoteId",
-                                                name: "Modmail trigger emote",
-                                                description: "The emote with which users will have to react to create a modmail ticket.",
-                                                placeholder: "Emote ID",
-                                                defaultValue: reactionAction?.emoteId,
-                                                prefixIcon: faSmile,
-                                            },
-                                        ],
-                                    },
-                                ]}
-                                onSubmit={({ channelId, messageId, emoteId }) =>
-                                    this.modifyModmailInfo(channelId as string | null | undefined, messageId as string | null | undefined, emoteId as number | null | undefined)
-                                }
-                            />
-                        </CardContent>
-                    </Card>
-                </Box>}
+                {highestRoleType === RoleType.ADMIN && (
+                    <Box>
+                        <Typography level="h4" gutterBottom>
+                            Modmail configuration
+                        </Typography>
+                        <Card>
+                            <CardContent>
+                                <LabsForm
+                                    sections={[
+                                        {
+                                            order: LabsFormSectionOrder.Grid,
+                                            fields: [
+                                                {
+                                                    type: LabsFormFieldType.Select,
+                                                    prop: "channelId",
+                                                    name: "Modmail channel",
+                                                    description: "The channel that will be used to create modmail ticket threads.",
+                                                    defaultValue: reactionAction?.channelId,
+                                                    selectableValues: channelsToSelectionOptions(serverChannels),
+                                                },
+                                                {
+                                                    type: LabsFormFieldType.Text,
+                                                    prop: "messageId",
+                                                    name: "Modmail trigger message",
+                                                    description: "The ID of the message that will be used to create modmail threads.",
+                                                    placeholder: "Message ID",
+                                                    defaultValue: reactionAction?.messageId,
+                                                    prefixIcon: faCommentDots,
+                                                },
+                                                {
+                                                    type: LabsFormFieldType.Number,
+                                                    prop: "emoteId",
+                                                    name: "Modmail trigger emote",
+                                                    description: "The emote with which users will have to react to create a modmail ticket.",
+                                                    placeholder: "Emote ID",
+                                                    defaultValue: reactionAction?.emoteId,
+                                                    prefixIcon: faSmile,
+                                                },
+                                            ],
+                                        },
+                                    ]}
+                                    onSubmit={({ channelId, messageId, emoteId }) =>
+                                        this.modifyModmailInfo(channelId as string | null | undefined, messageId as string | null | undefined, emoteId as number | null | undefined)
+                                    }
+                                />
+                            </CardContent>
+                        </Card>
+                    </Box>
+                )}
                 <Stack direction="column" gap={3}>
                     <Typography level="h4">Modmail tickets</Typography>
                     <DataTable<SanitizedModmailThread, string>

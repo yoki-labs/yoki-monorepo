@@ -16,6 +16,7 @@ import {
     IconDefinition,
 } from "@fortawesome/free-solid-svg-icons";
 import { ColorPaletteProp } from "@mui/joy";
+import { RoleType } from "@prisma/client";
 import React from "react";
 
 import AutomodPage from "./automod/Automod";
@@ -33,7 +34,6 @@ import OverviewPage from "./overview/Overview";
 import ConfigPage from "./overview/Premium";
 import RolesPage from "./overview/Roles";
 import { SanitizedServer } from "../../lib/@types/db";
-import { RoleType } from "@prisma/client";
 
 export interface DashboardPageItem {
     id: string;
