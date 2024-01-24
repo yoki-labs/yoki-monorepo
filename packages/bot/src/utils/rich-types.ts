@@ -86,6 +86,24 @@ export interface RichMarkupUserMention
         }
     > {}
 
+export interface RichMarkupRoleMention
+    extends RichMarkupElement<
+        "inline",
+        "mention",
+        RichMarkupText,
+        {
+            mention: {
+                type: "role";
+                matcher: string;
+                name: string;
+                color: string;
+                color2?: string;
+                id: number;
+                sortOrder: number;
+            }
+        }
+    > {}
+
 export interface RichMarkupChannelMention
     extends RichMarkupElement<
         "inline",
@@ -100,4 +118,4 @@ export interface RichMarkupChannelMention
         }
     > {}
 
-export type RichMarkupInlineElement = RichMarkupEmote | RichMarkupUserMention | RichMarkupChannelMention;
+export type RichMarkupInlineElement = RichMarkupEmote | RichMarkupUserMention | RichMarkupRoleMention | RichMarkupChannelMention;

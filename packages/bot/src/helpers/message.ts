@@ -104,6 +104,22 @@ export class MessageUtil<
         return this.client.messages.send(channelId, content instanceof Embed ? { embeds: [content.toJSON()] } : typeof content === "string" ? { content } : content);
     }
 
+    sendRichMessage(channelId: string, content: RichMarkupBlockElement[], messagePartial?: Partial<MessageBody>) {
+        const text = {
+            object: "value",
+            document: {
+                object: "document",
+                data: {},
+                nodes: content,
+            },
+        } as unknown as string;
+
+        return this.send(channelId, {
+            content: text,
+            ...messagePartial,
+        });
+    }
+
     // Reply to a message
     reply(message: Message, content: MessageBody) {
         const opts: MessageBody = typeof content === "string" ? { replyMessageIds: [message.id], content } : content;
@@ -122,18 +138,8 @@ export class MessageUtil<
     }
 
     replyWithRichMessage(message: Message, content: RichMarkupBlockElement[], messagePartial?: Partial<MessageBody>) {
-        const text = {
-            object: "value",
-            document: {
-                object: "document",
-                data: {},
-                nodes: content,
-            },
-        } as unknown as string;
-
-        return this.send(message.channelId, {
+        return this.sendRichMessage(message.channelId, content, {
             replyMessageIds: [message.id],
-            content: text,
             ...messagePartial,
         });
     }
