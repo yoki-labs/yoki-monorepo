@@ -12,6 +12,7 @@ import Maximum from "./Max.command";
 import Name from "./Name.command";
 import Starting from "./Starting.command";
 import Tag from "./Tag.command";
+import CustomEmote from "./CustomEmote.command";
 
 const Currency: Command = {
     name: "currency",
@@ -30,6 +31,7 @@ const Currency: Command = {
         .set("maximum", Maximum)
         .set("starting", Starting)
         .set("emote", Emote)
+        .set("customemote", CustomEmote)
         .set("candeposit", CanDeposit),
     execute: () => void 0,
 };

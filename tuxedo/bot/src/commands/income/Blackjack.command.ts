@@ -76,10 +76,7 @@ const Blackjack: Command = {
 
         if (lastUsed && Date.now() - lastUsed < localCooldown)
             return ctx.messageUtil.replyWithError(message, "Too fast", `You have to wait ${ms(lastUsed + localCooldown - Date.now(), { long: true })} to play blackjack again.`);
-
-        // For the cooldown
-        ctx.balanceUtil.updateLastCommandUsage(message.serverId!, message.createdById, DefaultIncomeType.BLACKJACK);
-
+        
         const executorInfo = await ctx.dbUtil.getServerMember(message.serverId!, message.createdById);
 
         const balance = executorInfo?.balances.find((x) => x.currencyId === selectedCurrency.id)?.all ?? selectedCurrency.startingBalance ?? 0;
@@ -91,6 +88,9 @@ const Blackjack: Command = {
                 `Not enough currency`,
                 `You are trying to place a bet with ${amount} ${selectedCurrency.name}, but you have ${balance} ${selectedCurrency.name} in total.`
             );
+
+        // For the cooldown
+        ctx.balanceUtil.updateLastCommandUsage(message.serverId!, message.createdById, DefaultIncomeType.BLACKJACK);
 
         return ctx.minigameUtil.initBlackJackInstance(message, selectedCurrency, amount);
     },

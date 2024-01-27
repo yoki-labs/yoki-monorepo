@@ -6,6 +6,7 @@ import { DatabaseUtil } from "./helpers/database";
 import { GiveawayUtil } from "./helpers/giveaway";
 import { MinigameUtil } from "./helpers/minigame";
 import type { Command, Server } from "./typings";
+import { LifetimedUtil } from "./helpers/lifetimed";
 
 /**
  * Main class that stores utils, connections to various providers, and ws
@@ -26,6 +27,8 @@ export class TuxoClient extends AbstractClient<TuxoClient, Server, Command> {
     readonly balanceUtil: BalanceUtil = new BalanceUtil(this);
 
     readonly minigameUtil: MinigameUtil = new MinigameUtil(this);
+
+    readonly lifetimedUtil: LifetimedUtil = new LifetimedUtil(this);
 
     // events that this bot handles, directly from the ws manager
     readonly eventHandler: { [x: string]: (packet: any, ctx: TuxoClient, server: Server) => Promise<unknown> } = {};

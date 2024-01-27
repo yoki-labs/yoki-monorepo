@@ -213,7 +213,7 @@ export class DatabaseUtil extends Util<TuxoClient> {
                 // We are not removing or giving person currency, we are just moving it elsewhere.
                 pocket: x.pocket - (deposit[x.currencyId] ?? 0),
                 bank: x.bank + (deposit[x.currencyId] ?? 0),
-                all: x.pocket + x.bank,
+                all: BigInt(x.pocket + x.bank),
             },
         }));
 
@@ -322,7 +322,7 @@ export class DatabaseUtil extends Util<TuxoClient> {
                 data: {
                     pocket: updated?.pocket ?? x.pocket,
                     bank: updated?.bank ?? x.bank,
-                    all: (updated?.pocket ?? x.pocket) + (updated?.bank ?? x.bank),
+                    all: BigInt((updated?.pocket ?? x.pocket) + (updated?.bank ?? x.bank)),
                 },
             };
         });
@@ -377,7 +377,7 @@ export class DatabaseUtil extends Util<TuxoClient> {
                         currencyId,
                         pocket,
                         bank,
-                        all: pocket + bank,
+                        all: BigInt(pocket + bank),
                     })),
                 },
                 items: item
@@ -403,7 +403,7 @@ export class DatabaseUtil extends Util<TuxoClient> {
                 data: {
                     pocket: updated?.pocket ?? x.pocket,
                     bank: updated?.bank ?? x.bank,
-                    all: (updated?.pocket ?? x.pocket) + (updated?.bank ?? x.bank),
+                    all: BigInt((updated?.pocket ?? x.pocket) + (updated?.bank ?? x.bank)),
                 },
             };
         });
@@ -416,7 +416,7 @@ export class DatabaseUtil extends Util<TuxoClient> {
                 currencyId,
                 pocket,
                 bank,
-                all: pocket + bank,
+                all: BigInt(pocket + bank),
             })) as Omit<MemberBalance, "id" | "memberId" | "member">[];
 
         return this.client.prisma.serverMember.update({
@@ -447,7 +447,7 @@ export class DatabaseUtil extends Util<TuxoClient> {
                 data: {
                     pocket: updated?.pocket ?? x.pocket,
                     bank: updated?.bank ?? x.bank,
-                    all: (updated?.pocket ?? x.pocket) + (updated?.bank ?? x.bank),
+                    all: BigInt((updated?.pocket ?? x.pocket) + (updated?.bank ?? x.bank)),
                 },
             };
         });
@@ -460,7 +460,7 @@ export class DatabaseUtil extends Util<TuxoClient> {
                 currencyId,
                 pocket,
                 bank,
-                all: pocket + bank,
+                all: BigInt(pocket + bank),
             })) as Omit<MemberBalance, "id" | "memberId" | "member">[];
 
         return this.client.prisma.serverMember.update({

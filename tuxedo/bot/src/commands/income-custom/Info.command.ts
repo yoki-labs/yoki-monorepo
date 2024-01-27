@@ -1,5 +1,5 @@
 import { DefaultIncomeType, RoleType } from "@prisma/client";
-import { inlineCode, inlineQuote } from "@yokilabs/bot";
+import { codeBlock, inlineQuote } from "@yokilabs/bot";
 import { formatDate } from "@yokilabs/utils";
 import { stripIndents } from "common-tags";
 import { EmbedField } from "guilded.js";
@@ -54,11 +54,14 @@ const Info: Command = {
                     {
                         name: "Income Info",
                         value: stripIndents`
-                                **Action message:** ${inlineCode(income?.action ?? defaultIncomeInfo?.action ?? `used ${income!.name}`)}
                                 **Cooldown:** ${ms(income?.cooldownMs ?? defaultIncomeInfo?.cooldown ?? defaultCreatedCooldown, { long: true })}
                                 **Fail chance:** ${(income?.failChance ?? defaultIncomeInfo?.failChance ?? 0) * 100}%
                                 **Fail percentage cut:** ${(income?.failSubtractCut ?? defaultIncomeInfo?.failCut ?? 0) * 100}%
                             `,
+                    },
+                    {
+                        name: "Action messages",
+                        value: codeBlock(income?.action?.split("|").join("\n") ?? defaultIncomeInfo?.action.join("\n") ?? `You have used ${income!.name}, which gave you {}.`, "md"),
                     },
                     income && {
                         name: "Additional Info",

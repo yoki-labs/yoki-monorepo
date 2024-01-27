@@ -37,4 +37,5 @@ export {
     createUserMentionElement,
     crossmarkEmoteNode,
     exclamationmarkEmoteNode,
+    emptyText,
 } from "./utils/rich";

@@ -62,12 +62,9 @@ const Rob: Command = {
         const targetInfo = await ctx.dbUtil.getServerMember(message.serverId!, target.id);
 
         // Starting balance only exists in banks, so you can't rob anything
-        if (!(targetInfo?.balances.length && targetInfo.balances.some((x) => x.pocket)))
+        if (!(targetInfo?.balances.length && targetInfo.balances.some((x) => x.pocket > 0)))
             return ctx.messageUtil.replyWithError(message, "Nothing to steal", `The member either has no balance at all or their entire balance is in the bank.`);
-
-        // For the cooldown
-        ctx.balanceUtil.updateLastCommandUsage(message.serverId!, message.createdById, DefaultIncomeType.ROB);
-
+        
         // Add random amounts of rewards that were configured or ones that are default
         const rewards: Pick<Reward, "currencyId" | "minAmount" | "maxAmount">[] = serverConfig?.rewards.length
             ? serverConfig.rewards
@@ -77,6 +74,7 @@ const Rob: Command = {
 
         // Loop for checking whether executor has enough balance and adding rewards; does it all
         for (const reward of rewards) {
+            // ---- Check user's balance requirements ----
             // The opposite could be done, but this means adding additional `continue` if reward for that currency
             // doesn't exist, yada yada
             const currency = currencies.find((x) => x.id === reward.currencyId)!;
@@ -85,24 +83,32 @@ const Rob: Command = {
             // Balance changes
             const currentBalance = existingBalance?.all ?? currency.startingBalance ?? 0;
             const requiredBalance = reward.maxAmount * (serverConfig?.failSubtractCut ?? defaultConfig.failCut!);
-
+            
             // To have a proper losing condition
             if (currentBalance < requiredBalance)
                 return ctx.messageUtil.replyWithError(message, "Need more currency", `You need at least ${requiredBalance} ${currency.name} to rob someone.`);
 
-            const targetBalance = targetInfo?.balances.find((x) => x.pocket)?.pocket;
+            // ---- Check target's balance requirements ----
+            const targetBalance = targetInfo.balances.find((x) => x.currencyId === reward.currencyId)?.pocket;
 
-            // No point in calculating the stuff
-            if (!targetBalance) continue;
-
+            // No point in calculating the stuff; shouldn't be able to steal negative currency either
+            if (!targetBalance || targetBalance < 1) continue;
+            
             const randomReward = Math.floor(Math.random() * (reward.maxAmount - reward.minAmount) + reward.minAmount);
-
+            
             // I don't like this
             const cappedReward = randomReward > targetBalance ? targetBalance : randomReward;
             const finalReward = currency.maximumBalance && cappedReward > currency.maximumBalance ? currency.maximumBalance : cappedReward;
 
             newBalance.push({ currency, change: finalReward });
         }
+
+        // Failed to steal anything
+        if (!newBalance.length)
+            return ctx.messageUtil.replyWithError(message, "Nothing to steal", `The member has no balance that you can steal at all or it's in the negatives.`);
+
+        // For the cooldown
+        ctx.balanceUtil.updateLastCommandUsage(message.serverId!, message.createdById, DefaultIncomeType.ROB);
 
         // If it has failed
         if ((serverConfig?.failChance ?? defaultConfig.failChance!) > Math.random())

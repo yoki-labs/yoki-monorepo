@@ -1,7 +1,6 @@
 import { inlineCode } from "@yokilabs/bot";
 import { stripIndents } from "common-tags";
 import { inspect } from "node:util";
-
 // import fetch from "node-fetch";
 import type { Command } from "./commands";
 

@@ -121,7 +121,7 @@ async function onIncomeSuccess(
         // doesn't exist, yada yada
         const currency = currencies.find((x) => x.id === reward.currencyId)!;
         const existingBalance = userInfo?.balances.find((x) => x.currencyId === reward.currencyId);
-        const existingBalanceCount = existingBalance?.all ?? currency.startingBalance ?? 0;
+        const existingBalanceCount = Number(existingBalance?.all) ?? currency.startingBalance ?? 0;
 
         // Balance changes
         const randomReward = Math.floor(Math.random() * (reward.maxAmount - reward.minAmount) + reward.minAmount);
@@ -165,7 +165,7 @@ async function onIncomeSuccess(
 
     // If there is any text after the reward, add the text afterwards
     // There may be some currency that went over the limit, so add the `However, ...` text too
-    const afterCurrencies = lostCurrencies.length ? `${actionDescription[1]} However, some of the rewards went over the limit, so you lost additional` : actionDescription[1];
+    const afterCurrencies = lostCurrencies.length ? `${actionDescription[1]} However, some of the rewards went over the limit, so you lost additional` : actionDescription[1] ?? "";
 
     return ctx.messageUtil.replyWithRichMessage(message, [
         {
@@ -181,10 +181,12 @@ async function onIncomeSuccess(
                 // It might look rather empty if everything went over the limit
                 ...(addedCurrencies.length
                     ? addedCurrencies.flatMap((x, i) => displayCurrencyAmountRichMarkup(x.currency, x.added, i < addedCurrencies.length - 1, afterCurrencies))
-                    : [createTextElement(`some rewards`)]),
+                    : [createTextElement(`some rewards${afterCurrencies}`)]),
+                // // Because it will be either missing anything after the reward, like exclamation mark, period or other info
+                // // Or even `However,` part
                 // (actionDescription[1] || lostCurrencies.length) &&
                 //     createTextElement(
-                //         lostCurrencies.length ? `${actionDescription[1]} However, some of the rewards went over the limit, so you lost additional ` : actionDescription[1]
+                //         afterCurrencies
                 //     ),
                 // Add some lost currencies that went over the limit if there were any
                 ...(lostCurrencies.length ? lostCurrencies.flatMap((x, i) => displayCurrencyAmountRichMarkup(x.currency, x.lost!, i < lostCurrencies.length - 1)) : []),

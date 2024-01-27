@@ -56,7 +56,7 @@ void (async (): Promise<void> => {
 
         await client.giveawayUtil.cacheGiveaways();
         client.giveawayUtil.tick();
-        client.minigameUtil.tick();
+        client.lifetimedUtil.tick();
     } catch (e) {
         console.error(e);
         return process.exit(1);

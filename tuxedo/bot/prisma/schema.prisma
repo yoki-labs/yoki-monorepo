@@ -56,6 +56,7 @@ model Currency {
     name            String   @db.VarChar(100)
     tag             String   @db.VarChar(16)
     emote           String   @db.VarChar(32) @default("small_orange_diamond")
+    emoteId         Int      @default(90002259)
     // Perks
     startingBalance Int?
     maximumBalance  Int?
@@ -158,7 +159,7 @@ model MemberBalance {
     // Balance
     pocket     Int          @default(0)
     bank       Int          @default(0)
-    all        Int          @default(0)
+    all        BigInt       @default(0)
 }
 model MemberItem {
     // Basics

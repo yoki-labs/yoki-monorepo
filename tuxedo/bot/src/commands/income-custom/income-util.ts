@@ -43,7 +43,7 @@ export const displayOverridenRewards = (rewards: Reward[], serverCurrencies: Cur
         .map((x) => {
             const currency = serverCurrencies.find((y) => x.currencyId === y.id);
 
-            return `:${currency?.emote}: ${inlineCode(x.minAmount)} to ${inlineCode(x.minAmount + x.minAmount)} ${currency?.name}`;
+            return `:${currency?.emote}: ${inlineCode(x.minAmount)} to ${inlineCode(x.maxAmount)} ${currency?.name}`;
         })
         .join("\n");
 

@@ -76,7 +76,7 @@ const Profile: Command = {
                 ],
                 footer: userInfo?.items.length
                     ? {
-                          text: `Page ${page}/${Math.ceil(userInfo.items.length / PROFILE_ITEMS_PER_PAGE)} \u2022 total items`,
+                          text: `Page ${page}/${Math.ceil(userInfo.items.length / PROFILE_ITEMS_PER_PAGE)} \u2022 ${userInfo.items.length} total entries`,
                       }
                     : undefined,
             },

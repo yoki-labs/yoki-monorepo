@@ -91,28 +91,7 @@ export const createChannelMentionElement = (channel: Channel): RichMarkupChannel
     ],
 });
 
-export const createDefaultEmoteNode = (id: number, name: string): RichMarkupEmote => ({
-    object: "inline",
-    type: "reaction",
-    data: {
-        reaction: {
-            id,
-            customReactionId: id,
-        },
-    },
-    nodes: [
-        {
-            object: "text",
-            leaves: [
-                {
-                    object: "leaf",
-                    text: `:${name}:`,
-                    marks: [],
-                },
-            ],
-        },
-    ],
-});
+export const createDefaultEmoteNode = (id: number, name: string): RichMarkupEmote => createEmoteNode(id, name);
 
 export const createEmoteNode = (id: number, name: string): RichMarkupEmote => ({
     object: "inline",

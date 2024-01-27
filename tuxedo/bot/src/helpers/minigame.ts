@@ -4,10 +4,8 @@ import { stripIndents } from "common-tags";
 import { EmbedField, EmbedPayload, Message } from "guilded.js";
 
 import { BlackjackCondition, BlackjackDeck, randomBlackjackNumToCard, SpecialBlackjackVariant, stringifyBlackjackDeck, stringifyCard } from "../util/blackjack";
-import { TickedUtil } from "./ticked";
-
-const evaporateInstancesIn = 20 * 60 * 1000;
-const instanceLifetimeTick = evaporateInstancesIn;
+import { TuxoClient } from "../Client";
+import { Util } from "@yokilabs/bot";
 
 interface BlackjackInstance {
     serverId: string;
@@ -29,11 +27,11 @@ export const blackjackReactionStand = 90002171;
 // :ballot_box_with_check:
 export const blackjackReactionStandAce1 = 90002172;
 
-export class MinigameUtil extends TickedUtil {
-    private _blackJackInstances: BlackjackInstance[] = [];
+export class MinigameUtil extends Util<TuxoClient> {
+    blackJackInstances: BlackjackInstance[] = [];
 
     getBlackjackInstanceIndex(serverId: string, messageId: string) {
-        return this._blackJackInstances.findIndex((x) => x.serverId === serverId && x.messageId === messageId);
+        return this.blackJackInstances.findIndex((x) => x.serverId === serverId && x.messageId === messageId);
     }
 
     async addBlackjackHit(serverId: string, messageId: string, createdBy: string) {
@@ -42,7 +40,7 @@ export class MinigameUtil extends TickedUtil {
         // Ignore it automatically; probably a random reaction
         if (instanceIndex < 0) return;
 
-        const instance = this._blackJackInstances[instanceIndex];
+        const instance = this.blackJackInstances[instanceIndex];
 
         // Can't play for others
         if (instance.createdBy !== createdBy) return;
@@ -64,16 +62,16 @@ export class MinigameUtil extends TickedUtil {
         if (currentDeckValue > 21) {
             condition = BlackjackCondition.Lost;
             // It's done
-            this._blackJackInstances.splice(instanceIndex, 1);
+            this.blackJackInstances.splice(instanceIndex, 1);
 
             // Remove balance
             return Promise.all([this.updateBlackjackMessage(instance, currentDeckValue, dealerDeckValue, BlackjackCondition.Lost), this.updateBlackjackPlayer(instance, -1)]);
         } else if (currentDeckValue === 21 && dealerDeckValue === 21) {
-            this._blackJackInstances.splice(instanceIndex, 1);
+            this.blackJackInstances.splice(instanceIndex, 1);
 
             return this.updateBlackjackMessage(instance, currentDeckValue, dealerDeckValue, BlackjackCondition.NeutralPush);
         } else if (currentDeckValue === 21) {
-            this._blackJackInstances.splice(instanceIndex, 1);
+            this.blackJackInstances.splice(instanceIndex, 1);
 
             return Promise.all([this.updateBlackjackMessage(instance, currentDeckValue, dealerDeckValue, BlackjackCondition.Won), this.updateBlackjackPlayer(instance, 1)]);
         }
@@ -90,7 +88,7 @@ export class MinigameUtil extends TickedUtil {
         // Ignore it automatically; probably a random reaction
         if (instanceIndex < 0) return;
 
-        const instance = this._blackJackInstances[instanceIndex];
+        const instance = this.blackJackInstances[instanceIndex];
 
         // Can't play for others
         if (instance.createdBy !== createdBy) return;
@@ -121,7 +119,7 @@ export class MinigameUtil extends TickedUtil {
         // const dealerDeckValue = dealerDeckValueAce11 > 21 ? dealerDeckValueAce1 : dealerDeckValueAce11;
         const dealerDeckValue = this.getDealerDeckValue(instance.dealerDeck);
 
-        this._blackJackInstances.splice(instanceIndex, 1);
+        this.blackJackInstances.splice(instanceIndex, 1);
 
         // After standing, dealer has 2 cards and draws until they hit 17 or more;
         // we have already done it at the start and now need to see if they bust
@@ -170,7 +168,7 @@ export class MinigameUtil extends TickedUtil {
         ]);
 
         // Add to the registry to handle it with reactions
-        this._blackJackInstances.push({
+        this.blackJackInstances.push({
             serverId: message.serverId!,
             channelId: message.channelId,
             messageId: messageCreated.id,
@@ -268,26 +266,6 @@ export class MinigameUtil extends TickedUtil {
                 getStatusField(acesCanBe11, condition),
             ],
         };
-    }
-
-    tick() {
-        console.log("Will start ticking minigames");
-        this.addTicked(this.handleInstanceLifetimes.bind(this), instanceLifetimeTick);
-
-        return this;
-    }
-
-    handleInstanceLifetimes() {
-        const currentTime = Date.now();
-
-        // To have index saved and all
-        for (let i = 0; i < this._blackJackInstances.length; i++) {
-            const blackjackInstance = this._blackJackInstances[i];
-            console.log({ blackjackInstance, i, evaporateInstancesIn, currentTime, maxLifetime: blackjackInstance.createdAt + evaporateInstancesIn });
-
-            // It's time to make it evaporate
-            if (currentTime > blackjackInstance.createdAt + evaporateInstancesIn) this._blackJackInstances.splice(i, 1);
-        }
     }
 }
 
