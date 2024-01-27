@@ -18,7 +18,7 @@ import time from "../args/time";
 import UUID from "../args/UUID";
 import type { AbstractClient } from "../Client";
 import type { IRole, IServer } from "../db-types";
-import { codeBlock, inlineCode, inlineQuote } from "../utils/formatting";
+import { bold, codeBlock, inlineCode, inlineQuote } from "../utils/formatting";
 import type { ResolvedArgs, UsedMentions } from "./arguments";
 import type { BaseCommand, CommandArgType, CommandArgument, CommandArgValidator } from "./command-typings";
 
@@ -158,7 +158,7 @@ export function createCommandHandler<
                 event_properties: { serverId: message.serverId },
             });
 
-            await ctx.messageUtil.replyWithUnpermitted(message, `Unfortunately, you are missing the ${inlineCode(command.requiredRole)} role!`);
+            await ctx.messageUtil.replyWithUnpermitted(message, `Unfortunately, you are missing a role that is set as ${bold(command.requiredRole)} in this server!`);
             return false;
         },
         resolveArguments: async (context: [Message, TClient], prefix: string, command: TCommand, args: string[]) => {
