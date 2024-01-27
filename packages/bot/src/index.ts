@@ -30,8 +30,8 @@ export {
 export { channelTypeToGreenIcon, channelTypeToGreyIcon, channelTypeToRedIcon } from "./utils/images";
 export {
     checkmarkEmoteNode,
+    createParagraph,
     createChannelMentionElement,
-    createDefaultEmoteNode,
     createEmoteNode,
     createTextElement,
     createUserMentionElement,

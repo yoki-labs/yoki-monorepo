@@ -1,6 +1,6 @@
 import { Channel, Member, Role, UserType } from "guilded.js";
 
-import { RichMarkupChannelMention, RichMarkupEmote, RichMarkupLeaf, RichMarkupMark, RichMarkupRoleMention, RichMarkupText, RichMarkupUserMention } from "./rich-types";
+import { RichMarkupChannelMention, RichMarkupEmote, RichMarkupInlineElement, RichMarkupLeaf, RichMarkupMark, RichMarkupParagraph, RichMarkupRoleMention, RichMarkupText, RichMarkupUserMention } from "./rich-types";
 
 export const createUserMentionElement = (member: Member): RichMarkupUserMention => ({
     type: "mention",
@@ -91,8 +91,6 @@ export const createChannelMentionElement = (channel: Channel): RichMarkupChannel
     ],
 });
 
-export const createDefaultEmoteNode = (id: number, name: string): RichMarkupEmote => createEmoteNode(id, name);
-
 export const createEmoteNode = (id: number, name: string): RichMarkupEmote => ({
     object: "inline",
     type: "reaction",
@@ -122,6 +120,13 @@ export const createEmoteNode = (id: number, name: string): RichMarkupEmote => ({
             ],
         },
     ],
+});
+
+export const createParagraph = (nodes: Array<RichMarkupText | RichMarkupInlineElement>): RichMarkupParagraph => ({
+    object: "block",
+    type: "paragraph",
+    data: {},
+    nodes,
 });
 
 export const createTextElement = (text: string, marks: RichMarkupMark[] = []): RichMarkupText => ({
