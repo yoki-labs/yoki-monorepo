@@ -38,7 +38,7 @@ export default class DataTableRow extends React.Component<Props, State> {
 
         return (
             <tr style={{ "--TableCell-dataBackground": isSelected ? "var(--labs-palette-primary-950)" : "transparent" } as unknown as CSSProperties} data-id={`${id}:expansion`}>
-                <td style={{ height: 0, padding: 0 }} colSpan={columnCount - Number(disableSelection) + 2}>
+                <td style={{ height: 0, padding: 0 }} colSpan={columnCount - Number(disableSelection ?? false) + 2}>
                     <Sheet color="neutral" sx={{ m: 1, borderRadius: 8, p: 2, pl: 4, pr: 4 }}>
                         {expandedInfo()}
                     </Sheet>

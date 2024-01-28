@@ -8,7 +8,6 @@ import LandingPage from "../../components/landing/LandingPage";
 import rest from "../../guilded";
 import prisma from "../../prisma";
 import { AppealsSessionProps, appealWaitingTime } from "../../utils/appealUtil";
-// import WelcomeBanner from "../../partials/WelcomeBanner";
 import { authOptions } from "../api/auth/[...nextauth]";
 
 export const getServerSideProps: GetServerSideProps<AppealsSessionProps> = async (ctx) => {

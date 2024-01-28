@@ -1,10 +1,11 @@
 import { Avatar, Box, ListItemDecorator, Option, SelectOption, Typography } from "@mui/joy";
 import React from "react";
 
-import { GuildedClientServer } from "../../../lib/@types/guilded";
+import { GuildedClientServer, GuildedServer } from "../../../lib/@types/guilded";
 import LabsDropdown from "../../form/LabsDropdown";
 
 interface Props {
+    currentServer?: GuildedServer;
     servers: GuildedClientServer[];
     defaultValue?: string;
     onChange: (serverId: string) => unknown | Promise<unknown>;
@@ -18,24 +19,17 @@ export class ServerSelector extends React.Component<Props> {
     renderValue(option: SelectOption<string> | null) {
         const server: GuildedClientServer | null = option ? this.props.servers.find((x) => x.id === option.value)! : null;
 
-        return server && this.renderOption(server);
+        return server && <SelectedServerOption name={server.name} avatar={server.profilePicture} />;
     }
 
-    renderOption(server: GuildedClientServer) {
-        return (
-            <>
-                <ListItemDecorator>
-                    <Avatar size="sm" src={server.profilePicture ?? void 0} />
-                </ListItemDecorator>
-                <Typography fontWeight="bolder" textColor="text.secondary">
-                    {server.name}
-                </Typography>
-            </>
-        );
+    renderCurrentServer() {
+        const { currentServer } = this.props;
+
+        return currentServer && <SelectedServerOption name={currentServer.name} avatar={currentServer.avatar} />
     }
 
     render() {
-        const { servers, defaultValue } = this.props;
+        const { currentServer, servers, defaultValue } = this.props;
 
         const sortedServers = servers.sort((a, b) => (a.name > b.name ? 1 : a.name < b.name ? -1 : 0));
 
@@ -43,21 +37,52 @@ export class ServerSelector extends React.Component<Props> {
             <LabsDropdown
                 placeholder="Select server"
                 defaultValue={defaultValue}
-                renderValue={this.renderValue.bind(this)}
+                renderValue={this.renderCurrentServer.bind(this)}
                 onChange={async (_, serverId) => serverId && (await this.props.onChange(serverId))}
             >
-                {sortedServers.map((server) => (
-                    <Option key={server.id} value={server.id} label={server.name}>
-                        <ListItemDecorator>
-                            <Avatar size="sm" src={server.profilePicture ?? void 0} />
-                        </ListItemDecorator>
-                        <Box>
-                            <Typography fontWeight="bolder">{server.name}</Typography>
-                            <Typography textColor="text.tertiary">/{server.subdomain}</Typography>
-                        </Box>
-                    </Option>
-                ))}
+                {servers.length
+                    ? sortedServers.map((server) => (
+                        <ServerOption
+                            id={server.id}
+                            name={server.name}
+                            subdomain={server.subdomain}
+                            avatar={server.profilePicture}
+                        />
+                    ))
+                    : currentServer && <ServerOption
+                        id={currentServer.id}
+                        name={currentServer.name}
+                        subdomain={currentServer.url}
+                        avatar={currentServer.avatar} />
+                }
             </LabsDropdown>
         );
     }
+}
+
+function ServerOption({ id, name, subdomain, avatar }: { id: string; name: string; subdomain?: string | null | undefined; avatar: string | null | undefined; }) {
+    return (
+        <Option key={id} value={id} label={name}>
+            <ListItemDecorator>
+                <Avatar size="sm" src={avatar ?? void 0} />
+            </ListItemDecorator>
+            <Box>
+                <Typography fontWeight="bolder">{name}</Typography>
+                {subdomain && <Typography textColor="text.tertiary">/{subdomain}</Typography>}
+            </Box>
+        </Option>
+    );
+}
+
+function SelectedServerOption({ name, avatar }: { name: string; avatar: string | undefined | null; }) {
+    return (
+        <>
+            <ListItemDecorator>
+                <Avatar size="sm" src={avatar ?? void 0} />
+            </ListItemDecorator>
+            <Typography level="title-lg" fontWeight="bolder" textColor="text.secondary">
+                {name}
+            </Typography>
+        </>
+    );
 }

@@ -57,7 +57,7 @@ export function AppealCard({ item: appeal, users, timezone, disableSelection, is
             ExpandedInfoRenderer={() => <AppealExpandedInfo appeal={appeal} timezone={timezone} />}
         >
             <Stack mt={2} gap={2} direction="column">
-                <Typography level="body-md">{content && content.length > 50 ? `${content?.slice(0, 50)}...` : content}</Typography>
+                <Typography level="body-md">{content && content.length > 50 ? `${content.split("\n").join(" ")?.slice(0, 50)}...` : content.split("\n").join(" ")}</Typography>
             </Stack>
         </DataTableCard>
     );

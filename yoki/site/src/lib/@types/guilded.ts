@@ -6,6 +6,9 @@ export interface GuildedClientServer {
     subdomain: string;
     profilePicture: string | null;
     teamDashImage: string | null;
+    homeBannerImageSm: string | null;
+    homeBannerImageMd: string | null;
+    homeBannerImageLg: string | null;
     gameIds: string[];
     memberCount: number;
 }

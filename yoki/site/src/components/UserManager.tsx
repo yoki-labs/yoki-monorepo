@@ -1,10 +1,12 @@
-import { faBolt, faChevronDown, faRightFromBracket, faSun, faTablet, faUserCircle } from "@fortawesome/free-solid-svg-icons";
+import { faBolt, faChevronDown, faMoon, faRightFromBracket, faSun, faTablet, faUserCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Avatar, Button, Divider, List, ListItemDecorator, Menu, MenuItem, Stack, Switch, Typography, buttonClasses, useColorScheme } from "@mui/joy";
 import Link from "next/link";
 import React from "react";
 import { LabsSessionUser } from "../utils/routes/pages";
 import { ClickAwayListener } from "@mui/base";
+import { guildedAwsCdnDomain, guildedCdnDomain } from "../utils/userUtil";
+import { LabsSwitch } from "./LabsSwitch";
 
 type Props = {
     user?: LabsSessionUser | null;
@@ -15,6 +17,8 @@ export default function UserManager({ user, displayName }: Props) {
     const userManagerRef = React.useRef(null);
     const [menuOpen, setMenuOpen] = React.useState(false);
     const { mode, setMode } = useColorScheme();
+
+    const normalizedAvatar = user?.avatar?.replace(guildedAwsCdnDomain, guildedCdnDomain);
 
     return (
         <>
@@ -35,7 +39,7 @@ export default function UserManager({ user, displayName }: Props) {
                 }}
             >
                 {user && (
-                    <Avatar src={user.avatar ?? void 0} alt="Your profile picture">
+                    <Avatar src={normalizedAvatar ?? void 0} alt="Your profile picture">
                         {user.name?.[0] ?? ""}
                     </Avatar>
                 )}
@@ -55,12 +59,12 @@ export default function UserManager({ user, displayName }: Props) {
                 sx={{ "--ListItemDecorator-size": "2.8rem" }}
             >
                 <ClickAwayListener onClickAway={setMenuOpen.bind(null, false)}>
-                    <>
+                    <div>
                         {user ? (
                             <Link href="/profile/overview" style={{ textDecoration: "none" }}>
                                 <MenuItem>
                                     <ListItemDecorator>
-                                        <Avatar src={user.avatar ?? void 0} alt="Your profile picture">
+                                        <Avatar src={normalizedAvatar ?? void 0} alt="Your profile picture">
                                             {user.name?.[0] ?? ""}
                                         </Avatar>
                                     </ListItemDecorator>
@@ -102,10 +106,10 @@ export default function UserManager({ user, displayName }: Props) {
                         <Divider />
                         <MenuItem color="neutral" onClick={() => setMode(mode === "light" ? "dark" : "light")}>
                             <ListItemDecorator>
-                                <FontAwesomeIcon icon={faSun} />
+                                <FontAwesomeIcon icon={(mode ?? "dark") === "light" ? faSun : faMoon} />
                             </ListItemDecorator>
                             <Typography sx={{ color: "inherit" }}>Light theme</Typography>
-                            <Switch sx={{ ml: 4 }} checked={(mode ?? "dark") === "light"} onChange={() => setMode(mode === "light" ? "dark" : "light")} />
+                            <LabsSwitch activeIcon={faSun} deactivatedIcon={faMoon} sx={{ ml: 4 }} checked={(mode ?? "dark") === "light"} onChange={() => setMode(mode === "light" ? "dark" : "light")} />
                         </MenuItem>
                         {user && (
                             <>
@@ -120,7 +124,7 @@ export default function UserManager({ user, displayName }: Props) {
                                 </Link>
                             </>
                         )}
-                    </>
+                    </div>
                 </ClickAwayListener>
             </Menu>
         </>

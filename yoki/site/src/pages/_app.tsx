@@ -28,7 +28,8 @@ import "@fontsource/space-mono";
 
 const ogDescription = "Meet Yoki, your moderation companion and Guilded's biggest moderation bot.";
 const ogUrl = "https://yoki.gg/";
-const ogFace = "https://yoki.gg/face.png";
+const ogFace = "https://yoki.gg/icon.png";
+const ogSiteName = "Yoki";
 const ogTitle = "Yoki";
 
 // eslint-disable-next-line @typescript-eslint/ban-types
@@ -58,6 +59,7 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }: AppPropsWith
 
                 <meta property="og:url" content={ogUrl} />
                 <meta property="og:type" content="website" />
+                <meta property="og:site_name" content={ogSiteName} />
                 <meta property="og:title" content={ogTitle} />
                 <meta property="og:description" content={ogDescription} />
                 <meta property="og:image" content={ogFace} />

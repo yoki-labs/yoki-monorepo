@@ -30,12 +30,15 @@ export const labsLightTheme: ColorSystemOptions = {
             50: labsTheme.spacelight.background[300],
             // Solid components
             solidColor: labsTheme.spacelight.foreground[900],
-            solidBg: labsTheme.spacelight.background[700],
+            solidBg: labsTheme.spacelight.background[600],
+            solidDisabledBg: labsTheme.spacelight.background[800],
+            solidBorder: labsTheme.spacelight.background[700],
             solidHoverBg: labsTheme.spacelight.background[500],
             solidActiveBg: labsTheme.spacelight.background[400],
             // Plain components
             plainColor: labsTheme.spacelight.foreground[300],
             plainHoverBg: labsTheme.spacelight.background[900],
+            plainHoverColor: labsTheme.spacelight.foreground[400],
             plainActiveBg: labsTheme.spacelight.background[950],
             // Soft components
             softColor: labsTheme.spacelight.foreground[300],
@@ -74,9 +77,9 @@ export const labsLightTheme: ColorSystemOptions = {
         background: {
             body: labsTheme.spacelight.background[800],
             level0: mixHexColours(labsTheme.spacelight.background[800], labsTheme.spacelight.background[900], 0.5),
-            level1: labsTheme.spacelight.background[900],
-            level2: labsTheme.spacelight.background[950],
-            level3: labsTheme.spacelight.background[900],
+            level1: mixHexColours(labsTheme.spacelight.background[800], labsTheme.spacelight.background[900], 0.8),
+            level2: mixHexColours(labsTheme.spacelight.background[900], labsTheme.spacelight.background[950], 0.1),
+            level3: labsTheme.spacelight.background[950],
 
             surface: labsTheme.spacelight.background[950],
             backdrop: `${labsTheme.spacelight.background[800]}DF`,

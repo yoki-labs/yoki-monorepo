@@ -64,7 +64,7 @@ export default class DashboardModule extends React.Component<Props, { isActive: 
                         >
                             {name}
                         </Typography>
-                        <Switch className="toggle justify-end" disabled={disabled} defaultChecked={this.state.isActive} onChange={({ target }) => this.onToggle(target.checked)} />
+                        {!disabled && <Switch className="toggle justify-end" defaultChecked={this.state.isActive} onChange={({ target }) => this.onToggle(target.checked)} />}
                     </Stack>
                     <Typography level="body-md">{description}</Typography>
                 </Box>

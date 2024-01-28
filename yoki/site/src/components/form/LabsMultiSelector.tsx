@@ -4,7 +4,7 @@ import LabsForm, { FormFieldHeader } from "./LabsForm";
 import { Chip, Dropdown, ListItemDecorator, Menu, MenuButton, MenuItem, MenuList, Option, Select, SelectProps, Stack, Typography, styled } from "@mui/joy";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleDown, faCheck } from "@fortawesome/free-solid-svg-icons";
-import ClickAwayListener from "@mui/base/ClickAwayListener";
+import { ClickAwayListener } from "@mui/base";
 import AlertIcon from "../AlertIcon";
 
 type Props = {
@@ -17,8 +17,10 @@ type State = {
     values: string[];
 };
 
-export function LabsMultiSelectorShell({ children, valueDecorator, placeholder }: SelectProps<{}> & { valueDecorator?: ReactNode | undefined }) {
+export function LabsMultiSelectorShell({ children, valueDecorator, placeholder }: SelectProps<{}, true> & { valueDecorator?: ReactNode | undefined }) {
     const [menuOpen, setMenuOpen] = React.useState(false);
+
+    console.log("Menu button", { MenuButton, FontAwesomeIcon, ClickAwayListener });
 
     return (
         <Dropdown disabled>

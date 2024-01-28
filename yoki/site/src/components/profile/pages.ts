@@ -4,7 +4,7 @@ import React from "react";
 
 import ProfileAppealPage from "./ProfileAppealPage";
 import ProfileOverviewPage from "./ProfileOverviewPage";
-import { LabsSessionUser } from "../../utils/routes/pages";
+import { LabsProfiledUser, LabsSessionUser } from "../../utils/routes/pages";
 
 export interface ProfilePageItem {
     id: string;
@@ -15,8 +15,7 @@ export interface ProfilePageItem {
 }
 
 export interface ProfilePageProps {
-    user: LabsSessionUser;
-    appealCount: number;
+    user: LabsProfiledUser;
 }
 
 export const profilePageList: ProfilePageItem[] = [

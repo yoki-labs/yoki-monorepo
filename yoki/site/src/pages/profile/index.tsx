@@ -3,11 +3,7 @@ import { GetServerSideProps, GetServerSidePropsResult } from "next";
 import { getServerSession } from "next-auth";
 import React from "react";
 
-import LayoutWrapper from "../../components/dashboard/layout/LayoutWrapper";
-import { GuildedClientServer } from "../../lib/@types/guilded";
-// import WelcomeBanner from "../../partials/WelcomeBanner";
 import { authOptions } from "../api/auth/[...nextauth]";
-import { LabsSessionUser } from "../../utils/routes/pages";
 import LandingPage from "../../components/landing/LandingPage";
 
 export const getServerSideProps: GetServerSideProps = async (ctx): Promise<GetServerSidePropsResult<{}>> => {

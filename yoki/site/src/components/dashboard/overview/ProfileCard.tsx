@@ -5,7 +5,7 @@ import LabsForm, { LabsFormFieldValueMap } from "../../form/LabsForm";
 import { LabsFormFieldType } from "../../form/form";
 import { timezones } from "@yokilabs/utils";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faRocket } from "@fortawesome/free-solid-svg-icons";
+import { IconDefinition, faEarthAfrica, faEarthAmerica, faEarthAsia, faEarthEurope, faEarthOceania, faRocket } from "@fortawesome/free-solid-svg-icons";
 import { errorifyResponseError, notifyFetchError } from "../../../utils/errorUtil";
 import { PremiumType, RoleType } from "@prisma/client";
 import { TextColor } from "@mui/joy/styles/types";
@@ -165,7 +165,7 @@ function DashboardProfileCardForm(props: { onSubmit: (values: LabsFormFieldValue
                             name: "Timezone",
                             type: LabsFormFieldType.Select,
                             defaultValue: serverConfig.timezone ?? "america/new_york",
-                            selectableValues: timezones.map((timezone) => ({ name: normalizeTimezoneName(timezone), value: timezone })),
+                            selectableValues: timezones.map((timezone) => ({ name: normalizeTimezoneName(timezone), icon: getRegionIcon(timezone), value: timezone })),
                             description: "The timezone Yoki displays time in.",
                         },
                     ],
@@ -182,6 +182,25 @@ const normalizeTimezoneName = (timezone: string): string => {
         .split("_")
         .map((x) => normalizeTimezonePart(x))
         .join(" ")}, ${normalizeTimezonePart(region)}`;
+};
+
+const regionIcons: Record<string, IconDefinition> = {
+    africa: faEarthAfrica,
+    america: faEarthAmerica,
+    antarctica: faEarthOceania,
+    arctic: faEarthEurope,
+    asia: faEarthAsia,
+    atlantic: faEarthEurope,
+    australia: faEarthOceania,
+    europe: faEarthEurope,
+    indian: faEarthAsia,
+    pacific: faEarthOceania,
+};
+
+const getRegionIcon = (timezone: string): IconDefinition => {
+    const region = timezone.split("/")[0];
+
+    return regionIcons[region];
 };
 
 const normalizeTimezonePart = (timezoneWord: string) => timezoneWord[0].toUpperCase() + timezoneWord.slice(1);

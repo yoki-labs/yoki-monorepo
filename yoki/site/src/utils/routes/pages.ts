@@ -7,6 +7,14 @@ export type LabsSessionUser = { id: string } & Partial<{
     name: string | null;
     avatar: string | null;
 }>;
+export interface LabsProfiledUser {
+    id: string;
+    name: string;
+    subdomain: string | undefined | null;
+    avatar: string | undefined | null;
+    banner: string | undefined | null;
+    aboutInfo: Partial<{ tagLine: string | null; bio: string | null; }> | undefined | null;
+};
 
 export interface LandingPageSessionProps {
     user: LabsSessionUser | null;

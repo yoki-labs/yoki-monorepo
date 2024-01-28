@@ -37,7 +37,7 @@ const DecorationStarStack = styled(`div`)(({ theme }) => ({
 export default function FinalSection() {
     return (
         <div className="px-5 md:px-24 lg:px-40">
-            <FinalSectionCard className="py-8 px-8 mt-40 mb-20 md:py-32 md:px-32" color="primary" variant="solid" invertedColors>
+            <FinalSectionCard className="py-12 px-8 mt-40 mb-20 md:py-32 md:px-32" color="primary" variant="solid" invertedColors>
                 <CardDecorationWrapper>
                     <CardDecorationContainer>
                         <CurvyMask placement="bottom" start="80%" sx={{ width: "100%", height: "150%", transform: "rotate(-10deg) translateY(20px) translateX(250px)" }}>

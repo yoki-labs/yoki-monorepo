@@ -77,6 +77,18 @@ export const theme = extendTheme({
         dark: labsDarkTheme,
     },
     components: {
+        JoyMenuItem: {
+            styleOverrides: {
+                root: {
+                    margin: "5px 8px",
+                },
+            },
+        },
+        JoyCard: {
+            defaultProps: {
+                variant: "plain",
+            },
+        },
         JoyLink: {
             styleOverrides: {
                 root: {
@@ -112,9 +124,15 @@ export const theme = extendTheme({
                 thumb: ({ theme }) => ({
                     background: theme.vars.palette.background.body,
                 }),
+                track: {
+                    border: "none",
+                },
                 // track: ({ ownerState, theme }) => ({
                 //     background: ownerState.checked ? "#FF0000" : labsTheme.spacedark.background[600],
                 // })
+            },
+            defaultProps: {
+                size: "lg",
             },
         },
         JoyListItemDecorator: {

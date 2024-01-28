@@ -122,8 +122,6 @@ export function createServerDataRoute<TItem extends { id: TId }, TId>({
             async DELETE(req, res, _session, server, _member) {
                 const { ids } = req.body;
 
-                console.log("Ids", { ids, type });
-
                 // Check query
                 if (!Array.isArray(ids) || ids.some((x) => typeof x !== type)) return res.status(400).json({ error: true, message: `ids must be a ${type} array` });
 

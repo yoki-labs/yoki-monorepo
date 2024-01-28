@@ -6,7 +6,6 @@ import React from "react";
 import LayoutWrapper from "../../../components/dashboard/layout/LayoutWrapper";
 import { GuildedClientServer } from "../../../lib/@types/guilded";
 import { methods } from "../../../lib/Fetcher";
-// import WelcomeBanner from "../../partials/WelcomeBanner";
 import { authOptions } from "../../api/auth/[...nextauth]";
 import rest from "../../../guilded";
 import { LabsSessionUser } from "../../../utils/routes/pages";

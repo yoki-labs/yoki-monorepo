@@ -4,7 +4,6 @@ import React from "react";
 
 import { GuildedClientServer } from "../../lib/@types/guilded";
 import { methods } from "../../lib/Fetcher";
-// import WelcomeBanner from "../../partials/WelcomeBanner";
 import { authOptions } from "../api/auth/[...nextauth]";
 import LayoutWrapper from "../../components/dashboard/layout/LayoutWrapper";
 import ServerSelectionPage from "../../components/dashboard/pages/ServerSelectionPage";
@@ -18,7 +17,7 @@ type SessionProps = {
 
 export const getServerSideProps: GetServerSideProps = async (ctx): Promise<GetServerSidePropsResult<SessionProps>> => {
     const session = await getServerSession(ctx.req, ctx.res, authOptions);
-    console.log(`Session user does not have access token:`, !session?.user.access_token);
+
     if (!session?.user.access_token || !session?.user.id) return { redirect: { destination: "/auth/signin", permanent: false } };
 
     const servers = await methods(session.user.access_token).get<GuildedClientServer[]>("https://authlink.app/api/v1/users/@me/servers");

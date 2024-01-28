@@ -2,17 +2,17 @@ import { faAnglesDown, faBan, faEnvelope, faExclamationTriangle, faImage, faLink
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import DashboardModule from "../DashboardModule";
-import { Alert, Box, Link, Stack, Typography } from "@mui/joy";
+import { Box, Stack, Typography } from "@mui/joy";
 import { DashboardPageProps } from "../pages";
 import DashboardProfileCard from "./ProfileCard";
 import { PremiumType, RoleType } from "@prisma/client";
 
 export default function OverviewPage(props: DashboardPageProps) {
-    const { serverConfig, highestRoleType } = props;
+    const { currentServer, serverConfig, highestRoleType } = props;
 
     return (
         <Stack direction="column" gap={4}>
-            <Alert color="warning" variant="soft" startDecorator={<FontAwesomeIcon icon={faExclamationTriangle} />}>
+            {/* <Alert color="warning" variant="soft" startDecorator={<FontAwesomeIcon icon={faExclamationTriangle} />}>
                 <Box sx={{ alignItems: "baseline" }}>
                     <Typography fontSize="md" sx={{ color: "inherit" }}>
                         This dashboard is in-progress and may have some bugs. If you run into any issues, report it in{" "}
@@ -21,7 +21,7 @@ export default function OverviewPage(props: DashboardPageProps) {
                         </Link>
                     </Typography>
                 </Box>
-            </Alert>
+            </Alert> */}
             {/* Maybe do vertical icon cards with 4 tiers in premium tab? */}
             <DashboardProfileCard serverConfig={serverConfig} highestRoleType={highestRoleType} />
             <section>

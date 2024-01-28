@@ -2,7 +2,7 @@ import { faAngleDown, faChevronDown } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { FormControl, Select, selectClasses, SelectOwnProps } from "@mui/joy";
 
-export default function LabsDropdown(props: SelectOwnProps<string>) {
+export default function LabsDropdown(props: SelectOwnProps<string, false>) {
     return (
         <FormControl>
             <Select

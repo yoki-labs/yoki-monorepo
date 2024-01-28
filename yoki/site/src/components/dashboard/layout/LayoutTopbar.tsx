@@ -4,6 +4,7 @@ import { GuildedClientServer, GuildedServer } from "../../../lib/@types/guilded"
 import UserManager from "../../UserManager";
 import Branding from "../../Branding";
 import { LabsSessionUser } from "../../../utils/routes/pages";
+import { ServerSelector } from "./ServerSelector";
 
 type Props = {
     servers: GuildedClientServer[];
@@ -29,9 +30,9 @@ export function LayoutTopbar({ children, onServerChange, currentServer, servers,
                 <Box>
                     <Branding />
                 </Box>
-                {/* <Box className="hidden md:block">
-                    <ServerSelector onChange={onServerChange} defaultValue={currentServer?.id} servers={servers} />
-                </Box> */}
+                <Box className="hidden md:block">
+                    <ServerSelector onChange={onServerChange} defaultValue={currentServer?.id} currentServer={currentServer} servers={servers} />
+                </Box>
             </Breadcrumbs>
             <UserManager user={user} />
         </Box>

@@ -31,11 +31,13 @@ export const labsDarkTheme: ColorSystemOptions = {
             // Solid components
             solidColor: labsTheme.spacedark.foreground[900],
             solidBg: labsTheme.spacedark.background[700],
+            solidBorder: labsTheme.spacedark.background[700],
             solidHoverBg: labsTheme.spacedark.background[500],
             solidActiveBg: labsTheme.spacedark.background[400],
             // Plain components
             plainColor: labsTheme.spacedark.foreground[300],
             plainHoverBg: labsTheme.spacedark.background[900],
+            plainHoverColor: labsTheme.spacedark.foreground[400],
             plainActiveBg: labsTheme.spacedark.background[800],
             // Soft components
             softColor: labsTheme.spacedark.foreground[400],

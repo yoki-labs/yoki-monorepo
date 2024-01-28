@@ -5,7 +5,6 @@ import React from "react";
 import DashForm from "../../../components/dashboard/DashForm";
 import { GuildedClientServer, GuildedServer } from "../../../lib/@types/guilded";
 import { methods } from "../../../lib/Fetcher";
-// import WelcomeBanner from "../../partials/WelcomeBanner";
 import { authOptions } from "../../api/auth/[...nextauth]";
 import prisma, { sanitizeServer } from "../../../prisma";
 import NoServerPage from "../../../components/dashboard/pages/NoServerPage";
@@ -117,7 +116,7 @@ export default function Dashboard(props: SessionProps) {
     if (!props.code)
         return (
             <Layout {...props} onServerChange={onServerChange}>
-                <DashForm serverConfig={props.serverConfig} page={props.page} highestRoleType={props.highestRoleType} />
+                <DashForm currentServer={props.currentServer} serverConfig={props.serverConfig} page={props.page} highestRoleType={props.highestRoleType} />
             </Layout>
         );
     // No ADMIN code

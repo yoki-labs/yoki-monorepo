@@ -34,7 +34,7 @@ export default class PagePlaceholder extends React.Component<Props> {
                 <Typography level="body-md" textColor="text.secondary" fontSize="xlg" sx={{ fontSize: "2.5em" }} gutterBottom>
                     {icons[icon]}
                 </Typography>
-                <Typography level="h1" fontSize="lg">
+                <Typography level="h1" fontSize="lg" gutterBottom>
                     {title}
                 </Typography>
                 <Typography level="body-md" textAlign="center" textColor="text.secondary">
