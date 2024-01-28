@@ -69,7 +69,7 @@ export default class AutomodPage extends React.Component<DashboardPageProps, Sta
                         requiresPremium={PremiumType.Silver}
                     />
                     <DashboardModule
-                        name="Auto-mod"
+                        name="Automod"
                         description="Filters out spam and blacklisted phrases, words or links."
                         icon={faBan}
                         activeClassName="from-red-500 to-pink-500"

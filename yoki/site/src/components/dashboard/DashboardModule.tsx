@@ -19,6 +19,7 @@ export type Props = {
 
     hideBadges?: boolean;
     requiresPremium?: PremiumType;
+    requiresEarlyAccess?: boolean;
     disabled?: boolean;
     largeHeader?: boolean;
 };
@@ -42,7 +43,7 @@ export default class DashboardModule extends React.Component<Props, { isActive: 
     }
 
     render() {
-        const { name, description, icon, activeClassName, requiresPremium, hideBadges: titleBarBadges, disabled, largeHeader } = this.props;
+        const { name, description, icon, activeClassName, requiresPremium, requiresEarlyAccess, hideBadges: titleBarBadges, disabled, largeHeader } = this.props;
         const { isActive } = this.state;
 
         return (
@@ -54,10 +55,10 @@ export default class DashboardModule extends React.Component<Props, { isActive: 
                             fontWeight="md"
                             level={largeHeader ? "title-lg" : "title-md"}
                             endDecorator={
-                                requiresPremium &&
+                                (requiresPremium || requiresEarlyAccess) &&
                                 titleBarBadges && (
                                     <span className="hidden md:block">
-                                        <ModulePremiumBadge size="sm" premium={requiresPremium} />
+                                        <ModuleBadge size="sm" earlyAccess={requiresEarlyAccess} premium={requiresPremium} />
                                     </span>
                                 )
                             }
@@ -69,16 +70,22 @@ export default class DashboardModule extends React.Component<Props, { isActive: 
                     <Typography level="body-md">{description}</Typography>
                 </Box>
                 <Box mt={2} className={titleBarBadges ? `block md:hidden` : ``}>
-                    <ModulePremiumBadge premium={requiresPremium} />
+                    <ModuleBadge earlyAccess={requiresEarlyAccess} premium={requiresPremium} />
                 </Box>
             </LabsIconCard>
         );
     }
 }
 
-function ModulePremiumBadge({ premium, size }: { premium: PremiumType | undefined | null; size?: "sm" | "md" | "lg" }) {
+function ModuleBadge({ earlyAccess, premium, size }: { earlyAccess?: boolean | undefined; premium: PremiumType | undefined | null; size?: "sm" | "md" | "lg" }) {
     return (
-        <Tooltip title={premium ? `This module requires ${premium} tier subscription of Yoki Labs.` : `This module is available for everyone to use for free.`}>
+        earlyAccess
+        ? <Tooltip title="This requires Yoki early access">
+            <Chip size={size} color="danger">
+                Early Access
+            </Chip>
+        </Tooltip>
+        : <Tooltip title={premium ? `This module requires ${premium} tier subscription of Yoki Labs.` : `This module is available for everyone to use for free.`}>
             <Chip size={size} color={premium ? "warning" : "neutral"}>
                 {premium ? "Premium" : "Free"}
             </Chip>

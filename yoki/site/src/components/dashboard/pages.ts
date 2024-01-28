@@ -13,6 +13,7 @@ import {
     faPrayingHands,
     faShieldHalved,
     faTicket,
+    faUserSecret,
     IconDefinition,
 } from "@fortawesome/free-solid-svg-icons";
 import { ColorPaletteProp } from "@mui/joy";
@@ -35,6 +36,7 @@ import ConfigPage from "./overview/Premium";
 import RolesPage from "./overview/Roles";
 import { SanitizedServer } from "../../lib/@types/db";
 import { GuildedServer } from "../../lib/@types/guilded";
+import AntinukePage from "./entry/Antinuke";
 
 export interface DashboardPageItem {
     id: string;
@@ -44,6 +46,7 @@ export interface DashboardPageItem {
     category: DashboardPageCategory;
     color?: ColorPaletteProp;
     requiredRole: RoleType;
+    earlyAccess?: boolean;
 }
 
 export enum DashboardPageCategory {
@@ -66,8 +69,9 @@ export const dashboardPageList: DashboardPageItem[] = [
     { id: "images", name: "Image Filter", icon: faImage, component: ImagesPage, category: DashboardPageCategory.Automod, requiredRole: RoleType.ADMIN },
     { id: "spam", name: "Anti-spam", icon: faPoo, component: SpamPage, category: DashboardPageCategory.Automod, requiredRole: RoleType.ADMIN },
     { id: "modmail", name: "Modmail", icon: faEnvelope, component: ModmailPage, category: DashboardPageCategory.Entry, requiredRole: RoleType.MINIMOD },
-    { id: "antiraid", name: "Antiraid", icon: faShieldHalved, component: AntiraidPage, category: DashboardPageCategory.Entry, requiredRole: RoleType.ADMIN },
+    { id: "antiraid", name: "Anti-raid", icon: faShieldHalved, component: AntiraidPage, category: DashboardPageCategory.Entry, requiredRole: RoleType.ADMIN },
     { id: "appeals", name: "Appeals", icon: faPrayingHands, component: AppealsPage, category: DashboardPageCategory.Entry, requiredRole: RoleType.MOD },
+    //{ id: "antinuke", name: "Anti-nuke", icon: faUserSecret, component: AntinukePage, category: DashboardPageCategory.Entry, requiredRole: RoleType.ADMIN, earlyAccess: true },
 ];
 
 export interface DashboardPageProps {

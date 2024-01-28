@@ -47,7 +47,8 @@ export function LayoutSidebar({ page, serverConfig, menuToggled, highestRoleType
                 <ServerSelector currentServer={currentServer} onChange={onServerChange} defaultValue={currentServer?.id} servers={servers} />
             </Box>
             {categorizedPages.map(({ category, items }) => {
-                const filteredItems = items.filter((item) => highestRoleLevel >= roleTypeLevels[item.requiredRole]);
+                const filteredItems = items.filter((item) => highestRoleLevel >= roleTypeLevels[item.requiredRole] && (!item.earlyAccess || serverConfig.earlyaccess));
+
 
                 return filteredItems.length ? (
                     <section className="pb-5" key={`sidebar-category-${category}`}>

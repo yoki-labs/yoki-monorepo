@@ -1,4 +1,4 @@
-import { faAnglesDown, faBan, faEnvelope, faExclamationTriangle, faImage, faLink, faPrayingHands, faShieldHalved } from "@fortawesome/free-solid-svg-icons";
+import { faAnglesDown, faBan, faEnvelope, faExclamationTriangle, faImage, faLink, faPrayingHands, faShieldHalved, faUserSecret } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import DashboardModule from "../DashboardModule";
@@ -57,6 +57,16 @@ export default function OverviewPage(props: DashboardPageProps) {
                         disabled={highestRoleType !== RoleType.ADMIN}
                         prop="antiRaidEnabled"
                     />
+                    {/* <DashboardModule
+                        name="Anti-nuke"
+                        description="Customize how rogue mods are handled."
+                        icon={faUserSecret}
+                        activeClassName="from-pink-500 to-violet-500"
+                        serverConfig={serverConfig}
+                        disabled={highestRoleType !== RoleType.ADMIN}
+                        requiresEarlyAccess
+                        prop="antiRaidEnabled"
+                        /> */}
                     <DashboardModule
                         name="Appeals"
                         description="Allows people to apply for an unban in your server."
