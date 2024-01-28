@@ -33,18 +33,20 @@ const CustomEmote: Command = {
         // Currency needs to exist for it to be edited
         if (!currency) return ctx.messageUtil.replyWithError(message, "Doesn't exist", `The currency with tag ${inlineQuote(tag)} does not exist and cannot be edited.`);
 
-        const reactionSelection = await ctx.messageUtil.replyWithInfo(message, `Select emote`, `React to this message with an emote you want to use as an icon of ${inlineQuote(currency.name)}.`);
+        const reactionSelection = await ctx.messageUtil.replyWithInfo(
+            message,
+            `Select emote`,
+            `React to this message with an emote you want to use as an icon of ${inlineQuote(currency.name)}.`
+        );
 
         // Wait for the response
-        ctx.lifetimedUtil.awaitingCurrencyEmotes.push({
-            currency: currency,
+        return ctx.lifetimedUtil.awaitingCurrencyEmotes.push({
+            currency,
             serverId: message.serverId!,
             channelId: message.channelId,
             messageId: reactionSelection.id,
             createdAt: Date.now(),
         });
-
-        return;
     },
 };
 

@@ -109,7 +109,13 @@ export default function UserManager({ user, displayName }: Props) {
                                 <FontAwesomeIcon icon={(mode ?? "dark") === "light" ? faSun : faMoon} />
                             </ListItemDecorator>
                             <Typography sx={{ color: "inherit" }}>Light theme</Typography>
-                            <LabsSwitch activeIcon={faSun} deactivatedIcon={faMoon} sx={{ ml: 4 }} checked={(mode ?? "dark") === "light"} onChange={() => setMode(mode === "light" ? "dark" : "light")} />
+                            <LabsSwitch
+                                activeIcon={faSun}
+                                deactivatedIcon={faMoon}
+                                sx={{ ml: 4 }}
+                                checked={(mode ?? "dark") === "light"}
+                                onChange={() => setMode(mode === "light" ? "dark" : "light")}
+                            />
                         </MenuItem>
                         {user && (
                             <>

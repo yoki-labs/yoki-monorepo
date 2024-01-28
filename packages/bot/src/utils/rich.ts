@@ -1,6 +1,16 @@
 import { Channel, Member, Role, UserType } from "guilded.js";
 
-import { RichMarkupChannelMention, RichMarkupEmote, RichMarkupInlineElement, RichMarkupLeaf, RichMarkupMark, RichMarkupParagraph, RichMarkupRoleMention, RichMarkupText, RichMarkupUserMention } from "./rich-types";
+import {
+    RichMarkupChannelMention,
+    RichMarkupEmote,
+    RichMarkupInlineElement,
+    RichMarkupLeaf,
+    RichMarkupMark,
+    RichMarkupParagraph,
+    RichMarkupRoleMention,
+    RichMarkupText,
+    RichMarkupUserMention,
+} from "./rich-types";
 
 export const createUserMentionElement = (member: Member): RichMarkupUserMention => ({
     type: "mention",
@@ -39,7 +49,7 @@ export const createUserMentionElement = (member: Member): RichMarkupUserMention 
     ],
 });
 
-export const createRoleMentionElement = (role: Role, sortOrder: number = 0): RichMarkupRoleMention => ({
+export const createRoleMentionElement = (role: Role, sortOrder = 0): RichMarkupRoleMention => ({
     type: "mention",
     object: "inline",
     data: {

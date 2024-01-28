@@ -14,7 +14,11 @@ type Props = {
 
 export default function FeaturePreview({ icon, subtitle, title, description, children, rightSide }: Props) {
     return (
-        <Box component="article" className={`grid sm:grid-cols-1 md:grid-cols-[4fr,5fr] lg:grid-cols-[5fr,4fr] gap-10 md:gap-20 lg:gap-40`} sx={{ direction: rightSide ? "rtl" : "ltr" }}>
+        <Box
+            component="article"
+            className={`grid sm:grid-cols-1 md:grid-cols-[4fr,5fr] lg:grid-cols-[5fr,4fr] gap-10 md:gap-20 lg:gap-40`}
+            sx={{ direction: rightSide ? "rtl" : "ltr" }}
+        >
             <Box sx={{ direction: "ltr" }}>
                 <Typography startDecorator={<FontAwesomeIcon icon={icon} />} level="body-md" textColor="text.tertiary" sx={{ mb: 2 }} fontWeight="bolder">
                     {subtitle}

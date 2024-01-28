@@ -30,12 +30,12 @@ export {
 export { channelTypeToGreenIcon, channelTypeToGreyIcon, channelTypeToRedIcon } from "./utils/images";
 export {
     checkmarkEmoteNode,
-    createParagraph,
     createChannelMentionElement,
     createEmoteNode,
+    createParagraph,
     createTextElement,
     createUserMentionElement,
     crossmarkEmoteNode,
-    exclamationmarkEmoteNode,
     emptyText,
+    exclamationmarkEmoteNode,
 } from "./utils/rich";

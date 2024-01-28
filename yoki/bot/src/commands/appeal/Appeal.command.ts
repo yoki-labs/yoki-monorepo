@@ -14,10 +14,7 @@ const Appeal: Command = {
     module: "appeals",
     category: Category.Entry,
     requiredRole: RoleType.MOD,
-    subCommands: new Collection<string, Command>()
-        .set("list", List)
-        .set("view", View)
-        .set("channel", Channel),
+    subCommands: new Collection<string, Command>().set("list", List).set("view", View).set("channel", Channel),
     execute: () => void 0,
 };
 

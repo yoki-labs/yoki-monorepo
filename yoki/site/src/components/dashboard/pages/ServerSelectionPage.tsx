@@ -40,8 +40,8 @@ export default class ServerSelectionPage extends React.Component<Props, State> {
                             Authlink can no longer fetch servers that user is in. As such, it's recommended to use{" "}
                             <Typography component="span" level="code">
                                 ?dashboard
-                            </Typography>
-                            {" "}command in the server that you want to use dashboard of.
+                            </Typography>{" "}
+                            command in the server that you want to use dashboard of.
                         </Typography>
                     </Box>
                 </Alert>

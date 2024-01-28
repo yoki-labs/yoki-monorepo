@@ -61,7 +61,10 @@ const Info: Command = {
                     },
                     {
                         name: "Action messages",
-                        value: codeBlock(income?.action?.split("|").join("\n") ?? defaultIncomeInfo?.action.join("\n") ?? `You have used ${income!.name}, which gave you {}.`, "md"),
+                        value: codeBlock(
+                            income?.action?.split("|").join("\n") ?? defaultIncomeInfo?.action.join("\n") ?? `You have used ${income!.name}, which gave you {}.`,
+                            "md"
+                        ),
                     },
                     income && {
                         name: "Additional Info",

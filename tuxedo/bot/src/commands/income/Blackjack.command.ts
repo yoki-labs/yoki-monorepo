@@ -76,7 +76,7 @@ const Blackjack: Command = {
 
         if (lastUsed && Date.now() - lastUsed < localCooldown)
             return ctx.messageUtil.replyWithError(message, "Too fast", `You have to wait ${ms(lastUsed + localCooldown - Date.now(), { long: true })} to play blackjack again.`);
-        
+
         const executorInfo = await ctx.dbUtil.getServerMember(message.serverId!, message.createdById);
 
         const balance = executorInfo?.balances.find((x) => x.currencyId === selectedCurrency.id)?.all ?? selectedCurrency.startingBalance ?? 0;

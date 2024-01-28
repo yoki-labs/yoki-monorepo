@@ -100,7 +100,7 @@ export interface RichMarkupRoleMention
                 color2?: string;
                 id: number;
                 sortOrder: number;
-            }
+            };
         }
     > {}
 

@@ -49,7 +49,6 @@ export function LayoutSidebar({ page, serverConfig, menuToggled, highestRoleType
             {categorizedPages.map(({ category, items }) => {
                 const filteredItems = items.filter((item) => highestRoleLevel >= roleTypeLevels[item.requiredRole] && (!item.earlyAccess || serverConfig.earlyaccess));
 
-
                 return filteredItems.length ? (
                     <section className="pb-5" key={`sidebar-category-${category}`}>
                         <Typography level="h1" textColor="text.tertiary" fontSize="sm">

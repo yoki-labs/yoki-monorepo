@@ -1,11 +1,11 @@
+import { AppealStatus } from "@prisma/client";
 import { codeBlock, inlineCode } from "@yokilabs/bot";
-
-import { RoleType } from "../../typings";
-import { Category, Command } from "../commands";
 import { Colors } from "@yokilabs/utils";
 import { stripIndents } from "common-tags";
 import { EmbedField } from "guilded.js";
-import { AppealStatus } from "@prisma/client";
+
+import { RoleType } from "../../typings";
+import { Category, Command } from "../commands";
 
 const View: Command = {
     name: "appeal-view",
@@ -51,17 +51,16 @@ const View: Command = {
             return ctx.messageUtil.replyWithSuccess(message, `Appeal deleted`, `Appeal ${inlineCode(appealId)} has been successfully deleted.`);
         }
 
-        const statusEmote = fetchedAppeal.status == AppealStatus.ACCEPTED
-            ? `large_green_circle`
-            : fetchedAppeal.status === AppealStatus.DECLINED
-            ? `red_circle`
-            : `large_orange_circle`;
+        const statusEmote =
+            fetchedAppeal.status === AppealStatus.ACCEPTED ? `large_green_circle` : fetchedAppeal.status === AppealStatus.DECLINED ? `red_circle` : `large_orange_circle`;
 
         // View
         return ctx.messageUtil.replyWithEmbed(
             message,
             {
-                title: `:${statusEmote}: ${fetchedAppeal.content.length > 50 ? `${fetchedAppeal.content.substring(0, 50).replaceAll(`\n`, ` `)}...` : fetchedAppeal.content.replaceAll(`\n`, ` `)} (${inlineCode(fetchedAppeal.id)})`,
+                title: `:${statusEmote}: ${
+                    fetchedAppeal.content.length > 50 ? `${fetchedAppeal.content.substring(0, 50).replaceAll(`\n`, ` `)}...` : fetchedAppeal.content.replaceAll(`\n`, ` `)
+                } (${inlineCode(fetchedAppeal.id)})`,
                 description: `Ban appeal submitted by <@${fetchedAppeal.creatorId}> (\`${fetchedAppeal.creatorId}\`).`,
                 color: Colors.blockBackground,
                 fields: [
@@ -79,8 +78,8 @@ const View: Command = {
                             **Appeal created:** ${server.formatTimezone(fetchedAppeal.createdAt)}
                             **Status:** ${fetchedAppeal.status ? fetchedAppeal.status[0] + fetchedAppeal.status.toLowerCase().substring(1) : "Awaiting"}
                         `,
-                    }
-                ].filter(Boolean) as EmbedField[]
+                    },
+                ].filter(Boolean) as EmbedField[],
             },
             {
                 isSilent: true,

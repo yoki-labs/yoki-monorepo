@@ -4,9 +4,9 @@ import { AbstractClient, MessageUtil, RoleUtil } from "@yokilabs/bot";
 import { BalanceUtil } from "./helpers/balance";
 import { DatabaseUtil } from "./helpers/database";
 import { GiveawayUtil } from "./helpers/giveaway";
+import { LifetimedUtil } from "./helpers/lifetimed";
 import { MinigameUtil } from "./helpers/minigame";
 import type { Command, Server } from "./typings";
-import { LifetimedUtil } from "./helpers/lifetimed";
 
 /**
  * Main class that stores utils, connections to various providers, and ws

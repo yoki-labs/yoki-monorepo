@@ -40,12 +40,18 @@ export default class PremiumPage extends React.Component<DashboardPageProps> {
                     Premium allows you to receive additional perks and benefits in this server. Subscribe on Yoki Labs Guilded server and enjoy premium features.
                 </Typography>
                 <NextLink href="/subscribe">
-                    <Button variant="soft" color="warning" size="lg" disabled={premium === PremiumType.Gold} sx={{ mb: 6 }}>Subscribe</Button>
+                    <Button variant="soft" color="warning" size="lg" disabled={premium === PremiumType.Gold} sx={{ mb: 6 }}>
+                        Subscribe
+                    </Button>
                 </NextLink>
                 <Stepper orientation="vertical" sx={{ width: "100%" }} size="lg">
-                    <Step indicator={<PremiumStepIndicator active={true}/>} sx={{ "::after": { bgcolor: "primary.700" } }}>
-                        <Typography level="title-md" textColor="text.primary" fontWeight="bolder">Free</Typography>
-                        <Typography level="body-md" textColor="text.secondary" fontWeight="normal">No additional perks.</Typography>
+                    <Step indicator={<PremiumStepIndicator active={true} />} sx={{ "::after": { bgcolor: "primary.700" } }}>
+                        <Typography level="title-md" textColor="text.primary" fontWeight="bolder">
+                            Free
+                        </Typography>
+                        <Typography level="body-md" textColor="text.secondary" fontWeight="normal">
+                            No additional perks.
+                        </Typography>
                     </Step>
                     <PremiumLevelStep
                         name="Copper"
@@ -64,7 +70,7 @@ export default class PremiumPage extends React.Component<DashboardPageProps> {
                                 icon: faCirclePlus,
                             },
                         ]}
-                        />
+                    />
                     <PremiumLevelStep
                         name="Silver"
                         active={premiumLevel > 1}
@@ -78,7 +84,7 @@ export default class PremiumPage extends React.Component<DashboardPageProps> {
                                 icon: faCirclePlus,
                             },
                         ]}
-                        />
+                    />
                     <PremiumLevelStep
                         name="Gold"
                         active={premiumLevel > 2}
@@ -149,32 +155,38 @@ export default class PremiumPage extends React.Component<DashboardPageProps> {
     }
 }
 
-function PremiumLevelStep({ name, perks, active }: { name: string; active: boolean; perks: Array<{ text: string; icon: IconDefinition; }>; }) {
+function PremiumLevelStep({ name, perks, active }: { name: string; active: boolean; perks: Array<{ text: string; icon: IconDefinition }> }) {
     return (
-        <Step indicator={<PremiumStepIndicator active={active}/>} sx={{ "::after": active ? { bgcolor: "primary.700" } : undefined }}>
-            <Typography level="title-md" textColor={active ? "text.primary" : "text.secondary"} fontWeight="bolder" sx={{ mt: 1 }} gutterBottom>{name}</Typography>
+        <Step indicator={<PremiumStepIndicator active={active} />} sx={{ "::after": active ? { bgcolor: "primary.700" } : undefined }}>
+            <Typography level="title-md" textColor={active ? "text.primary" : "text.secondary"} fontWeight="bolder" sx={{ mt: 1 }} gutterBottom>
+                {name}
+            </Typography>
             <Stack direction="column" sx={{ opacity: active ? 1 : 0.6 }}>
-                <Typography level="title-md" textColor="text.secondary">Perks</Typography>
+                <Typography level="title-md" textColor="text.secondary">
+                    Perks
+                </Typography>
                 <List sx={{ "--ListDivider-gap": 0, mb: 1 }}>
-                    {perks.map((perk, i) =>
+                    {perks.map((perk, i) => (
                         <ListItem id={`premium.${name}.perk-${i}`}>
                             <ListItemDecorator>
                                 <FontAwesomeIcon icon={perk.icon} />
                             </ListItemDecorator>
                             {perk.text}
                         </ListItem>
-                    )}
+                    ))}
                 </List>
-                <Link href="/premium" color="primary">See more</Link>
+                <Link href="/premium" color="primary">
+                    See more
+                </Link>
             </Stack>
         </Step>
     );
 }
 
-function PremiumStepIndicator({ active }: { active: boolean; }) {
+function PremiumStepIndicator({ active }: { active: boolean }) {
     return (
         <StepIndicator variant={active ? "solid" : "soft"} color={active ? "primary" : "neutral"} sx={{ bgcolor: active ? "primary.600" : "neutral.800" }}>
             <FontAwesomeIcon icon={active ? faCheck : faTimes} />
         </StepIndicator>
-    )
+    );
 }

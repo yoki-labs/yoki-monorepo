@@ -31,11 +31,9 @@ export default class ServerSearch extends React.Component<Props, State> {
         const previousTimeout = this.state.typingTimeout;
 
         // To not spam Guilded with requests
-        if (previousTimeout)
-            clearTimeout(previousTimeout);
+        if (previousTimeout) clearTimeout(previousTimeout);
 
-        if (search === "")
-            return this.setState({ search, servers: [] });
+        if (search === "") return this.setState({ search, servers: [] });
 
         const waitForTypingTimeout = setTimeout(async () => this.setState({ awaitingResults: false, servers: await ServerSearch.fetchSearchedServers(search) }), 1000);
 
@@ -69,31 +67,32 @@ export default class ServerSearch extends React.Component<Props, State> {
                         startDecorator={<FontAwesomeIcon icon={faSearch} />}
                     />
                 </Box>
-                {
-                    search
-                    ? <Box className="grow h-full overflow-y-auto px-5 md:px-32 lg:px-60" sx={{ pb: 8 }}>
+                {search ? (
+                    <Box className="grow h-full overflow-y-auto px-5 md:px-32 lg:px-60" sx={{ pb: 8 }}>
                         <Box className="grid mb-8 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                            {awaitingResults
-                            ? <>
-                                <ServerSearchSkeleton />
-                                <ServerSearchSkeleton />
-                                <ServerSearchSkeleton />
-                                <ServerSearchSkeleton />
-                                <ServerSearchSkeleton />
-                                <ServerSearchSkeleton />
-                            </>
-                            : servers.map((server) => (
-                                <Link key={server.id} style={{ textDecoration: "none" }} href={`/dashboard/${server.id}/overview`}>
-                                    <ServerDisplay
-                                        id={server.id}
-                                        name={server.name}
-                                        avatar={server.profilePicture}
-                                        banner={server.homeBannerImageMd}
-                                        url={server.subdomain}
-                                        sx={{ cursor: "pointer", bgcolor: "background.level1", "&:hover": { boxShadow: "md", bgcolor: "background.level2" } }}
-                                    />
-                                </Link>
-                            ))}
+                            {awaitingResults ? (
+                                <>
+                                    <ServerSearchSkeleton />
+                                    <ServerSearchSkeleton />
+                                    <ServerSearchSkeleton />
+                                    <ServerSearchSkeleton />
+                                    <ServerSearchSkeleton />
+                                    <ServerSearchSkeleton />
+                                </>
+                            ) : (
+                                servers.map((server) => (
+                                    <Link key={server.id} style={{ textDecoration: "none" }} href={`/dashboard/${server.id}/overview`}>
+                                        <ServerDisplay
+                                            id={server.id}
+                                            name={server.name}
+                                            avatar={server.profilePicture}
+                                            banner={server.homeBannerImageMd}
+                                            url={server.subdomain}
+                                            sx={{ cursor: "pointer", bgcolor: "background.level1", "&:hover": { boxShadow: "md", bgcolor: "background.level2" } }}
+                                        />
+                                    </Link>
+                                ))
+                            )}
                         </Box>
                         <PagePlaceholder icon={PagePlaceholderIcon.NotFound} title="Can't find the server">
                             Private servers may not show up in the dashboard server list due to restrictions in Guilded. Considering using{" "}
@@ -103,14 +102,15 @@ export default class ServerSearch extends React.Component<Props, State> {
                             in the server to open its dashboard.
                         </PagePlaceholder>
                     </Box>
-                    : <PagePlaceholder icon={PagePlaceholderIcon.Wip} title="Find your server">
+                ) : (
+                    <PagePlaceholder icon={PagePlaceholderIcon.Wip} title="Find your server">
                         Due to Guilded removing our old ways of displaying the server, it is required that you use
                         <Typography component="span" level="code">
                             ?dashboard
                         </Typography>{" "}
                         in your server or search it up.
                     </PagePlaceholder>
-                }
+                )}
             </Box>
         );
     }
@@ -121,9 +121,7 @@ function ServerSearchSkeleton() {
         <Card sx={{ bgcolor: "background.level1", minWidth: 200 }}>
             <CardOverflow>
                 <AspectRatio ratio="5">
-                    <Box sx={{ height: "100%", bgcolor: "background.level2" }}>
-
-                    </Box>
+                    <Box sx={{ height: "100%", bgcolor: "background.level2" }}></Box>
                 </AspectRatio>
             </CardOverflow>
             <CardContent>

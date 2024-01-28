@@ -22,12 +22,13 @@ export default function ServerDisplay({ id, name, avatar, banner, url, onClick, 
                 {/* <Stack sx={{ height: "100%" }} direction="row" alignItems="center">
                     <Avatar src={avatar ?? void 0}>{name[0]}</Avatar>
                 </Stack> */}
-                {banner
-                    ? <AspectRatio ratio="5">
+                {banner ? (
+                    <AspectRatio ratio="5">
                         <img src={banner.replace(guildedAwsCdnDomain, guildedCdnDomain) ?? void 0} alt={`${name}'s Banner`} />
                     </AspectRatio>
-                    : <FakeImage ratio="5" number={id.charCodeAt(0) % 10} />
-                }
+                ) : (
+                    <FakeImage ratio="5" number={id.charCodeAt(0) % 10} />
+                )}
                 {/* <Avatar sx={{ position: "absolute", left: 16, bottom: 0, transform: "translateY(60%)" }} size="md" src={avatar ?? void 0}>
                     {name[0].toUpperCase()}
                 </Avatar> */}
@@ -37,8 +38,8 @@ export default function ServerDisplay({ id, name, avatar, banner, url, onClick, 
                     <Avatar size="lg" src={avatar?.replace(guildedAwsCdnDomain, guildedCdnDomain) ?? void 0} sx={{ bgcolor: "neutral.700" }}>
                         {name[0].toUpperCase()}
                     </Avatar>
-                    {url
-                        ? <Stack direction="column">
+                    {url ? (
+                        <Stack direction="column">
                             <Typography component="span" level="title-sm">
                                 {name}
                             </Typography>
@@ -46,12 +47,13 @@ export default function ServerDisplay({ id, name, avatar, banner, url, onClick, 
                                 <Typography level="body-md">/{url}</Typography>
                             </Stack>
                         </Stack>
-                        : <Stack direction="row" alignItems="center">
+                    ) : (
+                        <Stack direction="row" alignItems="center">
                             <Typography component="span" level="title-sm">
                                 {name}
                             </Typography>
                         </Stack>
-                    }
+                    )}
                 </Stack>
             </CardContent>
         </Card>

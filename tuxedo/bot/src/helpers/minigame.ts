@@ -1,11 +1,11 @@
 import { Currency } from "@prisma/client";
+import { Util } from "@yokilabs/bot";
 import { Colors } from "@yokilabs/utils";
 import { stripIndents } from "common-tags";
 import { EmbedField, EmbedPayload, Message } from "guilded.js";
 
-import { BlackjackCondition, BlackjackDeck, randomBlackjackNumToCard, SpecialBlackjackVariant, stringifyBlackjackDeck, stringifyCard } from "../util/blackjack";
 import { TuxoClient } from "../Client";
-import { Util } from "@yokilabs/bot";
+import { BlackjackCondition, BlackjackDeck, randomBlackjackNumToCard, SpecialBlackjackVariant, stringifyBlackjackDeck, stringifyCard } from "../util/blackjack";
 
 interface BlackjackInstance {
     serverId: string;

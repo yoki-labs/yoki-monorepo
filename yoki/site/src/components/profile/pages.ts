@@ -4,7 +4,7 @@ import React from "react";
 
 import ProfileAppealPage from "./ProfileAppealPage";
 import ProfileOverviewPage from "./ProfileOverviewPage";
-import { LabsProfiledUser, LabsSessionUser } from "../../utils/routes/pages";
+import { LabsProfiledUser } from "../../utils/routes/pages";
 
 export interface ProfilePageItem {
     id: string;

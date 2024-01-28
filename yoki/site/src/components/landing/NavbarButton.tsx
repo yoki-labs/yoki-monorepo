@@ -3,7 +3,19 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Button } from "@mui/joy";
 import Link from "next/link";
 
-export default function NavbarButton({ displayOnlyOnHigh, text, icon, href, color }: { displayOnlyOnHigh?: boolean; text: string; icon?: IconDefinition; href: string; color: "primary" | "neutral" | "warning" }) {
+export default function NavbarButton({
+    displayOnlyOnHigh,
+    text,
+    icon,
+    href,
+    color,
+}: {
+    displayOnlyOnHigh?: boolean;
+    text: string;
+    icon?: IconDefinition;
+    href: string;
+    color: "primary" | "neutral" | "warning";
+}) {
     return (
         <Link href={href} className={`nextlink ${displayOnlyOnHigh ? "sm:block md:hidden lg:block" : ""}`}>
             <Button tabIndex={-1} size="lg" startDecorator={icon && <FontAwesomeIcon icon={icon} />} variant="plain" color={color} sx={{ width: "100%", textDecoration: "none" }}>

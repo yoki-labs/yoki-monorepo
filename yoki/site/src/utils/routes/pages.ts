@@ -13,8 +13,8 @@ export interface LabsProfiledUser {
     subdomain: string | undefined | null;
     avatar: string | undefined | null;
     banner: string | undefined | null;
-    aboutInfo: Partial<{ tagLine: string | null; bio: string | null; }> | undefined | null;
-};
+    aboutInfo: Partial<{ tagLine: string | null; bio: string | null }> | undefined | null;
+}
 
 export interface LandingPageSessionProps {
     user: LabsSessionUser | null;

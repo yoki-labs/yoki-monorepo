@@ -64,7 +64,7 @@ const Rob: Command = {
         // Starting balance only exists in banks, so you can't rob anything
         if (!(targetInfo?.balances.length && targetInfo.balances.some((x) => x.pocket > 0)))
             return ctx.messageUtil.replyWithError(message, "Nothing to steal", `The member either has no balance at all or their entire balance is in the bank.`);
-        
+
         // Add random amounts of rewards that were configured or ones that are default
         const rewards: Pick<Reward, "currencyId" | "minAmount" | "maxAmount">[] = serverConfig?.rewards.length
             ? serverConfig.rewards
@@ -83,7 +83,7 @@ const Rob: Command = {
             // Balance changes
             const currentBalance = existingBalance?.all ?? currency.startingBalance ?? 0;
             const requiredBalance = reward.maxAmount * (serverConfig?.failSubtractCut ?? defaultConfig.failCut!);
-            
+
             // To have a proper losing condition
             if (currentBalance < requiredBalance)
                 return ctx.messageUtil.replyWithError(message, "Need more currency", `You need at least ${requiredBalance} ${currency.name} to rob someone.`);
@@ -93,9 +93,9 @@ const Rob: Command = {
 
             // No point in calculating the stuff; shouldn't be able to steal negative currency either
             if (!targetBalance || targetBalance < 1) continue;
-            
+
             const randomReward = Math.floor(Math.random() * (reward.maxAmount - reward.minAmount) + reward.minAmount);
-            
+
             // I don't like this
             const cappedReward = randomReward > targetBalance ? targetBalance : randomReward;
             const finalReward = currency.maximumBalance && cappedReward > currency.maximumBalance ? currency.maximumBalance : cappedReward;
@@ -104,8 +104,7 @@ const Rob: Command = {
         }
 
         // Failed to steal anything
-        if (!newBalance.length)
-            return ctx.messageUtil.replyWithError(message, "Nothing to steal", `The member has no balance that you can steal at all or it's in the negatives.`);
+        if (!newBalance.length) return ctx.messageUtil.replyWithError(message, "Nothing to steal", `The member has no balance that you can steal at all or it's in the negatives.`);
 
         // For the cooldown
         ctx.balanceUtil.updateLastCommandUsage(message.serverId!, message.createdById, DefaultIncomeType.ROB);

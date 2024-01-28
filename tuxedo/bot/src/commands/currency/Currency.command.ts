@@ -4,6 +4,7 @@ import { RoleType } from "@prisma/client";
 import { Category, Command } from "../commands";
 import CanDeposit from "./CanDeposit.command";
 import Create from "./Create.command";
+import CustomEmote from "./CustomEmote.command";
 import Delete from "./Delete.command";
 import Emote from "./Emote.command";
 import Info from "./Info.command";
@@ -12,7 +13,6 @@ import Maximum from "./Max.command";
 import Name from "./Name.command";
 import Starting from "./Starting.command";
 import Tag from "./Tag.command";
-import CustomEmote from "./CustomEmote.command";
 
 const Currency: Command = {
     name: "currency",

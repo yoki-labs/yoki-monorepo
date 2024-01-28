@@ -1,5 +1,6 @@
 import { LogChannelType, ModmailThread, ReactionActionType } from "@prisma/client";
 import { inlineCode, Util } from "@yokilabs/bot";
+import { createRoleMentionElement, createTextElement, createUserMentionElement, emptyText } from "@yokilabs/bot/dist/src/utils/rich";
 import { Colors } from "@yokilabs/utils";
 import { stripIndents } from "common-tags";
 import { nanoid } from "nanoid";
@@ -7,7 +8,6 @@ import { nanoid } from "nanoid";
 import type YokiClient from "../Client";
 import type { LogChannel, Server } from "../typings";
 import { errorLoggerS3, uploadS3 } from "../utils/s3";
-import { createRoleMentionElement, createTextElement, createUserMentionElement, emptyText } from "@yokilabs/bot/dist/src/utils/rich";
 
 export default class SupportUtil extends Util<YokiClient> {
     async createModmailThread(server: Server, channelId: string, createdBy: string) {
@@ -16,8 +16,7 @@ export default class SupportUtil extends Util<YokiClient> {
         if (!server.modmailPingRoleId) return;
 
         // No ping role, no way to notify
-        const modmailPingRole = await this.client.roles.fetch(serverId, server.modmailPingRoleId)
-            .catch(() => null);
+        const modmailPingRole = await this.client.roles.fetch(serverId, server.modmailPingRoleId).catch(() => null);
         if (!modmailPingRole) return;
 
         // User needs to close the other thread before proceeding with a new one
@@ -99,13 +98,7 @@ export default class SupportUtil extends Util<YokiClient> {
                 type: "paragraph",
                 object: "block",
                 data: {},
-                nodes: [
-                    emptyText,
-                    createRoleMentionElement(modmailPingRole),
-                    createTextElement(" "),
-                    createUserMentionElement(member),
-                    emptyText,
-                ],
+                nodes: [emptyText, createRoleMentionElement(modmailPingRole), createTextElement(" "), createUserMentionElement(member), emptyText],
             },
         ]);
 

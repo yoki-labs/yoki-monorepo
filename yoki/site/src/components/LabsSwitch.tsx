@@ -15,8 +15,8 @@ export function LabsSwitch({ activeIcon, deactivatedIcon, slotProps, ...props }:
                 thumb: ({ checked }) => ({
                     children: <FontAwesomeIcon icon={checked ? activeIcon ?? faCheck : deactivatedIcon ?? faTimes} style={{ width: 12, height: 12 }} />,
                 }),
-                ...slotProps
+                ...slotProps,
             }}
         />
-    )
+    );
 }

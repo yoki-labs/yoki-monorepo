@@ -25,7 +25,7 @@ export class ServerSelector extends React.Component<Props> {
     renderCurrentServer() {
         const { currentServer } = this.props;
 
-        return currentServer && <SelectedServerOption name={currentServer.name} avatar={currentServer.avatar} />
+        return currentServer && <SelectedServerOption name={currentServer.name} avatar={currentServer.avatar} />;
     }
 
     render() {
@@ -41,26 +41,14 @@ export class ServerSelector extends React.Component<Props> {
                 onChange={async (_, serverId) => serverId && (await this.props.onChange(serverId))}
             >
                 {servers.length
-                    ? sortedServers.map((server) => (
-                        <ServerOption
-                            id={server.id}
-                            name={server.name}
-                            subdomain={server.subdomain}
-                            avatar={server.profilePicture}
-                        />
-                    ))
-                    : currentServer && <ServerOption
-                        id={currentServer.id}
-                        name={currentServer.name}
-                        subdomain={currentServer.url}
-                        avatar={currentServer.avatar} />
-                }
+                    ? sortedServers.map((server) => <ServerOption id={server.id} name={server.name} subdomain={server.subdomain} avatar={server.profilePicture} />)
+                    : currentServer && <ServerOption id={currentServer.id} name={currentServer.name} subdomain={currentServer.url} avatar={currentServer.avatar} />}
             </LabsDropdown>
         );
     }
 }
 
-function ServerOption({ id, name, subdomain, avatar }: { id: string; name: string; subdomain?: string | null | undefined; avatar: string | null | undefined; }) {
+function ServerOption({ id, name, subdomain, avatar }: { id: string; name: string; subdomain?: string | null | undefined; avatar: string | null | undefined }) {
     return (
         <Option key={id} value={id} label={name}>
             <ListItemDecorator>
@@ -74,7 +62,7 @@ function ServerOption({ id, name, subdomain, avatar }: { id: string; name: strin
     );
 }
 
-function SelectedServerOption({ name, avatar }: { name: string; avatar: string | undefined | null; }) {
+function SelectedServerOption({ name, avatar }: { name: string; avatar: string | undefined | null }) {
     return (
         <>
             <ListItemDecorator>

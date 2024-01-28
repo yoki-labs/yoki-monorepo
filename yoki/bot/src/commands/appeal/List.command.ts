@@ -1,7 +1,8 @@
 import { Appeal } from "@prisma/client";
+import { inlineCode } from "@yokilabs/bot";
+
 import { RoleType } from "../../typings";
 import { Category, Command } from "../commands";
-import { inlineCode } from "@yokilabs/bot";
 
 // ID -- 17; Text -- 9; User ID -- 12; Max content -- 100; Content ellipse -- 3
 const maxContent = 35;
@@ -34,7 +35,7 @@ const List: Command = {
         const appeals = await ctx.prisma.appeal.findMany({
             where: {
                 serverId: message.serverId!,
-            }
+            },
         });
 
         return ctx.messageUtil.replyWithPaginatedContent<Appeal>({
