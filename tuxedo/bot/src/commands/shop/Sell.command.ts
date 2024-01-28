@@ -80,15 +80,15 @@ const Sell: Command = {
         for (const itemValue of item.value) {
             const currency = currencies.find((x) => x.id === itemValue.currencyId)!;
             const memberBalance = member?.balances.find((x) => x.currencyId === itemValue.currencyId);
-            const amountInMember = memberBalance?.all ?? currency.startingBalance ?? 0;
+            const amountInMember = memberBalance?.all ? Number(memberBalance.all) : currency.startingBalance ?? 0;
 
             const addedAmount = itemValue.amount * itemAmount;
             // To cap amount to maximum currency balance
             const amountAfter = amountInMember + addedAmount;
             const finalAmount =
                 currency.maximumBalance && amountAfter > currency.maximumBalance
-                    ? // ? addedAmount - ((amountInMember + addedAmount) - currency.maximumBalance)
-                      addedAmount + currency.maximumBalance - amountAfter
+                    ? // The delta between maximum balance and how much member had (This is how much we can add until we get to the max)
+                      currency.maximumBalance - amountInMember
                     : addedAmount;
 
             balances.push({
@@ -96,6 +96,8 @@ const Sell: Command = {
                 currencyId: currency.id,
                 pocket: memberBalance?.pocket ?? 0,
                 bank: (memberBalance?.bank ?? currency.startingBalance ?? 0) + finalAmount,
+                // Final amount means how much we added due to cap. If finalAmount === addedAmount, then we lost nothing
+                // Otherwise, we lost anything after finalAmount
                 lost: addedAmount - finalAmount,
             });
         }
