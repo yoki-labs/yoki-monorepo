@@ -6,6 +6,7 @@ import { SanitizedServer } from "../../../lib/@types/db";
 import { GuildedClientServer, GuildedServer } from "../../../lib/@types/guilded";
 import { RoleType } from "@prisma/client";
 import { roleTypeLevels } from "../../../utils/routes/permissions";
+import { ServerSelector } from "./ServerSelector";
 
 type Props = {
     menuToggled: boolean;
@@ -42,9 +43,9 @@ export function LayoutSidebar({ page, serverConfig, menuToggled, highestRoleType
             sx={{ fontSize: 14, pb: 5, userSelect: "none" }}
             className={`px-5 w-full pt-4 md:pt-0 md:px-7 md:max-w-56 md:w-56 lg:max-w-64 lg:w-64 h-full overflow-y-auto overflow-x-hidden ${showStateClass}`}
         >
-            {/* <Box sx={{ mb: 5 }} className="block md:hidden">
-                <ServerSelector onChange={onServerChange} defaultValue={currentServer?.id} servers={servers} />
-            </Box> */}
+            <Box sx={{ mb: 5 }} className="block md:hidden">
+                <ServerSelector currentServer={currentServer} onChange={onServerChange} defaultValue={currentServer?.id} servers={servers} />
+            </Box>
             {categorizedPages.map(({ category, items }) => {
                 const filteredItems = items.filter((item) => highestRoleLevel >= roleTypeLevels[item.requiredRole]);
 
