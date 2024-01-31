@@ -2,6 +2,8 @@ import { Stack, Typography } from "@mui/joy";
 import React, { ReactNode } from "react";
 
 export enum PagePlaceholderIcon {
+    Success,
+    Invalid,
     NotFound,
     Wip,
     NoPermission,
@@ -9,6 +11,8 @@ export enum PagePlaceholderIcon {
 }
 
 const icons: Record<PagePlaceholderIcon, string> = {
+    [PagePlaceholderIcon.Success]: "(ﾉ◕ヮ◕)ﾉ”",
+    [PagePlaceholderIcon.Invalid]: "(╥︣﹏᷅╥)",
     [PagePlaceholderIcon.NotFound]: "¯\\_ (ツ)_/¯",
     [PagePlaceholderIcon.Wip]: "(｡- ‿ -｡)💤",
     [PagePlaceholderIcon.NoPermission]: "( •́ ‸ •̀ )",
