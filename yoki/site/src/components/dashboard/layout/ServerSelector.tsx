@@ -30,9 +30,9 @@ export class ServerSelector extends React.Component<Props> {
 
     render() {
         const { currentServer, servers, defaultValue } = this.props;
-
+        if (!servers) return null;
         const sortedServers = servers.sort((a, b) => (a.name > b.name ? 1 : a.name < b.name ? -1 : 0));
-
+        
         return (
             <LabsDropdown
                 placeholder="Select server"
