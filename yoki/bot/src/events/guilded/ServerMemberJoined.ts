@@ -1,5 +1,5 @@
 import { LogChannelType, ResponseType, Severity } from "@prisma/client";
-import { codeBlock, inlineCode } from "@yokilabs/bot";
+import { codeBlock, errorEmbed, inlineCode } from "@yokilabs/bot";
 import { Colors } from "@yokilabs/utils";
 import { GuildedImages } from "@yokilabs/utils/dist/src/images";
 import { stripIndents } from "common-tags";
@@ -34,12 +34,16 @@ export default {
         }
 
         console.log(`${userId} joined ${server.serverId}, with account age of ${Date.now() - new Date(member.user!.createdAt!).getTime()}`);
+        
+        const canFilterAnyone = !server.antiRaidAgeFilter && server.antiRaidResponse !== ResponseType.KICK;
+        const memberJoinDateIsBelowRequirement = Date.now() - new Date(member.user!.createdAt!).getTime() <= (server.antiRaidAgeFilter ?? 0);
+        const userHasNoAvatar = !member.user!.avatar
+
+        console.log(`Antiraid settings for ${userId}: antiRaidEnabled (${server.antiRaidEnabled}), antiRaidAgeFilter (${server.antiRaidAgeFilter}), antiRaidResponse (${server.antiRaidResponse}), ONE OF canFilterAnyone (${canFilterAnyone}), memberJoinDateIsBelowRequirement (${memberJoinDateIsBelowRequirement}), userHasNoAvatar (${userHasNoAvatar})`);
 
         if (
             server.antiRaidEnabled &&
-            ((!server.antiRaidAgeFilter && server.antiRaidResponse !== ResponseType.KICK) ||
-                Date.now() - new Date(member.user!.createdAt!).getTime() <= (server.antiRaidAgeFilter ?? 0) ||
-                !member.user!.avatar)
+            (canFilterAnyone || memberJoinDateIsBelowRequirement || userHasNoAvatar)
         ) {
             console.log(`User ${userId} tripped antiraid in server ${server.serverId}, response ${server.antiRaidResponse}`);
             void ctx.amp.logEvent({ event_type: "FRESH_ACCOUNT_JOIN", user_id: userId, event_properties: { serverId } });
@@ -57,6 +61,7 @@ export default {
                             userCaptcha = createdCaptcha;
                         }
 
+                        console.log(`User captcha URL: ${userCaptcha.url}`);
                         if (server.muteRoleId) await ctx.roles.addRoleToMember(serverId, userId, server.muteRoleId).catch(() => null);
                         // Have to complete captcha
                         await ctx.messageUtil
@@ -75,7 +80,7 @@ export default {
                                     fields: [
                                         {
                                             name: `Example`,
-                                            value: codeBlock(`?solve ahS9fjW`, `md`),
+                                            value: codeBlock(`${server.getPrefix()}solve ahS9fjW`, `md`),
                                         },
                                     ],
                                 },
@@ -83,9 +88,12 @@ export default {
                                     isPrivate: true,
                                 }
                             )
-                            .catch((err) => console.log(`Error notifying user of captcha for server ${serverId} because of ${err}`));
-                    }
-                    break;
+                            .catch((err) => {
+                                console.log(`Error notifying user of captcha for server ${serverId} because of ${err}`);
+                                void ctx.errorHandler.send("Error while handling antiraid site challenge", [errorEmbed((err as Error).message)]);
+                            });
+                        }
+                        break;
                 }
                 case "KICK": {
                     void ctx.amp.logEvent({ event_type: "MEMBER_KICKED_JOIN", user_id: userId, event_properties: { serverId } });
@@ -109,6 +117,7 @@ export default {
                     return;
                 }
                 case "SITE_CAPTCHA": {
+                    console.log(`AntiRaidChallengeChannel exists: ${server.antiRaidChallengeChannel}`);
                     if (server.antiRaidChallengeChannel) {
                         let userCaptcha = await ctx.prisma.captcha.findFirst({ where: { serverId, triggeringUser: userId, solved: false } });
                         void ctx.amp.logEvent({ event_type: "MEMBER_SITE_CAPTCHA_JOIN", user_id: userId, event_properties: { serverId } });
@@ -139,7 +148,10 @@ export default {
                                 undefined,
                                 server.muteRoleId ? { isPrivate: true } : undefined
                             )
-                            .catch((err) => console.log(`Error notifying user of captcha for server ${serverId} because of ${err}`));
+                            .catch((err) => {
+                                console.log(`Error notifying user of captcha for server ${serverId} because of ${err}`);
+                                void ctx.errorHandler.send("Error while handling antiraid site challenge", [errorEmbed((err as Error).message)]);
+                            });
                     }
                     break;
                 }
