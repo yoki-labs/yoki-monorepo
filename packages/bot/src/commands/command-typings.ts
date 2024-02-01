@@ -2,7 +2,7 @@ import type { Collection } from "@discordjs/collection";
 import { CommandArgumentInfo } from "@yokilabs/utils";
 import type { Message } from "guilded.js";
 
-import type { AbstractClient } from "../Client";
+import type { AbstractClient, AnyClient } from "../Client";
 import type { IServer } from "../db-types";
 import type { CommandContext } from "../typings";
 import type { ResolvedArgs, UsedMentions } from "./arguments";
@@ -39,8 +39,7 @@ export interface BaseCommand<
 export interface CommandArgument extends CommandArgumentInfo {
     // resolver?: (...content: any[]) => any;
 }
-export type CommandArgType = "string" | "UUID" | "member" | "number" | "boolean" | "enum" | "time" | "rest" | "enumList" | "channel" | "emote" | "role";
-export type CommandArgValidator = [
-    (input: string, rawArgs: string[], index: number, message: Message, argument: CommandArgument, usedMentions: UsedMentions) => ResolvedArgs | Promise<ResolvedArgs>,
+export type CommandArgValidator<TClient extends AbstractClient<TClient, any, any> = AnyClient> = [
+    (input: string, rawArgs: string[], index: number, message: Message, argument: CommandArgument, usedMentions: UsedMentions, client: TClient) => ResolvedArgs | Promise<ResolvedArgs>,
     (arg: CommandArgument) => string
 ];

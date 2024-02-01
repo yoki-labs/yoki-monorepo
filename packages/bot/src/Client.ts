@@ -1,6 +1,6 @@
 import { init } from "@amplitude/node";
 import { Collection } from "@discordjs/collection";
-import { Client, ClientOptions, WebhookClient } from "guilded.js";
+import { Client, ClientOptions, RestManager, WebhookClient } from "guilded.js";
 
 // import RedisClient from "ioredis";
 import type { BaseCommand } from "./commands/command-typings";
@@ -8,6 +8,8 @@ import type { IServer } from "./db-types";
 import Welcome from "./events/Welcome";
 import type { MessageUtil } from "./helpers/message";
 import type { RoleUtil } from "./helpers/role";
+
+export type AnyClient = AbstractClient<any, any, any>;
 
 /**
  * Main class that stores utils, connections to various providers, and ws
@@ -44,6 +46,9 @@ export abstract class AbstractClient<
     // global collection of all the bots commands (parent commands, sub commands, etc.)
     readonly commands = new Collection<string, TCommand>();
 
+    // Client API rest manager
+    readonly clientApiRest: RestManager;
+
     // Util
     abstract roleUtil: RoleUtil<TClient>;
 
@@ -56,6 +61,7 @@ export abstract class AbstractClient<
         super(options);
 
         this.prefix = prefix;
+        this.clientApiRest = new RestManager({ token: options.token, proxyURL: "https://www.guilded.gg/api" });
     }
 
     /** Start the bot connection */

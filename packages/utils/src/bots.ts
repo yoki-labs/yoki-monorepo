@@ -1,4 +1,4 @@
-export type CommandArgType = "string" | "UUID" | "member" | "number" | "boolean" | "enum" | "time" | "rest" | "enumList" | "channel" | "emote" | "role";
+export type CommandArgType = "string" | "UUID" | "user" | "member" | "number" | "boolean" | "enum" | "time" | "rest" | "enumList" | "channel" | "emote" | "role";
 
 export interface CommandArgumentInfo {
     // In-code basics

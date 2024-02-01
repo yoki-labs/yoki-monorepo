@@ -1,4 +1,5 @@
-import { CachedMember, RoleType } from "../../typings";
+import { User } from "guilded.js";
+import { RoleType } from "../../typings";
 import { Category, Command } from "../commands";
 import { displayHistory } from "./util";
 
@@ -15,7 +16,7 @@ const View: Command = {
         {
             name: "target",
             display: "user",
-            type: "member",
+            type: "user",
         },
         {
             name: "page",
@@ -24,10 +25,11 @@ const View: Command = {
         },
     ],
     execute: async (message, args, ctx) => {
-        const target = args.target as CachedMember;
+        const target = args.target as User;
         const page = args.page ? Math.floor((args.page as number) - 1) : 0;
+        console.log("Target", target.id);
 
-        await displayHistory(message, ctx, { where: { serverId: message.serverId!, targetId: target.user!.id } }, page, `<@${target.user!.id}>'s History`);
+        await displayHistory(message, ctx, { where: { serverId: message.serverId!, targetId: target.id } }, page, `<@${target.id}>'s History`);
     },
 };
 

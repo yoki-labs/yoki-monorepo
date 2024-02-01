@@ -10,6 +10,7 @@ import emote from "../args/emote";
 import enumArg from "../args/enum";
 import enumList from "../args/enumList";
 import member from "../args/member";
+import user from "../args/user";
 import number from "../args/number";
 import rest from "../args/rest";
 import role from "../args/role";
@@ -20,7 +21,8 @@ import type { AbstractClient } from "../Client";
 import type { IRole, IServer } from "../db-types";
 import { bold, codeBlock, inlineCode, inlineQuote } from "../utils/formatting";
 import type { ResolvedArgs, UsedMentions } from "./arguments";
-import type { BaseCommand, CommandArgType, CommandArgument, CommandArgValidator } from "./command-typings";
+import type { BaseCommand, CommandArgument, CommandArgValidator } from "./command-typings";
+import { CommandArgType } from "@yokilabs/utils";
 
 export function createCommandHandler<
     TClient extends AbstractClient<TClient, TServer, TCommand>,
@@ -28,13 +30,14 @@ export function createCommandHandler<
     TCommand extends BaseCommand<TCommand, TClient, TRoleType, TServer>,
     TRoleType extends string
 >(roleValues: Record<TRoleType, number>, errorLogger?: (ctx: TClient, event: string, err: Error, context?: any) => void) {
-    const argumentConverters: Record<CommandArgType, CommandArgValidator> = {
+    const argumentConverters: Record<CommandArgType, CommandArgValidator<TClient>> = {
         boolean: booleanArg,
         channel,
         enum: enumArg,
         enumList,
         time,
         member,
+        user,
         number,
         rest,
         string: stringArg,
@@ -183,7 +186,7 @@ export function createCommandHandler<
                     const [argValidator, invalidStringGenerator] = argumentConverters[commandArg.type];
 
                     // run the caster and see if the arg is valid
-                    const castArg = args[i] ? await argValidator(args[i], args, i, message, commandArg, usedMentions) : null;
+                    const castArg = args[i] ? await argValidator(args[i], args, i, message, commandArg, usedMentions, ctx) : null;
 
                     // If the arg is not valid, inform the user
                     if (castArg === null) {

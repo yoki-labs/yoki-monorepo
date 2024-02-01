@@ -12,25 +12,19 @@ const View: Command = {
     subName: "view",
     description: "View info of an appeal.",
     // usage: "<caseId> [remove]",
-    examples: ["12345", "12345 remove"],
+    examples: ["12345"],
     requiredRole: RoleType.MINIMOD,
     category: Category.Moderation,
+    subCommand: true,
     args: [
         {
             name: "appealId",
             display: "appeal ID",
             type: "number",
         },
-        {
-            name: "action",
-            display: "remove",
-            type: "string",
-            optional: true,
-        },
     ],
     execute: async (message, args, ctx, { server }) => {
         const appealId = args.appealId as number;
-        const remove = (args.action as string)?.toLowerCase() === "remove";
 
         const [fetchedAppeal] = await ctx.prisma.appeal.findMany({
             where: {
@@ -40,16 +34,6 @@ const View: Command = {
         });
 
         if (!fetchedAppeal) return ctx.messageUtil.replyWithError(message, `Unknown appeal`, `An appeal with that ID does not exist!`);
-
-        // Delete
-        if (remove) {
-            await ctx.prisma.appeal.delete({
-                where: {
-                    id: appealId,
-                },
-            });
-            return ctx.messageUtil.replyWithSuccess(message, `Appeal deleted`, `Appeal ${inlineCode(appealId)} has been successfully deleted.`);
-        }
 
         const statusEmote =
             fetchedAppeal.status === AppealStatus.ACCEPTED ? `large_green_circle` : fetchedAppeal.status === AppealStatus.DECLINED ? `red_circle` : `large_orange_circle`;

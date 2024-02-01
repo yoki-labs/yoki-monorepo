@@ -6,6 +6,15 @@ export type RichMarkupElementType = RichMarkupBlockElementType | RichMarkupInlin
 
 export type RichMarkupMarkType = "bold" | "italic" | "strikethrough" | "underline" | "spoiler" | "inline-code-v2";
 
+export interface RichMarkupValue extends RichMarkupNode<"value"> {
+    document: RichMarkupDocument;
+}
+
+export interface RichMarkupDocument extends RichMarkupNode<"document"> {
+    data: {};
+    nodes: RichMarkupBlockElement[];
+}
+
 export interface RichMarkupNode<T extends RichMarkupObject> {
     object: T;
 }

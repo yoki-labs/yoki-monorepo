@@ -4,7 +4,6 @@ import { RoleType } from "../../typings";
 import { Category, Command } from "../commands";
 import All from "./All.command";
 import Clear from "./Clear.command";
-import ForceView from "./ForceView.command";
 import View from "./View.command";
 
 const History: Command = {
@@ -15,7 +14,7 @@ const History: Command = {
     parentCommand: true,
     requiredRole: RoleType.MINIMOD,
     category: Category.Moderation,
-    subCommands: new Collection<string, Command>().set("view", View).set("clear", Clear).set("all", All).set("forceview", ForceView),
+    subCommands: new Collection<string, Command>().set("view", View).set("clear", Clear).set("all", All),
     execute: () => void 0,
 };
 

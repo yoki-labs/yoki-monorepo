@@ -33,6 +33,7 @@ const argumentTypeToDisplay: Record<CommandArgType, string> = {
     boolean: "'yes' or 'no'",
     UUID: "ID",
     member: "server member",
+    user: "user",
     enum: "allowed values",
     enumList: "allowed values",
     time: "time",
