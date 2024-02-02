@@ -15,6 +15,20 @@ export default class DerivedMessageUtil extends MessageUtil<TestClient, Server, 
         });
     }
 
+    createMarkdownTopic(channelId: string, title: string, content: string) {
+        return this.client.rest.make({
+            path: `/channels/${channelId}/topics`,
+            method: "POST",
+            body: {
+                title,
+                content,
+            },
+            headers: {
+                "x-guilded-bot-api-use-official-markdown": "true",
+            },
+        });
+    }
+
     replyWithMarkdown(message: Message, content: MessageContent) {
         const msgContent: MessageContent = typeof content === "string" ? { replyMessageIds: [message.id], content } : { replyMessageIds: [message.id], ...content };
 
