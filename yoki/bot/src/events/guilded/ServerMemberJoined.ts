@@ -90,7 +90,7 @@ export default {
                                 )
                                 .catch((err) => {
                                     console.log(`Error notifying user of captcha for server ${serverId} because of ${err}`);
-                                    void ctx.errorHandler.send("Error while handling antiraid site challenge", [errorEmbed((err as Error).message)]);
+                                    void ctx.errorHandler.send(`Error while handling antiraid site challenge for user ${userId}`, [errorEmbed((err as Error).message)]);
                                 })
                         , 3000);
                     }
@@ -150,7 +150,7 @@ export default {
                                 )
                                 .catch((err) => {
                                     console.log(`Error notifying user of captcha for server ${serverId} because of ${err}`);
-                                    void ctx.errorHandler.send("Error while handling antiraid site challenge", [errorEmbed((err as Error).message)]);
+                                    void ctx.errorHandler.send(`Error while handling antiraid site challenge for user ${userId}`, [errorEmbed((err as Error).message)]);
                                 })
                         , 3000);
                     }
