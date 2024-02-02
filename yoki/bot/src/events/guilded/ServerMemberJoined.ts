@@ -39,13 +39,10 @@ export default {
         const memberJoinDateIsBelowRequirement = Date.now() - new Date(member.user!.createdAt!).getTime() <= (server.antiRaidAgeFilter ?? 0);
         const userHasNoAvatar = !member.user!.avatar
 
-        console.log(`Antiraid settings for ${userId}: antiRaidEnabled (${server.antiRaidEnabled}), antiRaidAgeFilter (${server.antiRaidAgeFilter}), antiRaidResponse (${server.antiRaidResponse}), ONE OF canFilterAnyone (${canFilterAnyone}), memberJoinDateIsBelowRequirement (${memberJoinDateIsBelowRequirement}), userHasNoAvatar (${userHasNoAvatar})`);
-
         if (
             server.antiRaidEnabled &&
             (canFilterAnyone || memberJoinDateIsBelowRequirement || userHasNoAvatar)
         ) {
-            console.log(`User ${userId} tripped antiraid in server ${server.serverId}, response ${server.antiRaidResponse}`);
             void ctx.amp.logEvent({ event_type: "FRESH_ACCOUNT_JOIN", user_id: userId, event_properties: { serverId } });
             switch (server.antiRaidResponse) {
                 case "TEXT_CAPTCHA": {
@@ -63,37 +60,41 @@ export default {
 
                         console.log(`User captcha URL: ${userCaptcha.url}`);
                         if (server.muteRoleId) await ctx.roles.addRoleToMember(serverId, userId, server.muteRoleId).catch(() => null);
-                        // Have to complete captcha
-                        await ctx.messageUtil
-                            .sendWarningBlock(
-                                server.antiRaidChallengeChannel,
-                                `Halt! Please complete this captcha`,
-                                stripIndents`
-                        <@${userId}>, your account has tripped the anti-raid filter and requires further verification to ensure you are not a bot.
 
-                        Please run the following command with the code below: \`${server.getPrefix()}solve insert-code-here\`.
-                    `,
-                                {
-                                    image: {
-                                        url: userCaptcha.url!,
-                                    },
-                                    fields: [
-                                        {
-                                            name: `Example`,
-                                            value: codeBlock(`${server.getPrefix()}solve ahS9fjW`, `md`),
+                        // Have to complete captcha
+                        // There might be bots doing something behind the scenes and people may not be able to be mentioned for that period of time
+                        setTimeout(async () =>
+                            await ctx.messageUtil
+                                .sendWarningBlock(
+                                    server.antiRaidChallengeChannel!,
+                                    `Halt! Please complete this captcha`,
+                                    stripIndents`
+                                        <@${userId}>, your account has tripped the anti-raid filter and requires further verification to ensure you are not a bot.
+
+                                        Please run the following command with the code below: \`${server.getPrefix()}solve insert-code-here\`.
+                                    `,
+                                    {
+                                        image: {
+                                            url: userCaptcha!.url!,
                                         },
-                                    ],
-                                },
-                                {
-                                    isPrivate: true,
-                                }
-                            )
-                            .catch((err) => {
-                                console.log(`Error notifying user of captcha for server ${serverId} because of ${err}`);
-                                void ctx.errorHandler.send("Error while handling antiraid site challenge", [errorEmbed((err as Error).message)]);
-                            });
-                        }
-                        break;
+                                        fields: [
+                                            {
+                                                name: `Example`,
+                                                value: codeBlock(`${server.getPrefix()}solve ahS9fjW`, `md`),
+                                            },
+                                        ],
+                                    },
+                                    {
+                                        isPrivate: true,
+                                    }
+                                )
+                                .catch((err) => {
+                                    console.log(`Error notifying user of captcha for server ${serverId} because of ${err}`);
+                                    void ctx.errorHandler.send("Error while handling antiraid site challenge", [errorEmbed((err as Error).message)]);
+                                })
+                        , 300);
+                    }
+                    break;
                 }
                 case "KICK": {
                     void ctx.amp.logEvent({ event_type: "MEMBER_KICKED_JOIN", user_id: userId, event_properties: { serverId } });
@@ -117,7 +118,6 @@ export default {
                     return;
                 }
                 case "SITE_CAPTCHA": {
-                    console.log(`AntiRaidChallengeChannel exists: ${server.antiRaidChallengeChannel}`);
                     if (server.antiRaidChallengeChannel) {
                         let userCaptcha = await ctx.prisma.captcha.findFirst({ where: { serverId, triggeringUser: userId, solved: false } });
                         void ctx.amp.logEvent({ event_type: "MEMBER_SITE_CAPTCHA_JOIN", user_id: userId, event_properties: { serverId } });
@@ -127,31 +127,32 @@ export default {
                             const createdCaptcha = await ctx.prisma.captcha.create({
                                 data: { id, serverId, triggeringUser: userId },
                             });
-                            console.log(server.muteRoleId);
                             userCaptcha = createdCaptcha;
                         }
 
-                        console.log(`Muting user ${userId} in ${server.serverId} for site captcha`);
                         if (server.muteRoleId) await ctx.roles.addRoleToMember(serverId, userId, server.muteRoleId).catch(() => null);
                         // Have to complete captcha
-                        await ctx.messageUtil
-                            .sendWarningBlock(
-                                server.antiRaidChallengeChannel,
-                                `Halt! Please complete this captcha`,
-                                stripIndents`
-                        <@${userId}>, your account has tripped the anti-raid filter and requires further verification to ensure you are not a bot.
-                        
-						Please visit [this link](${process.env.NODE_ENV === "development" ? process.env.NEXTAUTH_URL ?? "http://localhost:3000" : "https://yoki.gg"}/verify/${
-                                    userCaptcha.id
-                                }) which will use a frameless captcha to verify you are not a bot.
-                    `,
-                                undefined,
-                                server.muteRoleId ? { isPrivate: true } : undefined
-                            )
-                            .catch((err) => {
-                                console.log(`Error notifying user of captcha for server ${serverId} because of ${err}`);
-                                void ctx.errorHandler.send("Error while handling antiraid site challenge", [errorEmbed((err as Error).message)]);
-                            });
+                        // There might be bots that are doing something else behind the scenes and those people might not be allowed to be privately mentioned
+                        setTimeout(async () =>
+                            await ctx.messageUtil
+                                .sendWarningBlock(
+                                    server.antiRaidChallengeChannel!,
+                                    `Halt! Please complete this captcha`,
+                                    stripIndents`
+                                        <@${userId}>, your account has tripped the anti-raid filter and requires further verification to ensure you are not a bot.
+                                        
+                                        Please visit [this link](${process.env.NODE_ENV === "development" ? process.env.NEXTAUTH_URL ?? "http://localhost:3000" : "https://yoki.gg"}/verify/${
+                                            userCaptcha!.id
+                                        }) which will use a frameless captcha to verify you are not a bot.
+                                    `,
+                                    undefined,
+                                    { isPrivate: true }
+                                )
+                                .catch((err) => {
+                                    console.log(`Error notifying user of captcha for server ${serverId} because of ${err}`);
+                                    void ctx.errorHandler.send("Error while handling antiraid site challenge", [errorEmbed((err as Error).message)]);
+                                })
+                        , 300);
                     }
                     break;
                 }

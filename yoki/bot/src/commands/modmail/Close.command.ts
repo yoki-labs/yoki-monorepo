@@ -30,7 +30,7 @@ const Close: Command = {
 
         await ctx.supportUtil.closeExistingThread(server, ticket, message.authorId);
 
-        if (ticket.modFacingChannelId === ticket.userFacingChannelId) await ctx.rest.put(`/channels/${message.channelId}/archive`);
+        if (ticket.modFacingChannelId === ticket.userFacingChannelId) await ctx.rest.put(`/channels/${ticket.modFacingChannelId}/archive`);
         else await ctx.channels.delete(message.channelId);
 
         return ctx.supportUtil.sendModmailCloseMessage(server, ticket, "closed by a staff member");
