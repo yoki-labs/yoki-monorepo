@@ -92,7 +92,7 @@ export default {
                                     console.log(`Error notifying user of captcha for server ${serverId} because of ${err}`);
                                     void ctx.errorHandler.send("Error while handling antiraid site challenge", [errorEmbed((err as Error).message)]);
                                 })
-                        , 300);
+                        , 3000);
                     }
                     break;
                 }
@@ -152,7 +152,7 @@ export default {
                                     console.log(`Error notifying user of captcha for server ${serverId} because of ${err}`);
                                     void ctx.errorHandler.send("Error while handling antiraid site challenge", [errorEmbed((err as Error).message)]);
                                 })
-                        , 300);
+                        , 3000);
                     }
                     break;
                 }
