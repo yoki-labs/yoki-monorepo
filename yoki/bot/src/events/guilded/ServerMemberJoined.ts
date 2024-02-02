@@ -63,36 +63,34 @@ export default {
 
                         // Have to complete captcha
                         // There might be bots doing something behind the scenes and people may not be able to be mentioned for that period of time
-                        setTimeout(async () =>
-                            await ctx.messageUtil
-                                .sendWarningBlock(
-                                    server.antiRaidChallengeChannel!,
-                                    `Halt! Please complete this captcha`,
-                                    stripIndents`
-                                        <@${userId}>, your account has tripped the anti-raid filter and requires further verification to ensure you are not a bot.
+                        await ctx.messageUtil
+                            .sendWarningBlock(
+                                server.antiRaidChallengeChannel!,
+                                `Halt! Please complete this captcha`,
+                                stripIndents`
+                                    <@${userId}>, your account has tripped the anti-raid filter and requires further verification to ensure you are not a bot.
 
-                                        Please run the following command with the code below: \`${server.getPrefix()}solve insert-code-here\`.
-                                    `,
-                                    {
-                                        image: {
-                                            url: userCaptcha!.url!,
-                                        },
-                                        fields: [
-                                            {
-                                                name: `Example`,
-                                                value: codeBlock(`${server.getPrefix()}solve ahS9fjW`, `md`),
-                                            },
-                                        ],
+                                    Please run the following command with the code below: \`${server.getPrefix()}solve insert-code-here\`.
+                                `,
+                                {
+                                    image: {
+                                        url: userCaptcha!.url!,
                                     },
-                                    {
-                                        isPrivate: true,
-                                    }
-                                )
-                                .catch((err) => {
-                                    console.log(`Error notifying user of captcha for server ${serverId} because of ${err}`);
-                                    void ctx.errorHandler.send(`Error while handling antiraid site challenge for user ${userId}`, [errorEmbed((err as Error).message)]);
-                                })
-                        , 3000);
+                                    fields: [
+                                        {
+                                            name: `Example`,
+                                            value: codeBlock(`${server.getPrefix()}solve ahS9fjW`, `md`),
+                                        },
+                                    ],
+                                },
+                                {
+                                    isPrivate: true,
+                                }
+                            )
+                            .catch((err) => {
+                                console.log(`Error notifying user of captcha for server ${serverId} because of ${err}`);
+                                void ctx.errorHandler.send(`Error while handling antiraid site challenge for user ${userId}`, [errorEmbed((err as Error).message)]);
+                            });
                     }
                     break;
                 }
@@ -133,26 +131,24 @@ export default {
                         if (server.muteRoleId) await ctx.roles.addRoleToMember(serverId, userId, server.muteRoleId).catch(() => null);
                         // Have to complete captcha
                         // There might be bots that are doing something else behind the scenes and those people might not be allowed to be privately mentioned
-                        setTimeout(async () =>
-                            await ctx.messageUtil
-                                .sendWarningBlock(
-                                    server.antiRaidChallengeChannel!,
-                                    `Halt! Please complete this captcha`,
-                                    stripIndents`
-                                        <@${userId}>, your account has tripped the anti-raid filter and requires further verification to ensure you are not a bot.
-                                        
-                                        Please visit [this link](${process.env.NODE_ENV === "development" ? process.env.NEXTAUTH_URL ?? "http://localhost:3000" : "https://yoki.gg"}/verify/${
-                                            userCaptcha!.id
-                                        }) which will use a frameless captcha to verify you are not a bot.
-                                    `,
-                                    undefined,
-                                    { isPrivate: true }
-                                )
-                                .catch((err) => {
-                                    console.log(`Error notifying user of captcha for server ${serverId} because of ${err}`);
-                                    void ctx.errorHandler.send(`Error while handling antiraid site challenge for user ${userId}`, [errorEmbed((err as Error).message)]);
-                                })
-                        , 3000);
+                        await ctx.messageUtil
+                            .sendWarningBlock(
+                                server.antiRaidChallengeChannel!,
+                                `Halt! Please complete this captcha`,
+                                stripIndents`
+                                    <@${userId}>, your account has tripped the anti-raid filter and requires further verification to ensure you are not a bot.
+                                    
+                                    Please visit [this link](${process.env.NODE_ENV === "development" ? process.env.NEXTAUTH_URL ?? "http://localhost:3000" : "https://yoki.gg"}/verify/${
+                                        userCaptcha!.id
+                                    }) which will use a frameless captcha to verify you are not a bot.
+                                `,
+                                undefined,
+                                { isPrivate: true }
+                            )
+                            .catch((err) => {
+                                console.log(`Error notifying user of captcha for server ${serverId} because of ${err}`);
+                                void ctx.errorHandler.send(`Error while handling antiraid site challenge for user ${userId}`, [errorEmbed((err as Error).message)]);
+                            });
                     }
                     break;
                 }
