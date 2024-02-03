@@ -109,7 +109,7 @@ function CommandDisplayArguments({ command }: { command: Command }) {
                                 {"\u2022"}
                             </Typography>
                         </ListItemDecorator>
-                        <Box sx={{ flexGrow: 1 }} className="grid grid-cols-1 md:grid-cols-2">
+                        <Box sx={{ flexGrow: 1 }} className="grid grid-cols-1 md:grid-cols-[1fr,3fr]">
                             <Box>
                                 <Typography component="span" level="body-md">
                                     {(x.type === "rest" || x.type === "enumList") && "..."}
@@ -118,9 +118,19 @@ function CommandDisplayArguments({ command }: { command: Command }) {
                             </Box>
                             <Box>
                                 <Stack direction="row" gap={1}>
-                                    <Typography component="span" level="body-md" textColor="text.secondary" fontWeight="bold">
-                                        {argumentTypeToDisplay[x.type]}
-                                    </Typography>
+                                    {x.values
+                                    ? (
+                                        <Tooltip title={<CommandArgumentValues commandName={command.name} argumentIndex={i} values={x.values} />}>
+                                            <Typography component="span" level="body-md">
+                                                {argumentTypeToDisplay[x.type]}
+                                            </Typography>
+                                        </Tooltip>
+                                    )
+                                    : (
+                                        <Typography component="span" level="body-md">
+                                            {argumentTypeToDisplay[x.type]}
+                                        </Typography>
+                                    )}
                                     {x.optional && (
                                         <Chip size="sm" color="neutral">
                                             Optional
@@ -133,6 +143,25 @@ function CommandDisplayArguments({ command }: { command: Command }) {
                 ))}
             </List>
         </Box>
+    );
+}
+
+function CommandArgumentValues({ commandName, argumentIndex, values }: { commandName: string; argumentIndex: number; values: string[]; }) {
+    return (
+        <>
+            <Typography level="title-md" gutterBottom>Argument allows the following:</Typography>
+            <List>
+                {values
+                    .map((x, i) =>
+                        <ListItem key={`command.${commandName}.args.${argumentIndex}.tooltip-value.${i}`}>
+                            <Typography level="code" sx={{ width: "max-content" }}>
+                                {x.toLowerCase()}
+                            </Typography>
+                        </ListItem>
+                    )
+                }
+            </List>
+        </>
     );
 }
 

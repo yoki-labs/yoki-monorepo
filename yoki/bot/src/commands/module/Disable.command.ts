@@ -1,7 +1,7 @@
-import { inlineCode } from "@yokilabs/bot";
+import { ResolvedEnum, inlineCode } from "@yokilabs/bot";
 
 import { RoleType } from "../../typings";
-import { DBPropToTypeKeys, typeToDBPropKeys, typeToDBPropMap } from "../../utils/util";
+import { typeToDBPropMap } from "../../utils/util";
 import { Category, Command } from "../commands";
 
 const Disable: Command = {
@@ -15,24 +15,18 @@ const Disable: Command = {
     args: [
         {
             name: "module",
-            display: DBPropToTypeKeys.join(" / "),
             type: "string",
+            values: typeToDBPropMap,
         },
     ],
     execute: (message, args, ctx, commandCtx) => {
-        const module = args.module as string;
-        if (!typeToDBPropKeys.includes(module))
-            return ctx.messageUtil.replyWithError(
-                message,
-                "Invalid module name",
-                `The module you wish to disable must be one of the following: ${typeToDBPropKeys.map((x) => `\`${x}\``).join(", ")}`
-            );
+        const module = args.module as ResolvedEnum;
+        void ctx.amp.logEvent({ event_type: "MODULE_DISABLE", user_id: message.authorId, event_properties: { serverId: message.serverId!, module: module.resolved } });
 
-        void ctx.amp.logEvent({ event_type: "MODULE_DISABLE", user_id: message.authorId, event_properties: { serverId: message.serverId!, module: typeToDBPropMap[module] } });
         return ctx.prisma.server
             .update({
                 where: { id: commandCtx.server.id },
-                data: { [typeToDBPropMap[module]]: false },
+                data: { [module.resolved]: false },
             })
             .then(() => ctx.messageUtil.replyWithSuccess(message, `Module disabled`, `Successfully disabled the ${inlineCode(module)} module for this server.`))
             .catch((e: Error) =>

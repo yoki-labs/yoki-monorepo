@@ -15,5 +15,5 @@ export interface CommandArgumentInfo {
     separator?: string;
     max?: number;
     min?: number;
-    values?: any;
+    values?: Record<string, any>;
 }

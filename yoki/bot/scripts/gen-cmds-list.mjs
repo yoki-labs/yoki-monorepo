@@ -10,11 +10,20 @@ const __dirname = join(import.meta.url.substring(7), "..");
  * Sanitizes information about a command.
  * @param {import("../src/commands/commands").Command} command 
  */
-function rewriteCommandInfo({ execute, hidden, forceShow, devOnly, rawArgs, subCommands, ...command }) {
+function rewriteCommandInfo({ execute, hidden, forceShow, devOnly, rawArgs, subCommands, args, ...command }) {
     return {
         ...command,
+        args: args && args.map(rewriteArgInfo),
         subCommands: subCommands && subCommands.map(rewriteCommandInfo),
     }
+}
+
+/**
+ * Sanitizes information about a command argument.
+ * @param {import("@yokilabs/bot").CommandArgument} param0 
+ */
+function rewriteArgInfo({ values, ...arg }) {
+    return {...arg, values: values ? Object.keys(values) : undefined };
 }
 
 void (async () => {
