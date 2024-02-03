@@ -143,8 +143,9 @@ export default class RolesPage extends React.Component<DashboardPageProps, State
                     <RoleItemCreationForm serverRoleOptions={staffRoleOptions} onCreate={this.onRoleCreate.bind(this)} />
                 </Card>
                 <Stack direction="column" gap={2}>
-                    {roles.map((role) => (
+                    {roles.map((role, i) => (
                         <DashboardRole
+                            key={`role-page.role-${i}`}
                             serverId={serverConfig.serverId}
                             role={role}
                             serverRoles={serverRoles}

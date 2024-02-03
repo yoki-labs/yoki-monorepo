@@ -132,6 +132,7 @@ function DashboardProfileCardForm(props: { onSubmit: (values: LabsFormFieldValue
 
     return (
         <LabsForm
+            id="profile-card-form"
             onSubmit={onSubmit}
             alwaysDisplayActions
             sections={[

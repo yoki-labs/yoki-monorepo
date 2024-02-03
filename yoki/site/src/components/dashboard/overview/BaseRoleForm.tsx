@@ -16,6 +16,7 @@ async function onBaseRoleChanges(serverId: string, muteRoleId: number | undefine
 export default function BaseRolesForm({ serverConfig, serverRoleOptions }: { serverConfig: SanitizedServer; serverRoleOptions: LabsFormFieldOption<number>[] }) {
     return (
         <LabsForm
+            id="base-role-form"
             onSubmit={({ muteRoleId, memberRoleId, modmailPingRoleId }) =>
                 onBaseRoleChanges(
                     serverConfig.serverId,

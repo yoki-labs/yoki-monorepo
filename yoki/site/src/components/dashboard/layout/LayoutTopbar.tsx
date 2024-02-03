@@ -27,10 +27,10 @@ export function LayoutTopbar({ children, onServerChange, currentServer, servers,
                     </Typography>
                 }
             >
-                <Box>
+                <Box key="layout-topbar.breadcrumb-branding">
                     <Branding />
                 </Box>
-                <Box className="hidden md:block">
+                <Box key="layout-topbar.breadcrumb-server" className="hidden md:block">
                     <ServerSelector onChange={onServerChange} defaultValue={currentServer?.id} currentServer={currentServer} servers={servers} />
                 </Box>
             </Breadcrumbs>

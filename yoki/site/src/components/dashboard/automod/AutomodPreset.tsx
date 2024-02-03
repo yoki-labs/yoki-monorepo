@@ -57,13 +57,14 @@ export default class AutomodPreset extends React.Component<Props, State> {
     }
 
     render() {
-        const { title, description, preset, disabled } = this.props;
+        const { title, description, preset, presetName, disabled } = this.props;
         const { isEnabled } = this.state;
 
         return (
             <Card>
                 <CardContent>
                     <LabsForm
+                        id={`automod-preset-${presetName}`}
                         sections={[
                             {
                                 order: LabsFormSectionOrder.GridSm,

@@ -45,8 +45,9 @@ export default class LabsPicker extends React.Component<Props, State> {
                 <FormFieldHeader field={field} />
                 <Box sx={{ overflowY: "scroll", maxHeight: field.height }}>
                     <List sx={{ paddingBlock: 0, "--ListItem-paddingY": "0.25rem", "--List-gap": "0.5rem" }} key={id}>
-                        {field.selectableValues?.map((x) => (
+                        {field.selectableValues?.map((x, i) => (
                             <LabsPickerOption
+                                key={`picker-${id}.option-${i}`}
                                 variant={field.variant}
                                 rightSideCheck={field.rightSideCheck}
                                 // color={field.color}

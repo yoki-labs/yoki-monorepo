@@ -102,11 +102,12 @@ export default class LogsPage extends React.Component<DashboardPageProps, State>
                     </Card>
                 )}
                 <Stack sx={{ mb: 4 }} gap={2} direction="column">
-                    {Object.keys(channelLookup).map((channelId) => {
+                    {Object.keys(channelLookup).map((channelId, i) => {
                         const channelTypeInfos = channelLookup[channelId]!;
 
                         return (
                             <DashboardLogChannel
+                                key={`logs-page-log-${i}`}
                                 serverId={serverConfig.serverId}
                                 channelId={channelId}
                                 serverChannels={serverChannels}

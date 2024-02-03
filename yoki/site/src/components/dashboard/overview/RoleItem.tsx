@@ -102,6 +102,7 @@ export default class DashboardRole extends React.Component<Props, State> {
 
         return (
             <LabsForm
+                id={`role-item-edit-${this.props.role.roleId}`}
                 sections={
                     [
                         {
@@ -175,6 +176,7 @@ type EditorProps = {
 export function RoleItemCreationForm({ serverRoleOptions, onCreate }: EditorProps) {
     return (
         <LabsForm
+            id="role-creation-form"
             sections={
                 [
                     {

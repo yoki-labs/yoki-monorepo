@@ -34,7 +34,7 @@ export default class ServerSelectionPage extends React.Component<Props, State> {
 
         return (
             <>
-                <Alert sx={{ mb: 4 }} variant="soft" color="danger" startDecorator={<FontAwesomeIcon icon={faExclamationCircle} />}>
+                {/* <Alert sx={{ mb: 4 }} variant="soft" color="danger" startDecorator={<FontAwesomeIcon icon={faExclamationCircle} />}>
                     <Box sx={{ alignItems: "baseline" }}>
                         <Typography sx={{ color: "inherit" }}>
                             Authlink can no longer fetch servers that user is in. As such, it's recommended to use{" "}
@@ -44,7 +44,7 @@ export default class ServerSelectionPage extends React.Component<Props, State> {
                             command in the server that you want to use dashboard of.
                         </Typography>
                     </Box>
-                </Alert>
+                </Alert> */}
                 <ServerSearch />
                 {/* {servers.length && (
                     <Typography level="h3" color="neutral" sx={{ textAlign: "center", mb: 4 }}>

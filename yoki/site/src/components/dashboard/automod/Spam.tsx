@@ -56,6 +56,7 @@ export default class SpamPage extends React.Component<DashboardPageProps> {
                     <Card>
                         <CardContent>
                             <LabsForm
+                                id="spam-page-form"
                                 sections={[
                                     {
                                         name: "Spam detection",

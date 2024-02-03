@@ -1,12 +1,11 @@
 import React from "react";
 import { GuildedClientServer } from "../../../lib/@types/guilded";
-import { AspectRatio, Avatar, Box, Card, CardContent, CardOverflow, CircularProgress, Input, LinearProgress, Skeleton, Stack, Typography } from "@mui/joy";
+import { AspectRatio, Box, Card, CardContent, CardOverflow, Input, Skeleton, Stack, Typography } from "@mui/joy";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
-import { LabsServerCard } from "../../LabsServerCard";
-import Link from "next/link";
 import ServerDisplay from "../ServerDisplay";
 import PagePlaceholder, { PagePlaceholderIcon } from "../../PagePlaceholder";
+import Link from "next/link";
 
 type Props = {};
 type State = {
@@ -59,7 +58,7 @@ export default class ServerSearch extends React.Component<Props, State> {
 
         return (
             <Box sx={{ width: "100%", height: "100%" }}>
-                <Box sx={{ mb: 2 }} className="px-5 md:px-32 lg:px-60">
+                <Box className="px-5 py-4 mb-10 md:px-32 lg:px-96">
                     <Input
                         placeholder={"Search for servers"}
                         value={search}
@@ -69,16 +68,22 @@ export default class ServerSearch extends React.Component<Props, State> {
                 </Box>
                 {search ? (
                     <Box className="grow h-full overflow-y-auto px-5 md:px-32 lg:px-60" sx={{ pb: 8 }}>
+                        <Typography level="title-md" sx={{ mb: 3 }}>
+                            {awaitingResults
+                                ? <Skeleton animation="wave" sx={{ mb: 3 }}>
+                                    X servers found while searching for "search"
+                                </Skeleton>
+                                : <>
+                                    {servers.length} server{"s".repeat(Number(servers.length !== 1))} found while searching for{" "}
+                                    <Typography level="code">
+                                        {search}
+                                    </Typography>
+                                </>
+                            }
+                        </Typography>
                         <Box className="grid mb-8 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                             {awaitingResults ? (
-                                <>
-                                    <ServerSearchSkeleton />
-                                    <ServerSearchSkeleton />
-                                    <ServerSearchSkeleton />
-                                    <ServerSearchSkeleton />
-                                    <ServerSearchSkeleton />
-                                    <ServerSearchSkeleton />
-                                </>
+                                <ServerSearchAwaiting />
                             ) : (
                                 servers.map((server) => (
                                     <Link key={server.id} style={{ textDecoration: "none" }} href={`/dashboard/${server.id}/overview`}>
@@ -94,7 +99,7 @@ export default class ServerSearch extends React.Component<Props, State> {
                                 ))
                             )}
                         </Box>
-                        <PagePlaceholder icon={PagePlaceholderIcon.NotFound} title="Can't find the server">
+                        <PagePlaceholder icon={PagePlaceholderIcon.NotFound} title="Can't find the server?">
                             Private servers may not show up in the dashboard server list due to restrictions in Guilded. Considering using{" "}
                             <Typography component="span" level="code">
                                 ?dashboard
@@ -102,18 +107,35 @@ export default class ServerSearch extends React.Component<Props, State> {
                             in the server to open its dashboard.
                         </PagePlaceholder>
                     </Box>
-                ) : (
-                    <PagePlaceholder icon={PagePlaceholderIcon.Wip} title="Find your server">
-                        Due to Guilded removing our old ways of displaying the server, it is required that you use
-                        <Typography component="span" level="code">
-                            ?dashboard
-                        </Typography>{" "}
-                        in your server or search it up.
-                    </PagePlaceholder>
-                )}
+                ) : <ServerSearchEmpty />}
             </Box>
         );
     }
+}
+
+function ServerSearchAwaiting() {
+    return (
+        <>
+            <ServerSearchSkeleton />
+            <ServerSearchSkeleton />
+            <ServerSearchSkeleton />
+            <ServerSearchSkeleton />
+            <ServerSearchSkeleton />
+            <ServerSearchSkeleton />
+        </>
+    );
+}
+
+function ServerSearchEmpty() {
+    return (
+        <PagePlaceholder icon={PagePlaceholderIcon.Wip} title="Find your server">
+            Due to Guilded removing our old ways of displaying the server, it is required that you use
+            <Typography component="span" level="code">
+                ?dashboard
+            </Typography>{" "}
+            in your server or search it up.
+        </PagePlaceholder>
+    );
 }
 
 function ServerSearchSkeleton() {

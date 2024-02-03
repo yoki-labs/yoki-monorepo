@@ -101,6 +101,7 @@ export default class UrlsPage extends React.Component<DashboardPageProps> {
                         <Card>
                             <CardContent>
                                 <LabsForm
+                                    id="urls-page-form"
                                     sections={[
                                         {
                                             order: LabsFormSectionOrder.Grid,

@@ -1,4 +1,4 @@
-import { faBolt, faChevronDown, faMoon, faRightFromBracket, faSun, faTablet, faUserCircle } from "@fortawesome/free-solid-svg-icons";
+import { faBolt, faChevronDown, faMoon, faPrayingHands, faRightFromBracket, faSun, faTablet, faUserCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Avatar, Button, Divider, List, ListItemDecorator, Menu, MenuItem, Stack, Switch, Typography, buttonClasses, useColorScheme } from "@mui/joy";
 import Link from "next/link";
@@ -61,21 +61,23 @@ export default function UserManager({ user, displayName }: Props) {
                 <ClickAwayListener onClickAway={setMenuOpen.bind(null, false)}>
                     <div>
                         {user ? (
-                            <Link href="/profile/overview" style={{ textDecoration: "none" }}>
-                                <MenuItem>
-                                    <ListItemDecorator>
-                                        <Avatar src={normalizedAvatar ?? void 0} alt="Your profile picture">
-                                            {user.name?.[0] ?? ""}
-                                        </Avatar>
-                                    </ListItemDecorator>
-                                    <Stack direction="column">
-                                        <Typography level="title-md">{user.name}</Typography>
-                                        <Typography level="body-md" textColor="text.tertiary">
-                                            Click to view profile
-                                        </Typography>
-                                    </Stack>
-                                </MenuItem>
-                            </Link>
+                            <>
+                                <Link href="/profile/overview" style={{ textDecoration: "none" }}>
+                                    <MenuItem>
+                                        <ListItemDecorator>
+                                            <Avatar src={normalizedAvatar ?? void 0} alt="Your profile picture">
+                                                {user.name?.[0] ?? ""}
+                                            </Avatar>
+                                        </ListItemDecorator>
+                                        <Stack direction="column">
+                                            <Typography level="title-md">{user.name}</Typography>
+                                            <Typography level="body-md" textColor="text.tertiary">
+                                                Click to view profile
+                                            </Typography>
+                                        </Stack>
+                                    </MenuItem>
+                                </Link>
+                            </>
                         ) : (
                             <Link href="/auth/signin?callbackUrl=%2F" style={{ textDecoration: "none" }}>
                                 <MenuItem color="primary">

@@ -120,6 +120,7 @@ export default class AppealsPage extends React.Component<DashboardPageProps, Sta
                         <Card>
                             <CardContent>
                                 <LabsForm
+                                    id="appeals-page-form"
                                     sections={[
                                         {
                                             order: LabsFormSectionOrder.Grid,

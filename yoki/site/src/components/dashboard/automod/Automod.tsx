@@ -45,7 +45,7 @@ export default class AutomodPage extends React.Component<DashboardPageProps, Sta
     async onPresetFetchError(errorResponse: Response) {
         this.setState({ isLoaded: true, presets: [] });
 
-        notifyFetchError("Error while fetching preset data", errorResponse);
+        return notifyFetchError("Error while fetching preset data", errorResponse);
     }
 
     render() {

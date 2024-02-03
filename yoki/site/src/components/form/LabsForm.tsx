@@ -14,6 +14,7 @@ type LabsFormFieldValue = string | string[] | number | boolean | undefined | nul
 export type LabsFormFieldValueMap = Record<string, LabsFormFieldValue>;
 
 export type LabsFormProps = {
+    id: string;
     sections: LabsFormSection[];
     children?: React.ReactElement | React.ReactElement[];
 
@@ -33,7 +34,6 @@ type LabsFormState = {
 };
 
 export default class LabsForm extends React.Component<LabsFormProps, LabsFormState> {
-    private formId: number;
     // Do not use state for performance reasons
     public fieldValues: Record<string, LabsFormFieldValue>;
 
@@ -44,9 +44,11 @@ export default class LabsForm extends React.Component<LabsFormProps, LabsFormSta
             changed: false,
         };
 
-        this.formId = Math.floor(Math.random() * 75 + 25);
-
         this.fieldValues = this.defaultFieldValues;
+    }
+
+    get formId() {
+        return this.props.id;
     }
 
     get fields() {
@@ -106,7 +108,7 @@ export default class LabsForm extends React.Component<LabsFormProps, LabsFormSta
                 {children}
                 <Stack direction="column" gap={3}>
                     {sections.map((section, i) => (
-                        <Box component="section">
+                        <Box key={`form-${this.formId}.section-${i}`} component="section">
                             {i > 0 && !section.hideDivider && <Divider sx={{ mb: 2 }} />}
                             {section.name && (
                                 <Typography level="h2" fontSize="lg" sx={{ mb: 2 }}>
@@ -114,7 +116,7 @@ export default class LabsForm extends React.Component<LabsFormProps, LabsFormSta
                                 </Typography>
                             )}
                             {section.description && <Typography level="body-md">{section.description}</Typography>}
-                            <Box gap={section.gap ?? 2} className={sectionOrderCss[section.order ?? LabsFormSectionOrder.Column]}>
+                            <Box key={`form-${this.formId}.section-${i}.fieldlist`} gap={section.gap ?? 2} className={sectionOrderCss[section.order ?? LabsFormSectionOrder.Column]}>
                                 {section.start}
                                 {section.fields.map(this.generateField.bind(this))}
                             </Box>
@@ -141,7 +143,7 @@ export default class LabsForm extends React.Component<LabsFormProps, LabsFormSta
         const fieldId = `formfield-${this.formId}-${field.prop}`;
 
         return (
-            <FormControl sx={{ opacity: field.disabled ? 0.4 : 1 }}>
+            <FormControl key={`${fieldId}.formcontrol`} sx={{ opacity: field.disabled ? 0.4 : 1 }}>
                 {fieldRenderers[field.type](this, fieldId, field as never)}
                 {field.description && <FormHelperText>{field.description}</FormHelperText>}
             </FormControl>

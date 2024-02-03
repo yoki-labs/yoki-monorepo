@@ -61,11 +61,11 @@ export default class LabsMultiSelector extends React.Component<Props, State> {
         const { field } = this.props;
         const { selectedValues } = this;
 
-        const menuItems = field.selectableValues?.map(({ value, name, disabled }) => {
+        const menuItems = field.selectableValues?.map(({ value, name, disabled }, i) => {
             const isSelected = selectedValues.includes(value);
 
             return (
-                <MenuItem disabled={disabled} onClick={() => this.setSelectedValues(isSelected ? selectedValues.filter((x) => x !== value) : selectedValues.concat(value))}>
+                <MenuItem key={`multiselector-${field.prop}.menu-item-${i}`} disabled={disabled} onClick={() => this.setSelectedValues(isSelected ? selectedValues.filter((x) => x !== value) : selectedValues.concat(value))}>
                     <ListItemDecorator>{isSelected && <AlertIcon icon={faCheck} color="primary" variant="soft" />}</ListItemDecorator>
                     {name}
                 </MenuItem>

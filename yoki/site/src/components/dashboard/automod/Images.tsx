@@ -56,6 +56,7 @@ export default class ImagesPage extends React.Component<DashboardPageProps> {
                     <Card>
                         <CardContent>
                             <LabsForm
+                                id="images-page-form"
                                 sections={[
                                     {
                                         name: "Explicit image detection confidence",

@@ -79,8 +79,8 @@ export default class LabsSelector extends React.Component<Props, State> {
                     renderValue={this.renderOption.bind(this)}
                     variant="outlined"
                 >
-                    {field.selectableValues?.map((value) => (
-                        <Option disabled={value.disabled} value={value.value}>
+                    {field.selectableValues?.map((value, i) => (
+                        <Option key={`${id}.option-${i}`} disabled={value.disabled} value={value.value}>
                             {(value.icon || value.avatarIcon) && (
                                 <ListItemDecorator sx={{ width: 40 }}>
                                     {value.icon && <FontAwesomeIcon icon={value.icon} />}

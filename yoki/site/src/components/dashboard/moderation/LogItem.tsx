@@ -200,6 +200,7 @@ export function LogItemCreationForm({
 }) {
     return (
         <LabsForm
+            id="logs-page-creator"
             sections={[
                 {
                     order: LabsFormSectionOrder.Row,

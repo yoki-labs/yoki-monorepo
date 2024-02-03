@@ -102,6 +102,7 @@ export default class AntiraidPage extends React.Component<DashboardPageProps, St
                     <Card>
                         <CardContent>
                             <LabsForm
+                                id="antiraid-page-form"
                                 sections={[
                                     {
                                         order: LabsFormSectionOrder.Grid,

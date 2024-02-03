@@ -43,6 +43,7 @@ export default function AppealsPageDisplay(props: AppealsSessionProps) {
             <Typography level="body-md">This is the form for applying for an unban in {server.name}.</Typography>
             <Box sx={{ mt: 4, minWidth: 500 }}>
                 <LabsForm
+                    id="appeals-page-form"
                     sections={[
                         {
                             fields: [

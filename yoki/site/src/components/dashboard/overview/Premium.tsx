@@ -54,6 +54,7 @@ export default class PremiumPage extends React.Component<DashboardPageProps> {
                         </Typography>
                     </Step>
                     <PremiumLevelStep
+                        key="premium-level.copper"
                         name="Copper"
                         active={premiumLevel > 0}
                         perks={[
@@ -72,6 +73,7 @@ export default class PremiumPage extends React.Component<DashboardPageProps> {
                         ]}
                     />
                     <PremiumLevelStep
+                        key="premium-level.silver"
                         name="Silver"
                         active={premiumLevel > 1}
                         perks={[
@@ -86,6 +88,7 @@ export default class PremiumPage extends React.Component<DashboardPageProps> {
                         ]}
                     />
                     <PremiumLevelStep
+                        key="premium-level.gold"
                         name="Gold"
                         active={premiumLevel > 2}
                         perks={[
@@ -96,60 +99,6 @@ export default class PremiumPage extends React.Component<DashboardPageProps> {
                         ]}
                     />
                 </Stepper>
-                {/* <Box
-                    sx={(theme) => ({
-                        borderRadius: theme.vars.radius.lg,
-                        background: `linear-gradient(to bottom right, ${premium ? tierColours[premium] : noPremiumColours})`,
-                        p: 0.25,
-                    })}
-                >
-                    <Card>
-                        <CardContent>
-                            {premium === PremiumType.Gold ? (
-                                <Box>
-                                    <Typography level="title-lg" gutterBottom>
-                                        This server has the highest tier of Yoki Labs subscription (Gold)
-                                    </Typography>
-                                    <Typography level="body-md">There is nothing to upgrade to.</Typography>
-                                </Box>
-                            ) : premium ? (
-                                <>
-                                    <Box>
-                                        <Typography level="title-lg" gutterBottom>
-                                            This server has {premium} tier of Yoki Labs subscription
-                                        </Typography>
-                                        <Typography level="body-md">All the tier perks will be available for this. You can upgrade to receive even more.</Typography>
-                                    </Box>
-                                    <Box mt={2}>
-                                        <Link href="/premium">
-                                            <Button variant="soft" color="warning">
-                                                Upgrade
-                                            </Button>
-                                        </Link>
-                                    </Box>
-                                </>
-                            ) : (
-                                <>
-                                    <Box>
-                                        <Typography level="title-lg" gutterBottom>
-                                            This server does not have Yoki Labs subscription
-                                        </Typography>
-                                        <Typography level="body-md">
-                                            No additional perks will be received. You can upgrade to premium to receive more features and other perks.
-                                        </Typography>
-                                    </Box>
-                                    <Box mt={2}>
-                                        <Link href="/premium">
-                                            <Button variant="soft" color="warning">
-                                                Subscribe
-                                            </Button>
-                                        </Link>
-                                    </Box>
-                                </>
-                            )}
-                        </CardContent>
-                    </Card>
-                </Box> */}
             </Box>
         );
     }
@@ -167,7 +116,7 @@ function PremiumLevelStep({ name, perks, active }: { name: string; active: boole
                 </Typography>
                 <List sx={{ "--ListDivider-gap": 0, mb: 1 }}>
                     {perks.map((perk, i) => (
-                        <ListItem id={`premium.${name}.perk-${i}`}>
+                        <ListItem key={`premium-level.${name}.perk.${i}`}>
                             <ListItemDecorator>
                                 <FontAwesomeIcon icon={perk.icon} />
                             </ListItemDecorator>

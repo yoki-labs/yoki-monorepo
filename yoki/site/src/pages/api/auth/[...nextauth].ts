@@ -2,6 +2,11 @@ import NextAuth, { NextAuthOptions } from "next-auth";
 import GuildedProvider from "next-auth-guilded";
 
 export const authOptions: NextAuthOptions = {
+    theme: {
+        colorScheme: "auto",
+        logo: "/face.png",
+        brandColor: "#9e52fd"
+    },
     // Configure one or more authentication providers
     providers: [
         GuildedProvider({

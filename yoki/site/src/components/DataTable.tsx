@@ -5,15 +5,14 @@ import {
     Button,
     ButtonGroup,
     Checkbox,
-    CircularProgress,
     Dropdown,
     Input,
+    LinearProgress,
     ListItem,
     ListItemDecorator,
     Menu,
     MenuButton,
     MenuItem,
-    MenuList,
     Modal,
     Stack,
     Table,
@@ -171,8 +170,9 @@ export default class DataTable<TItem extends { id: TItemId }, TItemId> extends R
         const { items, selectedItems, users } = this.state;
         const { timezone, columns, disableOperations, ItemRenderer, ItemMobileRenderer } = this.props;
 
-        return items.map((item) => [
+        return items.map((item, i) => [
             <ItemRenderer
+                key={`data-table.item-${i}`}
                 item={item}
                 users={users}
                 timezone={timezone}
@@ -182,6 +182,7 @@ export default class DataTable<TItem extends { id: TItemId }, TItemId> extends R
                 disableSelection={disableOperations}
             />,
             <ItemMobileRenderer
+                key={`data-table.item-${i}-mobile`}
                 item={item}
                 users={users}
                 timezone={timezone}
@@ -203,9 +204,7 @@ export default class DataTable<TItem extends { id: TItemId }, TItemId> extends R
             );
         else if (!this.state.isLoaded)
             return (
-                <Stack direction="column" alignItems="center">
-                    <CircularProgress />
-                </Stack>
+                <LinearProgress />
             );
 
         const { items, page, search, filter, maxPages } = this.state;
@@ -260,8 +259,8 @@ export default class DataTable<TItem extends { id: TItemId }, TItemId> extends R
                                 <tr>
                                     {/* Select corner */}
                                     {!disableOperations && <th style={{ width: 30 }}>{this.DataTableToggleCheckbox()}</th>}
-                                    {columns.map((column) => (
-                                        <th>{column}</th>
+                                    {columns.map((column, i) => (
+                                        <th key={`data-table.column-${i}`}>{column}</th>
                                     ))}
                                     {/* Expand corner */}
                                     <th style={{ width: 60 }}>{!disableOperations && this.DataTableOverflow()}</th>
@@ -273,7 +272,7 @@ export default class DataTable<TItem extends { id: TItemId }, TItemId> extends R
                         {maxPages > 1 && (
                             <ButtonGroup>
                                 {[...(pagesToArray(maxPages) as unknown as number[])].map((buttonPage) => (
-                                    <Button disabled={page === buttonPage} onClick={this.fetchItems.bind(this, buttonPage, search, filter)}>
+                                    <Button key={`data-table-button-${buttonPage}`} disabled={page === buttonPage} onClick={this.fetchItems.bind(this, buttonPage, search, filter)}>
                                         {buttonPage + 1}
                                     </Button>
                                 ))}
@@ -336,6 +335,7 @@ function DataTableFilterMenu({ itemType, users, fields, getFields, onChange }: F
         <Menu placement="bottom-start" sx={{ "--ListItem-paddingY": 0 }}>
             <ListItem>
                 <LabsForm
+                    id={`data-table.filter-form`}
                     sections={[
                         {
                             order: LabsFormSectionOrder.GridSm,
