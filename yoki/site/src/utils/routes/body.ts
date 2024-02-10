@@ -1,10 +1,11 @@
-import { Severity } from "@prisma/client";
+import { ChannelIgnoreType, Severity } from "@prisma/client";
 import { isHashId } from "@yokilabs/utils";
 import { NextApiResponse } from "next";
 
 import { channelExistsInServer } from "./route";
 
 export const availableSeverityValues = Object.keys(Severity);
+export const availableIgnoreTypeValues = Object.keys(ChannelIgnoreType);
 
 export const getBodyErrorResponse = (res: NextApiResponse, name: string, type: string) => res.status(400).json({ error: true, message: `Invalid ${name}. Expected ${type}` });
 
@@ -30,3 +31,6 @@ export const queryUserIsIncorrect = (userId: string | string[] | undefined) => u
 
 export const querySeverityIsIncorrect = (severity: string | string[] | undefined) =>
     severity && (typeof severity !== "string" || !availableSeverityValues.includes(severity as string));
+
+export const queryChannelIgnoreTypeIsIncorrect = (ignoreType: string | string[] | undefined) =>
+    ignoreType && (typeof ignoreType !== "string" || !availableIgnoreTypeValues.includes(ignoreType as string));

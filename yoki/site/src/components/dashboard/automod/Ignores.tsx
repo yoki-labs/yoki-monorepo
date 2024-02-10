@@ -1,28 +1,33 @@
 import React from "react";
-import { SanitizedLogChannel } from "../../../lib/@types/db";
+import { SanitizedChannelIgnore } from "../../../lib/@types/db";
 import { Box, Card, Skeleton, Stack, Typography } from "@mui/joy";
-import DashboardLogChannel, { LogItemCreationForm } from "./LogItem";
+import DashboardChannelIgnore, { ChannelIgnoreCreationForm } from "./IgnoreItem";
 import { toLookup } from "@yokilabs/utils";
 import { DashboardPageProps } from "../pages";
 import PagePlaceholder, { PagePlaceholderIcon } from "../../PagePlaceholder";
-import { LogChannelType, RoleType } from "@prisma/client";
+import { ChannelIgnoreType, RoleType } from "@prisma/client";
 import { notifyFetchError } from "../../../utils/errorUtil";
 import { GuildedSanitizedChannel } from "../../../lib/@types/guilded";
 import { LabsFormFieldOption } from "../../form/form";
 import { channelsToSelectionOptions } from "../channels";
+import { contentIgnoreSelectionList } from "./ignore-util";
 
 type State = {
     isLoaded: boolean;
-    logs: SanitizedLogChannel[];
+    items: SanitizedChannelIgnore[];
     serverChannels: GuildedSanitizedChannel[];
     error?: { code: string; message: string };
 };
 
-export default class LogsPage extends React.Component<DashboardPageProps, State> {
+export default class IgnoresPage extends React.Component<DashboardPageProps, State> {
     constructor(props: DashboardPageProps) {
         super(props);
 
-        this.state = { isLoaded: false, logs: [], serverChannels: [] };
+        this.state = { isLoaded: false, items: [], serverChannels: [] };
+    }
+
+    get contentTypeSelectionOptions(): LabsFormFieldOption<string>[] {
+        return contentIgnoreSelectionList;
     }
 
     get channelSelectionOptions(): LabsFormFieldOption<string>[] {
@@ -34,7 +39,7 @@ export default class LogsPage extends React.Component<DashboardPageProps, State>
             serverConfig: { serverId },
         } = this.props;
 
-        return fetch(`/api/servers/${serverId}/logs`, {
+        return fetch(`/api/servers/${serverId}/ignores`, {
             method: "GET",
             headers: { "content-type": "application/json" },
         })
@@ -42,24 +47,24 @@ export default class LogsPage extends React.Component<DashboardPageProps, State>
                 if (!response.ok) throw response;
                 return response.json();
             })
-            .then(({ logs, serverChannels }) => this.setState({ isLoaded: true, logs, serverChannels }))
+            .then(({ items, serverChannels }) => this.setState({ isLoaded: true, items, serverChannels }))
             .catch(async (errorResponse) => this.onFetchError(errorResponse));
     }
 
     async onFetchError(errorResponse: Response) {
         const error = await errorResponse.json();
 
-        console.log("Error while fetching logs data:", error);
+        console.log("Error while fetching ignores data:", error);
 
         this.setState({ error });
     }
 
-    async onLogsUpdate(channelId: string, types: LogChannelType[]) {
+    async onIgnoreUpdate(channelIdOrType: string, types: ChannelIgnoreType[]) {
         const {
             serverConfig: { serverId },
         } = this.props;
 
-        return fetch(`/api/servers/${serverId}/logs/${channelId}`, {
+        return fetch(`/api/servers/${serverId}/ignores/${channelIdOrType}`, {
             method: "PUT",
             headers: { "content-type": "application/json" },
             body: JSON.stringify({ types }),
@@ -68,14 +73,18 @@ export default class LogsPage extends React.Component<DashboardPageProps, State>
                 if (!response.ok) throw response;
                 return response.json();
             })
-            .then(({ logs }) => this.setState({ logs }))
+            .then(({ items }) => this.setState({ items }))
             .catch(notifyFetchError.bind(null, "Error while updating log data"));
     }
 
     render() {
         const { serverConfig, highestRoleType } = this.props;
-        const { error, isLoaded, logs, serverChannels } = this.state;
-        const { channelSelectionOptions } = this;
+        const { error, isLoaded, items, serverChannels } = this.state;
+        const { contentTypeSelectionOptions, channelSelectionOptions } = this;
+
+        const selectionOptions = contentTypeSelectionOptions
+            .concat({ type: "divider", name: "", value: "" })
+            .concat(...channelSelectionOptions);
 
         // Server-side error
         if (error)
@@ -87,37 +96,35 @@ export default class LogsPage extends React.Component<DashboardPageProps, State>
         // Still fetching data
         else if (!isLoaded) return <LogsPageSkeleton />;
 
-        const channelLookup = toLookup(logs, (log) => log.channelId);
-        // To reinforce not allowing duplicates
-        const existingTypes = logs.map((x) => x.type);
+        const ignoreLookup = toLookup(items, (ignore) => ignore.contentType ?? ignore.channelId!);
 
         return (
             <Box>
                 <Typography level="h3" sx={{ mb: 2 }}>
-                    Log channels
+                    Auto-moderation ignoring
                 </Typography>
                 {highestRoleType === RoleType.ADMIN && (
                     <Card sx={{ mb: 2 }}>
-                        <LogItemCreationForm onCreate={this.onLogsUpdate.bind(this)} existingTypes={existingTypes} channelOptions={channelSelectionOptions} />
+                        <ChannelIgnoreCreationForm onCreate={this.onIgnoreUpdate.bind(this)} options={selectionOptions} />
                     </Card>
                 )}
                 <Stack sx={{ mb: 4 }} gap={2} direction="column">
-                    {Object.keys(channelLookup).map((channelId) => {
-                        const channelTypeInfos = channelLookup[channelId]!;
+                    {Object.keys(ignoreLookup).map((content) => {
+                        const ignoreTypeInfos = ignoreLookup[content]!;
 
                         return (
-                            <DashboardLogChannel
-                                key={`logs-page-log-${channelId}`}
+                            <DashboardChannelIgnore
+                                key={`content-ignore-${content}`}
                                 serverId={serverConfig.serverId}
-                                channelId={channelId}
+                                channelId={ignoreTypeInfos[0].channelId}
+                                contentType={ignoreTypeInfos[0].contentType}
                                 serverChannels={serverChannels}
-                                channelOptions={channelSelectionOptions}
-                                createdAt={channelTypeInfos[0].createdAt}
-                                types={channelTypeInfos.map((x) => x.type)}
+                                selectionOptions={selectionOptions}
+                                createdAt={ignoreTypeInfos[0].createdAt}
+                                types={ignoreTypeInfos.map((x) => x.type)}
                                 canEdit={highestRoleType === RoleType.ADMIN}
-                                existingTypes={existingTypes}
                                 timezone={serverConfig.timezone}
-                                onUpdate={this.onLogsUpdate.bind(this, channelId)}
+                                onUpdate={this.onIgnoreUpdate.bind(this, content)}
                             />
                         );
                     })}

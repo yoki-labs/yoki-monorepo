@@ -1,8 +1,9 @@
-import { Action, Appeal, ContentFilter, InviteFilter, LogChannel, ModmailThread, Preset, ReactionAction, Role, Server, UrlFilter } from "@prisma/client";
+import { Action, Appeal, ChannelIgnore, ContentFilter, InviteFilter, LogChannel, ModmailThread, Preset, ReactionAction, Role, Server, UrlFilter } from "@prisma/client";
 
 export type SanitizedServer = Omit<Server, "id" | "flags" | "blacklisted" | "botJoinedAt" | "createdAt" | "updatedAt"> & { earlyaccess: boolean };
 
 export type SanitizedLogChannel = Pick<LogChannel, "serverId" | "channelId" | "type"> & { createdAt: string };
+export type SanitizedChannelIgnore = Pick<ChannelIgnore, "serverId" | "channelId" | "contentType" | "updatedAt" | "type"> & { createdAt: string; updatedAt: string | null };
 
 export type SanitizedAction = Omit<Action, "logChannelId" | "logChannelMessage" | "createdAt" | "updatedAt" | "expiresAt"> & {
     createdAt: string;

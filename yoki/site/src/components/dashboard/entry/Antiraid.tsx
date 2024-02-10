@@ -135,7 +135,7 @@ export default class AntiraidPage extends React.Component<DashboardPageProps, St
                                                 subtitle: "How the recently created accounts will be dealt with.",
                                                 defaultValue: serverConfig.antiRaidResponse,
                                                 selectableValues: antiRaidResponseValues,
-                                                variant: "soft",
+                                                variant: "outlined",
                                             },
                                         ],
                                     },

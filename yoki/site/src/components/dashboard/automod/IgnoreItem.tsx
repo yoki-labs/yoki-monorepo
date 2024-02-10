@@ -3,26 +3,29 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { IconDefinition, faHashtag, faPen, faPlus, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { formatDate } from "@yokilabs/utils";
 import LabsIconWrapper from "../../LabsIconWrapper";
-import { LogChannelType } from "@prisma/client";
+import { ChannelIgnoreType, ContentIgnoreType, LogChannelType } from "@prisma/client";
 import LabsOverflowButton from "../../LabsOverflowButton";
 import React from "react";
 import LabsForm, { LabsFormFieldValueMap } from "../../form/LabsForm";
 import { LabsFormFieldOption, LabsFormFieldType, LabsFormSectionOrder } from "../../form/form";
 import { GuildedSanitizedChannel } from "../../../lib/@types/guilded";
 import { channelTypeToIcon } from "../channels";
+import { channelIgnoreTypeList, contentIgnoreSelectionList } from "./ignore-util";
 
 type Props = {
     serverId: string;
-    channelId: string;
+
+    channelId: string | null;
+    contentType: ContentIgnoreType | null;
+    types: ChannelIgnoreType[];
+
     serverChannels: GuildedSanitizedChannel[];
-    channelOptions: LabsFormFieldOption<string>[];
+    selectionOptions: LabsFormFieldOption<string>[];
     createdAt: string;
     canEdit: boolean;
-    types: LogChannelType[];
-    existingTypes: LogChannelType[];
     timezone: string | null;
 
-    onUpdate: (types: LogChannelType[]) => Promise<unknown>;
+    onUpdate: (types: ChannelIgnoreType[]) => Promise<unknown>;
 };
 // Edit mode exists instead of putting you right away there because there may be too many Select form fields
 // With too many channels and too many types at a time and it can be pretty laggy, especially on lower-end
@@ -31,31 +34,7 @@ type State = {
     inEditMode: boolean;
 };
 
-const typeDisplayNames: Record<LogChannelType, string> = {
-    [LogChannelType.all]: "All/The rest",
-    [LogChannelType.notifications]: "Yoki notifications",
-    [LogChannelType.mod_actions]: "Yoki mod logs",
-    [LogChannelType.modmail_logs]: "Yoki Modmail logs",
-    [LogChannelType.role_creations]: "Server role created",
-    [LogChannelType.role_deletions]: "Server role deleted",
-    [LogChannelType.channel_creations]: "Server channel created",
-    [LogChannelType.channel_deletions]: "Server channel deleted",
-    [LogChannelType.member_joins]: "Member joins",
-    [LogChannelType.member_updates]: "Member nickname changes",
-    [LogChannelType.member_roles_updates]: "Member's role changes",
-    [LogChannelType.member_leaves]: "Member leaves",
-    [LogChannelType.member_bans]: "Member bans",
-    [LogChannelType.message_edits]: "Message edits",
-    [LogChannelType.message_deletions]: "Message deletions",
-    [LogChannelType.topic_edits]: "Forum topic edits",
-    [LogChannelType.topic_deletions]: "Forum topic deletions",
-    [LogChannelType.topic_locks]: "Forum topic locks/unlocks",
-    [LogChannelType.comment_deletions]: "Content comment deletions",
-};
-
-const typeOptions = Object.values(LogChannelType).map((type) => ({ value: type, name: typeDisplayNames[type] }));
-
-export default class DashboardLogChannel extends React.Component<Props, State> {
+export default class DashboardChannelIgnore extends React.Component<Props, State> {
     private _serverChannel: GuildedSanitizedChannel | undefined;
     private _icon: IconDefinition;
 
@@ -63,16 +42,20 @@ export default class DashboardLogChannel extends React.Component<Props, State> {
         super(props);
 
         this.state = { inEditMode: false };
-        this._serverChannel = props.serverChannels.find((x) => x.id === props.channelId);
-        this._icon = this._serverChannel?.contentType ? channelTypeToIcon[this._serverChannel.contentType as "chat" | "voice" | "stream"] : faHashtag;
+        this._serverChannel = props.channelId ? props.serverChannels.find((x) => x.id === props.channelId) : undefined;
+        this._icon = this._serverChannel?.contentType
+            ? channelTypeToIcon[this._serverChannel.contentType as "chat" | "voice" | "stream"]
+            : contentIgnoreSelectionList.find((x) => x.value === props.contentType)?.icon ?? faHashtag;
     }
 
     toggleEditMode(inEditMode: boolean) {
         this.setState({ inEditMode });
     }
 
-    LogChannelStaticMode() {
-        const { serverId, channelId, canEdit, types, createdAt, timezone } = this.props;
+    ChannelIgnoreStaticMode() {
+        const { serverId, channelId, contentType, canEdit, types, createdAt, timezone } = this.props;
+
+        console.log({ channelId, contentType });
 
         return (
             <>
@@ -84,12 +67,12 @@ export default class DashboardLogChannel extends React.Component<Props, State> {
                         </LabsIconWrapper>
                         {/* TODO: Replace it with proper channel name */}
                         <Typography level="h1" fontSize="md" fontWeight="bolder" className="sm:flex-1 md:grow-0 md:shrink-0 md:basis-[auto]">
-                            {this._serverChannel?.name ?? channelId}
+                            {this._serverChannel?.name ?? channelId ?? contentType}
                         </Typography>
                         <Stack sx={{ flex: "1" }} direction="row" gap={1} alignItems="center" className="hidden md:flex">
                             {types.map((type) => (
                                 <Chip variant="outlined" sx={{ fontWeight: "bolder" }}>
-                                    {typeDisplayNames[type]}
+                                    {channelIgnoreTypeList.find((x) => x.value === type)?.name}
                                 </Chip>
                             ))}
                         </Stack>
@@ -99,13 +82,13 @@ export default class DashboardLogChannel extends React.Component<Props, State> {
                                     <ListItemDecorator>
                                         <FontAwesomeIcon icon={faPen} />
                                     </ListItemDecorator>
-                                    Edit log channel
+                                    Edit automod ignore
                                 </MenuItem>
-                                <MenuItem color="danger" onClick={() => this.onLogChannelDelete()}>
+                                <MenuItem color="danger" onClick={() => this.onChannelIgnoreDelete()}>
                                     <ListItemDecorator>
                                         <FontAwesomeIcon icon={faTrash} />
                                     </ListItemDecorator>
-                                    Delete log channel
+                                    Delete automod ignore
                                 </MenuItem>
                             </LabsOverflowButton>
                         )}
@@ -113,7 +96,7 @@ export default class DashboardLogChannel extends React.Component<Props, State> {
                     <Box sx={{ flex: "1", my: 1 }} className="block md:hidden">
                         {types.map((type) => (
                             <Chip variant="outlined" sx={{ mr: 1 }}>
-                                {typeDisplayNames[type]}
+                                {channelIgnoreTypeList.find((x) => x.value === type)?.name}
                             </Chip>
                         ))}
                     </Box>
@@ -126,14 +109,13 @@ export default class DashboardLogChannel extends React.Component<Props, State> {
         );
     }
 
-    LogChannelEditMode() {
-        const { channelOptions, channelId, types, existingTypes, createdAt, timezone } = this.props;
-        const onSubmit = this.onLogChannelEdit.bind(this);
-        const otherUsedTypes = existingTypes.filter((x) => !types.includes(x));
+    ChannelIgnoreEditMode() {
+        const { selectionOptions, channelId, contentType, types, createdAt, timezone } = this.props;
+        const onSubmit = this.onChannelIgnoreEdit.bind(this);
 
         return (
             <LabsForm
-                id={`log-${channelId}`}
+                id={`channel-ignore-${contentType ?? channelId}`}
                 sections={[
                     {
                         order: LabsFormSectionOrder.Row,
@@ -145,16 +127,16 @@ export default class DashboardLogChannel extends React.Component<Props, State> {
                         fields: [
                             {
                                 type: LabsFormFieldType.Select,
-                                prop: "channelId",
-                                defaultValue: channelId,
-                                selectableValues: channelOptions,
+                                prop: "content",
+                                defaultValue: contentType ?? channelId,
+                                selectableValues: selectionOptions,
                             },
                             {
                                 type: LabsFormFieldType.MultiSelect,
-                                prop: "types",
-                                selectableValues: typeOptions.map((x) => ({ ...x, disabled: otherUsedTypes.includes(x.value) })),
+                                prop: "type",
+                                selectableValues: channelIgnoreTypeList,
                                 defaultValue: types,
-                                placeholder: "Select log types",
+                                placeholder: "Select ignored",
                             },
                         ],
                     },
@@ -171,33 +153,31 @@ export default class DashboardLogChannel extends React.Component<Props, State> {
         );
     }
 
-    async onLogChannelEdit({ types }: LabsFormFieldValueMap) {
+    async onChannelIgnoreEdit({ types }: LabsFormFieldValueMap) {
         this.toggleEditMode(false);
 
-        return this.props.onUpdate(types as LogChannelType[]);
+        return this.props.onUpdate(types as ChannelIgnoreType[]);
     }
 
-    async onLogChannelDelete() {
+    async onChannelIgnoreDelete() {
         return this.props.onUpdate([]);
     }
 
     render() {
         const { inEditMode } = this.state;
-        const LogChannelStaticMode = this.LogChannelStaticMode.bind(this);
-        const LogChannelEditMode = this.LogChannelEditMode.bind(this);
+        const LogChannelStaticMode = this.ChannelIgnoreStaticMode.bind(this);
+        const LogChannelEditMode = this.ChannelIgnoreEditMode.bind(this);
 
         return <Card>{inEditMode ? <LogChannelEditMode /> : <LogChannelStaticMode />}</Card>;
     }
 }
 
-export function LogItemCreationForm({
-    existingTypes,
+export function ChannelIgnoreCreationForm({
     onCreate: onCreated,
-    channelOptions,
+    options,
 }: {
-    existingTypes: LogChannelType[];
-    onCreate: (channelId: string, types: LogChannelType[]) => Promise<unknown>;
-    channelOptions: LabsFormFieldOption<string>[];
+    onCreate: (channelId: string, types: ChannelIgnoreType[]) => Promise<unknown>;
+    options: LabsFormFieldOption<string>[];
 }) {
     return (
         <LabsForm
@@ -213,20 +193,20 @@ export function LogItemCreationForm({
                     fields: [
                         {
                             type: LabsFormFieldType.Select,
-                            prop: "channelId",
-                            placeholder: "Select server channel",
-                            selectableValues: channelOptions,
+                            prop: "content",
+                            placeholder: "Select content or channel",
+                            selectableValues: options,
                         },
                         {
                             type: LabsFormFieldType.MultiSelect,
                             prop: "types",
-                            selectableValues: typeOptions.map((x) => ({ ...x, disabled: existingTypes.includes(x.value) })),
-                            placeholder: "Select log types",
+                            selectableValues: channelIgnoreTypeList,
+                            placeholder: "Select ignored",
                         },
                     ],
                 },
             ]}
-            onSubmit={({ channelId, types }) => onCreated(channelId as string, types as LogChannelType[])}
+            onSubmit={({ content, types }) => onCreated(content as string, types as ChannelIgnoreType[])}
             resetOnSubmission
         />
     );

@@ -1,6 +1,6 @@
 import { faAngleDown } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Avatar, Box, ListItemDecorator, Option, Select, SelectOption, Typography } from "@mui/joy";
+import { Avatar, Box, Divider, ListItemDecorator, Option, Select, SelectOption, Typography } from "@mui/joy";
 import React from "react";
 
 import { LabsFormFieldByType, LabsFormFieldOption, LabsFormFieldType } from "./form";
@@ -80,7 +80,9 @@ export default class LabsSelector extends React.Component<Props, State> {
                     variant="outlined"
                 >
                     {field.selectableValues?.map((value, i) => (
-                        <Option key={`${id}.option-${i}`} disabled={value.disabled} value={value.value}>
+                        value.type === "divider"
+                        ? <Divider sx={{ my: 1 }} />
+                        : <Option key={`${id}.option-${i}`} disabled={value.disabled} value={value.value}>
                             {(value.icon || value.avatarIcon) && (
                                 <ListItemDecorator sx={{ width: 40 }}>
                                     {value.icon && <FontAwesomeIcon icon={value.icon} />}

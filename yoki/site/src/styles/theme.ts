@@ -78,9 +78,13 @@ export const theme = extendTheme({
     },
     components: {
         JoyMenuItem: {
+            defaultProps: {
+                className: "px-4 py-2 md:px-2 md:py-1"
+            },
             styleOverrides: {
                 root: {
                     margin: "5px 8px",
+                    borderRadius: 8,
                 },
             },
         },

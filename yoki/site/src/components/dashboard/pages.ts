@@ -4,6 +4,7 @@ import {
     faCommentDots,
     faCrown,
     faEnvelope,
+    faGhost,
     faHashtag,
     faHeart,
     faImage,
@@ -35,6 +36,7 @@ import ConfigPage from "./overview/Premium";
 import RolesPage from "./overview/Roles";
 import { SanitizedServer } from "../../lib/@types/db";
 import { GuildedServer } from "../../lib/@types/guilded";
+import IgnoresPage from "./automod/Ignores";
 
 export interface DashboardPageItem {
     id: string;
@@ -66,6 +68,7 @@ export const dashboardPageList: DashboardPageItem[] = [
     { id: "invites", name: "Invite Filter", icon: faTicket, component: InvitesPage, category: DashboardPageCategory.Automod, requiredRole: RoleType.MOD },
     { id: "images", name: "Image Filter", icon: faImage, component: ImagesPage, category: DashboardPageCategory.Automod, requiredRole: RoleType.ADMIN },
     { id: "spam", name: "Anti-spam", icon: faPoo, component: SpamPage, category: DashboardPageCategory.Automod, requiredRole: RoleType.ADMIN },
+    { id: "ignoring", name: "Ignoring", icon: faGhost, component: IgnoresPage, category: DashboardPageCategory.Automod, requiredRole: RoleType.MOD },
     { id: "modmail", name: "Modmail", icon: faEnvelope, component: ModmailPage, category: DashboardPageCategory.Entry, requiredRole: RoleType.MINIMOD },
     { id: "antiraid", name: "Anti-raid", icon: faShieldHalved, component: AntiraidPage, category: DashboardPageCategory.Entry, requiredRole: RoleType.ADMIN },
     { id: "appeals", name: "Appeals", icon: faPrayingHands, component: AppealsPage, category: DashboardPageCategory.Entry, requiredRole: RoleType.MOD },

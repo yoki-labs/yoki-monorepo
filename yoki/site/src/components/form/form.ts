@@ -51,6 +51,7 @@ interface StyledLabsFormField {
 }
 
 export interface LabsFormFieldOption<T> {
+    type?: "item" | "divider";
     name: string;
     description?: string;
     value: T;
