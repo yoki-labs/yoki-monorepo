@@ -65,7 +65,7 @@ export default abstract class BaseFilterUtil<TFilterType = null> extends Util<Yo
                 });
         }
 
-        const memberExceeds = await this.getMemberExceedsThreshold(server, userId, server.spamInfractionPoints);
+        const memberExceeds = await this.getMemberExceedsThreshold(server, userId, infractionPoints);
         const actionType = memberExceeds ?? fallbackSeverity;
 
         await this.client.dbUtil.emitAction(
