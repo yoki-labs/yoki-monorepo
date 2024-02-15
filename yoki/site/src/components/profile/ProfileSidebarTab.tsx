@@ -18,7 +18,7 @@ export default function ProfileSidebarTab({ item, isActive }: Prop) {
     const href = `/profile/${item.id}`;
 
     return (
-        <ListItemButton sx={{ borderRadius: 6 }} color={item.color} selected={isActive} onClick={() => router.push(href)}>
+        <ListItemButton sx={{ borderRadius: "radius.sm" }} color={item.color} selected={isActive} onClick={() => router.push(href)}>
             <ListItemDecorator>
                 <FontAwesomeIcon icon={item.icon} />
             </ListItemDecorator>

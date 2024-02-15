@@ -55,7 +55,7 @@ export default class DashboardRole extends React.Component<Props, State> {
                 <CardContent>
                     {/* The hashtag icon (kind of useless, but there should be indication that it is a channel), channel ID */}
                     <Stack component="header" gap={2} direction="row" alignItems="center">
-                        <LabsIconWrapper className="hidden md:block">
+                        <LabsIconWrapper className="p-2 hidden md:block">
                             <FontAwesomeIcon style={{ width: "100%", height: "100%" }} icon={faShieldHalved} />
                         </LabsIconWrapper>
                         {/* TODO: Replace it with proper channel name */}
@@ -108,7 +108,7 @@ export default class DashboardRole extends React.Component<Props, State> {
                         {
                             row: true,
                             start: (
-                                <LabsIconWrapper className="hidden md:block">
+                                <LabsIconWrapper className="p-2 hidden md:block">
                                     <FontAwesomeIcon style={{ width: "100%", height: "100%" }} icon={faShieldHalved} />
                                 </LabsIconWrapper>
                             ),
@@ -182,7 +182,7 @@ export function RoleItemCreationForm({ serverRoleOptions, onCreate }: EditorProp
                     {
                         order: LabsFormSectionOrder.Row,
                         start: (
-                            <LabsIconWrapper className="hidden md:block">
+                            <LabsIconWrapper className="p-2 hidden md:block">
                                 <FontAwesomeIcon style={{ width: "100%", height: "100%" }} icon={faPlus} />
                             </LabsIconWrapper>
                         ),

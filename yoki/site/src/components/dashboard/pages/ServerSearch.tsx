@@ -62,6 +62,7 @@ export default class ServerSearch extends React.Component<Props, State> {
                     <Input
                         placeholder={"Search for servers"}
                         value={search}
+                        variant="soft"
                         onChange={({ target }) => this.onChange(target.value)}
                         startDecorator={<FontAwesomeIcon icon={faSearch} />}
                     />
@@ -75,7 +76,7 @@ export default class ServerSearch extends React.Component<Props, State> {
                                 </Skeleton>
                                 : <>
                                     {servers.length} server{"s".repeat(Number(servers.length !== 1))} found while searching for{" "}
-                                    <Typography level="code">
+                                    <Typography level="code" sx={{ bgcolor: "background.level1" }}>
                                         {search}
                                     </Typography>
                                 </>
@@ -101,7 +102,7 @@ export default class ServerSearch extends React.Component<Props, State> {
                         </Box>
                         <PagePlaceholder icon={PagePlaceholderIcon.NotFound} title="Can't find the server?">
                             Private servers may not show up in the dashboard server list due to restrictions in Guilded. Considering using{" "}
-                            <Typography component="span" level="code">
+                            <Typography component="span" level="code" sx={{ bgcolor: "background.level1" }}>
                                 ?dashboard
                             </Typography>{" "}
                             in the server to open its dashboard.
@@ -130,7 +131,7 @@ function ServerSearchEmpty() {
     return (
         <PagePlaceholder icon={PagePlaceholderIcon.Wip} title="Find your server">
             Due to Guilded removing our old ways of displaying the server, it is required that you use
-            <Typography component="span" level="code">
+            <Typography component="span" level="code" sx={{ bgcolor: "background.level1" }}>
                 ?dashboard
             </Typography>{" "}
             in your server or search it up.

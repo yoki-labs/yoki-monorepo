@@ -1,4 +1,4 @@
-import { faPrayingHands, faUserCircle, IconDefinition } from "@fortawesome/free-solid-svg-icons";
+import { faCheckDouble, faPrayingHands, faUserCircle, IconDefinition } from "@fortawesome/free-solid-svg-icons";
 import { ColorPaletteProp } from "@mui/joy";
 import React from "react";
 
@@ -21,4 +21,5 @@ export interface ProfilePageProps {
 export const profilePageList: ProfilePageItem[] = [
     { id: "overview", name: "Overview", icon: faUserCircle, component: ProfileOverviewPage },
     { id: "appeals", name: "Appeals", icon: faPrayingHands, component: ProfileAppealPage },
+    // { id: "verify", name: "Verify", icon: faCheckDouble, component: ProfileAppealPage },
 ];

@@ -86,7 +86,7 @@ function ModuleBadge({ earlyAccess, premium, size }: { earlyAccess?: boolean | u
         </Tooltip>
     ) : (
         <Tooltip title={premium ? `This module requires ${premium} tier subscription of Yoki Labs.` : `This module is available for everyone to use for free.`}>
-            <Chip size={size} color={premium ? "warning" : "neutral"}>
+            <Chip variant="soft" size={size} color={premium ? "warning" : "neutral"}>
                 {premium ? "Premium" : "Free"}
             </Chip>
         </Tooltip>

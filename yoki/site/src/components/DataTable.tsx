@@ -1,4 +1,4 @@
-import { faMagnifyingGlass, faSliders, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faMagnifyingGlass, faPlus, faSliders, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
     Box,
@@ -266,7 +266,14 @@ export default class DataTable<TItem extends { id: TItemId }, TItemId> extends R
                                     <th style={{ width: 60 }}>{!disableOperations && this.DataTableOverflow()}</th>
                                 </tr>
                             </thead>
-                            <tbody>{renderedItems.map(([item]) => item)}</tbody>
+                            <tbody>
+                                {renderedItems.map(([item]) => item)}
+                                {/* <tr>
+                                    <td colSpan={columns.length + 2}>
+                                        <Button size="lg" variant="soft" color="neutral" startDecorator={<FontAwesomeIcon icon={faPlus} />} sx={{ justifyContent: "left", width: "100%" }}>Add {itemType}</Button>
+                                    </td>
+                                </tr> */}
+                            </tbody>
                         </Table>
 
                         {maxPages > 1 && (

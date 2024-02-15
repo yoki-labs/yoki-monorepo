@@ -62,7 +62,7 @@ export default class DashboardChannelIgnore extends React.Component<Props, State
                 <CardContent>
                     {/* The hashtag icon (kind of useless, but there should be indication that it is a channel), channel ID */}
                     <Stack component="header" gap={2} direction="row" alignItems="center">
-                        <LabsIconWrapper className="hidden md:block">
+                        <LabsIconWrapper className="p-2 hidden md:block">
                             <FontAwesomeIcon style={{ width: "100%", height: "100%" }} icon={this._icon} />
                         </LabsIconWrapper>
                         {/* TODO: Replace it with proper channel name */}
@@ -120,7 +120,7 @@ export default class DashboardChannelIgnore extends React.Component<Props, State
                     {
                         order: LabsFormSectionOrder.Row,
                         start: (
-                            <LabsIconWrapper className="hidden md:block">
+                            <LabsIconWrapper className="p-2 hidden md:block">
                                 <FontAwesomeIcon style={{ width: "100%", height: "100%" }} icon={this._icon} />
                             </LabsIconWrapper>
                         ),
@@ -186,7 +186,7 @@ export function ChannelIgnoreCreationForm({
                 {
                     order: LabsFormSectionOrder.Row,
                     start: (
-                        <LabsIconWrapper className="hidden md:block">
+                        <LabsIconWrapper className="p-2 hidden md:block">
                             <FontAwesomeIcon style={{ width: "100%", height: "100%" }} icon={faPlus} />
                         </LabsIconWrapper>
                     ),

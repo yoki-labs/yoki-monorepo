@@ -1,7 +1,7 @@
 import { Box, styled } from "@mui/joy";
 
 const LabsIconWrapper = styled(Box)(({ theme }) => ({
-    backgroundColor: theme.vars.palette.background.level2,
+    backgroundColor: theme.vars.palette.background.level1,
     width: 20,
     height: 20,
     borderRadius: "50%",

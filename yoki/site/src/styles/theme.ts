@@ -66,11 +66,11 @@ export const theme = extendTheme({
         thickness: "1px",
     },
     radius: {
-        xs: "6px",
-        sm: "10px",
-        md: "16px",
-        lg: "20px",
-        xl: "24px",
+        xs: "10px",
+        sm: "16px",
+        md: "22px",
+        lg: "28px",
+        xl: "34px",
     },
     colorSchemes: {
         light: labsLightTheme,
@@ -84,7 +84,6 @@ export const theme = extendTheme({
             styleOverrides: {
                 root: {
                     margin: "5px 8px",
-                    borderRadius: 8,
                 },
             },
         },
@@ -147,6 +146,11 @@ export const theme = extendTheme({
             },
         },
         JoyChip: {
+            styleOverrides: {
+                root: {
+                    paddingBlock: "var(--_Chip-paddingBlock)",
+                },
+            },
             defaultProps: {
                 variant: "outlined",
             },

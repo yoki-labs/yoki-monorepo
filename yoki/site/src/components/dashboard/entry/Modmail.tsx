@@ -121,6 +121,7 @@ export default class ModmailPage extends React.Component<DashboardPageProps, Sta
                         <Card>
                             <CardContent>
                                 <LabsForm
+                                    id="modmail-config"
                                     sections={[
                                         {
                                             order: LabsFormSectionOrder.Grid,

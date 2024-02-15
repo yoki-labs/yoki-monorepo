@@ -8,5 +8,5 @@ export default [
         if (!resolvedFromObj) return null;
         return { original: input, resolved: resolvedFromObj };
     },
-    (arg) => `I was expecting a single phrase from the following options: ${listInlineCode(Object.keys(arg.values))}.`,
+    (arg) => `I was expecting a single phrase from the following options: ${listInlineCode(Object.keys(arg.values!))}.`,
 ] satisfies CommandArgValidator;
