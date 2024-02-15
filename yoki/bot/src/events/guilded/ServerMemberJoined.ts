@@ -1,15 +1,16 @@
 import { LogChannelType, ResponseType, Severity } from "@prisma/client";
-import { codeBlock, errorEmbed, inlineCode } from "@yokilabs/bot";
+import { codeBlock, createUserMentionElement, emptyText, errorEmbed, inlineCode } from "@yokilabs/bot";
 import { Colors } from "@yokilabs/utils";
 import { GuildedImages } from "@yokilabs/utils/dist/src/images";
 import { stripIndents } from "common-tags";
-import { UserType } from "guilded.js";
+import { EmbedPayload, Member, UserType } from "guilded.js";
 import { nanoid } from "nanoid";
 
 import type { GEvent } from "../../typings";
 import { generateCaptcha } from "../../utils/antiraid";
 import { trimHoistingSymbols } from "../../utils/moderation";
 import { suspicious as sus } from "../../utils/util";
+import YokiClient from "../../Client";
 
 export default {
     execute: async ([member, ctx]) => {
@@ -63,33 +64,46 @@ export default {
 
                         // Have to complete captcha
                         // There might be bots doing something behind the scenes and people may not be able to be mentioned for that period of time
-                        await ctx.messageUtil
-                            .sendWarningBlock(
-                                server.antiRaidChallengeChannel!,
-                                `Halt! Please complete this captcha`,
-                                stripIndents`
-                                    <@${userId}>, your account has tripped the anti-raid filter and requires further verification to ensure you are not a bot.
-
-                                    Please run the following command with the code below: \`${server.getPrefix()}solve insert-code-here\`.
-                                `,
-                                {
-                                    image: {
-                                        url: userCaptcha!.url!,
-                                    },
-                                    fields: [
-                                        {
-                                            name: `Example`,
-                                            value: codeBlock(`${server.getPrefix()}solve ahS9fjW`, `md`),
-                                        },
-                                    ],
+                        await sendCaptcha(
+                            ctx,
+                            server.antiRaidChallengeChannel!,
+                            member,
+                            `Please run the following command with the code below: \`${server.getPrefix()}solve insert-code-here\`.`,
+                            {
+                                image: {
+                                    url: userCaptcha!.url!,
                                 },
-                                {
-                                    isPrivate: true,
-                                }
-                            )
+                                fields: [
+                                    {
+                                        name: `Example`,
+                                        value: codeBlock(`${server.getPrefix()}solve ahS9fjW`, `md`),
+                                    },
+                                ],
+                            }
+                        )
                             .catch((err) => {
                                 console.log(`Error notifying user of captcha for server ${serverId} because of ${err}`);
                                 void ctx.errorHandler.send(`Error while handling antiraid site challenge for user ${userId}`, [errorEmbed((err as Error).message)]);
+
+                                // setTimeout(() =>
+                                //     sendCaptcha(
+                                //         ctx,
+                                //         server.antiRaidChallengeChannel!,
+                                //         member,
+                                //         `Please run the following command with the code below: \`${server.getPrefix()}solve insert-code-here\`.`,
+                                //         {
+                                //             image: {
+                                //                 url: userCaptcha!.url!,
+                                //             },
+                                //             fields: [
+                                //                 {
+                                //                     name: `Example`,
+                                //                     value: codeBlock(`${server.getPrefix()}solve ahS9fjW`, `md`),
+                                //                 },
+                                //             ],
+                                //         }
+                                //     )
+                                // , 60000);
                             });
                     }
                     break;
@@ -131,55 +145,96 @@ export default {
                         if (server.muteRoleId) await ctx.roles.addRoleToMember(serverId, userId, server.muteRoleId).catch(() => null);
                         // Have to complete captcha
                         // There might be bots that are doing something else behind the scenes and those people might not be allowed to be privately mentioned
-                        await ctx.messageUtil
-                            .sendWarningBlock(
-                                server.antiRaidChallengeChannel!,
-                                `Halt! Please complete this captcha`,
-                                stripIndents`
-                                    <@${userId}>, your account has tripped the anti-raid filter and requires further verification to ensure you are not a bot.
-                                    
-                                    Please visit [this link](${process.env.NODE_ENV === "development" ? process.env.NEXTAUTH_URL ?? "http://localhost:3000" : "https://yoki.gg"}/verify/${
-                                        userCaptcha!.id
-                                    }) which will use a frameless captcha to verify you are not a bot.
-                                `,
-                                undefined,
-                                { isPrivate: true }
-                            )
-                            .catch((err) => {
-                                console.log(`Error notifying user of captcha for server ${serverId} because of ${err}`);
-                                void ctx.errorHandler.send(`Error while handling antiraid site challenge for user ${userId}`, [errorEmbed((err as Error).message)]);
-                            });
-                    }
-                    break;
+                        await sendCaptcha(
+                            ctx,
+                            server.antiRaidChallengeChannel!,
+                            member,
+                            `Please visit [this link](${process.env.NODE_ENV === "development" ? process.env.NEXTAUTH_URL ?? "http://localhost:3000" : "https://yoki.gg"}/verify/${
+                                userCaptcha!.id
+                            }) which will use a frameless captcha to verify you are not a bot.`
+                        )
+                        .catch((err) => {
+                            console.log(`Error notifying user of captcha for server ${serverId} because of ${err}`);
+                            void ctx.errorHandler.send(`Error while handling antiraid site challenge for user ${userId}`, [errorEmbed((err as Error).message)]);
+
+                            // setTimeout(() =>
+                            //     sendCaptcha(
+                            //         ctx,
+                            //         server.antiRaidChallengeChannel!,
+                            //         member,
+                            //         `Please visit [this link](${process.env.NODE_ENV === "development" ? process.env.NEXTAUTH_URL ?? "http://localhost:3000" : "https://yoki.gg"}/verify/${
+                            //             userCaptcha!.id
+                            //         }) which will use a frameless captcha to verify you are not a bot.`
+                            //     )
+                            // , 60000);
+                        });
                 }
-                default: {
-                }
+                break;
+            }
+            default: {
             }
         }
+    }
 
-        // check if there's a log channel channel for member joins
-        const memberJoinLogChannel = await ctx.dbUtil.getLogChannel(serverId!, LogChannelType.member_joins);
-        if (!memberJoinLogChannel) return;
-        const creationDate = new Date(member.user!.createdAt!);
-        const suspicious = sus(creationDate);
+    // check if there's a log channel channel for member joins
+    const memberJoinLogChannel = await ctx.dbUtil.getLogChannel(serverId!, LogChannelType.member_joins);
+    if (!memberJoinLogChannel) return;
+    const creationDate = new Date(member.user!.createdAt!);
+    const suspicious = sus(creationDate);
 
-        // send the log channel message with the content/data of the deleted message
-        await ctx.messageUtil.sendLog({
-            where: memberJoinLogChannel.channelId,
-            author: {
-                icon_url: member?.user?.avatar ?? GuildedImages.defaultAvatar,
-                name: `${member.user!.type === UserType.Bot ? "Bot added" : "User joined"} \u2022 ${member?.displayName ?? "Unknown user"}`,
-            },
-            // title: `${member.user!.type === UserType.Bot ? "Bot Added" : "User Joined"}`,
-            serverId: server.serverId,
-            description: `<@${userId}> (${inlineCode(userId)}) has joined the server.`,
-            color: suspicious ? Colors.yellow : Colors.green,
-            // occurred: member.joinedAt!.toISOString(),
-            additionalInfo: stripIndents`
-                **Account created:** ${server.formatTimezone(creationDate)} ${suspicious ? "(:warning: recent)" : ""}
-                **Joined:** ${server.formatTimezone(member.joinedAt!)}
-            `,
-        });
-    },
-    name: "memberJoined",
+    // send the log channel message with the content/data of the deleted message
+    await ctx.messageUtil.sendLog({
+        where: memberJoinLogChannel.channelId,
+        author: {
+            icon_url: member?.user?.avatar ?? GuildedImages.defaultAvatar,
+            name: `${member.user!.type === UserType.Bot ? "Bot added" : "User joined"} \u2022 ${member?.displayName ?? "Unknown user"}`,
+        },
+        // title: `${member.user!.type === UserType.Bot ? "Bot Added" : "User Joined"}`,
+        serverId: server.serverId,
+        description: `<@${userId}> (${inlineCode(userId)}) has joined the server.`,
+        color: suspicious ? Colors.yellow : Colors.green,
+        // occurred: member.joinedAt!.toISOString(),
+        additionalInfo: stripIndents`
+            **Account created:** ${server.formatTimezone(creationDate)} ${suspicious ? "(:warning: recent)" : ""}
+            **Joined:** ${server.formatTimezone(member.joinedAt!)}
+        `,
+    });
+},
+name: "memberJoined",
 } satisfies GEvent<"memberJoined">;
+
+function sendCaptcha(ctx: YokiClient, channelId: string, member: Member, content: string, embed?: Partial<EmbedPayload> | undefined) {
+    return ctx.messageUtil
+        .sendWarningBlock(
+            channelId,
+            `Halt! Please complete this captcha`,
+            stripIndents`
+                <@${member.id}>, your account has tripped the anti-raid filter and requires further verification to ensure you are not a bot.
+
+                ${content}
+            `,
+            embed,
+            {
+                isPrivate: true,
+                content: {
+                    object: "value",
+                    document: {
+                        object: "document",
+                        data: {},
+                        nodes: [
+                            {
+                                object: "block",
+                                type: "paragraph",
+                                data: {},
+                                nodes: [
+                                    emptyText,
+                                    createUserMentionElement(member),
+                                    emptyText,
+                                ]
+                            }
+                        ]
+                    }
+                } as unknown as string
+            },
+        )
+}

@@ -217,7 +217,7 @@ export function FormFieldHeader({ field }: { field: BaseLabsFormField<LabsFormFi
                                 <Typography level="title-md">{field.name}</Typography>
                             </FormLabel>
                             {field.badge && (
-                                <Chip size="sm" variant="outlined" color={field.badge.color}>
+                                <Chip size="sm" variant="soft" color={field.badge.color}>
                                     {field.badge.text}
                                 </Chip>
                             )}

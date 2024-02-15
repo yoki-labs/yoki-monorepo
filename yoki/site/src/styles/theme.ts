@@ -110,6 +110,7 @@ export const theme = extendTheme({
         JoyInput: {
             styleOverrides: {
                 input: {
+                    "--Select-inlinePadding": "1rem",
                     outline: "none",
                     ":focus": {
                         outline: "none",
