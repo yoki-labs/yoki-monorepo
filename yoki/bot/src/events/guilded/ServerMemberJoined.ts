@@ -47,65 +47,66 @@ export default {
             void ctx.amp.logEvent({ event_type: "FRESH_ACCOUNT_JOIN", user_id: userId, event_properties: { serverId } });
             switch (server.antiRaidResponse) {
                 case "TEXT_CAPTCHA": {
-                    if (server.antiRaidChallengeChannel) {
-                        let userCaptcha = await ctx.prisma.captcha.findFirst({ where: { serverId, triggeringUser: userId, solved: false } });
-                        void ctx.amp.logEvent({ event_type: "MEMBER_CAPTCHA_JOIN", user_id: userId, event_properties: { serverId } });
+                    if (!server.antiRaidChallengeChannel) break;
 
-                        if (!userCaptcha) {
-                            const { id, value, url } = await generateCaptcha(ctx.s3);
-                            const createdCaptcha = await ctx.prisma.captcha.create({
-                                data: { id, serverId, triggeringUser: userId, value, url },
-                            });
-                            userCaptcha = createdCaptcha;
-                        }
+                    let userCaptcha = await ctx.prisma.captcha.findFirst({ where: { serverId, triggeringUser: userId, solved: false } });
+                    void ctx.amp.logEvent({ event_type: "MEMBER_CAPTCHA_JOIN", user_id: userId, event_properties: { serverId } });
 
-                        console.log(`User captcha URL: ${userCaptcha.url}`);
-                        if (server.muteRoleId) await ctx.roles.addRoleToMember(serverId, userId, server.muteRoleId).catch(() => null);
-
-                        // Have to complete captcha
-                        // There might be bots doing something behind the scenes and people may not be able to be mentioned for that period of time
-                        await sendCaptcha(
-                            ctx,
-                            server.antiRaidChallengeChannel!,
-                            member,
-                            `Please run the following command with the code below: \`${server.getPrefix()}solve insert-code-here\`.`,
-                            {
-                                image: {
-                                    url: userCaptcha!.url!,
-                                },
-                                fields: [
-                                    {
-                                        name: `Example`,
-                                        value: codeBlock(`${server.getPrefix()}solve ahS9fjW`, `md`),
-                                    },
-                                ],
-                            }
-                        )
-                            .catch((err) => {
-                                console.log(`Error notifying user of captcha for server ${serverId} because of ${err}`);
-                                void ctx.errorHandler.send(`Error while handling antiraid site challenge for user ${userId}`, [errorEmbed((err as Error).message)]);
-
-                                // setTimeout(() =>
-                                //     sendCaptcha(
-                                //         ctx,
-                                //         server.antiRaidChallengeChannel!,
-                                //         member,
-                                //         `Please run the following command with the code below: \`${server.getPrefix()}solve insert-code-here\`.`,
-                                //         {
-                                //             image: {
-                                //                 url: userCaptcha!.url!,
-                                //             },
-                                //             fields: [
-                                //                 {
-                                //                     name: `Example`,
-                                //                     value: codeBlock(`${server.getPrefix()}solve ahS9fjW`, `md`),
-                                //                 },
-                                //             ],
-                                //         }
-                                //     )
-                                // , 60000);
-                            });
+                    if (!userCaptcha) {
+                        const { id, value, url } = await generateCaptcha(ctx.s3);
+                        const createdCaptcha = await ctx.prisma.captcha.create({
+                            data: { id, serverId, triggeringUser: userId, value, url },
+                        });
+                        userCaptcha = createdCaptcha;
                     }
+
+                    console.log(`User captcha URL: ${userCaptcha.url}`);
+                    if (server.muteRoleId) await ctx.roles.addRoleToMember(serverId, userId, server.muteRoleId).catch(() => null);
+
+                    // Have to complete captcha
+                    // There might be bots doing something behind the scenes and people may not be able to be mentioned for that period of time
+                    await sendCaptcha(
+                        ctx,
+                        server.antiRaidChallengeChannel!,
+                        member,
+                        `Please run the following command with the code below: \`${server.getPrefix()}solve insert-code-here\`.`,
+                        {
+                            image: {
+                                url: userCaptcha!.url!,
+                            },
+                            fields: [
+                                {
+                                    name: `Example`,
+                                    value: codeBlock(`${server.getPrefix()}solve ahS9fjW`, `md`),
+                                },
+                            ],
+                        }
+                        )
+                        .catch((err) => {
+                            console.log(`Error notifying user of captcha for server ${serverId} because of ${err}`);
+                            void ctx.errorHandler.send(`Error while handling antiraid site challenge for user ${member.id}`, [errorEmbed((err as Error).message)]);
+        
+                            setTimeout(() =>
+                                sendCaptcha(
+                                    ctx,
+                                    server.antiRaidChallengeChannel!,
+                                    member,
+                                    `Please run the following command with the code below: \`${server.getPrefix()}solve insert-code-here\`.`,
+                                    {
+                                        image: {
+                                            url: userCaptcha!.url!,
+                                        },
+                                        fields: [
+                                            {
+                                                name: `Example`,
+                                                value: codeBlock(`${server.getPrefix()}solve ahS9fjW`, `md`),
+                                            },
+                                        ],
+                                    }
+                                )
+                            , 60000);
+                        });
+
                     break;
                 }
                 case "KICK": {
@@ -130,46 +131,47 @@ export default {
                     return;
                 }
                 case "SITE_CAPTCHA": {
-                    if (server.antiRaidChallengeChannel) {
-                        let userCaptcha = await ctx.prisma.captcha.findFirst({ where: { serverId, triggeringUser: userId, solved: false } });
-                        void ctx.amp.logEvent({ event_type: "MEMBER_SITE_CAPTCHA_JOIN", user_id: userId, event_properties: { serverId } });
+                    if (!server.antiRaidChallengeChannel)
+                        break;
 
-                        if (!userCaptcha) {
-                            const id = nanoid();
-                            const createdCaptcha = await ctx.prisma.captcha.create({
-                                data: { id, serverId, triggeringUser: userId },
-                            });
-                            userCaptcha = createdCaptcha;
-                        }
+                    let userCaptcha = await ctx.prisma.captcha.findFirst({ where: { serverId, triggeringUser: userId, solved: false } });
+                    void ctx.amp.logEvent({ event_type: "MEMBER_SITE_CAPTCHA_JOIN", user_id: userId, event_properties: { serverId } });
 
-                        if (server.muteRoleId) await ctx.roles.addRoleToMember(serverId, userId, server.muteRoleId).catch(() => null);
-                        // Have to complete captcha
-                        // There might be bots that are doing something else behind the scenes and those people might not be allowed to be privately mentioned
-                        await sendCaptcha(
-                            ctx,
-                            server.antiRaidChallengeChannel!,
-                            member,
-                            `Please visit [this link](${process.env.NODE_ENV === "development" ? process.env.NEXTAUTH_URL ?? "http://localhost:3000" : "https://yoki.gg"}/verify/${
-                                userCaptcha!.id
-                            }) which will use a frameless captcha to verify you are not a bot.`
-                        )
+                    if (!userCaptcha) {
+                        const id = nanoid();
+                        const createdCaptcha = await ctx.prisma.captcha.create({
+                            data: { id, serverId, triggeringUser: userId },
+                        });
+                        userCaptcha = createdCaptcha;
+                    }
+
+                    if (server.muteRoleId) await ctx.roles.addRoleToMember(serverId, userId, server.muteRoleId).catch(() => null);
+                    // Have to complete captcha
+                    // There might be bots that are doing something else behind the scenes and those people might not be allowed to be privately mentioned
+                    await sendCaptcha(
+                        ctx,
+                        server.antiRaidChallengeChannel!,
+                        member,
+                        `Please visit [this link](${process.env.NODE_ENV === "development" ? process.env.NEXTAUTH_URL ?? "http://localhost:3000" : "https://yoki.gg"}/verify/${
+                            userCaptcha!.id
+                        }) which will use a frameless captcha to verify you are not a bot.`
+                    )
                         .catch((err) => {
                             console.log(`Error notifying user of captcha for server ${serverId} because of ${err}`);
-                            void ctx.errorHandler.send(`Error while handling antiraid site challenge for user ${userId}`, [errorEmbed((err as Error).message)]);
+                            void ctx.errorHandler.send(`Error while handling antiraid site challenge for user ${member.id}`, [errorEmbed((err as Error).message)]);
 
-                            // setTimeout(() =>
-                            //     sendCaptcha(
-                            //         ctx,
-                            //         server.antiRaidChallengeChannel!,
-                            //         member,
-                            //         `Please visit [this link](${process.env.NODE_ENV === "development" ? process.env.NEXTAUTH_URL ?? "http://localhost:3000" : "https://yoki.gg"}/verify/${
-                            //             userCaptcha!.id
-                            //         }) which will use a frameless captcha to verify you are not a bot.`
-                            //     )
-                            // , 60000);
+                            setTimeout(() =>
+                                sendCaptcha(
+                                    ctx,
+                                    server.antiRaidChallengeChannel!,
+                                    member,
+                                    `Please visit [this link](${process.env.NODE_ENV === "development" ? process.env.NEXTAUTH_URL ?? "http://localhost:3000" : "https://yoki.gg"}/verify/${
+                                        userCaptcha!.id
+                                    }) which will use a frameless captcha to verify you are not a bot.`
+                                )
+                            , 60000);
                         });
-                }
-                break;
+                    break;
             }
             default: {
             }

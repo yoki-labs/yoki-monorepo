@@ -350,15 +350,19 @@ export class MessageUtil<
     }
 
     sendWarningBlock(channelId: string, title: string, description: string, embedPartial?: EmbedPayload, messagePartial?: Partial<MessageBody>) {
+        const embed = {
+            author: { name: title, icon_url: BotImages.exclamationmark },
+            description,
+            color: Colors.yellow,
+            thumbnail: { url: StateImages.stop },
+            ...embedPartial,
+        };
+
+        console.log("Embed", JSON.stringify(embed));
+
         return this.sendEmbed(
             channelId,
-            {
-                author: { name: title, icon_url: BotImages.exclamationmark },
-                description,
-                color: Colors.yellow,
-                thumbnail: { url: StateImages.stop },
-                ...embedPartial,
-            },
+            embed,
             messagePartial
         );
     }
