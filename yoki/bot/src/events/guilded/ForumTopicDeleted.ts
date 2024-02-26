@@ -39,7 +39,7 @@ export default {
                 name: `Forum topic deleted \u2022 ${member?.displayName ?? "Unknown user"}`,
             },
             // title: "Forum Topic Removed",
-            description: `A forum topic ${inlineQuote(forumTopic.title)} by <@${forumTopic.createdBy}> (${inlineCode(forumTopic.createdBy)}) was deleted in [#${
+            description: `The forum topic ${inlineQuote(forumTopic.title)} by <@${forumTopic.createdBy}> (${inlineCode(forumTopic.createdBy)}) was deleted in [#${
                 channel.name
             }](${channelURL}).`,
             additionalInfo: stripIndents`

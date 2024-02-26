@@ -104,10 +104,13 @@ export default {
                                         ],
                                     }
                                 )
-                            , 60000);
+                                    .catch((err) =>
+                                        void ctx.errorHandler.send(`Error while retrying antiraid captcha challenge for user ${member.id}`, [errorEmbed((err as Error).message)])
+                                    )
+                            , 30000);
                         });
-
-                    break;
+                        
+                        break;
                 }
                 case "KICK": {
                     void ctx.amp.logEvent({ event_type: "MEMBER_KICKED_JOIN", user_id: userId, event_properties: { serverId } });
@@ -159,7 +162,7 @@ export default {
                         .catch((err) => {
                             console.log(`Error notifying user of captcha for server ${serverId} because of ${err}`);
                             void ctx.errorHandler.send(`Error while handling antiraid site challenge for user ${member.id}`, [errorEmbed((err as Error).message)]);
-
+                            
                             setTimeout(() =>
                                 sendCaptcha(
                                     ctx,
@@ -169,7 +172,10 @@ export default {
                                         userCaptcha!.id
                                     }) which will use a frameless captcha to verify you are not a bot.`
                                 )
-                            , 60000);
+                                    .catch((err) =>
+                                        void ctx.errorHandler.send(`Error while retrying antiraid site challenge for user ${member.id}`, [errorEmbed((err as Error).message)])
+                                    )
+                            , 30000);
                         });
                     break;
             }

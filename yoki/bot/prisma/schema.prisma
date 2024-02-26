@@ -307,6 +307,8 @@ enum LogChannelType {
     topic_locks
     topic_edits
     topic_deletions
+    doc_edits
+    doc_deletions
     comment_deletions
     notifications
     modmail_logs

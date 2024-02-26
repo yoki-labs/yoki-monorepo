@@ -63,7 +63,7 @@ export default {
             },
             // title: "Forum Topic Edited",
             serverId: server.serverId,
-            description: `A forum topic ${inlineQuote(forumTopic.title)} by <@${forumTopic.createdBy}> (${inlineCode(forumTopic.createdBy)}) has been edited in [#${
+            description: `The forum topic ${inlineQuote(forumTopic.title)} by <@${forumTopic.createdBy}> (${inlineCode(forumTopic.createdBy)}) has been edited in [#${
                 channel.name
             }](${channelURL}).`,
             color: Colors.yellow,
@@ -80,11 +80,11 @@ export default {
                 },
                 contentChanged && {
                     name: "Old content",
-                    value: await quoteChangedContent(ctx, serverId, forumTopic.id, "forums", forumTopic.content),
+                    value: await quoteChangedContent(ctx, serverId, forumTopic.id, "forums", oldContent?.content),
                 },
                 contentChanged && {
                     name: "New content",
-                    value: await quoteChangedContent(ctx, serverId, forumTopic.id, "forums", oldContent?.content),
+                    value: await quoteChangedContent(ctx, serverId, forumTopic.id, "forums", forumTopic.content),
                 },
             ].filter(Boolean) as EmbedField[],
         });
