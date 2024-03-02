@@ -29,6 +29,8 @@ export abstract class AbstractClient<
     // cache connection
     // readonly redis = new RedisClient(process.env.REDIS_URL ?? "cache:6379");
 
+    readonly startTime = new Date();
+
     // analytics
     readonly amp = init(process.env.AMPLITUDE_API_KEY!);
 
