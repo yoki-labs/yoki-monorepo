@@ -91,7 +91,7 @@ export default class ModmailPage extends React.Component<DashboardPageProps, Sta
             body: JSON.stringify({ channelId, messageId, emoteId }),
         })
             .then(errorifyResponseError)
-            .catch(notifyFetchError.bind(null, "Error while updating reaction action data for modmail"));
+            .catch((res) => notifyFetchError("Error while updating reaction action data for modmail", res));
     }
 
     render() {
