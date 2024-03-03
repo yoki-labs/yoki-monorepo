@@ -51,6 +51,8 @@ const typeDisplayNames: Record<LogChannelType, string> = {
     [LogChannelType.topic_deletions]: "Forum topic deletions",
     [LogChannelType.topic_locks]: "Forum topic locks/unlocks",
     [LogChannelType.comment_deletions]: "Content comment deletions",
+    [LogChannelType.doc_edits]: "Document edits",
+    [LogChannelType.doc_deletions]: "Document deletions",
 };
 
 const typeOptions = Object.values(LogChannelType).map((type) => ({ value: type, name: typeDisplayNames[type] }));
