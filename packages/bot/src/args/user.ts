@@ -4,6 +4,7 @@ import { Client, User } from "guilded.js";
 import type { CommandArgValidator } from "../commands/command-typings";
 import { GuildedClientUserProfile } from "../guilded-types";
 import { stringifyParagraph } from "../utils/rich";
+import { RichMarkupParagraph } from "../utils/rich-types";
 
 export default [
     async (input, args, index, message, _, usedMentions, client): Promise<User | null> => {
@@ -51,7 +52,7 @@ function normalizeUser(client: Client, { id, type, name, profilePicture, profile
         avatar: profilePicture,
         banner: profileBanner,
         status: userStatus?.customReactionId
-            ? { emoteId: userStatus.customReactionId, content: userStatus.content ? stringifyParagraph(userStatus.content.document.nodes[0]) : undefined }
+            ? { emoteId: userStatus.customReactionId, content: userStatus.content ? stringifyParagraph(userStatus.content.document.nodes[0] as RichMarkupParagraph) : undefined }
             : undefined,
         createdAt
     });

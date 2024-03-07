@@ -1,7 +1,7 @@
 export type RichMarkupObject = "value" | "document" | "block" | "inline" | "text" | "leaf" | "mark";
 
-export type RichMarkupBlockElementType = "paragraph";
-export type RichMarkupInlineElementType = "reaction" | "mention" | "channel";
+export type RichMarkupBlockElementType = "paragraph" | "code-line" | "code-container";
+export type RichMarkupInlineElementType = "link" | "reaction" | "mention" | "channel";
 export type RichMarkupElementType = RichMarkupBlockElementType | RichMarkupInlineElementType;
 
 export type RichMarkupMarkType = "bold" | "italic" | "strikethrough" | "underline" | "spoiler" | "inline-code-v2";
@@ -44,8 +44,10 @@ export interface RichMarkupElement<TObject extends RichMarkupObject, TType exten
 }
 
 export interface RichMarkupParagraph extends RichMarkupElement<"block", "paragraph", RichMarkupText | RichMarkupInlineElement, unknown> {}
+export interface RichMarkupCodeLine extends RichMarkupElement<"block", "code-line", RichMarkupText, unknown> {}
+export interface RichMarkupCodeContainer extends RichMarkupElement<"block", "code-container", RichMarkupCodeLine, { language: "unformatted" | "javascript"; }> {}
 
-export type RichMarkupBlockElement = RichMarkupParagraph;
+export type RichMarkupBlockElement = RichMarkupParagraph | RichMarkupCodeContainer;
 
 export interface RichMarkupEmote
     extends RichMarkupElement<
@@ -67,6 +69,8 @@ export interface RichMarkupEmote
             };
         }
     > {}
+
+export interface RichMarkupLink extends RichMarkupElement<"inline", "link", RichMarkupText, { href: string; }> {}
 
 export interface RichMarkupUserMention
     extends RichMarkupElement<

@@ -1,5 +1,4 @@
 import { inlineCode } from "@yokilabs/bot";
-import { stripIndents } from "common-tags";
 import { inspect } from "node:util";
 
 import { uploadS3 } from "../utils/s3";
@@ -14,19 +13,6 @@ const _clean = async (text: any) => {
         .replace(/@/g, `@${String.fromCharCode(8203)}`)
         .replace(process.env.GUILDED_TOKEN!, "this is supposed to be the bot's token");
 };
-
-const format = (first: string, second: string) => stripIndents`
-	📥 **Input**
-	${first
-        .split("\n")
-        .map((x) => inlineCode(x.trim()))
-        .join("\n")}
-	📤 **Output**
-	${second
-        .split("\n")
-        .map((x) => inlineCode(x.trim()))
-        .join("\n")}
-	`;
 
 const Eval: Command = {
     name: "eval",
@@ -48,19 +34,48 @@ const Eval: Command = {
         } catch (e) {
             evaled = e;
         }
-        const clean = await _clean(evaled);
-        const final = format(code, clean);
+        const result = await _clean(evaled);
+        // const final = format(code, clean);
 
-        if (final.length > 2048) {
-            const key = await uploadS3(ctx, `eval/${Date.now()}.js`, final);
+        if (result.length > 3900) {
+            const key = await uploadS3(ctx, `eval/${Date.now()}.js`, result);
             return ctx.messageUtil.replyWithInfo(
                 message,
                 `Output over the limit`,
-                `Output exceeded 2048 characters (${final.length}). [Here](${key.Location}) is the full output.`
+                `Output exceeded 2048 characters (${result.length}). [Here](${key.Location}) is the full output.`
             );
         }
 
-        return ctx.messageUtil.replyWithInfo(message, `Eval results`, final);
+        return ctx.messageUtil.replyWithRichMessage(
+            message,
+            [
+                {
+                    object: "block",
+                    type: "code-container",
+                    data: { language: typeof evaled === "string" ? "unformatted" : "javascript", },
+                    nodes: result
+                        .split("\n")
+                        .map((line) => ({
+                            object: "block",
+                            type: "code-line",
+                            data: {},
+                            nodes: [
+                                {
+                                    object: "text",
+                                    leaves: [
+                                        {
+                                            object: "leaf",
+                                            text: line,
+                                            marks: [],
+                                        },
+                                    ],
+                                },
+                            ],
+                        })),
+                }
+            ]
+        );
+        // return ctx.messageUtil.replyWithInfo(message, `Eval results`, final);
     },
 };
 
