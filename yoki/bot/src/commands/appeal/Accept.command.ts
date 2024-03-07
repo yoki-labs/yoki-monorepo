@@ -7,7 +7,7 @@ import { AppealStatus } from "@prisma/client";
 const Accept: Command = {
     name: "appeal-accept",
     subName: "accept",
-    description: "Accepts a ban appeal and unbans the user who applied.",
+    description: "Accept the specified ban appeal and unban the user who applied.",
     examples: ["12345"],
     requiredRole: RoleType.MOD,
     category: Category.Moderation,

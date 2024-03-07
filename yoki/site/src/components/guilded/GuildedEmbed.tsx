@@ -59,7 +59,7 @@ const GuildedEmbed = React.forwardRef<unknown, Props>((props, ref) => {
     const { color, author, footer, children } = props;
 
     return (
-        <EmbedWrapper ref={ref} sx={{ borderLeft: color && `solid 4px ${color}` }}>
+        <EmbedWrapper ref={ref} sx={{ borderLeft: color && `solid 3px ${color}` }}>
             {author && (
                 <EmbedAuthor>
                     <Avatar size="sm">{author[0]}</Avatar>

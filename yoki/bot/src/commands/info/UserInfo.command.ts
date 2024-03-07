@@ -8,7 +8,7 @@ import { Category, Command } from "../commands";
 
 const UserInfo: Command = {
     name: "userinfo",
-    description: "View information about a user or yourself.",
+    description: "View information about the specified user or yourself.",
     // usage: "[id-of-user]",
     examples: ["0mqNyllA"],
     aliases: ["user", "ui"],

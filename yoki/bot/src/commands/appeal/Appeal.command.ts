@@ -12,7 +12,7 @@ import Decline from "./Decline.command";
 const Appeal: Command = {
     name: "appeal",
     aliases: ["appeals"],
-    description: "Configures appeal accepting.",
+    description: "Manage server ban appeals.",
     parentCommand: true,
     module: "appeals",
     category: Category.Entry,

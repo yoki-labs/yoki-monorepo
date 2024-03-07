@@ -7,7 +7,7 @@ import { Category, Command } from "../commands";
 
 const RoleInfo: Command = {
     name: "roleinfo",
-    description: "View information about the role.",
+    description: "View information about the specified role.",
     category: Category.Info,
     aliases: ["rolei", "ri"],
     args: [

@@ -47,6 +47,8 @@ const typeDisplayNames: Record<LogChannelType, string> = {
     [LogChannelType.member_bans]: "Member bans",
     [LogChannelType.message_edits]: "Message edits",
     [LogChannelType.message_deletions]: "Message deletions",
+    [LogChannelType.doc_edits]: "Document edits",
+    [LogChannelType.doc_deletions]: "Document deletions",
     [LogChannelType.topic_edits]: "Forum topic edits",
     [LogChannelType.topic_deletions]: "Forum topic deletions",
     [LogChannelType.topic_locks]: "Forum topic locks/unlocks",
@@ -121,7 +123,7 @@ export default class DashboardLogChannel extends React.Component<Props, State> {
                     </Box>
                     <Box sx={{ mt: 0.5 }}>
                         {/* Additional info, such as its creation date */}
-                        <Typography level="body-md">{formatDate(new Date(createdAt), timezone)}</Typography>
+                        <Typography level="body-sm">{formatDate(new Date(createdAt), timezone)}</Typography>
                     </Box>
                 </CardContent>
             </>
@@ -136,6 +138,7 @@ export default class DashboardLogChannel extends React.Component<Props, State> {
         return (
             <LabsForm
                 id={`log-${channelId}`}
+                sectionGap={1}
                 sections={[
                     {
                         order: LabsFormSectionOrder.Row,

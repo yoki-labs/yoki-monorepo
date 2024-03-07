@@ -5,6 +5,8 @@ import UserManager from "../../UserManager";
 import Branding from "../../Branding";
 import { LabsSessionUser } from "../../../utils/routes/pages";
 import { ServerSelector } from "./ServerSelector";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSlash } from "@fortawesome/free-solid-svg-icons";
 
 type Props = {
     servers: GuildedClientServer[];
@@ -22,8 +24,8 @@ export function LayoutTopbar({ children, onServerChange, currentServer, servers,
                 sx={{ p: 0, "--Breadcrumbs-gap": "20px", display: "flex", alignItems: "center", userSelect: "none" }}
                 className="grow"
                 separator={
-                    <Typography level="title-sm" textColor="text.secondary" className="hidden md:block">
-                        /
+                    <Typography level="title-sm" textColor="text.secondary" className="hidden md:block" fontWeight="bolder">
+                        {"/"}
                     </Typography>
                 }
             >

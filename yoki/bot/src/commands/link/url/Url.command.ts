@@ -9,7 +9,7 @@ import Whitelist from "./Whitelist.command";
 const Url: Command = {
     name: "link-url",
     subName: "url",
-    description: "Manages domain blacklists and whitelists.",
+    description: "Manage domain blacklists and whitelists.",
     examples: ["add example.com warn", "add discord.com ban"],
     parentCommand: true,
     subCommand: true,

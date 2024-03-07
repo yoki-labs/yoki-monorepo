@@ -13,7 +13,7 @@ type LogChannelArgEnum = keyof typeof LogChannelArgs;
 
 const Remove: Command = {
     name: "logs-remove",
-    description: "Unsubscribe a specified channel from a specified log type.",
+    description: "Unsubscribe the specified channel from the specified log type.",
     // usage: "<channel> [logTypes]",
     subCommand: true,
     category: Category.Settings,

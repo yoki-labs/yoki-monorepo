@@ -10,7 +10,7 @@ import { Category, Command } from "../commands";
 const View: Command = {
     name: "appeal-view",
     subName: "view",
-    description: "View info of an appeal.",
+    description: "View information about the specified appeal.",
     // usage: "<caseId> [remove]",
     examples: ["12345"],
     requiredRole: RoleType.MINIMOD,

@@ -7,7 +7,7 @@ import { Category, Command } from "../commands";
 
 const Ban: Command = {
     name: "ban",
-    description: "Ban a user.",
+    description: "Ban the specified user from the server.",
     // usage: "<target> [...reason]",
     examples: ["R40Mp0Wd", "<@R40Mp0Wd> Talking too much about Town of Salem"],
     requiredRole: RoleType.MOD,

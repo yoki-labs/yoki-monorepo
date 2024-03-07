@@ -1,5 +1,5 @@
 import { faCommentDots, faEnvelope, faLock, faLockOpen, faSmile } from "@fortawesome/free-solid-svg-icons";
-import { Box, Card, CardContent, Stack, Typography } from "@mui/joy";
+import { Box, Card, CardContent, LinearProgress, Skeleton, Stack, Typography } from "@mui/joy";
 import React from "react";
 import DashboardModule from "../DashboardModule";
 import { DashboardPageProps } from "../pages";
@@ -16,6 +16,7 @@ import { nullUserOptionList, optionifyUserDetails } from "../content";
 
 type State = {
     isMounted: boolean;
+    modmailInfoFetched: boolean;
     reactionAction?: ReactionAction;
     serverChannels: GuildedSanitizedChannel[];
 };
@@ -24,7 +25,7 @@ export default class ModmailPage extends React.Component<DashboardPageProps, Sta
     constructor(props: DashboardPageProps) {
         super(props);
 
-        this.state = { isMounted: false, serverChannels: [] };
+        this.state = { isMounted: false, modmailInfoFetched: false, serverChannels: [] };
     }
 
     componentDidMount(): unknown {
@@ -78,7 +79,7 @@ export default class ModmailPage extends React.Component<DashboardPageProps, Sta
         })
             .then(errorifyResponseError)
             .then((response) => response.json())
-            .then(({ reactionAction, serverChannels }) => this.setState({ reactionAction, serverChannels }))
+            .then(({ reactionAction, serverChannels }) => this.setState({ modmailInfoFetched: true, reactionAction, serverChannels }))
             .catch(notifyFetchError.bind(null, "Error while fetching reaction action data for modmail"));
     }
 
@@ -96,7 +97,7 @@ export default class ModmailPage extends React.Component<DashboardPageProps, Sta
 
     render() {
         const { serverConfig, highestRoleType } = this.props;
-        const { reactionAction, serverChannels } = this.state;
+        const { reactionAction, modmailInfoFetched, serverChannels } = this.state;
 
         return (
             <>
@@ -120,45 +121,49 @@ export default class ModmailPage extends React.Component<DashboardPageProps, Sta
                         </Typography>
                         <Card>
                             <CardContent>
-                                <LabsForm
-                                    id="modmail-config"
-                                    sections={[
-                                        {
-                                            order: LabsFormSectionOrder.Grid,
-                                            fields: [
-                                                {
-                                                    type: LabsFormFieldType.Select,
-                                                    prop: "channelId",
-                                                    name: "Modmail channel",
-                                                    description: "The channel that will be used to create modmail ticket threads.",
-                                                    defaultValue: reactionAction?.channelId,
-                                                    selectableValues: channelsToSelectionOptions(serverChannels),
-                                                },
-                                                {
-                                                    type: LabsFormFieldType.Text,
-                                                    prop: "messageId",
-                                                    name: "Modmail trigger message",
-                                                    description: "The ID of the message that will be used to create modmail threads.",
-                                                    placeholder: "Message ID",
-                                                    defaultValue: reactionAction?.messageId,
-                                                    prefixIcon: faCommentDots,
-                                                },
-                                                {
-                                                    type: LabsFormFieldType.Number,
-                                                    prop: "emoteId",
-                                                    name: "Modmail trigger emote",
-                                                    description: "The emote with which users will have to react to create a modmail ticket.",
-                                                    placeholder: "Emote ID",
-                                                    defaultValue: reactionAction?.emoteId,
-                                                    prefixIcon: faSmile,
-                                                },
-                                            ],
-                                        },
-                                    ]}
-                                    onSubmit={({ channelId, messageId, emoteId }) =>
-                                        this.modifyModmailInfo(channelId as string | null | undefined, messageId as string | null | undefined, emoteId as number | null | undefined)
-                                    }
-                                />
+                                {
+                                    modmailInfoFetched
+                                    ? <LabsForm
+                                        id="modmail-config"
+                                        sections={[
+                                            {
+                                                order: LabsFormSectionOrder.Grid,
+                                                fields: [
+                                                    {
+                                                        type: LabsFormFieldType.Select,
+                                                        prop: "channelId",
+                                                        name: "Channel",
+                                                        description: "The channel that will be used to create modmail ticket threads.",
+                                                        defaultValue: reactionAction?.channelId,
+                                                        selectableValues: channelsToSelectionOptions(serverChannels),
+                                                    },
+                                                    {
+                                                        type: LabsFormFieldType.Text,
+                                                        prop: "messageId",
+                                                        name: "Trigger message",
+                                                        description: "The ID of the message that will be used to create modmail threads.",
+                                                        placeholder: "Message ID",
+                                                        defaultValue: reactionAction?.messageId,
+                                                        prefixIcon: faCommentDots,
+                                                    },
+                                                    {
+                                                        type: LabsFormFieldType.Number,
+                                                        prop: "emoteId",
+                                                        name: "Reaction emote",
+                                                        description: "The reaction emote that will act as a button to create a modmail ticket.",
+                                                        placeholder: "Emote ID",
+                                                        defaultValue: reactionAction?.emoteId,
+                                                        prefixIcon: faSmile,
+                                                    },
+                                                ],
+                                            },
+                                        ]}
+                                        onSubmit={({ channelId, messageId, emoteId }) =>
+                                            this.modifyModmailInfo(channelId as string | null | undefined, messageId as string | null | undefined, emoteId as number | null | undefined)
+                                        }
+                                    />
+                                    : <ModmailInfoCardSkeleton />
+                                }
                             </CardContent>
                         </Card>
                     </Box>
@@ -211,4 +216,38 @@ export default class ModmailPage extends React.Component<DashboardPageProps, Sta
             </>
         );
     }
+}
+
+function ModmailInfoCardSkeleton() {
+    return (
+        <Stack gap={2} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xlg:grid-cols-4">
+            <Box>
+                <Typography level="title-md" sx={{ mb: 1 }}>
+                    <Skeleton animation="wave">Channel</Skeleton>
+                </Typography>
+                <Skeleton animation="wave" height={28 + 6} />
+                <Typography level="body-sm" sx={{ mt: 1 }}>
+                    <Skeleton animation="wave">The channel that will be used to create modmail ticket threads.</Skeleton>
+                </Typography>
+            </Box>
+            <Box>
+                <Typography level="title-md" sx={{ mb: 1 }}>
+                    <Skeleton animation="wave">Trigger message</Skeleton>
+                </Typography>
+                <Skeleton animation="wave" height={28 + 6} />
+                <Typography level="body-sm" sx={{ mt: 1 }}>
+                    <Skeleton animation="wave">The ID of the message that will be used to create modmail threads.</Skeleton>
+                </Typography>
+            </Box>
+            <Box>
+                <Typography level="title-md" sx={{ mb: 1 }}>
+                    <Skeleton animation="wave">Reaction emote</Skeleton>
+                </Typography>
+                <Skeleton animation="wave" height={28 + 6} />
+                <Typography level="body-sm" sx={{ mt: 1 }}>
+                    <Skeleton animation="wave">The reaction emote that will act as a button to create a modmail ticket.</Skeleton>
+                </Typography>
+            </Box>
+        </Stack>
+    )
 }

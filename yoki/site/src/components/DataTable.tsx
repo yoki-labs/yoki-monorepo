@@ -220,7 +220,7 @@ export default class DataTable<TItem extends { id: TItemId }, TItemId> extends R
                         variant="plain"
                         placeholder={`Search ${itemType}`}
                         startDecorator={<FontAwesomeIcon icon={faMagnifyingGlass} />}
-                        sx={{ fontWeight: "bolder" }}
+                        sx={{ fontWeight: 600 }}
                     />
                     <ButtonGroup>
                         {(filterFormFields || getFilterFormFields) && (

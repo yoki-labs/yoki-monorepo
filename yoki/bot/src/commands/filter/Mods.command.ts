@@ -3,7 +3,7 @@ import { Category, Command } from "../commands";
 
 const FilterOnMods: Command = {
     name: "filter-onmods",
-    description: "Set or view whether mods are filtered on this server.",
+    description: "Set or view whether content created by the moderators are filtered on this server.",
     // usage: "[new setting]",
     examples: ["enable", ""],
     subCommand: true,

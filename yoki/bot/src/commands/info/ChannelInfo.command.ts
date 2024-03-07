@@ -21,7 +21,7 @@ const channelTypeToPermission: Record<ChannelType, Permission> = {
 
 const ChannelInfo: Command = {
     name: "channelinfo",
-    description: "View information about the channel.",
+    description: "View information about the specified or current channel.",
     category: Category.Info,
     aliases: ["channeli", "ci"],
     args: [

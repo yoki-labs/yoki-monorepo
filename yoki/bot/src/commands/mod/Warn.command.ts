@@ -8,7 +8,7 @@ import { Category, Command } from "../commands";
 
 const Warn: Command = {
     name: "warn",
-    description: "Warn a user.",
+    description: "Add an entry to someone's offence history and notify them.",
     // usage: "<target> [infraction points] [...reason]",
     examples: ["R40Mp0Wd Not following rules", "<@R40Mp0Wd> Doing weird shenanigans.", "<@R40Mp0Wd> 20 After what you did, you definitely need +20 infractions."],
     requiredRole: RoleType.MINIMOD,

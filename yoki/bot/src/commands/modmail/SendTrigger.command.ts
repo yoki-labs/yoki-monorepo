@@ -9,7 +9,7 @@ const SendTrigger: Command = {
     name: "modmail-sendtrigger",
     aliases: ["sendtrigger"],
     subName: "sendtrigger",
-    description: "Sends a message with which people can create a modmail ticket.",
+    description: "Send a message that can be used to create modmail tickets.",
     // usage: "<channel-id> <emoji>",
     examples: ["#Modmail :smile:"],
     subCommand: true,

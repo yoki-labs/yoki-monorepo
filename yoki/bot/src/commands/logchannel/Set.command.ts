@@ -13,7 +13,7 @@ type LogChannelArgEnum = keyof typeof LogChannelArgs;
 
 const Set: Command = {
     name: "logs-set",
-    description: "Subscribe a specified channel to a specified log type.",
+    description: "Subscribe the specified channel to the specified log type.",
     subCommand: true,
     category: Category.Settings,
     subName: "set",

@@ -40,6 +40,7 @@ export const labsLightTheme: ColorSystemOptions = {
             plainHoverBg: labsTheme.spacelight.background[900],
             plainHoverColor: labsTheme.spacelight.foreground[400],
             plainActiveBg: labsTheme.spacelight.background[950],
+            plainActiveColor: labsTheme.primary,
             // Soft components
             softColor: labsTheme.spacelight.foreground[300],
             softBg: labsTheme.spacelight.background[900],
@@ -81,7 +82,7 @@ export const labsLightTheme: ColorSystemOptions = {
             level2: mixHexColours(labsTheme.spacelight.background[900], labsTheme.spacelight.background[950], 0.1),
             level3: labsTheme.spacelight.background[950],
 
-            surface: labsTheme.spacelight.background[950],
+            surface: mixHexColours(labsTheme.spacelight.background[900], labsTheme.spacelight.background[950], 0.1),
             backdrop: `${labsTheme.spacelight.background[800]}DF`,
             embedded: mixHexColours(labsTheme.spacelight.background[900], labsTheme.spacelight.background[800], 0.7),
             embeddedfooter: mixHexColours(labsTheme.spacelight.background[800], labsTheme.spacelight.background[700], 0.3),

@@ -5,7 +5,7 @@ import { Category, Command } from "../commands";
 
 const SpamInfractions: Command = {
     name: "filter-spaminfractions",
-    description: "Set how many infraction points a user will get if they spam.",
+    description: "Set how many infraction points users will get if they spam.",
     // usage: "[infraction points]",
     examples: ["5"],
     subCommand: true,

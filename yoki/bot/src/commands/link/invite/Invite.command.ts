@@ -8,7 +8,7 @@ import Remove from "./Remove.command";
 const Invite: Command = {
     name: "link-invite",
     subName: "invite",
-    description: "Manages invite whitelist.",
+    description: "Manage invite whitelist.",
     examples: ["add api-official"],
     parentCommand: true,
     subCommand: true,

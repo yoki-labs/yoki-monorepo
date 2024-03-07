@@ -12,7 +12,7 @@ const Module: Command = {
     name: "module",
     category: Category.Settings,
     aliases: ["modules"],
-    description: "Enable or disable a module for this server.",
+    description: "Manage modules/available features for this server.",
     // examples: [...(Modlog.examples as string[]), ...(Modrole.examples as string[])],
     parentCommand: true,
     requiredRole: RoleType.ADMIN,

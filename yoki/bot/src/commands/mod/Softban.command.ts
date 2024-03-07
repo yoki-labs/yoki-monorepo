@@ -7,7 +7,7 @@ import { Category, Command } from "../commands";
 
 const Ban: Command = {
     name: "softban",
-    description: "Kick the member and clear their messages.",
+    description: "Kick out the specified member and clear their messages.",
     // usage: "<target> [...reason]",
     examples: ["R40Mp0Wd", "<@R40Mp0Wd> Talking too much about Town of Salem"],
     requiredRole: RoleType.MOD,

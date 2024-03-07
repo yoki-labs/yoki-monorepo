@@ -8,7 +8,7 @@ import { Category, Command } from "../commands";
 const History: Command = {
     name: "modmail-history",
     subName: "history",
-    description: "View the modmail history for a user.",
+    description: "View user's created modmail tickets.",
     // usage: "<userId>",
     examples: ["0mqNyllA"],
     subCommand: true,

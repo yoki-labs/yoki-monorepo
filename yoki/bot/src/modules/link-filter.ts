@@ -238,7 +238,7 @@ export class LinkFilterUtil extends BaseFilterUtil {
         if (filteredContent < FilteredContent.ChannelContent)
             return this.client.messageUtil.sendWarningBlock(
                 channelId!,
-                `Stop spamming`,
+                `Cannot post that link`,
                 `<@${userId}>, you have posted a blacklisted/non-whitelisted domain or invite in this server. This is a warning for you to not do it again, otherwise moderation actions may be taken against you.`,
                 undefined,
                 { isPrivate: true }

@@ -39,7 +39,7 @@ export const generateColourScheme = (typicalColour: string, background: string, 
     solidHoverBg: mixHexColours(typicalColour, counter, 0.2),
     // Plain
     plainHoverBg: mixHexColours(typicalColour, background, 0.9),
-    plainActiveBg: mixHexColours(typicalColour, background, 0.7),
+    plainActiveBg: mixHexColours(typicalColour, background, 0.85),
     // Outlined
     outlinedColor: mixHexColours(typicalColour, counter, 0.5),
     outlinedBorder: mixHexColours(typicalColour, background, 0.55),
@@ -56,7 +56,7 @@ export const generateColourScheme = (typicalColour: string, background: string, 
     outlinedDisabledBorder: mixHexColours(typicalColour, background, 0.85),
     // Soft
     softBg: mixHexColours(typicalColour, background, 0.8),
-    softColor: mixHexColours(typicalColour, counter, 0.6),
+    softColor: mixHexColours(typicalColour, counter, 0.5),
 
     softHoverBg: mixHexColours(typicalColour, background, 0.7),
     softHoverColor: mixHexColours(typicalColour, counter, 0.7),

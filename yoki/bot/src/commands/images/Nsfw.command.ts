@@ -6,7 +6,7 @@ import { Category, Command } from "../commands";
 
 const Nsfw: Command = {
     name: "nsfw",
-    description: "Sets how much confidence NSFW detection should have when filtering images.",
+    description: "Set how much confidence NSFW detection should have when filtering images.",
     examples: ["0.5 0.7", ""],
     requiredRole: RoleType.ADMIN,
     category: Category.Filter,

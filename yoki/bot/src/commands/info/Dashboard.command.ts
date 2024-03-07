@@ -4,7 +4,7 @@ import { Category, Command } from "../commands";
 
 const Dashboard: Command = {
     name: "dashboard",
-    description: "Sends a link to the dashboard of the server.",
+    description: "Get a link to the dashboard of the server.",
     // usage: "",
     aliases: ["db"],
     category: Category.Info,

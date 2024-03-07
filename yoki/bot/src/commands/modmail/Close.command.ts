@@ -4,7 +4,7 @@ import { Category, Command } from "../commands";
 const Close: Command = {
     name: "close",
     subName: "close",
-    description: "Closes the current or specific user's modmail ticket.",
+    description: "Close the current or specified user's modmail ticket.",
     examples: [""],
     subCommand: true,
     forceShow: true,

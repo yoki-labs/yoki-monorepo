@@ -6,7 +6,7 @@ import { Category, Command } from "../commands";
 
 const Case: Command = {
     name: "case",
-    description: "View info of a case.",
+    description: "View info about the specified case.",
     // usage: "<caseId> [remove]",
     examples: ["123456789-1234567", "123456789-1234567 remove"],
     requiredRole: RoleType.MINIMOD,

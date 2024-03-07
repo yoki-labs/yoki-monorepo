@@ -13,7 +13,7 @@ const maxAppeals = Math.floor(2048 / maxAppeal);
 const List: Command = {
     name: "appeal-list",
     subName: "list",
-    description: "Gets the list of all ban appeals in this server.",
+    description: "View the list of all ban appeals in this server.",
     // usage: "[page]",
     examples: ["", "2"],
     subCommand: true,

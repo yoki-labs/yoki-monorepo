@@ -7,7 +7,7 @@ import IgnoreContent from "./Content.command";
 
 const Ignore: Command = {
     name: "ignore",
-    description: "Configures content filtering ignoring.",
+    description: "Manage content filtering and auto-mod exceptions.",
     examples: ["channel channel_id"],
     parentCommand: true,
     category: Category.Filter,

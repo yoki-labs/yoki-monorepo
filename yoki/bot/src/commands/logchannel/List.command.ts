@@ -7,7 +7,7 @@ import { Category, Command } from "../commands";
 
 const List: Command = {
     name: "logs-list",
-    description: "See all the enabled logchannels in this server.",
+    description: "See all the enabled log channels in this server.",
     // usage: "[channel]",
     examples: ["channel_id", ""],
     subCommand: true,

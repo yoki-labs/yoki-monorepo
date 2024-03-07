@@ -19,7 +19,7 @@ const categorizedLogs: Collection<string, LogChannelType[]> = new Collection<str
 
 const Types: Command = {
     name: "logs-types",
-    description: "List all possible Log Channel types.",
+    description: "List all possible log types.",
     // usage: "",
     subCommand: true,
     category: Category.Settings,

@@ -14,7 +14,7 @@ enum MutableSeverities {
 
 const Threshold: Command = {
     name: "severity-threshold",
-    description: "Sets how many infraction points are required for each level of moderation severity.",
+    description: "Set how many infraction points are required for each level of moderation severity.",
     // usage: "<severity> <infraction points required> [duration]",
     examples: ["mute 20 10m", "kick 40"],
     subCommand: true,

@@ -5,7 +5,7 @@ import { Category, Command } from "./commands";
 
 const Prefix: Command = {
     name: "name",
-    description: "Sets or removes the nickname of Yoki in this server.",
+    description: "Set or remove the nickname of Yoki in this server.",
     // usage: "[new prefix]",
     examples: ["Auto-mod", "Yoki"],
     category: Category.Custom,

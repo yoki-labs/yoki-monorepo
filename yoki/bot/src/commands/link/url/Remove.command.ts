@@ -7,7 +7,7 @@ import { Category, Command } from "../../commands";
 const Remove: Command = {
     name: "link-url-remove",
     subName: "remove",
-    description: "Removes a domain from the blacklist or whitelist.",
+    description: "Remove a domain from the blacklist or whitelist.",
     // usage: "<domain>",
     subCommand: true,
     category: Category.Filter,

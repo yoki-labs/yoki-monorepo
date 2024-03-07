@@ -7,7 +7,7 @@ import { Category, Command } from "../commands";
 
 const Unban: Command = {
     name: "unban",
-    description: "unban a user.",
+    description: "Remove a ban from the server for the specified user.",
     // usage: "<targetId>",
     examples: ["R40Mp0Wd", "<@R40Mp0Wd>"],
     requiredRole: RoleType.MOD,

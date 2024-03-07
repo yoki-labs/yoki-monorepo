@@ -33,9 +33,9 @@ export interface GuildedClientUserProfile {
     type: "user";
 
     userStatus: {
-        customReactionId: number;
-        customReaction: { id: number; name: string; png: string | null; webp: string | null; apng: string | null; teamId: string | null; };
-        content: RichMarkupValue;
+        customReactionId: null | number;
+        customReaction: null | { id: number; name: string; png: string | null; webp: string | null; apng: string | null; teamId: string | null; };
+        content: null | RichMarkupValue;
     };
 
     profilePictureSm: string;

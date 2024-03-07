@@ -11,7 +11,7 @@ const allowedTypes = ["MINIMOD", "MOD", "ADMIN"];
 
 const Staff: Command = {
     name: "role-staff",
-    description: "Moderator/staff roles for using mod commands.",
+    description: "Set moderator/staff roles for using moderation commands.",
     subCommand: true,
     // usage: "[role] [minimod/mod/admin/remove]",
     examples: ["@mod", "12345678 admin", "@mod remove"],

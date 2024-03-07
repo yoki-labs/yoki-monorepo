@@ -63,7 +63,7 @@ export default class DashboardRole extends React.Component<Props, State> {
                             {serverRole?.name ?? role.roleId}
                         </Typography>
                         <Stack sx={{ flex: "1" }} direction="row" gap={1} alignItems="center" className="hidden md:flex">
-                            <Chip color="primary" variant="outlined" sx={{ flex: "1" }}>
+                            <Chip color="primary" variant="soft" sx={{ flex: "1" }}>
                                 {role.type}
                             </Chip>
                         </Stack>
@@ -89,7 +89,7 @@ export default class DashboardRole extends React.Component<Props, State> {
                     </Box>
                     <Box sx={{ mt: 0.5 }}>
                         {/* Additional info, such as its creation date */}
-                        <Typography level="body-md">{formatDate(new Date(role.createdAt), timezone)}</Typography>
+                        <Typography level="body-sm">{formatDate(new Date(role.createdAt), timezone)}</Typography>
                     </Box>
                 </CardContent>
             </>
@@ -103,10 +103,11 @@ export default class DashboardRole extends React.Component<Props, State> {
         return (
             <LabsForm
                 id={`role-item-edit-${this.props.role.roleId}`}
+                sectionGap={1}
                 sections={
                     [
                         {
-                            row: true,
+                            order: LabsFormSectionOrder.Row,
                             start: (
                                 <LabsIconWrapper className="p-2 hidden md:block">
                                     <FontAwesomeIcon style={{ width: "100%", height: "100%" }} icon={faShieldHalved} />

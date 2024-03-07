@@ -7,7 +7,7 @@ import { Category, Command } from "../commands";
 
 const ServerInfo: Command = {
     name: "serverinfo",
-    description: "View information about the server.",
+    description: "View information about this server.",
     category: Category.Info,
     aliases: ["server", "si"],
     args: [],

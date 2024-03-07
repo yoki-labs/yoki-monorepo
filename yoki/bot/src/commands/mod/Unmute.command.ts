@@ -9,7 +9,7 @@ import { Category, Command } from "../commands";
 
 const Unmute: Command = {
     name: "unmute",
-    description: "Remove a mute from the specified user.",
+    description: "Remove a mute for the specified user.",
     // usage: "<target> [reason]",
     examples: ["R40Mp0Wd", "<@R40Mp0Wd> Stopped playing Town of Salem"],
     requiredRole: RoleType.MINIMOD,

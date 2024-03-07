@@ -3,7 +3,7 @@ import { Category, Command } from "../commands";
 
 const Solve: Command = {
     name: "solve",
-    description: "Solve the current captcha.",
+    description: "Solve the captcha required to enter the server.",
     // usage: "<code>",
     aliases: ["verify"],
     examples: ["djAshAJ"],

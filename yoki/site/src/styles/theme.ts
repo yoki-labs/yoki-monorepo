@@ -54,7 +54,7 @@ export const theme = extendTheme({
             // Doesn't make the text break, so it isn't recommended.
             // width: "max-content",
             borderRadius: `var(--labs-radius-sm)`,
-            padding: `2px 4px`,
+            padding: `2px 8px`,
             fontFamily: ["'Space Mono'"],
         },
     },

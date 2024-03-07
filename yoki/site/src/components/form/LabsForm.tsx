@@ -18,6 +18,9 @@ export type LabsFormProps = {
     sections: LabsFormSection[];
     children?: React.ReactElement | React.ReactElement[];
 
+    // Appearance
+    sectionGap?: number;
+
     // Actions
     alwaysDisplayActions?: boolean;
     resetOnSubmission?: boolean;
@@ -30,6 +33,7 @@ export type LabsFormProps = {
 
 type LabsFormState = {
     changed: boolean;
+    canSave: boolean;
     // values: Record<string, LabsFormFieldValue>;
 };
 
@@ -41,6 +45,7 @@ export default class LabsForm extends React.Component<LabsFormProps, LabsFormSta
         super(props);
 
         this.state = {
+            canSave: false,
             changed: false,
         };
 
@@ -59,11 +64,8 @@ export default class LabsForm extends React.Component<LabsFormProps, LabsFormSta
         return this.fields.reduce<Record<string, LabsFormFieldValue>>((mapped, field) => ((mapped[field.prop] = field.defaultValue ?? null), mapped), {});
     }
 
-    get displayActions() {
-        const { alwaysDisplayActions } = this.props;
-        const { changed } = this.state;
-
-        return alwaysDisplayActions || changed;
+    get fieldsCanBeSaved() {
+        return !this.fields.some((x) => !x.optional && (this.fieldValues[x.prop] === null || typeof this.fieldValues[x.prop] === "undefined"));
     }
 
     onSubmit(event: FormEvent<HTMLFormElement>) {
@@ -87,12 +89,10 @@ export default class LabsForm extends React.Component<LabsFormProps, LabsFormSta
     }
 
     setValue<T>(field: LabsFormField, value: T) {
-        const { changed } = this.state;
-
         // this.setState(({ values }) => ({ changed: true, values: Object.assign({}, values, { [field.prop]: value }) }));
         this.fieldValues = Object.assign({}, this.fieldValues, { [field.prop]: value });
 
-        if (!changed) this.setState({ changed: true });
+        this.setState({ canSave: this.fieldsCanBeSaved, changed: true });
 
         return value;
     }
@@ -100,13 +100,12 @@ export default class LabsForm extends React.Component<LabsFormProps, LabsFormSta
     render(): React.ReactNode {
         const onSubmit = this.onSubmit.bind(this);
         const { sections, children, submitText, onCancel } = this.props;
-        const { changed } = this.state;
-        const { displayActions } = this;
+        const { canSave } = this.state;
 
         return (
             <form id={`form-${this.formId}`} autoComplete="off" onSubmit={onSubmit}>
                 {children}
-                <Stack direction="column" gap={3}>
+                <Stack direction="column" gap={this.props.sectionGap ?? 3}>
                     {sections.map((section, i) => (
                         <Box key={`form-${this.formId}.section-${i}`} component="section">
                             {i > 0 && !section.hideDivider && <Divider sx={{ mb: 2 }} />}
@@ -115,7 +114,7 @@ export default class LabsForm extends React.Component<LabsFormProps, LabsFormSta
                                     {section.name}
                                 </Typography>
                             )}
-                            {section.description && <Typography level="body-md">{section.description}</Typography>}
+                            {section.description && <Typography level="body-sm">{section.description}</Typography>}
                             <Box key={`form-${this.formId}.section-${i}.fieldlist`} gap={section.gap ?? 2} className={sectionOrderCss[section.order ?? LabsFormSectionOrder.Column]}>
                                 {section.start}
                                 {section.fields.map(this.generateField.bind(this))}
@@ -123,9 +122,9 @@ export default class LabsForm extends React.Component<LabsFormProps, LabsFormSta
                         </Box>
                     ))}
                 </Stack>
-                {displayActions && (
+                {(this.props.alwaysDisplayActions || canSave) && (
                     <Stack sx={{ mt: 2 }} direction="row" gap={1}>
-                        <Button disabled={!changed} variant="outlined" color="primary" type="submit">
+                        <Button disabled={!canSave} variant="outlined" color="primary" type="submit">
                             {submitText ?? "Save"}
                         </Button>
                         {onCancel && (

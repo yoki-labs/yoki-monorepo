@@ -94,7 +94,7 @@ export default class LabsMultiSelector extends React.Component<Props, State> {
                         selectedValueInfos?.length && (
                             <Stack direction="row" gap={1} alignItems="center">
                                 {selectedValueInfos?.slice(0, 2).map(({ name }) => (
-                                    <Chip variant="outlined" color="primary">
+                                    <Chip variant="soft" color="primary">
                                         {name}
                                     </Chip>
                                 ))}

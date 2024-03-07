@@ -5,7 +5,7 @@ import { Category, Command } from "../commands";
 
 const MentionSpamFrequency: Command = {
     name: "filter-mentionfrequency",
-    description: "Sets required mention count to count it as a mention spam.",
+    description: "Set the required count of mentions per 5 seconds to filter.",
     // usage: "[mentions per 5 secs]",
     examples: ["5"],
     subCommand: true,

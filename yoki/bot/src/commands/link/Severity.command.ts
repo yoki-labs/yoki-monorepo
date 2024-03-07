@@ -6,7 +6,7 @@ import { Category, Command } from "../commands";
 const LinkSeverity: Command = {
     name: "link-severity",
     subName: "severity",
-    description: "Sets severity and infraction points of non-whitelisted links.",
+    description: "Set the severity and the infraction points of non-whitelisted links.",
     // usage: "<severity> <infraction points>",
     examples: ["warn 5"],
     subCommand: true,

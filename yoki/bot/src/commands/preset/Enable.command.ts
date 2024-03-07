@@ -7,7 +7,7 @@ import type { Command } from "../commands";
 const Enable: Command = {
     name: "preset-enable",
     subName: "enable",
-    description: "Enables a filter preset.",
+    description: "Enable a filter preset.",
     // usage: "<preset-to-enable> <severity> [infraction points=5]",
     subCommand: true,
     requiredRole: RoleType.MOD,

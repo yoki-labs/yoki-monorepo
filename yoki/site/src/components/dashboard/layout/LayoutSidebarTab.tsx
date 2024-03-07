@@ -19,7 +19,7 @@ export default function LayoutSidebarTab({ item, serverId, isActive }: Prop) {
     const href = `/dashboard/${serverId}/${item.id}`;
 
     return (
-        <ListItemButton sx={(theme) => ({ borderRadius: theme.vars.radius.xs })} color={item.color} selected={isActive} onClick={() => router.push(href)}>
+        <ListItemButton sx={(theme) => ({ borderRadius: theme.vars.radius.xs })} color={isActive ? item.color ?? "primary" : item.color} selected={isActive} onClick={() => router.push(href)}>
             <ListItemDecorator>
                 <FontAwesomeIcon icon={item.icon} />
             </ListItemDecorator>

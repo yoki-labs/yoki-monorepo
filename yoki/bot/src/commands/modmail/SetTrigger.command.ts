@@ -9,7 +9,7 @@ import { Category, Command } from "../commands";
 const SetTrigger: Command = {
     name: "modmail-settrigger",
     subName: "settrigger",
-    description: "Selects a message with which people can start a modmail thread.",
+    description: "Select a message that can be used to create modmail tickets.",
     aliases: ["selecttrigger"],
     // usage: "<channel-id> <message-id> <emote-id>",
     examples: ["#Modmail 9fd03b10-c4a1-4c3a-814a-5f6a7b39c632 :smile:"],

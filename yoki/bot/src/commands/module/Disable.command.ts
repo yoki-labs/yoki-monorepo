@@ -7,7 +7,7 @@ import { Category, Command } from "../commands";
 const Disable: Command = {
     name: "module-disable",
     subName: "disable",
-    description: "Disable a module.",
+    description: "Disable a Yoki module for this server.",
     // usage: `<${DBPropToTypeKeys.join("|")}>`,
     subCommand: true,
     requiredRole: RoleType.ADMIN,
@@ -15,7 +15,7 @@ const Disable: Command = {
     args: [
         {
             name: "module",
-            type: "string",
+            type: "enum",
             values: typeToDBPropMap,
         },
     ],

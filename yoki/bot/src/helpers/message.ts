@@ -6,6 +6,7 @@ import { EmbedAuthor, EmbedFooter } from "guilded.js";
 import type YokiClient from "../Client";
 import type { Command } from "../commands/commands";
 import type { Server } from "../typings";
+import { Colors } from "@yokilabs/utils";
 
 export class MessageUtil extends BaseMessageUtil<YokiClient, Server, Command> {
     readonly logchannelErrCounter: Record<string, number> = {};

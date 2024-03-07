@@ -4,16 +4,14 @@ import { RoleType } from "@prisma/client";
 import { Category, Command } from "../commands";
 // import CategoryCommand from "./Category.command";
 import Close from "./Close.command";
-import Edit from "./Edit.command";
 // import Group from "./Group.command";
 import History from "./History.command";
-import Reply from "./Reply.command";
 import SendTrigger from "./SendTrigger.command";
 import SetTrigger from "./SetTrigger.command";
 
 const Modmail: Command = {
     name: "modmail",
-    description: "Parent command for modmail related commands.",
+    description: "Manage modmail/ticket system.",
     aliases: ["m"],
     module: "modmail",
     examples: ["reply Hi, what can I help you with?"],
@@ -21,9 +19,7 @@ const Modmail: Command = {
     category: Category.Modmail,
     requiredRole: RoleType.MINIMOD,
     subCommands: new Collection<string, Command>()
-        .set("reply", Reply)
         .set("close", Close)
-        .set("edit", Edit)
         .set("history", History)
         .set("settrigger", SetTrigger)
         .set("sendtrigger", SendTrigger),

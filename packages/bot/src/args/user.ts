@@ -50,8 +50,8 @@ function normalizeUser(client: Client, { id, type, name, profilePicture, profile
         type: type,
         avatar: profilePicture,
         banner: profileBanner,
-        status: userStatus
-            ? { emoteId: userStatus.customReactionId, content: stringifyParagraph(userStatus.content.document.nodes[0]) }
+        status: userStatus?.customReactionId
+            ? { emoteId: userStatus.customReactionId, content: userStatus.content ? stringifyParagraph(userStatus.content.document.nodes[0]) : undefined }
             : undefined,
         createdAt
     });

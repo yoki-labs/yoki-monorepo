@@ -6,7 +6,7 @@ import { Category, Command } from "../commands";
 const Delete: Command = {
     name: "appeal-delete",
     subName: "delete",
-    description: "Deletes an existing appeal.",
+    description: "Delete the specified appeal.",
     examples: ["12345"],
     requiredRole: RoleType.MOD,
     category: Category.Moderation,

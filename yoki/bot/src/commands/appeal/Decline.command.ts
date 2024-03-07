@@ -7,7 +7,7 @@ import { AppealStatus } from "@prisma/client";
 const Decline: Command = {
     name: "appeal-decline",
     subName: "decline",
-    description: "Declines a ban appeal.",
+    description: "Reject the specified ban appeal.",
     examples: ["12345"],
     requiredRole: RoleType.MOD,
     category: Category.Moderation,
