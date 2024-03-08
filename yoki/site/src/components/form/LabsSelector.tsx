@@ -57,7 +57,9 @@ export default class LabsSelector extends React.Component<Props, State> {
     setSelectedValue(value: string) {
         const { field, form } = this.props;
 
-        return this.setState({ value: form.setValue(field, value) });
+        const formValue = form.setValue(field, value);
+
+        return this.setState({ value: formValue });
     }
 
     render() {

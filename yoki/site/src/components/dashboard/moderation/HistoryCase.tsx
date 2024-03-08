@@ -1,4 +1,4 @@
-import { Box, Stack, Typography } from "@mui/joy";
+import { Box, Chip, Stack, Typography } from "@mui/joy";
 import DataTableRow from "../../DataTableRow";
 import CodeWrapper from "../../CodeWrapper";
 import { LabsCopyInput } from "../../LabsCopyInput";
@@ -35,7 +35,9 @@ export function HistoryCaseRow({ item: action, users, columnCount, timezone, dis
                 <LabsUserCard userId={action.executorId} user={users?.[action.executorId]} />
             </td>
             <td>
-                <Typography level="body-md">{reason && reason.length > 32 ? `${reason?.slice(0, 32)}...` : reason}</Typography>
+                {reason
+                ? <Typography level="body-md">{reason.length > 32 ? `${reason?.slice(0, 32)}...` : reason}</Typography>
+                : <Typography level="body-md" textColor="text.tertiary">No reason specified.</Typography>}
             </td>
             <td>
                 <Typography level="body-md">{formatDate(new Date(action.createdAt), timezone)}</Typography>
@@ -100,14 +102,14 @@ function CaseExpandedInfo({
                     <LabsUserCard userId={action.executorId} user={executor} />
                 </Box>
             )}
-            <Box>
+            {action.reason && <Box>
                 <Typography level="h2" fontSize="md" gutterBottom>
                     Reason
                 </Typography>
                 <CodeWrapper>
                     <Typography textColor="text.secondary">{action.reason}</Typography>
                 </CodeWrapper>
-            </Box>
+            </Box>}
             {action.triggerContent && (
                 <Box>
                     <Typography level="h2" fontSize="md" gutterBottom>

@@ -1,8 +1,7 @@
-import { faAnglesDown, faBan, faEnvelope, faExclamationTriangle, faImage, faLink, faPrayingHands, faShieldHalved, faUserSecret } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faAnglesDown, faBan, faEnvelope, faImage, faLink, faPrayingHands, faShieldHalved } from "@fortawesome/free-solid-svg-icons";
 
 import DashboardModule from "../DashboardModule";
-import { Box, Stack, Typography } from "@mui/joy";
+import { Box, CssVarsProvider, Stack, Typography } from "@mui/joy";
 import { DashboardPageProps } from "../pages";
 import DashboardProfileCard from "./ProfileCard";
 import { PremiumType, RoleType } from "@prisma/client";
@@ -12,16 +11,6 @@ export default function OverviewPage(props: DashboardPageProps) {
 
     return (
         <Stack direction="column" gap={4}>
-            {/* <Alert color="warning" variant="soft" startDecorator={<FontAwesomeIcon icon={faExclamationTriangle} />}>
-                <Box sx={{ alignItems: "baseline" }}>
-                    <Typography fontSize="md" sx={{ color: "inherit" }}>
-                        This dashboard is in-progress and may have some bugs. If you run into any issues, report it in{" "}
-                        <Link color="warning" sx={{ textDecoration: "underline" }} href="https://www.guilded.gg/yoki">
-                            our Guilded server
-                        </Link>
-                    </Typography>
-                </Box>
-            </Alert> */}
             {/* Maybe do vertical icon cards with 4 tiers in premium tab? */}
             <DashboardProfileCard serverConfig={serverConfig} highestRoleType={highestRoleType} />
             <section>

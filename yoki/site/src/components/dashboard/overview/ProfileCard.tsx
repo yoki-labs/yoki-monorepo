@@ -145,6 +145,7 @@ function DashboardProfileCardForm(props: { onSubmit: (values: LabsFormFieldValue
                             placeholder: "?",
                             type: LabsFormFieldType.Text,
                             description: "The prefix that Yoki uses to recognize commands.",
+                            optional: true,
                         },
                         {
                             prop: "language",
@@ -154,6 +155,7 @@ function DashboardProfileCardForm(props: { onSubmit: (values: LabsFormFieldValue
                             defaultValue: serverConfig.locale ?? "en-US",
                             disabled: true,
                             badge: { text: "WIP", color: "primary" },
+                            optional: true,
                             selectableValues: [
                                 {
                                     name: "English (US)",
@@ -168,6 +170,7 @@ function DashboardProfileCardForm(props: { onSubmit: (values: LabsFormFieldValue
                             defaultValue: serverConfig.timezone ?? "america/new_york",
                             selectableValues: timezones.map((timezone) => ({ name: normalizeTimezoneName(timezone), icon: getRegionIcon(timezone), value: timezone })),
                             description: "The timezone Yoki displays time in.",
+                            optional: true,
                         },
                     ],
                 },

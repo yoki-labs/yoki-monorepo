@@ -40,6 +40,7 @@ type LabsFormState = {
 export default class LabsForm extends React.Component<LabsFormProps, LabsFormState> {
     // Do not use state for performance reasons
     public fieldValues: Record<string, LabsFormFieldValue>;
+    public fieldsAreValid: Record<string, boolean>;
 
     constructor(props: LabsFormProps) {
         super(props);
@@ -50,6 +51,7 @@ export default class LabsForm extends React.Component<LabsFormProps, LabsFormSta
         };
 
         this.fieldValues = this.defaultFieldValues;
+        this.fieldsAreValid = Object.fromEntries(this.fields.map((x) => [x.prop, this.getFieldCanBeSaved(x)]));
     }
 
     get formId() {
@@ -65,7 +67,11 @@ export default class LabsForm extends React.Component<LabsFormProps, LabsFormSta
     }
 
     get fieldsCanBeSaved() {
-        return !this.fields.some((x) => !x.optional && (this.fieldValues[x.prop] === null || typeof this.fieldValues[x.prop] === "undefined"));
+        return this.fields.every((x) => this.fieldsAreValid[x.prop]);
+    }
+
+    getFieldCanBeSaved(field: LabsFormField) {
+        return field.optional || (this.fieldValues[field.prop] !== null && typeof this.fieldValues[field.prop] !== "undefined");
     }
 
     onSubmit(event: FormEvent<HTMLFormElement>) {
@@ -92,7 +98,12 @@ export default class LabsForm extends React.Component<LabsFormProps, LabsFormSta
         // this.setState(({ values }) => ({ changed: true, values: Object.assign({}, values, { [field.prop]: value }) }));
         this.fieldValues = Object.assign({}, this.fieldValues, { [field.prop]: value });
 
-        this.setState({ canSave: this.fieldsCanBeSaved, changed: true });
+        this.fieldsAreValid[field.prop] = this.getFieldCanBeSaved(field);
+
+        const canBeSaved = this.fieldsCanBeSaved;
+
+        if (!this.state.changed || this.state.canSave !== canBeSaved)
+            this.setState({ canSave: canBeSaved, changed: true });
 
         return value;
     }
