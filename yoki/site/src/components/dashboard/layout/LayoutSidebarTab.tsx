@@ -18,7 +18,6 @@ export default function LayoutSidebarTab({ item, serverId, isActive }: Prop) {
     const router = useRouter();
     const href = `/dashboard/${serverId}/${item.id}`;
 
-    console.log("Item", item);
     return (
         <ListItemButton sx={(theme) => ({ borderRadius: theme.vars.radius.xs })} color={isActive ? item.color ?? "primary" : item.color} selected={isActive} onClick={() => router.push(href)}>
             <ListItemDecorator>

@@ -29,7 +29,6 @@ export function LayoutSidebar({ page, serverConfig, menuToggled, highestRoleType
     // const [currentPage, setModule] = useAtom(navbarAtom);
     const showStateClass = menuToggled ? "" : " md:block hidden";
 
-    console.log("Dashboard page list", dashboardPageList);
     const categorizedPages = Object.values(DashboardPageCategory)
         .filter((category) => typeof category === "number")
         .map((category) => ({
