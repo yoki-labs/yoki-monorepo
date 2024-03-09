@@ -125,12 +125,14 @@ export default class RolesPage extends React.Component<DashboardPageProps, State
 
         return (
             <Box>
-                <Typography level="h3" sx={{ mb: 2 }}>
-                    Roles
-                </Typography>
-                <Typography level="title-md" gutterBottom>
-                    Base roles
-                </Typography>
+                <Box sx={{ mb: 3 }}>
+                    <Typography level="h4" gutterBottom>
+                        Roles
+                    </Typography>
+                    <Typography level="body-sm">
+                        Configure the level of management roles have access to in Yoki.
+                    </Typography>
+                </Box>
                 <Card sx={{ mb: 4 }}>
                     <CardContent>
                         <BaseRolesForm serverRoleOptions={roleOptions} serverConfig={serverConfig} />
@@ -168,12 +170,16 @@ export default class RolesPage extends React.Component<DashboardPageProps, State
 function RolesPageSkeleton() {
     return (
         <Box sx={{ overflow: "hidden" }}>
-            <Typography level="h3" sx={{ mb: 2 }}>
-                <Skeleton animation="wave">Roles</Skeleton>
-            </Typography>
-            <Typography level="title-md" gutterBottom>
-                <Skeleton animation="wave">Base roles</Skeleton>
-            </Typography>
+            <Box sx={{ mb: 3 }}>
+                <Typography level="h3" gutterBottom>
+                    <Skeleton animation="wave">Roles</Skeleton>
+                </Typography>
+                <Typography level="body-sm">
+                    <Skeleton animation="wave">
+                        Configure the level of management roles have access to in Yoki.
+                    </Skeleton>
+                </Typography>
+            </Box>
             <Card sx={{ mb: 4 }}>
                 <CardContent>
                     <Typography level="title-md" sx={{ mb: 1 }}>

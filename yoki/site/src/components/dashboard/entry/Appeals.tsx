@@ -14,6 +14,7 @@ import { channelsToSelectionOptions } from "../channels";
 import { appealStatusOptions } from "../../../utils/appealUtil";
 import { nullUserOptionList, optionifyUserDetails } from "../content";
 import { RoleType } from "@prisma/client";
+import { LabsCopyInput } from "../../LabsCopyInput";
 
 type State = {
     isMounted: boolean;
@@ -112,10 +113,24 @@ export default class AppealsPage extends React.Component<DashboardPageProps, Sta
                         largeHeader
                     />
                 </Box>
+                <Box>
+                    <Typography level="h4" gutterBottom>
+                        Information
+                    </Typography>
+                    <Card>
+                        <CardContent>
+                            <Box>
+                                <Typography level="title-md" sx={{ mb: 1 }}>Server's appeal link</Typography>
+                                <LabsCopyInput text={`https://yoki.gg/appeals/${serverConfig.serverId}`} sx={{ width: "max-content" }} />
+                                <Typography level="body-sm" sx={{ mt: 1 }}>Leave a link in your server to allow users to appeal bans in the server.</Typography>
+                            </Box>
+                        </CardContent>
+                    </Card>
+                </Box>
                 {highestRoleType === RoleType.ADMIN && (
                     <Box>
                         <Typography level="h4" gutterBottom>
-                            Appeals configuration
+                            Configuration
                         </Typography>
                         <Card>
                             <CardContent>

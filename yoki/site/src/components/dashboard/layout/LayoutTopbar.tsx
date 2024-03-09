@@ -13,10 +13,11 @@ type Props = {
     currentServer?: GuildedServer;
     onServerChange: (serverId: string) => unknown | Promise<unknown>;
     user?: LabsSessionUser | null;
+    breadcrumbs?: React.ReactNode | React.ReactNode[] | undefined;
     children?: React.ReactNode | React.ReactNode[];
 };
 
-export function LayoutTopbar({ children, onServerChange, currentServer, servers, user }: Props) {
+export function LayoutTopbar({ breadcrumbs, children, onServerChange, currentServer, servers, user }: Props) {
     return (
         <Box sx={{ display: "flex", flexDirection: "row", gap: 2, alignItems: "center" }} className="px-5 py-4 md:px-10 md:py-8">
             {children}
@@ -35,6 +36,7 @@ export function LayoutTopbar({ children, onServerChange, currentServer, servers,
                 <Box key="layout-topbar.breadcrumb-server" className="hidden md:block">
                     <ServerSelector onChange={onServerChange} defaultValue={currentServer?.id} currentServer={currentServer} servers={servers} />
                 </Box>
+                {breadcrumbs}
             </Breadcrumbs>
             <UserManager user={user} />
         </Box>

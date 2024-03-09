@@ -1,6 +1,7 @@
 import { Box, Stack, Typography } from "@mui/joy";
 import CodeWrapper from "../CodeWrapper";
 import { SanitizedAppeal } from "../../lib/@types/db";
+import { LabsCopyInput } from "../LabsCopyInput";
 
 export default function AppealExpandedInfo({ appeal }: { appeal: SanitizedAppeal; timezone: string | null }) {
     return (
@@ -23,6 +24,12 @@ export default function AppealExpandedInfo({ appeal }: { appeal: SanitizedAppeal
                     </CodeWrapper>
                 </Box>
             )}
+            <Box>
+                <Typography level="h3" fontSize="md" gutterBottom>
+                    Identifier
+                </Typography>
+                <LabsCopyInput text={appeal.id} sx={{ width: "max-content" }} />
+            </Box>
         </Stack>
     );
 }

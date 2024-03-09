@@ -9,6 +9,7 @@ type LayoutProps = {
     currentServer?: GuildedServer;
     user: LabsSessionUser;
     topbarPrefix?: React.ReactNode | React.ReactNode[];
+    breadcrumbs?: React.ReactNode | React.ReactNode[] | undefined;
     children: React.ReactNode;
     onServerChange: (serverId: string) => void;
 };
@@ -22,11 +23,11 @@ const LayoutWrapperBox = styled(`div`)(({ theme }) => ({
 }));
 
 export default function LayoutWrapper(props: LayoutProps) {
-    const { children, user, currentServer, servers, topbarPrefix, onServerChange } = props;
+    const { children, user, currentServer, servers, topbarPrefix, breadcrumbs, onServerChange } = props;
 
     return (
         <LayoutWrapperBox>
-            <LayoutTopbar onServerChange={onServerChange} currentServer={currentServer} servers={servers} user={user}>
+            <LayoutTopbar breadcrumbs={breadcrumbs} onServerChange={onServerChange} currentServer={currentServer} servers={servers} user={user}>
                 {topbarPrefix}
             </LayoutTopbar>
             <Box className="flex flex-row grow overflow-hidden">{children}</Box>

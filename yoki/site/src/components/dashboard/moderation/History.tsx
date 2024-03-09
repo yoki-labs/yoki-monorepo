@@ -1,4 +1,4 @@
-import { Stack, Typography } from "@mui/joy";
+import { Box, Stack, Typography } from "@mui/joy";
 import React from "react";
 
 import { DashboardPageProps } from "../pages";
@@ -52,8 +52,11 @@ export default class HistoryPage extends React.Component<DashboardPageProps> {
         const { serverConfig } = this.props;
 
         return (
-            <Stack direction="column" gap={3}>
-                <Typography level="h4">Server history</Typography>
+            <Stack direction="column" gap={4}>
+                <Box>
+                    <Typography level="h4" gutterBottom>Server history</Typography>
+                    <Typography level="body-sm">See previous offences of server members and information about the offences.</Typography>
+                </Box>
                 <DataTable<SanitizedAction, string>
                     itemType="cases"
                     timezone={serverConfig.timezone}

@@ -6,6 +6,7 @@ import { bodyFontFamily, themeFontCss, themeTitleFontCss, titleFontFamily } from
 
 declare module "@mui/joy/styles" {
     interface TypographySystemOverrides {
+        ["inline-code"]: true;
         code: true;
         reverse: true;
     }
@@ -14,6 +15,7 @@ declare module "@mui/joy/styles" {
     }
 
     interface PaletteTextOverrides {
+        ["inline-code"]: true;
         code: true;
         reverse: true;
     }
@@ -48,6 +50,12 @@ export const theme = extendTheme({
         h2: themeTitleFontCss,
         h3: themeTitleFontCss,
         h4: themeTitleFontCss,
+        "inline-code": {
+            color: `var(--labs-palette-text-code)`,
+            // Doesn't make the text break, so it isn't recommended.
+            // width: "max-content",
+            fontFamily: ["'Space Mono'"],
+        },
         code: {
             backgroundColor: `var(--labs-palette-background-body)`,
             color: `var(--labs-palette-text-code)`,

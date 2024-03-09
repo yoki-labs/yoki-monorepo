@@ -100,9 +100,14 @@ export default class IgnoresPage extends React.Component<DashboardPageProps, Sta
 
         return (
             <Box>
-                <Typography level="h3" sx={{ mb: 2 }}>
-                    Auto-moderation ignoring
-                </Typography>
+                <Box sx={{ mb: 3 }}>
+                    <Typography level="h4" gutterBottom>
+                        Auto-moderation ignoring
+                    </Typography>
+                    <Typography level="body-sm">
+                        Set which type of filtering should be ignored by specified content or specified channels.
+                    </Typography>
+                </Box>
                 {highestRoleType === RoleType.ADMIN && (
                     <Card sx={{ mb: 2 }}>
                         <ChannelIgnoreCreationForm onCreate={this.onIgnoreUpdate.bind(this)} options={selectionOptions} />
@@ -141,9 +146,16 @@ export default class IgnoresPage extends React.Component<DashboardPageProps, Sta
 function LogsPageSkeleton() {
     return (
         <Box sx={{ overflow: "hidden" }}>
-            <Typography level="h3" sx={{ mb: 2 }}>
-                <Skeleton animation="wave">Log channels</Skeleton>
-            </Typography>
+            <Box sx={{ mb: 3 }}>
+                <Typography level="h4" gutterBottom>
+                    <Skeleton animation="wave">Auto-moderation ignoring</Skeleton>
+                </Typography>
+                <Typography level="body-sm">
+                    <Skeleton animation="wave">
+                        Set which type of filtering should be ignored by specified content or specified channels.
+                    </Skeleton>
+                </Typography>
+            </Box>
             <Card>
                 <Stack direction="row" gap={2} alignItems="center">
                     <Skeleton animation="wave" variant="circular" width={40} height={40} />

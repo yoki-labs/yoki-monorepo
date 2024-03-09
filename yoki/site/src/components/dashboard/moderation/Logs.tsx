@@ -93,9 +93,14 @@ export default class LogsPage extends React.Component<DashboardPageProps, State>
 
         return (
             <Box>
-                <Typography level="h3" sx={{ mb: 2 }}>
-                    Log channels
-                </Typography>
+                <Box sx={{ mb: 3 }}>
+                    <Typography level="h4" gutterBottom>
+                        Log channels
+                    </Typography>
+                    <Typography level="body-sm">
+                        Manages what changes to the server or actions should be notified and where.
+                    </Typography>
+                </Box>
                 {highestRoleType === RoleType.ADMIN && (
                     <Card sx={{ mb: 2 }}>
                         <LogItemCreationForm onCreate={this.onLogsUpdate.bind(this)} existingTypes={existingTypes} channelOptions={channelSelectionOptions} />
@@ -134,9 +139,16 @@ export default class LogsPage extends React.Component<DashboardPageProps, State>
 function LogsPageSkeleton() {
     return (
         <Box sx={{ overflow: "hidden" }}>
-            <Typography level="h3" sx={{ mb: 2 }}>
-                <Skeleton animation="wave">Log channels</Skeleton>
-            </Typography>
+            <Box sx={{ mb: 3 }}>
+                <Typography level="h4" gutterBottom>
+                    <Skeleton animation="wave">Log channels</Skeleton>
+                </Typography>
+                <Skeleton animation="wave">
+                    <Typography level="body-sm">
+                        Manages what changes to the server or actions should be notified and where.
+                    </Typography>
+                </Skeleton>
+            </Box>
             <Card>
                 <Stack direction="row" gap={2} alignItems="center">
                     <Skeleton animation="wave" variant="circular" width={40} height={40} />

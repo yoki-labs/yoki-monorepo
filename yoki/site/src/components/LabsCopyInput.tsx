@@ -4,7 +4,7 @@ import { Button, Chip, IconButton, Input, InputProps, Stack, Typography } from "
 import React from "react";
 
 type Props = InputProps & {
-    text: string;
+    text: string | number;
 };
 type State = {
     copied: boolean;
@@ -21,7 +21,7 @@ export class LabsCopyInput extends React.Component<Props, State> {
         const { text } = this.props;
 
         // Copy
-        navigator.clipboard.writeText(text);
+        navigator.clipboard.writeText(text.toString());
 
         // Feedback; let user know they copied the text
         this.setState({ copied: true });
@@ -31,7 +31,7 @@ export class LabsCopyInput extends React.Component<Props, State> {
         const { text } = this.props;
         const { copied } = this.state;
 
-        const color = copied ? "success" : "neutral";
+        const color = copied ? "success" : "primary";
 
         return (
             <Input
@@ -40,7 +40,7 @@ export class LabsCopyInput extends React.Component<Props, State> {
                 }}
                 slotProps={{
                     input: {
-                        children: <Typography>{text}</Typography>,
+                        children: <Typography level="inline-code">{text}</Typography>,
                         direction: "row",
                         alignItems: "center",
                         gap: 2,
@@ -48,14 +48,14 @@ export class LabsCopyInput extends React.Component<Props, State> {
                 }}
                 endDecorator={
                     <Button
-                        variant="plain"
+                        variant="soft"
                         color={color}
-                        sx={(theme) => ({
-                            backgroundColor: `${theme.vars.palette[color][copied ? 900 : 700]} !important`,
-                            ":hover": {
-                                backgroundColor: `${theme.vars.palette[color][copied ? 800 : 600]} !important`,
-                            },
-                        })}
+                        // sx={(theme) => ({
+                        //     backgroundColor: `${theme.vars.palette[color][copied ? 900 : 700]} !important`,
+                        //     ":hover": {
+                        //         backgroundColor: `${theme.vars.palette[color][copied ? 800 : 600]} !important`,
+                        //     },
+                        // })}
                         onClick={this.copyText.bind(this)}
                         startDecorator={<FontAwesomeIcon icon={copied ? faCheck : faClipboard} />}
                     >

@@ -36,6 +36,7 @@ export const generateColourScheme = (typicalColour: string, background: string, 
     100: mixHexColours(typicalColour, counter, 0.8),
     // Solid
     solidBg: typicalColour,
+    solidColor: background,
     solidHoverBg: mixHexColours(typicalColour, counter, 0.2),
     // Plain
     plainHoverBg: mixHexColours(typicalColour, background, 0.9),

@@ -17,6 +17,7 @@ import { useRouter } from "next/router";
 import { LabsSessionUser } from "../../../utils/routes/pages";
 import { roleTypeLevels } from "../../../utils/routes/permissions";
 import { RoleType } from "@prisma/client";
+import { dashboardPageList } from "../../../components/dashboard/pages";
 
 type BaseSessionProps = {
     user: LabsSessionUser;
@@ -113,12 +114,15 @@ export default function Dashboard(props: SessionProps) {
     };
 
     // All good
-    if (!props.code)
+    if (!props.code) {
+        const currentPage = dashboardPageList.find((x) => x.id === props.page);
+
         return (
-            <Layout {...props} onServerChange={onServerChange}>
-                <DashForm currentServer={props.currentServer} serverConfig={props.serverConfig} page={props.page} highestRoleType={props.highestRoleType} />
+            <Layout {...props} currentPage={currentPage} onServerChange={onServerChange}>
+                <DashForm currentServer={props.currentServer} serverConfig={props.serverConfig} page={currentPage} highestRoleType={props.highestRoleType} />
             </Layout>
         );
+    }
     // No ADMIN code
     else if (props.code === "UNPERMITTED")
         return (

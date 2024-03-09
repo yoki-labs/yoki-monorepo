@@ -1,5 +1,6 @@
 import {
     faBan,
+    faBrush,
     faClipboardUser,
     faCommentDots,
     faCrown,
@@ -14,6 +15,7 @@ import {
     faPrayingHands,
     faShieldHalved,
     faTicket,
+    faUserSecret,
     IconDefinition,
 } from "@fortawesome/free-solid-svg-icons";
 import { ColorPaletteProp } from "@mui/joy";
@@ -37,6 +39,8 @@ import RolesPage from "./overview/Roles";
 import { SanitizedServer } from "../../lib/@types/db";
 import { GuildedServer } from "../../lib/@types/guilded";
 import IgnoresPage from "./automod/Ignores";
+import BotProfilePage from "./overview/BotProfile";
+import AntinukePage from "./entry/Antinuke";
 
 export interface DashboardPageItem {
     id: string;
@@ -47,6 +51,7 @@ export interface DashboardPageItem {
     color?: ColorPaletteProp;
     requiredRole: RoleType;
     earlyAccess?: boolean;
+    wip?: boolean;
 }
 
 export enum DashboardPageCategory {
@@ -59,6 +64,7 @@ export enum DashboardPageCategory {
 export const dashboardPageList: DashboardPageItem[] = [
     { id: "overview", name: "Overview", icon: faLayerGroup, component: OverviewPage, category: DashboardPageCategory.Bot, requiredRole: RoleType.MINIMOD },
     { id: "roles", name: "Roles", icon: faCrown, component: RolesPage, category: DashboardPageCategory.Bot, requiredRole: RoleType.ADMIN },
+    { id: "profile", name: "Profile", icon: faBrush, component: BotProfilePage, category: DashboardPageCategory.Bot, requiredRole: RoleType.MINIMOD, wip: true, },
     { id: "premium", name: "Premium", icon: faHeart, color: "warning", component: ConfigPage, category: DashboardPageCategory.Bot, requiredRole: RoleType.MINIMOD },
     { id: "logs", name: "Logging", icon: faHashtag, component: LogsPage, category: DashboardPageCategory.Moderation, requiredRole: RoleType.MOD },
     { id: "cases", name: "Cases", icon: faClipboardUser, component: HistoryPage, category: DashboardPageCategory.Moderation, requiredRole: RoleType.MINIMOD },

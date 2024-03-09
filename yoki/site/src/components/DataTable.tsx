@@ -170,9 +170,9 @@ export default class DataTable<TItem extends { id: TItemId }, TItemId> extends R
         const { items, selectedItems, users } = this.state;
         const { timezone, columns, disableOperations, ItemRenderer, ItemMobileRenderer } = this.props;
 
-        return items.map((item, i) => [
+        return items.map((item) => [
             <ItemRenderer
-                key={`data-table.item-${i}`}
+                key={`data-table.item-${item.id}.desktop`}
                 item={item}
                 users={users}
                 timezone={timezone}
@@ -182,7 +182,7 @@ export default class DataTable<TItem extends { id: TItemId }, TItemId> extends R
                 disableSelection={disableOperations}
             />,
             <ItemMobileRenderer
-                key={`data-table.item-${i}-mobile`}
+                key={`data-table.item-${item.id}.mobile`}
                 item={item}
                 users={users}
                 timezone={timezone}

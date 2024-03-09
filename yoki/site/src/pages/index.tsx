@@ -59,10 +59,10 @@ const Home: NextPage<LandingPageSessionProps> = ({ user }) => {
                 <div className="pt-28 pb-40 px-5 md:px-24 lg:px-40 grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-8">
                     <LandingStat amount="20,000,000+" subtitle="Scanned" what="messages" />
                     <LandingStat amount="16,000+" subtitle="Actioned" what="cases" />
-                    <LandingStat amount="3,000+" subtitle="Serving" what="servers" />
+                    <LandingStat amount="3,600+" subtitle="Serving" what="servers" />
                     <LandingStat amount="90,000+" subtitle="Watching over" what="members" />
                     <LandingStat amount="6,000+" subtitle="Stopped" what="bad actors" />
-                    <LandingStat amount="7,000+" subtitle="Served" what="captchas" />
+                    <LandingStat amount="9,000+" subtitle="Served" what="captchas" />
                 </div>
                 {/* Yoki's features */}
                 <div className="py-8 px-5 md:px-24 lg:px-40">

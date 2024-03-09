@@ -33,7 +33,7 @@ export default class PremiumPage extends React.Component<DashboardPageProps> {
 
         return (
             <Box>
-                <Typography level="h3" textColor="warning.300" sx={{ mb: 1 }}>
+                <Typography level="h3" textColor="warning.300" gutterBottom>
                     Premium
                 </Typography>
                 <Typography level="title-md" textColor="text.secondary" sx={{ mb: 2 }}>
@@ -134,7 +134,7 @@ function PremiumLevelStep({ name, perks, active }: { name: string; active: boole
 
 function PremiumStepIndicator({ active }: { active: boolean }) {
     return (
-        <StepIndicator variant={active ? "solid" : "soft"} color={active ? "primary" : "neutral"} sx={{ bgcolor: active ? "primary.600" : "neutral.800" }}>
+        <StepIndicator variant={active ? "solid" : "soft"} color={active ? "primary" : "neutral"} sx={{ bgcolor: active ? "primary.500" : "neutral.800" }}>
             <FontAwesomeIcon icon={active ? faCheck : faTimes} />
         </StepIndicator>
     );

@@ -80,7 +80,7 @@ export default class DashboardModule extends React.Component<Props, { isActive: 
 function ModuleBadge({ earlyAccess, premium, size }: { earlyAccess?: boolean | undefined; premium: PremiumType | undefined | null; size?: "sm" | "md" | "lg" }) {
     return earlyAccess ? (
         <Tooltip title="This requires Yoki early access">
-            <Chip size={size} color="danger">
+            <Chip variant="soft" size={size} color="danger">
                 Early Access
             </Chip>
         </Tooltip>

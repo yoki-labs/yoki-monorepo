@@ -1,8 +1,11 @@
-import { Avatar, Box, ListItemDecorator, Option, SelectOption, Typography } from "@mui/joy";
+import { Avatar, Box, Divider, ListItemDecorator, MenuItem, Option, SelectOption, Typography } from "@mui/joy";
 import React from "react";
 
 import { GuildedClientServer, GuildedServer } from "../../../lib/@types/guilded";
 import LabsDropdown from "../../form/LabsDropdown";
+import Link from "next/link";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faHandPointer } from "@fortawesome/free-solid-svg-icons";
 
 interface Props {
     currentServer?: GuildedServer;
@@ -40,6 +43,20 @@ export class ServerSelector extends React.Component<Props> {
                 renderValue={this.renderCurrentServer.bind(this)}
                 onChange={async (_, serverId) => serverId && (await this.props.onChange(serverId))}
             >
+                {currentServer && <>
+                    <Link href="/dashboard" style={{ textDecoration: "none" }}>
+                        <MenuItem>
+                            <ListItemDecorator>
+                                <FontAwesomeIcon icon={faHandPointer} />
+                            </ListItemDecorator>
+                            <Box>
+                                <Typography fontWeight="bolder">Select other</Typography>
+                                <Typography textColor="text.tertiary">Go back to server selection page</Typography>
+                            </Box>
+                        </MenuItem>
+                    </Link>
+                    <Divider />
+                </>}
                 {servers.length
                     ? sortedServers.map((server) => <ServerOption id={server.id} name={server.name} subdomain={server.subdomain} avatar={server.profilePicture} />)
                     : currentServer && <ServerOption id={currentServer.id} name={currentServer.name} subdomain={currentServer.url} avatar={currentServer.avatar} />}

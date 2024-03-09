@@ -1,13 +1,13 @@
 import { faAnglesDown, faBan, faEnvelope, faImage, faLink, faPrayingHands, faShieldHalved } from "@fortawesome/free-solid-svg-icons";
 
 import DashboardModule from "../DashboardModule";
-import { Box, CssVarsProvider, Stack, Typography } from "@mui/joy";
+import { Box, Stack, Typography } from "@mui/joy";
 import { DashboardPageProps } from "../pages";
 import DashboardProfileCard from "./ProfileCard";
 import { PremiumType, RoleType } from "@prisma/client";
 
 export default function OverviewPage(props: DashboardPageProps) {
-    const { currentServer, serverConfig, highestRoleType } = props;
+    const { serverConfig, highestRoleType } = props;
 
     return (
         <Stack direction="column" gap={4}>
