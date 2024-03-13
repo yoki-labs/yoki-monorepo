@@ -19,6 +19,7 @@ const PageWrapper = styled(Box, {
 })(({ theme }) => ({
     backgroundColor: theme.vars.palette.background.body,
     minHeight: "100%",
+    position: "relative",
 }));
 
 export default class LandingPage extends React.Component<Props, State> {

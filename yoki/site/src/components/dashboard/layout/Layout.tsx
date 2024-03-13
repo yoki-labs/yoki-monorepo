@@ -16,7 +16,7 @@ type LayoutProps = {
     serverConfig: SanitizedServer;
     highestRoleType: RoleType;
     user: LabsSessionUser;
-    page: string;
+    page: string[];
     currentPage: DashboardPageItem | undefined;
     children: React.ReactNode;
     onServerChange: (serverId: string) => void;
@@ -69,7 +69,7 @@ export default class Layout extends React.Component<LayoutProps, LayoutState> {
                     servers={servers}
                     currentServer={currentServer}
                     onServerChange={onServerChange}
-                    page={page}
+                    page={page[0]}
                 />
                 <Box className={`overflow-hidden grow basis-0 shrink-0 flex ${this.state.menuEnabled ? "md:block hidden" : ""}`}>{children}</Box>
             </LayoutWrapper>

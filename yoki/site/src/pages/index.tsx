@@ -18,13 +18,20 @@ import LandingProfileCard from "../components/landing/home/LandingProfileCard";
 import LandingStat from "../components/landing/home/LandingStat";
 import LandingPage from "../components/landing/LandingPage";
 import { getLandingPagePageProps, LandingPageSessionProps } from "../utils/routes/pages";
+import { HomePageBackground } from "../components/landing/home/HomePageBackground";
+import { CurvyMask } from "../components/landing/masked";
 
 export const getServerSideProps: GetServerSideProps<LandingPageSessionProps> = getLandingPagePageProps;
 
 const Home: NextPage<LandingPageSessionProps> = ({ user }) => {
     return (
         <LandingPage user={user}>
-            <Stack direction="column" alignItems="stretch" sx={{ width: "100%" }}>
+            <HomePageBackground>
+                <CurvyMask placement="bottom" start="80%" sx={{ width: "100%", height: "100%", transform: "rotate(5deg) translateY(-30px) translateX(-150px)" }}>
+                    <Box sx={{ width: "100%", height: "100%", backgroundImage: "linear-gradient(to bottom right, #9e52fd, transparent)" }}></Box>
+                </CurvyMask>
+            </HomePageBackground>
+            <Stack direction="column" alignItems="stretch" sx={{ zIndex: 2, width: "100%" }}>
                 <div className="py-20 px-5 md:py-32 md:px-24 lg:px-40">
                     <Stack direction="row" gap={8}>
                         <Box sx={{ flex: "1" }}>

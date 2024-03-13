@@ -28,7 +28,7 @@ type SessionProps =
     | (BaseSessionProps & {
           code: null;
           serverConfig: SanitizedServer;
-          page: string;
+          page: string[];
           highestRoleType: RoleType;
       })
     | (BaseSessionProps & {
@@ -100,7 +100,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx): Promise<GetSe
             user,
             currentServer: referencedServer!,
             serverConfig: sanitizeServer(serverInDb),
-            page: page as string,
+            page: page as string[],
             highestRoleType: highestLevel,
         },
     };
@@ -115,7 +115,8 @@ export default function Dashboard(props: SessionProps) {
 
     // All good
     if (!props.code) {
-        const currentPage = dashboardPageList.find((x) => x.id === props.page);
+        const [mainPage, subPage] = props.page;
+        const currentPage = dashboardPageList.find((x) => x.id === mainPage);
 
         return (
             <Layout {...props} currentPage={currentPage} onServerChange={onServerChange}>

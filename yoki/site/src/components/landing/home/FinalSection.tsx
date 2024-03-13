@@ -41,10 +41,10 @@ export default function FinalSection() {
                 <CardDecorationWrapper>
                     <CardDecorationContainer>
                         <CurvyMask placement="bottom" start="80%" sx={{ width: "100%", height: "150%", transform: "rotate(-10deg) translateY(20px) translateX(250px)" }}>
-                            <Box sx={{ width: "100%", height: "100%", backgroundImage: "linear-gradient(to bottom right, rgba(255, 255, 255, 0.3), transparent)" }}></Box>
+                            <Box sx={{ width: "100%", height: "100%", backgroundImage: "linear-gradient(to bottom right, rgba(255, 255, 255, 0.15), transparent)" }}></Box>
                         </CurvyMask>
                         {/* TODO: Change this whole grid to be SVG and use components for stars inside that SVG */}
-                        <DecorationStarStack sx={{ position: "absolute", top: 0, left: 0, mask: "linear-gradient(to bottom right, white 0%, transparent 65%)" }}>
+                        <DecorationStarStack sx={{ position: "absolute", opacity: 0.55, top: 0, left: 0, mask: "linear-gradient(to bottom right, white 0%, transparent 65%)" }}>
                             <StarSvg top={0} left={0} column={1} />
                             <StarSvg top={60} left={0} column={2} />
                             <StarSvg top={13} left={12} column={3} />
