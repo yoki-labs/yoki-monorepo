@@ -70,7 +70,7 @@ const serverConfigRoute = createServerRoute({
             // Enums
             else if (isBodyEnumPropertyInvalid(body.linkSeverity, availableSeverityValues)) return getBodyErrorResponse(res, "linkSeverity", "severity");
             else if (isBodyEnumPropertyInvalid(body.antiRaidResponse, availableResponse)) return getBodyErrorResponse(res, "antiRaidResponse", "response type");
-            // Channels
+                // Channels
             else if (!(await isBodyChannelPropertyValid(body.appealChannelId))) return getBodyErrorResponse(res, "appealChannelId", "null or channel");
             else if (!(await isBodyChannelPropertyValid(body.antiRaidChallengeChannel))) return getBodyErrorResponse(res, "antiRaidChallengeChannel", "null or channel");
             // Misc numbers
@@ -83,14 +83,18 @@ const serverConfigRoute = createServerRoute({
                 prefix: MAP_DEFAULT_PREFIXES.includes(body.prefix) ? null : body.prefix ?? server.prefix,
                 timezone: MAP_DEFAULT_TIMEZONE.includes(body.timezone) ? null : body.timezone ?? server.timezone,
                 // Spam & Filters
+                urlFilterIsWhitelist: body.urlFilterIsWhitelist,
                 spamFrequency: body.spamFrequency,
                 spamMentionFrequency: body.spamMentionFrequency,
                 nsfwHentaiConfidence: body.nsfwHentaiConfidence,
                 nsfwPornConfidence: body.nsfwPornConfidence,
+                // Anti-raid
+                antiRaidAgeFilter: body.antiRaidAgeFilter,
+                antiRaidResponse: body.antiRaidResponse,
                 // Infractions
                 spamInfractionPoints: body.spamInfractionPoints,
                 linkInfractionPoints: body.linkInfractionPoints,
-                linkSeverity: MAP_DEFAULT_SEVERITY.includes(body.linkSeverity) ? null : body.linkSeverity ?? server.linkSeverity,
+                linkSeverity: MAP_DEFAULT_SEVERITY.includes(body.linkSeverity) ? Severity.WARN : body.linkSeverity ?? server.linkSeverity,
                 // Channels
                 appealChannelId: typeof body.appealChannelId === "undefined" ? server.appealChannelId : body.appealChannelId,
                 antiRaidChallengeChannel: typeof body.antiRaidChallengeChannel === "undefined" ? server.antiRaidChallengeChannel : body.antiRaidChallengeChannel,

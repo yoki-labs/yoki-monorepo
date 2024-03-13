@@ -83,7 +83,7 @@ export default class LabsForm extends React.Component<LabsFormProps, LabsFormSta
         if (this.props.resetOnSubmission) this.fieldValues = this.defaultFieldValues;
 
         // To not be able to save again
-        this.setState({ changed: false });
+        this.setState({ canSave: false, changed: false });
 
         return this.props.onSubmit(oldValues);
     }
