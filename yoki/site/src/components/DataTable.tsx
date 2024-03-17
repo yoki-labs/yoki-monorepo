@@ -204,7 +204,9 @@ export default class DataTable<TItem extends { id: TItemId }, TItemId> extends R
             );
         else if (!this.state.isLoaded)
             return (
-                <LinearProgress />
+                <Box sx={{ width: "100%", overflow: "hidden" }}>
+                    <LinearProgress sx={{ width: "100%" }} />
+                </Box>
             );
 
         const { items, page, search, filter, maxPages } = this.state;

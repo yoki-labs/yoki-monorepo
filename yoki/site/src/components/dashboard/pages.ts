@@ -64,7 +64,7 @@ export enum DashboardPageCategory {
 export const dashboardPageList: DashboardPageItem[] = [
     { id: "overview", name: "Overview", icon: faLayerGroup, component: OverviewPage, category: DashboardPageCategory.Bot, requiredRole: RoleType.MINIMOD },
     { id: "roles", name: "Roles", icon: faCrown, component: RolesPage, category: DashboardPageCategory.Bot, requiredRole: RoleType.ADMIN },
-    { id: "profile", name: "Profile", icon: faBrush, component: BotProfilePage, category: DashboardPageCategory.Bot, requiredRole: RoleType.MINIMOD, wip: true, },
+    // { id: "profile", name: "Profile", icon: faBrush, component: BotProfilePage, category: DashboardPageCategory.Bot, requiredRole: RoleType.MINIMOD, wip: true, },
     { id: "premium", name: "Premium", icon: faHeart, color: "warning", component: ConfigPage, category: DashboardPageCategory.Bot, requiredRole: RoleType.MINIMOD },
     { id: "logs", name: "Logging", icon: faHashtag, component: LogsPage, category: DashboardPageCategory.Moderation, requiredRole: RoleType.MOD },
     { id: "cases", name: "Cases", icon: faClipboardUser, component: HistoryPage, category: DashboardPageCategory.Moderation, requiredRole: RoleType.MINIMOD },

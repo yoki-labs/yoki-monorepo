@@ -2,10 +2,12 @@ import { Box, Stack, Typography } from "@mui/joy";
 import CodeWrapper from "../CodeWrapper";
 import { SanitizedAppeal } from "../../lib/@types/db";
 import { LabsCopyInput } from "../LabsCopyInput";
+import Link from "../Link";
 
-export default function AppealExpandedInfo({ appeal }: { appeal: SanitizedAppeal; timezone: string | null }) {
+export default function AppealExpandedInfo({ appeal, appealLink }: { appealLink: string; appeal: SanitizedAppeal; timezone: string | null }) {
     return (
         <Stack gap={3}>
+            {/* <Link href={appealLink}>See more</Link> */}
             <Box>
                 <Typography level="h2" fontSize="md" gutterBottom>
                     Reason for appealing

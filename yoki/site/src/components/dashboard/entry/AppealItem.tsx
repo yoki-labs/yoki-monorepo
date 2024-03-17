@@ -18,7 +18,7 @@ export function AppealRow({ item: appeal, users, columnCount, timezone, disableS
             disableSelection={disableSelection}
             isSelected={isSelected}
             onSelected={onSelected}
-            ExpandedInfoRenderer={() => <AppealExpandedInfo appeal={appeal} timezone={timezone} />}
+            ExpandedInfoRenderer={() => <AppealExpandedInfo appeal={appeal} appealLink={`/dashboard/${appeal.serverId}/appeals/${appeal.id}`} timezone={timezone} />}
         >
             <td>
                 <LabsUserCard userId={appeal.creatorId} user={users?.[appeal.creatorId]} />
@@ -54,7 +54,7 @@ export function AppealCard({ item: appeal, users, timezone, disableSelection, is
                     <AppealStatusBadge status={appeal.status} />
                 </>
             )}
-            ExpandedInfoRenderer={() => <AppealExpandedInfo appeal={appeal} timezone={timezone} />}
+            ExpandedInfoRenderer={() => <AppealExpandedInfo appeal={appeal} appealLink={`/dashboard/${appeal.serverId}/appeals/${appeal.id}`} timezone={timezone} />}
         >
             <Stack mt={2} gap={2} direction="column">
                 <Typography level="body-md">{content && content.length > 50 ? `${content.split("\n").join(" ")?.slice(0, 50)}...` : content.split("\n").join(" ")}</Typography>

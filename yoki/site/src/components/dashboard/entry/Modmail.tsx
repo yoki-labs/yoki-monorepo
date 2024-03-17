@@ -220,7 +220,7 @@ export default class ModmailPage extends React.Component<DashboardPageProps, Sta
 
 function ModmailInfoCardSkeleton() {
     return (
-        <Stack gap={2} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xlg:grid-cols-4">
+        <Stack sx={{ overflow: "hidden" }} gap={2} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xlg:grid-cols-4">
             <Box>
                 <Typography level="title-md" sx={{ mb: 1 }}>
                     <Skeleton animation="wave">Channel</Skeleton>

@@ -1,5 +1,5 @@
 import { faGuilded } from "@fortawesome/free-brands-svg-icons";
-import { faEnvelope, faExclamation, faHashtag, faRobot, faShieldHalved } from "@fortawesome/free-solid-svg-icons";
+import { faCheckDouble, faClipboardCheck, faEnvelope, faExclamation, faHashtag, faLayerGroup, faMessage, faRobot, faShieldHalved, faUsers, faUserSecret } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Box, Button, Chip, Link, List, Stack, Typography } from "@mui/joy";
 import { Colors } from "@yokilabs/utils";
@@ -58,19 +58,19 @@ const Home: NextPage<LandingPageSessionProps> = ({ user }) => {
                             </Stack>
                             <Typography textColor="text.secondary">Made by Yoki Labs</Typography>
                         </Box>
-                        <LandingProfileCard serverCount={2000} />
+                        <LandingProfileCard serverCount={3600} />
                     </Stack>
                 </div>
-                {/* TODO: Server carousel */}
                 {/* Statistics */}
                 <div className="pt-28 pb-40 px-5 md:px-24 lg:px-40 grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-8">
-                    <LandingStat amount="20,000,000+" subtitle="Scanned" what="messages" />
-                    <LandingStat amount="16,000+" subtitle="Actioned" what="cases" />
-                    <LandingStat amount="3,600+" subtitle="Serving" what="servers" />
-                    <LandingStat amount="170,000+" subtitle="Watching over" what="members" />
-                    <LandingStat amount="6,000+" subtitle="Stopped" what="bad actors" />
-                    <LandingStat amount="9,000+" subtitle="Served" what="captchas" />
+                    <LandingStat icon={faMessage} amount="20,000,000+" subtitle="Scanned" what="messages" />
+                    <LandingStat icon={faClipboardCheck} amount="16,000+" subtitle="Actioned" what="cases" />
+                    <LandingStat icon={faLayerGroup} amount="3,600+" subtitle="Serving" what="servers" />
+                    <LandingStat icon={faUsers} amount="170,000+" subtitle="Watching over" what="members" />
+                    <LandingStat icon={faUserSecret} amount="6,000+" subtitle="Stopped" what="bad actors" />
+                    <LandingStat icon={faCheckDouble} amount="9,000+" subtitle="Served" what="captchas" />
                 </div>
+                {/* TODO: Server carousel */}
                 {/* Yoki's features */}
                 <div className="py-8 px-5 md:px-24 lg:px-40">
                     <Box sx={{ textAlign: "center", mb: 24 }}>

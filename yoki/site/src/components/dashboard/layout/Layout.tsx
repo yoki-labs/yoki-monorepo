@@ -34,7 +34,11 @@ export default class Layout extends React.Component<LayoutProps, LayoutState> {
 
     toggleMenu() {
         const { menuEnabled } = this.state;
-        this.setState({ menuEnabled: !menuEnabled });
+        return this.setMenuToggled(!menuEnabled);
+    }
+    
+    setMenuToggled(menuEnabled: boolean) {
+        return this.setState({ menuEnabled });
     }
 
     render() {

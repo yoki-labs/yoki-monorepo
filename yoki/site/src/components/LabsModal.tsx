@@ -16,9 +16,11 @@ export function LabsModal({ icon, title, onClose, children }: Props) {
             role="menu"
             // aria-labelledby="modal-title"
             // aria-describedby="modal-title"
+            variant="soft"
+            sx={{ px: 4, py: 3 }}
         >
             <Stack mb={1} gap={2} direction="row" alignItems="center">
-                <FontAwesomeIcon icon={icon} />
+                {/* <FontAwesomeIcon icon={icon} /> */}
                 <Typography level="h2" fontSize="md" sx={{ flex: "1" }}>
                     {title}
                 </Typography>
@@ -26,7 +28,7 @@ export function LabsModal({ icon, title, onClose, children }: Props) {
                     <FontAwesomeIcon icon={faTimes} />
                 </IconButton>
             </Stack>
-            <Box mt={1}>{children}</Box>
+            <Box>{children}</Box>
         </ModalDialog>
     );
 }
