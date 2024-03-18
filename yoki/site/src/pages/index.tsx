@@ -60,7 +60,7 @@ const Home: NextPage<LandingPageSessionProps> = ({ user }) => {
                     <LandingStat amount="20,000,000+" subtitle="Scanned" what="messages" />
                     <LandingStat amount="16,000+" subtitle="Actioned" what="cases" />
                     <LandingStat amount="3,600+" subtitle="Serving" what="servers" />
-                    <LandingStat amount="90,000+" subtitle="Watching over" what="members" />
+                    <LandingStat amount="170,000+" subtitle="Watching over" what="members" />
                     <LandingStat amount="6,000+" subtitle="Stopped" what="bad actors" />
                     <LandingStat amount="9,000+" subtitle="Served" what="captchas" />
                 </div>
