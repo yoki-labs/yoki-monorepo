@@ -14,7 +14,7 @@ export default function OverviewPage(props: DashboardPageProps) {
             {/* Maybe do vertical icon cards with 4 tiers in premium tab? */}
             <DashboardProfileCard serverConfig={serverConfig} highestRoleType={highestRoleType} />
             <section>
-                <Typography level="h4" gutterBottom>
+                <Typography level="title-lg" gutterBottom>
                     Modules
                 </Typography>
                 <Box className="grid grid-cols-1 lg:grid-cols-2 xlg:grid-cols-3 gap-5">

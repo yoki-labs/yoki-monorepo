@@ -68,7 +68,7 @@ export default class InvitesPage extends React.Component<DashboardPageProps> {
                     />
                 </Box>
                 <Stack direction="column" gap={3}>
-                    <Typography level="h4">Invite whitelisted servers</Typography>
+                    <Typography level="title-lg">Invite whitelisted servers</Typography>
                     <DataTable<SanitizedInviteFilter, number>
                         itemType="whitelisted server"
                         timezone={serverConfig.timezone}

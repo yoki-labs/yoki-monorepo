@@ -116,7 +116,7 @@ export default class ModmailPage extends React.Component<DashboardPageProps, Sta
                 </Box>
                 {highestRoleType === RoleType.ADMIN && (
                     <Box>
-                        <Typography level="h4" gutterBottom>
+                        <Typography level="title-lg" gutterBottom>
                             Modmail configuration
                         </Typography>
                         <Card>
@@ -169,7 +169,7 @@ export default class ModmailPage extends React.Component<DashboardPageProps, Sta
                     </Box>
                 )}
                 <Stack direction="column" gap={3}>
-                    <Typography level="h4">Modmail tickets</Typography>
+                    <Typography level="title-lg">Modmail tickets</Typography>
                     <DataTable<SanitizedModmailThread, string>
                         itemType="tickets"
                         timezone={serverConfig.timezone}

@@ -69,7 +69,7 @@ export default class PhrasesPage extends React.Component<DashboardPageProps> {
                     />
                 </Box>
                 <Stack direction="column" gap={3}>
-                    <Typography level="h4">Banned phrases</Typography>
+                    <Typography level="title-lg">Banned phrases</Typography>
                     <DataTable<SanitizedContentFilter, number>
                         itemType="banned phrases"
                         timezone={serverConfig.timezone}

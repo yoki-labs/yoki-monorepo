@@ -69,7 +69,7 @@ const Line = styled(`div`, {
 
 export default function CommandDisplay({ command, isSubCommand }: Props) {
     const requiredRoleBadge = command.requiredRole && (
-        <Tooltip title={`This command requires having a role that is set at ${command.requiredRole} level or higher`}>
+        <Tooltip title={<>This command requires having a role that is set at <Chip variant="soft" color="primary" size="sm">{command.requiredRole[0]}{command.requiredRole.substring(1).toLowerCase()}</Chip> level or higher</>}>
             <Chip variant="soft" color="primary" startDecorator={<FontAwesomeIcon icon={faShieldHalved} />}>
                 {command.requiredRole[0]}
                 {command.requiredRole.substring(1).toLowerCase()}

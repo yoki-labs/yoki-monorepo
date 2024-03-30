@@ -6,6 +6,7 @@ import LabsDropdown from "../../form/LabsDropdown";
 import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHandPointer } from "@fortawesome/free-solid-svg-icons";
+import { guildedAwsCdnDomain, guildedCdnDomain } from "../../../utils/userUtil";
 
 interface Props {
     currentServer?: GuildedServer;
@@ -28,11 +29,12 @@ export class ServerSelector extends React.Component<Props> {
     renderCurrentServer() {
         const { currentServer } = this.props;
 
-        return currentServer && <SelectedServerOption name={currentServer.name} avatar={currentServer.avatar} />;
+        return currentServer && <SelectedServerOption name={currentServer.name} avatar={currentServer.avatar?.replace(guildedAwsCdnDomain, guildedCdnDomain)} />;
     }
 
     render() {
         const { currentServer, servers, defaultValue } = this.props;
+        console.log("props", this.props);
         if (!servers || !Array.isArray(servers)) return null;
         const sortedServers = servers.sort((a, b) => (a.name > b.name ? 1 : a.name < b.name ? -1 : 0));
         
@@ -59,7 +61,7 @@ export class ServerSelector extends React.Component<Props> {
                 </>}
                 {servers.length
                     ? sortedServers.map((server) => <ServerOption id={server.id} name={server.name} subdomain={server.subdomain} avatar={server.profilePicture} />)
-                    : currentServer && <ServerOption id={currentServer.id} name={currentServer.name} subdomain={currentServer.url} avatar={currentServer.avatar} />}
+                    : currentServer && <ServerOption id={currentServer.id} name={currentServer.name} subdomain={currentServer.url} avatar={currentServer.avatar?.replace(guildedAwsCdnDomain, guildedCdnDomain)} />}
             </LabsDropdown>
         );
     }

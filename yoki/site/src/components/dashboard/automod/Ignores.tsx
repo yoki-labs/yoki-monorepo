@@ -101,7 +101,7 @@ export default class IgnoresPage extends React.Component<DashboardPageProps, Sta
         return (
             <Box>
                 <Box sx={{ mb: 3 }}>
-                    <Typography level="h4" gutterBottom>
+                    <Typography level="title-lg" gutterBottom>
                         Auto-moderation ignoring
                     </Typography>
                     <Typography level="body-sm">

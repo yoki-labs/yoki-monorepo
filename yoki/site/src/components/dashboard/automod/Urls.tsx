@@ -95,7 +95,7 @@ export default class UrlsPage extends React.Component<DashboardPageProps> {
                 </Box>
                 {highestRoleType === RoleType.ADMIN && (
                     <Box>
-                        <Typography level="h4" gutterBottom>
+                        <Typography level="title-lg" gutterBottom>
                             URL filter list configuration
                         </Typography>
                         <Card>
@@ -134,7 +134,7 @@ export default class UrlsPage extends React.Component<DashboardPageProps> {
                                                     name: "Link infraction points",
                                                     description: "The amount of infraction points to give when someone posts a link that is not in the filter whitelist.",
                                                     defaultValue: serverConfig.linkInfractionPoints,
-                                                    min: 1,
+                                                    min: -100,
                                                     max: 100,
                                                 },
                                             ],

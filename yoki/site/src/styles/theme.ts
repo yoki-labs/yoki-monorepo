@@ -220,6 +220,7 @@ export const theme = extendTheme({
                 root: ({ theme }) => ({
                     backgroundColor: theme.vars.palette.background.tooltip,
                     padding: "8px 12px",
+                    fontWeight: 500,
                 }),
                 arrow: ({ theme }) => ({
                     "::before": {

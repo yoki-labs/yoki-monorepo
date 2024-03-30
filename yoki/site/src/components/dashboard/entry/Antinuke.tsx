@@ -98,7 +98,7 @@ export default class AntinukePage extends React.Component<DashboardPageProps, St
                     />
                 </Box>
                 <Box>
-                    <Typography level="h4" gutterBottom>
+                    <Typography level="title-lg" gutterBottom>
                         Anti-nuke configuration
                     </Typography>
                     <PagePlaceholder icon={PagePlaceholderIcon.Wip} title="Work in progress">

@@ -12,6 +12,7 @@ export * from "./typings";
 
 // Utils
 export { ChannelRolePermission, ChannelUserPermission, Permission } from "./guilded-types";
+export { chatChannelTypes } from "./utils/values";
 export { summarizeItems, summarizeRolesOrUsers } from "./utils/content";
 export {
     bold,

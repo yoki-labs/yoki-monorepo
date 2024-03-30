@@ -1,9 +1,10 @@
-import { Alert, Box, Link, Stack, Typography } from "@mui/joy";
+import { Alert, Box, Button, Link, Stack, Typography } from "@mui/joy";
 import { GuildedServer } from "../../../lib/@types/guilded";
 import ServerDisplay from "../ServerDisplay";
 import PagePlaceholder, { PagePlaceholderIcon } from "../../PagePlaceholder";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
+import ServerNameDisplay from "../ServerNameDisplay";
 
 type Props = {
     currentServer: GuildedServer;
@@ -16,7 +17,8 @@ export default function NotPermittedPage({ currentServer }: Props) {
                 <PagePlaceholder icon={PagePlaceholderIcon.NoPermission} title="Not permitted">
                     Unfortunately, you do not have a role that is configured as staff role or you are not the owner of this server.
                 </PagePlaceholder>
-                <ServerDisplay id={currentServer.id} name={currentServer.name} avatar={currentServer.avatar} banner={currentServer.banner} url={currentServer.url} />
+                <ServerNameDisplay id={currentServer.id} name={currentServer.name} avatar={currentServer.avatar} url={currentServer.url} sx={{ mt: 1, mb: 1.5 }} />
+                <Button variant="outlined" color="primary">Go back</Button>
                 <Alert color="primary" variant="soft" startDecorator={<FontAwesomeIcon icon={faInfoCircle} />} sx={{ mt: 8 }}>
                     <Box sx={{ alignItems: "baseline" }}>
                         <Typography fontSize="md" sx={{ color: "inherit" }}>

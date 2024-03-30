@@ -11,13 +11,14 @@ import NoServerPage from "../../../components/dashboard/pages/NoServerPage";
 import LayoutWrapper from "../../../components/dashboard/layout/LayoutWrapper";
 import { SanitizedServer } from "../../../lib/@types/db";
 import Layout from "../../../components/dashboard/layout/Layout";
-import rest from "../../../guilded";
+import rest, { clientRest } from "../../../guilded";
 import NotPermittedPage from "../../../components/dashboard/pages/NotPermittedPage";
 import { useRouter } from "next/router";
 import { LabsSessionUser } from "../../../utils/routes/pages";
 import { roleTypeLevels } from "../../../utils/routes/permissions";
 import { RoleType } from "@prisma/client";
 import { dashboardPageList } from "../../../components/dashboard/pages";
+import { transformToApiServer } from "../../../utils/routes/transform";
 
 type BaseSessionProps = {
     user: LabsSessionUser;
@@ -47,21 +48,23 @@ export const getServerSideProps: GetServerSideProps = async (ctx): Promise<GetSe
     // /dashboard/:serverId/:page
     const { serverId, page } = ctx.query;
 
-    const referencedServer = (await rest.router.servers.serverRead({ serverId: serverId as string }).catch(() => null))?.server;
+    // const referencedServer = (await rest.router.servers.serverRead({ serverId: serverId as string }).catch(() => null))?.server;
+    const referencedClientServer = (await clientRest.get(`/teams/${serverId}/info`).catch(() => null))?.team as GuildedClientServer | undefined;
 
     // Not in that server; cannot manage it
-    if (!referencedServer) return { redirect: { destination: "/dashboard", permanent: false } };
+    if (!referencedClientServer) return { redirect: { destination: "/dashboard", permanent: false } };
 
     const serverInDb = (
         await prisma.server.findMany({
             where: {
-                serverId: referencedServer.id,
+                serverId: referencedClientServer.id,
             },
         })
     )[0];
 
     const user = { id: session.user.id, name: session.user.name, avatar: session.user.avatar };
 
+    const referencedServer = transformToApiServer(referencedClientServer);
     // No server found
     if (!serverInDb) return { props: { code: "NOT_FOUND", servers, user, currentServer: referencedServer } };
 

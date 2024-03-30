@@ -54,7 +54,7 @@ export default class AutomodPage extends React.Component<DashboardPageProps, Sta
 
         return (
             <>
-                <Typography level="h4" gutterBottom>
+                <Typography level="title-lg" gutterBottom>
                     Auto-moderation
                 </Typography>
                 <Box className="grid grid-cols-1 lg:grid-cols-2 xlg:grid-cols-3 gap-4">

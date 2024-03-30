@@ -1,4 +1,4 @@
-import { inlineCode, listInlineCode } from "@yokilabs/bot";
+import { chatChannelTypes, inlineCode, listInlineCode } from "@yokilabs/bot";
 import { stripIndents } from "common-tags";
 import type { Channel, Message } from "guilded.js";
 
@@ -24,16 +24,22 @@ const Set: Command = {
         { name: "logTypes", display: "log types", optional: true, type: "enumList", values: LogChannelArgs },
     ],
     execute: async (message, args, ctx) => {
-        const { id: channelId } = args.channel as Channel;
+        const channel = args.channel as Channel;
         let logTypes: LogChannelArgEnum[] = args.logTypes === null ? [] : (args.logTypes as LogChannelArgEnum[]);
 
-        const channel = await ctx.channels.fetch(channelId).catch(() => null);
-        if (!channel)
+        // const channel = await ctx.channels.fetch(channelId).catch(() => null);
+        // if (!channel)
+        //     return ctx.messageUtil.replyWithError(
+        //         message,
+        //         "Sorry! That is not a valid channel!",
+        //         "Please ensure that the provided ID belongs to a channel that I can see! I also require `MANAGE CHANNEL` permissions to be able to grab that channel!"
+        //     );
+        if (!(channel.type & chatChannelTypes))
             return ctx.messageUtil.replyWithError(
                 message,
-                "Sorry! That is not a valid channel!",
-                "Please ensure that the provided ID belongs to a channel that I can see! I also require `MANAGE CHANNEL` permissions to be able to grab that channel!"
-            );
+                "Not a chat channel",
+                "The provided channel is not a chat channel, voice channenl or streaming channel."
+            );  
 
         // If there are logTypes, uppercase them all, then filter out duplicates. No idea why this had to specifically be two different lines.
         if (logTypes && logTypes.length > 0) {
@@ -46,7 +52,7 @@ const Set: Command = {
         }
 
         try {
-            await ctx.messageUtil.send(channelId, "Checking for permission to send here...").then((x) => ctx.messages.delete(channelId, x.id));
+            await ctx.messageUtil.send(channel.id, "Checking for permission to send here...").then((x) => ctx.messages.delete(channel.id, x.id));
         } catch (e) {
             return ctx.messageUtil.replyWithError(
                 message,
@@ -55,17 +61,17 @@ const Set: Command = {
             );
         }
 
-        const [successfulTypes, failedTypes] = await subscribeToLogs(ctx, message, channelId, logTypes as LogChannelType[]);
+        const [successfulTypes, failedTypes] = await subscribeToLogs(ctx, message, channel.id, logTypes as LogChannelType[]);
 
         // Reply to the command, with the successful and failed types.
         return ctx.messageUtil[successfulTypes.length > 0 ? "replyWithSuccess" : "replyWithError"](
             message,
             successfulTypes.length > 0 ? `Subscriptions added` : `No subscriptions added`,
             stripIndents`
-                ${successfulTypes.length > 0 ? `Successfully subscribed channel ${inlineCode(channelId)} to the following events: ${listInlineCode(successfulTypes)}` : ""}
+                ${successfulTypes.length > 0 ? `Successfully subscribed channel ${inlineCode(channel.id)} to the following events: ${listInlineCode(successfulTypes)}` : ""}
                 ${
                     failedTypes.length > 0
-                        ? `Failed to subscribe channel ${inlineCode(channelId)} to the following events: ${listInlineCode(
+                        ? `Failed to subscribe channel ${inlineCode(channel.id)} to the following events: ${listInlineCode(
                               failedTypes.map((x) => x[0])
                           )} due to the following reason(s) ${listInlineCode(failedTypes.map((x) => x[1]))}`
                         : ""

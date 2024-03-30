@@ -126,7 +126,7 @@ export default class RolesPage extends React.Component<DashboardPageProps, State
         return (
             <Box>
                 <Box sx={{ mb: 3 }}>
-                    <Typography level="h4" gutterBottom>
+                    <Typography level="h3" gutterBottom>
                         Roles
                     </Typography>
                     <Typography level="body-sm">
@@ -138,7 +138,7 @@ export default class RolesPage extends React.Component<DashboardPageProps, State
                         <BaseRolesForm serverRoleOptions={roleOptions} serverConfig={serverConfig} />
                     </CardContent>
                 </Card>
-                <Typography level="title-md" gutterBottom>
+                <Typography level="title-lg" gutterBottom>
                     Staff roles
                 </Typography>
                 <Card sx={{ mb: 2 }}>

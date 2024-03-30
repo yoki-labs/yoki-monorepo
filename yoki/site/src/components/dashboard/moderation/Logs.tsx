@@ -94,7 +94,7 @@ export default class LogsPage extends React.Component<DashboardPageProps, State>
         return (
             <Box>
                 <Box sx={{ mb: 3 }}>
-                    <Typography level="h4" gutterBottom>
+                    <Typography level="h3" gutterBottom>
                         Log channels
                     </Typography>
                     <Typography level="body-sm">

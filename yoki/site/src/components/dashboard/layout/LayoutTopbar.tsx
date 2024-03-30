@@ -6,7 +6,7 @@ import Branding from "../../Branding";
 import { LabsSessionUser } from "../../../utils/routes/pages";
 import { ServerSelector } from "./ServerSelector";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSlash } from "@fortawesome/free-solid-svg-icons";
+import { faAngleRight, faSlash } from "@fortawesome/free-solid-svg-icons";
 
 type Props = {
     servers: GuildedClientServer[];
@@ -26,7 +26,8 @@ export function LayoutTopbar({ breadcrumbs, children, onServerChange, currentSer
                 className="grow"
                 separator={
                     <Typography level="title-sm" textColor="text.secondary" className="hidden md:block" fontWeight="bolder">
-                        {"/"}
+                        {/* {"/"} */}
+                        <FontAwesomeIcon icon={faAngleRight} />
                     </Typography>
                 }
             >

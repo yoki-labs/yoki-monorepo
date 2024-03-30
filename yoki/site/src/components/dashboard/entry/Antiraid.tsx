@@ -96,7 +96,7 @@ export default class AntiraidPage extends React.Component<DashboardPageProps, St
                     />
                 </Box>
                 <Box>
-                    <Typography level="h4" gutterBottom>
+                    <Typography level="title-lg" gutterBottom>
                         Anti-raid configuration
                     </Typography>
                     <Card>

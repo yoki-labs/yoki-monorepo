@@ -114,7 +114,7 @@ export default class AppealsPage extends React.Component<DashboardPageProps, Sta
                     />
                 </Box>
                 <Box>
-                    <Typography level="h4" gutterBottom>
+                    <Typography level="title-lg" gutterBottom>
                         Information
                     </Typography>
                     <Card>
@@ -129,7 +129,7 @@ export default class AppealsPage extends React.Component<DashboardPageProps, Sta
                 </Box>
                 {highestRoleType === RoleType.ADMIN && (
                     <Box>
-                        <Typography level="h4" gutterBottom>
+                        <Typography level="title-lg" gutterBottom>
                             Configuration
                         </Typography>
                         <Card>
@@ -158,7 +158,7 @@ export default class AppealsPage extends React.Component<DashboardPageProps, Sta
                     </Box>
                 )}
                 <Stack direction="column" gap={3}>
-                    <Typography level="h4">Appeals</Typography>
+                    <Typography level="title-lg">Appeals</Typography>
                     <DataTable<SanitizedAppeal, number>
                         itemType="ban appeals"
                         timezone={serverConfig.timezone}

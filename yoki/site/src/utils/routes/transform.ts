@@ -1,4 +1,4 @@
-import { GuildedSanitizedUserDetail, GuildedUserDetail } from "../../lib/@types/guilded";
+import { GuildedClientServer, GuildedSanitizedUserDetail, GuildedServer, GuildedUserDetail } from "../../lib/@types/guilded";
 
 export const sanitizeUserDetails = (userDetails: Record<string, GuildedUserDetail>): Record<string, GuildedSanitizedUserDetail> => {
     const newDetails: Record<string, GuildedSanitizedUserDetail> = {};
@@ -18,3 +18,6 @@ const sanitizeSingleUserDetail = ({ id, name, nickname, subdomain, profilePictur
     aboutInfo,
     type,
 });
+
+export const transformToApiServer = ({ id, name, subdomain, profilePicture, homeBannerImageMd }: GuildedClientServer): GuildedServer =>
+    ({ id, name, url: subdomain, avatar: profilePicture ?? undefined, banner: homeBannerImageMd ?? undefined });

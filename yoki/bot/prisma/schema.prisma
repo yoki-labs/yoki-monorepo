@@ -32,6 +32,8 @@ model Server {
     linkSeverity         Severity @default(WARN)
     linkInfractionPoints Int      @default(5)
     spamInfractionPoints Int      @default(5)
+    nsfwInfractionPoints Int      @default(10)
+    nsfwSeverity         Severity @default(WARN)
 
     muteInfractionThreshold Int? @default(15)
     muteInfractionDuration  Int? @default(720)
@@ -39,6 +41,8 @@ model Server {
     kickInfractionThreshold    Int? @default(30)
     banInfractionThreshold     Int? @default(65)
     softbanInfractionThreshold Int? @default(45)
+
+    actionNotificationChannel  String? @db.VarChar(48)
 
     // --- Anti-raid and captcha
     antiRaidEnabled          Boolean       @default(false)

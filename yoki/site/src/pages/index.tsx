@@ -1,5 +1,5 @@
 import { faGuilded } from "@fortawesome/free-brands-svg-icons";
-import { faCheckDouble, faClipboardCheck, faEnvelope, faExclamation, faHashtag, faLayerGroup, faMessage, faRobot, faShieldHalved, faUsers, faUserSecret } from "@fortawesome/free-solid-svg-icons";
+import { faCheckDouble, faClipboardCheck, faEnvelope, faExclamation, faHashtag, faLayerGroup, faMessage, faPrayingHands, faRobot, faShieldHalved, faUsers, faUserSecret } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Box, Button, Chip, Link, List, Stack, Typography } from "@mui/joy";
 import { Colors } from "@yokilabs/utils";
@@ -20,6 +20,7 @@ import LandingPage from "../components/landing/LandingPage";
 import { getLandingPagePageProps, LandingPageSessionProps } from "../utils/routes/pages";
 import { HomePageBackground } from "../components/landing/home/HomePageBackground";
 import { CurvyMask } from "../components/landing/masked";
+import CodeWrapper from "../components/CodeWrapper";
 
 export const getServerSideProps: GetServerSideProps<LandingPageSessionProps> = getLandingPagePageProps;
 
@@ -196,12 +197,12 @@ const Home: NextPage<LandingPageSessionProps> = ({ user }) => {
                             <GuildedContentWrapper>
                                 <GuildedChatMasked>
                                     <GuildedMessage name="Yoki" bot>
-                                        <GuildedEmbed color={`#${Colors.yellow.toString(16)}`} footer={<Typography textColor="text.tertiary">Aug 27, 2023</Typography>}>
-                                            <GuildedEmbedField title="User joined">
-                                                <Typography textColor="text.primary">
-                                                    <GuildedMention>User</GuildedMention> has joined the server.
-                                                </Typography>
-                                            </GuildedEmbedField>
+                                        <GuildedEmbed author={`Alex \u2022 User joined`} color={`#${Colors.yellow.toString(16)}`} footer={<Typography textColor="text.tertiary">Aug 27, 2023</Typography>}>
+                                            {/* <GuildedEmbedField title="User joined">
+                                            </GuildedEmbedField> */}
+                                            <Typography textColor="text.primary">
+                                                <GuildedMention>Alex</GuildedMention> has joined the server.
+                                            </Typography>
                                             <GuildedEmbedField title="Additional info">
                                                 <Typography textColor="text.primary">
                                                     <Typography component="span" fontWeight="bolder">
@@ -217,12 +218,12 @@ const Home: NextPage<LandingPageSessionProps> = ({ user }) => {
                                                 </Typography>
                                             </GuildedEmbedField>
                                         </GuildedEmbed>
-                                        <GuildedEmbed color={`#${Colors.red.toString(16)}`} footer={<Typography textColor="text.tertiary">Aug 27, 2023</Typography>}>
-                                            <GuildedEmbedField title="User warned">
-                                                <Typography textColor="text.primary">
-                                                    <GuildedMention>User</GuildedMention> has been warned by <GuildedMention>Moderator</GuildedMention>.
-                                                </Typography>
-                                            </GuildedEmbedField>
+                                        <GuildedEmbed author={`Sean \u2022 User warned`} color={`#${Colors.red.toString(16)}`} footer={<Typography textColor="text.tertiary">Aug 27, 2023</Typography>}>
+                                            {/* <GuildedEmbedField title="User warned">
+                                            </GuildedEmbedField> */}
+                                            <Typography textColor="text.primary">
+                                                <GuildedMention>Sean</GuildedMention> has been warned by <GuildedMention>Tyrone</GuildedMention>.
+                                            </Typography>
                                             <GuildedEmbedField title="Reason">
                                                 <Box sx={{ backgroundColor: "black", py: 2, px: 2, borderRadius: 4 }}>
                                                     <Typography>Being disrespectful to others.</Typography>
@@ -240,6 +241,44 @@ const Home: NextPage<LandingPageSessionProps> = ({ user }) => {
                                                         Case ID:
                                                     </Typography>{" "}
                                                     R40Mp0WdAnn6Le
+                                                </Typography>
+                                            </GuildedEmbedField>
+                                        </GuildedEmbed>
+                                    </GuildedMessage>
+                                </GuildedChatMasked>
+                            </GuildedContentWrapper>
+                        </FeaturePreview>
+                        <FeaturePreview
+                            title="Allowing users to appeal their bans."
+                            subtitle="appeals"
+                            icon={faPrayingHands}
+                            description="Allow banned people to appeal their bans in your server via Yoki if enabled. All the difficult work will be done by Yoki and only requires you to either accept or decline appeals."
+                        >
+                            <GuildedContentWrapper>
+                                <GuildedChatMasked>
+                                    <GuildedMessage name="Yoki" bot>
+                                        <GuildedEmbed author={`Josh \u2022 New appeal`} footer={<Typography textColor="text.tertiary">Aug 27, 2023</Typography>}>
+                                            {/* <GuildedEmbedField title={`New appeal`}>
+                                            </GuildedEmbedField> */}
+                                            <Typography textColor="text.primary">
+                                                <GuildedMention>Josh</GuildedMention> has made an appeal for an unban.
+                                            </Typography>
+                                            <GuildedEmbedField title="Appeal reason">
+                                                <CodeWrapper>
+                                                    <Typography textColor="text.secondary">
+                                                        I have made a severe and continous lapse in my judgement, and I don't expect to be forgiven, I'm simply here to apologize...
+                                                    </Typography>
+                                                </CodeWrapper>
+                                                <Typography sx={{ mt: 0.5 }}>
+                                                    <Link>Read more</Link>
+                                                </Typography>
+                                            </GuildedEmbedField>
+                                            <GuildedEmbedField title="Additional info">
+                                                <Typography textColor="text.primary">
+                                                    <Typography component="span" fontWeight="bolder">
+                                                        Last banned:
+                                                    </Typography>{" "}
+                                                    August 27, 2023 at 11:30 AM EST
                                                 </Typography>
                                             </GuildedEmbedField>
                                         </GuildedEmbed>

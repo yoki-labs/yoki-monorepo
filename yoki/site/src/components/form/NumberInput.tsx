@@ -31,13 +31,15 @@ export default class NumberInput extends React.Component<Props, State> {
         const { form, field } = this.props;
         const { max, min } = field;
 
-        if (target.validity.badInput) return this.setState({ isInvalid: true });
+        const currentValue = target.value === "-" ? -0 : Number(target.value);
+
+        if (target.value !== "" && Number.isNaN(currentValue)) return this.setState({ isInvalid: true });
         // Don't allow 0.1, 1.1, etc. if it's not set as floating
-        else if (!field.allowFloating && target.valueAsNumber % 1) return this.setState({ isInvalid: true });
+        else if (!field.allowFloating && currentValue % 1) return this.setState({ isInvalid: true });
         // Just set the valid value instead of erroring out
-        else if (typeof max === "number" && target.valueAsNumber > max) form.setValue(field, max);
-        else if (typeof min === "number" && target.valueAsNumber < min) form.setValue(field, min);
-        else form.setValue(field, target.valueAsNumber);
+        else if (typeof max === "number" && currentValue > max) form.setValue(field, max);
+        else if (typeof min === "number" && currentValue < min) form.setValue(field, min);
+        else form.setValue(field, target.value === "" ? null : currentValue);
 
         this.setState({ isInvalid: false });
     }
@@ -62,11 +64,11 @@ export default class NumberInput extends React.Component<Props, State> {
                 <Input
                     // Identification
                     id={id}
-                    type="number"
+                    // type="number"
                     // Values
                     placeholder={field.placeholder}
-                    defaultValue={field.defaultValue ?? void 0}
-                    value={currentValue}
+                    defaultValue={field.defaultValue ?? undefined}
+                    value={currentValue === -0 ? "-" : currentValue}
                     disabled={field.disabled}
                     slotProps={{
                         input: {

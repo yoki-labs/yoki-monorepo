@@ -36,7 +36,7 @@ export default class PremiumPage extends React.Component<DashboardPageProps> {
                 <Typography level="h3" textColor="warning.300" gutterBottom>
                     Premium
                 </Typography>
-                <Typography level="title-md" textColor="text.secondary" sx={{ mb: 2 }}>
+                <Typography level="body-sm" textColor="text.secondary" sx={{ mb: 2 }}>
                     Premium allows you to receive additional perks and benefits in this server. Subscribe on Yoki Labs Guilded server and enjoy premium features.
                 </Typography>
                 <NextLink href="/subscribe">
