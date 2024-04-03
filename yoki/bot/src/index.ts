@@ -24,7 +24,7 @@ client.ws.options.replayMissedEvents = false;
 // And any unhandled objects are simply ignored thanks to optional chaining
 client.ws.emitter.on("gatewayEvent", async (event, data) => {
     const { serverId } = data.d as { serverId?: string | null };
-    if (!serverId || ["XjBWymwR", "DlZMvw1R", "ME2kg2ej"].includes(serverId)) return;
+    if (!serverId || ["XjBWymwR", "DlZMvw1R"].includes(serverId)) return;
 
     if (!client.eventHandler[event]) return;
     const serverFromDb = await client.dbUtil.getServer(serverId).catch((err) => unhandledPromiseRejection(err as Error, client));
@@ -67,7 +67,7 @@ void (async (): Promise<void> => {
         client.on(event.name, async (...args: Parameters<ClientEvents[keyof ClientEvents]>) => {
             try {
                 // @ts-ignore this is valid
-                if (["XjBWymwR", "DlZMvw1R", "ME2kg2ej"].includes(args[0]?.serverId)) return;
+                if (["XjBWymwR", "DlZMvw1R"].includes(args[0]?.serverId)) return;
                 await event.execute([...args, client]);
             } catch (err) {
                 await errorLoggerS3(client, event.name, err as Error, args);
