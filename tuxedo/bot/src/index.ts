@@ -27,7 +27,7 @@ client.ws.emitter.on("gatewayEvent", async (event, data) => {
 
     const serverFromDb = await client.dbUtil
         .getServer(serverId)
-        .catch((err) => void client.errorHandler.send("Error creating/fetching server for gateway event.", [errorEmbed(err, { server: serverId, event })]));
+        .catch((err) => void client.errorHandler.send("Error creating/fetching server for gateway event.", [errorEmbed(err as Error, { server: serverId, event })]));
 
     if (!serverFromDb || serverFromDb?.blacklisted || !serverFromDb.flags.includes("EARLY_ACCESS")) return;
 
