@@ -249,10 +249,10 @@ const Home: NextPage<LandingPageSessionProps> = ({ user }) => {
                             </GuildedContentWrapper>
                         </FeaturePreview>
                         <FeaturePreview
-                            title="Allowing users to appeal their bans."
+                            title="Enabling second chances for difficult members."
                             subtitle="appeals"
                             icon={faPrayingHands}
-                            description="Allow banned people to appeal their bans in your server via Yoki if enabled. All the difficult work will be done by Yoki and only requires you to either accept or decline appeals."
+                            description="Banned users can submit appeals through Yoki, without needing any complicated forms. Yoki handles the complex stuff and allows you to just accept or reject appeals."
                         >
                             <GuildedContentWrapper>
                                 <GuildedChatMasked>
