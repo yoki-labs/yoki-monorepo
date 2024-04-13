@@ -5,7 +5,7 @@ import { UserType } from "guilded.js";
 import type YokiClient from "../Client";
 import type { Server } from "../typings";
 import { errorLoggerS3 } from "../utils/s3";
-import type { FilteredContent } from "./content-filter";
+import { FilteredContent } from "./content-filter";
 
 export default abstract class BaseFilterUtil<TFilterType = null> extends Util<YokiClient> {
     // An object mapping the Action type -> Action punishment
@@ -85,7 +85,7 @@ export default abstract class BaseFilterUtil<TFilterType = null> extends Util<Yo
             server
         );
 
-        return this.severityAction[actionType](userId, server, channelId, filteredContent, filterType);
+        return this.severityAction[actionType](userId, server, server.actionNotificationChannel ?? (filteredContent < FilteredContent.ChannelContent ? channelId : null), filteredContent, filterType);
     }
 
     abstract onUserWarn(userId: string, server: Server, channelId: string | null, filteredContent: FilteredContent, filterType: TFilterType | null): Promise<unknown> | unknown;

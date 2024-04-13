@@ -218,6 +218,7 @@ model ModmailThread {
     userFacingChannelId String           @db.VarChar(255)
     modFacingChannelId  String           @db.VarChar(255)
     openerId            String           @db.VarChar(255)
+    addedUsers          String[]         
     handlingModerators  String[]
     closed              Boolean          @default(false)
     messages            ModmailMessage[]

@@ -64,35 +64,28 @@ export class ImageFilterUtil extends BaseFilterUtil {
         return req.hentai >= (serverHentaiConfidence ?? this.defaultHentaiConfidence) || req.porn >= (serverPornConfidence ?? this.defaultPornConfidence);
     }
 
-    override onUserWarn(userId: string, _serv: Server, channelId: string | null, filteredContent: FilteredContent) {
+    override onUserWarn(userId: string, _serv: Server, channelId: string | null) {
         // When channels and messages get filtered
-        if (filteredContent < FilteredContent.ChannelContent)
-            return this.client.messageUtil.sendWarningBlock(
-                channelId!,
-                `Inappropriate image`,
-                `<@${userId}>, it seems that one of your images may be inappropriate. This is a warning for you to not use it again, otherwise moderation actions may be taken against you.`,
-                undefined,
-                { isPrivate: true }
-            );
-        // TODO: DM user
-        return 0;
+        return this.client.messageUtil.sendWarningBlock(
+            channelId!,
+            `Inappropriate image`,
+            `<@${userId}>, it seems that one of your images may be inappropriate. This is a warning for you to not use it again, otherwise moderation actions may be taken against you.`,
+            undefined,
+            { isPrivate: true }
+        );
     }
 
-    override onUserMute(userId: string, _serv: Server, channelId: string | null, filteredContent: FilteredContent) {
-        // When channels and messages get filtered
-        if (filteredContent < FilteredContent.ChannelContent)
-            return this.client.messageUtil.sendEmbed(
-                channelId!,
-                {
-                    title: `:mute: You have been muted`,
-                    description: `<@${userId}>, you have been muted for posting multiple images that may be inappropriate. Please reach out to staff if this was in error.`,
-                    color: Colors.red,
-                },
-                {
-                    isPrivate: true,
-                }
-            );
-        // TODO: DM user
-        return 0;
+    override onUserMute(userId: string, _serv: Server, channelId: string | null) {
+        return this.client.messageUtil.sendEmbed(
+            channelId!,
+            {
+                title: `:mute: You have been muted`,
+                description: `<@${userId}>, you have been muted for posting multiple images that may be inappropriate. Please reach out to staff if this was in error.`,
+                color: Colors.red,
+            },
+            {
+                isPrivate: true,
+            }
+        );
     }
 }

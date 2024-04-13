@@ -159,35 +159,27 @@ export class ContentFilterUtil extends BaseFilterUtil {
             : phrase.startsWith(contentFilter.content);
     }
 
-    override onUserWarn(userId: string, _serv: Server, channelId: string | null, filteredContent: FilteredContent) {
-        // When channels and messages get filtered
-        if (filteredContent < FilteredContent.ChannelContent)
-            return this.client.messageUtil.sendWarningBlock(
-                channelId!,
-                `Cannot use that word`,
-                `<@${userId}>, you have used a filtered word. This is a warning for you to not use it again, otherwise moderation actions may be taken against you.`,
-                undefined,
-                { isPrivate: true }
-            );
-        // TODO: DM user
-        return 0;
+    override onUserWarn(userId: string, _serv: Server, channelId: string | null) {
+        return this.client.messageUtil.sendWarningBlock(
+            channelId!,
+            `Cannot use that word`,
+            `<@${userId}>, you have used a filtered word. This is a warning for you to not use it again, otherwise moderation actions may be taken against you.`,
+            undefined,
+            { isPrivate: true }
+        );
     }
 
-    override onUserMute(userId: string, _serv: Server, channelId: string | null, filteredContent: FilteredContent) {
-        // When channels and messages get filtered
-        if (filteredContent < FilteredContent.ChannelContent)
-            return this.client.messageUtil.sendEmbed(
-                channelId!,
-                {
-                    title: `:mute: You have been muted`,
-                    description: `<@${userId}>, you have been muted for using a filtered word excessively. Please reach out to staff if this was in error.`,
-                    color: Colors.red,
-                },
-                {
-                    isPrivate: true,
-                }
-            );
-        // TODO: DM user
-        return 0;
+    override onUserMute(userId: string, _serv: Server, channelId: string | null) {
+        return this.client.messageUtil.sendEmbed(
+            channelId!,
+            {
+                title: `:mute: You have been muted`,
+                description: `<@${userId}>, you have been muted for using a filtered word excessively. Please reach out to staff if this was in error.`,
+                color: Colors.red,
+            },
+            {
+                isPrivate: true,
+            }
+        );
     }
 }

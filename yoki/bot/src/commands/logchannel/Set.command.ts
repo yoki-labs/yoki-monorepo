@@ -52,7 +52,11 @@ const Set: Command = {
         }
 
         try {
-            await ctx.messageUtil.send(channel.id, "Checking for permission to send here...").then((x) => ctx.messages.delete(channel.id, x.id));
+            await ctx.messageUtil.send(channel.id, "Checking for permission to send here...")
+                .then((x) =>
+                    ctx.messages.delete(channel.id, x.id)
+                        .catch(() => null)
+                );
         } catch (e) {
             return ctx.messageUtil.replyWithError(
                 message,

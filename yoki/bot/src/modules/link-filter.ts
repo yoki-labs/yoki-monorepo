@@ -233,33 +233,25 @@ export class LinkFilterUtil extends BaseFilterUtil {
         }
     }
 
-    override onUserWarn(userId: string, _serv: Server, channelId: string | null, filteredContent: FilteredContent) {
-        // When channels and messages get filtered
-        if (filteredContent < FilteredContent.ChannelContent)
-            return this.client.messageUtil.sendWarningBlock(
-                channelId!,
-                `Cannot post that link`,
-                `<@${userId}>, you have posted a blacklisted/non-whitelisted domain or invite in this server. This is a warning for you to not do it again, otherwise moderation actions may be taken against you.`,
-                undefined,
-                { isPrivate: true }
-            );
-        // TODO: DM user
-        return 0;
+    override onUserWarn(userId: string, _serv: Server, channelId: string | null) {
+        return this.client.messageUtil.sendWarningBlock(
+            channelId!,
+            `Cannot post that link`,
+            `<@${userId}>, you have posted a blacklisted/non-whitelisted domain or invite in this server. This is a warning for you to not do it again, otherwise moderation actions may be taken against you.`,
+            undefined,
+            { isPrivate: true }
+        );
     }
 
-    override onUserMute(userId: string, _serv: Server, channelId: string | null, filteredContent: FilteredContent) {
-        // When channels and messages get filtered
-        if (filteredContent < FilteredContent.ChannelContent)
-            return this.client.messageUtil.sendEmbed(
-                channelId!,
-                {
-                    title: `:mute: You have been muted`,
-                    description: `<@${userId}>, you have been muted for posting a blacklisted/non-whitelisted domain or invite in this server.`,
-                    color: Colors.red,
-                },
-                { isPrivate: true }
-            );
-        // TODO: DM user
-        return 0;
+    override onUserMute(userId: string, _serv: Server, channelId: string | null) {
+        return this.client.messageUtil.sendEmbed(
+            channelId!,
+            {
+                title: `:mute: You have been muted`,
+                description: `<@${userId}>, you have been muted for posting a blacklisted/non-whitelisted domain or invite in this server.`,
+                color: Colors.red,
+            },
+            { isPrivate: true }
+        );
     }
 }

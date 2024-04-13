@@ -14,6 +14,10 @@ export class DatabaseUtil extends Util<YokiClient> {
         return this.client.prisma.contentFilter.create({ data });
     }
 
+    updateWordInFilter({ serverId, content, matching, severity, infractionPoints }: Omit<ContentFilter, "id" | "createdAt" | "creatorId">) {
+        return this.client.prisma.contentFilter.updateMany({ where: { serverId, content, matching }, data: { severity, infractionPoints } });
+    }
+
     removeWordFromFilter(serverId: string, content: string, matching: FilterMatching) {
         return this.client.prisma.contentFilter.deleteMany({ where: { serverId, content, matching } });
     }
