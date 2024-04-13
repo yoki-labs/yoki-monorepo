@@ -7,6 +7,7 @@ import { URL_REGEX, UrlRegexGroups } from "../utils/matching";
 import { urlPresets } from "../utils/presets";
 import BaseFilterUtil from "./base-filter";
 import { FilteredContent } from "./content-filter";
+import { Member } from "guilded.js";
 
 export class LinkFilterUtil extends BaseFilterUtil {
     readonly vanityRegex = /^[A-Za-z0-9\-]+$/;
@@ -36,7 +37,7 @@ export class LinkFilterUtil extends BaseFilterUtil {
 
     async checkLinks({
         server,
-        userId,
+        member,
         channelId,
         content,
         filteredContent,
@@ -45,7 +46,7 @@ export class LinkFilterUtil extends BaseFilterUtil {
         resultingAction,
     }: {
         server: Server;
-        userId: string;
+        member: Member;
         channelId: string;
         content: string;
         // The same, might be able to merge
@@ -87,7 +88,7 @@ export class LinkFilterUtil extends BaseFilterUtil {
 
         void this.client.amp.logEvent({
             event_type: "MESSAGE_LINKS_SCAN",
-            user_id: userId,
+            user_id: member.id,
             event_properties: { serverId: server.serverId },
         });
 
@@ -114,9 +115,9 @@ export class LinkFilterUtil extends BaseFilterUtil {
 
             // Not guilded.gg, thing above (OR) is one of the preset items
             if (!dontFilterUrls && domain !== "guilded.gg" && (badUrl || inPreset)) {
-                void this.client.amp.logEvent({ event_type: "MESSAGE_LINK_ACTION", user_id: userId, event_properties: { serverId: server.serverId } });
+                void this.client.amp.logEvent({ event_type: "MESSAGE_LINK_ACTION", user_id: member.id, event_properties: { serverId: server.serverId } });
                 await this.dealWithUser(
-                    userId,
+                    member,
                     server,
                     channelId,
                     filteredContent,
@@ -141,7 +142,7 @@ export class LinkFilterUtil extends BaseFilterUtil {
                 // So we ignore those 2 and only up to 3rd one, yielding ["ID-HERE"]
                 const teamId = breadCrumbs.slice(2, 3)[0];
 
-                await this.checkServerId(server, userId, channelId, filteredContent, teamId, whitelistedInvites!, route, resultingAction);
+                await this.checkServerId(server, member, channelId, filteredContent, teamId, whitelistedInvites!, route, resultingAction);
 
                 return false;
             }
@@ -162,7 +163,7 @@ export class LinkFilterUtil extends BaseFilterUtil {
                 // Try getting it, but if it fails, then it will detect the fail regardless
                 const targetServerId = (json as { metadata?: { inviteInfo?: { team: { id: string } } } }).metadata?.inviteInfo?.team.id;
 
-                await this.checkServerId(server, userId, channelId, filteredContent, targetServerId, whitelistedInvites!, route, resultingAction);
+                await this.checkServerId(server, member, channelId, filteredContent, targetServerId, whitelistedInvites!, route, resultingAction);
 
                 return true;
             }
@@ -183,7 +184,7 @@ export class LinkFilterUtil extends BaseFilterUtil {
                 // Try getting it, but if it fails, then it will detect the fail regardless
                 const targetServerId = (json as { metadata?: { team?: { id: string } } }).metadata?.team?.id;
 
-                await this.checkServerId(server, userId, channelId, filteredContent, targetServerId, whitelistedInvites!, route, resultingAction);
+                await this.checkServerId(server, member, channelId, filteredContent, targetServerId, whitelistedInvites!, route, resultingAction);
 
                 return true;
             }
@@ -218,7 +219,7 @@ export class LinkFilterUtil extends BaseFilterUtil {
 
     async checkServerId(
         server: Server,
-        userId: string,
+        member: Member,
         channelId: string,
         filteredContent: FilteredContent,
         targetServerId: string | undefined,
@@ -228,8 +229,8 @@ export class LinkFilterUtil extends BaseFilterUtil {
     ) {
         // Detect non-whitelisted server IDs and non-this-server ID
         if (targetServerId && targetServerId !== server.serverId && !whitelisted.some((x) => x.targetServerId === targetServerId)) {
-            void this.client.amp.logEvent({ event_type: "MESSAGE_LINK_INVITE_ACTION", user_id: userId, event_properties: { serverId: server.serverId, route } });
-            return this.dealWithUser(userId, server, channelId, filteredContent, resultingAction, "Invite filter tripped", server.linkInfractionPoints, server.linkSeverity, route);
+            void this.client.amp.logEvent({ event_type: "MESSAGE_LINK_INVITE_ACTION", user_id: member.id, event_properties: { serverId: server.serverId, route } });
+            return this.dealWithUser(member, server, channelId, filteredContent, resultingAction, "Invite filter tripped", server.linkInfractionPoints, server.linkSeverity, route);
         }
     }
 

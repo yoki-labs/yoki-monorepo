@@ -7,6 +7,7 @@ import { stripIndents } from "common-tags";
 import type { FilteredContent } from "../modules/content-filter";
 import type { Context, Server } from "../typings";
 import { premiumTierValues } from "./premium";
+import { Member } from "guilded.js";
 
 const numberCharCodeStart = 48;
 const numberCharCodeEnd = 57;
@@ -48,10 +49,9 @@ export async function moderateContent(
     ctx: Context,
     server: Server,
     channelId: string,
+    member: Member,
     contentType: ContentIgnoreType,
     filteredContent: FilteredContent,
-    userId: string,
-    roleIds: number[],
     content: string,
     mentions: Schema<"Mentions"> | undefined,
     resultingAction: () => Promise<unknown>
@@ -71,8 +71,7 @@ export async function moderateContent(
             canFilter &&
                 ctx.contentFilterUtil
                     .scanContent({
-                        userId,
-                        roleIds,
+                        member,
                         text: content,
                         filteredContent,
                         channelId,
@@ -87,7 +86,7 @@ export async function moderateContent(
                     }),
             // Spam prevention
             canFilter &&
-                ctx.spamFilterUtil.checkForSpam(server, userId, channelId, mentions, resultingAction).then((success) => {
+                ctx.spamFilterUtil.checkForSpam(server, member, channelId, mentions, resultingAction).then((success) => {
                     // To be ignored in Promise.any
                     if (!success) throw 0;
                 }),
@@ -96,7 +95,7 @@ export async function moderateContent(
                 ctx.linkFilterUtil
                     .checkLinks({
                         server,
-                        userId,
+                        member,
                         channelId,
                         content,
                         filteredContent,
@@ -109,7 +108,7 @@ export async function moderateContent(
                         if (!success) throw 0;
                     }),
             canScanImages &&
-                ctx.imageFilterUtil.scanMessageMedia(server, channelId, content, userId, resultingAction).then((success) => {
+                ctx.imageFilterUtil.scanMessageMedia(server, channelId, content, member, resultingAction).then((success) => {
                     // To be ignored in Promise.any
                     if (!success) throw 0;
                 }),

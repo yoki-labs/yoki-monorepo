@@ -5,6 +5,7 @@ import { Server, Severity } from "../typings";
 import { IMAGE_REGEX } from "../utils/matching";
 import BaseFilterUtil from "./base-filter";
 import { FilteredContent } from "./content-filter";
+import { Member } from "guilded.js";
 
 interface ImageScanResult {
     hentai: number;
@@ -20,14 +21,14 @@ export class ImageFilterUtil extends BaseFilterUtil {
     readonly defaultPornConfidence: number = 0.65;
     readonly defaultHentaiConfidence: number = 0.5;
 
-    async scanMessageMedia(server: Server, channelId: string, content: string, userId: string, onDelete: () => Promise<unknown>): Promise<boolean> {
+    async scanMessageMedia(server: Server, channelId: string, content: string, member: Member, onDelete: () => Promise<unknown>): Promise<boolean> {
         const matches = [...content.matchAll(IMAGE_REGEX)];
 
         if (!matches.length) return false;
 
         void this.client.amp.logEvent({
             event_type: "MESSAGE_MEDIA_ACTION",
-            user_id: userId,
+            user_id: member.id,
             event_properties: { serverId: server.serverId },
         });
 
@@ -45,7 +46,7 @@ export class ImageFilterUtil extends BaseFilterUtil {
         if (nsfwDetected) {
             try {
                 // Warn/mute/kick/ban
-                await this.dealWithUser(userId, server, channelId, FilteredContent.Message, onDelete, `NSFW image filter tripped`, server.spamInfractionPoints, Severity.WARN);
+                await this.dealWithUser(member, server, channelId, FilteredContent.Message, onDelete, `NSFW image filter tripped`, server.spamInfractionPoints, Severity.WARN);
             } catch (e) {}
         }
 

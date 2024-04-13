@@ -190,6 +190,6 @@ const handleNonCommandMesssage = async (ctx: YokiClient, server: Server, member:
 };
 
 const moderateMessage = (ctx: YokiClient, server: Server, message: Message, member: Member) =>
-    moderateContent(ctx, server, message.channelId, ContentIgnoreType.MESSAGE, FilteredContent.Message, member.id, member.roleIds, message.content, message.mentions, () =>
+    moderateContent(ctx, server, message.channelId, member, ContentIgnoreType.MESSAGE, FilteredContent.Message, message.content, message.mentions, () =>
         ctx.messages.delete(message.channelId, message.id)
     );

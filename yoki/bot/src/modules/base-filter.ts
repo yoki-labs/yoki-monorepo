@@ -1,6 +1,6 @@
 import { Action, Severity } from "@prisma/client";
 import { Util } from "@yokilabs/bot";
-import { UserType } from "guilded.js";
+import { Member, UserType } from "guilded.js";
 
 import type YokiClient from "../Client";
 import type { Server } from "../typings";
@@ -33,7 +33,7 @@ export default abstract class BaseFilterUtil<TFilterType = null> extends Util<Yo
     };
 
     async dealWithUser(
-        userId: string,
+        member: Member,
         server: Server,
         channelId: string | null,
         filteredContent: FilteredContent,
@@ -44,7 +44,7 @@ export default abstract class BaseFilterUtil<TFilterType = null> extends Util<Yo
         triggerContent: string | null = null,
         filterType: TFilterType | null = null
     ) {
-        if (!(await this.shouldFilterUser(server, userId))) return;
+        if (!(await this.shouldFilterUser(server, member))) return;
 
         try {
             // Perform resulting action, for message filtering it's deleting the original message
@@ -52,7 +52,7 @@ export default abstract class BaseFilterUtil<TFilterType = null> extends Util<Yo
         } catch (err: any) {
             if (err instanceof Error)
                 await errorLoggerS3(this.client, "FILTER_RESULTING_ACTION", err, {
-                    userId,
+                    userId: member.id,
                     serverId: server.serverId,
                     channelId,
                     filteredContent,
@@ -65,7 +65,7 @@ export default abstract class BaseFilterUtil<TFilterType = null> extends Util<Yo
                 });
         }
 
-        const memberExceeds = await this.getMemberExceedsThreshold(server, userId, infractionPoints);
+        const memberExceeds = await this.getMemberExceedsThreshold(server, member.id, infractionPoints);
         const actionType = memberExceeds ?? fallbackSeverity;
 
         await this.client.dbUtil.emitAction(
@@ -74,7 +74,7 @@ export default abstract class BaseFilterUtil<TFilterType = null> extends Util<Yo
                 reason: `${reason}.${memberExceeds ? ` ${memberExceeds} threshold exceeded.` : ""}`,
                 serverId: server.serverId,
                 channelId,
-                targetId: userId,
+                targetId: member.id,
                 executorId: this.client.user!.id,
                 infractionPoints,
                 triggerContent,
@@ -85,7 +85,7 @@ export default abstract class BaseFilterUtil<TFilterType = null> extends Util<Yo
             server
         );
 
-        return this.severityAction[actionType](userId, server, server.actionNotificationChannel ?? (filteredContent < FilteredContent.ChannelContent ? channelId : null), filteredContent, filterType);
+        return this.severityAction[actionType](member.id, server, server.actionNotificationChannel ?? (filteredContent < FilteredContent.ChannelContent ? channelId : null), filteredContent, filterType);
     }
 
     abstract onUserWarn(userId: string, server: Server, channelId: string | null, filteredContent: FilteredContent, filterType: TFilterType | null): Promise<unknown> | unknown;
@@ -108,11 +108,7 @@ export default abstract class BaseFilterUtil<TFilterType = null> extends Util<Yo
         return severity;
     }
 
-    async shouldFilterUser(server: Server, userId: string) {
-        // By now, we assume the member has violated a filter or preset
-        // Get the member from cache or API
-        const member = await this.client.members.fetch(server.serverId, userId);
-
+    async shouldFilterUser(server: Server, member: Member) {
         // Don't moderate bots
         if (member.user!.type === UserType.Bot) return false;
 

@@ -4,6 +4,7 @@ import { Colors } from "@yokilabs/utils";
 import { Server, Severity } from "../typings";
 import BaseFilterUtil from "./base-filter";
 import { FilteredContent } from "./content-filter";
+import { Member } from "guilded.js";
 
 interface Counter {
     count: number;
@@ -21,10 +22,10 @@ export class SpamFilterUtil extends BaseFilterUtil<SpamType> {
 
     readonly messageCounter = new Map<string, Counter>();
 
-    async checkForSpam(server: Server, userId: string, channelId: string, mentions: Schema<"Mentions"> | undefined, resultingAction: () => unknown): Promise<boolean> {
-        void this.client.amp.logEvent({ event_type: "SPAM_SCAN", user_id: userId, event_properties: { serverId: server.serverId } });
+    async checkForSpam(server: Server, member: Member, channelId: string, mentions: Schema<"Mentions"> | undefined, resultingAction: () => unknown): Promise<boolean> {
+        void this.client.amp.logEvent({ event_type: "SPAM_SCAN", user_id: member.id, event_properties: { serverId: server.serverId } });
         // Only do it for a specific server
-        const key = `${server.serverId}:${userId}`;
+        const key = `${server.serverId}:${member.id}`;
 
         let instance = this.messageCounter.get(key);
 
@@ -38,11 +39,11 @@ export class SpamFilterUtil extends BaseFilterUtil<SpamType> {
                 })
                 .get(key);
         } else if (++instance.count >= server.spamFrequency) {
-            this.onSpam(server, key, userId, instance);
+            this.onSpam(server, key, member.id, instance);
 
             // Warn/mute/kick/ban
             await this.dealWithUser(
-                userId,
+                member,
                 server,
                 channelId,
                 FilteredContent.Message,
@@ -63,10 +64,10 @@ export class SpamFilterUtil extends BaseFilterUtil<SpamType> {
 
         // Mention spam
         if (instance.mentions >= server.spamMentionFrequency) {
-            this.onSpam(server, key, userId, instance);
+            this.onSpam(server, key, member.id, instance);
 
             await this.dealWithUser(
-                userId,
+                member,
                 server,
                 channelId,
                 FilteredContent.Message,
