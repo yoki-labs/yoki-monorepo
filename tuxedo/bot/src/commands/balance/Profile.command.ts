@@ -69,7 +69,7 @@ const Profile: Command = {
                                   page - 1,
                                   userInfo.items,
                                   PROFILE_ITEMS_PER_PAGE,
-                                  (itemStack) => `\u2022 ${itemStack.amount} ${items.find((item) => item.id === itemStack.itemId)!.name}`
+                                  (itemStack, index) => `${(page - 1) * PROFILE_ITEMS_PER_PAGE + index + 1}. ${items.find((item) => item.id === itemStack.itemId)!.name} (\xD7${itemStack.amount})`
                               )
                             : "User does not have any items.",
                     },

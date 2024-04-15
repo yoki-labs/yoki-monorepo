@@ -161,11 +161,10 @@ export class MinigameUtil extends Util<TuxoClient> {
         );
 
         // Add reactions for easier interactions
-        await Promise.all([
-            messageCreated.addReaction(blackjackReactionHit),
-            messageCreated.addReaction(blackjackReactionStand),
-            startingCard === SpecialBlackjackVariant.Ace ? messageCreated.addReaction(blackjackReactionStandAce1) : null,
-        ]);
+        await this.addMessageReactions(messageCreated, startingCard)
+            .catch(() =>
+                setTimeout(this.addMessageReactions.bind(this, messageCreated, startingCard), 30000)
+            );
 
         // Add to the registry to handle it with reactions
         this.blackJackInstances.push({
@@ -180,6 +179,14 @@ export class MinigameUtil extends Util<TuxoClient> {
             dealerDeck,
             currencyStartingBalance: currency.startingBalance,
         });
+    }
+
+    addMessageReactions(messageCreated: Message, startingCard: number | SpecialBlackjackVariant): Promise<unknown> {
+        return Promise.all([
+            messageCreated.addReaction(blackjackReactionHit),
+            messageCreated.addReaction(blackjackReactionStand),
+            startingCard === SpecialBlackjackVariant.Ace ? messageCreated.addReaction(blackjackReactionStandAce1) : null,
+        ]);
     }
 
     getCard(): number | SpecialBlackjackVariant {
