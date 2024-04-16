@@ -17,20 +17,19 @@ export default {
         // Only if it's a thread; parentId instead of messageId, because it can filter list threads too
         if ((channel.raw as { id: string; parentId: string }).parentId) {
             const member = await ctx.members.fetch(serverId, channel.createdBy).catch(() => null);
+            if (!member) return;
 
-            return moderateContent(
+            return moderateContent({
                 ctx,
                 server,
-                channel.id,
-                ContentIgnoreType.THREAD,
-                FilteredContent.Channel,
-                channel.createdBy,
-                member?.roleIds ?? [],
-                // To moderate forum titles as well
-                channel.name,
-                undefined,
-                () => ctx.channels.update(channel.id, { name: "Filtered thread name" })
-            );
+                channelId: channel.id,
+                member,
+                contentType: ContentIgnoreType.THREAD,
+                filteredContent: FilteredContent.ChannelContent,
+                content: channel.name,
+                mentions: undefined,
+                resultingAction: () => ctx.channels.delete(channel.id),
+            })
         }
 
         // check if there's a log channel channel for message deletions

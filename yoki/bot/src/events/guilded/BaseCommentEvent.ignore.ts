@@ -4,6 +4,7 @@ import { UserType } from "guilded.js";
 import { FilteredContent } from "../../modules/content-filter";
 import type { Context, Server } from "../../typings";
 import { moderateContent } from "../../utils/moderation";
+import { ContentIgnoreType } from "@prisma/client";
 
 export interface CommentPayload {
     id: number;
@@ -29,16 +30,15 @@ export default async (serverId: string, parentId: number, comment: CommentPayloa
     // Scanning
     const deletion = () => ctx.rest.delete(`/channels/${comment.channelId}/${contentType}/${parentId}/comments/${comment.id}`);
 
-    await moderateContent(
+    await moderateContent({
         ctx,
         server,
-        comment.channelId,
-        "COMMENT",
-        FilteredContent.ChannelContent,
-        comment.createdBy,
-        member?.roleIds ?? [],
-        comment.content,
-        comment.mentions,
-        deletion
-    );
+        channelId: comment.channelId,
+        member,
+        contentType: ContentIgnoreType.COMMENT,
+        filteredContent: FilteredContent.ChannelContent,
+        content: comment.content,
+        mentions: comment.mentions,
+        resultingAction: deletion
+    });
 };

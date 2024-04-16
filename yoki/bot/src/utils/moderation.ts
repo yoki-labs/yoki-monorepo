@@ -46,16 +46,27 @@ export function getInfractionsFrom(args: Record<string, any>): [string | null, n
 }
 
 export async function moderateContent(
-    ctx: Context,
-    server: Server,
-    channelId: string,
-    member: Member,
-    contentType: ContentIgnoreType,
-    filteredContent: FilteredContent,
-    content: string,
-    mentions: Schema<"Mentions"> | undefined,
-    resultingAction: () => Promise<unknown>
-) {
+    {
+        ctx,
+        server,
+        channelId,
+        member,
+        contentType,
+        filteredContent,
+        content,
+        mentions,
+        resultingAction,
+    }: {
+        ctx: Context,
+        server: Server,
+        channelId: string,
+        member: Member,
+        contentType: ContentIgnoreType,
+        filteredContent: FilteredContent,
+        content: string,
+        mentions: Schema<"Mentions"> | undefined,
+        resultingAction: () => Promise<unknown>
+    }) {
     const { serverId } = server;
     const channelIgnores = await ctx.dbUtil.getChannelIgnore(serverId, channelId, contentType);
 
@@ -69,49 +80,49 @@ export async function moderateContent(
         [
             // scan the message for any harmful content (filter list, presets)
             canFilter &&
-                ctx.contentFilterUtil
-                    .scanContent({
-                        member,
-                        text: content,
-                        filteredContent,
-                        channelId,
-                        server,
-                        presets: enabledPresets,
-                        // Filter
-                        resultingAction,
-                    })
-                    .then((success) => {
-                        // To be ignored in Promise.any
-                        if (!success) throw 0;
-                    }),
+            ctx.contentFilterUtil
+                .scanContent({
+                    member,
+                    text: content,
+                    filteredContent,
+                    channelId,
+                    server,
+                    presets: enabledPresets,
+                    // Filter
+                    resultingAction,
+                })
+                .then((success) => {
+                    // To be ignored in Promise.any
+                    if (!success) throw 0;
+                }),
             // Spam prevention
             canFilter &&
-                ctx.spamFilterUtil.checkForSpam(server, member, channelId, mentions, resultingAction).then((success) => {
-                    // To be ignored in Promise.any
-                    if (!success) throw 0;
-                }),
+            ctx.spamFilterUtil.checkForSpam(server, member, channelId, mentions, resultingAction).then((success) => {
+                // To be ignored in Promise.any
+                if (!success) throw 0;
+            }),
             // Invites or bad URLs
             canFilterLinks &&
-                ctx.linkFilterUtil
-                    .checkLinks({
-                        server,
-                        member,
-                        channelId,
-                        content,
-                        filteredContent,
-                        contentType,
-                        presets: enabledPresets,
-                        resultingAction,
-                    })
-                    .then((success) => {
-                        // To be ignored in Promise.any
-                        if (!success) throw 0;
-                    }),
-            canScanImages &&
-                ctx.imageFilterUtil.scanMessageMedia(server, channelId, content, member, resultingAction).then((success) => {
+            ctx.linkFilterUtil
+                .checkLinks({
+                    server,
+                    member,
+                    channelId,
+                    content,
+                    filteredContent,
+                    contentType,
+                    presets: enabledPresets,
+                    resultingAction,
+                })
+                .then((success) => {
                     // To be ignored in Promise.any
                     if (!success) throw 0;
                 }),
+            canScanImages &&
+            ctx.imageFilterUtil.scanMessageMedia(server, channelId, content, member, resultingAction).then((success) => {
+                // To be ignored in Promise.any
+                if (!success) throw 0;
+            }),
         ].filter(Boolean)
     )
         .then(() => true)
@@ -119,14 +130,14 @@ export async function moderateContent(
 }
 
 export const describeAction = (data: Action): string[] =>
-    ({
-        [Severity.NOTE]: ["Moderation note added", "had a moderation note placed on them"],
-        [Severity.WARN]: ["User warned", "has been warned"],
-        [Severity.MUTE]: ["User muted", "has been muted"],
-        [Severity.SOFTBAN]: ["User flushed", "has been softbanned and their content has been cleared"],
-        [Severity.BAN]: ["User banned", "has been banned"],
-        [Severity.KICK]: ["User kicked", "has been kicked"],
-    }[data.type]);
+({
+    [Severity.NOTE]: ["Moderation note added", "had a moderation note placed on them"],
+    [Severity.WARN]: ["User warned", "has been warned"],
+    [Severity.MUTE]: ["User muted", "has been muted"],
+    [Severity.SOFTBAN]: ["User flushed", "has been softbanned and their content has been cleared"],
+    [Severity.BAN]: ["User banned", "has been banned"],
+    [Severity.KICK]: ["User kicked", "has been kicked"],
+}[data.type]);
 
 export function getActionInfo(data: Action & { isAutomod?: boolean }): [string, string] {
     const [title, description] = describeAction(data);

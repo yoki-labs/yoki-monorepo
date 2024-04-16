@@ -87,8 +87,7 @@ export default {
         const moduleEnabledStatus = isCommandModule && server[`${command.module}Enabled`];
         const commandModuleMessage =
             isCommandModule &&
-            `${moduleEnabledStatus ? "" : "⚠️"} The \`${command.module}\` module is ${
-                moduleEnabledStatus ? "enabled" : `disabled. To enable it, run \`${server.getPrefix()}module enable ${command.module}\``
+            `${moduleEnabledStatus ? "" : "⚠️"} The \`${command.module}\` module is ${moduleEnabledStatus ? "enabled" : `disabled. To enable it, run \`${server.getPrefix()}module enable ${command.module}\``
             }.`;
         const subCommand = await fetchCommandInfo([message, ctx], prefix, command, parsedArgs, commandModuleMessage || undefined);
 
@@ -190,6 +189,14 @@ const handleNonCommandMesssage = async (ctx: YokiClient, server: Server, member:
 };
 
 const moderateMessage = (ctx: YokiClient, server: Server, message: Message, member: Member) =>
-    moderateContent(ctx, server, message.channelId, member, ContentIgnoreType.MESSAGE, FilteredContent.Message, message.content, message.mentions, () =>
-        ctx.messages.delete(message.channelId, message.id)
-    );
+    moderateContent({
+        ctx,
+        server,
+        channelId: message.channelId,
+        member,
+        contentType: ContentIgnoreType.MESSAGE,
+        filteredContent: FilteredContent.Message,
+        content: message.content,
+        mentions: message.mentions,
+        resultingAction: () => ctx.messages.delete(message.channelId, message.id)
+    });

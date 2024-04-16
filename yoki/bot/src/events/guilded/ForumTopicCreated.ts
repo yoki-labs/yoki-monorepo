@@ -3,6 +3,7 @@ import { UserType } from "guilded.js";
 import { FilteredContent } from "../../modules/content-filter";
 import { GEvent, LogChannelType } from "../../typings";
 import { moderateContent } from "../../utils/moderation";
+import { ContentIgnoreType } from "@prisma/client";
 
 export default {
     execute: async ([forumTopic, ctx]) => {
@@ -11,7 +12,7 @@ export default {
         if (!server) return;
 
         const member = await ctx.members.fetch(serverId, forumTopic.createdBy).catch(() => null);
-        if (member?.user?.type === UserType.Bot) return;
+        if (!member || member?.user?.type === UserType.Bot) return;
 
         // check if there's a log channel channel if it needs to be even logged
         const editedTopicLogChannel = await ctx.dbUtil.getLogChannel(serverId, LogChannelType.topic_edits);
@@ -23,19 +24,17 @@ export default {
         // Scanning
         const deletion = () => ctx.rest.delete(`/channels/${forumTopic.channelId}/topics/${forumTopic.id}`);
 
-        await moderateContent(
+        await moderateContent({
             ctx,
             server,
-            forumTopic.channelId,
-            "FORUM_TOPIC",
-            FilteredContent.ChannelContent,
-            forumTopic.createdBy,
-            member?.roleIds ?? [],
-            // To moderate forum titles as well
-            `${forumTopic.title}\n${forumTopic.content ?? ""}`,
-            forumTopic.mentions,
-            deletion
-        );
+            channelId: forumTopic.channelId,
+            member,
+            contentType: ContentIgnoreType.FORUM_TOPIC,
+            filteredContent: FilteredContent.ChannelContent,
+            content: `${forumTopic.title}\n${forumTopic.content ?? ""}`,
+            mentions: forumTopic.mentions,
+            resultingAction: deletion
+        });
     },
     name: "forumTopicCreated",
 } satisfies GEvent<"forumTopicCreated">;

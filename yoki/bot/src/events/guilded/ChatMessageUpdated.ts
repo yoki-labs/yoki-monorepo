@@ -1,4 +1,4 @@
-import { LogChannelType } from "@prisma/client";
+import { ContentIgnoreType, LogChannelType } from "@prisma/client";
 import { inlineCode, quoteMarkdown } from "@yokilabs/bot";
 import { Colors } from "@yokilabs/utils";
 import { GuildedImages } from "@yokilabs/utils/dist/src/images";
@@ -20,7 +20,7 @@ export default {
         void ctx.amp.logEvent({ event_type: "MESSAGE_UPDATE", user_id: message.createdById, event_properties: { serverId: message.serverId! } });
 
         const member = await ctx.members.fetch(message.serverId, message.authorId).catch(() => null);
-        if (member?.user?.type === UserType.Bot) return;
+        if (!member || member?.user?.type === UserType.Bot) return;
 
         // get the old message from the database if we logged it before
         const oldMessage = await ctx.dbUtil.getMessage(message.channelId, message.id);
@@ -31,9 +31,17 @@ export default {
         }
 
         // scan the updated message content
-        await moderateContent(ctx, server, message.channelId, "MESSAGE", FilteredContent.Message, message.authorId, member?.roleIds ?? [], message.content, message.mentions, () =>
-            ctx.messages.delete(message.channelId, message.id)
-        );
+        await moderateContent({
+            ctx,
+            server,
+            channelId: message.channelId,
+            member,
+            contentType: ContentIgnoreType.MESSAGE,
+            filteredContent: FilteredContent.ChannelContent,
+            content: message.content,
+            mentions: message.mentions,
+            resultingAction: () => ctx.messages.delete(message.channelId, message.id),
+        })
 
         // get the log channel for message updates
         const updatedMessageLogChannel = await ctx.dbUtil.getLogChannel(message.serverId!, LogChannelType.message_edits);

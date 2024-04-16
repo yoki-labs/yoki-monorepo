@@ -30,19 +30,19 @@ export default {
         // Scanning
         const deletion = () => ctx.rest.delete(`/channels/${forumTopic.channelId}/topics/${forumTopic.id}`);
         const member = await ctx.members.fetch(serverId, forumTopic.createdBy).catch(() => null);
+        if (!member) return;
 
-        await moderateContent(
+        await moderateContent({
             ctx,
             server,
-            forumTopic.channelId,
-            "FORUM_TOPIC",
-            FilteredContent.ChannelContent,
-            forumTopic.createdBy,
-            member?.roleIds ?? [],
-            `${forumTopic.title}\n${forumTopic.content ?? ""}`,
-            forumTopic.mentions,
-            deletion
-        );
+            channelId: forumTopic.channelId,
+            member,
+            contentType: "FORUM_TOPIC",
+            filteredContent: FilteredContent.ChannelContent,
+            content: `${forumTopic.title}\n${forumTopic.content ?? ""}`,
+            mentions: forumTopic.mentions,
+            resultingAction: deletion,
+        });
 
         // check if there's a log channel channel for message deletions
         const editedTopicLogChannel = await ctx.dbUtil.getLogChannel(serverId, LogChannelType.topic_edits);
@@ -63,9 +63,8 @@ export default {
             },
             // title: "Forum Topic Edited",
             serverId: server.serverId,
-            description: `The forum topic ${inlineQuote(forumTopic.title)} by <@${forumTopic.createdBy}> (${inlineCode(forumTopic.createdBy)}) has been edited in [#${
-                channel.name
-            }](${channelURL}).`,
+            description: `The forum topic ${inlineQuote(forumTopic.title)} by <@${forumTopic.createdBy}> (${inlineCode(forumTopic.createdBy)}) has been edited in [#${channel.name
+                }](${channelURL}).`,
             color: Colors.yellow,
             additionalInfo: stripIndents`
                 **When:** ${server.formatTimezone(forumTopic.updatedAt!)}
