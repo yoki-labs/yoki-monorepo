@@ -36,9 +36,8 @@ export default {
                 fields: [
                     {
                         name: "Nickname changes",
-                        value: `${oldMember ? (oldMember.nickname ? inlineQuote(oldMember.nickname) : "No nickname") : "Unknown nickname"} \u21D2 ${
-                            nickname ? inlineQuote(nickname) : "No nickname"
-                        }`,
+                        value: `${oldMember ? (oldMember.nickname ? inlineQuote(oldMember.nickname) : "No nickname") : "Unknown nickname"} \u21D2 ${nickname ? inlineQuote(nickname) : "No nickname"
+                            }`,
                     },
                 ],
                 // occurred: new Date().toISOString(),
@@ -56,10 +55,10 @@ export default {
                 return ctx.members.updateNickname(serverId, userId, nonHoistingName?.trim() || "NON-HOISTING NAME");
             }
             const member = await ctx.members.fetch(serverId, userId).catch(() => null);
+            if (!member) return;
 
             return ctx.contentFilterUtil.scanContent({
-                userId,
-                roleIds: member?.roleIds ?? oldMember?.roleIds ?? [],
+                member,
                 text: name,
                 filteredContent: FilteredContent.ServerContent,
                 channelId: null,

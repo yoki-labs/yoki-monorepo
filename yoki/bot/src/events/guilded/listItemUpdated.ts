@@ -8,13 +8,13 @@ export default {
 
         const { id, channelId, createdBy, message, note, serverId } = listItem;
         const member = await ctx.members.fetch(serverId, createdBy).catch(() => null);
+        if (!member) return;
 
         // If it's a thread
         void ctx.amp.logEvent({ event_type: "LIST_ITEM_SCAN", user_id: createdBy, event_properties: { serverId } });
         if (server.filterEnabled)
             return ctx.contentFilterUtil.scanContent({
-                userId: createdBy,
-                roleIds: member?.roleIds ?? [],
+                member,
                 text: note ? `${message}\n${note.content}` : message,
                 filteredContent: FilteredContent.ChannelContent,
                 channelId,
