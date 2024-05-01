@@ -42,6 +42,7 @@
 		"@yokilabs/captcha-generator": "1.1.1",
 		"@yokilabs/utils": "workspace:*",
 		"aws-sdk": "^2.1440.0",
+		"canvas": "^2.11.2",
 		"common-tags": "^1.8.2",
 		"dotenv": "^8.6.0",
 		"guilded.js": "0.24.2",

@@ -1,8 +1,17 @@
-import { inlineQuote } from "@yokilabs/bot";
+import { createServerLimit, inlineQuote } from "@yokilabs/bot";
 import { isHashId } from "@yokilabs/utils";
 
 import { RoleType } from "../../../typings";
 import { Category, Command } from "../../commands";
+import { PremiumType, Server } from "@prisma/client";
+
+const getServerLimit = createServerLimit<PremiumType, Server>({
+    Gold: 200,
+    Silver: 100,
+    Copper: 75,
+    Early: 50,
+    Default: 50,
+});
 
 const Add: Command = {
     name: "link-invite-add",
@@ -27,8 +36,19 @@ const Add: Command = {
 
         if (!isHashId(targetServerId)) return ctx.messageUtil.replyWithError(message, `Expected ID`, `Expected server ID, not its vanity URL.`);
 
-        const doesExistAlready = await ctx.prisma.inviteFilter.findFirst({ where: { serverId: message.serverId!, targetServerId } });
-        if (doesExistAlready) return ctx.messageUtil.replyWithError(message, `Already added`, `This server is already in your server's invite whitelist!`);
+        const allInvites = await ctx.prisma.inviteFilter.findMany({ where: { serverId: server.serverId } });
+
+        // To not create too many of them for DB to blow up
+        const serverLimit = getServerLimit(server);
+
+        if (allInvites.length >= serverLimit)
+            return ctx.messageUtil.replyWithError(
+                message,
+                "Too many invites",
+                `You can only have ${serverLimit} filtered invites per server.${server.premium ? "" : "\n\n**Note:** You can upgrade to premium to increase the limit."}`
+            );
+        else if (allInvites.some((x) => x.targetServerId === targetServerId))
+            return ctx.messageUtil.replyWithError(message, `Already added`, `This server is already in your server's invite whitelist!`);
 
         await ctx.dbUtil.addInviteToFilter({
             targetServerId,

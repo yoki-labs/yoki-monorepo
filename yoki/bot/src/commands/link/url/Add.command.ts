@@ -1,10 +1,18 @@
-import { Severity } from "@prisma/client";
-import { inlineCode, inlineQuote } from "@yokilabs/bot";
+import { PremiumType, Server, Severity } from "@prisma/client";
+import { createServerLimit, inlineCode, inlineQuote } from "@yokilabs/bot";
 import { stripIndents } from "common-tags";
 
 import { ResolvedEnum, RoleType } from "../../../typings";
 import { MAX_URL_LENGTH, ONLY_URL_REGEX } from "../../../utils/matching";
 import { Category, Command } from "../../commands";
+
+const getServerLimit = createServerLimit<PremiumType, Server>({
+    Gold: 200,
+    Silver: 100,
+    Copper: 75,
+    Early: 50,
+    Default: 50,
+});
 
 const Add: Command = {
     name: "link-url-add",
@@ -40,15 +48,10 @@ const Add: Command = {
         const url = args.url as string;
         const severity = ((args.severity as ResolvedEnum | null)?.resolved ?? Severity.WARN) as Severity;
         const infractionPoints = (args.infraction_points as number | null) ?? 5;
-
-        // Other
-        if (!severity) return ctx.messageUtil.replyWithError(message, `No such severity level`, `Sorry, but that is not a valid severity level!`);
-        if (infractionPoints < 0 || infractionPoints > 100)
-            return ctx.messageUtil.replyWithError(message, `Points over the limit`, `Sorry, but the infraction points must be between \`0\` and \`100\`.`);
-
+        
         // To not match long
         if (url.length > MAX_URL_LENGTH) return ctx.messageUtil.replyWithError(message, `Too long`, `The provided URL is too long and cannot be saved by Yoki.`);
-
+        
         const urlMatch = url.match(ONLY_URL_REGEX);
         if (!urlMatch) return ctx.messageUtil.replyWithError(message, `Bad formatting`, `The provided text is not a URL.`);
 
@@ -62,8 +65,19 @@ const Add: Command = {
                 `The provided URL's ${domain.length > 200 ? "domain" : subdomain && subdomain?.length > 100 ? "subdomain" : "route"} is way too long.`
             );
 
-        const doesExistAlready = await ctx.prisma.urlFilter.findFirst({ where: { serverId: message.serverId!, domain, subdomain, route } });
-        if (doesExistAlready) return ctx.messageUtil.replyWithError(message, `Already added`, `This URL is already in your server's filter!`);
+        const allUrls = await ctx.prisma.urlFilter.findMany({ where: { serverId: server.serverId } });
+
+        // To not create too many of them for DB to blow up
+        const serverLimit = getServerLimit(server);
+
+        if (allUrls.length >= serverLimit)
+            return ctx.messageUtil.replyWithError(
+                message,
+                "Too many URLs",
+                `You can only have ${serverLimit} filtered URLs per server.${server.premium ? "" : "\n\n**Note:** You can upgrade to premium to increase the limit."}`
+            );
+        else if (allUrls.some((x) => x.domain === domain && x.subdomain === subdomain && x.route === route))
+            return ctx.messageUtil.replyWithError(message, `Already added`, `This URL is already in your server's filter!`);
 
         await ctx.dbUtil.addUrlToFilter({
             domain,

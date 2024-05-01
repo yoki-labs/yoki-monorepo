@@ -46,7 +46,7 @@ export class ImageFilterUtil extends BaseFilterUtil {
         if (nsfwDetected) {
             try {
                 // Warn/mute/kick/ban
-                await this.dealWithUser(member, server, channelId, FilteredContent.Message, onDelete, `NSFW image filter tripped`, server.spamInfractionPoints, Severity.WARN);
+                await this.dealWithUser(member, server, channelId, FilteredContent.Message, onDelete, `NSFW image filter tripped`, server.nsfwInfractionPoints, server.nsfwSeverity ?? Severity.WARN);
             } catch (e) {}
         }
 

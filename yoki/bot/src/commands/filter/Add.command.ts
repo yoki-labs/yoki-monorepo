@@ -1,5 +1,5 @@
-import { Severity } from "@prisma/client";
-import { inlineCode, inlineQuote } from "@yokilabs/bot";
+import { PremiumType, Server, Severity } from "@prisma/client";
+import { createServerLimit, inlineCode, inlineQuote } from "@yokilabs/bot";
 
 import { ResolvedEnum, RoleType } from "../../typings";
 import { ONLY_URL_REGEX } from "../../utils/matching";
@@ -7,7 +7,13 @@ import { wordPresets } from "../../utils/presets";
 import { getFilterFromSyntax } from "../../utils/util";
 import { Category, Command } from "../commands";
 
-const maxPhrases = 50;
+const getServerLimit = createServerLimit<PremiumType, Server>({
+    Gold: 200,
+    Silver: 100,
+    Copper: 75,
+    Early: 50,
+    Default: 50,
+});
 
 const Add: Command = {
     name: "filter-add",
@@ -50,14 +56,14 @@ const Add: Command = {
         // To see count of them
         const allBannedWords = await ctx.dbUtil.getBannedWords(message.serverId!);
 
-        // To not have DB blow up
-        if (allBannedWords.length >= maxPhrases)
+        // To not create too many of them for DB to blow up
+        const serverLimit = getServerLimit(server);
+
+        if (allBannedWords.length >= serverLimit)
             return ctx.messageUtil.replyWithError(
                 message,
-                "Too many words",
-                `For technical reasons, you cannot have more than ${maxPhrases} words added to the filter. You can join the [Yoki Labs server](https://guilded.gg/yoki) to suggest new presets or enable any of the existing ones by using ${inlineQuote(
-                    `${prefix}preset`
-                )}.`
+                "Too many phrases",
+                `You can only have ${serverLimit} filtered phrases per server.${server.premium ? "" : "\n\n**Note:** You can upgrade to premium to increase the limit."}`
             );
         // Can't add something that already exists
         else if (allBannedWords.find((x) => x.content === content && x.matching === matching))

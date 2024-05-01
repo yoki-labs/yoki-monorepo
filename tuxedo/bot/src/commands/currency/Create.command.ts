@@ -3,7 +3,7 @@ import { inlineQuote } from "@yokilabs/bot";
 import { ReactionInfo } from "@yokilabs/utils";
 
 import { TAG_REGEX } from "../../util/matching";
-import { createServerLimit } from "../../util/premium";
+import { createServerLimit } from "@yokilabs/bot/src/premium";
 import { Category, Command } from "../commands";
 
 const getServerLimit = createServerLimit({

@@ -29,6 +29,7 @@ export {
     quoteMarkdown,
 } from "./utils/formatting";
 export { channelTypeToGreenIcon, channelTypeToGreyIcon, channelTypeToRedIcon } from "./utils/images";
+export { createServerLimit } from "./premium";
 export {
     checkmarkEmoteNode,
     createChannelMentionElement,
