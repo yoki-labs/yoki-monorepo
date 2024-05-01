@@ -20,6 +20,8 @@ const fetchServerRoles = (ctx: TestClient, serverId: string): Promise<IRole<Role
 export default {
     execute: async (args) => {
         const [message, ctx] = args;
+ 
+        console.log("Message content", { content: message.content, mentions: message.mentions });
 
         if (message.createdByWebhookId || message.authorId === ctx.user!.id || message.authorId === "Ann6LewA" || !message.serverId) return;
 

@@ -44,7 +44,7 @@
 		"aws-sdk": "^2.1440.0",
 		"common-tags": "^1.8.2",
 		"dotenv": "^8.6.0",
-		"guilded.js": "0.23.2",
+		"guilded.js": "0.24.2",
 		"json-stringify-safe": "^5.0.1",
 		"ms": "^2.1.3",
 		"nanoid": "^3.3.6",

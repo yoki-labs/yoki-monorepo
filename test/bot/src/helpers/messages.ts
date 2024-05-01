@@ -5,6 +5,7 @@ import { Message, MessageContent } from "guilded.js";
 
 export default class DerivedMessageUtil extends MessageUtil<TestClient, Server, Command> {
     sendMarkdown(channelId: string, message: MessageContent) {
+        console.log("Sending markdown", message);
         return this.client.rest.make({
             path: `/channels/${channelId}/messages`,
             method: "POST",

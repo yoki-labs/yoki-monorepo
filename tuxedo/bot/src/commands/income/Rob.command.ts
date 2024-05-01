@@ -1,10 +1,9 @@
 import { Currency, DefaultIncomeType, MemberBalance, ModuleName, Reward, ServerMember } from "@prisma/client";
-import { checkmarkEmoteNode, createTextElement, createUserMentionElement, exclamationmarkEmoteNode } from "@yokilabs/bot";
 import { Member, Message } from "guilded.js";
 import ms from "ms";
 
 import { TuxoClient } from "../../Client";
-import { displayCurrencyAmountRichMarkup } from "../../util/text";
+import { displayCurrencyAmountInline } from "../../util/text";
 import { Category, Command } from "../commands";
 import { defaultIncomes } from "./income-defaults";
 
@@ -133,19 +132,7 @@ async function handleFailState(ctx: TuxoClient, message: Message, executorInfo: 
         })
     );
 
-    return ctx.messageUtil.replyWithRichMessage(message, [
-        {
-            object: "block",
-            type: "paragraph",
-            data: {},
-            nodes: [
-                exclamationmarkEmoteNode,
-                createTextElement(` You were caught trying to pickpocket and you were fined `),
-                ...newBalance.flatMap((x, i) => displayCurrencyAmountRichMarkup(x.currency, x.change, i < newBalance.length - 1)),
-                createTextElement(" as a result."),
-            ],
-        },
-    ]);
+    return ctx.messageUtil.replyWithWarningInline(message, `You were caught trying to pickpocket and you were fined ${newBalance.map((x) => displayCurrencyAmountInline(x.currency, x.change)).join(", ")}.`);
 }
 
 async function handleSuccessState(
@@ -185,29 +172,7 @@ async function handleSuccessState(
         ),
     ]);
 
-    return ctx.messageUtil.replyWithRichMessage(message, [
-        {
-            object: "block",
-            type: "paragraph",
-            data: {},
-            nodes: [
-                checkmarkEmoteNode,
-                createTextElement(` You pickpocketed `),
-                createUserMentionElement(target),
-                createTextElement(" ("),
-                createTextElement(target.id, [
-                    {
-                        object: "mark",
-                        type: "inline-code-v2",
-                        data: {},
-                    },
-                ]),
-                createTextElement(") and stole "),
-                ...newBalance.flatMap((x, i) => displayCurrencyAmountRichMarkup(x.currency, x.change, i < newBalance.length - 1)),
-                createTextElement(" from them."),
-            ],
-        },
-    ]);
+    return ctx.messageUtil.replyWithSuccessInline(message, `You pickpocketed <@${target.id}> (\`${target.id}\`) and stole ${newBalance.map((x) => displayCurrencyAmountInline(x.currency, x.change)).join(", ")} from them.`);
 }
 
 export default Rob;

@@ -1,7 +1,7 @@
 import { Currency, MemberBalance, ModuleName } from "@prisma/client";
 import { inlineCode, inlineQuote } from "@yokilabs/bot";
 
-import { displayCurrencyAmount } from "../../util/text";
+import { displayCurrencyAmountInline } from "../../util/text";
 import { Category, Command } from "../commands";
 
 type BalanceChange = Pick<MemberBalance, "currencyId" | "bank" | "pocket"> & { currency: Currency; lost: number };
@@ -119,15 +119,12 @@ const Sell: Command = {
         // Notify user that they lost some of it
         const lostCurrencyAmounts = balances.filter((x) => x.lost);
         if (lostCurrencyAmounts.length)
-            return ctx.messageUtil.replyWithWarning(
+            return ctx.messageUtil.replyWithWarningInline(
                 message,
-                "Item sold",
-                `You have successfully sold ${itemAmount} ${item.name}, but the received currency was exceeded by ${lostCurrencyAmounts
-                    .map((x) => displayCurrencyAmount(x.currency, x.lost))
-                    .join(", ")}.`
+                `You have successfully sold \xD7${itemAmount} ${item.name}, but the received currency was exceeded by ${lostCurrencyAmounts.map((x) => displayCurrencyAmountInline(x.currency, x.lost)).join(", ")}.`
             );
 
-        return ctx.messageUtil.replyWithSuccess(message, `Item sold`, `You have successfully sold ${itemAmount} ${item.name}.`);
+        return ctx.messageUtil.replyWithSuccessInline(message, `You have successfully sold \xD7${itemAmount} ${item.name}.`);
     },
 };
 

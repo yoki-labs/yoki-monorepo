@@ -11,6 +11,8 @@ import type { RoleUtil } from "./helpers/role";
 
 export type AnyClient = AbstractClient<any, any, any>;
 
+const defaultHeaders = { headers: { "x-guilded-bot-api-use-official-markdown": "true" } };
+
 /**
  * Main class that stores utils, connections to various providers, and ws
  */
@@ -60,7 +62,7 @@ export abstract class AbstractClient<
     abstract eventHandler: { [x: string]: (packet: any, ctx: TClient, server: TServer) => Promise<unknown> | undefined };
 
     constructor(options: ClientOptions, prefix: string) {
-        super(options);
+        super({ rest: defaultHeaders, ws: defaultHeaders, ...options });
 
         this.prefix = prefix;
         this.clientApiRest = new RestManager({ token: options.token, proxyURL: "https://www.guilded.gg/api" });

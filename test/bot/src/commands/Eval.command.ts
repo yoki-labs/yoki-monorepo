@@ -1,4 +1,4 @@
-import { inlineCode } from "@yokilabs/bot";
+import { codeBlock, inlineCode } from "@yokilabs/bot";
 import { inspect } from "node:util";
 
 // import fetch from "node-fetch";
@@ -35,36 +35,10 @@ const Eval: Command = {
         }
         const result = await _clean(evaled);
 
-        return ctx.messageUtil.replyWithRichMessage(
-            message,
-            [
-                {
-                    object: "block",
-                    type: "code-container",
-                    data: { language: typeof evaled === "string" ? "unformatted" : "javascript", },
-                    nodes: result
-                        .substring(0, 4000)
-                        .split("\n")
-                        .map((line) => ({
-                            object: "block",
-                            type: "code-line",
-                            data: {},
-                            nodes: [
-                                {
-                                    object: "text",
-                                    leaves: [
-                                        {
-                                            object: "leaf",
-                                            text: line,
-                                            marks: [],
-                                        },
-                                    ],
-                                },
-                            ],
-                        })),
-                }
-            ]
-        );
+        return ctx.messageUtil.sendMarkdown(message.channelId, {
+            replyMessageIds: [message.id],
+            content: codeBlock(result.substring(0, 4000), typeof evaled === "string" ? "" : "markdown"),
+        });
     },
 };
 

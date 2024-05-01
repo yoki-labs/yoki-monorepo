@@ -61,6 +61,7 @@ model Currency {
     startingBalance Int?
     maximumBalance  Int?
     bankEnabled     Boolean  @default(true)
+    transferRate    Float    @default(0)
     //canLose         Boolean  @default(true)
     // Who, when
     createdBy       String?  @db.VarChar(255)
@@ -118,6 +119,7 @@ model Item {
     value           ItemValue[]
     givesRoles      Int[]              @db.Integer
     canBuy          Boolean            @default(false)
+    canTransfer     Boolean            @default(false)
     // Who, when
     createdBy       String             @db.VarChar(255)
     createdAt       DateTime           @default(now())

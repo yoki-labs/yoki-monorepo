@@ -1,13 +1,11 @@
 import { Currency, DefaultIncomeType, IncomeCommand, MemberBalance, ModuleName, Reward, ServerMember } from "@prisma/client";
-import { checkmarkEmoteNode, CommandContext, createTextElement, exclamationmarkEmoteNode, inlineQuote, ResolvedArgs } from "@yokilabs/bot";
-import { emptyText } from "@yokilabs/bot/dist/src/utils/rich";
-import { RichMarkupInlineElement, RichMarkupText } from "@yokilabs/bot/dist/src/utils/rich-types";
+import { CommandContext, emoteNameToId, inlineQuote, ResolvedArgs } from "@yokilabs/bot";
 import { Message } from "guilded.js";
 import ms from "ms";
 
 import { TuxoClient } from "../../Client";
 import { Server } from "../../typings";
-import { displayCurrencyAmountRichMarkup } from "../../util/text";
+import { displayCurrencyAmountInline } from "../../util/text";
 import { defaultCreatedCooldown, defaultCreatedReceivedCurrency, defaultIncomes } from "./income-defaults";
 
 type BalanceChange = Pick<MemberBalance, "currencyId" | "pocket" | "bank"> & { currency: Currency; added: number; lost?: number };
@@ -165,34 +163,41 @@ async function onIncomeSuccess(
 
     // If there is any text after the reward, add the text afterwards
     // There may be some currency that went over the limit, so add the `However, ...` text too
-    const afterCurrencies = lostCurrencies.length ? `${actionDescription[1]} However, some of the rewards went over the limit, so you lost additional` : actionDescription[1] ?? "";
+    const afterCurrencies = lostCurrencies.length ? `${actionDescription[1]} However, some of the rewards went over the limit, so you lost additional ` : actionDescription[1] ?? "";
 
-    return ctx.messageUtil.replyWithRichMessage(message, [
-        {
-            object: "block",
-            type: "paragraph",
-            data: {},
-            nodes: [
-                emptyText,
-                // Icon of the content; if it went over the limit, use exclamation mark
-                lostCurrencies.length ? exclamationmarkEmoteNode : checkmarkEmoteNode,
-                // It might start with currency rewards
-                actionDescription[0] && createTextElement(` ${actionDescription[0]}`),
-                // It might look rather empty if everything went over the limit
-                ...(addedCurrencies.length
-                    ? addedCurrencies.flatMap((x, i) => displayCurrencyAmountRichMarkup(x.currency, x.added, i < addedCurrencies.length - 1, afterCurrencies))
-                    : [createTextElement(`some rewards${afterCurrencies}`)]),
-                // // Because it will be either missing anything after the reward, like exclamation mark, period or other info
-                // // Or even `However,` part
-                // (actionDescription[1] || lostCurrencies.length) &&
-                //     createTextElement(
-                //         afterCurrencies
-                //     ),
-                // Add some lost currencies that went over the limit if there were any
-                ...(lostCurrencies.length ? lostCurrencies.flatMap((x, i) => displayCurrencyAmountRichMarkup(x.currency, x.lost!, i < lostCurrencies.length - 1)) : []),
-            ].filter(Boolean) as (RichMarkupText | RichMarkupInlineElement)[],
-        },
-    ]);
+    const addedCurrenciesText = addedCurrencies.length ? addedCurrencies.map((x) => displayCurrencyAmountInline(x.currency, x.added)).join(", ") : "some rewards";
+    const lostCurrenciesText = lostCurrencies.length ? `${lostCurrencies.map((x) => displayCurrencyAmountInline(x.currency, x.lost!)).join(", ")}.` : "";
+
+    return ctx.messageUtil.reply(
+        message,
+        `<::${lostCurrencies.length ? emoteNameToId.YokiLabsExclamationbox : emoteNameToId.YokiLabsCheckbox}> ${actionDescription[0] ?? ""} ${addedCurrenciesText}${afterCurrencies}${lostCurrenciesText}`
+    );
+    // return ctx.messageUtil.replyWithRichMessage(message, [
+    //     {
+    //         object: "block",
+    //         type: "paragraph",
+    //         data: {},
+    //         nodes: [
+    //             emptyText,
+    //             // Icon of the content; if it went over the limit, use exclamation mark
+    //             lostCurrencies.length ? exclamationmarkEmoteNode : checkmarkEmoteNode,
+    //             // It might start with currency rewards
+    //             actionDescription[0] && createTextElement(` ${actionDescription[0]}`),
+    //             // It might look rather empty if everything went over the limit
+    //             ...(addedCurrencies.length
+    //                 ? addedCurrencies.flatMap((x, i) => displayCurrencyAmountRichMarkup(x.currency, x.added, i < addedCurrencies.length - 1, afterCurrencies))
+    //                 : [createTextElement(`some rewards${afterCurrencies}`)]),
+    //             // // Because it will be either missing anything after the reward, like exclamation mark, period or other info
+    //             // // Or even `However,` part
+    //             // (actionDescription[1] || lostCurrencies.length) &&
+    //             //     createTextElement(
+    //             //         afterCurrencies
+    //             //     ),
+    //             // Add some lost currencies that went over the limit if there were any
+    //             ...(lostCurrencies.length ? lostCurrencies.flatMap((x, i) => displayCurrencyAmountRichMarkup(x.currency, x.lost!, i < lostCurrencies.length - 1)) : []),
+    //         ].filter(Boolean) as (RichMarkupText | RichMarkupInlineElement)[],
+    //     },
+    // ]);
 }
 
 async function onIncomeFail(
@@ -210,14 +215,15 @@ async function onIncomeFail(
 
     // There is no point in doing anything, nor displaying the fail chance
     if (!failCut)
-        return ctx.messageUtil.replyWithRichMessage(message, [
-            {
-                object: "block",
-                type: "paragraph",
-                data: {},
-                nodes: [emptyText, exclamationmarkEmoteNode, createTextElement(` You have failed while doing ${commandName.toLowerCase()}.`)],
-            },
-        ]);
+        return ctx.messageUtil.replyWithErrorInline(message, `You have failed while doing \`${commandName.toLowerCase()}\`.`);
+        // return ctx.messageUtil.replyWithRichMessage(message, [
+        //     {
+        //         object: "block",
+        //         type: "paragraph",
+        //         data: {},
+        //         nodes: [emptyText, exclamationmarkEmoteNode, createTextElement(` You have failed while doing ${commandName.toLowerCase()}.`)],
+        //     },
+        // ]);
 
     // Loop for checking whether executor has enough balance and adding rewards; does it all
     for (const reward of rewards) {
@@ -240,18 +246,19 @@ async function onIncomeFail(
 
     await ctx.dbUtil.updateMemberBalance(message.serverId!, message.createdById, userInfo, newBalance);
 
-    return ctx.messageUtil.replyWithRichMessage(message, [
-        {
-            object: "block",
-            type: "paragraph",
-            data: {},
-            nodes: [
-                emptyText,
-                exclamationmarkEmoteNode,
-                createTextElement(` You have failed while doing ${commandName.toLowerCase()} and lost `),
-                // It might look rather empty if everything went over the limit
-                ...newBalance.flatMap((x, i) => displayCurrencyAmountRichMarkup(x.currency, x.change, i < newBalance.length - 1)),
-            ],
-        },
-    ]);
+    return ctx.messageUtil.replyWithWarningInline(message, `You have failed while doing \`${commandName.toLowerCase()}\` and lost ${newBalance.map((x) => displayCurrencyAmountInline(x.currency, x.change)).join(", ")}.`);
+    // return ctx.messageUtil.replyWithRichMessage(message, [
+    //     {
+    //         object: "block",
+    //         type: "paragraph",
+    //         data: {},
+    //         nodes: [
+    //             emptyText,
+    //             exclamationmarkEmoteNode,
+    //             createTextElement(` You have failed while doing ${commandName.toLowerCase()} and lost `),
+    //             // It might look rather empty if everything went over the limit
+    //             ...newBalance.flatMap((x, i) => displayCurrencyAmountRichMarkup(x.currency, x.change, i < newBalance.length - 1)),
+    //         ],
+    //     },
+    // ]);
 }

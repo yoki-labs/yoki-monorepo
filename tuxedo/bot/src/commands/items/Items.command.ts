@@ -10,6 +10,7 @@ import Info from "./Info.command";
 import List from "./List.command";
 import SetName from "./Name.command";
 import SetPrice from "./Price.command";
+import SetCanTransfer from "./CanTransfer.command";
 
 const Items: Command = {
     name: "items",
@@ -25,6 +26,7 @@ const Items: Command = {
         .set("info", Info)
         .set("name", SetName)
         .set("canbuy", SetCanBuy)
+        .set("cantransfer", SetCanTransfer)
         .set("price", SetPrice)
         .set("giverole", SetGiveRole)
         .set("delete", Delete),

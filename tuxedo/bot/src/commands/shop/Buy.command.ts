@@ -106,7 +106,7 @@ const Buy: Command = {
             }),
         ]);
 
-        return ctx.messageUtil.replyWithSuccess(message, `Item bought`, `You have successfully purchased ${itemAmount} ${item.name}.`);
+        return ctx.messageUtil.replyWithSuccessInline(message, `You have successfully purchased \xD7${itemAmount} ${item.name}.`);
     },
 };
 

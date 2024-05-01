@@ -45,6 +45,8 @@ const TransferCurrency: Command = {
         const currency = await ctx.dbUtil.getCurrency(server.serverId, currencyTag);
         if (!currency)
             return ctx.messageUtil.replyWithError(message, "No such currency", `Currency with the tag ${inlineCode(currencyTag)} does not exist.`);
+        else if (!currency.transferRate)
+            return ctx.messageUtil.replyWithError(message, "No transfer rate", `Currency with the tag ${inlineCode(currencyTag)} does not have transfer rate set and cannot be transferred.`);
 
         const executorInfo = await ctx.dbUtil.getServerMember(server.serverId, message.createdById);
 
@@ -59,8 +61,9 @@ const TransferCurrency: Command = {
         const targetBalance = targetInfo?.balances.find((x) => x.currencyId === currency.id);
         const targetCurrency = targetBalance?.all ?? BigInt(currency.startingBalance ?? 0);
 
+        const transferAmount = Math.floor(amount * currency.transferRate);
         // Balance too high
-        if (currency.maximumBalance && (targetCurrency + BigInt(amount)) > currency.maximumBalance)
+        if (currency.maximumBalance && (targetCurrency + BigInt(transferAmount)) > currency.maximumBalance)
             return ctx.messageUtil.replyWithError(message, `Too much currency`, `Giving ${displayCurrencyAmount(currency, amount)} would result in <@${target.id}> being over the currency limit by ${targetCurrency + BigInt(amount) - BigInt(currency.maximumBalance)}.`, undefined, { isSilent: true });
 
         await Promise.all([
@@ -74,7 +77,7 @@ const TransferCurrency: Command = {
             ctx.dbUtil.updateMemberBalance(message.serverId!, target.id, targetInfo, [
                 {
                     currencyId: currency.id,
-                    pocket: (targetBalance?.pocket ?? 0) + amount,
+                    pocket: (targetBalance?.pocket ?? 0) + transferAmount,
                     bank: targetBalance?.bank ?? currency.startingBalance ?? 0,
                 }
             ])

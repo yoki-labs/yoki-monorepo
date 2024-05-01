@@ -10,6 +10,7 @@ import type { IServer } from "../db-types";
 import { inlineCode, listInlineCode } from "../utils/formatting";
 import { RichMarkupBlockElement } from "../utils/rich-types";
 import { Util } from "./util";
+import { emoteNameToId } from "../utils/emotes";
 
 type MessageBody = Omit<RestBody<RestPath<"/channels/{channelId}/messages">["post"]>, "embeds" | "content"> & { embeds?: Embed[]; content?: string };
 
@@ -94,7 +95,7 @@ export class MessageUtil<
             {
                 fields: [this.createUsageField(command, prefix)],
             }
-        );
+            );
     }
     // #endregion
 
@@ -102,6 +103,20 @@ export class MessageUtil<
     // Send a message using either string, embed object, or raw object
     send(channelId: string, content: MessageContent) {
         return this.client.messages.send(channelId, content instanceof Embed ? { embeds: [content.toJSON()] } : typeof content === "string" ? { content } : content);
+    }
+
+    // Reply to a message
+    replyLegacy(message: Message, content: MessageBody) {
+        const opts: MessageBody = typeof content === "string" ? { replyMessageIds: [message.id], content } : content;
+        return this.client.messages.send(message.channelId, opts);
+    }
+
+    reply(message: Message, content: string, messagePartial?: Partial<MessageBody>) {
+        return this.send(message.channelId, {
+            ...messagePartial,
+            content,
+            replyMessageIds: [message.id],
+        });
     }
 
     sendRichMessage(channelId: string, content: RichMarkupBlockElement[], messagePartial?: Partial<MessageBody>) {
@@ -118,12 +133,6 @@ export class MessageUtil<
             content: text,
             ...messagePartial,
         });
-    }
-
-    // Reply to a message
-    reply(message: Message, content: MessageBody) {
-        const opts: MessageBody = typeof content === "string" ? { replyMessageIds: [message.id], content } : content;
-        return this.client.messages.send(message.channelId, opts);
     }
 
     sendEmbed(channelId: string, embed: EmbedPayload, messagePartial?: Partial<MessageBody>) {
@@ -304,6 +313,14 @@ export class MessageUtil<
         );
     }
 
+    replyWithSuccessInline(message: Message, content: string, messagePartial?: Partial<MessageBody>) {
+        return this.reply(
+            message,
+            `<::${emoteNameToId.YokiLabsCheckbox}> ${content}`,
+            messagePartial
+        );
+    }
+
     // Value blocks
     sendSuccessBlock(channelId: string, title: string, description: string, embedPartial?: EmbedPayload, messagePartial?: Partial<MessageBody>) {
         return this.sendEmbed(
@@ -349,6 +366,14 @@ export class MessageUtil<
         );
     }
 
+    replyWithWarningInline(message: Message, content: string, messagePartial?: Partial<MessageBody>) {
+        return this.reply(
+            message,
+            `<::${emoteNameToId.YokiLabsExclamationbox}> ${content}`,
+            messagePartial
+        );
+    }
+    
     sendWarningBlock(channelId: string, title: string, description: string, embedPartial?: EmbedPayload, messagePartial?: Partial<MessageBody>) {
         const embed = {
             author: { name: title, icon_url: BotImages.exclamationmark },
@@ -357,8 +382,6 @@ export class MessageUtil<
             thumbnail: { url: StateImages.stop },
             ...embedPartial,
         };
-
-        console.log("Embed", JSON.stringify(embed));
 
         return this.sendEmbed(
             channelId,
@@ -377,6 +400,14 @@ export class MessageUtil<
                 thumbnail: { url: StateImages.notFound },
                 ...embedPartial,
             },
+            messagePartial
+        );
+    }
+
+    replyWithErrorInline(message: Message, content: string, messagePartial?: Partial<MessageBody>) {
+        return this.reply(
+            message,
+            `<::${emoteNameToId.YokiLabsCrossbox}> ${content}`,
             messagePartial
         );
     }

@@ -51,7 +51,10 @@ const TransferItem: Command = {
         const item = (await ctx.dbUtil.getItem(server.serverId, executorItem.itemId))!;
 
         // Make sure they have enough
-        if (executorItem.amount < amount)
+        if (!item.canTransfer)
+            return ctx.messageUtil.replyWithError(message, `Can't transfer`, `This item has not been set as transferrable.`);
+        // Make sure they have enough
+        else if (executorItem.amount < amount)
             return ctx.messageUtil.replyWithError(message, `Not enough items`, `You only have ${executorItem.amount} amount of ${inlineQuote(item.name)}.`);
 
         // Info of the person being given the currency

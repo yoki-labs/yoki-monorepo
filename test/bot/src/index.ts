@@ -4,6 +4,7 @@ import { WebhookEmbed } from "guilded.js";
 import { join } from "path";
 
 import { TestClient } from "./Client";
+import CustomWsManager from "./CustomWsManager";
 
 // Load env variables
 config({ path: join(__dirname, "..", "..", ".env") });
@@ -15,6 +16,8 @@ config({ path: join(__dirname, "..", "..", ".env") });
 
 const client = new TestClient({ token: process.env.GUILDED_TOKEN! }, process.env.DEFAULT_PREFIX!);
 
+client.ws = new CustomWsManager({ token: process.env.GUILDED_TOKEN! });
+
 client.ws.emitter.on("error", (err) => {
     console.log(`[WS ERR]: ${err}`);
     void client.errorHandler.send("Error in command usage!", [new WebhookEmbed().setDescription("[WS ERR]:").addField(`Err`, codeBlock(err)).setColor("RED")]);
@@ -22,6 +25,8 @@ client.ws.emitter.on("error", (err) => {
 
 client.ws.emitter.on("gatewayEvent", async (event, data) => {
     const { serverId } = data.d as { serverId?: string | null };
+
+    // console.log("Event data", data);
 
     if (!serverId) return;
 

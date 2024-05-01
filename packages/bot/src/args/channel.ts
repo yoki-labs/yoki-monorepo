@@ -3,27 +3,33 @@ import { isUUID } from "@yokilabs/utils";
 import type { CommandArgValidator } from "../commands/command-typings";
 
 export default [
-    async (input, args, index, message, __, usedMentions) => {
-        if (input.startsWith("#")) {
-            // Get the mentioned user and increment used mentions
-            const mention = message.mentions?.channels?.[usedMentions.channel++];
-            if (!mention) return null;
+    async (input, _args, _index, message, __, _usedMentions) => {
+        // if (input.startsWith("#")) {
+        //     // Get the mentioned user and increment used mentions
+        //     const mention = message.mentions?.channels?.[usedMentions.channel++];
+        //     if (!mention) return null;
 
-            const channel = await message.client.channels.fetch(mention.id).catch(() => null);
-            if (!channel) return null;
+        //     const channel = await message.client.channels.fetch(mention.id).catch(() => null);
+        //     if (!channel) return null;
 
-            const { name } = channel;
-            const spaceCount = name.split(" ").length;
+        //     const { name } = channel;
+        //     const spaceCount = name.split(" ").length;
 
-            // [..., "#super", "cool", "channel", ...] => [..., "#super cool channel", ...]
-            args.splice(index + 1, spaceCount - 1);
+        //     // [..., "#super", "cool", "channel", ...] => [..., "#super cool channel", ...]
+        //     args.splice(index + 1, spaceCount - 1);
 
-            args[index] = name;
+        //     args[index] = name;
 
-            return channel;
+        //     return channel;
+        // }
+        if (input.startsWith("<#") && input.endsWith(">")) {
+            const id = input.substring(2, input.length - 1);
+
+            if (!isUUID(id)) return null;
+
+            return message.client.channels.fetch(id).catch(() => null);
         }
-
-        if (isUUID(input)) {
+        else if (isUUID(input)) {
             return message.client.channels.fetch(input).catch(() => null);
         }
 

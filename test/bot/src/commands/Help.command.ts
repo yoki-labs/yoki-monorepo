@@ -47,7 +47,7 @@ const Help: Command = {
 
         // embed.addField(":star: **__Other features__**", `\u2022 [**Add auto-moderation, modmail, ban appeals**](https://www.guilded.gg/b/7af0dd87-f6c8-43b1-b1bb-8917c82d5cfd)`);
 
-        return ctx.messageUtil.reply(message, { embeds: [embed] });
+        return ctx.messageUtil.replyLegacy(message, { embeds: [embed] });
     },
 };
 

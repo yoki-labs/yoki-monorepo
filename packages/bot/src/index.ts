@@ -40,3 +40,4 @@ export {
     emptyText,
     exclamationmarkEmoteNode,
 } from "./utils/rich";
+export { emoteNameToId } from "./utils/emotes";

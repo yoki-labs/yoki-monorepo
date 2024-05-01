@@ -1,12 +1,11 @@
 import { Currency, MemberBalance, ModuleName, ServerMember } from "@prisma/client";
-import { checkmarkEmoteNode, createTextElement, inlineCode, ResolvedArgs } from "@yokilabs/bot";
-import { RichMarkupInlineElement, RichMarkupText } from "@yokilabs/bot/dist/src/utils/rich-types";
+import { inlineCode, ResolvedArgs } from "@yokilabs/bot";
 import { Message } from "guilded.js";
 import ms from "ms";
 
 import { TuxoClient } from "../../Client";
 import { CommandContext } from "../../typings";
-import { displayCurrencyAmountRichMarkup } from "../../util/text";
+import { displayCurrencyAmountInline } from "../../util/text";
 import { bankCooldown } from "../income/income-defaults";
 
 export function generateBankCommand(
@@ -30,7 +29,7 @@ export function generateBankCommand(
 
         // Need to wait 5 hours
         if (lastUsed && Date.now() - lastUsed < bankCooldown)
-            return ctx.messageUtil.replyWithError(message, "Too fast", `You have to wait ${ms(lastUsed + bankCooldown - Date.now(), { long: true })} to use bank again.`);
+            return ctx.messageUtil.replyWithError(message, "On cooldown", `You have to wait ${ms(lastUsed + bankCooldown - Date.now(), { long: true })} to use bank again.`);
 
         // Check existance and balance of members
         const member = await ctx.dbUtil.getServerMember(message.serverId!, message.createdById);
@@ -49,19 +48,19 @@ export function generateBankCommand(
             const depositingCurrencies = serverCurrencies.filter((x) => x.bankEnabled);
 
             if (!depositingCurrencies.length)
-                return ctx.messageUtil.replyWithError(message, "No depositable currencies", `There is no currency that can be deposited to bank in this server.`);
+                return ctx.messageUtil.replyWithError(message, "No currency", `There is no currency that can be deposited to bank in this server.`);
 
             return depositAllCurrency(ctx, message, member, depositingCurrencies, amount, depositMultiplier, balanceType, action, actionDone, getBalanceAmount);
         }
 
         const depositingCurrency = serverCurrencies.find((x) => x.tag === tag);
 
-        if (!depositingCurrency) return ctx.messageUtil.replyWithError(message, "No such currency", `Currency with the tag ${inlineCode(tag)} does not exist.`);
+        if (!depositingCurrency) return ctx.messageUtil.replyWithError(message, "No currency", `Currency with the tag ${inlineCode(tag)} does not exist.`);
         // Allow disabling bank for specific currencies
         else if (!depositingCurrency.bankEnabled)
             return ctx.messageUtil.replyWithError(
                 message,
-                "Can't deposit currency",
+                "Cannot deposit or draw",
                 `Currency with the tag ${inlineCode(tag)} cannot be deposited to the bank, as bank for this currency has been disabled.`
             );
 
@@ -92,9 +91,8 @@ async function depositAllCurrency(
 
         // Check if it can be deposited
         if (amount && balanceAmount < amount)
-            return ctx.messageUtil.replyWithError(
+            return ctx.messageUtil.replyWithErrorInline(
                 message,
-                "Balance currency too low",
                 `You cannot ${action} ${inlineCode(amount)} ${depositingCurrency.name}, as your ${balanceType} balance only has ${balanceAmount} ${depositingCurrency.name}.`
             );
 
@@ -124,9 +122,8 @@ async function depositOneCurrency(
 
     // Check if it can be deposited
     if (amount && balanceAmount < amount)
-        return ctx.messageUtil.replyWithError(
+        return ctx.messageUtil.replyWithErrorInline(
             message,
-            "Balance currency too low",
             `You cannot ${action} ${inlineCode(amount)} ${depositingCurrency.name}, as your ${balanceType} balance only has ${balanceAmount} ${depositingCurrency.name}.`
         );
 
@@ -147,21 +144,5 @@ async function depositToBank(
     // Deposit into bank
     await ctx.dbUtil.depositMemberBalance(member, depositMap);
 
-    // Reply with success
-    return ctx.messageUtil.replyWithRichMessage(message, [
-        {
-            object: "block",
-            type: "paragraph",
-            data: {},
-            nodes: [
-                // Icon of the content; if it went over the limit, use exclamation mark
-                checkmarkEmoteNode,
-                // It might start with currency rewards
-                createTextElement(` You have successfully ${actionDone} `),
-                // It might look rather empty if everything went over the limit
-                ...depositedCurrencies.flatMap((x, i) => displayCurrencyAmountRichMarkup(x, depositMap[x.id] / depositMultiplier, i < depositedCurrencies.length - 1)),
-                createTextElement(`.`),
-            ].filter(Boolean) as (RichMarkupText | RichMarkupInlineElement)[],
-        },
-    ]);
+    return ctx.messageUtil.replyWithSuccessInline(message, `You have successfully ${actionDone} ${depositedCurrencies.map((x) => displayCurrencyAmountInline(x, depositMap[x.id] / depositMultiplier))}`);
 }
