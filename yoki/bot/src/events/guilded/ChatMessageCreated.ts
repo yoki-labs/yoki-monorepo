@@ -76,7 +76,7 @@ export default {
         // const member = await ctx.members.fetch(message.serverId!, message.createdById).catch(() => null);
         // if (!member) return;
 
-        const canExecute = await checkUserPermissions(fetchServerRoles, [message, ctx, member], command);
+        const canExecute = await checkUserPermissions(fetchServerRoles, [message, ctx, member, prefix], command);
 
         // If it could be moderated and it was moderated, ignore it
         if ((!command.requiredRole || !canExecute) && (await moderateMessage(ctx, server, message, member))) return;
@@ -92,7 +92,7 @@ export default {
         const subCommand = await fetchCommandInfo([message, ctx], prefix, command, parsedArgs, commandModuleMessage || undefined);
 
         if (subCommand) {
-            const canExecuteSub = await checkUserPermissions(fetchServerRoles, [message, ctx, member], subCommand.command);
+            const canExecuteSub = await checkUserPermissions(fetchServerRoles, [message, ctx, member, prefix], subCommand.command);
             if (!canExecuteSub) return;
 
             command = subCommand.command;

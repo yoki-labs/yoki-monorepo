@@ -10,9 +10,11 @@ export async function generateUserJoinBanner(member: Member): Promise<Buffer> {
     const canvas = createCanvas(600, 250)
     const canvasCtx = canvas.getContext("2d");
 
-    // Text
+    // Background
     canvasCtx.fillStyle = "#07050F";
     canvasCtx.fillRect(0, 0, 600, 250);
+
+    // Text
     canvasCtx.font = "bold 32px 'Fira Sans'";
     canvasCtx.textAlign = "center";
     canvasCtx.fillStyle = "#FFFFFF";

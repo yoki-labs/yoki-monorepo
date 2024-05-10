@@ -133,10 +133,10 @@ export function createCommandHandler<
         },
         checkUserPermissions: async (
             getRoles: (ctx: TClient, serverId: string) => Promise<IRole<TRoleType>[]>,
-            context: [Message, TClient, Member],
+            context: [Message, TClient, Member, string],
             command: TCommand
         ): Promise<boolean> => {
-            const [message, ctx, member] = context;
+            const [message, ctx, member, prefix] = context;
             const { serverId } = message;
 
             if (ctx.operators.includes(message.createdById)) return true;
@@ -161,7 +161,14 @@ export function createCommandHandler<
                 event_properties: { serverId: message.serverId },
             });
 
-            await ctx.messageUtil.replyWithUnpermitted(message, `Unfortunately, you are missing a role that is set as ${bold(command.requiredRole)} in this server!`);
+            await ctx.messageUtil.replyWithUnpermitted(
+                message,
+                stripIndents`
+                    Unfortunately, you are missing a role that is set as ${bold(command.requiredRole.toLowerCase())} in this server!
+
+                    Perhaps you are not supposed to use this command in the server or staff roles aren't set correctly (\`${prefix}role staff\`)?
+                `
+            );
             return false;
         },
         resolveArguments: async (context: [Message, TClient], prefix: string, command: TCommand, args: string[]) => {

@@ -36,13 +36,13 @@ export default {
         const member = await ctx.members.fetch(message.serverId!, message.authorId).catch(() => null);
         if (!member) return;
 
-        const canExecute = await checkUserPermissions(fetchServerRoles, [message, ctx, member], command);
+        const canExecute = await checkUserPermissions(fetchServerRoles, [message, ctx, member, ctx.prefix], command);
         if (!canExecute) return;
 
         const subCommand = await fetchCommandInfo([message, ctx], ctx.prefix, command, parsedArgs);
 
         if (subCommand) {
-            const canExecuteSub = await checkUserPermissions(fetchServerRoles, [message, ctx, member], command);
+            const canExecuteSub = await checkUserPermissions(fetchServerRoles, [message, ctx, member, ctx.prefix], command);
             if (!canExecuteSub) return;
 
             command = subCommand.command;

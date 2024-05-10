@@ -28,6 +28,13 @@ export default [
 
             return member.user;
         }
+        else if (input.startsWith("<@") && input.endsWith(">")) {
+            const id = input.substring(2, input.length - 1);
+
+            if (!isHashId(id)) return null;
+
+            return await message.client.members.fetch(message.serverId!, id).then((member) => member.user).catch(() => null);
+        }
         // At least the ID was provided
         else if (isHashId(input)) {
             return client.clientApiRest.get(`/users/${input}`)

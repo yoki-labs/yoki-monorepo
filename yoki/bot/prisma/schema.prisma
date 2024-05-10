@@ -55,6 +55,7 @@ model Server {
     appealChannelId String? @db.VarChar(255)
     appealsEnabled  Boolean @default(false)
 
+    // -- Modmail
     modmailEnabled    Boolean @default(false)
     modmailGroupId    String? @db.VarChar(255)
     modmailCategoryId Int?

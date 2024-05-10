@@ -32,8 +32,17 @@ const Mute: Command = {
             max: 500,
         },
     ],
-    execute: async (message, args, ctx, commandCtx) => {
-        if (!commandCtx.server.muteRoleId) return ctx.messageUtil.replyWithError(message, `No mute role set`, `There is no mute role configured for this server.`);
+    execute: async (message, args, ctx, { prefix, server }) => {
+        if (!server.muteRoleId)
+            return ctx.messageUtil.replyWithError(
+                message,
+                `No mute role set`,
+                stripIndents`
+                    There is no mute role configured for this server.
+
+                    Set it by using \`${prefix}role mute\` command.
+                `
+        );
 
         const target = args.target as CachedMember;
         const duration = args.duration as number;
@@ -64,7 +73,7 @@ const Mute: Command = {
                 type: "MUTE",
                 expiresAt,
             },
-            commandCtx.server
+            server
         );
 
         let successMessage = `<@${message.authorId}>, you have successfully muted <@${target.user!.id}>.`;
@@ -98,7 +107,7 @@ const Mute: Command = {
         }
 
         try {
-            await ctx.roles.addRoleToMember(message.serverId!, target.user!.id, commandCtx.server.muteRoleId);
+            await ctx.roles.addRoleToMember(message.serverId!, target.user!.id, server.muteRoleId);
         } catch (e) {
             return ctx.messageUtil.replyWithUnexpected(
                 message,

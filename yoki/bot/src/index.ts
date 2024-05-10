@@ -16,7 +16,12 @@ config({ path: join(__dirname, "..", "..", ".env") });
     if (!process.env[x]) throw new Error(`Missing env var ${x}`);
 });
 
-const client = new YokiClient({ token: process.env.GUILDED_TOKEN, rest: ({ maxRatelimitRetryLimit: 10 } as any) }, process.env.DEFAULT_PREFIX!);
+const client = new YokiClient({
+    token: process.env.GUILDED_TOKEN,
+    rest: ({
+        maxRatelimitRetryLimit: 10
+    } as any)
+}, process.env.DEFAULT_PREFIX!);
 client.ws.options.replayMissedEvents = false;
 
 // Under client.eventHandler, we register a bunch of events that we can execute

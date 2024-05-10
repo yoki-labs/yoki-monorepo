@@ -18,7 +18,7 @@ export default [
             const [name, idStr] = split;
             const id = parseInt(idStr, 10);
 
-            if (idStr.length === 0 || Number.isNaN(id))
+            if (idStr.length === 0 || Number.isNaN(id) || id <= 0)
                 return null;
 
             return { id, name };
