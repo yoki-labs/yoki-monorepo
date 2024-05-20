@@ -28,6 +28,7 @@ jobs:
                   filters: |
                       service:
                         - '${{ matrix.service.bot }}/${{ matrix.service.service }}/**'
+                        - 'yoki/common/**'
                         - 'packages/**'
 
             - name: Set up QEMU

@@ -11,6 +11,7 @@
         "build:ci:yoki": "turbo run build:ci --filter=@yokilabs/** --filter=!@yoki/site --filter=@yoki/**",
         "build:ci:tuxedo": "turbo run build:ci --filter=@yokilabs/** --filter=@tuxedo/**",
         "build:deps": "turbo run build --filter=@yokilabs/**",
+        "build:deps:yoki": "turbo run build --filter=@yoki/** --filter=!@yoki/site --filter=!@yoki/bot",
         "build:yoki": "turbo run generate build --filter=@yokilabs/** --filter=!@yoki/site --filter=@yoki/**",
         "build:tuxedo": "turbo run generate build --filter=@yokilabs/** --filter=@tuxedo/**",
         "build:test": "turbo run generate build --filter=@yokilabs/** --filter=@test/**",
@@ -81,6 +82,7 @@
     ],
     "lint-staged": {
         "packages/{bot}/src/*.{js,ts}": "eslint -c .eslintrc.js --fix",
+        "yoki/{common}/src/*.{js,ts}": "eslint -c .eslintrc.js --fix",
         "yoki/{bot}/src/*.{js,ts}": "eslint -c .eslintrc.js --fix",
         "tuxedo/**/*.{js,ts}": "eslint -c .eslintrc.js --fix",
         "yoki/site/src/*.{ts,tsx}": "eslint -c .eslintrc.web.js --fix",

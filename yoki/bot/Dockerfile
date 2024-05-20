@@ -20,6 +20,7 @@ COPY ./yoki/common ./yoki/common
 
 RUN pnpm install --silent
 RUN pnpm run build:deps
+RUN pnpm run build:deps:yoki
 
 # root /yoki/bot
 WORKDIR /opt/build/yoki/bot
