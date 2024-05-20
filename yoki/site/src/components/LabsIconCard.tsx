@@ -21,6 +21,7 @@ export const IconCardIconWrapper = styled(`aside`)(({ theme }) => ({
 
 export default function LabsIconCard(props: Props) {
     const { children, icon, iconClassName, orientation, iconSize, useFontColor } = props;
+    const IconComponent = props.iconComponent!;
 
     return (
         <Card orientation={orientation ?? "horizontal"} variant="plain" sx={{ overflow: "hidden" }}>
@@ -38,7 +39,7 @@ export default function LabsIconCard(props: Props) {
                             {icon ? (
                                 <FontAwesomeIcon className={`margin-auto w-9 h-9`} icon={icon} />
                             ) : (
-                                <props.iconComponent className={`margin-auto w-9 h-9`} sx={{ color: "inherit" }} />
+                                <IconComponent className={`margin-auto w-9 h-9`} sx={{ color: "inherit" }} />
                             )}
                         </div>
                     </IconCardIconWrapper>

@@ -43,6 +43,7 @@ export default class Layout extends React.Component<LayoutProps, LayoutState> {
 
     render() {
         const { page, children, currentPage, currentServer, serverConfig, servers, user, highestRoleType, onServerChange } = this.props;
+        const IconComponent = currentPage?.iconComponent!;
 
         return (
             <LayoutWrapper
@@ -63,7 +64,7 @@ export default class Layout extends React.Component<LayoutProps, LayoutState> {
                                 level="title-lg"
                                 fontWeight={500}
                                 textColor="text.secondary"
-                                startDecorator={currentPage.icon ? <FontAwesomeIcon icon={currentPage.icon} /> : <currentPage.iconComponent sx={{ color: "inherit" }} />}
+                                startDecorator={currentPage.icon ? <FontAwesomeIcon icon={currentPage.icon} /> : <IconComponent sx={{ color: "inherit" }} />}
                             >
                                 {currentPage.name}
                             </Typography>

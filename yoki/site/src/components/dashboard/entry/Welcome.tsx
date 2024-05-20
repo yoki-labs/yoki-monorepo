@@ -2,10 +2,8 @@ import { Box, Card, CardContent, Typography } from "@mui/joy";
 import React from "react";
 import DashboardModule from "../DashboardModule";
 import { DashboardPageProps } from "../pages";
-import { faCommentDots, faDoorOpen, faGlobe, faShieldHalved } from "@fortawesome/free-solid-svg-icons";
 import LabsForm from "../../form/LabsForm";
-import { LabsFormFieldOption, LabsFormFieldType, LabsFormSectionOrder, TimeStep } from "../../form/form";
-import { ResponseType, RoleType } from "@prisma/client";
+import { LabsFormFieldType, LabsFormSectionOrder } from "../../form/form";
 import { errorifyResponseError, notifyFetchError } from "../../../utils/errorUtil";
 import { channelsToSelectionOptions } from "../channels";
 import { GuildedSanitizedChannel } from "../../../lib/@types/guilded";
@@ -15,27 +13,6 @@ type State = {
     isMounted: boolean;
     serverChannels: GuildedSanitizedChannel[];
 };
-
-const antiRaidResponseValues: LabsFormFieldOption<ResponseType>[] = [
-    {
-        name: "Text Captcha",
-        value: ResponseType.TEXT_CAPTCHA,
-        description: "Prompts user to fill in captcha in the designated captcha channel.",
-        icon: faCommentDots,
-    },
-    {
-        name: "Site Captcha",
-        value: ResponseType.SITE_CAPTCHA,
-        description: "Prompts user to fill in captcha on Yoki's website.",
-        icon: faGlobe,
-    },
-    {
-        name: "Kick",
-        description: "Kicks out the recently created account.",
-        icon: faDoorOpen,
-        value: ResponseType.KICK,
-    },
-];
 
 export default class WelcomePage extends React.Component<DashboardPageProps, State> {
     constructor(props: DashboardPageProps) {
@@ -79,7 +56,7 @@ export default class WelcomePage extends React.Component<DashboardPageProps, Sta
     }
 
     render() {
-        const { serverConfig, highestRoleType } = this.props;
+        const { serverConfig } = this.props;
         const { serverChannels } = this.state;
 
         return (
