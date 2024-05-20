@@ -1,6 +1,6 @@
 import { RoleType } from "@prisma/client";
 import { inlineQuote } from "@yokilabs/bot";
-import { createServerLimit } from "@yokilabs/bot/src/premium";
+import { createServerLimit } from "@yokilabs/bot";
 
 import { Category, Command } from "../commands";
 import { getUnavailableIncomeNames, nameRegex } from "./income-util";
