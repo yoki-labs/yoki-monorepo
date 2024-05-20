@@ -310,9 +310,6 @@ importers:
       '@prisma/client':
         specifier: ^4.2.1
         version: 4.13.0(prisma@4.8.1)
-      '@yokilabs/bot':
-        specifier: workspace:*
-        version: link:../../packages/bot
       '@yokilabs/captcha-generator':
         specifier: 1.1.1
         version: 1.1.1
