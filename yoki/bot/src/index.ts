@@ -1,18 +1,18 @@
 import { GEvent, setClientCommands } from "@yokilabs/bot";
 import { config } from "dotenv";
 import { ClientEvents } from "guilded.js";
-import path, { join } from "path";
+import { join } from "path";
 import recursive from "recursive-readdir";
 
 import YokiClient from "./Client";
 import unhandledPromiseRejection from "./events/other/unhandledPromiseRejection";
 import { errorLoggerS3 } from "./utils/s3";
-import { registerFont } from "canvas";
+import { registerCanvasing } from "@yoki/common";
 
 // Load env variables
 config({ path: join(__dirname, "..", "..", ".env") });
 
-registerFont(path.join(__dirname, "..", "node_modules/@fontsource/space-mono/files/space-mono-latin-700-normal.woff"), { family: "Space Mono" });
+registerCanvasing();
 
 // Check ENV variables to ensure we have the necessary things to start the bot up
 ["DEFAULT_PREFIX", "GUILDED_TOKEN", "DATABASE_URL", "MAIN_SERVER", "ERROR_WEBHOOK", "S3_KEY_ID", "S3_SECRET_KEY", "S3_BUCKET"].forEach((x) => {

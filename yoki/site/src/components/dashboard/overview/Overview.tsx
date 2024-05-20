@@ -5,6 +5,7 @@ import { Box, Stack, Typography } from "@mui/joy";
 import { DashboardPageProps } from "../pages";
 import DashboardProfileCard from "./ProfileCard";
 import { PremiumType, RoleType } from "@prisma/client";
+import { WavingHandRounded } from "@mui/icons-material";
 
 export default function OverviewPage(props: DashboardPageProps) {
     const { serverConfig, highestRoleType } = props;
@@ -45,6 +46,16 @@ export default function OverviewPage(props: DashboardPageProps) {
                         serverConfig={serverConfig}
                         disabled={highestRoleType !== RoleType.ADMIN}
                         prop="antiRaidEnabled"
+                        />
+                    <DashboardModule
+                        name="Welcome"
+                        description="Greets new verified users."
+                        iconComponent={WavingHandRounded}
+                        activeClassName="from-indigo-500 to-fuchsia-500"
+                        serverConfig={serverConfig}
+                        requiresEarlyAccess
+                        disabled={!serverConfig.earlyaccess}
+                        prop="welcomeEnabled"
                     />
                     {/* <DashboardModule
                         name="Anti-nuke"
@@ -60,7 +71,7 @@ export default function OverviewPage(props: DashboardPageProps) {
                         name="Appeals"
                         description="Allows people to apply for an unban in your server."
                         icon={faPrayingHands}
-                        activeClassName="from-violet-500 via-blue-500 to-cyan-500"
+                        activeClassName="from-blue-500 to-teal-500"
                         serverConfig={serverConfig}
                         disabled={highestRoleType !== RoleType.ADMIN}
                         prop="appealsEnabled"

@@ -5,10 +5,13 @@ import { ServerMember } from "@guildedjs/api/types/generated/router/models/Serve
 import { Colors } from "@yokilabs/utils";
 
 export async function handleWelcome(serverId: string, channelId: string, userId: string) {
+    console.log("A");
     const { member } = await rest.router.members.serverMemberRead({ serverId, userId });
 
+    console.log("Member", member);
     const welcomeUrl = await createWelcomeBanner(member);
 
+    console.log("Welcome URL", { welcomeUrl });
     return rest.router.chat.channelMessageCreate({
         channelId,
         requestBody: {

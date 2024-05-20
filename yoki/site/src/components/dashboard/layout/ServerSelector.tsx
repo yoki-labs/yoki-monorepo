@@ -34,7 +34,7 @@ export class ServerSelector extends React.Component<Props> {
 
     render() {
         const { currentServer, servers, defaultValue } = this.props;
-        console.log("props", this.props);
+
         if (!servers || !Array.isArray(servers)) return null;
         const sortedServers = servers.sort((a, b) => (a.name > b.name ? 1 : a.name < b.name ? -1 : 0));
         

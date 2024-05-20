@@ -8,7 +8,8 @@ import { PremiumType } from "@prisma/client";
 
 export type Props = {
     name: string;
-    icon: IconDefinition;
+    icon?: IconDefinition;
+    iconComponent?: any;
     description: string;
 
     activeClassName: string;
@@ -43,11 +44,11 @@ export default class DashboardModule extends React.Component<Props, { isActive: 
     }
 
     render() {
-        const { name, description, icon, activeClassName, requiresPremium, requiresEarlyAccess, hideBadges: titleBarBadges, disabled, largeHeader } = this.props;
+        const { name, description, icon, iconComponent, activeClassName, requiresPremium, requiresEarlyAccess, hideBadges: titleBarBadges, disabled, largeHeader } = this.props;
         const { isActive } = this.state;
 
         return (
-            <LabsIconCard icon={icon} iconSize={80} iconClassName={isActive ? activeClassName : ""} useFontColor={!isActive}>
+            <LabsIconCard icon={icon} iconComponent={iconComponent} iconSize={80} iconClassName={isActive ? activeClassName : ""} useFontColor={!isActive}>
                 <Box className="grow">
                     <Stack direction="row" gap={4}>
                         <Typography

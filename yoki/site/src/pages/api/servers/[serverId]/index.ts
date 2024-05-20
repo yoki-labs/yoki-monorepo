@@ -73,6 +73,7 @@ const serverConfigRoute = createServerRoute({
                 // Channels
             else if (!(await isBodyChannelPropertyValid(body.appealChannelId))) return getBodyErrorResponse(res, "appealChannelId", "null or channel");
             else if (!(await isBodyChannelPropertyValid(body.antiRaidChallengeChannel))) return getBodyErrorResponse(res, "antiRaidChallengeChannel", "null or channel");
+            else if (!(await isBodyChannelPropertyValid(body.welcomeChannel))) return getBodyErrorResponse(res, "welcomeChannel", "null or channel");
             // Misc numbers
             else if (isBodyPropertyTypeInvalid(body.antiRaidAgeFilter, "number") || body.antiRaidAgeFilter < MIN_ANTIRAID_TIME || body.antiRaidAgeFilter > MAX_ANTIRAID_TIME)
                 return getBodyErrorResponse(res, "antiRaidAgeFilter", "time between 10 minutes and 14 days");
@@ -98,6 +99,7 @@ const serverConfigRoute = createServerRoute({
                 // Channels
                 appealChannelId: typeof body.appealChannelId === "undefined" ? server.appealChannelId : body.appealChannelId,
                 antiRaidChallengeChannel: typeof body.antiRaidChallengeChannel === "undefined" ? server.antiRaidChallengeChannel : body.antiRaidChallengeChannel,
+                welcomeChannel: typeof body.welcomeChannel === "undefined" ? server.welcomeChannel : body.welcomeChannel,
             };
 
             // Remove repetition

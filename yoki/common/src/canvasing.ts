@@ -1,7 +1,12 @@
-import { CanvasRenderingContext2D, createCanvas, loadImage } from "canvas";
+import { CanvasRenderingContext2D, createCanvas, loadImage, registerFont } from "canvas";
 import fetch from "node-fetch";
 import sharp from "sharp";
 import { GuildedImages } from "@yokilabs/utils";
+import path from "path";
+
+export function registerCanvasing() {
+    registerFont(path.join(__dirname, "../..", "node_modules/@fontsource/space-mono/files/space-mono-latin-700-normal.woff"), { family: "Space Mono" });
+}
 
 export async function generateUserJoinBanner(name: string, avatarUrl?: string | null): Promise<Buffer> {
     // const name = "01234567890123456789012345678901";

@@ -39,13 +39,14 @@ import RolesPage from "./overview/Roles";
 import { SanitizedServer } from "../../lib/@types/db";
 import { GuildedServer } from "../../lib/@types/guilded";
 import IgnoresPage from "./automod/Ignores";
-import BotProfilePage from "./overview/BotProfile";
-import AntinukePage from "./entry/Antinuke";
+import { WavingHandRounded } from "@mui/icons-material";
+import WelcomePage from "./entry/Welcome";
 
 export interface DashboardPageItem {
     id: string;
     name: string;
-    icon: IconDefinition;
+    icon?: IconDefinition;
+    iconComponent?: any;
     component: typeof React.Component | ((props: DashboardPageProps) => React.ReactElement);
     category: DashboardPageCategory;
     color?: ColorPaletteProp;
@@ -77,6 +78,7 @@ export const dashboardPageList: DashboardPageItem[] = [
     { id: "ignoring", name: "Ignoring", icon: faGhost, component: IgnoresPage, category: DashboardPageCategory.Automod, requiredRole: RoleType.MOD },
     { id: "modmail", name: "Modmail", icon: faEnvelope, component: ModmailPage, category: DashboardPageCategory.Entry, requiredRole: RoleType.MINIMOD },
     { id: "antiraid", name: "Anti-raid", icon: faShieldHalved, component: AntiraidPage, category: DashboardPageCategory.Entry, requiredRole: RoleType.ADMIN },
+    { id: "welcome", name: "Welcome", iconComponent: WavingHandRounded, component: WelcomePage, category: DashboardPageCategory.Entry,  earlyAccess: true, requiredRole: RoleType.ADMIN },
     { id: "appeals", name: "Appeals", icon: faPrayingHands, component: AppealsPage, category: DashboardPageCategory.Entry, requiredRole: RoleType.MOD },
     // { id: "antinuke", name: "Anti-nuke", icon: faUserSecret, component: AntinukePage, category: DashboardPageCategory.Entry, requiredRole: RoleType.ADMIN, earlyAccess: true },
 ];

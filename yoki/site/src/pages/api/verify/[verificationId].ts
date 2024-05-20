@@ -15,11 +15,11 @@ const PostVerifyRoute = async (req: NextApiRequest, res: NextApiResponse) => {
     const token = req.body.token as string | null;
     const forwarded = req.headers["x-forwarded-for"];
     const ip = typeof forwarded === "string" ? forwarded.split(/, /)[0] : req.socket.remoteAddress;
-
+    
     // Invalid parameters
     if (!token) return res.status(400).json({ error: true, message: "Missing captcha token." });
     if (!ip) return res.status(400).json({ error: true, message: "Missing IP with request." });
-
+    
     // Don't know what captcha to solve
     // While this allows user to complete captcha for someone else, it also doesn't require
     // logging in with Guilded
@@ -34,7 +34,7 @@ const PostVerifyRoute = async (req: NextApiRequest, res: NextApiResponse) => {
     const hashedIp = createHmac("sha256", process.env.HMAC_SECRET!).update(ip).digest("hex");
     const allPossiblePastAccounts = (await prisma.captcha.findMany({ where: { hashedIp } })).map((x) => x.triggeringUser);
     allPossiblePastAccounts.push(captcha.triggeringUser);
-
+    
     // TODO: Use Guilded API instead
     const ban = await prisma.action.findFirst({ where: { serverId: captcha.serverId, targetId: { in: allPossiblePastAccounts }, expired: false, type: "BAN" } });
     if (ban) return res.status(403).json({ error: true, message: "You have been banned from this server." });

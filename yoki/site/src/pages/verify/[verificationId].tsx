@@ -6,7 +6,7 @@ import LandingPage from "../../components/landing/LandingPage";
 import prisma from "../../prisma";
 import { VerificationStatus } from "../../utils/verificationUtil";
 import PagePlaceholder, { PagePlaceholderIcon } from "../../components/PagePlaceholder";
-import { Stack, Typography } from "@mui/joy";
+import { Button, Stack, Typography } from "@mui/joy";
 
 export interface Props {
     id: string | null;
@@ -23,6 +23,7 @@ const VerificationPage: NextPage<Props> = ({ id }) => {
     const captchaReq = async (token: string) => {
         const req = await fetch(`/api/verify/${id}`, { method: "POST", body: JSON.stringify({ token }), headers: { "content-type": "application/json" } });
 
+        console.log("Req", req);
         if (req.ok) setStatus(VerificationStatus.SUCCESS);
         else if (req.status === 403) setStatus(VerificationStatus.BANNED);
         else setStatus(VerificationStatus.FAILED);

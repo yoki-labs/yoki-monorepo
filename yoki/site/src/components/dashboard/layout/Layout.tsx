@@ -59,7 +59,7 @@ export default class Layout extends React.Component<LayoutProps, LayoutState> {
                 breadcrumbs={
                     currentPage &&
                     <Box>
-                        <Typography level="title-lg" fontWeight={500} textColor="text.secondary" startDecorator={<FontAwesomeIcon icon={currentPage.icon} />}>
+                        <Typography level="title-lg" fontWeight={500} textColor="text.secondary" startDecorator={currentPage.icon ? <FontAwesomeIcon icon={currentPage.icon} /> : <currentPage.iconComponent sx={{ color: "inherit" }} />}>
                             {currentPage.name}
                         </Typography>
                     </Box>
