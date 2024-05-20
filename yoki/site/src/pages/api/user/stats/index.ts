@@ -1,4 +1,5 @@
 import { Severity } from "@prisma/client";
+
 import prisma from "../../../../prisma";
 import { createUserRoute } from "../../../../utils/routes/users";
 
@@ -20,7 +21,7 @@ const userAppealsRoute = createUserRoute({
                         not: Severity.NOTE,
                     },
                 },
-            })
+            }),
         ]);
         const awaitingAppeals = appeals.filter((x) => !x.status);
 

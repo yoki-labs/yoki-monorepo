@@ -69,7 +69,18 @@ const Line = styled(`div`, {
 
 export default function CommandDisplay({ command, isSubCommand }: Props) {
     const requiredRoleBadge = command.requiredRole && (
-        <Tooltip title={<>This command requires having a role that is set at <Chip variant="soft" color="primary" size="sm">{command.requiredRole[0]}{command.requiredRole.substring(1).toLowerCase()}</Chip> level or higher</>}>
+        <Tooltip
+            title={
+                <>
+                    This command requires having a role that is set at{" "}
+                    <Chip variant="soft" color="primary" size="sm">
+                        {command.requiredRole[0]}
+                        {command.requiredRole.substring(1).toLowerCase()}
+                    </Chip>{" "}
+                    level or higher
+                </>
+            }
+        >
             <Chip variant="soft" color="primary" startDecorator={<FontAwesomeIcon icon={faShieldHalved} />}>
                 {command.requiredRole[0]}
                 {command.requiredRole.substring(1).toLowerCase()}
@@ -118,15 +129,13 @@ function CommandDisplayArguments({ command }: { command: Command }) {
                             </Box>
                             <Box>
                                 <Stack direction="row" gap={1}>
-                                    {x.values
-                                    ? (
+                                    {x.values ? (
                                         <Tooltip title={<CommandArgumentValues commandName={command.name} argumentIndex={i} values={x.values} />}>
                                             <Typography component="span" level="body-md">
                                                 {argumentTypeToDisplay[x.type]}
                                             </Typography>
                                         </Tooltip>
-                                    )
-                                    : (
+                                    ) : (
                                         <Typography component="span" level="body-md">
                                             {argumentTypeToDisplay[x.type]}
                                         </Typography>
@@ -146,20 +155,20 @@ function CommandDisplayArguments({ command }: { command: Command }) {
     );
 }
 
-function CommandArgumentValues({ commandName, argumentIndex, values }: { commandName: string; argumentIndex: number; values: string[]; }) {
+function CommandArgumentValues({ commandName, argumentIndex, values }: { commandName: string; argumentIndex: number; values: string[] }) {
     return (
         <>
-            <Typography level="title-md" gutterBottom>Argument allows the following:</Typography>
+            <Typography level="title-md" gutterBottom>
+                Argument allows the following:
+            </Typography>
             <List>
-                {values
-                    .map((x, i) =>
-                        <ListItem key={`command.${commandName}.args.${argumentIndex}.tooltip-value.${i}`}>
-                            <Typography level="code" sx={{ width: "max-content" }}>
-                                {x.toLowerCase()}
-                            </Typography>
-                        </ListItem>
-                    )
-                }
+                {values.map((x, i) => (
+                    <ListItem key={`command.${commandName}.args.${argumentIndex}.tooltip-value.${i}`}>
+                        <Typography level="code" sx={{ width: "max-content" }}>
+                            {x.toLowerCase()}
+                        </Typography>
+                    </ListItem>
+                ))}
             </List>
         </>
     );

@@ -28,8 +28,7 @@ export default [
             if (!isUUID(id)) return null;
 
             return message.client.channels.fetch(id).catch(() => null);
-        }
-        else if (isUUID(input)) {
+        } else if (isUUID(input)) {
             return message.client.channels.fetch(input).catch(() => null);
         }
 

@@ -33,11 +33,7 @@ const Channel: Command = {
         }
 
         await ctx.prisma.server.update({ where: { id: commandCtx.server.id }, data: { actionNotificationChannel: channel.id } });
-        return ctx.messageUtil.replyWithSuccess(
-            message,
-            "Action channel successfully set",
-            `You have now set the action notification channel to \`${channel.name}\`.`
-        );
+        return ctx.messageUtil.replyWithSuccess(message, "Action channel successfully set", `You have now set the action notification channel to \`${channel.name}\`.`);
     },
 };
 

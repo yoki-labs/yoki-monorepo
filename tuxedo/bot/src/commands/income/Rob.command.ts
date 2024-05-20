@@ -132,7 +132,10 @@ async function handleFailState(ctx: TuxoClient, message: Message, executorInfo: 
         })
     );
 
-    return ctx.messageUtil.replyWithWarningInline(message, `You were caught trying to pickpocket and you were fined ${newBalance.map((x) => displayCurrencyAmountInline(x.currency, x.change)).join(", ")}.`);
+    return ctx.messageUtil.replyWithWarningInline(
+        message,
+        `You were caught trying to pickpocket and you were fined ${newBalance.map((x) => displayCurrencyAmountInline(x.currency, x.change)).join(", ")}.`
+    );
 }
 
 async function handleSuccessState(
@@ -172,7 +175,10 @@ async function handleSuccessState(
         ),
     ]);
 
-    return ctx.messageUtil.replyWithSuccessInline(message, `You pickpocketed <@${target.id}> (\`${target.id}\`) and stole ${newBalance.map((x) => displayCurrencyAmountInline(x.currency, x.change)).join(", ")} from them.`);
+    return ctx.messageUtil.replyWithSuccessInline(
+        message,
+        `You pickpocketed <@${target.id}> (\`${target.id}\`) and stole ${newBalance.map((x) => displayCurrencyAmountInline(x.currency, x.change)).join(", ")} from them.`
+    );
 }
 
 export default Rob;

@@ -41,7 +41,7 @@ export default {
             content: message.content,
             mentions: message.mentions,
             resultingAction: () => ctx.messages.delete(message.channelId, message.id),
-        })
+        });
 
         // get the log channel for message updates
         const updatedMessageLogChannel = await ctx.dbUtil.getLogChannel(message.serverId!, LogChannelType.message_edits);

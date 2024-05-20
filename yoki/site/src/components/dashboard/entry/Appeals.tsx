@@ -120,9 +120,13 @@ export default class AppealsPage extends React.Component<DashboardPageProps, Sta
                     <Card>
                         <CardContent>
                             <Box>
-                                <Typography level="title-md" sx={{ mb: 1 }}>Server's appeal link</Typography>
+                                <Typography level="title-md" sx={{ mb: 1 }}>
+                                    Server's appeal link
+                                </Typography>
                                 <LabsCopyInput text={`https://yoki.gg/appeals/${serverConfig.serverId}`} sx={{ width: "max-content" }} />
-                                <Typography level="body-sm" sx={{ mt: 1 }}>Leave a link in your server to allow users to appeal bans in the server.</Typography>
+                                <Typography level="body-sm" sx={{ mt: 1 }}>
+                                    Leave a link in your server to allow users to appeal bans in the server.
+                                </Typography>
                             </Box>
                         </CardContent>
                     </Card>

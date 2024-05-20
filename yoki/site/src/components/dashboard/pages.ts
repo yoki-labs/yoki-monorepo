@@ -1,6 +1,5 @@
 import {
     faBan,
-    faBrush,
     faClipboardUser,
     faCommentDots,
     faCrown,
@@ -15,14 +14,15 @@ import {
     faPrayingHands,
     faShieldHalved,
     faTicket,
-    faUserSecret,
     IconDefinition,
 } from "@fortawesome/free-solid-svg-icons";
+import { WavingHandRounded } from "@mui/icons-material";
 import { ColorPaletteProp } from "@mui/joy";
 import { RoleType } from "@prisma/client";
 import React from "react";
 
 import AutomodPage from "./automod/Automod";
+import IgnoresPage from "./automod/Ignores";
 import ImagesPage from "./automod/Images";
 import InvitesPage from "./automod/Invites";
 import PhrasesPage from "./automod/Phrases";
@@ -31,6 +31,7 @@ import LinksPage from "./automod/Urls";
 import AntiraidPage from "./entry/Antiraid";
 import AppealsPage from "./entry/Appeals";
 import ModmailPage from "./entry/Modmail";
+import WelcomePage from "./entry/Welcome";
 import HistoryPage from "./moderation/History";
 import LogsPage from "./moderation/Logs";
 import OverviewPage from "./overview/Overview";
@@ -38,15 +39,12 @@ import ConfigPage from "./overview/Premium";
 import RolesPage from "./overview/Roles";
 import { SanitizedServer } from "../../lib/@types/db";
 import { GuildedServer } from "../../lib/@types/guilded";
-import IgnoresPage from "./automod/Ignores";
-import { WavingHandRounded } from "@mui/icons-material";
-import WelcomePage from "./entry/Welcome";
 
 export interface DashboardPageItem {
     id: string;
     name: string;
     icon?: IconDefinition;
-    iconComponent?: any;
+    iconComponent?: { muiName: string };
     component: typeof React.Component | ((props: DashboardPageProps) => React.ReactElement);
     category: DashboardPageCategory;
     color?: ColorPaletteProp;
@@ -78,7 +76,15 @@ export const dashboardPageList: DashboardPageItem[] = [
     { id: "ignoring", name: "Ignoring", icon: faGhost, component: IgnoresPage, category: DashboardPageCategory.Automod, requiredRole: RoleType.MOD },
     { id: "modmail", name: "Modmail", icon: faEnvelope, component: ModmailPage, category: DashboardPageCategory.Entry, requiredRole: RoleType.MINIMOD },
     { id: "antiraid", name: "Anti-raid", icon: faShieldHalved, component: AntiraidPage, category: DashboardPageCategory.Entry, requiredRole: RoleType.ADMIN },
-    { id: "welcome", name: "Welcome", iconComponent: WavingHandRounded, component: WelcomePage, category: DashboardPageCategory.Entry,  earlyAccess: true, requiredRole: RoleType.ADMIN },
+    {
+        id: "welcome",
+        name: "Welcome",
+        iconComponent: WavingHandRounded,
+        component: WelcomePage,
+        category: DashboardPageCategory.Entry,
+        earlyAccess: true,
+        requiredRole: RoleType.ADMIN,
+    },
     { id: "appeals", name: "Appeals", icon: faPrayingHands, component: AppealsPage, category: DashboardPageCategory.Entry, requiredRole: RoleType.MOD },
     // { id: "antinuke", name: "Anti-nuke", icon: faUserSecret, component: AntinukePage, category: DashboardPageCategory.Entry, requiredRole: RoleType.ADMIN, earlyAccess: true },
 ];

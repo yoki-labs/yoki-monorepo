@@ -1,4 +1,4 @@
-import { faCheckDouble, faPrayingHands, faUserCircle, IconDefinition } from "@fortawesome/free-solid-svg-icons";
+import { faPrayingHands, faUserCircle, IconDefinition } from "@fortawesome/free-solid-svg-icons";
 import { ColorPaletteProp } from "@mui/joy";
 import React from "react";
 

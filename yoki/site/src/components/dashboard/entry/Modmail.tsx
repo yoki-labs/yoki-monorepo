@@ -121,9 +121,8 @@ export default class ModmailPage extends React.Component<DashboardPageProps, Sta
                         </Typography>
                         <Card>
                             <CardContent>
-                                {
-                                    modmailInfoFetched
-                                    ? <LabsForm
+                                {modmailInfoFetched ? (
+                                    <LabsForm
                                         id="modmail-config"
                                         sections={[
                                             {
@@ -159,11 +158,16 @@ export default class ModmailPage extends React.Component<DashboardPageProps, Sta
                                             },
                                         ]}
                                         onSubmit={({ channelId, messageId, emoteId }) =>
-                                            this.modifyModmailInfo(channelId as string | null | undefined, messageId as string | null | undefined, emoteId as number | null | undefined)
+                                            this.modifyModmailInfo(
+                                                channelId as string | null | undefined,
+                                                messageId as string | null | undefined,
+                                                emoteId as number | null | undefined
+                                            )
                                         }
                                     />
-                                    : <ModmailInfoCardSkeleton />
-                                }
+                                ) : (
+                                    <ModmailInfoCardSkeleton />
+                                )}
                             </CardContent>
                         </Card>
                     </Box>
@@ -249,5 +253,5 @@ function ModmailInfoCardSkeleton() {
                 </Typography>
             </Box>
         </Stack>
-    )
+    );
 }

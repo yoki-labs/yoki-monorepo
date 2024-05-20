@@ -35,10 +35,11 @@ export default function LabsIconCard(props: Props) {
                         }`}
                     >
                         <div className="flex grow flex-col items-center">
-                            { icon
-                                ? <FontAwesomeIcon className={`margin-auto w-9 h-9`} icon={icon} />
-                                : <props.iconComponent className={`margin-auto w-9 h-9`} sx={{ color: "inherit" }} />
-                            }
+                            {icon ? (
+                                <FontAwesomeIcon className={`margin-auto w-9 h-9`} icon={icon} />
+                            ) : (
+                                <props.iconComponent className={`margin-auto w-9 h-9`} sx={{ color: "inherit" }} />
+                            )}
                         </div>
                     </IconCardIconWrapper>
                 </Box>

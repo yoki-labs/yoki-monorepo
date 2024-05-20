@@ -1,9 +1,9 @@
+import { PremiumType, Server } from "@prisma/client";
 import { createServerLimit, inlineQuote } from "@yokilabs/bot";
 import { isHashId } from "@yokilabs/utils";
 
 import { RoleType } from "../../../typings";
 import { Category, Command } from "../../commands";
-import { PremiumType, Server } from "@prisma/client";
 
 const getServerLimit = createServerLimit<PremiumType, Server>({
     Gold: 200,

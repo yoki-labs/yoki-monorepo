@@ -1,5 +1,18 @@
 import { faGuilded } from "@fortawesome/free-brands-svg-icons";
-import { faCheckDouble, faClipboardCheck, faEnvelope, faExclamation, faHashtag, faLayerGroup, faMessage, faPrayingHands, faRobot, faShieldHalved, faUsers, faUserSecret } from "@fortawesome/free-solid-svg-icons";
+import {
+    faCheckDouble,
+    faClipboardCheck,
+    faEnvelope,
+    faExclamation,
+    faHashtag,
+    faLayerGroup,
+    faMessage,
+    faPrayingHands,
+    faRobot,
+    faShieldHalved,
+    faUsers,
+    faUserSecret,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Box, Button, Chip, Link, List, Stack, Typography } from "@mui/joy";
 import { Colors } from "@yokilabs/utils";
@@ -197,7 +210,11 @@ const Home: NextPage<LandingPageSessionProps> = ({ user }) => {
                             <GuildedContentWrapper>
                                 <GuildedChatMasked>
                                     <GuildedMessage name="Yoki" bot>
-                                        <GuildedEmbed author={`Alex \u2022 User joined`} color={`#${Colors.yellow.toString(16)}`} footer={<Typography textColor="text.tertiary">Aug 27, 2023</Typography>}>
+                                        <GuildedEmbed
+                                            author={`Alex \u2022 User joined`}
+                                            color={`#${Colors.yellow.toString(16)}`}
+                                            footer={<Typography textColor="text.tertiary">Aug 27, 2023</Typography>}
+                                        >
                                             {/* <GuildedEmbedField title="User joined">
                                             </GuildedEmbedField> */}
                                             <Typography textColor="text.primary">
@@ -218,7 +235,11 @@ const Home: NextPage<LandingPageSessionProps> = ({ user }) => {
                                                 </Typography>
                                             </GuildedEmbedField>
                                         </GuildedEmbed>
-                                        <GuildedEmbed author={`Sean \u2022 User warned`} color={`#${Colors.red.toString(16)}`} footer={<Typography textColor="text.tertiary">Aug 27, 2023</Typography>}>
+                                        <GuildedEmbed
+                                            author={`Sean \u2022 User warned`}
+                                            color={`#${Colors.red.toString(16)}`}
+                                            footer={<Typography textColor="text.tertiary">Aug 27, 2023</Typography>}
+                                        >
                                             {/* <GuildedEmbedField title="User warned">
                                             </GuildedEmbedField> */}
                                             <Typography textColor="text.primary">

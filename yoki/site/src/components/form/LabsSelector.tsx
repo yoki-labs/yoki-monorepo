@@ -41,9 +41,7 @@ export default class LabsSelector extends React.Component<Props, State> {
                         {value.avatarIcon && <Avatar size="sm" src={value.avatarIcon} />}
                     </ListItemDecorator>
                 )}
-                <Typography sx={{ color: value.color ? `#${value.color.toString(16)}` : "inherit" }}>
-                    {value.name}
-                </Typography>
+                <Typography sx={{ color: value.color ? `#${value.color.toString(16)}` : "inherit" }}>{value.name}</Typography>
             </>
         );
     }
@@ -81,24 +79,24 @@ export default class LabsSelector extends React.Component<Props, State> {
                     renderValue={this.renderOption.bind(this)}
                     variant="outlined"
                 >
-                    {field.selectableValues?.map((value, i) => (
-                        value.type === "divider"
-                        ? <Divider sx={{ my: 1 }} />
-                        : <Option key={`${id}.option-${i}`} disabled={value.disabled} value={value.value}>
-                            {(value.icon || value.avatarIcon) && (
-                                <ListItemDecorator sx={{ width: 40 }}>
-                                    {value.icon && <FontAwesomeIcon icon={value.icon} />}
-                                    {value.avatarIcon && <Avatar size="sm" src={value.avatarIcon} />}
-                                </ListItemDecorator>
-                            )}
-                            <Box>
-                                <Typography sx={{ color: value.color ? `#${value.color.toString(16)}` : "inherit" }}>
-                                    {value.name}
-                                </Typography>
-                                {value.description && <Typography textColor="text.tertiary">{value.description}</Typography>}
-                            </Box>
-                        </Option>
-                    ))}
+                    {field.selectableValues?.map((value, i) =>
+                        value.type === "divider" ? (
+                            <Divider sx={{ my: 1 }} />
+                        ) : (
+                            <Option key={`${id}.option-${i}`} disabled={value.disabled} value={value.value}>
+                                {(value.icon || value.avatarIcon) && (
+                                    <ListItemDecorator sx={{ width: 40 }}>
+                                        {value.icon && <FontAwesomeIcon icon={value.icon} />}
+                                        {value.avatarIcon && <Avatar size="sm" src={value.avatarIcon} />}
+                                    </ListItemDecorator>
+                                )}
+                                <Box>
+                                    <Typography sx={{ color: value.color ? `#${value.color.toString(16)}` : "inherit" }}>{value.name}</Typography>
+                                    {value.description && <Typography textColor="text.tertiary">{value.description}</Typography>}
+                                </Box>
+                            </Option>
+                        )
+                    )}
                 </Select>
             </>
         );

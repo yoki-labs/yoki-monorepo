@@ -1,8 +1,8 @@
 import { RoleType } from "@prisma/client";
 
 import prisma from "../../../../../prisma";
-import { createServerRoute } from "../../../../../utils/routes/servers";
 import { getServerTextChannels } from "../../../../../utils/routes/route";
+import { createServerRoute } from "../../../../../utils/routes/servers";
 
 const serverIgnoresRoute = createServerRoute({
     requiredRoles: {

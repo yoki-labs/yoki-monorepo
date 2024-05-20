@@ -11,7 +11,7 @@ export interface RichMarkupValue extends RichMarkupNode<"value"> {
 }
 
 export interface RichMarkupDocument extends RichMarkupNode<"document"> {
-    data: {};
+    data: unknown;
     nodes: RichMarkupBlockElement[];
 }
 
@@ -45,7 +45,7 @@ export interface RichMarkupElement<TObject extends RichMarkupObject, TType exten
 
 export interface RichMarkupParagraph extends RichMarkupElement<"block", "paragraph", RichMarkupText | RichMarkupInlineElement, unknown> {}
 export interface RichMarkupCodeLine extends RichMarkupElement<"block", "code-line", RichMarkupText, unknown> {}
-export interface RichMarkupCodeContainer extends RichMarkupElement<"block", "code-container", RichMarkupCodeLine, { language: "unformatted" | "javascript"; }> {}
+export interface RichMarkupCodeContainer extends RichMarkupElement<"block", "code-container", RichMarkupCodeLine, { language: "unformatted" | "javascript" }> {}
 
 export type RichMarkupBlockElement = RichMarkupParagraph | RichMarkupCodeContainer;
 
@@ -70,7 +70,7 @@ export interface RichMarkupEmote
         }
     > {}
 
-export interface RichMarkupLink extends RichMarkupElement<"inline", "link", RichMarkupText, { href: string; }> {}
+export interface RichMarkupLink extends RichMarkupElement<"inline", "link", RichMarkupText, { href: string }> {}
 
 export interface RichMarkupUserMention
     extends RichMarkupElement<

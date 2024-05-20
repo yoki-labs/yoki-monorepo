@@ -35,11 +35,7 @@ const Set: Command = {
         //         "Please ensure that the provided ID belongs to a channel that I can see! I also require `MANAGE CHANNEL` permissions to be able to grab that channel!"
         //     );
         if (!(channel.type & chatChannelTypes))
-            return ctx.messageUtil.replyWithError(
-                message,
-                "Not a chat channel",
-                "The provided channel is not a chat channel, voice channenl or streaming channel."
-            );  
+            return ctx.messageUtil.replyWithError(message, "Not a chat channel", "The provided channel is not a chat channel, voice channenl or streaming channel.");
 
         // If there are logTypes, uppercase them all, then filter out duplicates. No idea why this had to specifically be two different lines.
         if (logTypes && logTypes.length > 0) {
@@ -52,11 +48,7 @@ const Set: Command = {
         }
 
         try {
-            await ctx.messageUtil.send(channel.id, "Checking for permission to send here...")
-                .then((x) =>
-                    ctx.messages.delete(channel.id, x.id)
-                        .catch(() => null)
-                );
+            await ctx.messageUtil.send(channel.id, "Checking for permission to send here...").then((x) => ctx.messages.delete(channel.id, x.id).catch(() => null));
         } catch (e) {
             return ctx.messageUtil.replyWithError(
                 message,

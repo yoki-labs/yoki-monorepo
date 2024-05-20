@@ -19,5 +19,10 @@ const sanitizeSingleUserDetail = ({ id, name, nickname, subdomain, profilePictur
     type,
 });
 
-export const transformToApiServer = ({ id, name, subdomain, profilePicture, homeBannerImageMd }: GuildedClientServer): GuildedServer =>
-    ({ id, name, url: subdomain, avatar: profilePicture ?? undefined, banner: homeBannerImageMd ?? undefined });
+export const transformToApiServer = ({ id, name, subdomain, profilePicture, homeBannerImageMd }: GuildedClientServer): GuildedServer => ({
+    id,
+    name,
+    url: subdomain,
+    avatar: profilePicture ?? undefined,
+    banner: homeBannerImageMd ?? undefined,
+});

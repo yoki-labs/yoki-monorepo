@@ -129,9 +129,7 @@ export default class RolesPage extends React.Component<DashboardPageProps, State
                     <Typography level="h3" gutterBottom>
                         Roles
                     </Typography>
-                    <Typography level="body-sm">
-                        Configure the level of management roles have access to in Yoki.
-                    </Typography>
+                    <Typography level="body-sm">Configure the level of management roles have access to in Yoki.</Typography>
                 </Box>
                 <Card sx={{ mb: 4 }}>
                     <CardContent>
@@ -175,9 +173,7 @@ function RolesPageSkeleton() {
                     <Skeleton animation="wave">Roles</Skeleton>
                 </Typography>
                 <Typography level="body-sm">
-                    <Skeleton animation="wave">
-                        Configure the level of management roles have access to in Yoki.
-                    </Skeleton>
+                    <Skeleton animation="wave">Configure the level of management roles have access to in Yoki.</Skeleton>
                 </Typography>
             </Box>
             <Card sx={{ mb: 4 }}>

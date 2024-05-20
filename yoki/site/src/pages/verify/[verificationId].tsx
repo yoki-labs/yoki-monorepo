@@ -56,14 +56,18 @@ const VerificationPage: NextPage<Props> = ({ id }) => {
 
     return (
         <VerificationPageWrapper>
-            <Typography level="h2" gutterBottom>Verification</Typography>
-            <Typography level="body-md" sx={{ mb: 2 }}>We are checking whether you're a bot. Please solve the captcha:</Typography>
+            <Typography level="h2" gutterBottom>
+                Verification
+            </Typography>
+            <Typography level="body-md" sx={{ mb: 2 }}>
+                We are checking whether you're a bot. Please solve the captcha:
+            </Typography>
             <Turnstile className="flex justify-center" sitekey={process.env.NEXT_PUBLIC_CLOUDFLARE_TURNSTILE_SITE_KEY!} onVerify={(token) => captchaReq(token)} />
         </VerificationPageWrapper>
     );
 };
 
-function VerificationPageWrapper({ children }: { children: ReactNode | ReactNode[]; }) {
+function VerificationPageWrapper({ children }: { children: ReactNode | ReactNode[] }) {
     return (
         <LandingPage>
             <Stack direction="row" alignItems="center" sx={{ flex: "1" }}>

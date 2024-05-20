@@ -1,4 +1,4 @@
-import { ResolvedEnum, inlineCode } from "@yokilabs/bot";
+import { inlineCode, ResolvedEnum } from "@yokilabs/bot";
 
 import { RoleType } from "../../typings";
 import { typeToDBPropMap } from "../../utils/util";
@@ -20,19 +20,19 @@ const Disable: Command = {
         },
     ],
     execute: (message, args, ctx, commandCtx) => {
-        const module = args.module as ResolvedEnum;
-        void ctx.amp.logEvent({ event_type: "MODULE_DISABLE", user_id: message.authorId, event_properties: { serverId: message.serverId!, module: module.resolved } });
+        const moduleArg = args.module as ResolvedEnum;
+        void ctx.amp.logEvent({ event_type: "MODULE_DISABLE", user_id: message.authorId, event_properties: { serverId: message.serverId!, module: moduleArg.resolved } });
 
         return ctx.prisma.server
             .update({
                 where: { id: commandCtx.server.id },
-                data: { [module.resolved]: false },
+                data: { [moduleArg.resolved]: false },
             })
-            .then(() => ctx.messageUtil.replyWithSuccess(message, `Module disabled`, `Successfully disabled the ${inlineCode(module)} module for this server.`))
+            .then(() => ctx.messageUtil.replyWithSuccess(message, `Module disabled`, `Successfully disabled the ${inlineCode(moduleArg)} module for this server.`))
             .catch((e: Error) =>
                 ctx.messageUtil.replyWithUnexpected(
                     message,
-                    `There was an issue disabling the ${module} module for your server. Please forward this error to bot staff: ${inlineCode(e.message)}`
+                    `There was an issue disabling the ${moduleArg.resolved} module for your server. Please forward this error to bot staff: ${inlineCode(e.message)}`
                 )
             );
     },

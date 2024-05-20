@@ -70,7 +70,7 @@ const serverConfigRoute = createServerRoute({
             // Enums
             else if (isBodyEnumPropertyInvalid(body.linkSeverity, availableSeverityValues)) return getBodyErrorResponse(res, "linkSeverity", "severity");
             else if (isBodyEnumPropertyInvalid(body.antiRaidResponse, availableResponse)) return getBodyErrorResponse(res, "antiRaidResponse", "response type");
-                // Channels
+            // Channels
             else if (!(await isBodyChannelPropertyValid(body.appealChannelId))) return getBodyErrorResponse(res, "appealChannelId", "null or channel");
             else if (!(await isBodyChannelPropertyValid(body.antiRaidChallengeChannel))) return getBodyErrorResponse(res, "antiRaidChallengeChannel", "null or channel");
             else if (!(await isBodyChannelPropertyValid(body.welcomeChannel))) return getBodyErrorResponse(res, "welcomeChannel", "null or channel");

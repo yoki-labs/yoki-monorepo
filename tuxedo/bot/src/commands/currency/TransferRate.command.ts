@@ -50,7 +50,11 @@ const Max: Command = {
 
         await ctx.dbUtil.updateCurrency(currency, { transferRate: value });
 
-        return ctx.messageUtil.replyWithSuccess(message, "Transfer rate set", `Currency with the tag ${inlineQuote(tag)} now has transfer rate of ${inlineQuote(`${value * 100}%`)}.`);
+        return ctx.messageUtil.replyWithSuccess(
+            message,
+            "Transfer rate set",
+            `Currency with the tag ${inlineQuote(tag)} now has transfer rate of ${inlineQuote(`${value * 100}%`)}.`
+        );
     },
 };
 

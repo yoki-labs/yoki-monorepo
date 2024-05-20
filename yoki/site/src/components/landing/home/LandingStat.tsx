@@ -14,9 +14,15 @@ export default function LandingStat({ icon, subtitle, amount: numbers, what }: P
     return (
         <Card>
             <CardContent sx={{ py: 2, px: 4 }}>
-                <Typography level="body-md" sx={{ textAlign: "center" }}>{subtitle}</Typography>
+                <Typography level="body-md" sx={{ textAlign: "center" }}>
+                    {subtitle}
+                </Typography>
                 <Typography level="h3" fontWeight="normal" sx={{ textAlign: "center" }}>
-                    <FontAwesomeIcon icon={icon} />{" "}<Typography fontWeight="bolder" sx={{ ml: 1 }}>{numbers}</Typography>{" "}{what}
+                    <FontAwesomeIcon icon={icon} />{" "}
+                    <Typography fontWeight="bolder" sx={{ ml: 1 }}>
+                        {numbers}
+                    </Typography>{" "}
+                    {what}
                 </Typography>
             </CardContent>
         </Card>

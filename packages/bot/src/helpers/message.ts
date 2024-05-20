@@ -7,10 +7,10 @@ import { Embed, Message, MessageContent } from "guilded.js";
 import type { AbstractClient } from "../Client";
 import type { BaseCommand, CommandArgument } from "../commands/command-typings";
 import type { IServer } from "../db-types";
+import { emoteNameToId } from "../utils/emotes";
 import { inlineCode, listInlineCode } from "../utils/formatting";
 import { RichMarkupBlockElement } from "../utils/rich-types";
 import { Util } from "./util";
-import { emoteNameToId } from "../utils/emotes";
 
 type MessageBody = Omit<RestBody<RestPath<"/channels/{channelId}/messages">["post"]>, "embeds" | "content"> & { embeds?: Embed[]; content?: string };
 
@@ -95,7 +95,7 @@ export class MessageUtil<
             {
                 fields: [this.createUsageField(command, prefix)],
             }
-            );
+        );
     }
     // #endregion
 
@@ -314,11 +314,7 @@ export class MessageUtil<
     }
 
     replyWithSuccessInline(message: Message, content: string, messagePartial?: Partial<MessageBody>) {
-        return this.reply(
-            message,
-            `<::${emoteNameToId.YokiLabsCheckbox}> ${content}`,
-            messagePartial
-        );
+        return this.reply(message, `<::${emoteNameToId.YokiLabsCheckbox}> ${content}`, messagePartial);
     }
 
     // Value blocks
@@ -367,13 +363,9 @@ export class MessageUtil<
     }
 
     replyWithWarningInline(message: Message, content: string, messagePartial?: Partial<MessageBody>) {
-        return this.reply(
-            message,
-            `<::${emoteNameToId.YokiLabsExclamationbox}> ${content}`,
-            messagePartial
-        );
+        return this.reply(message, `<::${emoteNameToId.YokiLabsExclamationbox}> ${content}`, messagePartial);
     }
-    
+
     sendWarningBlock(channelId: string, title: string, description: string, embedPartial?: EmbedPayload, messagePartial?: Partial<MessageBody>) {
         const embed = {
             author: { name: title, icon_url: BotImages.exclamationmark },
@@ -383,11 +375,7 @@ export class MessageUtil<
             ...embedPartial,
         };
 
-        return this.sendEmbed(
-            channelId,
-            embed,
-            messagePartial
-        );
+        return this.sendEmbed(channelId, embed, messagePartial);
     }
 
     replyWithError(message: Message, title: string, description: string, embedPartial?: EmbedPayload, messagePartial?: Partial<MessageBody>) {
@@ -405,11 +393,7 @@ export class MessageUtil<
     }
 
     replyWithErrorInline(message: Message, content: string, messagePartial?: Partial<MessageBody>) {
-        return this.reply(
-            message,
-            `<::${emoteNameToId.YokiLabsCrossbox}> ${content}`,
-            messagePartial
-        );
+        return this.reply(message, `<::${emoteNameToId.YokiLabsCrossbox}> ${content}`, messagePartial);
     }
 
     sendErrorBlock(channelId: string, title: string, description: string, embedPartial?: EmbedPayload, messagePartial?: Partial<MessageBody>) {

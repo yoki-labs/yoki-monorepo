@@ -4,23 +4,22 @@ import type { TestClient } from "../../Client";
 import type { Command, GEvent, Server } from "../../typings";
 import { RoleType, roleTypeValues } from "../../util/fakes";
 
-const { parseCommand, fetchCommandInfo, resolveArguments, checkUserPermissions, tryExecuteCommand } = createCommandHandler<TestClient, Server, Command, RoleType>(
-    roleTypeValues
-);
+const { parseCommand, fetchCommandInfo, resolveArguments, checkUserPermissions, tryExecuteCommand } = createCommandHandler<TestClient, Server, Command, RoleType>(roleTypeValues);
 
 // Fetches minimod/mod/admin roles
-const fetchServerRoles = (ctx: TestClient, serverId: string): Promise<IRole<RoleType>[]> => Promise.resolve([
-    {
-        serverId,
-        roleId: ctx.mainServerDevRoleId,
-        type: "ADMIN",
-    }
-]);
+const fetchServerRoles = (ctx: TestClient, serverId: string): Promise<IRole<RoleType>[]> =>
+    Promise.resolve([
+        {
+            serverId,
+            roleId: ctx.mainServerDevRoleId,
+            type: "ADMIN",
+        },
+    ]);
 
 export default {
     execute: async (args) => {
         const [message, ctx] = args;
- 
+
         console.log("Message content", { content: message.content, mentions: message.mentions });
 
         if (message.createdByWebhookId || message.authorId === ctx.user!.id || message.authorId === "Ann6LewA" || !message.serverId) return;
@@ -30,8 +29,7 @@ export default {
         if (!parsed) return;
         let { command, args: parsedArgs } = parsed;
 
-        if (!command)
-            return;
+        if (!command) return;
 
         const member = await ctx.members.fetch(message.serverId!, message.authorId).catch(() => null);
         if (!member) return;

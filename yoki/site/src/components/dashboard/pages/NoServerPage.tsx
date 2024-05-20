@@ -22,7 +22,9 @@ export default function NoServerPage({ currentServer }: Props) {
                 {/* <ServerDisplay id={currentServer.id} name={currentServer.name} avatar={currentServer.avatar} banner={currentServer.banner} url={currentServer.url} /> */}
                 <Stack gap={2} direction="row">
                     <LabsButton>Invite Yoki</LabsButton>
-                    <Button variant="outlined" color="primary">Go back</Button>
+                    <Button variant="outlined" color="primary">
+                        Go back
+                    </Button>
                 </Stack>
                 <Alert color="primary" variant="soft" startDecorator={<FontAwesomeIcon icon={faInfoCircle} />} sx={{ mt: 12 }}>
                     <Box sx={{ alignItems: "baseline" }}>

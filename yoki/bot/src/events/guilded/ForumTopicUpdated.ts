@@ -63,8 +63,9 @@ export default {
             },
             // title: "Forum Topic Edited",
             serverId: server.serverId,
-            description: `The forum topic ${inlineQuote(forumTopic.title)} by <@${forumTopic.createdBy}> (${inlineCode(forumTopic.createdBy)}) has been edited in [#${channel.name
-                }](${channelURL}).`,
+            description: `The forum topic ${inlineQuote(forumTopic.title)} by <@${forumTopic.createdBy}> (${inlineCode(forumTopic.createdBy)}) has been edited in [#${
+                channel.name
+            }](${channelURL}).`,
             color: Colors.yellow,
             additionalInfo: stripIndents`
                 **When:** ${server.formatTimezone(forumTopic.updatedAt!)}

@@ -25,11 +25,10 @@ export default class ProfileOverviewPage extends React.Component<ProfilePageProp
         return fetch(`/api/user/stats`, {
             method: "GET",
             headers: { "content-type": "application/json" },
-        })
-            .then((response) => {
-                if (!response.ok) throw response;
-                return response.json();
-            });
+        }).then((response) => {
+            if (!response.ok) throw response;
+            return response.json();
+        });
     }
 
     async componentDidMount(): Promise<void> {
@@ -43,7 +42,7 @@ export default class ProfileOverviewPage extends React.Component<ProfilePageProp
                 this.setState({ isLoaded: true });
 
                 return notifyFetchError("Error while fetching user stats", error);
-            })
+            });
     }
 
     render() {
@@ -61,17 +60,19 @@ export default class ProfileOverviewPage extends React.Component<ProfilePageProp
                         ) : (
                             <FakeImage ratio={8} number={user.id.charCodeAt(0) % 10} />
                         )}
-                        <Box sx={{
-                            borderRadius: "100%",
-                            bgcolor: "background.level1",
-                            position: "absolute",
-                            left: 20,
-                            bottom: 0,
-                            transform: "translateY(90%)",
-                            width: 90,
-                            height: 90,
-                            p: 1,
-                        }}>
+                        <Box
+                            sx={{
+                                borderRadius: "100%",
+                                bgcolor: "background.level1",
+                                position: "absolute",
+                                left: 20,
+                                bottom: 0,
+                                transform: "translateY(90%)",
+                                width: 90,
+                                height: 90,
+                                p: 1,
+                            }}
+                        >
                             <Avatar sx={{ "--Avatar-size": "100%" }} size="lg" src={user.avatar ?? void 0} />
                         </Box>
                     </CardOverflow>
@@ -86,15 +87,15 @@ export default class ProfileOverviewPage extends React.Component<ProfilePageProp
                         </Box>
                     </CardContent>
                 </Card>
-                {
-                    isLoaded
-                    ? <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-8">
+                {isLoaded ? (
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-8">
                         <ProfileStat amount={cases} what="cases in total" />
                         <ProfileStat amount={appeals} what="appeals in total" />
                         <ProfileStat amount={awaitingAppeals} what="appeals pending" />
                     </div>
-                    : <LinearProgress />
-                }
+                ) : (
+                    <LinearProgress />
+                )}
             </Stack>
         );
     }

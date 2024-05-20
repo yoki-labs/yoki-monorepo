@@ -2,8 +2,8 @@ import { Collection } from "@discordjs/collection";
 import { RoleType } from "@prisma/client";
 
 import { Category, Command } from "../commands";
-import Severity from "./Severity.command";
 import Confidence from "./Confidence.command";
+import Severity from "./Severity.command";
 
 const Nsfw: Command = {
     name: "nsfw",

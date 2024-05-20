@@ -1,15 +1,15 @@
 import { LogChannelType, ModmailThread, ReactionActionType } from "@prisma/client";
+import { generateUserJoinBanner } from "@yoki/common";
 import { inlineCode, Util } from "@yokilabs/bot";
 import { createRoleMentionElement, createTextElement, createUserMentionElement, emptyText } from "@yokilabs/bot/dist/src/utils/rich";
 import { Colors } from "@yokilabs/utils";
 import { stripIndents } from "common-tags";
+import { Member } from "guilded.js";
 import { nanoid } from "nanoid";
 
 import type YokiClient from "../Client";
 import type { LogChannel, Server } from "../typings";
 import { errorLoggerS3, uploadS3 } from "../utils/s3";
-import { Member } from "guilded.js";
-import { generateUserJoinBanner } from "@yoki/common";
 
 export default class SupportUtil extends Util<YokiClient> {
     async handleWelcome(server: Server, member: Member) {

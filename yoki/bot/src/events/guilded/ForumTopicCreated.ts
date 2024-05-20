@@ -1,9 +1,9 @@
+import { ContentIgnoreType } from "@prisma/client";
 import { UserType } from "guilded.js";
 
 import { FilteredContent } from "../../modules/content-filter";
 import { GEvent, LogChannelType } from "../../typings";
 import { moderateContent } from "../../utils/moderation";
-import { ContentIgnoreType } from "@prisma/client";
 
 export default {
     execute: async ([forumTopic, ctx]) => {
@@ -33,7 +33,7 @@ export default {
             filteredContent: FilteredContent.ChannelContent,
             content: `${forumTopic.title}\n${forumTopic.content ?? ""}`,
             mentions: forumTopic.mentions,
-            resultingAction: deletion
+            resultingAction: deletion,
         });
     },
     name: "forumTopicCreated",

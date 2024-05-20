@@ -8,6 +8,6 @@ export type CommandContext = BaseCommandContext<Server>;
 
 export type Command = BaseCommand<Command, TestClient, RoleType, Server>;
 
-export type Server = { prefix: string | null; };
+export type Server = { prefix: string | null };
 
 export type GEvent<T extends keyof ClientEvents> = AbstractGEvent<TestClient, T>;

@@ -23,7 +23,9 @@ export default function ServerNameDisplay({ id, name, avatar, url, sx }: Props) 
             </Box>
             <Stack direction="column">
                 <Typography level="h3">{name}</Typography>
-                <Typography level="body-md" fontWeight="bold">/{url}</Typography>
+                <Typography level="body-md" fontWeight="bold">
+                    /{url}
+                </Typography>
             </Stack>
         </Stack>
         // <Card className="hoverAbove" sx={{ bgcolor: "background.level1", minWidth: 200, ...sx }} onClick={onClick}>

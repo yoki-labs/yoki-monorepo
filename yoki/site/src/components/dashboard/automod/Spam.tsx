@@ -53,7 +53,9 @@ export default class SpamPage extends React.Component<DashboardPageProps> {
                     />
                 </Box>
                 <Box>
-                    <Typography level="title-lg" gutterBottom>Spam detection</Typography>
+                    <Typography level="title-lg" gutterBottom>
+                        Spam detection
+                    </Typography>
                     <Card>
                         <CardContent>
                             <LabsForm

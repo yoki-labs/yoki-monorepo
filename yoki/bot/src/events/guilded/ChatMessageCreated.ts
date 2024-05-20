@@ -87,7 +87,8 @@ export default {
         const moduleEnabledStatus = isCommandModule && server[`${command.module}Enabled`];
         const commandModuleMessage =
             isCommandModule &&
-            `${moduleEnabledStatus ? "" : "⚠️"} The \`${command.module}\` module is ${moduleEnabledStatus ? "enabled" : `disabled. To enable it, run \`${server.getPrefix()}module enable ${command.module}\``
+            `${moduleEnabledStatus ? "" : "⚠️"} The \`${command.module}\` module is ${
+                moduleEnabledStatus ? "enabled" : `disabled. To enable it, run \`${server.getPrefix()}module enable ${command.module}\``
             }.`;
         const subCommand = await fetchCommandInfo([message, ctx], prefix, command, parsedArgs, commandModuleMessage || undefined);
 
@@ -198,5 +199,5 @@ const moderateMessage = (ctx: YokiClient, server: Server, message: Message, memb
         filteredContent: FilteredContent.Message,
         content: message.content,
         mentions: message.mentions,
-        resultingAction: () => ctx.messages.delete(message.channelId, message.id)
+        resultingAction: () => ctx.messages.delete(message.channelId, message.id),
     });

@@ -37,7 +37,7 @@ export class ServerSelector extends React.Component<Props> {
 
         if (!servers || !Array.isArray(servers)) return null;
         const sortedServers = servers.sort((a, b) => (a.name > b.name ? 1 : a.name < b.name ? -1 : 0));
-        
+
         return (
             <LabsDropdown
                 placeholder="Select server"
@@ -45,23 +45,32 @@ export class ServerSelector extends React.Component<Props> {
                 renderValue={this.renderCurrentServer.bind(this)}
                 onChange={async (_, serverId) => serverId && (await this.props.onChange(serverId))}
             >
-                {currentServer && <>
-                    <Link href="/dashboard" style={{ textDecoration: "none" }}>
-                        <MenuItem>
-                            <ListItemDecorator>
-                                <FontAwesomeIcon icon={faHandPointer} />
-                            </ListItemDecorator>
-                            <Box>
-                                <Typography fontWeight="bolder">Select other</Typography>
-                                <Typography textColor="text.tertiary">Go back to server selection page</Typography>
-                            </Box>
-                        </MenuItem>
-                    </Link>
-                    <Divider />
-                </>}
+                {currentServer && (
+                    <>
+                        <Link href="/dashboard" style={{ textDecoration: "none" }}>
+                            <MenuItem>
+                                <ListItemDecorator>
+                                    <FontAwesomeIcon icon={faHandPointer} />
+                                </ListItemDecorator>
+                                <Box>
+                                    <Typography fontWeight="bolder">Select other</Typography>
+                                    <Typography textColor="text.tertiary">Go back to server selection page</Typography>
+                                </Box>
+                            </MenuItem>
+                        </Link>
+                        <Divider />
+                    </>
+                )}
                 {servers.length
                     ? sortedServers.map((server) => <ServerOption id={server.id} name={server.name} subdomain={server.subdomain} avatar={server.profilePicture} />)
-                    : currentServer && <ServerOption id={currentServer.id} name={currentServer.name} subdomain={currentServer.url} avatar={currentServer.avatar?.replace(guildedAwsCdnDomain, guildedCdnDomain)} />}
+                    : currentServer && (
+                          <ServerOption
+                              id={currentServer.id}
+                              name={currentServer.name}
+                              subdomain={currentServer.url}
+                              avatar={currentServer.avatar?.replace(guildedAwsCdnDomain, guildedCdnDomain)}
+                          />
+                      )}
             </LabsDropdown>
         );
     }

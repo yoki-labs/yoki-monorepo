@@ -1,8 +1,8 @@
 import { Currency } from "@prisma/client";
+import { inlineCode, inlineQuote } from "@yokilabs/bot";
+import { Member } from "guilded.js";
 
 import { Category, Command } from "../commands";
-import { Member } from "guilded.js";
-import { inlineCode, inlineQuote } from "@yokilabs/bot";
 
 export interface BalanceChange {
     currency: Currency;
@@ -38,21 +38,18 @@ const TransferItem: Command = {
         const amount = args.amount as number;
         const itemId = args.itemId as number;
 
-        if (target.id === message.createdById)
-            return ctx.messageUtil.replyWithError(message, "Can't transfer to yourself", `You cannot transfer items or currency to yourself.`);
+        if (target.id === message.createdById) return ctx.messageUtil.replyWithError(message, "Can't transfer to yourself", `You cannot transfer items or currency to yourself.`);
 
         // Non-existant currency
         const executorInfo = await ctx.dbUtil.getServerMember(server.serverId, message.createdById);
 
         const executorItem = executorInfo?.items[itemId - 1];
-        if (!executorItem)
-            return ctx.messageUtil.replyWithError(message, "No such item", `The item ${inlineCode(itemId)} does not exist in your inventory.`);
+        if (!executorItem) return ctx.messageUtil.replyWithError(message, "No such item", `The item ${inlineCode(itemId)} does not exist in your inventory.`);
 
         const item = (await ctx.dbUtil.getItem(server.serverId, executorItem.itemId))!;
 
         // Make sure they have enough
-        if (!item.canTransfer)
-            return ctx.messageUtil.replyWithError(message, `Can't transfer`, `This item has not been set as transferrable.`);
+        if (!item.canTransfer) return ctx.messageUtil.replyWithError(message, `Can't transfer`, `This item has not been set as transferrable.`);
         // Make sure they have enough
         else if (executorItem.amount < amount)
             return ctx.messageUtil.replyWithError(message, `Not enough items`, `You only have ${executorItem.amount} amount of ${inlineQuote(item.name)}.`);
@@ -72,7 +69,13 @@ const TransferItem: Command = {
             }),
         ]);
 
-        return ctx.messageUtil.replyWithSuccess(message, `Item transferred`, `You have successfully transfered ${amount} of ${inlineQuote(item.id)} to <@${target.id}>.`, undefined, { isSilent: true });
+        return ctx.messageUtil.replyWithSuccess(
+            message,
+            `Item transferred`,
+            `You have successfully transfered ${amount} of ${inlineQuote(item.id)} to <@${target.id}>.`,
+            undefined,
+            { isSilent: true }
+        );
     },
 };
 

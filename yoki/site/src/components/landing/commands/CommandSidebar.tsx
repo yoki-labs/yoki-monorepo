@@ -14,7 +14,9 @@ export default function CommandSidebar({ categories, activeCategory }: Props) {
 
     return (
         <Box sx={{ fontSize: 14, pt: 0, pb: 5 }} className={`h-full overflow-y-auto overflow-x-hidden`}>
-            <Typography level="title-sm" textColor="text.tertiary">Yoki commands</Typography>
+            <Typography level="title-sm" textColor="text.tertiary">
+                Yoki commands
+            </Typography>
             <List variant="plain">
                 {Object.values(categories).map((category) => (
                     <ListItemButton onClick={() => router.push(`/commands/${category.url}`)} key={`command-category.${category.url}`} selected={category.url === activeCategory}>

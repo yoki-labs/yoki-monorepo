@@ -1,3 +1,4 @@
+import { registerCanvasing } from "@yoki/common";
 import { GEvent, setClientCommands } from "@yokilabs/bot";
 import { config } from "dotenv";
 import { ClientEvents } from "guilded.js";
@@ -7,7 +8,6 @@ import recursive from "recursive-readdir";
 import YokiClient from "./Client";
 import unhandledPromiseRejection from "./events/other/unhandledPromiseRejection";
 import { errorLoggerS3 } from "./utils/s3";
-import { registerCanvasing } from "@yoki/common";
 
 // Load env variables
 config({ path: join(__dirname, "..", "..", ".env") });
@@ -19,12 +19,15 @@ registerCanvasing();
     if (!process.env[x]) throw new Error(`Missing env var ${x}`);
 });
 
-const client = new YokiClient({
-    token: process.env.GUILDED_TOKEN,
-    rest: ({
-        maxRatelimitRetryLimit: 10
-    } as any)
-}, process.env.DEFAULT_PREFIX!);
+const client = new YokiClient(
+    {
+        token: process.env.GUILDED_TOKEN,
+        rest: {
+            maxRatelimitRetryLimit: 10,
+        } as any,
+    },
+    process.env.DEFAULT_PREFIX!
+);
 client.ws.options.replayMissedEvents = false;
 
 // Under client.eventHandler, we register a bunch of events that we can execute

@@ -14,7 +14,7 @@ export default [
             const member = await message.client.members.fetch(message.serverId!, mention.id).catch(() => null);
 
             if (!member) return null;
-            
+
             const name = member.nickname ?? member.user!.name;
             const spaceCount = name.split(" ").length;
 
@@ -24,13 +24,12 @@ export default [
             args[index] = name;
 
             return member;
-        }
-        else if (input.startsWith("<@") && input.endsWith(">")) {
+        } else if (input.startsWith("<@") && input.endsWith(">")) {
             const id = input.substring(2, input.length - 1);
 
             if (!isHashId(id)) return null;
 
-            return await message.client.members.fetch(message.serverId!, id).catch(() => null);
+            return message.client.members.fetch(message.serverId!, id).catch(() => null);
         }
         // At least the ID was provided
         else if (isHashId(input)) {

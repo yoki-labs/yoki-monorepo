@@ -1,8 +1,8 @@
+import { AppealStatus } from "@prisma/client";
 import { inlineCode } from "@yokilabs/bot";
 
 import { RoleType } from "../../typings";
 import { Category, Command } from "../commands";
-import { AppealStatus } from "@prisma/client";
 
 const Decline: Command = {
     name: "appeal-decline",
@@ -23,7 +23,7 @@ const Decline: Command = {
             display: "staff note",
             type: "rest",
             optional: true,
-        }
+        },
     ],
     execute: async (message, args, ctx) => {
         const appealId = args.appealId as number;
@@ -45,10 +45,14 @@ const Decline: Command = {
             data: {
                 status: AppealStatus.DECLINED,
                 staffNote,
-            }
+            },
         });
 
-        return ctx.messageUtil.replyWithSuccess(message, fetchedAppeal.status ? `Appeal status updated` : `Appeal declined`, `Appeal ${inlineCode(appealId)} has been successfully ${fetchedAppeal.status ? "modified" : "declined"}.`);
+        return ctx.messageUtil.replyWithSuccess(
+            message,
+            fetchedAppeal.status ? `Appeal status updated` : `Appeal declined`,
+            `Appeal ${inlineCode(appealId)} has been successfully ${fetchedAppeal.status ? "modified" : "declined"}.`
+        );
     },
 };
 

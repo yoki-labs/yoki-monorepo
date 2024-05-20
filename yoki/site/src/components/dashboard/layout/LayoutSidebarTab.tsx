@@ -17,17 +17,25 @@ interface Prop {
 export default function LayoutSidebarTab({ item, serverId, isActive }: Prop) {
     const router = useRouter();
     const href = `/dashboard/${serverId}/${item.id}`;
-    const wipLabel = item.wip && <Chip variant="soft" color="primary">WIP</Chip>;
-    const eaLabel = item.earlyAccess && <Chip variant="soft" color="danger">Early</Chip>;
+    const wipLabel = item.wip && (
+        <Chip variant="soft" color="primary">
+            WIP
+        </Chip>
+    );
+    const eaLabel = item.earlyAccess && (
+        <Chip variant="soft" color="danger">
+            Early
+        </Chip>
+    );
 
     return (
-        <ListItemButton sx={(theme) => ({ borderRadius: theme.vars.radius.xs })} color={isActive ? item.color ?? "primary" : item.color} selected={isActive} onClick={() => router.push(href)}>
-            <ListItemDecorator>
-                { item.icon
-                    ? <FontAwesomeIcon icon={item.icon} />
-                    : <item.iconComponent sx={{ color: "inherit" }} />
-                }
-            </ListItemDecorator>
+        <ListItemButton
+            sx={(theme) => ({ borderRadius: theme.vars.radius.xs })}
+            color={isActive ? item.color ?? "primary" : item.color}
+            selected={isActive}
+            onClick={() => router.push(href)}
+        >
+            <ListItemDecorator>{item.icon ? <FontAwesomeIcon icon={item.icon} /> : <item.iconComponent sx={{ color: "inherit" }} />}</ListItemDecorator>
             <Typography sx={{ color: "inherit" }} component="span" endDecorator={wipLabel || eaLabel}>
                 {item.name}
             </Typography>

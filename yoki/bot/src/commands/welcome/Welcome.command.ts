@@ -13,8 +13,7 @@ const Welcome: Command = {
     parentCommand: true,
     category: Category.Entry,
     requiredRole: RoleType.MINIMOD,
-    subCommands: new Collection<string, Command>()
-        .set("channel", WelcomeChannel),
+    subCommands: new Collection<string, Command>().set("channel", WelcomeChannel),
     execute: () => void 0,
 };
 

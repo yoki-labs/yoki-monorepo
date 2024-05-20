@@ -6,11 +6,11 @@ import { stripIndents } from "common-tags";
 import { EmbedPayload, Member, UserType } from "guilded.js";
 import { nanoid } from "nanoid";
 
+import YokiClient from "../../Client";
 import type { GEvent, Server } from "../../typings";
 import { generateCaptcha } from "../../utils/antiraid";
 import { trimHoistingSymbols } from "../../utils/moderation";
 import { suspicious as sus } from "../../utils/util";
-import YokiClient from "../../Client";
 
 export default {
     execute: async ([member, ctx]) => {
@@ -38,17 +38,13 @@ export default {
 
         const canFilterAnyone = !server.antiRaidAgeFilter && server.antiRaidResponse !== ResponseType.KICK;
         const memberJoinDateIsBelowRequirement = Date.now() - new Date(member.user!.createdAt!).getTime() <= (server.antiRaidAgeFilter ?? 0);
-        const userHasNoAvatar = !member.user!.avatar
+        const userHasNoAvatar = !member.user!.avatar;
 
-        if (
-            server.antiRaidEnabled &&
-            (canFilterAnyone || memberJoinDateIsBelowRequirement || userHasNoAvatar)
-        ) {
+        if (server.antiRaidEnabled && (canFilterAnyone || memberJoinDateIsBelowRequirement || userHasNoAvatar)) {
             const proceed = await handleAntiRaid(ctx, server, member);
 
             if (!proceed) return;
-        }
-        else await ctx.supportUtil.handleWelcome(server, member);
+        } else await ctx.supportUtil.handleWelcome(server, member);
 
         // check if there's a log channel channel for member joins
         const memberJoinLogChannel = await ctx.dbUtil.getLogChannel(serverId!, LogChannelType.member_joins);
@@ -85,10 +81,10 @@ async function handleAntiRaid(ctx: YokiClient, server: Server, member: Member) {
     switch (server.antiRaidResponse) {
         case "TEXT_CAPTCHA": {
             if (!server.antiRaidChallengeChannel) break;
-    
+
             let userCaptcha = await ctx.prisma.captcha.findFirst({ where: { serverId, triggeringUser: userId, solved: false } });
             void ctx.amp.logEvent({ event_type: "MEMBER_CAPTCHA_JOIN", user_id: userId, event_properties: { serverId } });
-    
+
             if (!userCaptcha) {
                 const { id, value, url } = await generateCaptcha(ctx.s3);
                 const createdCaptcha = await ctx.prisma.captcha.create({
@@ -98,7 +94,7 @@ async function handleAntiRaid(ctx: YokiClient, server: Server, member: Member) {
             }
 
             if (server.muteRoleId) await ctx.roles.addRoleToMember(serverId, userId, server.muteRoleId).catch(() => null);
-    
+
             // Have to complete captcha
             // There might be bots doing something behind the scenes and people may not be able to be mentioned for that period of time
             await sendCaptcha(
@@ -117,12 +113,12 @@ async function handleAntiRaid(ctx: YokiClient, server: Server, member: Member) {
                         },
                     ],
                 }
-            )
-                .catch((err) => {
-                    console.log(`Error notifying user of captcha for server ${serverId} because of ${err}`);
-                    void ctx.errorHandler.send(`Error while handling antiraid site challenge for user ${member.id}`, [errorEmbed((err as Error).message)]);
-    
-                    setTimeout(() =>
+            ).catch((err) => {
+                console.log(`Error notifying user of captcha for server ${serverId} because of ${err}`);
+                void ctx.errorHandler.send(`Error while handling antiraid site challenge for user ${member.id}`, [errorEmbed((err as Error).message)]);
+
+                setTimeout(
+                    () =>
                         sendCaptcha(
                             ctx,
                             server.antiRaidChallengeChannel!,
@@ -139,19 +135,17 @@ async function handleAntiRaid(ctx: YokiClient, server: Server, member: Member) {
                                     },
                                 ],
                             }
-                        )
-                            .catch((err) =>
-                                void ctx.errorHandler.send(`Error while retrying antiraid captcha challenge for user ${member.id}`, [errorEmbed((err as Error).message)])
-                            )
-                    , 30000);
-                });
-                
-                break;
+                        ).catch((err) => void ctx.errorHandler.send(`Error while retrying antiraid captcha challenge for user ${member.id}`, [errorEmbed((err as Error).message)])),
+                    30000
+                );
+            });
+
+            break;
         }
         case "KICK": {
             void ctx.amp.logEvent({ event_type: "MEMBER_KICKED_JOIN", user_id: userId, event_properties: { serverId } });
             await ctx.members.kick(serverId, userId);
-    
+
             // Add this action to the database
             const createdCase = await ctx.dbUtil.addAction({
                 serverId,
@@ -164,18 +158,17 @@ async function handleAntiRaid(ctx: YokiClient, server: Server, member: Member) {
                 infractionPoints: 0,
                 expiresAt: null,
             });
-    
+
             // If a modlog channel is set
             ctx.emitter.emit("ActionIssued", { ...createdCase }, server, ctx);
             return false;
         }
         case "SITE_CAPTCHA": {
-            if (!server.antiRaidChallengeChannel)
-                break;
-    
+            if (!server.antiRaidChallengeChannel) break;
+
             let userCaptcha = await ctx.prisma.captcha.findFirst({ where: { serverId, triggeringUser: userId, solved: false } });
             void ctx.amp.logEvent({ event_type: "MEMBER_SITE_CAPTCHA_JOIN", user_id: userId, event_properties: { serverId } });
-    
+
             if (!userCaptcha) {
                 const id = nanoid();
                 const createdCaptcha = await ctx.prisma.captcha.create({
@@ -183,7 +176,7 @@ async function handleAntiRaid(ctx: YokiClient, server: Server, member: Member) {
                 });
                 userCaptcha = createdCaptcha;
             }
-    
+
             if (server.muteRoleId) await ctx.roles.addRoleToMember(serverId, userId, server.muteRoleId).catch(() => null);
             // Have to complete captcha
             // There might be bots that are doing something else behind the scenes and those people might not be allowed to be privately mentioned
@@ -194,12 +187,12 @@ async function handleAntiRaid(ctx: YokiClient, server: Server, member: Member) {
                 `Please visit [this link](${process.env.NODE_ENV === "development" ? process.env.NEXTAUTH_URL ?? "http://localhost:3000" : "https://yoki.gg"}/verify/${
                     userCaptcha!.id
                 }) which will use a frameless captcha to verify you are not a bot.`
-            )
-                .catch((err) => {
-                    console.log(`Error notifying user of captcha for server ${serverId} because of ${err}`);
-                    void ctx.errorHandler.send(`Error while handling antiraid site challenge for user ${member.id}`, [errorEmbed((err as Error).message)]);
-                    
-                    setTimeout(() =>
+            ).catch((err) => {
+                console.log(`Error notifying user of captcha for server ${serverId} because of ${err}`);
+                void ctx.errorHandler.send(`Error while handling antiraid site challenge for user ${member.id}`, [errorEmbed((err as Error).message)]);
+
+                setTimeout(
+                    () =>
                         sendCaptcha(
                             ctx,
                             server.antiRaidChallengeChannel!,
@@ -207,12 +200,10 @@ async function handleAntiRaid(ctx: YokiClient, server: Server, member: Member) {
                             `Please visit [this link](${process.env.NODE_ENV === "development" ? process.env.NEXTAUTH_URL ?? "http://localhost:3000" : "https://yoki.gg"}/verify/${
                                 userCaptcha!.id
                             }) which will use a frameless captcha to verify you are not a bot.`
-                        )
-                            .catch((err) =>
-                                void ctx.errorHandler.send(`Error while retrying antiraid site challenge for user ${member.id}`, [errorEmbed((err as Error).message)])
-                            )
-                    , 30000);
-                });
+                        ).catch((err) => void ctx.errorHandler.send(`Error while retrying antiraid site challenge for user ${member.id}`, [errorEmbed((err as Error).message)])),
+                    30000
+                );
+            });
             break;
         }
         default: {
@@ -223,37 +214,32 @@ async function handleAntiRaid(ctx: YokiClient, server: Server, member: Member) {
 }
 
 function sendCaptcha(ctx: YokiClient, channelId: string, member: Member, content: string, embed?: Partial<EmbedPayload> | undefined) {
-    return ctx.messageUtil
-        .sendWarningBlock(
-            channelId,
-            `Halt! Please complete this captcha`,
-            stripIndents`
+    return ctx.messageUtil.sendWarningBlock(
+        channelId,
+        `Halt! Please complete this captcha`,
+        stripIndents`
                 <@${member.id}>, your account has tripped the anti-raid filter and requires further verification to ensure you are not a bot.
 
                 ${content}
             `,
-            embed,
-            {
-                isPrivate: true,
-                content: {
-                    object: "value",
-                    document: {
-                        object: "document",
-                        data: {},
-                        nodes: [
-                            {
-                                object: "block",
-                                type: "paragraph",
-                                data: {},
-                                nodes: [
-                                    emptyText,
-                                    createUserMentionElement(member),
-                                    emptyText,
-                                ]
-                            }
-                        ]
-                    }
-                } as unknown as string
-            },
-        )
+        embed,
+        {
+            isPrivate: true,
+            content: {
+                object: "value",
+                document: {
+                    object: "document",
+                    data: {},
+                    nodes: [
+                        {
+                            object: "block",
+                            type: "paragraph",
+                            data: {},
+                            nodes: [emptyText, createUserMentionElement(member), emptyText],
+                        },
+                    ],
+                },
+            } as unknown as string,
+        }
+    );
 }

@@ -163,14 +163,18 @@ async function onIncomeSuccess(
 
     // If there is any text after the reward, add the text afterwards
     // There may be some currency that went over the limit, so add the `However, ...` text too
-    const afterCurrencies = lostCurrencies.length ? `${actionDescription[1]} However, some of the rewards went over the limit, so you lost additional ` : actionDescription[1] ?? "";
+    const afterCurrencies = lostCurrencies.length
+        ? `${actionDescription[1]} However, some of the rewards went over the limit, so you lost additional `
+        : actionDescription[1] ?? "";
 
     const addedCurrenciesText = addedCurrencies.length ? addedCurrencies.map((x) => displayCurrencyAmountInline(x.currency, x.added)).join(", ") : "some rewards";
     const lostCurrenciesText = lostCurrencies.length ? `${lostCurrencies.map((x) => displayCurrencyAmountInline(x.currency, x.lost!)).join(", ")}.` : "";
 
     return ctx.messageUtil.reply(
         message,
-        `<::${lostCurrencies.length ? emoteNameToId.YokiLabsExclamationbox : emoteNameToId.YokiLabsCheckbox}> ${actionDescription[0] ?? ""} ${addedCurrenciesText}${afterCurrencies}${lostCurrenciesText}`
+        `<::${lostCurrencies.length ? emoteNameToId.YokiLabsExclamationbox : emoteNameToId.YokiLabsCheckbox}> ${
+            actionDescription[0] ?? ""
+        } ${addedCurrenciesText}${afterCurrencies}${lostCurrenciesText}`
     );
     // return ctx.messageUtil.replyWithRichMessage(message, [
     //     {
@@ -214,16 +218,15 @@ async function onIncomeFail(
     const failCut = income.failSubtractCut ?? 0;
 
     // There is no point in doing anything, nor displaying the fail chance
-    if (!failCut)
-        return ctx.messageUtil.replyWithErrorInline(message, `You have failed while doing \`${commandName.toLowerCase()}\`.`);
-        // return ctx.messageUtil.replyWithRichMessage(message, [
-        //     {
-        //         object: "block",
-        //         type: "paragraph",
-        //         data: {},
-        //         nodes: [emptyText, exclamationmarkEmoteNode, createTextElement(` You have failed while doing ${commandName.toLowerCase()}.`)],
-        //     },
-        // ]);
+    if (!failCut) return ctx.messageUtil.replyWithErrorInline(message, `You have failed while doing \`${commandName.toLowerCase()}\`.`);
+    // return ctx.messageUtil.replyWithRichMessage(message, [
+    //     {
+    //         object: "block",
+    //         type: "paragraph",
+    //         data: {},
+    //         nodes: [emptyText, exclamationmarkEmoteNode, createTextElement(` You have failed while doing ${commandName.toLowerCase()}.`)],
+    //     },
+    // ]);
 
     // Loop for checking whether executor has enough balance and adding rewards; does it all
     for (const reward of rewards) {
@@ -246,7 +249,10 @@ async function onIncomeFail(
 
     await ctx.dbUtil.updateMemberBalance(message.serverId!, message.createdById, userInfo, newBalance);
 
-    return ctx.messageUtil.replyWithWarningInline(message, `You have failed while doing \`${commandName.toLowerCase()}\` and lost ${newBalance.map((x) => displayCurrencyAmountInline(x.currency, x.change)).join(", ")}.`);
+    return ctx.messageUtil.replyWithWarningInline(
+        message,
+        `You have failed while doing \`${commandName.toLowerCase()}\` and lost ${newBalance.map((x) => displayCurrencyAmountInline(x.currency, x.change)).join(", ")}.`
+    );
     // return ctx.messageUtil.replyWithRichMessage(message, [
     //     {
     //         object: "block",

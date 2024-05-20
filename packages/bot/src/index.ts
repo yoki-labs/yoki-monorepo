@@ -12,8 +12,9 @@ export * from "./typings";
 
 // Utils
 export { ChannelRolePermission, ChannelUserPermission, Permission } from "./guilded-types";
-export { chatChannelTypes } from "./utils/values";
+export { createServerLimit } from "./premium";
 export { summarizeItems, summarizeRolesOrUsers } from "./utils/content";
+export { emoteNameToId } from "./utils/emotes";
 export {
     bold,
     channelName,
@@ -29,7 +30,6 @@ export {
     quoteMarkdown,
 } from "./utils/formatting";
 export { channelTypeToGreenIcon, channelTypeToGreyIcon, channelTypeToRedIcon } from "./utils/images";
-export { createServerLimit } from "./premium";
 export {
     checkmarkEmoteNode,
     createChannelMentionElement,
@@ -41,4 +41,4 @@ export {
     emptyText,
     exclamationmarkEmoteNode,
 } from "./utils/rich";
-export { emoteNameToId } from "./utils/emotes";
+export { chatChannelTypes } from "./utils/values";

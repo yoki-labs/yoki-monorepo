@@ -9,5 +9,7 @@ type ServerLimitDictionary<T extends string> = Record<T | ServerLimitDictionaryF
  * @param dictionary The dictionary of possible values for premium, early access (just "early") or non-premium and non-early access ("default")
  * @returns Function to get a limit of a server
  */
-export const createServerLimit = <TPremiumType extends string, TServer extends IServerFlagged<TPremiumType>>(dictionary: ServerLimitDictionary<TPremiumType>) => (server: TServer) =>
-    dictionary[server.premium ?? (server.flags.includes("EARLY_ACCESS") ? "Early" : "Default")];
+export const createServerLimit =
+    <TPremiumType extends string, TServer extends IServerFlagged<TPremiumType>>(dictionary: ServerLimitDictionary<TPremiumType>) =>
+    (server: TServer) =>
+        dictionary[server.premium ?? (server.flags.includes("EARLY_ACCESS") ? "Early" : "Default")];

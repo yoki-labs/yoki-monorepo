@@ -1,11 +1,11 @@
 import { Colors } from "@yokilabs/utils";
+import { Member } from "guilded.js";
 import fetch from "node-fetch";
 
 import { Server, Severity } from "../typings";
 import { IMAGE_REGEX } from "../utils/matching";
 import BaseFilterUtil from "./base-filter";
 import { FilteredContent } from "./content-filter";
-import { Member } from "guilded.js";
 
 interface ImageScanResult {
     hentai: number;
@@ -46,7 +46,16 @@ export class ImageFilterUtil extends BaseFilterUtil {
         if (nsfwDetected) {
             try {
                 // Warn/mute/kick/ban
-                await this.dealWithUser(member, server, channelId, FilteredContent.Message, onDelete, `NSFW image filter tripped`, server.nsfwInfractionPoints, server.nsfwSeverity ?? Severity.WARN);
+                await this.dealWithUser(
+                    member,
+                    server,
+                    channelId,
+                    FilteredContent.Message,
+                    onDelete,
+                    `NSFW image filter tripped`,
+                    server.nsfwInfractionPoints,
+                    server.nsfwSeverity ?? Severity.WARN
+                );
             } catch (e) {}
         }
 

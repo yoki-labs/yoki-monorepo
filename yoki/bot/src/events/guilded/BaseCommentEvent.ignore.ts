@@ -1,10 +1,10 @@
 import { Schema } from "@guildedjs/guilded-api-typings";
+import { ContentIgnoreType } from "@prisma/client";
 import { UserType } from "guilded.js";
 
 import { FilteredContent } from "../../modules/content-filter";
 import type { Context, Server } from "../../typings";
 import { moderateContent } from "../../utils/moderation";
-import { ContentIgnoreType } from "@prisma/client";
 
 export interface CommentPayload {
     id: number;
@@ -39,6 +39,6 @@ export default async (serverId: string, parentId: number, comment: CommentPayloa
         filteredContent: FilteredContent.ChannelContent,
         content: comment.content,
         mentions: comment.mentions,
-        resultingAction: deletion
+        resultingAction: deletion,
     });
 };

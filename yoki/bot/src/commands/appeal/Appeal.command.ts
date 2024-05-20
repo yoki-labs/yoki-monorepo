@@ -2,12 +2,12 @@ import { Collection } from "@discordjs/collection";
 import { RoleType } from "@prisma/client";
 
 import { Category, Command } from "../commands";
+import Accept from "./Accept.command";
 import Channel from "./Channel.command";
+import Decline from "./Decline.command";
+import Delete from "./Delete.command";
 import List from "./List.command";
 import View from "./View.command";
-import Delete from "./Delete.command";
-import Accept from "./Accept.command";
-import Decline from "./Decline.command";
 
 const Appeal: Command = {
     name: "appeal",

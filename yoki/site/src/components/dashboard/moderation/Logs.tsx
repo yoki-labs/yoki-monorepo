@@ -97,9 +97,7 @@ export default class LogsPage extends React.Component<DashboardPageProps, State>
                     <Typography level="h3" gutterBottom>
                         Log channels
                     </Typography>
-                    <Typography level="body-sm">
-                        Manages what changes to the server or actions should be notified and where.
-                    </Typography>
+                    <Typography level="body-sm">Manages what changes to the server or actions should be notified and where.</Typography>
                 </Box>
                 {highestRoleType === RoleType.ADMIN && (
                     <Card sx={{ mb: 2 }}>
@@ -144,9 +142,7 @@ function LogsPageSkeleton() {
                     <Skeleton animation="wave">Log channels</Skeleton>
                 </Typography>
                 <Skeleton animation="wave">
-                    <Typography level="body-sm">
-                        Manages what changes to the server or actions should be notified and where.
-                    </Typography>
+                    <Typography level="body-sm">Manages what changes to the server or actions should be notified and where.</Typography>
                 </Skeleton>
             </Box>
             <Card>

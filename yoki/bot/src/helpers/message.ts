@@ -1,12 +1,12 @@
 import type { EmbedField } from "@guildedjs/guilded-api-typings";
 import { MessageUtil as BaseMessageUtil } from "@yokilabs/bot";
+import { Colors } from "@yokilabs/utils";
 import { stripIndents } from "common-tags";
 import { EmbedAuthor, EmbedFooter } from "guilded.js";
 
 import type YokiClient from "../Client";
 import type { Command } from "../commands/commands";
 import type { Server } from "../typings";
-import { Colors } from "@yokilabs/utils";
 
 export class MessageUtil extends BaseMessageUtil<YokiClient, Server, Command> {
     readonly logchannelErrCounter: Record<string, number> = {};
@@ -59,10 +59,10 @@ export class MessageUtil extends BaseMessageUtil<YokiClient, Server, Command> {
                 ],
                 isSilent: true,
             })
-		.then((x) => {
-			delete this.logchannelErrCounter[where];
-			return x;
-		})
+            .then((x) => {
+                delete this.logchannelErrCounter[where];
+                return x;
+            })
             .catch(async (e) => {
                 const existing = this.logchannelErrCounter[where] ?? 0;
                 console.log(serverId);
@@ -102,7 +102,7 @@ export class MessageUtil extends BaseMessageUtil<YokiClient, Server, Command> {
 					Count: \`${existing}\`
 		    `);
                     this.logchannelErrCounter[where] = existing + 1;
-		}
+                }
                 return null;
             });
     }

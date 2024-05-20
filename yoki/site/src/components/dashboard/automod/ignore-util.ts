@@ -1,9 +1,10 @@
-import { ChannelIgnoreType, ContentIgnoreType } from "@prisma/client";
-import { LabsFormFieldOption } from "../../form/form";
 import { faBarsStaggered, faCheckSquare, faEnvelope, faHashtag, faImage, faLink, faMessage, faRectangleList, faShieldHalved } from "@fortawesome/free-solid-svg-icons";
+import { ChannelIgnoreType, ContentIgnoreType } from "@prisma/client";
+
+import { LabsFormFieldOption } from "../../form/form";
 
 export const channelIgnoreTypeList: LabsFormFieldOption<ChannelIgnoreType>[] = [
-    { name: "Automod", value: ChannelIgnoreType.AUTOMOD, icon: faShieldHalved, },
+    { name: "Automod", value: ChannelIgnoreType.AUTOMOD, icon: faShieldHalved },
     { name: "Invite", value: ChannelIgnoreType.INVITE, icon: faEnvelope },
     { name: "URL", value: ChannelIgnoreType.URL, icon: faLink },
     { name: "NSFW", value: ChannelIgnoreType.NSFW, icon: faImage },
@@ -13,17 +14,17 @@ export const contentIgnoreSelectionList: LabsFormFieldOption<ContentIgnoreType>[
     {
         value: ContentIgnoreType.MESSAGE,
         name: "Messages",
-        icon: faHashtag
+        icon: faHashtag,
     },
     {
         value: ContentIgnoreType.THREAD,
         name: "Threads",
-        icon: faBarsStaggered
+        icon: faBarsStaggered,
     },
     {
         value: ContentIgnoreType.FORUM_TOPIC,
         name: "Forum Topics",
-        icon: faRectangleList
+        icon: faRectangleList,
     },
     {
         value: ContentIgnoreType.COMMENT,

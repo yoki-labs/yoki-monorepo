@@ -18,11 +18,7 @@ const Modmail: Command = {
     parentCommand: true,
     category: Category.Modmail,
     requiredRole: RoleType.MINIMOD,
-    subCommands: new Collection<string, Command>()
-        .set("close", Close)
-        .set("history", History)
-        .set("settrigger", SetTrigger)
-        .set("sendtrigger", SendTrigger),
+    subCommands: new Collection<string, Command>().set("close", Close).set("history", History).set("settrigger", SetTrigger).set("sendtrigger", SendTrigger),
     // .set("category", CategoryCommand)
     // .set("group", Group)
     // .set("pingrole", PingRole),

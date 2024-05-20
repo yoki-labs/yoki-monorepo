@@ -1,8 +1,8 @@
+import { AppealStatus } from "@prisma/client";
 import { inlineCode } from "@yokilabs/bot";
 
 import { RoleType } from "../../typings";
 import { Category, Command } from "../commands";
-import { AppealStatus } from "@prisma/client";
 
 const Accept: Command = {
     name: "appeal-accept",
@@ -23,7 +23,7 @@ const Accept: Command = {
             display: "staff note",
             type: "rest",
             optional: true,
-        }
+        },
     ],
     execute: async (message, args, ctx) => {
         const appealId = args.appealId as number;
@@ -45,15 +45,18 @@ const Accept: Command = {
             data: {
                 status: AppealStatus.ACCEPTED,
                 staffNote,
-            }
+            },
         });
 
         // If ban appeal was accepted, it is supposed to auto-unban
         const memberBan = await ctx.bans.fetch(message.serverId!, fetchedAppeal.creatorId).catch(() => null);
-        if (memberBan)
-            await ctx.bans.unban(message.serverId!, fetchedAppeal.creatorId);
+        if (memberBan) await ctx.bans.unban(message.serverId!, fetchedAppeal.creatorId);
 
-        return ctx.messageUtil.replyWithSuccess(message, fetchedAppeal.status ? `Appeal status updated` : `Appeal accepted`, `Appeal ${inlineCode(appealId)} has been successfully ${fetchedAppeal.status ? "modified" : "accepted"}.`);
+        return ctx.messageUtil.replyWithSuccess(
+            message,
+            fetchedAppeal.status ? `Appeal status updated` : `Appeal accepted`,
+            `Appeal ${inlineCode(appealId)} has been successfully ${fetchedAppeal.status ? "modified" : "accepted"}.`
+        );
     },
 };
 

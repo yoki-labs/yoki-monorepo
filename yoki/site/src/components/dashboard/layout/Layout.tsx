@@ -36,7 +36,7 @@ export default class Layout extends React.Component<LayoutProps, LayoutState> {
         const { menuEnabled } = this.state;
         return this.setMenuToggled(!menuEnabled);
     }
-    
+
     setMenuToggled(menuEnabled: boolean) {
         return this.setState({ menuEnabled });
     }
@@ -57,12 +57,18 @@ export default class Layout extends React.Component<LayoutProps, LayoutState> {
                     </div>
                 }
                 breadcrumbs={
-                    currentPage &&
-                    <Box>
-                        <Typography level="title-lg" fontWeight={500} textColor="text.secondary" startDecorator={currentPage.icon ? <FontAwesomeIcon icon={currentPage.icon} /> : <currentPage.iconComponent sx={{ color: "inherit" }} />}>
-                            {currentPage.name}
-                        </Typography>
-                    </Box>
+                    currentPage && (
+                        <Box>
+                            <Typography
+                                level="title-lg"
+                                fontWeight={500}
+                                textColor="text.secondary"
+                                startDecorator={currentPage.icon ? <FontAwesomeIcon icon={currentPage.icon} /> : <currentPage.iconComponent sx={{ color: "inherit" }} />}
+                            >
+                                {currentPage.name}
+                            </Typography>
+                        </Box>
+                    )
                 }
                 onServerChange={onServerChange}
             >

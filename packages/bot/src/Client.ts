@@ -1,5 +1,6 @@
 import { init } from "@amplitude/node";
 import { Collection } from "@discordjs/collection";
+import FormData from "form-data";
 import { Client, ClientOptions, RestManager, WebhookClient } from "guilded.js";
 
 // import RedisClient from "ioredis";
@@ -8,7 +9,6 @@ import type { IServer } from "./db-types";
 import Welcome from "./events/Welcome";
 import type { MessageUtil } from "./helpers/message";
 import type { RoleUtil } from "./helpers/role";
-import FormData from "form-data";
 
 export type AnyClient = AbstractClient<any, any, any>;
 
@@ -79,15 +79,20 @@ export abstract class AbstractClient<
         formData.append("uploadTrackingId", `r-${generateFormIdNum()}-${generateFormIdNum()}`);
         formData.append("file", buffer, { filename, contentType });
 
-        const [, response] = await this.mediaApiRest.make({
-            path: "/upload",
-            isFormData: true,
-            method: "POST",
-            body: formData,
-            query: { dynamicMediaTypeId: "ContentMedia" },
-        }, true, 1, { bodyIsJSON: false });
+        const [, response] = await this.mediaApiRest.make(
+            {
+                path: "/upload",
+                isFormData: true,
+                method: "POST",
+                body: formData,
+                query: { dynamicMediaTypeId: "ContentMedia" },
+            },
+            true,
+            1,
+            { bodyIsJSON: false }
+        );
 
-        return (await response as { url: string }).url;
+        return ((await response) as { url: string }).url;
     }
 
     /** Start the bot connection */

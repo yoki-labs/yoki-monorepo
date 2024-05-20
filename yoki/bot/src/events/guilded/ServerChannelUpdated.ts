@@ -26,7 +26,7 @@ export default {
                 content: channel.name,
                 mentions: undefined,
                 resultingAction: () => ctx.channels.delete(channel.id),
-            })
+            });
         }
 
         return null;

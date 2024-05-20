@@ -2,10 +2,10 @@ import { LogChannelType } from "@prisma/client";
 import { inlineCode, summarizeItems } from "@yokilabs/bot";
 import { Colors, GuildedImages } from "@yokilabs/utils";
 import { stripIndents } from "common-tags";
-
-import type { GEvent, LogChannel } from "../../typings";
 import { Member } from "guilded.js";
+
 import YokiClient from "../../Client";
+import type { GEvent, LogChannel } from "../../typings";
 
 export default {
     execute: async ([event, oldMembers, ctx]): Promise<unknown> => {
@@ -15,12 +15,11 @@ export default {
         const roleUpdateLogChannel = await ctx.dbUtil.getLogChannel(serverId!, LogChannelType.member_roles_updates);
 
         if (!roleUpdateLogChannel) return;
-        else if (newMembers.length > 1)
-            return onMultipleUsersModified(ctx, serverId, roleUpdateLogChannel, newMembers, oldMembers);
+        else if (newMembers.length > 1) return onMultipleUsersModified(ctx, serverId, roleUpdateLogChannel, newMembers, oldMembers);
 
         const member = newMembers[0];
         const oldMember = oldMembers[0];
-        const memberInfo = oldMember ?? await ctx.members.fetch(serverId, member.userId);
+        const memberInfo = oldMember ?? (await ctx.members.fetch(serverId, member.userId));
         const { addedRoles, removedRoles, roleIds, userId } = getRoleState(member.userId, member.roleIds, oldMember);
 
         const hadBothOrUnknown = !((addedRoles?.length ?? 0) ^ (removedRoles?.length ?? 0));
@@ -39,8 +38,8 @@ export default {
             author: {
                 name: `${title} \u2022 ${memberInfo.displayName}`,
                 icon_url: memberInfo.user?.avatar ?? GuildedImages.defaultAvatar,
-            }
-        })
+            },
+        });
     },
     name: "rolesUpdated",
 } satisfies GEvent<"rolesUpdated">;
@@ -48,11 +47,9 @@ export default {
 function getRoleDifference(previousRoleIds: number[], roleIds: number[]): [number[], number[]] {
     return [
         // Added roles
-        roleIds
-            .filter((currentRole) => !previousRoleIds.includes(currentRole)),
+        roleIds.filter((currentRole) => !previousRoleIds.includes(currentRole)),
         // Removed roles
-        previousRoleIds
-            .filter((previousRole) => !roleIds.includes(previousRole))
+        previousRoleIds.filter((previousRole) => !roleIds.includes(previousRole)),
     ];
 }
 
@@ -61,11 +58,17 @@ function getRoleState(userId: string, roleIds: number[], previousState: Member |
 
     // Array difference
     const [addedRoles, removedRoles] = getRoleDifference(previousState.roleIds, roleIds);
-    
+
     return { addedRoles, removedRoles, roleIds, userId };
 }
 
-function onMultipleUsersModified(ctx: YokiClient, serverId: string, roleUpdateLogChannel: LogChannel, newMembers: Array<{ userId: string; roleIds: number[]; }>, oldMembers: Member[]) {
+function onMultipleUsersModified(
+    ctx: YokiClient,
+    serverId: string,
+    roleUpdateLogChannel: LogChannel,
+    newMembers: Array<{ userId: string; roleIds: number[] }>,
+    oldMembers: Member[]
+) {
     // Prevent showcasing too many
     const cappedRoleChanges = newMembers.slice(0, 4);
 

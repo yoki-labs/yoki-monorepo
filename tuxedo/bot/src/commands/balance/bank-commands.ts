@@ -47,8 +47,7 @@ export function generateBankCommand(
         if (tag === "all") {
             const depositingCurrencies = serverCurrencies.filter((x) => x.bankEnabled);
 
-            if (!depositingCurrencies.length)
-                return ctx.messageUtil.replyWithError(message, "No currency", `There is no currency that can be deposited to bank in this server.`);
+            if (!depositingCurrencies.length) return ctx.messageUtil.replyWithError(message, "No currency", `There is no currency that can be deposited to bank in this server.`);
 
             return depositAllCurrency(ctx, message, member, depositingCurrencies, amount, depositMultiplier, balanceType, action, actionDone, getBalanceAmount);
         }
@@ -144,5 +143,8 @@ async function depositToBank(
     // Deposit into bank
     await ctx.dbUtil.depositMemberBalance(member, depositMap);
 
-    return ctx.messageUtil.replyWithSuccessInline(message, `You have successfully ${actionDone} ${depositedCurrencies.map((x) => displayCurrencyAmountInline(x, depositMap[x.id] / depositMultiplier))}`);
+    return ctx.messageUtil.replyWithSuccessInline(
+        message,
+        `You have successfully ${actionDone} ${depositedCurrencies.map((x) => displayCurrencyAmountInline(x, depositMap[x.id] / depositMultiplier))}`
+    );
 }

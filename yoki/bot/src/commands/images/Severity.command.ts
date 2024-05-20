@@ -46,9 +46,7 @@ const NsfwSeverity: Command = {
         return ctx.messageUtil.replyWithSuccess(
             message,
             `NSFW infraction changed`,
-            `NSFW images will now give ${inlineCode(infractions ?? server.linkInfractionPoints)} infraction points and a ${inlineCode(
-                severity ?? server.linkSeverity
-            )}.`
+            `NSFW images will now give ${inlineCode(infractions ?? server.linkInfractionPoints)} infraction points and a ${inlineCode(severity ?? server.linkSeverity)}.`
         );
     },
 };

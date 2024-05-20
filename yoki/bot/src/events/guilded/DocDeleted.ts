@@ -39,9 +39,7 @@ export default {
                 name: `Document deleted \u2022 ${member?.displayName ?? "Unknown user"}`,
             },
             // title: "Forum Topic Removed",
-            description: `The document ${inlineQuote(doc.title)} by <@${doc.createdBy}> (${inlineCode(doc.createdBy)}) was deleted in [#${
-                channel.name
-            }](${channelURL}).`,
+            description: `The document ${inlineQuote(doc.title)} by <@${doc.createdBy}> (${inlineCode(doc.createdBy)}) was deleted in [#${channel.name}](${channelURL}).`,
             additionalInfo: stripIndents`
                 **When:** ${server.formatTimezone(new Date())}
                 **Document ID:** ${inlineCode(doc.id)}

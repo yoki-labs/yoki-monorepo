@@ -102,8 +102,7 @@ export default class LabsForm extends React.Component<LabsFormProps, LabsFormSta
 
         const canBeSaved = this.fieldsCanBeSaved;
 
-        if (!this.state.changed || this.state.canSave !== canBeSaved)
-            this.setState({ canSave: canBeSaved, changed: true });
+        if (!this.state.changed || this.state.canSave !== canBeSaved) this.setState({ canSave: canBeSaved, changed: true });
 
         return value;
     }
@@ -126,7 +125,11 @@ export default class LabsForm extends React.Component<LabsFormProps, LabsFormSta
                                 </Typography>
                             )}
                             {section.description && <Typography level="body-sm">{section.description}</Typography>}
-                            <Box key={`form-${this.formId}.section-${i}.fieldlist`} gap={section.gap ?? 2} className={sectionOrderCss[section.order ?? LabsFormSectionOrder.Column]}>
+                            <Box
+                                key={`form-${this.formId}.section-${i}.fieldlist`}
+                                gap={section.gap ?? 2}
+                                className={sectionOrderCss[section.order ?? LabsFormSectionOrder.Column]}
+                            >
                                 {section.start}
                                 {section.fields.map(this.generateField.bind(this))}
                             </Box>

@@ -46,7 +46,7 @@ export default function OverviewPage(props: DashboardPageProps) {
                         serverConfig={serverConfig}
                         disabled={highestRoleType !== RoleType.ADMIN}
                         prop="antiRaidEnabled"
-                        />
+                    />
                     <DashboardModule
                         name="Welcome"
                         description="Greets new verified users."

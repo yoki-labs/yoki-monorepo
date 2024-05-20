@@ -48,10 +48,10 @@ const Add: Command = {
         const url = args.url as string;
         const severity = ((args.severity as ResolvedEnum | null)?.resolved ?? Severity.WARN) as Severity;
         const infractionPoints = (args.infraction_points as number | null) ?? 5;
-        
+
         // To not match long
         if (url.length > MAX_URL_LENGTH) return ctx.messageUtil.replyWithError(message, `Too long`, `The provided URL is too long and cannot be saved by Yoki.`);
-        
+
         const urlMatch = url.match(ONLY_URL_REGEX);
         if (!urlMatch) return ctx.messageUtil.replyWithError(message, `Bad formatting`, `The provided text is not a URL.`);
 

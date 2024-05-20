@@ -18,7 +18,9 @@ export default function NotPermittedPage({ currentServer }: Props) {
                     Unfortunately, you do not have a role that is configured as staff role or you are not the owner of this server.
                 </PagePlaceholder>
                 <ServerNameDisplay id={currentServer.id} name={currentServer.name} avatar={currentServer.avatar} url={currentServer.url} sx={{ mt: 1, mb: 1.5 }} />
-                <Button variant="outlined" color="primary">Go back</Button>
+                <Button variant="outlined" color="primary">
+                    Go back
+                </Button>
                 <Alert color="primary" variant="soft" startDecorator={<FontAwesomeIcon icon={faInfoCircle} />} sx={{ mt: 8 }}>
                     <Box sx={{ alignItems: "baseline" }}>
                         <Typography fontSize="md" sx={{ color: "inherit" }}>

@@ -2,7 +2,7 @@ import { styled } from "@mui/joy";
 
 export const HomePageBackground = styled(`div`, {
     name: "HomePageBackground",
-    slot: "root"
+    slot: "root",
 })(({ theme }) => ({
     opacity: 0.17,
     overflow: "hidden",
@@ -22,6 +22,6 @@ export const HomePageBackground = styled(`div`, {
         display: "block",
         width: "100%",
         height: "100%",
-        background: `linear-gradient(to bottom, #0000, ${theme.vars.palette.background.body})`
-    }
+        background: `linear-gradient(to bottom, #0000, ${theme.vars.palette.background.body})`,
+    },
 }));

@@ -12,14 +12,12 @@ export default [
         if (input.startsWith("<:") && input.endsWith(">")) {
             const split = input.substring(2, input.length - 1).split(":");
 
-            if (split.length !== 2)
-                return null;
+            if (split.length !== 2) return null;
 
             const [name, idStr] = split;
             const id = parseInt(idStr, 10);
 
-            if (idStr.length === 0 || Number.isNaN(id) || id <= 0)
-                return null;
+            if (idStr.length === 0 || Number.isNaN(id) || id <= 0) return null;
 
             return { id, name };
         }

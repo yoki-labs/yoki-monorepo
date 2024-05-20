@@ -10,7 +10,7 @@ export default [
             if (!mention) return null;
 
             const role = await message.client.roles.fetch(message.serverId!, mention.id).catch(() => null);
-            
+
             if (!role) return null;
 
             const { name } = role;
@@ -22,20 +22,18 @@ export default [
             args[index] = name;
 
             return role;
-        }
-        else if (input.startsWith("<@&") && input.endsWith(">")) {
+        } else if (input.startsWith("<@&") && input.endsWith(">")) {
             const id = input.substring(3, input.length - 1);
             const parsedId = parseInt(id, 10);
 
-            if (id.length === 0 || Number.isNaN(parsedId))
-                return null;
+            if (id.length === 0 || Number.isNaN(parsedId)) return null;
 
             return message.client.roles.fetch(message.serverId!, parsedId).catch(() => null);
         }
 
         const parsed = parseInt(input, 10);
 
-        return !Number.isNaN(parsed) ? message.client.roles.fetch(message.serverId!, parsed).catch(() => null) : null;
+        return Number.isNaN(parsed) ? null : message.client.roles.fetch(message.serverId!, parsed).catch(() => null);
     },
     (_arg) => `
 		I was expecting the mention or ID of a role in this server. It may look something like this: \`@role\` or \`28086957\`

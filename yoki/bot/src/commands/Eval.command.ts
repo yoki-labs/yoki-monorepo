@@ -46,35 +46,30 @@ const Eval: Command = {
             );
         }
 
-        return ctx.messageUtil.replyWithRichMessage(
-            message,
-            [
-                {
+        return ctx.messageUtil.replyWithRichMessage(message, [
+            {
+                object: "block",
+                type: "code-container",
+                data: { language: typeof evaled === "string" ? "unformatted" : "javascript" },
+                nodes: result.split("\n").map((line) => ({
                     object: "block",
-                    type: "code-container",
-                    data: { language: typeof evaled === "string" ? "unformatted" : "javascript", },
-                    nodes: result
-                        .split("\n")
-                        .map((line) => ({
-                            object: "block",
-                            type: "code-line",
-                            data: {},
-                            nodes: [
+                    type: "code-line",
+                    data: {},
+                    nodes: [
+                        {
+                            object: "text",
+                            leaves: [
                                 {
-                                    object: "text",
-                                    leaves: [
-                                        {
-                                            object: "leaf",
-                                            text: line,
-                                            marks: [],
-                                        },
-                                    ],
+                                    object: "leaf",
+                                    text: line,
+                                    marks: [],
                                 },
                             ],
-                        })),
-                }
-            ]
-        );
+                        },
+                    ],
+                })),
+            },
+        ]);
         // return ctx.messageUtil.replyWithInfo(message, `Eval results`, final);
     },
 };

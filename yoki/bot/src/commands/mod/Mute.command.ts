@@ -42,7 +42,7 @@ const Mute: Command = {
 
                     Set it by using \`${prefix}role mute\` command.
                 `
-        );
+            );
 
         const target = args.target as CachedMember;
         const duration = args.duration as number;

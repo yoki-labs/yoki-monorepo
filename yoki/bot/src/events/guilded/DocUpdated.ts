@@ -39,9 +39,9 @@ export default {
             },
             // title: "Forum Topic Edited",
             serverId: server.serverId,
-            description: `The document ${inlineQuote(doc.title)} by <@${doc.createdBy}> (${inlineCode(doc.createdBy)}) has been edited in [#${
-                channel.name
-            }](${channelURL}) by <@${doc.updatedBy}> (${inlineCode(doc.updatedBy)}).`,
+            description: `The document ${inlineQuote(doc.title)} by <@${doc.createdBy}> (${inlineCode(doc.createdBy)}) has been edited in [#${channel.name}](${channelURL}) by <@${
+                doc.updatedBy
+            }> (${inlineCode(doc.updatedBy)}).`,
             color: Colors.yellow,
             additionalInfo: stripIndents`
                 **When:** ${server.formatTimezone(new Date(doc.updatedAt!))}

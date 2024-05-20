@@ -29,7 +29,7 @@ export default {
                 content: channel.name,
                 mentions: undefined,
                 resultingAction: () => ctx.channels.delete(channel.id),
-            })
+            });
         }
 
         // check if there's a log channel channel for message deletions

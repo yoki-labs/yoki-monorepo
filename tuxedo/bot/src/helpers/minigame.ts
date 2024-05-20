@@ -161,10 +161,7 @@ export class MinigameUtil extends Util<TuxoClient> {
         );
 
         // Add reactions for easier interactions
-        await this.addMessageReactions(messageCreated, startingCard)
-            .catch(() =>
-                setTimeout(this.addMessageReactions.bind(this, messageCreated, startingCard), 30000)
-            );
+        await this.addMessageReactions(messageCreated, startingCard).catch(() => setTimeout(this.addMessageReactions.bind(this, messageCreated, startingCard), 30000));
 
         // Add to the registry to handle it with reactions
         this.blackJackInstances.push({

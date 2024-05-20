@@ -40,6 +40,14 @@ export interface CommandArgument extends CommandArgumentInfo {
     // resolver?: (...content: any[]) => any;
 }
 export type CommandArgValidator<TClient extends AbstractClient<TClient, any, any> = AnyClient> = [
-    (input: string, rawArgs: string[], index: number, message: Message, argument: CommandArgument, usedMentions: UsedMentions, client: TClient) => ResolvedArgs | Promise<ResolvedArgs>,
+    (
+        input: string,
+        rawArgs: string[],
+        index: number,
+        message: Message,
+        argument: CommandArgument,
+        usedMentions: UsedMentions,
+        client: TClient
+    ) => ResolvedArgs | Promise<ResolvedArgs>,
     (arg: CommandArgument) => string
 ];

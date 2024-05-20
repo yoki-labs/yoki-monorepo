@@ -27,17 +27,20 @@ export default [
             args[index] = name;
 
             return member.user;
-        }
-        else if (input.startsWith("<@") && input.endsWith(">")) {
+        } else if (input.startsWith("<@") && input.endsWith(">")) {
             const id = input.substring(2, input.length - 1);
 
             if (!isHashId(id)) return null;
 
-            return await message.client.members.fetch(message.serverId!, id).then((member) => member.user).catch(() => null);
+            return message.client.members
+                .fetch(message.serverId!, id)
+                .then((member) => member.user)
+                .catch(() => null);
         }
         // At least the ID was provided
         else if (isHashId(input)) {
-            return client.clientApiRest.get(`/users/${input}`)
+            return client.clientApiRest
+                .get(`/users/${input}`)
                 .then((payload) => normalizeUser(message.client, payload.user as GuildedClientUserProfile))
                 .catch(() => null);
         }
@@ -55,12 +58,12 @@ function normalizeUser(client: Client, { id, type, name, profilePicture, profile
     return new User(client, {
         id,
         name,
-        type: type,
+        type,
         avatar: profilePicture,
         banner: profileBanner,
         status: userStatus?.customReactionId
             ? { emoteId: userStatus.customReactionId, content: userStatus.content ? stringifyParagraph(userStatus.content.document.nodes[0] as RichMarkupParagraph) : undefined }
             : undefined,
-        createdAt
+        createdAt,
     });
 }

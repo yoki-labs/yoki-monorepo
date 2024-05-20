@@ -121,11 +121,7 @@ export default class WelcomePage extends React.Component<DashboardPageProps, Sta
                                         ],
                                     },
                                 ]}
-                                onSubmit={({ welcomeChannel }) =>
-                                    this.modifyServerConfig(
-                                        welcomeChannel as string | undefined | null,
-                                    )
-                                }
+                                onSubmit={({ welcomeChannel }) => this.modifyServerConfig(welcomeChannel as string | undefined | null)}
                             />
                         </CardContent>
                     </Card>

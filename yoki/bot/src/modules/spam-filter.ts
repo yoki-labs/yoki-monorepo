@@ -1,10 +1,10 @@
 import type { Schema } from "@guildedjs/guilded-api-typings";
 import { Colors } from "@yokilabs/utils";
+import { Member } from "guilded.js";
 
 import { Server, Severity } from "../typings";
 import BaseFilterUtil from "./base-filter";
 import { FilteredContent } from "./content-filter";
-import { Member } from "guilded.js";
 
 interface Counter {
     count: number;

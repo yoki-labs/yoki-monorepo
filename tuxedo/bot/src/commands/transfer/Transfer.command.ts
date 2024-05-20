@@ -10,9 +10,7 @@ const Currency: Command = {
     examples: [],
     parentCommand: true,
     category: Category.Balance,
-    subCommands: new Collection<string, Command>()
-        .set("currency", TransferCurrency)
-        .set("item", TransferItem),
+    subCommands: new Collection<string, Command>().set("currency", TransferCurrency).set("item", TransferItem),
     execute: () => void 0,
 };
 

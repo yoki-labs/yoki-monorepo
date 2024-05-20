@@ -70,17 +70,18 @@ export default class ServerSearch extends React.Component<Props, State> {
                 {search ? (
                     <Box className="grow h-full overflow-y-auto px-5 md:px-32 lg:px-60" sx={{ pb: 8 }}>
                         <Typography level="title-md" sx={{ mb: 3 }}>
-                            {awaitingResults
-                                ? <Skeleton animation="wave" sx={{ mb: 3 }}>
+                            {awaitingResults ? (
+                                <Skeleton animation="wave" sx={{ mb: 3 }}>
                                     X servers found while searching for "search"
                                 </Skeleton>
-                                : <>
+                            ) : (
+                                <>
                                     {servers.length} server{"s".repeat(Number(servers.length !== 1))} found while searching for{" "}
                                     <Typography level="code" sx={{ bgcolor: "background.level1" }}>
                                         {search}
                                     </Typography>
                                 </>
-                            }
+                            )}
                         </Typography>
                         <Box className="grid mb-8 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                             {awaitingResults ? (
@@ -108,7 +109,9 @@ export default class ServerSearch extends React.Component<Props, State> {
                             in the server to open its dashboard.
                         </PagePlaceholder>
                     </Box>
-                ) : <ServerSearchEmpty />}
+                ) : (
+                    <ServerSearchEmpty />
+                )}
             </Box>
         );
     }

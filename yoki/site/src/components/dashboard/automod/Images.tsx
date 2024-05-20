@@ -53,7 +53,9 @@ export default class ImagesPage extends React.Component<DashboardPageProps> {
                     />
                 </Box>
                 <Box>
-                    <Typography level="title-lg" gutterBottom>Explicit image detection confidence</Typography>
+                    <Typography level="title-lg" gutterBottom>
+                        Explicit image detection confidence
+                    </Typography>
                     <Card>
                         <CardContent>
                             <LabsForm

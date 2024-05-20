@@ -1,8 +1,8 @@
+import { GuildedImages } from "@yokilabs/utils";
 import { CanvasRenderingContext2D, createCanvas, loadImage, registerFont } from "canvas";
 import fetch from "node-fetch";
-import sharp from "sharp";
-import { GuildedImages } from "@yokilabs/utils";
 import path from "path";
+import sharp from "sharp";
 
 export function registerCanvasing() {
     registerFont(path.join(__dirname, "../..", "node_modules/@fontsource/space-mono/files/space-mono-latin-700-normal.woff"), { family: "Space Mono" });
@@ -27,7 +27,7 @@ export async function generateUserJoinBanner(name: string, avatarUrl?: string | 
     canvasCtx.fillRect(0, 0, 600, 250);
 
     // Text
-    const fontSize = 32 - (name.length * 0.65);
+    const fontSize = 32 - name.length * 0.65;
     const highlightPadding = fontSize / 5;
     canvasCtx.font = `bold ${fontSize}px 'Space Mono'`;
 
@@ -45,7 +45,7 @@ export async function generateUserJoinBanner(name: string, avatarUrl?: string | 
     // 1. Padding needs to start above and before the name
     // 2. highlightPadding * 2, because of padding on both sides
     canvasCtx.fillStyle = "#9E52FD33";
-    canvasCtx.fillRect(nameStart - highlightPadding, 200 - (fontSize / 1.5) - (highlightPadding * 2), nameLength.width + (highlightPadding * 2), fontSize + (highlightPadding * 2));
+    canvasCtx.fillRect(nameStart - highlightPadding, 200 - fontSize / 1.5 - highlightPadding * 2, nameLength.width + highlightPadding * 2, fontSize + highlightPadding * 2);
 
     // canvasCtx.textAlign = "center";
     canvasCtx.fillStyle = "#FFFFFF";
@@ -58,7 +58,9 @@ export async function generateUserJoinBanner(name: string, avatarUrl?: string | 
 
     // Avatar
     const avatarRequest = await fetch(avatarUrl ?? GuildedImages.defaultAvatar);
-    const png = await sharp(await avatarRequest.arrayBuffer()).toFormat("png").toBuffer();
+    const png = await sharp(await avatarRequest.arrayBuffer())
+        .toFormat("png")
+        .toBuffer();
     const avatar = await loadImage(png);
 
     canvasCtx.save();
@@ -79,7 +81,7 @@ function roundImage(canvasCtx: CanvasRenderingContext2D, x: number, y: number, w
     canvasCtx.lineTo(x + width - radius, y);
     canvasCtx.quadraticCurveTo(x + width, y, x + width, y + radius);
 
-    // From right to 
+    // From right to
     canvasCtx.lineTo(x + width, y + height - radius);
     canvasCtx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
 

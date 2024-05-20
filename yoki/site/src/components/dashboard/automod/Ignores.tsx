@@ -82,9 +82,7 @@ export default class IgnoresPage extends React.Component<DashboardPageProps, Sta
         const { error, isLoaded, items, serverChannels } = this.state;
         const { contentTypeSelectionOptions, channelSelectionOptions } = this;
 
-        const selectionOptions = contentTypeSelectionOptions
-            .concat({ type: "divider", name: "", value: "" })
-            .concat(...channelSelectionOptions);
+        const selectionOptions = contentTypeSelectionOptions.concat({ type: "divider", name: "", value: "" }).concat(...channelSelectionOptions);
 
         // Server-side error
         if (error)
@@ -104,9 +102,7 @@ export default class IgnoresPage extends React.Component<DashboardPageProps, Sta
                     <Typography level="title-lg" gutterBottom>
                         Auto-moderation ignoring
                     </Typography>
-                    <Typography level="body-sm">
-                        Set which type of filtering should be ignored by specified content or specified channels.
-                    </Typography>
+                    <Typography level="body-sm">Set which type of filtering should be ignored by specified content or specified channels.</Typography>
                 </Box>
                 {highestRoleType === RoleType.ADMIN && (
                     <Card sx={{ mb: 2 }}>
@@ -151,9 +147,7 @@ function LogsPageSkeleton() {
                     <Skeleton animation="wave">Auto-moderation ignoring</Skeleton>
                 </Typography>
                 <Typography level="body-sm">
-                    <Skeleton animation="wave">
-                        Set which type of filtering should be ignored by specified content or specified channels.
-                    </Skeleton>
+                    <Skeleton animation="wave">Set which type of filtering should be ignored by specified content or specified channels.</Skeleton>
                 </Typography>
             </Box>
             <Card>

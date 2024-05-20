@@ -1,5 +1,6 @@
 import { ChannelIgnoreType, ContentIgnoreType, InviteFilter, Preset } from "@prisma/client";
 import { Colors, isHashId } from "@yokilabs/utils";
+import { Member } from "guilded.js";
 import fetch from "node-fetch";
 
 import type { PresetLink, Server } from "../typings";
@@ -7,7 +8,6 @@ import { URL_REGEX, UrlRegexGroups } from "../utils/matching";
 import { urlPresets } from "../utils/presets";
 import BaseFilterUtil from "./base-filter";
 import { FilteredContent } from "./content-filter";
-import { Member } from "guilded.js";
 
 export class LinkFilterUtil extends BaseFilterUtil {
     readonly vanityRegex = /^[A-Za-z0-9\-]+$/;

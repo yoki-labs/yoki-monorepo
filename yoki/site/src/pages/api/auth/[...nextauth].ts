@@ -5,7 +5,7 @@ export const authOptions: NextAuthOptions = {
     theme: {
         colorScheme: "auto",
         logo: "/face.png",
-        brandColor: "#9e52fd"
+        brandColor: "#9e52fd",
     },
     // Configure one or more authentication providers
     providers: [

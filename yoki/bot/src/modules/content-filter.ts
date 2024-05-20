@@ -1,10 +1,10 @@
 import { ContentFilter, FilterMatching, Preset } from "@prisma/client";
 import { Colors } from "@yokilabs/utils";
+import { Member } from "guilded.js";
 
 import { ContentFilterScan, Server, Severity } from "../typings";
 import { wordPresets } from "../utils/presets";
 import BaseFilterUtil from "./base-filter";
-import { Member } from "guilded.js";
 
 export const transformSeverityStringToEnum = (str: string): Severity | undefined => Severity[str.toUpperCase()];
 export enum FilteredContent {
@@ -147,7 +147,7 @@ export class ContentFilterUtil extends BaseFilterUtil {
             `Content filter tripped`,
             triggeredWord.infractionPoints,
             triggeredWord.severity,
-            triggeredWord.content,
+            triggeredWord.content
         );
 
         return true;

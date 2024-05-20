@@ -1,1 +1,1 @@
-export { registerCanvasing, generateUserJoinBanner } from "./canvasing";
+export { generateUserJoinBanner, registerCanvasing } from "./canvasing";

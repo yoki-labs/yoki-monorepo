@@ -1,4 +1,4 @@
-import { ChannelIgnore, ChannelIgnoreType, ContentIgnoreType, LogChannelType, RoleType } from "@prisma/client";
+import { ChannelIgnoreType, ContentIgnoreType, RoleType } from "@prisma/client";
 import { isUUID } from "@yokilabs/utils";
 
 import prisma from "../../../../../prisma";
@@ -17,7 +17,8 @@ const serverIgnoresRoute = createServerRoute({
             const { item } = req.query;
 
             // Check query
-            if (typeof item !== "string" || !(isUUID(item) || contentIgnoreTypes.includes(item))) return res.status(400).json({ error: true, message: "Ignore item must be a content type or channel ID" });
+            if (typeof item !== "string" || !(isUUID(item) || contentIgnoreTypes.includes(item)))
+                return res.status(400).json({ error: true, message: "Ignore item must be a content type or channel ID" });
 
             const ignores = await prisma.channelIgnore.findMany({
                 where: {
@@ -57,7 +58,8 @@ const serverIgnoresRoute = createServerRoute({
             const { types } = req.body;
 
             // Check query
-            if (typeof item !== "string" || !(isUUID(item) || contentIgnoreTypes.includes(item))) return res.status(400).json({ error: true, message: "Ignore item must be a content type or channel ID" });
+            if (typeof item !== "string" || !(isUUID(item) || contentIgnoreTypes.includes(item)))
+                return res.status(400).json({ error: true, message: "Ignore item must be a content type or channel ID" });
             else if (!Array.isArray(types) || types.some((x) => typeof x !== "string") || types.some((x) => !ChannelIgnoreType[x as ChannelIgnoreType]))
                 return res.status(400).json({ error: true, message: "Log channel types must be a string array" });
 
@@ -68,8 +70,8 @@ const serverIgnoresRoute = createServerRoute({
             });
 
             const isContentType = contentIgnoreTypes.includes(item);
-            const contentType = isContentType ? ContentIgnoreType[item as ContentIgnoreType] : null;            
-            const channelId = isContentType ? null : item;            
+            const contentType = isContentType ? ContentIgnoreType[item as ContentIgnoreType] : null;
+            const channelId = isContentType ? null : item;
 
             const existingIgnores = ignores.filter((x) => x.channelId === channelId && x.contentType === contentType);
 
@@ -82,7 +84,8 @@ const serverIgnoresRoute = createServerRoute({
             if (!(ignoresToAdd.length || ignoresToRemove.length)) return res.status(400).json({ error: true, message: "Nothing to update in types." });
             // Can't delete non-existant ignore
             // This check is exclusively to ditch DELETE route and allow us to just do it all in PUT
-            else if (!(existingIgnores.length || ignoresToAdd.length)) return res.status(404).json({ error: true, message: "Any ignore by this channel ID or content type does not exist." });
+            else if (!(existingIgnores.length || ignoresToAdd.length))
+                return res.status(404).json({ error: true, message: "Any ignore by this channel ID or content type does not exist." });
             // Make sure channel exists
             else if (!existingIgnores.length && channelId && !(await channelExistsInServer(channelId)))
                 return res

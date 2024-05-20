@@ -3,6 +3,7 @@ import { RoleType } from "@prisma/client";
 
 import { Category, Command } from "../commands";
 import SetCanBuy from "./CanBuy.command";
+import SetCanTransfer from "./CanTransfer.command";
 import Create from "./Create.command";
 import Delete from "./Delete.command";
 import SetGiveRole from "./GiveRole.command";
@@ -10,7 +11,6 @@ import Info from "./Info.command";
 import List from "./List.command";
 import SetName from "./Name.command";
 import SetPrice from "./Price.command";
-import SetCanTransfer from "./CanTransfer.command";
 
 const Items: Command = {
     name: "items",

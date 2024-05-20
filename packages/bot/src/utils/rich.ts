@@ -14,11 +14,7 @@ import {
 
 export const stringifyParagraph = (paragraph: RichMarkupParagraph) =>
     paragraph.nodes
-        .flatMap((x) =>
-            x.object === "text"
-            ? (x as RichMarkupText).leaves.map((y) => y.text)
-            : (x as RichMarkupEmote).nodes.flatMap((y) => y.leaves.map(z  => z.text))
-        )
+        .flatMap((x) => (x.object === "text" ? (x as RichMarkupText).leaves.map((y) => y.text) : (x as RichMarkupEmote).nodes.flatMap((y) => y.leaves.map((z) => z.text))))
         .join("");
 
 export const createUserMentionElement = (member: Member): RichMarkupUserMention => ({

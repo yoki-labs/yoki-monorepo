@@ -2,14 +2,13 @@ import React from "react";
 import { DashboardPageProps } from "../pages";
 import PagePlaceholder, { PagePlaceholderIcon } from "../../PagePlaceholder";
 
-type State = {
-};
+type State = {};
 
 export default class BotProfilePage extends React.Component<DashboardPageProps, State> {
     constructor(props: DashboardPageProps) {
         super(props);
 
-        this.state = { };
+        this.state = {};
     }
 
     render() {

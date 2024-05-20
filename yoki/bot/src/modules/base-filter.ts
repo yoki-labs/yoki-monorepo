@@ -85,7 +85,13 @@ export default abstract class BaseFilterUtil<TFilterType = null> extends Util<Yo
             server
         );
 
-        return this.severityAction[actionType](member.id, server, server.actionNotificationChannel ?? (filteredContent < FilteredContent.ChannelContent ? channelId : null), filteredContent, filterType);
+        return this.severityAction[actionType](
+            member.id,
+            server,
+            server.actionNotificationChannel ?? (filteredContent < FilteredContent.ChannelContent ? channelId : null),
+            filteredContent,
+            filterType
+        );
     }
 
     abstract onUserWarn(userId: string, server: Server, channelId: string | null, filteredContent: FilteredContent, filterType: TFilterType | null): Promise<unknown> | unknown;

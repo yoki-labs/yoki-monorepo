@@ -121,7 +121,9 @@ const Sell: Command = {
         if (lostCurrencyAmounts.length)
             return ctx.messageUtil.replyWithWarningInline(
                 message,
-                `You have successfully sold \xD7${itemAmount} ${item.name}, but the received currency was exceeded by ${lostCurrencyAmounts.map((x) => displayCurrencyAmountInline(x.currency, x.lost)).join(", ")}.`
+                `You have successfully sold \xD7${itemAmount} ${item.name}, but the received currency was exceeded by ${lostCurrencyAmounts
+                    .map((x) => displayCurrencyAmountInline(x.currency, x.lost))
+                    .join(", ")}.`
             );
 
         return ctx.messageUtil.replyWithSuccessInline(message, `You have successfully sold \xD7${itemAmount} ${item.name}.`);
