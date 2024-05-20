@@ -167,6 +167,33 @@ const Premium: NextPage<LandingPageSessionProps> = ({ user }) => {
                             <tr>
                                 <td style={{ textAlign: "left" }}>
                                     <Typography level="body-md" textColor="text.primary">
+                                        Welcomer
+                                    </Typography>
+                                </td>
+                                <td>
+                                    <Stack direction="column" alignItems="center">
+                                        <AlertIcon icon={faCheck} color="success" variant="soft" />
+                                    </Stack>
+                                </td>
+                                <td>
+                                    <Stack direction="column" alignItems="center">
+                                        <AlertIcon icon={faCheck} color="success" variant="soft" />
+                                    </Stack>
+                                </td>
+                                <td>
+                                    <Stack direction="column" alignItems="center">
+                                        <AlertIcon icon={faCheck} color="success" variant="soft" />
+                                    </Stack>
+                                </td>
+                                <td>
+                                    <Stack direction="column" alignItems="center">
+                                        <AlertIcon icon={faCheck} color="success" variant="soft" />
+                                    </Stack>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style={{ textAlign: "left" }}>
+                                    <Typography level="body-md" textColor="text.primary">
                                         Modmail
                                     </Typography>
                                 </td>
