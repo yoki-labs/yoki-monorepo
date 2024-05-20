@@ -24,6 +24,7 @@
         "@types/ms": "^0.7.31",
         "@yokilabs/utils": "workspace:*",
         "common-tags": "^1.8.2",
+        "form-data": "^4.0.0",
         "guilded.js": "0.24.2",
         "lexure": "^0.17.0",
         "ms": "^2.1.3",

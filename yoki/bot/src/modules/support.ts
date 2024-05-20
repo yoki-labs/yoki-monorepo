@@ -8,8 +8,18 @@ import { nanoid } from "nanoid";
 import type YokiClient from "../Client";
 import type { LogChannel, Server } from "../typings";
 import { errorLoggerS3, uploadS3 } from "../utils/s3";
+import { Member } from "guilded.js";
+import { generateUserJoinBanner } from "@yoki/common";
 
 export default class SupportUtil extends Util<YokiClient> {
+    async handleWelcome(server: Server, member: Member) {
+        if (!(server.flags.includes("EARLY_ACCESS") && server.welcomeEnabled && server.welcomeChannel)) return;
+
+        const mediaUrl = await this.client.uploadMedia(await generateUserJoinBanner(member.user!.name, member.user?.avatar), `welcome-${member.id}.png`, `image/png`);
+
+        return this.client.messageUtil.sendInfoBlock(server.welcomeChannel, `<@${member.id}> just joined!`, "", { description: undefined, image: { url: mediaUrl } });
+    }
+
     async createModmailThread(server: Server, channelId: string, createdBy: string) {
         const { serverId } = server;
 

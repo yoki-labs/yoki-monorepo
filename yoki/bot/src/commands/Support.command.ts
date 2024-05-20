@@ -4,12 +4,13 @@ const Support: Command = {
     name: "support",
     description: "Get a link for our support server.",
     // usage: "",
-    execute: (message, _args, ctx) => {
+    execute: async (message, _args, ctx) => {
         void ctx.amp.logEvent({
             event_type: "BOT_SUPPORT",
             user_id: message.authorId,
             event_properties: { serverId: message.serverId! },
         });
+
         return ctx.messageUtil.replyWithInfo(
             message,
             `:link: Join support server`,

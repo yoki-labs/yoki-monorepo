@@ -1,0 +1,54 @@
+{
+    "name": "@yoki/common",
+    "version": "1.0.0",
+    "private": true,
+    "description": "Common Yoki code",
+    "main": "./dist/src/index.js",
+    "types": "./dist/src/index.d.ts",
+    "files": [
+        "dist"
+    ],
+    "author": "Yoki-Labs",
+    "license": "PROPRIETARY",
+    "scripts": {
+        "build": "tsc",
+        "build:ci": "tsc",
+        "lint": "eslint -c ../../.eslintrc.js src --ext .ts"
+    },
+    "imports": {
+        "#functions/*": "./dist/functions/*.js"
+    },
+    "devDependencies": {
+		"@guildedjs/guilded-api-typings": "4.0.0",
+		"@types/common-tags": "^1.8.1",
+		"@types/json-stringify-safe": "^5.0.0",
+		"@types/ms": "^0.7.31",
+		"@types/node": "^16.18.41",
+		"@types/node-fetch": "2.5.12",
+		"@types/recursive-readdir": "^2.2.1"
+	},
+	"dependencies": {
+		"@amplitude/node": "^1.10.2",
+		"@discordjs/collection": "^1.5.3",
+		"@fontsource/space-mono": "^5.0.18",
+		"@prisma/client": "^4.2.1",
+		"@yokilabs/bot": "workspace:*",
+		"@yokilabs/captcha-generator": "1.1.1",
+		"@yokilabs/utils": "workspace:*",
+		"aws-sdk": "^2.1440.0",
+		"canvas": "^2.11.2",
+		"common-tags": "^1.8.2",
+		"dotenv": "^8.6.0",
+		"form-data": "^4.0.0",
+		"guilded.js": "0.24.2",
+		"json-stringify-safe": "^5.0.1",
+		"ms": "^2.1.3",
+		"nanoid": "^3.3.6",
+		"node-fetch": "2.6.6",
+		"nodemon": "^2.0.22",
+		"recursive-readdir": "^2.2.3",
+		"sharp": "^0.33.3",
+		"tslib": "^2.6.2",
+		"typed-emitter": "^2.1.0"
+	}
+}

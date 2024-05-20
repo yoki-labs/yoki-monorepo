@@ -4,6 +4,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import rest from "../../../guilded";
 import errorHandler, { errorEmbed } from "../../../lib/ErrorHandler";
 import prisma from "../../../prisma";
+import { handleWelcome } from "../../../utils/canvasUtil";
 
 const PostVerifyRoute = async (req: NextApiRequest, res: NextApiResponse) => {
     // Has to be POST; cannot be other method, since there are no other functions than POST
@@ -67,6 +68,10 @@ const PostVerifyRoute = async (req: NextApiRequest, res: NextApiResponse) => {
             console.log("Adding member role to user if exists - ", server.memberRoleId);
             if (server.memberRoleId)
                 await rest.router.roleMembership.roleMembershipCreate({ serverId: captcha.serverId, userId: captcha.triggeringUser, roleId: server.memberRoleId });
+
+            // Handle welcome
+            if (server.flags.includes("EARLY_ACCESS") && server.welcomeEnabled && server.welcomeChannel)
+                await handleWelcome(server.serverId, server.welcomeChannel, captcha.triggeringUser);
 
             console.log("All done");
             return res.status(200).json({ error: false });

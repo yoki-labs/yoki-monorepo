@@ -10,6 +10,7 @@ const descriptions: Record<string, string> = {
     nsfwscan: "Filters out NSFW/NSFL images from chat.",
     invitescan: "Filters out server invites and links that aren't of this server or aren't whitelisted.",
     appeals: "Allows people who were banned to appeal for an unban.",
+    welcome: "Posts welcome messages when person joins and verifies.",
 };
 
 const List: Command = {

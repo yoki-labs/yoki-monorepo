@@ -6,7 +6,7 @@ import { stripIndents } from "common-tags";
 import { EmbedPayload, Member, UserType } from "guilded.js";
 import { nanoid } from "nanoid";
 
-import type { GEvent } from "../../typings";
+import type { GEvent, Server } from "../../typings";
 import { generateCaptcha } from "../../utils/antiraid";
 import { trimHoistingSymbols } from "../../utils/moderation";
 import { suspicious as sus } from "../../utils/util";
@@ -35,7 +35,7 @@ export default {
         }
 
         console.log(`${userId} joined ${server.serverId}, with account age of ${Date.now() - new Date(member.user!.createdAt!).getTime()}`);
-        
+
         const canFilterAnyone = !server.antiRaidAgeFilter && server.antiRaidResponse !== ResponseType.KICK;
         const memberJoinDateIsBelowRequirement = Date.now() - new Date(member.user!.createdAt!).getTime() <= (server.antiRaidAgeFilter ?? 0);
         const userHasNoAvatar = !member.user!.avatar
@@ -44,172 +44,183 @@ export default {
             server.antiRaidEnabled &&
             (canFilterAnyone || memberJoinDateIsBelowRequirement || userHasNoAvatar)
         ) {
-            void ctx.amp.logEvent({ event_type: "FRESH_ACCOUNT_JOIN", user_id: userId, event_properties: { serverId } });
-            switch (server.antiRaidResponse) {
-                case "TEXT_CAPTCHA": {
-                    if (!server.antiRaidChallengeChannel) break;
+            const proceed = await handleAntiRaid(ctx, server, member);
 
-                    let userCaptcha = await ctx.prisma.captcha.findFirst({ where: { serverId, triggeringUser: userId, solved: false } });
-                    void ctx.amp.logEvent({ event_type: "MEMBER_CAPTCHA_JOIN", user_id: userId, event_properties: { serverId } });
+            if (!proceed) return;
+        }
+        else await ctx.supportUtil.handleWelcome(server, member);
 
-                    if (!userCaptcha) {
-                        const { id, value, url } = await generateCaptcha(ctx.s3);
-                        const createdCaptcha = await ctx.prisma.captcha.create({
-                            data: { id, serverId, triggeringUser: userId, value, url },
-                        });
-                        userCaptcha = createdCaptcha;
-                    }
+        // check if there's a log channel channel for member joins
+        const memberJoinLogChannel = await ctx.dbUtil.getLogChannel(serverId!, LogChannelType.member_joins);
+        if (!memberJoinLogChannel) return;
+        const creationDate = new Date(member.user!.createdAt!);
+        const suspicious = sus(creationDate);
 
-                    console.log(`User captcha URL: ${userCaptcha.url}`);
-                    if (server.muteRoleId) await ctx.roles.addRoleToMember(serverId, userId, server.muteRoleId).catch(() => null);
+        // send the log channel message with the content/data of the deleted message
+        await ctx.messageUtil.sendLog({
+            where: memberJoinLogChannel.channelId,
+            author: {
+                icon_url: member?.user?.avatar ?? GuildedImages.defaultAvatar,
+                name: `${member.user!.type === UserType.Bot ? "Bot added" : "User joined"} \u2022 ${member?.displayName ?? "Unknown user"}`,
+            },
+            // title: `${member.user!.type === UserType.Bot ? "Bot Added" : "User Joined"}`,
+            serverId: server.serverId,
+            description: `<@${userId}> (${inlineCode(userId)}) has joined the server.`,
+            color: suspicious ? Colors.yellow : Colors.green,
+            // occurred: member.joinedAt!.toISOString(),
+            additionalInfo: stripIndents`
+                **Account created:** ${server.formatTimezone(creationDate)} ${suspicious ? "(:warning: recent)" : ""}
+                **Joined:** ${server.formatTimezone(member.joinedAt!)}
+            `,
+        });
+    },
+    name: "memberJoined",
+} satisfies GEvent<"memberJoined">;
 
-                    // Have to complete captcha
-                    // There might be bots doing something behind the scenes and people may not be able to be mentioned for that period of time
-                    await sendCaptcha(
-                        ctx,
-                        server.antiRaidChallengeChannel!,
-                        member,
-                        `Please run the following command with the code below: \`${server.getPrefix()}solve insert-code-here\`.`,
+async function handleAntiRaid(ctx: YokiClient, server: Server, member: Member) {
+    const { serverId } = server;
+    const { id: userId } = member;
+
+    void ctx.amp.logEvent({ event_type: "FRESH_ACCOUNT_JOIN", user_id: userId, event_properties: { serverId } });
+    switch (server.antiRaidResponse) {
+        case "TEXT_CAPTCHA": {
+            if (!server.antiRaidChallengeChannel) break;
+    
+            let userCaptcha = await ctx.prisma.captcha.findFirst({ where: { serverId, triggeringUser: userId, solved: false } });
+            void ctx.amp.logEvent({ event_type: "MEMBER_CAPTCHA_JOIN", user_id: userId, event_properties: { serverId } });
+    
+            if (!userCaptcha) {
+                const { id, value, url } = await generateCaptcha(ctx.s3);
+                const createdCaptcha = await ctx.prisma.captcha.create({
+                    data: { id, serverId, triggeringUser: userId, value, url },
+                });
+                userCaptcha = createdCaptcha;
+            }
+
+            if (server.muteRoleId) await ctx.roles.addRoleToMember(serverId, userId, server.muteRoleId).catch(() => null);
+    
+            // Have to complete captcha
+            // There might be bots doing something behind the scenes and people may not be able to be mentioned for that period of time
+            await sendCaptcha(
+                ctx,
+                server.antiRaidChallengeChannel!,
+                member,
+                `Please run the following command with the code below: \`${server.getPrefix()}solve insert-code-here\`.`,
+                {
+                    image: {
+                        url: userCaptcha!.url!,
+                    },
+                    fields: [
                         {
-                            image: {
-                                url: userCaptcha!.url!,
-                            },
-                            fields: [
-                                {
-                                    name: `Example`,
-                                    value: codeBlock(`${server.getPrefix()}solve ahS9fjW`, `md`),
+                            name: `Example`,
+                            value: codeBlock(`${server.getPrefix()}solve ahS9fjW`, `md`),
+                        },
+                    ],
+                }
+            )
+                .catch((err) => {
+                    console.log(`Error notifying user of captcha for server ${serverId} because of ${err}`);
+                    void ctx.errorHandler.send(`Error while handling antiraid site challenge for user ${member.id}`, [errorEmbed((err as Error).message)]);
+    
+                    setTimeout(() =>
+                        sendCaptcha(
+                            ctx,
+                            server.antiRaidChallengeChannel!,
+                            member,
+                            `Please run the following command with the code below: \`${server.getPrefix()}solve insert-code-here\`.`,
+                            {
+                                image: {
+                                    url: userCaptcha!.url!,
                                 },
-                            ],
-                        }
-                        )
-                        .catch((err) => {
-                            console.log(`Error notifying user of captcha for server ${serverId} because of ${err}`);
-                            void ctx.errorHandler.send(`Error while handling antiraid site challenge for user ${member.id}`, [errorEmbed((err as Error).message)]);
-        
-                            setTimeout(() =>
-                                sendCaptcha(
-                                    ctx,
-                                    server.antiRaidChallengeChannel!,
-                                    member,
-                                    `Please run the following command with the code below: \`${server.getPrefix()}solve insert-code-here\`.`,
+                                fields: [
                                     {
-                                        image: {
-                                            url: userCaptcha!.url!,
-                                        },
-                                        fields: [
-                                            {
-                                                name: `Example`,
-                                                value: codeBlock(`${server.getPrefix()}solve ahS9fjW`, `md`),
-                                            },
-                                        ],
-                                    }
-                                )
-                                    .catch((err) =>
-                                        void ctx.errorHandler.send(`Error while retrying antiraid captcha challenge for user ${member.id}`, [errorEmbed((err as Error).message)])
-                                    )
-                            , 30000);
-                        });
-                        
-                        break;
-                }
-                case "KICK": {
-                    void ctx.amp.logEvent({ event_type: "MEMBER_KICKED_JOIN", user_id: userId, event_properties: { serverId } });
-                    await ctx.members.kick(serverId, userId);
-
-                    // Add this action to the database
-                    const createdCase = await ctx.dbUtil.addAction({
-                        serverId,
-                        type: "KICK",
-                        executorId: ctx.user!.id,
-                        reason: `[AUTOMOD] User failed account age requirement.`,
-                        triggerContent: null,
-                        channelId: null,
-                        targetId: userId,
-                        infractionPoints: 0,
-                        expiresAt: null,
-                    });
-
-                    // If a modlog channel is set
-                    ctx.emitter.emit("ActionIssued", { ...createdCase }, server, ctx);
-                    return;
-                }
-                case "SITE_CAPTCHA": {
-                    if (!server.antiRaidChallengeChannel)
-                        break;
-
-                    let userCaptcha = await ctx.prisma.captcha.findFirst({ where: { serverId, triggeringUser: userId, solved: false } });
-                    void ctx.amp.logEvent({ event_type: "MEMBER_SITE_CAPTCHA_JOIN", user_id: userId, event_properties: { serverId } });
-
-                    if (!userCaptcha) {
-                        const id = nanoid();
-                        const createdCaptcha = await ctx.prisma.captcha.create({
-                            data: { id, serverId, triggeringUser: userId },
-                        });
-                        userCaptcha = createdCaptcha;
-                    }
-
-                    if (server.muteRoleId) await ctx.roles.addRoleToMember(serverId, userId, server.muteRoleId).catch(() => null);
-                    // Have to complete captcha
-                    // There might be bots that are doing something else behind the scenes and those people might not be allowed to be privately mentioned
-                    await sendCaptcha(
-                        ctx,
-                        server.antiRaidChallengeChannel!,
-                        member,
-                        `Please visit [this link](${process.env.NODE_ENV === "development" ? process.env.NEXTAUTH_URL ?? "http://localhost:3000" : "https://yoki.gg"}/verify/${
-                            userCaptcha!.id
-                        }) which will use a frameless captcha to verify you are not a bot.`
-                    )
-                        .catch((err) => {
-                            console.log(`Error notifying user of captcha for server ${serverId} because of ${err}`);
-                            void ctx.errorHandler.send(`Error while handling antiraid site challenge for user ${member.id}`, [errorEmbed((err as Error).message)]);
-                            
-                            setTimeout(() =>
-                                sendCaptcha(
-                                    ctx,
-                                    server.antiRaidChallengeChannel!,
-                                    member,
-                                    `Please visit [this link](${process.env.NODE_ENV === "development" ? process.env.NEXTAUTH_URL ?? "http://localhost:3000" : "https://yoki.gg"}/verify/${
-                                        userCaptcha!.id
-                                    }) which will use a frameless captcha to verify you are not a bot.`
-                                )
-                                    .catch((err) =>
-                                        void ctx.errorHandler.send(`Error while retrying antiraid site challenge for user ${member.id}`, [errorEmbed((err as Error).message)])
-                                    )
-                            , 30000);
-                        });
-                    break;
+                                        name: `Example`,
+                                        value: codeBlock(`${server.getPrefix()}solve ahS9fjW`, `md`),
+                                    },
+                                ],
+                            }
+                        )
+                            .catch((err) =>
+                                void ctx.errorHandler.send(`Error while retrying antiraid captcha challenge for user ${member.id}`, [errorEmbed((err as Error).message)])
+                            )
+                    , 30000);
+                });
+                
+                break;
+        }
+        case "KICK": {
+            void ctx.amp.logEvent({ event_type: "MEMBER_KICKED_JOIN", user_id: userId, event_properties: { serverId } });
+            await ctx.members.kick(serverId, userId);
+    
+            // Add this action to the database
+            const createdCase = await ctx.dbUtil.addAction({
+                serverId,
+                type: "KICK",
+                executorId: ctx.user!.id,
+                reason: `[AUTOMOD] User failed account age requirement.`,
+                triggerContent: null,
+                channelId: null,
+                targetId: userId,
+                infractionPoints: 0,
+                expiresAt: null,
+            });
+    
+            // If a modlog channel is set
+            ctx.emitter.emit("ActionIssued", { ...createdCase }, server, ctx);
+            return false;
+        }
+        case "SITE_CAPTCHA": {
+            if (!server.antiRaidChallengeChannel)
+                break;
+    
+            let userCaptcha = await ctx.prisma.captcha.findFirst({ where: { serverId, triggeringUser: userId, solved: false } });
+            void ctx.amp.logEvent({ event_type: "MEMBER_SITE_CAPTCHA_JOIN", user_id: userId, event_properties: { serverId } });
+    
+            if (!userCaptcha) {
+                const id = nanoid();
+                const createdCaptcha = await ctx.prisma.captcha.create({
+                    data: { id, serverId, triggeringUser: userId },
+                });
+                userCaptcha = createdCaptcha;
             }
-            default: {
-            }
+    
+            if (server.muteRoleId) await ctx.roles.addRoleToMember(serverId, userId, server.muteRoleId).catch(() => null);
+            // Have to complete captcha
+            // There might be bots that are doing something else behind the scenes and those people might not be allowed to be privately mentioned
+            await sendCaptcha(
+                ctx,
+                server.antiRaidChallengeChannel!,
+                member,
+                `Please visit [this link](${process.env.NODE_ENV === "development" ? process.env.NEXTAUTH_URL ?? "http://localhost:3000" : "https://yoki.gg"}/verify/${
+                    userCaptcha!.id
+                }) which will use a frameless captcha to verify you are not a bot.`
+            )
+                .catch((err) => {
+                    console.log(`Error notifying user of captcha for server ${serverId} because of ${err}`);
+                    void ctx.errorHandler.send(`Error while handling antiraid site challenge for user ${member.id}`, [errorEmbed((err as Error).message)]);
+                    
+                    setTimeout(() =>
+                        sendCaptcha(
+                            ctx,
+                            server.antiRaidChallengeChannel!,
+                            member,
+                            `Please visit [this link](${process.env.NODE_ENV === "development" ? process.env.NEXTAUTH_URL ?? "http://localhost:3000" : "https://yoki.gg"}/verify/${
+                                userCaptcha!.id
+                            }) which will use a frameless captcha to verify you are not a bot.`
+                        )
+                            .catch((err) =>
+                                void ctx.errorHandler.send(`Error while retrying antiraid site challenge for user ${member.id}`, [errorEmbed((err as Error).message)])
+                            )
+                    , 30000);
+                });
+            break;
+        }
+        default: {
         }
     }
 
-    // check if there's a log channel channel for member joins
-    const memberJoinLogChannel = await ctx.dbUtil.getLogChannel(serverId!, LogChannelType.member_joins);
-    if (!memberJoinLogChannel) return;
-    const creationDate = new Date(member.user!.createdAt!);
-    const suspicious = sus(creationDate);
-
-    // send the log channel message with the content/data of the deleted message
-    await ctx.messageUtil.sendLog({
-        where: memberJoinLogChannel.channelId,
-        author: {
-            icon_url: member?.user?.avatar ?? GuildedImages.defaultAvatar,
-            name: `${member.user!.type === UserType.Bot ? "Bot added" : "User joined"} \u2022 ${member?.displayName ?? "Unknown user"}`,
-        },
-        // title: `${member.user!.type === UserType.Bot ? "Bot Added" : "User Joined"}`,
-        serverId: server.serverId,
-        description: `<@${userId}> (${inlineCode(userId)}) has joined the server.`,
-        color: suspicious ? Colors.yellow : Colors.green,
-        // occurred: member.joinedAt!.toISOString(),
-        additionalInfo: stripIndents`
-            **Account created:** ${server.formatTimezone(creationDate)} ${suspicious ? "(:warning: recent)" : ""}
-            **Joined:** ${server.formatTimezone(member.joinedAt!)}
-        `,
-    });
-},
-name: "memberJoined",
-} satisfies GEvent<"memberJoined">;
+    return true;
+}
 
 function sendCaptcha(ctx: YokiClient, channelId: string, member: Member, content: string, embed?: Partial<EmbedPayload> | undefined) {
     return ctx.messageUtil

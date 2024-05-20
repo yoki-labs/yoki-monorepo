@@ -8,6 +8,7 @@ import type { IServer } from "./db-types";
 import Welcome from "./events/Welcome";
 import type { MessageUtil } from "./helpers/message";
 import type { RoleUtil } from "./helpers/role";
+import FormData from "form-data";
 
 export type AnyClient = AbstractClient<any, any, any>;
 
@@ -53,6 +54,9 @@ export abstract class AbstractClient<
     // Client API rest manager
     readonly clientApiRest: RestManager;
 
+    // Client API rest manager
+    readonly mediaApiRest: RestManager;
+
     // Util
     abstract roleUtil: RoleUtil<TClient>;
 
@@ -66,6 +70,24 @@ export abstract class AbstractClient<
 
         this.prefix = prefix;
         this.clientApiRest = new RestManager({ token: options.token, proxyURL: "https://www.guilded.gg/api" });
+        this.mediaApiRest = new RestManager({ token: options.token, proxyURL: "https://media.guilded.gg/media" });
+    }
+
+    async uploadMedia(buffer: Buffer, filename?: string, contentType?: string) {
+        const formData = new FormData();
+
+        formData.append("uploadTrackingId", `r-${generateFormIdNum()}-${generateFormIdNum()}`);
+        formData.append("file", buffer, { filename, contentType });
+
+        const [, response] = await this.mediaApiRest.make({
+            path: "/upload",
+            isFormData: true,
+            method: "POST",
+            body: formData,
+            query: { dynamicMediaTypeId: "ContentMedia" },
+        }, true, 1, { bodyIsJSON: false });
+
+        return (await response as { url: string }).url;
     }
 
     /** Start the bot connection */
@@ -75,3 +97,5 @@ export abstract class AbstractClient<
         return this.login();
     }
 }
+
+const generateFormIdNum = () => Math.floor(Math.random() * 9999999) + 1000000;

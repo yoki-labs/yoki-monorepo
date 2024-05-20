@@ -44,6 +44,10 @@ model Server {
 
     actionNotificationChannel  String? @db.VarChar(48)
 
+    // --- Welcomer
+    welcomeEnabled             Boolean @default(false)
+    welcomeChannel             String? @db.VarChar(48)
+
     // --- Anti-raid and captcha
     antiRaidEnabled          Boolean       @default(false)
     antiRaidResponse         ResponseType?

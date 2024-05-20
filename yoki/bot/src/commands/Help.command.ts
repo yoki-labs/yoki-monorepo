@@ -54,7 +54,7 @@ const Help: Command = {
             `\u2022 [**Add multi-currency economy, giveaways and mini-games**](https://guilded.gg/b/deabc4d2-ad06-44dd-a053-da4970229b28)`
         );
 
-        return ctx.messageUtil.reply(message, { embeds: [embed] });
+        return ctx.messageUtil.replyLegacy(message, { embeds: [embed] });
     },
 };
 

@@ -29,6 +29,9 @@ const viewSettings = [
     {
         category: "Antiraid & Appeals",
         properties: [
+            ["welcomeEnabled", "boolean"],
+            ["welcomeChannel", "string"],
+
             ["antiRaidEnabled", "boolean"],
             ["antiRaidAgeFilter", "string"],
             ["antiRaidChallengeChannel", "string"],
