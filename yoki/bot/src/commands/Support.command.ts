@@ -4,7 +4,7 @@ const Support: Command = {
     name: "support",
     description: "Get a link for our support server.",
     // usage: "",
-    execute: async (message, _args, ctx) => {
+    execute: (message, _args, ctx) => {
         void ctx.amp.logEvent({
             event_type: "BOT_SUPPORT",
             user_id: message.authorId,

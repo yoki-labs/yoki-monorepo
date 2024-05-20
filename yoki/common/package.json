@@ -32,7 +32,6 @@
 		"@discordjs/collection": "^1.5.3",
 		"@fontsource/space-mono": "^5.0.18",
 		"@prisma/client": "^4.2.1",
-		"@yokilabs/bot": "workspace:*",
 		"@yokilabs/captcha-generator": "1.1.1",
 		"@yokilabs/utils": "workspace:*",
 		"aws-sdk": "^2.1440.0",

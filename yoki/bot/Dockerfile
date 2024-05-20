@@ -16,6 +16,7 @@ RUN apk update \
 # root /
 COPY pnpm-workspace.yaml pnpm-lock.yaml tsconfig.json package.json turbo.json .swcrc ./
 COPY ./packages ./packages
+COPY ./yoki/common ./yoki/common
 
 RUN pnpm install --silent
 RUN pnpm run build:deps
@@ -47,6 +48,7 @@ RUN apk update \
 COPY --from=0 ./opt/build/tsconfig.json ./opt/build/package.json ./
 COPY --from=0 ./opt/build/node_modules node_modules
 COPY --from=0 ./opt/build/packages/ packages/
+COPY --from=0 ./opt/build/yoki/common/ yoki/common/
 COPY --from=0 ./opt/build/yoki/bot/ yoki/bot/
 
 WORKDIR /usr/app/yoki/bot
