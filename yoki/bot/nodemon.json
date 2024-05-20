@@ -1,11 +1,13 @@
 {
     "watch": [
         "src",
-        "../../packages/bot/src"
+        "../../packages/bot/src",
+        "../common/src"
     ],
     "ext": "ts,json",
     "ignore": [
         "src/**/*.d.ts",
+        "../common/src/**/*.d.ts",
         "../../packages/**/*.d.ts"
     ],
     "exec": "pnpm run -w build:yoki && node --enable-source-maps dist/index.js",

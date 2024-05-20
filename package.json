@@ -74,6 +74,7 @@
     "workspaces": [
         "packages/bot",
         "packages/utils",
+        "yoki/common",
         "yoki/bot",
         "yoki/site",
         "tuxedo/bot"
