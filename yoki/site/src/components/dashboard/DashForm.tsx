@@ -5,15 +5,17 @@ import PagePlaceholder, { PagePlaceholderIcon } from "../PagePlaceholder";
 import { RoleType } from "@prisma/client";
 import { roleTypeLevels } from "../../utils/routes/permissions";
 import { GuildedServer } from "../../lib/@types/guilded";
+import { LabsSessionUser } from "../../utils/routes/pages";
 
 type Props = {
     page: DashboardPageItem | undefined;
     serverConfig: SanitizedServer;
+    currentUser: LabsSessionUser;
     currentServer: GuildedServer;
     highestRoleType: RoleType;
 };
 
-export default function DashForm({ serverConfig, currentServer, page, highestRoleType }: Props) {
+export default function DashForm({ serverConfig, currentServer, currentUser, page, highestRoleType }: Props) {
     // const currentPage = useAtomValue(navbarAtom);
     // const pageInfo = dashboardPageList.find((x) => x.id === page);
     const PageComponent = page?.component;
@@ -31,7 +33,7 @@ export default function DashForm({ serverConfig, currentServer, page, highestRol
                         </PagePlaceholder>
                     </Box>
                 ) : (
-                    <PageComponent currentServer={currentServer} serverConfig={serverConfig} highestRoleType={highestRoleType} />
+                    <PageComponent currentUser={currentUser} currentServer={currentServer} serverConfig={serverConfig} highestRoleType={highestRoleType} />
                 )
             ) : (
                 <Box sx={{ pt: 8 }}>

@@ -39,6 +39,7 @@ import ConfigPage from "./overview/Premium";
 import RolesPage from "./overview/Roles";
 import { SanitizedServer } from "../../lib/@types/db";
 import { GuildedServer } from "../../lib/@types/guilded";
+import { LabsSessionUser } from "../../utils/routes/pages";
 
 export interface DashboardPageItem {
     id: string;
@@ -90,6 +91,7 @@ export const dashboardPageList: DashboardPageItem[] = [
 ];
 
 export interface DashboardPageProps {
+    currentUser: LabsSessionUser;
     currentServer: GuildedServer;
     serverConfig: SanitizedServer;
     highestRoleType: RoleType;

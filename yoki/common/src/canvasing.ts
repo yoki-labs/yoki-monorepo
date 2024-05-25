@@ -5,8 +5,8 @@ import path from "path";
 import sharp from "sharp";
 
 export function registerCanvasing() {
-    const fontPath = path.join(__dirname, "../..", "node_modules/@fontsource/space-mono/files/space-mono-latin-700-normal.woff");
-    console.log("Registering canvas", { fontPath });
+    const fontPath = path.join(process.cwd(), "node_modules/@fontsource/space-mono/files/space-mono-latin-700-normal.woff");
+
     registerFont(fontPath, { family: "Space Mono" });
 }
 

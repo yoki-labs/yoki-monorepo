@@ -8,6 +8,8 @@ import { errorifyResponseError, notifyFetchError } from "../../../utils/errorUti
 import { channelsToSelectionOptions } from "../channels";
 import { GuildedSanitizedChannel } from "../../../lib/@types/guilded";
 import { WavingHandRounded } from "@mui/icons-material";
+import GuildedContent from "../../guilded/GuildedContent";
+import WelcomeBanner from "../WelcomeBanner";
 
 type State = {
     isMounted: boolean;
@@ -56,7 +58,7 @@ export default class WelcomePage extends React.Component<DashboardPageProps, Sta
     }
 
     render() {
-        const { serverConfig } = this.props;
+        const { serverConfig, currentUser } = this.props;
         const { serverChannels } = this.state;
 
         return (
@@ -102,6 +104,19 @@ export default class WelcomePage extends React.Component<DashboardPageProps, Sta
                             />
                         </CardContent>
                     </Card>
+                </Box>
+                <Box>
+                    <Typography level="title-lg" gutterBottom>
+                        Preview
+                    </Typography>
+                    <Typography level="body-md" gutterBottom>
+                        The preview for the welcome message that will be sent by Yoki.
+                    </Typography>
+                    <Box sx={{ mt: 2 }}>
+                        <GuildedContent>
+                            <WelcomeBanner avatar={currentUser.avatar} />
+                        </GuildedContent>
+                    </Box>
                 </Box>
             </>
         );

@@ -123,7 +123,7 @@ export default function Dashboard(props: SessionProps) {
 
         return (
             <Layout {...props} currentPage={currentPage} onServerChange={onServerChange}>
-                <DashForm currentServer={props.currentServer} serverConfig={props.serverConfig} page={currentPage} highestRoleType={props.highestRoleType} />
+                <DashForm currentUser={props.user} currentServer={props.currentServer} serverConfig={props.serverConfig} page={currentPage} highestRoleType={props.highestRoleType} />
             </Layout>
         );
     }
