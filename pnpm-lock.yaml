@@ -443,15 +443,9 @@ importers:
       '@vercel/analytics':
         specifier: ^1.0.2
         version: 1.0.2
-      '@yoki/common':
-        specifier: workspace:*
-        version: link:../common
       '@yokilabs/utils':
         specifier: workspace:*
         version: link:../../packages/utils
-      canvas:
-        specifier: Automattic/node-canvas#master
-        version: github.com/Automattic/node-canvas/f934f226fc01b2ccb4554d0056718a24279ac087
       common-tags:
         specifier: ^1.8.2
         version: 1.8.2
@@ -500,9 +494,6 @@ importers:
       react-turnstile:
         specifier: ^1.1.2
         version: 1.1.2(react-dom@18.2.0)(react@18.2.0)
-      sharp:
-        specifier: ^0.32.6
-        version: 0.32.6
       styled-components:
         specifier: ^5.3.11
         version: 5.3.11(@babel/core@7.24.6)(react-dom@18.2.0)(react-is@18.3.1)(react@18.2.0)

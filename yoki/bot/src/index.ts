@@ -12,8 +12,6 @@ import { errorLoggerS3 } from "./utils/s3";
 // Load env variables
 config({ path: join(__dirname, "..", "..", ".env") });
 
-registerCanvasing();
-
 // Check ENV variables to ensure we have the necessary things to start the bot up
 ["DEFAULT_PREFIX", "GUILDED_TOKEN", "DATABASE_URL", "MAIN_SERVER", "ERROR_WEBHOOK", "S3_KEY_ID", "S3_SECRET_KEY", "S3_BUCKET"].forEach((x) => {
     if (!process.env[x]) throw new Error(`Missing env var ${x}`);
@@ -63,6 +61,8 @@ client.emitter.on("ActionIssued", client.customEventHandler.ActionIssued);
 process.on("unhandledRejection", (err) => unhandledPromiseRejection(err as Error, client));
 
 void (async (): Promise<void> => {
+    registerCanvasing();
+
     // Load all filse & directories in the commands dir recursively
     await setClientCommands(client, join(__dirname, "commands"));
     // Load guilded events

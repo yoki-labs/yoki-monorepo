@@ -31,7 +31,7 @@ export async function generateUserJoinBanner(name: string, avatarUrl?: string | 
     // Text
     const fontSize = 32 - name.length * 0.65;
     const highlightPadding = fontSize / 5;
-    canvasCtx.font = `bold ${fontSize}px 'Space Mono'`;
+    canvasCtx.font = `bold ${fontSize}px "Space Mono", "Ubuntu Mono", "Fira Sans", "Cascadia Code", "Cascadia Mono", "Inconsolata", mono, sans-serif`;
 
     const prefixLength = canvasCtx.measureText(`Welcome, `);
     const nameLength = canvasCtx.measureText(`@${name}`);
