@@ -226,7 +226,7 @@ importers:
         specifier: ^2.1627.0
         version: 2.1627.0
       canvas:
-        specifier: Automattic/node-canvas#master
+        specifier: ^2.11.2
         version: github.com/Automattic/node-canvas/f934f226fc01b2ccb4554d0056718a24279ac087
       common-tags:
         specifier: ^1.8.2
@@ -320,7 +320,7 @@ importers:
         specifier: ^2.1440.0
         version: 2.1627.0
       canvas:
-        specifier: Automattic/node-canvas#master
+        specifier: ^2.11.2
         version: github.com/Automattic/node-canvas/f934f226fc01b2ccb4554d0056718a24279ac087
       common-tags:
         specifier: ^1.8.2
