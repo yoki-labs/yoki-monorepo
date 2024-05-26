@@ -45,7 +45,7 @@ export interface DashboardPageItem {
     id: string;
     name: string;
     icon?: IconDefinition;
-    iconComponent?: any;
+    iconComponent?: unknown;
     component: typeof React.Component | ((props: DashboardPageProps) => React.ReactElement);
     category: DashboardPageCategory;
     color?: ColorPaletteProp;

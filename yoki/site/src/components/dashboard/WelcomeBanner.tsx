@@ -10,7 +10,7 @@ export const WelcomeBannerCanvas = styled(Box, {
     // height,
     // width: "100%",
     padding: "10px 20%",
-    backgroundColor: "transparent"
+    backgroundColor: "transparent",
 }));
 
 export const WelcomeBannerContainer = styled(Box, {
@@ -22,7 +22,7 @@ export const WelcomeBannerContainer = styled(Box, {
     height: "10rem",
     overflow: "hidden",
     position: "relative",
-    borderRadius: theme.vars.radius.lg
+    borderRadius: theme.vars.radius.lg,
 }));
 
 export const WelcomeBannerWrapper = styled(Box, {
@@ -69,15 +69,23 @@ export default function WelcomeBanner({ avatar }: Props) {
                     <WelcomeBannerWrapper>
                         <WelcomeBannerContent>
                             <Avatar src={avatar ?? void 0} sx={{ top: "20%", left: "41.66%", height: "40%", width: "16.6%", borderRadius: "40%" }} />
-                            <Typography component="div" level="inline-code" textColor="text.primary" fontWeight="bolder" sx={{ position: "absolute", fontSize: "3vh", top: "72%", width: "100%", textAlign: "center" }}>
+                            <Typography
+                                component="div"
+                                level="inline-code"
+                                textColor="text.primary"
+                                fontWeight="bolder"
+                                sx={{ position: "absolute", fontSize: "3vh", top: "72%", width: "100%", textAlign: "center" }}
+                            >
                                 Welcome,{" "}
-                                <Typography color="primary" variant="soft" sx={{ paddingBlock: "0.05em", paddingInline: "0.2em" }}>@ExampleUser</Typography>
-                                ,{" "} to the server!
+                                <Typography color="primary" variant="soft" sx={{ paddingBlock: "0.05em", paddingInline: "0.2em" }}>
+                                    @ExampleUser
+                                </Typography>
+                                , to the server!
                             </Typography>
                         </WelcomeBannerContent>
                     </WelcomeBannerWrapper>
                 </WelcomeBannerContainer>
             </AspectRatio>
         </WelcomeBannerCanvas>
-    )
+    );
 }

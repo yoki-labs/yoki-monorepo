@@ -1,6 +1,5 @@
 import { RoleType } from "@prisma/client";
-import { inlineQuote } from "@yokilabs/bot";
-import { createServerLimit } from "@yokilabs/bot";
+import { createServerLimit, inlineQuote } from "@yokilabs/bot";
 import { ReactionInfo } from "@yokilabs/utils";
 
 import { TAG_REGEX } from "../../util/matching";

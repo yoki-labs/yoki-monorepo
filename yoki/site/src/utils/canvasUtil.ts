@@ -24,7 +24,7 @@ export async function handleWelcome(serverId: string, channelId: string, userId:
     //         ],
     //     },
     // });
-    return 0;
+    return Promise.resolve([serverId, channelId, userId]);
 }
 
 // // Copy-pasted code basically
