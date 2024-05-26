@@ -42,7 +42,7 @@
 		"@amplitude/node": "^1.10.2",
 		"@discordjs/collection": "^1.5.3",
 		"@fontsource/space-mono": "^5.0.20",
-		"@prisma/client": "^4.16.2",
+		"@prisma/client": "^4.2.1",
 		"aws-sdk": "^2.1627.0",
 		"canvas": "^2.11.2",
 		"common-tags": "^1.8.2",
