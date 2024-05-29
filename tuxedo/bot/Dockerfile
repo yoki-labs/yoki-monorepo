@@ -11,6 +11,7 @@ RUN apk update \
 	curl \
 	bash \ 
 	jq \
+	font-opensans \
 	&& corepack enable && corepack prepare pnpm@7.18.0 --activate
 
 # root /

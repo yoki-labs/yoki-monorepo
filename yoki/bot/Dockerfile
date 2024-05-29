@@ -12,7 +12,6 @@ RUN apk update \
 	bash \ 
 	jq \
 	font-opensans \
-	font-ubuntu \
 	&& corepack enable && corepack prepare pnpm@7.18.0 --activate
 
 # root /
