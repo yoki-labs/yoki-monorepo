@@ -45,7 +45,7 @@ export default {
 
             if (!proceed) return;
         }
-        // else await ctx.supportUtil.handleWelcome(server, member);
+        else await ctx.supportUtil.handleWelcome(server, member);
 
         // check if there's a log channel channel for member joins
         const memberJoinLogChannel = await ctx.dbUtil.getLogChannel(serverId!, LogChannelType.member_joins);

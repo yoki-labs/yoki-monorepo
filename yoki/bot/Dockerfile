@@ -51,6 +51,7 @@ RUN apk update \
 COPY --from=0 ./opt/build/tsconfig.json ./opt/build/package.json ./
 COPY --from=0 ./opt/build/node_modules node_modules
 COPY --from=0 ./opt/build/packages/ packages/
+COPY --from=0 ./opt/build/assets/ assets/
 COPY --from=0 ./opt/build/yoki/common/ yoki/common/
 COPY --from=0 ./opt/build/yoki/bot/ yoki/bot/
 
