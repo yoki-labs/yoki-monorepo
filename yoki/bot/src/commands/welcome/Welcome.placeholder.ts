@@ -2,7 +2,7 @@ import { Collection } from "@discordjs/collection";
 import { RoleType } from "@prisma/client";
 
 import { Category, Command } from "../commands";
-import WelcomeChannel from "./Channel.command";
+import WelcomeChannel from "./Channel.placeholder";
 
 const Welcome: Command = {
     name: "welcome",

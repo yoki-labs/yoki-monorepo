@@ -12,7 +12,7 @@ const Solve: Command = {
     subCommand: true,
     subName: "solve",
     args: [{ name: "code", type: "string" }],
-    execute: async (message, args, ctx, { server, member }) => {
+    execute: async (message, args, ctx, { server }) => {
         const code = args.code as string;
         const captcha = await ctx.prisma.captcha.findFirst({
             where: {
@@ -41,7 +41,7 @@ const Solve: Command = {
         if (server.memberRoleId) await ctx.roles.addRoleToMember(message.serverId!, message.authorId, server.memberRoleId).catch(() => null);
         void ctx.amp.logEvent({ event_type: "CAPTCHA_SUCCESS", user_id: message.authorId, event_properties: { serverId: message.serverId! } });
 
-        await ctx.supportUtil.handleWelcome(server, member);
+        // await ctx.supportUtil.handleWelcome(server, member);
 
         return ctx.messageUtil.replyLegacy(message, { content: "Congrats! You solved the captcha. You may now use the rest of the server." });
     },
