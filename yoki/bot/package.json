@@ -32,7 +32,7 @@
 		"@types/node-fetch": "2.5.12",
 		"@types/recursive-readdir": "^2.2.4",
 		"dotenv-cli": "^5.1.0",
-		"prisma": "~4.8.1"
+		"prisma": "~5.14.0"
 	},
 	"dependencies": {
 		"@yoki/common": "workspace:*",
@@ -42,7 +42,7 @@
 		"@amplitude/node": "^1.10.2",
 		"@discordjs/collection": "^1.5.3",
 		"@fontsource/space-mono": "^5.0.20",
-		"@prisma/client": "^4.2.1",
+		"@prisma/client": "^5.14.0",
 		"aws-sdk": "^2.1627.0",
 		"canvas": "^2.11.2",
 		"common-tags": "^1.8.2",

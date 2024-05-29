@@ -24,7 +24,7 @@
     },
     "dependencies": {
         "@discordjs/collection": "^1.2.0",
-        "@prisma/client": "^4.2.1",
+        "@prisma/client": "^5.14.0",
         "@yokilabs/utils": "workspace:*",
         "@yokilabs/bot": "workspace:*",
         "common-tags": "^1.8.2",
@@ -45,6 +45,6 @@
         "@types/node-fetch": "2.5.12",
         "@types/recursive-readdir": "^2.2.0",
         "dotenv-cli": "^5.1.0",
-        "prisma": "~4.8.0"
+        "prisma": "~5.14.0"
     }
 }
