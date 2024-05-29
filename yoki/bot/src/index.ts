@@ -1,4 +1,3 @@
-import { registerCanvasing } from "@yoki/common";
 import { GEvent, setClientCommands } from "@yokilabs/bot";
 import { config } from "dotenv";
 import { ClientEvents } from "guilded.js";
@@ -61,8 +60,6 @@ client.emitter.on("ActionIssued", client.customEventHandler.ActionIssued);
 process.on("unhandledRejection", (err) => unhandledPromiseRejection(err as Error, client));
 
 void (async (): Promise<void> => {
-    registerCanvasing();
-
     // Load all filse & directories in the commands dir recursively
     await setClientCommands(client, join(__dirname, "commands"));
     // Load guilded events
