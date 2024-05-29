@@ -11,6 +11,8 @@ RUN apk update \
 	curl \
 	bash \ 
 	jq \
+	font-opensans \
+	font-ubuntu \
 	&& corepack enable && corepack prepare pnpm@7.18.0 --activate
 
 # root /
@@ -28,10 +30,6 @@ WORKDIR /opt/build/yoki/bot
 COPY ./yoki/bot/package.json ./
 # for workspaces
 RUN pnpm install --silent
-COPY ./yoki/bot/node_modules/@fontsource/space-mono/files/space-mono-latin-400-normal.woff /usr/share/fonts
-COPY ./yoki/bot/node_modules/@fontsource/space-mono/files/space-mono-latin-400-normal.woff2 /usr/share/fonts
-COPY ./yoki/bot/node_modules/@fontsource/space-mono/files/space-mono-latin-700-normal.woff /usr/share/fonts
-COPY ./yoki/bot/node_modules/@fontsource/space-mono/files/space-mono-latin-700-normal.woff2 /usr/share/fonts
 
 # root /yoki/bot/prisma/ for DB stuff
 COPY ./yoki/bot/prisma/. ./prisma/
