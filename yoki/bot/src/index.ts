@@ -7,6 +7,7 @@ import recursive from "recursive-readdir";
 import YokiClient from "./Client";
 import unhandledPromiseRejection from "./events/other/unhandledPromiseRejection";
 import { errorLoggerS3 } from "./utils/s3";
+import { registerCanvasing } from "@yoki/common";
 
 // Load env variables
 config({ path: join(__dirname, "..", "..", ".env") });
@@ -60,6 +61,8 @@ client.emitter.on("ActionIssued", client.customEventHandler.ActionIssued);
 process.on("unhandledRejection", (err) => unhandledPromiseRejection(err as Error, client));
 
 void (async (): Promise<void> => {
+    registerCanvasing();
+
     // Load all filse & directories in the commands dir recursively
     await setClientCommands(client, join(__dirname, "commands"));
     // Load guilded events

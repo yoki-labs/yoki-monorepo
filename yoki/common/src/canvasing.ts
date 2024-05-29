@@ -1,14 +1,16 @@
 import { GuildedImages } from "@yokilabs/utils";
-import { CanvasRenderingContext2D, createCanvas, loadImage } from "canvas";
+import { CanvasRenderingContext2D, createCanvas, loadImage, registerFont } from "canvas";
 import fetch from "node-fetch";
+import path from "path";
 import sharp from "sharp";
 
-// export function registerCanvasing() {
-//     const fontPath = path.join(process.cwd(), "node_modules/@fontsource/space-mono/files/space-mono-latin-700-normal.woff");
+export function registerCanvasing() {
+    // const fontPath = path.join(process.cwd(), "node_modules/@fontsource/space-mono/files/space-mono-latin-700-normal.woff");
+    const fontPath = path.join(process.cwd(), "../../assets/space-mono/ttf/space-mono-latin-700-normal.ttf");
 
-//     console.log("Setting canvas font", { fontPath });
-//     registerFont(fontPath, { family: "Space Mono" });
-// }
+    console.log("Setting canvas font", { fontPath });
+    registerFont(fontPath, { family: "Space Mono" });
+}
 
 export async function generateUserJoinBanner(name: string, avatarUrl?: string | null): Promise<Buffer> {
     // const name = "01234567890123456789012345678901";
@@ -31,7 +33,7 @@ export async function generateUserJoinBanner(name: string, avatarUrl?: string | 
     // Text
     const fontSize = 32 - name.length * 0.65;
     const highlightPadding = fontSize / 5;
-    canvasCtx.font = `bold ${fontSize}px sans-serif`;
+    canvasCtx.font = `bold ${fontSize}px "Space Mono", mono, sans-serif`;
 
     const prefixLength = canvasCtx.measureText(`Welcome, `);
     const nameLength = canvasCtx.measureText(`@${name}`);

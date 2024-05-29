@@ -17,6 +17,7 @@ RUN apk update \
 # root /
 COPY pnpm-workspace.yaml pnpm-lock.yaml tsconfig.json package.json turbo.json .swcrc ./
 COPY ./packages ./packages
+COPY ./assets ./assets
 COPY ./yoki/common ./yoki/common
 
 RUN pnpm install --silent
