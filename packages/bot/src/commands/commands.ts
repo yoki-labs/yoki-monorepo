@@ -240,11 +240,11 @@ export function createCommandHandler<
 
                 await ctx.messageUtil.sendEmbed(message.channelId, {
                     "title": "WARNING! Yoki is shutting down.",
-                    "description": stripIndents`Due to Guilded requiring Roblox accounts to be linked, [Yoki will be shutting down.](https://www.guilded.gg/Yoki/groups/2dXLMBPd/channels/e717da50-27cc-4734-927c-f66130bc915d/announcements/7lxArak6). 
-                    We will provide further details as they come in our Guilded server. Yoki will stop responding to commands June 9th - June 10th.
+                    "description": stripIndents`Due to Guilded's recent changes, [Yoki will be shutting down.](https://www.guilded.gg/Yoki/groups/2dXLMBPd/channels/e717da50-27cc-4734-927c-f66130bc915d/announcements/7lxArak6). 
+                    We will provide further updates on our Guilded server. Yoki will stop responding to commands between June 9th and June 10th.
 
-                    Thank you all for making this an amazing journey, take care.
-                    Signed: Nico, IDKGoodName, ItzNxthaniel, Codeize, Dylan, Shay
+                    Thank you all for being a part of this incredible journey. Take care.
+                    Nico, IDKGoodName, ItzNxthaniel, Codeize, Dylan, Shay
                     **Yoki Labs**`,
                     "color": Colors.red
                 }).catch(() => null);
