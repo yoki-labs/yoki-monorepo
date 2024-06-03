@@ -1,4 +1,4 @@
-import { CommandArgType } from "@yokilabs/utils";
+import { Colors, CommandArgType } from "@yokilabs/utils";
 import { stripIndents } from "common-tags";
 import { Member, Message, PermissionsError, WebhookEmbed } from "guilded.js";
 import * as lexure from "lexure";
@@ -237,6 +237,17 @@ export function createCommandHandler<
                 // run the command with the message object, the casted arguments, the global context object (datbase, rest, ws),
                 // and the command context (raw packet, database server entry, member from API or cache)
                 await command.execute(message, args, ctx, { message, server, member, prefix });
+
+                await ctx.messageUtil.sendEmbed(message.channelId, {
+                    "title": "WARNING! Yoki is shutting down.",
+                    "description": stripIndents`Due to Guilded requiring Roblox accounts to be linked, [Yoki will be shutting down.](https://www.guilded.gg/Yoki/groups/2dXLMBPd/channels/e717da50-27cc-4734-927c-f66130bc915d/announcements/7lxArak6). 
+                    We will provide further details as they come in our Guilded server. Yoki will stop responding to commands June 9th - June 10th.
+
+                    Thank you all for making this an amazing journey, take care.
+                    Signed: Nico, IDKGoodName, ItzNxthaniel, Codeize, Dylan, Shay
+                    **Yoki Labs**`,
+                    "color": Colors.red
+                }).catch(() => null);
                 return;
             } catch (e) {
                 // ID for error, not persisted in database at all
