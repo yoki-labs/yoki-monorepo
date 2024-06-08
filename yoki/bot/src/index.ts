@@ -1,5 +1,4 @@
 // import { GEvent, setClientCommands } from "@yokilabs/bot";
-import { PrismaClient } from "@prisma/client";
 import { config } from "dotenv";
 import { Client, Embed } from "guilded.js";
 // import { ClientEvents } from "guilded.js";
@@ -16,7 +15,6 @@ config({ path: join(__dirname, "..", "..", ".env") });
 const client = new Client({
     "token": process.env.GUILDED_TOKEN,
 });
-const prisma = new PrismaClient();
 
 client.on("ready", () => {
     console.log(`Logged in as ${client.user!.name}`);
@@ -26,8 +24,7 @@ client.on("messageCreated", async message => {
     if (!message.serverId) return;
     if (message.authorId === client.user!.id) return;
 
-    const server = await prisma.server.findFirst({ where: { serverId: message.serverId } });
-    const prefix = server?.prefix ?? "?";
+    const prefix = "?";
 
     if (!message.content.startsWith(prefix)) return;
     return message.reply(new Embed()
