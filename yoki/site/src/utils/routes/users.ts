@@ -3,7 +3,7 @@ import { Session, unstable_getServerSession } from "next-auth";
 
 import { LabsSessionUser } from "./pages";
 import { GuildedClientServer, GuildedServer } from "../../lib/@types/guilded";
-import { authOptions } from "../../pages/api/auth/[...nextauth]";
+import { authOptions } from "../../old_pages/api/auth/[...nextauth]";
 
 type UserRouteFunction = (req: NextApiRequest, res: NextApiResponse, session: Session | null, user: LabsSessionUser) => Promise<unknown>;
 type UserRouteInfo = Record<string, UserRouteFunction>;

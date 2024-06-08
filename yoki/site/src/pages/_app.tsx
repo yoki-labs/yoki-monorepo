@@ -19,17 +19,6 @@ import "../styles/globals.css";
 import "../styles/animations.css";
 import "../styles/scrollbar.css";
 
-// Fonts
-import "@fontsource/montserrat";
-import "@fontsource/montserrat/500.css";
-import "@fontsource/montserrat/500-italic.css";
-import "@fontsource/montserrat/600.css";
-import "@fontsource/montserrat/600-italic.css";
-import "@fontsource/montserrat/700.css";
-import "@fontsource/montserrat/700-italic.css";
-import "@fontsource/lexend";
-import "@fontsource/space-mono";
-
 const ogDescription = "Meet Yoki, your moderation companion and Guilded's biggest moderation bot.";
 const ogUrl = "https://yoki.gg/";
 const ogFace = "https://yoki.gg/icon.png";

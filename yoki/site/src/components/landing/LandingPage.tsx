@@ -44,7 +44,7 @@ export default class LandingPage extends React.Component<Props, State> {
                 {/* Anything here will be fixed */}
                 <Alert color="danger">
                     <Typography level="h3" textColor="danger.300">
-                        Yoki is shutting down. You can read more in <Link color="neutral" underline="always" textColor="text.primary" href="https://www.guilded.gg/Yoki/blog/News/Shutdown">this blog post.</Link>
+                        <Link color="neutral" underline="always" textColor="text.primary" href="https://www.guilded.gg/Yoki/blog/News/Shutdown">Yoki has shut down.</Link> Thank you all for the amazing journey.
                     </Typography>
                 </Alert>
 

@@ -7,7 +7,7 @@ import { roleTypeLevels } from "./permissions";
 import { sanitizeUserDetails } from "./transform";
 import rest from "../../guilded";
 import { GuildedUserDetail } from "../../lib/@types/guilded";
-import { authOptions } from "../../pages/api/auth/[...nextauth]";
+import { authOptions } from "../../old_pages/api/auth/[...nextauth]";
 import prisma from "../../prisma";
 
 type ServerRouteFunction = (req: NextApiRequest, res: NextApiResponse, session: Session | null, server: Server, member: ServerMember) => Promise<unknown>;
