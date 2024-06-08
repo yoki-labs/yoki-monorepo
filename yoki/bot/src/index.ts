@@ -31,7 +31,7 @@ client.on("messageCreated", async message => {
         .setTitle("Yoki has shutdown.")
         .setColor("red")
         .setDescription(stripIndents`
-            Yoki will not be responding to any commands. Please refer to [this post](https://www.guilded.gg/Yoki/groups/2dXLMBPd/channels/e717da50-27cc-4734-927c-f66130bc915d/announcements/glbNEXgl) for more information.
+            Yoki will not be responding to any commands. Please refer to [this post](https://www.guilded.gg/Yoki/blog/News/Shutdown-Complete) for more information.
 
             Thank you all for being a part of this incredible journey.
 
