@@ -1,0 +1,16 @@
+{
+    "redirects": [
+        {
+            "source": "/gapi-twitter",
+            "destination": "https://x.com/teamguilded/status/1547234394787565568"
+        },
+        {
+            "source": "/gapi-video",
+            "destination": "https://youtu.be/eZAbDXdHguc?si=QsFaE1wJmHsA9G1v&t=27"
+        },
+        {
+            "source": "/gapi-blog",
+            "destination": "https://www.guilded.gg/blog/spring-update-2022"
+        }
+    ]
+}
