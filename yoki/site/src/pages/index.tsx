@@ -80,7 +80,7 @@ const Home: NextPage<LandingPageSessionProps> = ({ user }) => {
                     <LandingStat icon={faMessage} amount="20,000,000+" subtitle="Scanned" what="messages" />
                     <LandingStat icon={faClipboardCheck} amount="16,000+" subtitle="Actioned" what="cases" />
                     <LandingStat icon={faLayerGroup} amount="3,600+" subtitle="Serving" what="servers" />
-                    <LandingStat icon={faUsers} amount="300,000+" subtitle="Watching over" what="members" />
+                    <LandingStat icon={faUsers} amount="200,000+" subtitle="Watching over" what="members" />
                     <LandingStat icon={faUserSecret} amount="50,000+" subtitle="Stopped" what="bad actors" />
                     <LandingStat icon={faCheckDouble} amount="9,000+" subtitle="Served" what="captchas" />
                 </div>
