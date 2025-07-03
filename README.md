@@ -1,6 +1,8 @@
-# Yoki (PRIVATE)
+> ⚠️ This is an archive of the Yoki & Tuxo source code. Yoki shut down in July of 2024 due to disagreements in Guilded's policy. The Guilded API has changed significantly since then, so it's likely that trying to run the bot in its current state would not work.
 
-An automod/moderation bot that helps assist communities to protect their servers.
+# Yoki
+
+An automod bot that helps assist communities to protect their servers.
 
 ## Getting Started
 
@@ -29,7 +31,7 @@ There are two docker-compose files included, one for the development environment
 ## Environment Variables
 
 ```
-MAIN_SERVER="MAIN_SERVER_TO_TEST_IN"
+MAIN_SERVER="MAIN_SERVER_ID_TO_TEST_IN"
 ERROR_WEBHOOK="ERROR_WEBHOOK_URL"
 GUILDED_TOKEN="GET_GUILDED_TOKEN_FROM_SOMEWHERE"
 DATABASE_URL="PUT_IN_TEST_DB_URL" // if you are using the docker-compose setup, your url will be exactly this "postgresql://yoki_user:yoki_pass@localhost:5432/yoki?schema=public".
@@ -43,4 +45,4 @@ Please make sure you run `pnpm build` and `pnpm lint:fix` before pushing commits
 
 ## Terms
 
-By coming on as a developer, you are expected to keep this code closed source. You are not to fork it or republish it, as this code is unlicensed and any unauthorized distribution will be a violation of the licensing (or rather, the lack of). Of course, I'm probably not gonna litigate anything, but it's in your better favor not to be a jerk to the people who have put a lot of hard work into this bot.
+This repository is public purely as a view-only showcase. You are not permitted to fork or run your own instance of the bot without prior permission.
