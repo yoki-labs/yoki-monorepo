@@ -1,9 +1,0 @@
-version: "3.7"
-services:
-    bot:
-        image: ghcr.io/yoki-labs/bots/test/bot:latest
-        container_name: TUXEDO_BOT
-        restart: unless-stopped
-        network_mode: host
-        env_file:
-            - ./.env.prod
